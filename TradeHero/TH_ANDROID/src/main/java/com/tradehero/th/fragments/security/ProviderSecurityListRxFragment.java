@@ -8,10 +8,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedViewDTOAdapter;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
@@ -30,13 +29,12 @@ import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 
-public class ProviderSecurityListRxFragment<ViewType extends View & DTOView<SecurityCompactDTO>>
-        extends SecurityListRxFragment<ViewType>
+public class ProviderSecurityListRxFragment
+        extends SecurityListRxFragment
 {
-    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
     @Inject ProviderCacheRx providerCache;
     @Inject ProviderUtil providerUtil;
 
@@ -144,7 +142,7 @@ public class ProviderSecurityListRxFragment<ViewType extends View & DTOView<Secu
         super.onDestroy();
     }
 
-    @NonNull @Override protected PagedViewDTOAdapter createItemViewAdapter()
+    @NonNull @Override protected SecurityPagedViewDTOAdapter createItemViewAdapter()
     {
         return new SecurityPagedViewDTOAdapter(getActivity(), R.layout.trending_security_item);
     }
@@ -161,10 +159,10 @@ public class ProviderSecurityListRxFragment<ViewType extends View & DTOView<Secu
 
     protected void fetchProviderDTO()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 providerCache.get(this.providerId)
-                .map(pair -> pair.second))
+                .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         e -> THToast.show(getString(R.string.error_fetch_provider_info))));
@@ -201,7 +199,7 @@ public class ProviderSecurityListRxFragment<ViewType extends View & DTOView<Secu
             BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         }
         args.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
-        navigator.get().pushFragment(securityCompactDTOUtil.fragmentFor(clicked), args);
+        navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(clicked), args);
     }
 
     protected void pushWizardElement()

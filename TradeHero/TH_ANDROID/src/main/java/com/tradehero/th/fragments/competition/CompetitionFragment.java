@@ -16,7 +16,7 @@ import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 abstract public class CompetitionFragment extends BasePurchaseManagerFragment
@@ -68,7 +68,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
     protected void fetchProviderDTO()
     {
         unsubscribe(providerCacheSubscription);
-        providerCacheSubscription = AndroidObservable.bindFragment(
+        providerCacheSubscription = AppObservable.bindFragment(
                 this,
                 providerCache.get(this.providerId))
                 .subscribe(createProviderCacheObserver());

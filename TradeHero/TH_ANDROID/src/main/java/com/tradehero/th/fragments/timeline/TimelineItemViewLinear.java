@@ -2,10 +2,12 @@ package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.PopupMenu;
+import com.tradehero.common.rx.PopupMenuItemClickOperator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
@@ -16,10 +18,12 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
+import com.tradehero.th.fragments.discussion.DiscussionActionButtonsView;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
+import com.tradehero.th.fragments.news.NewsItemViewHolder;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
@@ -27,6 +31,12 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import timber.log.Timber;
 
 public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLinear<TimelineItemDTO>
 {
@@ -39,44 +49,9 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
         super(context, attrs);
     }
 
-    @Override protected TimelineItemViewHolder createViewHolder()
+    @NonNull @Override protected TimelineItemViewHolder createViewHolder()
     {
         return new TimelineItemViewHolder<>(getContext());
-    }
-
-    protected PopupMenu.OnMenuItemClickListener createMonitorPopupMenuItemClickListener()
-    {
-        return new MonitorPopupMenuItemClickListener();
-    }
-
-    protected class MonitorPopupMenuItemClickListener implements PopupMenu.OnMenuItemClickListener
-    {
-        @Override public boolean onMenuItemClick(MenuItem item)
-        {
-            switch (item.getItemId())
-            {
-                case R.id.timeline_action_add_to_watchlist:
-                {
-                    openWatchlistEditor();
-                    return true;
-                }
-
-                case R.id.timeline_action_add_alert:
-                    openStockAlertEditor();
-                    return true;
-
-                case R.id.timeline_popup_menu_buy_sell:
-                {
-                    openSecurityProfile();
-                    return true;
-                }
-
-                case R.id.timeline_action_translate:
-                    translate();
-                    break;
-            }
-            return false;
-        }
     }
 
     private void translate()
@@ -85,7 +60,35 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
     }
 
     //<editor-fold desc="Popup dialog">
-    private PopupMenu createActionPopupMenu()
+    @NonNull @Override protected Observable<DiscussionActionButtonsView.UserAction> handleUserAction(
+            DiscussionActionButtonsView.UserAction userAction)
+    {
+        if (userAction instanceof DiscussionActionButtonsView.MoreUserAction)
+        {
+            return createActionPopupMenu()
+                    .flatMap(popupMenu -> Observable.create(new PopupMenuItemClickOperator(popupMenu, true)))
+                    .map(this::handleMenuItemClicked)
+                    .flatMap(result -> Observable.empty());
+        }
+        if (userAction instanceof DiscussionActionButtonsView.CommentUserAction)
+        {
+            openTimelineDiscussion();
+            return Observable.empty();
+        }
+        if (userAction instanceof AbstractDiscussionItemViewHolder.PlayerUserAction)
+        {
+            openOtherTimeline();
+            return Observable.empty();
+        }
+        if (userAction instanceof NewsItemViewHolder.SecurityUserAction)
+        {
+            openSecurityProfile();
+            return Observable.empty();
+        }
+        return super.handleUserAction(userAction);
+    }
+
+    @NonNull private Observable<PopupMenu> createActionPopupMenu()
     {
         PopupMenu popupMenu = new PopupMenu(getContext(), findViewById(R.id.discussion_action_button_more));
         MenuInflater menuInflater = popupMenu.getMenuInflater();
@@ -95,13 +98,46 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
             menuInflater.inflate(R.menu.timeline_stock_popup_menu, popupMenu.getMenu());
         }
 
-        if (socialShareHelper.canTranslate(abstractDiscussionCompactDTO))
-        {
-            menuInflater.inflate(R.menu.timeline_comment_share_popup_menu, popupMenu.getMenu());
-        }
+        return socialShareHelper.canTranslate(abstractDiscussionCompactDTO)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Boolean, PopupMenu>()
+                {
+                    @Override public PopupMenu call(Boolean canTranslate)
+                    {
+                        if (canTranslate)
+                        {
+                            menuInflater.inflate(R.menu.timeline_comment_share_popup_menu, popupMenu.getMenu());
+                        }
+                        return popupMenu;
+                    }
+                });
+    }
 
-        popupMenu.setOnMenuItemClickListener(createMonitorPopupMenuItemClickListener());
-        return popupMenu;
+    public boolean handleMenuItemClicked(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.timeline_action_add_to_watchlist:
+            {
+                openWatchlistEditor();
+                return true;
+            }
+
+            case R.id.timeline_action_add_alert:
+                openStockAlertEditor();
+                return true;
+
+            case R.id.timeline_popup_menu_buy_sell:
+            {
+                openSecurityProfile();
+                return true;
+            }
+
+            case R.id.timeline_action_translate:
+                translate();
+                break;
+        }
+        return false;
     }
 
     protected SecurityId getSecurityId()
@@ -195,47 +231,5 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
             }
         }
         getNavigator().pushFragment(WatchlistEditFragment.class, args, null);
-    }
-
-    @Override
-    protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
-    {
-        return new TimelineItemViewMenuClickedListener()
-        {
-            @Override public void onShareButtonClicked()
-            {
-                // Nothing to do
-            }
-
-            @Override public void onTranslationRequested()
-            {
-                // Nothing to do
-            }
-        };
-    }
-
-    abstract protected class TimelineItemViewMenuClickedListener extends AbstractDiscussionViewHolderClickedListener
-        implements TimelineItemViewHolder.OnMenuClickedListener
-    {
-        @Override public void onMoreButtonClicked()
-        {
-            PopupMenu popUpMenu = createActionPopupMenu();
-            popUpMenu.show();
-        }
-
-        @Override public void onCommentButtonClicked()
-        {
-            openTimelineDiscussion();
-        }
-
-        @Override public void onUserClicked(UserBaseKey userClicked)
-        {
-            openOtherTimeline();
-        }
-
-        @Override public void onSecurityClicked()
-        {
-            openSecurityProfile();
-        }
     }
 }

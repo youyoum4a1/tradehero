@@ -19,9 +19,9 @@ public class DTOProcessorProviderReceived extends ThroughDTOProcessor<ProviderDT
     }
     //</editor-fold>
 
-    @Override public ProviderDTO process(ProviderDTO value)
+    @Override public ProviderDTO process(@NonNull ProviderDTO value)
     {
-        if (value != null && value.associatedPortfolio != null)
+        if (value.associatedPortfolio != null)
         {
             portfolioCompactProcessor.process(value.associatedPortfolio);
         }

@@ -9,15 +9,8 @@ public class ConnectedLeaderboardDefDTO extends LeaderboardDefDTO
 {
     @Nullable public Integer bannerResId;
 
-    //<editor-fold desc="Constructors">
-    public ConnectedLeaderboardDefDTO()
-    {
-        super();
-    }
-    //</editor-fold>
-
     @NonNull @Override public LeaderboardDefListKey getLeaderboardDefListKey()
     {
-        return new ConnectedLeaderboardDefListKey();
+        return new ConnectedLeaderboardDefListKey(1);
     }
 }

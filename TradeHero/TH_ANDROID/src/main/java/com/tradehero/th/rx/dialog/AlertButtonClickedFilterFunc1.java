@@ -1,18 +1,17 @@
 package com.tradehero.th.rx.dialog;
 
 import android.content.DialogInterface;
-import android.util.Pair;
 import rx.functions.Func1;
 
-public class AlertButtonClickedFilterFunc1 implements Func1<Pair<DialogInterface, Integer>, Boolean>
+public class AlertButtonClickedFilterFunc1 implements Func1<OnDialogClickEvent, Boolean>
 {
     private final int buttonId;
 
     //<editor-fold desc="Constructors">
     public AlertButtonClickedFilterFunc1(int buttonId)
     {
-        if (buttonId != AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX
-                && buttonId != AlertDialogButtonConstants.NEGATIVE_BUTTON_INDEX)
+        if (buttonId != DialogInterface.BUTTON_POSITIVE
+                && buttonId != DialogInterface.BUTTON_NEGATIVE)
         {
             throw new IllegalArgumentException("Invalid buttonId " + buttonId);
         }
@@ -20,8 +19,8 @@ public class AlertButtonClickedFilterFunc1 implements Func1<Pair<DialogInterface
     }
     //</editor-fold>
 
-    @Override public Boolean call(Pair<DialogInterface, Integer> dialogInterfaceIntegerPair)
+    @Override public Boolean call(OnDialogClickEvent event)
     {
-        return dialogInterfaceIntegerPair.second == buttonId;
+        return event.which == buttonId;
     }
 }

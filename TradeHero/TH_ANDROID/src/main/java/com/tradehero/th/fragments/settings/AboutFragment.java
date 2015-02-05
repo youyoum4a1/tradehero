@@ -35,7 +35,6 @@ public class AboutFragment extends DashboardFragment
     @InjectView(R.id.about_scroll) ScrollView scrollView;
 
     @Inject Analytics analytics;
-    @Inject StaffDTOFactory staffDTOFactory;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     private ObjectAnimator rotateAnimator;
@@ -65,11 +64,6 @@ public class AboutFragment extends DashboardFragment
         rotateAnimator.setDuration(getResources().getInteger(R.integer.about_screen_rotation_duration));
         rotateAnimator.addListener(new AnimatorListenerAdapter()
         {
-            @Override public void onAnimationStart(Animator animation)
-            {
-                super.onAnimationStart(animation);
-            }
-
             @Override public void onAnimationEnd(Animator animation)
             {
                 super.onAnimationEnd(animation);
@@ -83,7 +77,7 @@ public class AboutFragment extends DashboardFragment
     private void initStaffList()
     {
         staffList.removeAllViews();
-        for (StaffDTO staffDTO : staffDTOFactory.getTradeHeroStaffers(getResources()))
+        for (StaffDTO staffDTO : StaffDTOFactory.getTradeHeroStaffers(getResources()))
         {
             StaffTitleView staffTitleView = (StaffTitleView) getActivity().getLayoutInflater().inflate(R.layout.staff_view, null);
             staffTitleView.setStaffDTO(staffDTO);

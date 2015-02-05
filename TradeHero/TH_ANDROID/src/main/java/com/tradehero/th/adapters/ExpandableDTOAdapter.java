@@ -2,6 +2,8 @@ package com.tradehero.th.adapters;
 
 import android.content.Context;
 import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
@@ -18,10 +20,12 @@ public abstract class ExpandableDTOAdapter<
     @IdRes public static final int RES_ID_EXPANDED_LAYOUT = R.id.expanding_layout;
     private List<DTOType> underlyingItems;
 
-    public ExpandableDTOAdapter(Context context, int layoutResourceId)
+    //<editor-fold desc="Constructors">
+    public ExpandableDTOAdapter(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
     }
+    //</editor-fold>
 
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {

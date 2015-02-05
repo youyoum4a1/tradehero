@@ -15,6 +15,7 @@ import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
@@ -46,9 +47,7 @@ public class PositionPartialTopView extends LinearLayout
     @Inject protected Picasso picasso;
     @Inject protected SecurityIdCache securityIdCache;
     @Inject protected SecurityCompactCacheRx securityCompactCache;
-    @Inject protected PositionDTOUtils positionDTOUtils;
     @Inject protected DashboardNavigator navigator;
-    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
     @InjectView(R.id.flags_container) protected FxFlagContainer flagsContainer;
@@ -155,7 +154,7 @@ public class PositionPartialTopView extends LinearLayout
             unsubscribe(securityCompactCacheFetchSubscription);
             //noinspection Convert2MethodRef
             securityCompactCacheFetchSubscription = securityIdCache.get(positionDTO.getSecurityIntegerId())
-                    .map(pair -> pair.second)
+                    .map(new PairGetSecond<>())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext(this::linkWith)
                     .flatMap(securityId -> securityCompactCache.get(securityId))
@@ -201,7 +200,7 @@ public class PositionPartialTopView extends LinearLayout
         Bundle args = new Bundle();
         BuySellFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
         BuySellFragment.putSecurityId(args, securityId);
-        Class<? extends BuySellFragment> fragmentClass = securityCompactDTOUtil.fragmentFor(securityCompactDTO);
+        Class<? extends BuySellFragment> fragmentClass = SecurityCompactDTOUtil.fragmentFor(securityCompactDTO);
         if (securityCompactDTO.getClass().equals(FxSecurityCompactDTO.class))
         {
             BuySellFXFragment.putCloseAttribute(args, positionDTO.shares);
@@ -444,13 +443,13 @@ public class PositionPartialTopView extends LinearLayout
             else if (positionDTO instanceof PositionInPeriodDTO && ((PositionInPeriodDTO) positionDTO).isProperInPeriod())
             {
                 positionPercent.setVisibility(VISIBLE);
-                positionDTOUtils.setROIInPeriod(positionPercent, (PositionInPeriodDTO) positionDTO);
+                PositionDTOUtils.setROIInPeriod(positionPercent, (PositionInPeriodDTO) positionDTO);
             }
             else
             {
                 positionPercent.setVisibility(VISIBLE);
 
-                positionDTOUtils.setROISinceInception(positionPercent, positionDTO);
+                PositionDTOUtils.setROISinceInception(positionPercent, positionDTO);
             }
         }
     }

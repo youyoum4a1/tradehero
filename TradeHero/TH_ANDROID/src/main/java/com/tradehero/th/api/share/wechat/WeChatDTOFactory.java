@@ -13,17 +13,10 @@ import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.social.ReferralCodeDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
-import javax.inject.Inject;
 
 public class WeChatDTOFactory
 {
-    //<editor-fold desc="Constructors">
-    @Inject public WeChatDTOFactory()
-    {
-    }
-    //</editor-fold>
-
-    @NonNull public WeChatDTO createFrom(@NonNull Context context, @NonNull DTO whatToShare)
+    @NonNull public static WeChatDTO createFrom(@NonNull Context context, @NonNull DTO whatToShare)
     {
         if (whatToShare instanceof AbstractDiscussionCompactDTO)
         {
@@ -40,14 +33,14 @@ public class WeChatDTOFactory
         throw new IllegalArgumentException("Unknown element to share " + whatToShare);
     }
 
-    @NonNull public WeChatDTO createFrom(@NonNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
+    @NonNull public static WeChatDTO createFrom(@NonNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {
         WeChatDTO weChatDTO = new WeChatDTO();
         populateWith(weChatDTO, abstractDiscussionCompactDTO);
         return weChatDTO;
     }
 
-    protected void populateWith(
+    static void populateWith(
             @NonNull WeChatDTO weChatDTO,
             @NonNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {
@@ -79,14 +72,17 @@ public class WeChatDTOFactory
         }
     }
 
-    @NonNull public WeChatDTO createFrom(@NonNull Context context, @NonNull UserAchievementDTO userAchievementDTO)
+    @NonNull public static WeChatDTO createFrom(@NonNull Context context, @NonNull UserAchievementDTO userAchievementDTO)
     {
         WeChatDTO weChatDTO = new WeChatDTO();
         populateWith(context, weChatDTO, userAchievementDTO);
         return weChatDTO;
     }
 
-    protected void populateWith(@NonNull Context context, @NonNull WeChatDTO weChatDTO, @NonNull UserAchievementDTO userAchievementDTO)
+    static void populateWith(
+            @NonNull Context context,
+            @NonNull WeChatDTO weChatDTO,
+            @NonNull UserAchievementDTO userAchievementDTO)
     {
         weChatDTO.id = userAchievementDTO.id;
         if (userAchievementDTO.achievementDef.isQuest)
@@ -102,28 +98,38 @@ public class WeChatDTOFactory
         weChatDTO.imageURL = userAchievementDTO.achievementDef.visual;
     }
 
-    @NonNull public WeChatDTO createFrom(@NonNull Context context, @NonNull ReferralCodeDTO referralCodeDTO)
+    @NonNull public static WeChatDTO createFrom(@NonNull Context context, @NonNull ReferralCodeDTO referralCodeDTO)
     {
         WeChatDTO weChatDTO = new WeChatDTO();
         populateWith(context, weChatDTO, referralCodeDTO);
         return weChatDTO;
     }
 
-    protected void populateWith(@NonNull Context context, @NonNull WeChatDTO weChatDTO, @NonNull ReferralCodeDTO referralCodeDTO)
+    static void populateWith(
+            @NonNull Context context,
+            @NonNull WeChatDTO weChatDTO,
+            @NonNull ReferralCodeDTO referralCodeDTO)
     {
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.Referral;
         weChatDTO.title = context.getString(R.string.share_to_wechat_referral_text, referralCodeDTO.referralCode);
     }
 
-    @NonNull public WeChatDTO createFrom(@NonNull Context context, @NonNull CompetitionPreSeasonDTO preSeasonDTO, @NonNull ProviderDTO providerDTO)
+    @NonNull public static WeChatDTO createFrom(
+            @NonNull Context context,
+            @NonNull CompetitionPreSeasonDTO preSeasonDTO,
+            @NonNull ProviderDTO providerDTO)
     {
         WeChatDTO weChatDTO = new WeChatDTO();
         populateWith(context, preSeasonDTO, providerDTO, weChatDTO);
         return weChatDTO;
     }
 
-    private void populateWith(Context context, CompetitionPreSeasonDTO preSeasonDTO, ProviderDTO providerDTO, WeChatDTO weChatDTO)
+    private static void populateWith(
+            @NonNull Context context,
+            @NonNull CompetitionPreSeasonDTO preSeasonDTO,
+            @NonNull ProviderDTO providerDTO,
+            @NonNull WeChatDTO weChatDTO)
     {
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.PreSeason;

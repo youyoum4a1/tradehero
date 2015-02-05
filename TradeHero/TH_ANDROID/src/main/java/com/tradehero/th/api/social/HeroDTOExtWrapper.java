@@ -18,13 +18,6 @@ public class HeroDTOExtWrapper implements DTO
     }
     //</editor-fold>
 
-    public boolean hasNullItem()
-    {
-        return allActiveHeroes.hasNullItem()
-                || activeFreeHeroes.hasNullItem()
-                || activePremiumHeroes.hasNullItem();
-    }
-
     public int getActiveFreeHeroesCount()
     {
         return activeFreeHeroes.size();

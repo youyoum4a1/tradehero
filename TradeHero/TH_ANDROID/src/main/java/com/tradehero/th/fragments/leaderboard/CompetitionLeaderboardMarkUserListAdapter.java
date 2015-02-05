@@ -25,7 +25,7 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
     private int extraTileFrequency = -1;
     private int extraTileStartrow = -1;
 
-    private final LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
+    @NonNull private final ListAdapter leaderboardMarkUserListAdapter;
     @NonNull private final ProviderDTO providerDTO;
     private final LayoutInflater inflater;
     private int[] masterTilesMarker;
@@ -36,7 +36,7 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
     public CompetitionLeaderboardMarkUserListAdapter(
             @NonNull Context context,
             @NonNull ProviderDTO providerDTO,
-            LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter)
+            @NonNull ListAdapter leaderboardMarkUserListAdapter)
     {
         this.inflater = LayoutInflater.from(context);
         this.providerDTO = providerDTO;
@@ -200,7 +200,7 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
         Object item = getItem(position);
         if (item instanceof AdDTO)
         {
-            CompetitionZoneAdvertisementDTO competitionZoneAdvertisementDTO = new CompetitionZoneAdvertisementDTO(null, null, 0, (AdDTO) item);
+            CompetitionZoneAdvertisementDTO competitionZoneAdvertisementDTO = new CompetitionZoneAdvertisementDTO((AdDTO) item);
             AdView adView = (AdView) inflater.inflate(R.layout.competition_zone_ads, parent, false);
             adView.setProviderId(providerDTO.id);
             adView.display(competitionZoneAdvertisementDTO);
@@ -218,5 +218,4 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
             return view;
         }
     }
-
 }

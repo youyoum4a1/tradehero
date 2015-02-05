@@ -31,7 +31,6 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
     @InjectView(R.id.post_comment_text) @Optional protected EditText postCommentText;
     @InjectView(R.id.mention_widget) @Optional protected MentionActionButtonsView mentionActionButtonsView;
 
-    @Inject @NonNull protected DiscussionKeyFactory discussionKeyFactory;
     @Inject @BottomTabs protected Lazy<DashboardTabHost> dashboardTabHost;
     @Inject protected MentionTaggedStockHandler mentionTaggedStockHandler;
 
@@ -44,11 +43,11 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
         args.putBundle(DISCUSSION_KEY_BUNDLE_KEY, discussionKey.getArgs());
     }
 
-    @Nullable protected static DiscussionKey getDiscussionKey(@NonNull Bundle args, @NonNull DiscussionKeyFactory discussionKeyFactory)
+    @Nullable protected static DiscussionKey getDiscussionKey(@NonNull Bundle args)
     {
         if (args.containsKey(DISCUSSION_KEY_BUNDLE_KEY))
         {
-            return discussionKeyFactory.fromBundle(args.getBundle(DISCUSSION_KEY_BUNDLE_KEY));
+            return DiscussionKeyFactory.fromBundle(args.getBundle(DISCUSSION_KEY_BUNDLE_KEY));
         }
         return null;
     }
@@ -57,7 +56,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.discussionKey = getDiscussionKey(getArguments(), discussionKeyFactory);
+        this.discussionKey = getDiscussionKey(getArguments());
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)

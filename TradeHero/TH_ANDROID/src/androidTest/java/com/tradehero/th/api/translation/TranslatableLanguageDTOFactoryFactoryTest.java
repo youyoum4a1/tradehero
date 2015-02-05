@@ -121,14 +121,14 @@ public class TranslatableLanguageDTOFactoryFactoryTest
     @Test public void getBestMatchWithWeirdReturnsFallback()
     {
         //noinspection ConstantConditions
-        LanguageDTO bestMatch = translatableLanguageDTOFactoryFactory.create(new BingTranslationToken()).getBestMatch("weird", "fr");
+        LanguageDTO bestMatch = translatableLanguageDTOFactoryFactory.create(new BingTranslationToken()).getBestMatch(TestTHApp.context().getResources(), "weird", "fr");
         assertThat(bestMatch.code).isEqualTo("fr");
     }
 
     @Test public void getBestMatchWithExistingReturnsExisting()
     {
         //noinspection ConstantConditions
-        LanguageDTO bestMatch = translatableLanguageDTOFactoryFactory.create(new BingTranslationToken()).getBestMatch("ca", "fr");
+        LanguageDTO bestMatch = translatableLanguageDTOFactoryFactory.create(new BingTranslationToken()).getBestMatch(TestTHApp.context().getResources(), "ca", "fr");
         assertThat(bestMatch.code).isEqualTo("ca");
     }
     //</editor-fold>

@@ -17,13 +17,6 @@ import com.tradehero.th.api.translation.bing.BingTranslationToken;
 )
 public class TranslationToken implements DTO
 {
-    //<editor-fold desc="Constructors">
-    public TranslationToken()
-    {
-        super();
-    }
-    //</editor-fold>
-
     public boolean isValid()
     {
         throw new IllegalStateException("Needs to be implemented");

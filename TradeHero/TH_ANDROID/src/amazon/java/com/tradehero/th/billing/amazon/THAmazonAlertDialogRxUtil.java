@@ -1,0 +1,240 @@
+package com.tradehero.th.billing.amazon;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import com.tradehero.common.billing.ProductIdentifier;
+import com.tradehero.common.billing.amazon.AmazonSKU;
+import com.tradehero.common.billing.amazon.exception.AmazonFetchInventoryFailedException;
+import com.tradehero.common.billing.amazon.exception.AmazonFetchInventoryUnsupportedException;
+import com.tradehero.common.billing.amazon.exception.AmazonPurchaseFailedException;
+import com.tradehero.common.billing.amazon.exception.AmazonPurchaseUnsupportedException;
+import com.tradehero.metrics.Analytics;
+import com.tradehero.th.R;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
+import com.tradehero.th.fragments.billing.THAmazonSKUDetailAdapter;
+import com.tradehero.th.fragments.billing.THAmazonStoreProductDetailView;
+import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
+import com.tradehero.th.rx.dialog.AlertDialogButtonHandler;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.tradehero.th.utils.ActivityUtil;
+import com.tradehero.th.utils.VersionUtils;
+import java.util.HashMap;
+import javax.inject.Inject;
+import rx.Observable;
+import timber.log.Timber;
+
+public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
+        AmazonSKU,
+        THAmazonProductDetail,
+        THAmazonLogicHolderRx,
+        THAmazonStoreProductDetailView,
+        THAmazonSKUDetailAdapter,
+        THAmazonOrderId,
+        THAmazonPurchase>
+        implements AmazonAlertDialogRxUtil
+{
+    @NonNull protected final THAmazonPurchaseCacheRx thAmazonPurchaseCache;
+    @NonNull protected final AmazonStoreUtils amazonStoreUtils;
+
+    //<editor-fold desc="Constructors">
+    @Inject public THAmazonAlertDialogRxUtil(
+            @NonNull Analytics analytics,
+            @NonNull VersionUtils versionUtils,
+            @NonNull THAmazonPurchaseCacheRx thAmazonPurchaseCache,
+            @NonNull AmazonStoreUtils amazonStoreUtils)
+    {
+        super(analytics, versionUtils);
+        this.thAmazonPurchaseCache = thAmazonPurchaseCache;
+        this.amazonStoreUtils = amazonStoreUtils;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="SKU related">
+    @Override @NonNull protected THAmazonSKUDetailAdapter createProductDetailAdapter(
+            @NonNull Activity activity,
+            @NonNull ProductIdentifierDomain skuDomain)
+    {
+        return new THAmazonSKUDetailAdapter(activity, skuDomain);
+    }
+
+    @Override @NonNull public HashMap<ProductIdentifier, Boolean> getEnabledItems()
+    {
+        HashMap<ProductIdentifier, Boolean> enabledItems = new HashMap<>();
+        for (THAmazonPurchase value : thAmazonPurchaseCache.getValues())
+        {
+            Timber.d("Disabling %s", value);
+            enabledItems.put(value.getProductIdentifier(), false);
+        }
+        return enabledItems;
+    }
+    //</editor-fold>
+
+    @NonNull @Override public Observable<OnDialogClickEvent> popErrorAndHandle(
+            @NonNull Context activityContext,
+            @NonNull Throwable throwable)
+    {
+        if (throwable instanceof AmazonFetchInventoryFailedException)
+        {
+            return popInventoryFailedAndHandle(activityContext, throwable);
+        }
+        if (throwable instanceof AmazonFetchInventoryUnsupportedException)
+        {
+            return popInventoryNotSupportedAndHandle(activityContext, throwable);
+        }
+        if (throwable instanceof AmazonPurchaseFailedException)
+        {
+            return popPurchaseFailedAndHandle(activityContext, throwable);
+        }
+        if (throwable instanceof AmazonPurchaseUnsupportedException)
+        {
+            return popPurchaseUnsupportedAndHandle(activityContext, throwable);
+        }
+        return super.popErrorAndHandle(activityContext, throwable);
+    }
+
+    //<editor-fold desc="Inventory Fetch related">
+    @Override @NonNull public Observable<OnDialogClickEvent> popInventoryFailedAndHandle(
+            @NonNull final Context activityContext,
+            @NonNull final Throwable throwable)
+    {
+        return popInventoryFailed(activityContext)
+                .flatMap(new AlertDialogButtonHandler(
+                        DialogInterface.BUTTON_POSITIVE,
+                        () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
+    }
+
+    @Override @NonNull public Observable<OnDialogClickEvent> popInventoryFailed(
+            @NonNull final Context activityContext)
+    {
+        return buildDefault(activityContext)
+                .setTitle(R.string.amazon_store_billing_inventory_failed_error_window_title)
+                .setMessage(R.string.amazon_store_billing_inventory_failed_error_window_description)
+                .setPositiveButton(R.string.amazon_store_billing_inventory_failed_error_ok)
+                .setNegativeButton(R.string.amazon_store_billing_inventory_failed_error_cancel)
+                .setCanceledOnTouchOutside(true)
+                .build();
+    }
+
+    @Override @NonNull public Observable<OnDialogClickEvent> popInventoryNotSupportedAndHandle(
+            @NonNull final Context activityContext,
+            @NonNull final Throwable throwable)
+    {
+        return popInventoryNotSupported(activityContext)
+                .flatMap(new AlertDialogButtonHandler(
+                        DialogInterface.BUTTON_POSITIVE,
+                        () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
+    }
+
+    @Override @NonNull public Observable<OnDialogClickEvent> popInventoryNotSupported(
+            @NonNull final Context activityContext)
+    {
+        return buildDefault(activityContext)
+                .setTitle(R.string.amazon_store_billing_inventory_unsupported_error_window_title)
+                .setMessage(R.string.amazon_store_billing_inventory_unsupported_error_window_description)
+                .setPositiveButton(R.string.amazon_store_billing_inventory_unsupported_error_ok)
+                .setNegativeButton(R.string.amazon_store_billing_inventory_unsupported_error_cancel)
+                .setCanceledOnTouchOutside(true)
+                .build();
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Purchase Related">
+    @NonNull public Observable<OnDialogClickEvent> popPurchaseFailedAndHandle(
+            @NonNull final Context activityContext,
+            @NonNull final Throwable throwable)
+    {
+        return popPurchaseFailed(activityContext)
+                .flatMap(new AlertDialogButtonHandler(
+                        DialogInterface.BUTTON_POSITIVE,
+                        () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
+    }
+
+    @NonNull public Observable<OnDialogClickEvent> popPurchaseFailed(
+            @NonNull final Context activityContext)
+    {
+        return buildDefault(activityContext)
+                .setTitle(R.string.amazon_store_billing_purchase_failed_error_window_title)
+                .setMessage(R.string.amazon_store_billing_purchase_failed_error_window_description)
+                .setPositiveButton(R.string.amazon_store_billing_purchase_failed_error_ok)
+                .setNegativeButton(R.string.amazon_store_billing_purchase_failed_error_cancel)
+                .setCanceledOnTouchOutside(true)
+                .build();
+    }
+
+    @Override @NonNull public Observable<OnDialogClickEvent> popPurchaseUnsupportedAndHandle(
+            @NonNull final Context activityContext,
+            @NonNull final Throwable throwable)
+    {
+        return popPurchaseUnsupported(activityContext)
+                .flatMap(new AlertDialogButtonHandler(
+                        DialogInterface.BUTTON_POSITIVE,
+                        () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
+    }
+
+    @Override @NonNull public Observable<OnDialogClickEvent> popPurchaseUnsupported(
+            @NonNull final Context activityContext)
+    {
+        return buildDefault(activityContext)
+                .setTitle(R.string.amazon_store_billing_purchase_unsupported_error_window_title)
+                .setMessage(R.string.amazon_store_billing_purchase_unsupported_error_window_description)
+                .setPositiveButton(R.string.amazon_store_billing_purchase_unsupported_error_ok)
+                .setNegativeButton(R.string.amazon_store_billing_purchase_unsupported_error_cancel)
+                .setCanceledOnTouchOutside(true)
+                .build();
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Sandbox Related">
+    @NonNull public Observable<OnDialogClickEvent> popSandboxModeAndHandle(
+            @NonNull final Context activityContext)
+    {
+        return popSandboxMode(activityContext)
+                .flatMap(pair -> handlePopSandboxMode(
+                        activityContext,
+                        pair));
+    }
+
+    @Override @NonNull public Observable<OnDialogClickEvent> popSandboxMode(
+            @NonNull final Context activityContext)
+    {
+        return buildDefault(activityContext)
+                .setTitle(R.string.amazon_store_billing_sandbox_window_title)
+                .setMessage(R.string.amazon_store_billing_sandbox_window_description)
+                .setPositiveButton(R.string.amazon_store_billing_sandbox_window_ok)
+                .setNegativeButton(R.string.amazon_store_billing_sandbox_window_cancel)
+                .setCanceledOnTouchOutside(true)
+                .build();
+    }
+
+    @NonNull protected Observable<OnDialogClickEvent> handlePopSandboxMode(
+            @NonNull final Context activityContext,
+            @NonNull OnDialogClickEvent event)
+    {
+        if (event.isPositive())
+        {
+            sendSupportEmailBillingSandbox(activityContext);
+            return Observable.empty();
+        }
+        return Observable.just(event);
+    }
+
+    public void sendSupportEmailBillingSandbox(final Context context)
+    {
+        Intent emailIntent = VersionUtils.getSupportEmailIntent(
+                versionUtils.getSupportEmailTraceParameters(context, true));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "My Amazon Store in-app purchases are in sandbox mode");
+        ActivityUtil.sendSupportEmail(context, emailIntent);
+    }
+    //</editor-fold>
+
+    public void sendSupportEmailRestoreFailed(final Context context, Exception exception)
+    {
+        context.startActivity(Intent.createChooser(
+                amazonStoreUtils.getSupportPurchaseRestoreEmailIntent(context, exception),
+                context.getString(R.string.iap_send_support_email_chooser_title)));
+    }
+}

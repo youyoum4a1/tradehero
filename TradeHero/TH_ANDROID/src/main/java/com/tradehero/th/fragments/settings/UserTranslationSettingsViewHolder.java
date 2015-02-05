@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.content.Context;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
@@ -27,7 +28,7 @@ import timber.log.Timber;
 
 public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
 {
-    @NonNull private final LanguageDTOFactory languageDTOFactory;
+    @NonNull private final Context applicationContext;
     @NonNull private final UserTranslationSettingPreference userTranslationSettingPreference;
     @NonNull private final TranslationTokenCacheRx translationTokenCache;
     @Nullable private Subscription translationTokenCacheSubscription;
@@ -39,11 +40,11 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
 
     //<editor-fold desc="Constructors">
     @Inject public UserTranslationSettingsViewHolder(
-            @NonNull LanguageDTOFactory languageDTOFactory,
+            @NonNull Context applicationContext,
             @NonNull UserTranslationSettingPreference userTranslationSettingPreference,
             @NonNull TranslationTokenCacheRx translationTokenCache)
     {
-        this.languageDTOFactory = languageDTOFactory;
+        this.applicationContext = applicationContext;
         this.userTranslationSettingPreference = userTranslationSettingPreference;
         this.translationTokenCache = translationTokenCache;
     }
@@ -165,7 +166,7 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
         {
             //noinspection ConstantConditions
             translationContainer.setEnabled(true);
-            linkWith(languageDTOFactory.createFromCode(userTranslationSettingDTO.languageCode));
+            linkWith(LanguageDTOFactory.createFromCode(applicationContext.getResources(), userTranslationSettingDTO.languageCode));
             //noinspection ConstantConditions
             translationAuto.setChecked(userTranslationSettingDTO.autoTranslate);
             translationAuto.setSummary(userTranslationSettingDTO.getProviderStringResId());

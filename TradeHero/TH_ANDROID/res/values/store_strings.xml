@@ -199,7 +199,7 @@
   <string name="iap_send_support_email_restore_fail_partial_cancel">Never Mind</string>
 
   <string name="iap_send_support_email_restore_fail_title">Purchases Failed To Restore</string>
-  <string name="iap_send_support_email_restore_fail_message">We could not restore your %1$d purchases. \n\nDo you mind reporting the incident to TradeHero?</string>
+  <string name="iap_send_support_email_restore_fail_message">We could not restore %1$d purchases. \n\nDo you mind reporting the incident to TradeHero?</string>
   <string name="iap_send_support_email_restore_fail_ok">Sure</string>
   <string name="iap_send_support_email_restore_fail_cancel">Never Mind</string>
 

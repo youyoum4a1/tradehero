@@ -23,12 +23,10 @@ import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
-import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.achievement.QuestBonusListCacheRx;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
@@ -57,7 +55,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
-import rx.observers.EmptyObserver;
+import rx.functions.Actions;
 
 @Singleton public class DTOCacheUtilImpl
     implements DTOCacheUtilRx
@@ -85,12 +83,10 @@ import rx.observers.EmptyObserver;
     protected final Lazy<WatchlistPositionCacheRx> watchlistPositionCache;
     //</editor-fold>
 
-    protected final Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
     protected final StringPreference serverEndpointPreference;
     protected final SharedPreferences userSharedPreferences;
     private final BooleanPreference isOnboardShown;
     @NonNull protected final BroadcastUtils broadcastUtils;
-    @NonNull protected final UserBaseDTOUtil userBaseDTOUtil;
     @NonNull protected final Context context;
 
     @NonNull private List<DTOCacheRx> userCacheRxs;
@@ -116,13 +112,11 @@ import rx.observers.EmptyObserver;
             Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
             Lazy<UserWatchlistPositionCacheRx> userWatchlistPositionCache,
             Lazy<WatchlistPositionCacheRx> watchlistPositionCache,
-            Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy,
             Lazy<QuestBonusListCacheRx> questBonusListCacheLazy,
             @ServerEndpoint StringPreference serverEndpointPreference,
             @ForUser SharedPreferences userSharedPreferences,
             @IsOnBoardShown BooleanPreference isOnboardShown,
             @NonNull BroadcastUtils broadcastUtils,
-            @NonNull UserBaseDTOUtil userBaseDTOUtil,
             @NonNull Context context)
     {
         this.userCacheRxs = new ArrayList<>();
@@ -149,12 +143,10 @@ import rx.observers.EmptyObserver;
         this.userWatchlistPositionCache = userWatchlistPositionCache;
         this.watchlistPositionCache = watchlistPositionCache;
 
-        this.warrantSpecificKnowledgeFactoryLazy = warrantSpecificKnowledgeFactoryLazy;
         this.serverEndpointPreference = serverEndpointPreference;
         this.userSharedPreferences = userSharedPreferences;
         this.isOnboardShown = isOnboardShown;
         this.broadcastUtils = broadcastUtils;
-        this.userBaseDTOUtil = userBaseDTOUtil;
         this.context = context;
     }
     //</editor-fold>
@@ -175,13 +167,13 @@ import rx.observers.EmptyObserver;
         }
     }
 
-    @Override public void clearAllCaches()
+    public void clearAllCaches()
     {
         clearSystemCaches();
         clearUserCaches();
     }
 
-    @Override public void clearSystemCaches()
+    public void clearSystemCaches()
     {
 //        CollectionUtils.apply(systemCacheNews, DTOCacheNew::invalidateAll);
 //        CollectionUtils.apply(systemCacheRxs, DTOCacheRx::invalidateAll);
@@ -192,7 +184,7 @@ import rx.observers.EmptyObserver;
         }
     }
 
-    @Override public void clearUserCaches()
+    public void clearUserCaches()
     {
 //        CollectionUtils.apply(userCacheNews, DTOCacheNew::invalidateAll);
 //        CollectionUtils.apply(userCacheRxs, DTOCacheRx::invalidateAll);
@@ -202,7 +194,6 @@ import rx.observers.EmptyObserver;
             userCacheRxs.get(i).invalidateAll();
         }
 
-        warrantSpecificKnowledgeFactoryLazy.get().clear();
         serverEndpointPreference.delete();
         isOnboardShown.delete();
         userSharedPreferences.edit().clear().apply();
@@ -220,18 +211,18 @@ import rx.observers.EmptyObserver;
 
     public void preFetchExchanges()
     {
-        exchangeCompactListCache.get().get(new ExchangeListType());
+        exchangeCompactListCache.get().getOne(new ExchangeListType());
     }
 
     public void preFetchTrending()
     {
         Observable.zip(
-                userProfileCache.get().get(currentUserId.toUserBaseKey()),
-                exchangeCompactListCache.get().get(new ExchangeListType()),
+                userProfileCache.get().getOne(currentUserId.toUserBaseKey()),
+                exchangeCompactListCache.get().getOne(new ExchangeListType()),
                 (obs1, obs2) -> Pair.create(obs1.second, obs2.second))
                 .first()
                 .doOnNext(this::preFetchTrending)
-                .subscribe(new EmptyObserver<>());
+                .subscribe(Actions.empty(), Actions.empty());
     }
 
     protected void preFetchTrending(@NonNull Pair<? extends UserBaseDTO, ExchangeCompactDTOList> pair)
@@ -266,25 +257,25 @@ import rx.observers.EmptyObserver;
         }
         TrendingFilterTypeBasicDTO filterTypeBasicDTO = new TrendingFilterTypeBasicDTO(initialExchangeSpinner);
 
-        this.securityCompactListCache.get().get(
+        this.securityCompactListCache.get().getOne(
                 filterTypeBasicDTO.getSecurityListType(1, TrendingStockFragment.DEFAULT_PER_PAGE));
     }
 
     private void preFetchTraderLevels()
     {
-        this.levelDefListCache.get().get(new LevelDefListId());
+        this.levelDefListCache.get().getOne(new LevelDefListId());
     }
 
     private void preFetchQuestBonus()
     {
-        this.questBonusListCacheLazy.get().get(new QuestBonusListId());
+        this.questBonusListCacheLazy.get().getOne(new QuestBonusListId());
     }
 
     public void prefetchesUponLogin(@Nullable UserProfileDTO profile)
     {
         if (profile != null)
         {
-            exchangeCompactListCache.get().get(new ExchangeListType())
+            exchangeCompactListCache.get().getOne(new ExchangeListType())
                     .doOnNext(pair -> {
                         Country country = profile.getCountry();
                         if (pair.second != null && country != null)
@@ -292,7 +283,7 @@ import rx.observers.EmptyObserver;
                             ExchangeCompactDTO initialExchange = pair.second.findFirstDefaultFor(country);
                             if (initialExchange != null)
                             {
-                                securityCompactListCache.get().get(
+                                securityCompactListCache.get().getOne(
                                         new TrendingBasicSecurityListType(
                                                 initialExchange.name,
                                                 1,
@@ -300,7 +291,7 @@ import rx.observers.EmptyObserver;
                             }
                         }
                     })
-                    .subscribe(new EmptyObserver<>());
+                    .subscribe(Actions.empty(), Actions.empty());
         }
 
         //initialPrefetches();
@@ -309,18 +300,19 @@ import rx.observers.EmptyObserver;
     public void initialPrefetches()
     {
         preFetchWatchlist();
+        preFetchTranslationToken();
 
         conveniencePrefetches(); // TODO move them so time after the others
     }
 
     public void preFetchWatchlist()
     {
-        userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
+        userWatchlistPositionCache.get().getOne(currentUserId.toUserBaseKey());
     }
 
     public void preFetchProviders()
     {
-        this.providerListCache.get().get(new ProviderListKey());
+        this.providerListCache.get().getOne(new ProviderListKey());
     }
 
     public void conveniencePrefetches()
@@ -333,21 +325,21 @@ import rx.observers.EmptyObserver;
 
     public void preFetchAlerts()
     {
-        alertCompactListCache.get().get(currentUserId.toUserBaseKey());
+        alertCompactListCache.get().getOne(currentUserId.toUserBaseKey());
     }
 
     public void preFetchTranslationToken()
     {
-        translationTokenCache.get().get(new TranslationTokenKey());
+        translationTokenCache.get().getOne(new TranslationTokenKey());
     }
 
     public void preFetchLeaderboardDefs()
     {
-        leaderboardDefListCache.get().get(new LeaderboardDefListKey());
+        leaderboardDefListCache.get().getOne(new LeaderboardDefListKey(1));
     }
 
     public void preFetchHomeContent()
     {
-        homeContentCache.get().get(currentUserId.toUserBaseKey());
+        homeContentCache.get().getOne(currentUserId.toUserBaseKey());
     }
 }

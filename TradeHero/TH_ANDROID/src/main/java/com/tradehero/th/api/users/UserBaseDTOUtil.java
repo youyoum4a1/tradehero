@@ -4,18 +4,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
-import javax.inject.Inject;
 
 public class UserBaseDTOUtil
 {
-    //<editor-fold desc="Constructors">
-    @Inject public UserBaseDTOUtil()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @NonNull public String getLongDisplayName(@NonNull Context context, @Nullable UserBaseDTO userBaseDTO)
+    @NonNull public static String getLongDisplayName(@NonNull Context context, @Nullable UserBaseDTO userBaseDTO)
     {
         if (userBaseDTO != null)
         {
@@ -34,7 +26,7 @@ public class UserBaseDTOUtil
     }
 
     //return displayName in Follow and Hero ListItemView as https://www.pivotaltracker.com/story/show/76497256
-    @NonNull public String getShortDisplayName(@NonNull Context context, @Nullable UserBaseDTO userBaseDTO)
+    @NonNull public static String getShortDisplayName(@NonNull Context context, @Nullable UserBaseDTO userBaseDTO)
     {
         if (userBaseDTO != null)
         {
@@ -44,7 +36,7 @@ public class UserBaseDTOUtil
         return context.getString(R.string.na);
     }
 
-    @NonNull public String getFirstLastName(@NonNull Context context, @Nullable UserBaseDTO userBaseDTO)
+    @NonNull public static String getFirstLastName(@NonNull Context context, @Nullable UserBaseDTO userBaseDTO)
     {
         if (userBaseDTO != null)
         {

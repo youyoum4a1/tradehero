@@ -50,7 +50,6 @@ public class PortfolioListItemView extends RelativeLayout
     @Inject UserProfileCacheRx userProfileCache;
     @Inject GetPositionsCacheRx getPositionsCache;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
-    @Inject DisplayablePortfolioUtil displayablePortfolioUtil;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userImageTransformation;
     @Inject DashboardNavigator navigator;
@@ -133,23 +132,15 @@ public class PortfolioListItemView extends RelativeLayout
 
     public void display(DisplayablePortfolioDTO displayablePortfolioDTO)
     {
-        linkWith(displayablePortfolioDTO, true);
-    }
-
-    public void linkWith(DisplayablePortfolioDTO displayablePortfolioDTO, boolean andDisplay)
-    {
         this.displayablePortfolioDTO = displayablePortfolioDTO;
 
         fetchCurrentUserProfile();
         fetchAdditional();
 
-        if (andDisplay)
-        {
-            displayUserIcon();
-            displayTitle();
-            displayDescription();
-            displayRoiValue();
-        }
+        displayUserIcon();
+        displayTitle();
+        displayDescription();
+        displayRoiValue();
     }
 
     protected void fetchCurrentUserProfile()
@@ -210,22 +201,16 @@ public class PortfolioListItemView extends RelativeLayout
         }
     }
 
-    protected void linkWith(GetPositionsDTO getPositionsDTO, boolean andDisplay)
+    protected void linkWith(GetPositionsDTO getPositionsDTO)
     {
         this.getPositionsDTO = getPositionsDTO;
-        if (andDisplay)
-        {
-            displayDescription();
-        }
+        displayDescription();
     }
 
-    protected void linkWith(WatchlistPositionDTOList watchlistPositionDTOs, boolean andDisplay)
+    protected void linkWith(WatchlistPositionDTOList watchlistPositionDTOs)
     {
         this.watchedSecurityPositions = watchlistPositionDTOs;
-        if (andDisplay)
-        {
-            displayDescription();
-        }
+        displayDescription();
     }
 
     //<editor-fold desc="Display Methods">
@@ -266,9 +251,9 @@ public class PortfolioListItemView extends RelativeLayout
     {
         if (title != null)
         {
-            title.setText(displayablePortfolioUtil.getLongTitle(getContext(),
+            title.setText(DisplayablePortfolioUtil.getLongTitle(getContext(),
                     displayablePortfolioDTO));
-            title.setTextColor(displayablePortfolioUtil.getLongTitleTextColor(getContext(),
+            title.setTextColor(DisplayablePortfolioUtil.getLongTitleTextColor(getContext(),
                     displayablePortfolioDTO));
         }
     }
@@ -284,7 +269,7 @@ public class PortfolioListItemView extends RelativeLayout
 
     public String getDescription()
     {
-        return displayablePortfolioUtil.getLongSubTitle(getContext(), displayablePortfolioDTO);
+        return DisplayablePortfolioUtil.getLongSubTitle(getContext(), currentUserId, displayablePortfolioDTO);
     }
 
     public void displayRoiValue()
@@ -350,7 +335,7 @@ public class PortfolioListItemView extends RelativeLayout
             if (displayablePortfolioDTOCopy != null && pair.first.equals(
                     displayablePortfolioDTOCopy.ownedPortfolioId))
             {
-                PortfolioListItemView.this.linkWith(pair.second, true);
+                PortfolioListItemView.this.linkWith(pair.second);
             }
         }
 
@@ -377,7 +362,7 @@ public class PortfolioListItemView extends RelativeLayout
                     displayablePortfolioDTOCopy.userBaseDTO != null &&
                     pair.first.equals(displayablePortfolioDTOCopy.userBaseDTO.getBaseKey()))
             {
-                PortfolioListItemView.this.linkWith(pair.second, true);
+                PortfolioListItemView.this.linkWith(pair.second);
             }
             else
             {

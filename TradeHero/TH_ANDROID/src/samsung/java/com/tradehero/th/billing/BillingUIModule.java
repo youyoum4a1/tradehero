@@ -1,38 +1,24 @@
 package com.tradehero.th.billing;
 
-import com.tradehero.common.billing.BillingInteractor;
-import com.tradehero.common.billing.BillingLogicHolder;
-import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
-import com.tradehero.th.billing.samsung.THBaseSamsungBillingAvailableTester;
-import com.tradehero.th.billing.samsung.THBaseSamsungBillingAvailableTesterHolder;
-import com.tradehero.th.billing.samsung.THBaseSamsungInventoryFetcher;
-import com.tradehero.th.billing.samsung.THBaseSamsungInventoryFetcherHolder;
-import com.tradehero.th.billing.samsung.THBaseSamsungProductIdentifierFetcher;
-import com.tradehero.th.billing.samsung.THBaseSamsungProductIdentifierFetcherHolder;
-import com.tradehero.th.billing.samsung.THBaseSamsungPurchaseFetcher;
-import com.tradehero.th.billing.samsung.THBaseSamsungPurchaseFetcherHolder;
-import com.tradehero.th.billing.samsung.THBaseSamsungPurchaseReporter;
-import com.tradehero.th.billing.samsung.THBaseSamsungPurchaseReporterHolder;
-import com.tradehero.th.billing.samsung.THBaseSamsungPurchaser;
-import com.tradehero.th.billing.samsung.THBaseSamsungPurchaserHolder;
-import com.tradehero.th.billing.samsung.THSamsungAlertDialogUtil;
-import com.tradehero.th.billing.samsung.THSamsungBillingAvailableTester;
-import com.tradehero.th.billing.samsung.THSamsungBillingAvailableTesterHolder;
-import com.tradehero.th.billing.samsung.THSamsungBillingInteractor;
-import com.tradehero.th.billing.samsung.THSamsungInteractor;
-import com.tradehero.th.billing.samsung.THSamsungInventoryFetcher;
-import com.tradehero.th.billing.samsung.THSamsungInventoryFetcherHolder;
-import com.tradehero.th.billing.samsung.THSamsungLogicHolder;
-import com.tradehero.th.billing.samsung.THSamsungLogicHolderFull;
-import com.tradehero.th.billing.samsung.THSamsungProductIdentifierFetcher;
-import com.tradehero.th.billing.samsung.THSamsungProductIdentifierFetcherHolder;
-import com.tradehero.th.billing.samsung.THSamsungPurchaseFetcher;
-import com.tradehero.th.billing.samsung.THSamsungPurchaseFetcherHolder;
-import com.tradehero.th.billing.samsung.THSamsungPurchaseReporter;
-import com.tradehero.th.billing.samsung.THSamsungPurchaseReporterHolder;
-import com.tradehero.th.billing.samsung.THSamsungPurchaser;
-import com.tradehero.th.billing.samsung.THSamsungPurchaserHolder;
-import com.tradehero.th.billing.samsung.request.BaseTHUISamsungRequest;
+import com.tradehero.common.billing.BillingInteractorRx;
+import com.tradehero.common.billing.BillingLogicHolderRx;
+import com.tradehero.th.billing.samsung.THBaseSamsungInteractorRx;
+import com.tradehero.th.billing.samsung.THBaseSamsungLogicHolderRx;
+import com.tradehero.th.billing.samsung.THSamsungAlertDialogRxUtil;
+import com.tradehero.th.billing.samsung.THSamsungInteractorRx;
+import com.tradehero.th.billing.samsung.THSamsungLogicHolderRx;
+import com.tradehero.th.billing.samsung.identifier.THBaseSamsungProductIdentifierFetcherHolderRx;
+import com.tradehero.th.billing.samsung.identifier.THSamsungProductIdentifierFetcherHolderRx;
+import com.tradehero.th.billing.samsung.inventory.THBaseSamsungInventoryFetcherHolderRx;
+import com.tradehero.th.billing.samsung.inventory.THSamsungInventoryFetcherHolderRx;
+import com.tradehero.th.billing.samsung.purchase.THBaseSamsungPurchaserHolderRx;
+import com.tradehero.th.billing.samsung.purchase.THSamsungPurchaserHolderRx;
+import com.tradehero.th.billing.samsung.purchasefetch.THBaseSamsungPurchaseFetcherHolderRx;
+import com.tradehero.th.billing.samsung.purchasefetch.THSamsungPurchaseFetcherHolderRx;
+import com.tradehero.th.billing.samsung.report.THBaseSamsungPurchaseReporterHolderRx;
+import com.tradehero.th.billing.samsung.report.THSamsungPurchaseReporterHolderRx;
+import com.tradehero.th.billing.samsung.tester.THBaseSamsungBillingAvailableTesterHolderRx;
+import com.tradehero.th.billing.samsung.tester.THSamsungBillingAvailableTesterHolderRx;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -44,108 +30,74 @@ import javax.inject.Singleton;
 )
 public class BillingUIModule
 {
-    //<editor-fold desc="Actors and Action Holders">
-    @Provides THSamsungBillingAvailableTester provideBillingAvailableTest(THBaseSamsungBillingAvailableTester thBaseSamsungBillingAvailableTester)
-    {
-        return thBaseSamsungBillingAvailableTester;
-    }
-
-    @Provides
-    THSamsungBillingAvailableTesterHolder provideBillingAvailableTesterHolder(THBaseSamsungBillingAvailableTesterHolder thBaseSamsungBillingAvailableTesterHolder)
+    //<editor-fold desc="Action Holders Rx">
+    @Provides THSamsungBillingAvailableTesterHolderRx provideBillingAvailableTesterHolderRx(
+            THBaseSamsungBillingAvailableTesterHolderRx thBaseSamsungBillingAvailableTesterHolder)
     {
         return thBaseSamsungBillingAvailableTesterHolder;
     }
 
-    @Provides
-    THSamsungProductIdentifierFetcher provideProductIdentifierFetcher(THBaseSamsungProductIdentifierFetcher thBaseSamsungProductIdentifierFetcher)
-    {
-        return thBaseSamsungProductIdentifierFetcher;
-    }
-
-    @Provides
-    THSamsungProductIdentifierFetcherHolder provideProductIdentifierFetcherHolder(THBaseSamsungProductIdentifierFetcherHolder thBaseSamsungProductIdentifierFetcherHolder)
+    @Provides THSamsungProductIdentifierFetcherHolderRx provideProductIdentifierFetcherHolder(
+            THBaseSamsungProductIdentifierFetcherHolderRx thBaseSamsungProductIdentifierFetcherHolder)
     {
         return thBaseSamsungProductIdentifierFetcherHolder;
     }
 
-    @Provides THSamsungInventoryFetcher provideInventoryFetcher(THBaseSamsungInventoryFetcher thBaseSamsungInventoryFetcher)
-    {
-        return thBaseSamsungInventoryFetcher;
-    }
-
-    @Provides THSamsungInventoryFetcherHolder provideInventoryFetcherHolder(THBaseSamsungInventoryFetcherHolder thBaseSamsungInventoryFetcherHolder)
+    @Provides THSamsungInventoryFetcherHolderRx provideInventoryFetcherHolderRx(
+            THBaseSamsungInventoryFetcherHolderRx thBaseSamsungInventoryFetcherHolder)
     {
         return thBaseSamsungInventoryFetcherHolder;
     }
 
-    @Provides THSamsungPurchaseFetcher providePurchaseFetcher(THBaseSamsungPurchaseFetcher thBaseSamsungPurchaseFetcher)
-    {
-        return thBaseSamsungPurchaseFetcher;
-    }
-
-    @Provides THSamsungPurchaseFetcherHolder providePurchaseFetcherHolder(THBaseSamsungPurchaseFetcherHolder thBaseSamsungPurchaseFetcherHolder)
+    @Provides THSamsungPurchaseFetcherHolderRx providePurchaseFetcherHolderRx(THBaseSamsungPurchaseFetcherHolderRx thBaseSamsungPurchaseFetcherHolder)
     {
         return thBaseSamsungPurchaseFetcherHolder;
     }
 
-    @Provides THSamsungPurchaser providePurchaser(THBaseSamsungPurchaser thBaseSamsungPurchaser)
-    {
-        return thBaseSamsungPurchaser;
-    }
-
-    @Provides THSamsungPurchaserHolder providePurchaserHolder(THBaseSamsungPurchaserHolder thBaseSamsungPurchaserHolder)
+    @Provides THSamsungPurchaserHolderRx providePurchaserHolderRx(THBaseSamsungPurchaserHolderRx thBaseSamsungPurchaserHolder)
     {
         return thBaseSamsungPurchaserHolder;
     }
 
-    @Provides THSamsungPurchaseReporter providePurchaseReporter(THBaseSamsungPurchaseReporter thBaseSamsungPurchaseReporter)
-    {
-        return thBaseSamsungPurchaseReporter;
-    }
-
-    @Provides THSamsungPurchaseReporterHolder providePurchaseReporterHolder(THBaseSamsungPurchaseReporterHolder thBaseSamsungPurchaseReporterHolder)
+    @Provides THSamsungPurchaseReporterHolderRx providePurchaseReporterHolderRx(
+            THBaseSamsungPurchaseReporterHolderRx thBaseSamsungPurchaseReporterHolder)
     {
         return thBaseSamsungPurchaseReporterHolder;
     }
     //</editor-fold>
 
-    @Provides @Singleton BillingLogicHolder provideBillingActor(THBillingLogicHolder logicHolder)
+    @Provides @Singleton BillingLogicHolderRx provideBillingActor(THBillingLogicHolderRx logicHolder)
     {
         return logicHolder;
     }
 
-    @Provides @Singleton THBillingLogicHolder provideTHBillingActor(THSamsungLogicHolder logicHolder)
+    @Provides @Singleton THBillingLogicHolderRx provideTHBillingActor(THSamsungLogicHolderRx logicHolder)
     {
         return logicHolder;
     }
 
-    @Provides @Singleton THSamsungLogicHolder provideTHSamsungLogicHolder(THSamsungLogicHolderFull thSamsungLogicHolderFull)
+    @Provides @Singleton THSamsungLogicHolderRx provideTHSamsungLogicHolder(THBaseSamsungLogicHolderRx thSamsungLogicHolderFull)
     {
         return thSamsungLogicHolderFull;
     }
 
-    @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THSamsungAlertDialogUtil THSamsungAlertDialogUtil)
+    @Provides THBillingAlertDialogRxUtil provideBillingAlertDialogUtilRx(THSamsungAlertDialogRxUtil THSamsungAlertDialogUtil)
     {
         return THSamsungAlertDialogUtil;
     }
 
-    @Provides @Singleton BillingInteractor provideBillingInteractor(THBillingInteractor billingInteractor)
+    @Provides @Singleton BillingInteractorRx provideBillingInteractorRx(THBillingInteractorRx billingInteractor)
     {
         return billingInteractor;
     }
 
-    @Provides @Singleton THBillingInteractor provideTHBillingInteractor(THSamsungInteractor thSamsungInteractor)
+    @Provides @Singleton THBillingInteractorRx provideTHBillingInteractorRx(THSamsungInteractorRx thSamsungInteractor)
     {
         return thSamsungInteractor;
     }
 
-    @Provides @Singleton THSamsungInteractor provideTHSamsungInteractor(THSamsungBillingInteractor thSamsungInteractor)
+    @Provides @Singleton THSamsungInteractorRx provideTHSamsungInteractorRx(THBaseSamsungInteractorRx thSamsungInteractor)
     {
         return thSamsungInteractor;
-    }
-
-    @Provides BaseTHUIBillingRequest.Builder provideTHUIBillingRequestBuilder()
-    {
-        return BaseTHUISamsungRequest.builder();
     }
 }

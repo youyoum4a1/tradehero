@@ -11,8 +11,6 @@ import com.tradehero.th.api.pagination.RangeDTO;
 import com.tradehero.th.api.pagination.RangeSequenceDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import retrofit.http.Body;
@@ -49,29 +47,6 @@ public class DiscussionServiceRxStub implements DiscussionServiceRx
             Integer perPage)
     {
         return Observable.empty();
-    }
-
-    @Override public Observable<PaginatedDTO<DiscussionDTO>> getDiscussions(
-            DiscussionType inReplyToType,
-            int inReplyToId,
-            Map<String, Object> options)
-    {
-        PaginatedDTO<DiscussionDTO> paginatedDTO = new PaginatedDTO<>();
-
-        List<DiscussionDTO> discussionDTOs = new ArrayList<>();
-
-        for (int i = 0; i < 10; ++i)
-        {
-            DiscussionDTO discussionDTO = new DiscussionDTO();
-            discussionDTO.id = i;
-            discussionDTO.text = inReplyToType.description + ": asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd " + i;
-            discussionDTO.userId = (i % 2 == 0) ? currentUserId.toUserBaseKey().key : 23;
-            discussionDTOs.add(discussionDTO);
-        }
-
-        paginatedDTO.setData(discussionDTOs);
-
-        return Observable.just(paginatedDTO);
     }
 
     @Override public Observable<PaginatedDTO<DiscussionDTO>> getMessageThread(

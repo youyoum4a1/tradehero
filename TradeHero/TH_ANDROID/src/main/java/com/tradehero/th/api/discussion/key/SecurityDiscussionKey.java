@@ -20,7 +20,7 @@ public class SecurityDiscussionKey extends DiscussionKey<SecurityDiscussionKey>
     }
     //</editor-fold>
 
-    @Override public DiscussionType getType()
+    @NonNull @Override public DiscussionType getType()
     {
         return TYPE;
     }

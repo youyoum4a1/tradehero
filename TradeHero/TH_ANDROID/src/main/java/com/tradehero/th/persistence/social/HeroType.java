@@ -39,7 +39,7 @@ public enum HeroType
     }
 
     @JsonCreator
-    public static HeroType fromDescription(String description)
+    public static HeroType fromDescription(@NonNull String description)
     {
         HeroType[] arr = HeroType.values();
         for (HeroType type : arr)

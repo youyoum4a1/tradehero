@@ -2,6 +2,7 @@ package com.tradehero.th.widget.time;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -72,22 +73,22 @@ public class TimeDisplayViewHolder
         displaySecondCount(timeDTO.seconds);
     }
 
-    protected int getDayFormatResId()
+    @StringRes protected int getDayFormatResId()
     {
         return R.string.time_display_view_holder_format_day;
     }
 
-    protected int getHourFormatResId()
+    @StringRes protected int getHourFormatResId()
     {
         return R.string.time_display_view_holder_format_hour;
     }
 
-    protected int getMinuteFormatResId()
+    @StringRes protected int getMinuteFormatResId()
     {
         return R.string.time_display_view_holder_format_minute;
     }
 
-    protected int getSecondFormatResId()
+    @StringRes protected int getSecondFormatResId()
     {
         return R.string.time_display_view_holder_format_second;
     }

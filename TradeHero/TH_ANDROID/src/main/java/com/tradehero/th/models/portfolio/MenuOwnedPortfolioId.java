@@ -23,12 +23,6 @@ public class MenuOwnedPortfolioId extends OwnedPortfolioId
         super(userBaseKey.key, portfolioCompactDTO.id);
         this.title = portfolioCompactDTO.title;
     }
-
-    public MenuOwnedPortfolioId(@NonNull OwnedPortfolioId ownedPortfolioId, @Nullable PortfolioCompactDTO portfolioCompactDTO)
-    {
-        super(ownedPortfolioId);
-        this.title = portfolioCompactDTO == null ? null : portfolioCompactDTO.title;
-    }
     //</editor-fold>
 
     //<editor-fold desc="CharSequence">
@@ -59,14 +53,15 @@ public class MenuOwnedPortfolioId extends OwnedPortfolioId
                 ^ (title == null ? 0 : title.hashCode());
     }
 
-    @Override public boolean equals(@NonNull OwnedPortfolioId other)
+    @Override protected boolean equalFields(@NonNull OwnedPortfolioId other)
     {
-        return getClass().isInstance(other) && equals(getClass().cast(other));
+        return (other instanceof MenuOwnedPortfolioId)
+                && equalFields((MenuOwnedPortfolioId) other);
     }
 
-    public boolean equals(@NonNull MenuOwnedPortfolioId other)
+    protected boolean equalFields(@NonNull MenuOwnedPortfolioId other)
     {
-        return super.equals(other) &&
+        return super.equalFields(other) &&
                 (title == null ? other.title == null : title.equals(other.title));
     }
 }

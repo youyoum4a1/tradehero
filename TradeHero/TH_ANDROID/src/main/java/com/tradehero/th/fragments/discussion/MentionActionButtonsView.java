@@ -17,6 +17,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.rx.view.ViewArrayObservable;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.android.view.OnClickEvent;
 import rx.functions.Func1;
 
 public class MentionActionButtonsView extends LinearLayout
@@ -51,20 +52,20 @@ public class MentionActionButtonsView extends LinearLayout
     @NonNull public Observable<HasSelectedItem> getSelectedItemObservable()
     {
         return ViewArrayObservable.clicks(buttons, false)
-                .map(new Func1<View, HasSelectedItem>()
+                .map(new Func1<OnClickEvent, HasSelectedItem>()
                 {
-                    @Override public HasSelectedItem call(View view)
+                    @Override public HasSelectedItem call(OnClickEvent event)
                     {
                         Bundle bundle = new Bundle();
                         bundle.putString(DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT, returnFragmentName);
-                        switch(view.getId())
+                        switch(event.view().getId())
                         {
                             case R.id.btn_mention:
                                 return navigator.pushFragment(AllRelationsFragment.class, bundle);
                             case R.id.btn_security_tag:
                                 return navigator.pushFragment(SecuritySearchFragment.class, bundle);
                         }
-                        throw new IllegalArgumentException("Unhandled view " + view);
+                        throw new IllegalArgumentException("Unhandled view " + event);
                     }
                 });
     }

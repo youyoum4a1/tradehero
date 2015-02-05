@@ -11,7 +11,8 @@ public class UserFriendsWeiboDTO extends UserFriendsDTO
     public String wbPicUrl;
 
     //<editor-fold desc="Constructors">
-    public UserFriendsWeiboDTO()
+    @SuppressWarnings("UnusedDeclaration") // Needed for deserialisation
+    UserFriendsWeiboDTO()
     {
         super();
     }
@@ -42,9 +43,9 @@ public class UserFriendsWeiboDTO extends UserFriendsDTO
         return super.hashCode() ^ wbId.hashCode();
     }
 
-    @Override protected boolean equals(@NonNull UserFriendsDTO other)
+    @Override protected boolean equalFields(@NonNull UserFriendsDTO other)
     {
-        return super.equals(other) &&
+        return super.equalFields(other) &&
                 other instanceof UserFriendsWeiboDTO &&
                 wbId.equals(((UserFriendsWeiboDTO) other).wbId);
     }

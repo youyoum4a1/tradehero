@@ -1,42 +1,26 @@
 package com.tradehero.th.billing;
 
-import com.tradehero.common.billing.BillingInteractor;
-import com.tradehero.common.billing.BillingLogicHolder;
-import com.tradehero.th.billing.googleplay.THBaseIABBillingAvailableTester;
-import com.tradehero.th.billing.googleplay.THBaseIABBillingAvailableTesterHolder;
-import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcher;
-import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
-import com.tradehero.th.billing.googleplay.THBaseIABProductIdentifierFetcher;
-import com.tradehero.th.billing.googleplay.THBaseIABProductIdentifierFetcherHolder;
-import com.tradehero.th.billing.googleplay.THBaseIABPurchaseConsumer;
-import com.tradehero.th.billing.googleplay.THBaseIABPurchaseConsumerHolder;
-import com.tradehero.th.billing.googleplay.THBaseIABPurchaseFetcher;
-import com.tradehero.th.billing.googleplay.THBaseIABPurchaseFetcherHolder;
-import com.tradehero.th.billing.googleplay.THBaseIABPurchaseReporter;
-import com.tradehero.th.billing.googleplay.THBaseIABPurchaseReporterHolder;
-import com.tradehero.th.billing.googleplay.THBaseIABPurchaser;
-import com.tradehero.th.billing.googleplay.THBaseIABPurchaserHolder;
-import com.tradehero.th.billing.googleplay.THIABAlertDialogUtil;
-import com.tradehero.th.billing.googleplay.THIABBillingAvailableTester;
-import com.tradehero.th.billing.googleplay.THIABBillingAvailableTesterHolder;
-import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
-import com.tradehero.th.billing.googleplay.THIABInteractor;
-import com.tradehero.th.billing.googleplay.THIABInventoryFetcher;
-import com.tradehero.th.billing.googleplay.THIABInventoryFetcherHolder;
-import com.tradehero.th.billing.googleplay.THIABLogicHolder;
-import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
-import com.tradehero.th.billing.googleplay.THIABProductIdentifierFetcher;
-import com.tradehero.th.billing.googleplay.THIABProductIdentifierFetcherHolder;
-import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
-import com.tradehero.th.billing.googleplay.THIABPurchaseConsumerHolder;
-import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
-import com.tradehero.th.billing.googleplay.THIABPurchaseFetcherHolder;
-import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
-import com.tradehero.th.billing.googleplay.THIABPurchaseReporterHolder;
-import com.tradehero.th.billing.googleplay.THIABPurchaser;
-import com.tradehero.th.billing.googleplay.THIABPurchaserHolder;
-import com.tradehero.th.billing.googleplay.request.BaseTHUIIABRequest;
-import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
+import com.tradehero.common.billing.BillingInteractorRx;
+import com.tradehero.common.billing.BillingLogicHolderRx;
+import com.tradehero.th.billing.googleplay.THBaseIABInteractorRx;
+import com.tradehero.th.billing.googleplay.THBaseIABLogicHolderRx;
+import com.tradehero.th.billing.googleplay.THIABAlertDialogRxUtil;
+import com.tradehero.th.billing.googleplay.THIABInteractorRx;
+import com.tradehero.th.billing.googleplay.THIABLogicHolderRx;
+import com.tradehero.th.billing.googleplay.consumer.THBaseIABPurchaseConsumerHolderRx;
+import com.tradehero.th.billing.googleplay.consumer.THIABPurchaseConsumerHolderRx;
+import com.tradehero.th.billing.googleplay.identifier.THBaseIABProductIdentifierFetcherHolderRx;
+import com.tradehero.th.billing.googleplay.identifier.THIABProductIdentifierFetcherHolderRx;
+import com.tradehero.th.billing.googleplay.inventory.THBaseIABInventoryFetcherHolderRx;
+import com.tradehero.th.billing.googleplay.inventory.THIABInventoryFetcherHolderRx;
+import com.tradehero.th.billing.googleplay.purchase.THBaseIABPurchaserHolderRx;
+import com.tradehero.th.billing.googleplay.purchase.THIABPurchaserHolderRx;
+import com.tradehero.th.billing.googleplay.purchasefetch.THBaseIABPurchaseFetcherHolderRx;
+import com.tradehero.th.billing.googleplay.purchasefetch.THIABPurchaseFetcherHolderRx;
+import com.tradehero.th.billing.googleplay.report.THBaseIABPurchaseReporterHolderRx;
+import com.tradehero.th.billing.googleplay.report.THIABPurchaseReporterHolderRx;
+import com.tradehero.th.billing.googleplay.tester.THBaseIABBillingAvailableTesterHolderRx;
+import com.tradehero.th.billing.googleplay.tester.THIABBillingAvailableTesterHolderRx;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -48,117 +32,77 @@ import javax.inject.Singleton;
 )
 public class BillingUIModule
 {
-    //<editor-fold desc="Actors and Action Holders">
-    @Provides THIABBillingAvailableTester provideBillingAvailableTest(THBaseIABBillingAvailableTester thBaseIABBillingAvailableTester)
-    {
-        return thBaseIABBillingAvailableTester;
-    }
-
-    @Provides THIABBillingAvailableTesterHolder provideBillingAvailableTesterHolder(
-            THBaseIABBillingAvailableTesterHolder thBaseIABBillingAvailableTesterHolder)
+    //<editor-fold desc="Action Holders Rx">
+    @Provides THIABBillingAvailableTesterHolderRx provideBillingAvailableTesterHolderRx(
+            THBaseIABBillingAvailableTesterHolderRx thBaseIABBillingAvailableTesterHolder)
     {
         return thBaseIABBillingAvailableTesterHolder;
     }
 
-    @Provides THIABProductIdentifierFetcher provideProductIdentifierFetcher(THBaseIABProductIdentifierFetcher thBaseIABProductIdentifierFetcher)
-    {
-        return thBaseIABProductIdentifierFetcher;
-    }
-
-    @Provides THIABProductIdentifierFetcherHolder provideProductIdentifierFetcherHolder(
-            THBaseIABProductIdentifierFetcherHolder thBaseIABProductIdentifierFetcherHolder)
+    @Provides THIABProductIdentifierFetcherHolderRx provideProductIdentifierFetcherHolderRx(
+            THBaseIABProductIdentifierFetcherHolderRx thBaseIABProductIdentifierFetcherHolder)
     {
         return thBaseIABProductIdentifierFetcherHolder;
     }
 
-    @Provides THIABInventoryFetcher provideInventoryFetcher(THBaseIABInventoryFetcher thBaseIABInventoryFetcher)
-    {
-        return thBaseIABInventoryFetcher;
-    }
-
-    @Provides THIABInventoryFetcherHolder provideInventoryFetcherHolder(THBaseIABInventoryFetcherHolder thBaseIABInventoryFetcherHolder)
+    @Provides THIABInventoryFetcherHolderRx provideInventoryFetcherHolderRx(THBaseIABInventoryFetcherHolderRx thBaseIABInventoryFetcherHolder)
     {
         return thBaseIABInventoryFetcherHolder;
     }
 
-    @Provides THIABPurchaseFetcher providePurchaseFetcher(THBaseIABPurchaseFetcher thBaseIABPurchaseFetcher)
-    {
-        return thBaseIABPurchaseFetcher;
-    }
-
-    @Provides THIABPurchaseFetcherHolder providePurchaseFetcherHolder(THBaseIABPurchaseFetcherHolder thBaseIABPurchaseFetcherHolder)
+    @Provides THIABPurchaseFetcherHolderRx providePurchaseFetcherHolderRx(THBaseIABPurchaseFetcherHolderRx thBaseIABPurchaseFetcherHolder)
     {
         return thBaseIABPurchaseFetcherHolder;
     }
 
-    @Provides THIABPurchaser providePurchaser(THBaseIABPurchaser thBaseIABPurchaser)
-    {
-        return thBaseIABPurchaser;
-    }
-
-    @Provides THIABPurchaserHolder providePurchaserHolder(THBaseIABPurchaserHolder thBaseIABPurchaserHolder)
+    @Provides THIABPurchaserHolderRx providePurchaserHolderRx(THBaseIABPurchaserHolderRx thBaseIABPurchaserHolder)
     {
         return thBaseIABPurchaserHolder;
     }
 
-    @Provides THIABPurchaseReporter providePurchaseReporter(THBaseIABPurchaseReporter thBaseIABPurchaseReporter)
-    {
-        return thBaseIABPurchaseReporter;
-    }
-
-    @Provides THIABPurchaseReporterHolder providePurchaseReporterHolder(THBaseIABPurchaseReporterHolder thBaseIABPurchaseReporterHolder)
+    @Provides THIABPurchaseReporterHolderRx providePurchaseReporterHolderRx(THBaseIABPurchaseReporterHolderRx thBaseIABPurchaseReporterHolder)
     {
         return thBaseIABPurchaseReporterHolder;
     }
 
-    @Provides THIABPurchaseConsumer providePurchaseConsumer(THBaseIABPurchaseConsumer thBaseIABPurchaseConsumer)
-    {
-        return thBaseIABPurchaseConsumer;
-    }
-
-    @Provides THIABPurchaseConsumerHolder providePurchaseConsumerHolder(THBaseIABPurchaseConsumerHolder thBaseIABPurchaseConsumerHolder)
+    @Provides THIABPurchaseConsumerHolderRx providePurchaseConsumerHolderRx(THBaseIABPurchaseConsumerHolderRx thBaseIABPurchaseConsumerHolder)
     {
         return thBaseIABPurchaseConsumerHolder;
     }
     //</editor-fold>
 
-    @Provides @Singleton BillingLogicHolder provideBillingActor(THBillingLogicHolder logicHolder)
+    @Provides @Singleton BillingLogicHolderRx provideBillingActorRx(THBillingLogicHolderRx logicHolderRx)
     {
-        return logicHolder;
+        return logicHolderRx;
     }
 
-    @Provides @Singleton THBillingLogicHolder provideTHBillingActor(THIABLogicHolder logicHolder)
+    @Provides @Singleton THBillingLogicHolderRx provideTHBillingActorRx(THIABLogicHolderRx logicHolderRx)
     {
-        return logicHolder;
+        return logicHolderRx;
     }
 
-    @Provides @Singleton THIABLogicHolder provideTHIABLogicHolder(THIABLogicHolderFull thiabLogicHolderFull)
+    @Provides @Singleton THIABLogicHolderRx provideTHIABLogicHolderRx(THBaseIABLogicHolderRx logicHolderRx)
     {
-        return thiabLogicHolderFull;
+        return logicHolderRx;
     }
 
-    @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THIABAlertDialogUtil THIABAlertDialogUtil)
+    @Provides THBillingAlertDialogRxUtil provideBillingAlertDialogRxUtil(THIABAlertDialogRxUtil THIABAlertDialogUtil)
     {
         return THIABAlertDialogUtil;
     }
 
-    @Provides @Singleton BillingInteractor provideBillingInteractor(THBillingInteractor billingInteractor)
+    @Provides @Singleton BillingInteractorRx provideBillingInteractorRx(THBillingInteractorRx billingInteractorRx)
     {
-        return billingInteractor;
+        return billingInteractorRx;
     }
 
-    @Provides @Singleton THBillingInteractor provideTHBillingInteractor(THIABInteractor thiabInteractor)
+    @Provides @Singleton THBillingInteractorRx provideTHBillingInteractorRx(THIABInteractorRx billingInteractorRx)
     {
-        return thiabInteractor;
+        return billingInteractorRx;
     }
 
-    @Provides @Singleton THIABInteractor provideTHIABInteractor(THIABBillingInteractor thiabInteractor)
+    @Provides @Singleton THIABInteractorRx provideTHIABInteractorRx(THBaseIABInteractorRx billingInteractorRx)
     {
-        return thiabInteractor;
-    }
-
-    @Provides BaseTHUIBillingRequest.Builder provideTHUIBillingRequestBuilder()
-    {
-        return BaseTHUIIABRequest.builder();
+        return billingInteractorRx;
     }
 }

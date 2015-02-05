@@ -15,7 +15,6 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class PositionDTOUtilsTest
 {
     @Inject Context context;
-    @Inject PositionDTOUtils positionDTOUtils;
 
     @Before
     public void setUp()
@@ -28,8 +27,8 @@ public class PositionDTOUtilsTest
         TextView positiveTextView = new TextView(context);
         TextView negativeTextView = new TextView(context);
 
-        positionDTOUtils.setROILook(positiveTextView, -10.0);
-        positionDTOUtils.setROILook(negativeTextView, 10.0);
+        PositionDTOUtils.setROILook(positiveTextView, -10.0);
+        PositionDTOUtils.setROILook(negativeTextView, 10.0);
 
         assertThat(positiveTextView.getText().toString().charAt(0)).isNotEqualTo(negativeTextView.getText().toString().charAt(0));
     }

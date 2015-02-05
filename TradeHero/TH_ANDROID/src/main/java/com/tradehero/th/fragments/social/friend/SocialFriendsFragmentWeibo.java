@@ -173,7 +173,7 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
 
     protected boolean checkMessageLengthLimit()
     {
-        return edtMessageInvite.getText().toString().length() > MAX_TEXT_LENGTH ? false : true;
+        return edtMessageInvite.getText().toString().length() <= MAX_TEXT_LENGTH;
     }
 
     protected String getStrMessageOfAtList(List<UserFriendsDTO> usersToInvite)

@@ -16,14 +16,9 @@ public class TranslationKey implements DTOKey
     //<editor-fold desc="Constructors">
     public TranslationKey(@NonNull String from, @NonNull String to, @NonNull String translatableText)
     {
-        this(from, to, translatableText.hashCode(), translatableText);
-    }
-
-    public TranslationKey(@NonNull String from, @NonNull String to, int textHashCode, @Nullable String translatableText)
-    {
         this.from = from;
         this.to = to;
-        this.textHashCode = textHashCode;
+        this.textHashCode = translatableText.hashCode();
         this.translatableText = translatableText;
     }
     //</editor-fold>
@@ -35,23 +30,14 @@ public class TranslationKey implements DTOKey
                 textHashCode;
     }
 
-    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override public boolean equals(@Nullable Object obj)
     {
         if (obj == this)
         {
             return true;
         }
-        if (obj == null)
-        {
-            return false;
-        }
-        return equalClass(obj) && equalFields((TranslationKey) obj);
-    }
-
-    protected boolean equalClass(@NonNull Object other)
-    {
-        return other.getClass().equals(getClass());
+        return obj instanceof TranslationKey
+                && equalFields((TranslationKey) obj);
     }
 
     protected boolean equalFields(@NonNull TranslationKey other)

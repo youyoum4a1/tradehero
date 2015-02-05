@@ -17,7 +17,6 @@ import dagger.Module;
 
                 MessagesCenterFragment.class,
                 NotificationsCenterFragment.class,
-                UpdateCenterResideMenuItem.class,
 
                 MessagesView.class,
                 MessageItemView.class,

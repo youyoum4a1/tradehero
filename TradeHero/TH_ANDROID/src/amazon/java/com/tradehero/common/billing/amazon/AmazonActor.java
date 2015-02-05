@@ -4,5 +4,4 @@ import com.tradehero.common.billing.RequestCodeActor;
 
 public interface AmazonActor extends RequestCodeActor
 {
-    void onDestroy();
 }

@@ -3,18 +3,12 @@ package com.tradehero.th.api.leaderboard.def;
 import android.support.annotation.NonNull;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.api.BaseArrayList;
+import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
 
 public class LeaderboardDefDTOList extends BaseArrayList<LeaderboardDefDTO>
-    implements DTO
+    implements DTO, ContainerDTO<LeaderboardDefDTO, LeaderboardDefDTOList>
 {
-    //<editor-fold desc="Contructors">
-    public LeaderboardDefDTOList()
-    {
-        super();
-    }
-    //</editor-fold>
-
     @NonNull
     public LeaderboardDefDTOList keepForCountryCode(@NonNull String countryCode)
     {
@@ -30,13 +24,8 @@ public class LeaderboardDefDTOList extends BaseArrayList<LeaderboardDefDTO>
         return kept;
     }
 
-    @NonNull public LeaderboardDefKeyList createKeys()
+    @Override public LeaderboardDefDTOList getList()
     {
-        LeaderboardDefKeyList list = new LeaderboardDefKeyList();
-        for (LeaderboardDefDTO leaderboardDefDTO : this)
-        {
-            list.add(leaderboardDefDTO.getLeaderboardDefKey());
-        }
-        return list;
+        return this;
     }
 }

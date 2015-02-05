@@ -1,9 +1,9 @@
 package com.tradehero.th.models.user;
 
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.social.BatchFollowFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.social.BatchFollowFormDTO;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;

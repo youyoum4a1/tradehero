@@ -4,12 +4,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.portfolio.DTOProcessorPortfolioListReceived;
+import com.tradehero.th.models.BaseDTOListProcessor;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioReceived;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
@@ -38,56 +37,35 @@ import rx.Observable;
     }
     //</editor-fold>
 
-    //<editor-fold desc="DTO Processors">
-    protected DTOProcessorPortfolioReceived<PortfolioCompactDTO> createPortfolioCompactReceivedProcessor(@NonNull UserBaseKey userBaseKey)
-    {
-        return new DTOProcessorPortfolioReceived<>(userBaseKey);
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Get User Portfolio List">
-    protected DTOProcessorPortfolioListReceived<PortfolioCompactDTOList> createPortfolioCompactListReceivedProcessor(@NonNull UserBaseKey userBaseKey)
-    {
-        return new DTOProcessorPortfolioListReceived<>(userBaseKey);
-    }
-
     @NonNull public Observable<PortfolioCompactDTOList> getPortfoliosRx(
             @NonNull UserBaseKey userBaseKey,
             @Nullable Boolean includeWatchList)
     {
         return portfolioServiceRx.getPortfolios(userBaseKey.key, includeWatchList)
-                .map(createPortfolioCompactListReceivedProcessor(userBaseKey));
+                .map(new BaseDTOListProcessor<>(
+                        new DTOProcessorPortfolioReceived<>(userBaseKey)));
     }
     //</editor-fold>
 
     //<editor-fold desc="Get One User Portfolio">
-    protected DTOProcessorPortfolioReceived<PortfolioDTO> createPortfolioReceivedProcessor(@NonNull UserBaseKey userBaseKey)
-    {
-        return new DTOProcessorPortfolioReceived<>(userBaseKey);
-    }
-
     @NonNull public Observable<PortfolioDTO> getPortfolioRx(
             @NonNull OwnedPortfolioId ownedPortfolioId)
     {
         return this.portfolioServiceRx.getPortfolio(
-                ownedPortfolioId.userId,
-                ownedPortfolioId.portfolioId)
-                .map(createPortfolioReceivedProcessor(ownedPortfolioId.getUserBaseKey()));
+                        ownedPortfolioId.userId,
+                        ownedPortfolioId.portfolioId)
+                .map(new DTOProcessorPortfolioReceived<>(ownedPortfolioId.getUserBaseKey()));
     }
     //</editor-fold>
 
     //<editor-fold desc="Reset Cash">
-    protected DTOProcessorUpdateUserProfile createUpdateProfileProcessor()
-    {
-        return new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache.get());
-    }
-
     @NonNull public Observable<UserProfileDTO> resetPortfolioRx(
             @NonNull OwnedPortfolioId ownedPortfolioId,
             PurchaseReportDTO purchaseReportDTO)
     {
         return this.portfolioServiceRx.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseReportDTO)
-                .map(createUpdateProfileProcessor());
+                .map(new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache.get()));
     }
     //</editor-fold>
 
@@ -97,16 +75,6 @@ import rx.Observable;
             PurchaseReportDTO purchaseReportDTO)
     {
         return this.portfolioServiceRx.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseReportDTO);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Mark One User Portfolio">
-    @NonNull public Observable<PortfolioDTO> markPortfolioRx(
-            @NonNull OwnedPortfolioId ownedPortfolioId)
-    {
-        return this.portfolioServiceRx.markPortfolio(
-                ownedPortfolioId.userId,
-                ownedPortfolioId.portfolioId);
     }
     //</editor-fold>
 }

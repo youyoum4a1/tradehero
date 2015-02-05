@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discovery;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +26,12 @@ public class CountryAdapter extends GenericArrayAdapter<CountryLanguagePairDTO>
 
     private Filter mFilter;
 
-    public CountryAdapter(@NonNull Context context, int layoutResourceId)
+    //<editor-fold desc="Constructors">
+    public CountryAdapter(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
     }
+    //</editor-fold>
 
     @Override public Filter getFilter()
     {

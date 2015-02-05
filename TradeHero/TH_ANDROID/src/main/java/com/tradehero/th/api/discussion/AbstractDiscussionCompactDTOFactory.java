@@ -1,22 +1,17 @@
 package com.tradehero.th.api.discussion;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.persistence.translation.TranslationKey;
-import javax.inject.Inject;
 
 public class AbstractDiscussionCompactDTOFactory
 {
-    //<editor-fold desc="Constructors">
-    @Inject public AbstractDiscussionCompactDTOFactory()
-    {
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Clone">
-    public AbstractDiscussionCompactDTO clone(AbstractDiscussionCompactDTO original)
+    @Nullable public static AbstractDiscussionCompactDTO clone(@Nullable AbstractDiscussionCompactDTO original)
     {
         if (original == null)
         {
@@ -24,108 +19,65 @@ public class AbstractDiscussionCompactDTOFactory
         }
         if (original instanceof NewsItemCompactDTO)
         {
-            return clone((NewsItemCompactDTO) original);
+            NewsItemCompactDTO newsCompact = (NewsItemCompactDTO) original;
+            if (newsCompact instanceof NewsItemDTO)
+            {
+                return new NewsItemDTO(newsCompact, NewsItemDTO.class);
+            }
+            return new NewsItemCompactDTO(newsCompact, NewsItemCompactDTO.class);
         }
         if (original instanceof AbstractDiscussionDTO)
         {
-            return clone((AbstractDiscussionDTO) original);
-        }
-
-        throw new IllegalArgumentException("Unhandled type " + original.getClass());
-    }
-
-    protected NewsItemCompactDTO clone(NewsItemCompactDTO original)
-    {
-        if (original instanceof NewsItemDTO)
-        {
-            return new NewsItemDTO(original, NewsItemDTO.class);
-        }
-        return new NewsItemCompactDTO(original, NewsItemCompactDTO.class);
-    }
-
-    protected AbstractDiscussionDTO clone(AbstractDiscussionDTO original)
-    {
-        if (original instanceof TimelineItemDTO)
-        {
-            return new TimelineItemDTO(original, TimelineItemDTO.class);
-        }
-        if (original instanceof DiscussionDTO)
-        {
-            return clone((DiscussionDTO) original);
+            AbstractDiscussionDTO abstractDiscussion = (AbstractDiscussionDTO) original;
+            if (abstractDiscussion instanceof TimelineItemDTO)
+            {
+                return new TimelineItemDTO(abstractDiscussion, TimelineItemDTO.class);
+            }
+            if (abstractDiscussion instanceof DiscussionDTO)
+            {
+                DiscussionDTO originalDiscussion = (DiscussionDTO) abstractDiscussion;
+                if (originalDiscussion instanceof PrivateDiscussionDTO)
+                {
+                    return new PrivateDiscussionDTO(originalDiscussion, PrivateDiscussionDTO.class);
+                }
+                return new DiscussionDTO(originalDiscussion, DiscussionDTO.class);
+            }
         }
         throw new IllegalArgumentException("Unhandled type " + original.getClass());
     }
 
-    protected DiscussionDTO clone(DiscussionDTO original)
-    {
-        if (original instanceof PrivateDiscussionDTO)
-        {
-            return new PrivateDiscussionDTO(original, PrivateDiscussionDTO.class);
-        }
-        return new DiscussionDTO(original, DiscussionDTO.class);
-    }
     //</editor-fold>
 
     //<editor-fold desc="Populate Translations">
-    public void populateTranslation(AbstractDiscussionCompactDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
+    public static void populateTranslation(
+            @Nullable AbstractDiscussionCompactDTO toPopulate,
+            @NonNull TranslationKey translationKey,
+            @NonNull TranslationResult translationResult)
     {
         if (toPopulate instanceof AbstractDiscussionDTO)
         {
-            populateTranslation((AbstractDiscussionDTO) toPopulate, translationKey, translationResult);
+            AbstractDiscussionDTO casted = (AbstractDiscussionDTO) toPopulate;
+            casted.text = getSameOrTranslated(casted.text, translationKey, translationResult);
         }
         else if (toPopulate instanceof NewsItemCompactDTO)
         {
-            populateTranslation((NewsItemCompactDTO) toPopulate, translationKey, translationResult);
+            NewsItemCompactDTO newsCompact = (NewsItemCompactDTO) toPopulate;
+            newsCompact.caption = getSameOrTranslated(newsCompact.caption, translationKey, translationResult);
+            newsCompact.description = getSameOrTranslated(newsCompact.description, translationKey, translationResult);
+            newsCompact.title = getSameOrTranslated(newsCompact.title, translationKey, translationResult);
+            if (newsCompact instanceof NewsItemDTO)
+            {
+                NewsItemDTO news = (NewsItemDTO) newsCompact;
+                news.text = getSameOrTranslated(news.text, translationKey, translationResult);
+                news.message = getSameOrTranslated(news.message, translationKey, translationResult);
+            }
         }
     }
 
-    protected void populateTranslation(AbstractDiscussionDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
-    {
-        toPopulate.text = getSameOrTranslated(toPopulate.text, translationKey, translationResult);
-        if (toPopulate instanceof TimelineItemDTO)
-        {
-            populateTranslation((TimelineItemDTO) toPopulate, translationKey, translationResult);
-        }
-        else if (toPopulate instanceof DiscussionDTO)
-        {
-            populateTranslation((DiscussionDTO) toPopulate, translationKey, translationResult);
-        }
-    }
-
-    protected void populateTranslation(TimelineItemDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
-    {
-    }
-
-    protected void populateTranslation(DiscussionDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
-    {
-        if (toPopulate instanceof PrivateDiscussionDTO)
-        {
-            populateTranslation((PrivateDiscussionDTO) toPopulate, translationKey, translationResult);
-        }
-    }
-
-    protected void populateTranslation(PrivateDiscussionDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
-    {
-    }
-
-    protected void populateTranslation(NewsItemCompactDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
-    {
-        toPopulate.caption = getSameOrTranslated(toPopulate.caption, translationKey, translationResult);
-        toPopulate.description = getSameOrTranslated(toPopulate.description, translationKey, translationResult);
-        toPopulate.title = getSameOrTranslated(toPopulate.title, translationKey, translationResult);
-        if (toPopulate instanceof NewsItemDTO)
-        {
-            populateTranslation((NewsItemDTO) toPopulate, translationKey, translationResult);
-        }
-    }
-
-    protected void populateTranslation(NewsItemDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
-    {
-        toPopulate.text = getSameOrTranslated(toPopulate.text, translationKey, translationResult);
-        toPopulate.message = getSameOrTranslated(toPopulate.message, translationKey, translationResult);
-    }
-
-    protected String getSameOrTranslated(String original, TranslationKey translationKey, TranslationResult translationResult)
+    @Nullable protected static String getSameOrTranslated(
+            @Nullable String original,
+            @NonNull TranslationKey translationKey,
+            @NonNull TranslationResult translationResult)
     {
         if (original == null || original.hashCode() != translationKey.textHashCode)
         {

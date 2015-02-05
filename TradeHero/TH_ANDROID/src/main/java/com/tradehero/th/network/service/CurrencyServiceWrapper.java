@@ -19,7 +19,7 @@ import rx.Observable;
     }
     //</editor-fold>
 
-    public Observable<List<CurrencyDTO>> getCurrenciesRx()
+    @NonNull public Observable<List<CurrencyDTO>> getCurrenciesRx()
     {
         return currencyServiceRx.getCurrencies();
     }

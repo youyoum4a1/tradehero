@@ -1,38 +1,35 @@
 package com.tradehero.th.api.position;
 
-import com.tradehero.th.api.portfolio.PortfolioId;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
-import java.util.ArrayList;
-import java.util.List;
 
-public class GetPositionsDTO extends AbstractGetPositionsDTO<PositionDTO>
+public class GetPositionsDTO implements DTO
 {
-    //<editor-fold desc="Constructors">
-    public GetPositionsDTO()
+    @Nullable public PositionDTOList<PositionDTO> positions;
+    @Nullable public SecurityCompactDTOList securities;
+    public int openPositionsCount;
+    public int closedPositionsCount;
+
+    @JsonIgnore
+    public void setOnInPeriod(@NonNull LeaderboardMarkUserId leaderboardMarkUserId)
     {
-        super();
+        if (positions != null)
+        {
+            positions.setOnInPeriod(leaderboardMarkUserId);
+        }
     }
 
-    public GetPositionsDTO(PositionDTOList<PositionDTO> positions, SecurityCompactDTOList securities, int openPositionsCount, int closedPositionsCount)
+    @Override public String toString()
     {
-        super(positions, securities, openPositionsCount, closedPositionsCount);
-    }
-    //</editor-fold>
-
-    public List<OwnedPositionId> getFiledPositionIds(PortfolioId portfolioId)
-    {
-        if (positions == null)
-        {
-            return null;
-        }
-
-        List<OwnedPositionId> ownedPositionIds = new ArrayList<>();
-
-        for (PositionDTO positionDTO: positions)
-        {
-            ownedPositionIds.add(new OwnedPositionId(positionDTO.userId, portfolioId.key, positionDTO.id));
-        }
-
-        return ownedPositionIds;
+        return "GetPositionsDTO{" +
+                "positions=" + positions +
+                ", securities=" + securities +
+                ", openPositionsCount=" + openPositionsCount +
+                ", closedPositionsCount=" + closedPositionsCount +
+                '}';
     }
 }

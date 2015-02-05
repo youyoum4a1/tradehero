@@ -59,14 +59,10 @@ public class PostCommentView extends RelativeLayout
 
     @Inject MessageServiceWrapper messageServiceWrapper;
     @Nullable private MessageType messageType = null;
-    @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject CurrentUserId currentUserId;
-    @Inject EditableUtil editableUtil;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
-    @Inject DiscussionKeyFactory discussionKeyFactory;
     private DiscussionKey discussionKey = null;
-    @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
     private CommentPostedListener commentPostedListener;
     private DiscussionKey nextStubKey;
 
@@ -129,24 +125,24 @@ public class PostCommentView extends RelativeLayout
         }
     }
 
-    protected DiscussionType getDefaultDiscussionType()
+    @NonNull protected DiscussionType getDefaultDiscussionType()
     {
         return DiscussionType.COMMENT;
     }
 
-    public synchronized DiscussionKey moveNextStubKey()
+    @NonNull public synchronized DiscussionKey moveNextStubKey()
     {
         if (nextStubKey != null)
         {
-            nextStubKey = discussionKeyFactory.create(nextStubKey.getType(), nextStubKey.id + 1);
+            nextStubKey = DiscussionKeyFactory.create(nextStubKey.getType(), nextStubKey.id + 1);
         }
         else if (discussionKey != null)
         {
-            nextStubKey = discussionKeyFactory.create(discussionKey.getType(), Integer.MAX_VALUE - 10000);
+            nextStubKey = DiscussionKeyFactory.create(discussionKey.getType(), Integer.MAX_VALUE - 10000);
         }
         else
         {
-            nextStubKey = discussionKeyFactory.create(getDefaultDiscussionType(), Integer.MAX_VALUE - 10000);
+            nextStubKey = DiscussionKeyFactory.create(getDefaultDiscussionType(), Integer.MAX_VALUE - 10000);
         }
         return nextStubKey;
     }
@@ -198,7 +194,7 @@ public class PostCommentView extends RelativeLayout
 
     @NonNull protected DiscussionFormDTO createEmptyCommentFormDTO()
     {
-        return discussionFormDTOFactory.createEmpty(discussionKey.getType());
+        return DiscussionFormDTOFactory.createEmpty(discussionKey.getType());
     }
 
     protected void populateFormDTO(@NonNull DiscussionFormDTO discussionFormDTO)
@@ -207,7 +203,7 @@ public class PostCommentView extends RelativeLayout
         {
             ((ReplyDiscussionFormDTO) discussionFormDTO).inReplyToId = discussionKey.id;
         }
-        discussionFormDTO.text = editableUtil.unSpanText(commentText.getText()).toString();
+        discussionFormDTO.text = EditableUtil.unSpanText(commentText.getText()).toString();
         if (USE_QUICK_STUB_DISCUSSION)
         {
             discussionFormDTO.stubKey = moveNextStubKey();
@@ -226,8 +222,8 @@ public class PostCommentView extends RelativeLayout
 
     @NonNull protected MessageCreateFormDTO buildMessageCreateFormDTO()
     {
-        MessageCreateFormDTO messageCreateFormDTO = messageCreateFormDTOFactory.createEmpty(messageType);
-        messageCreateFormDTO.message = editableUtil.unSpanText(commentText.getText()).toString();
+        MessageCreateFormDTO messageCreateFormDTO = MessageCreateFormDTOFactory.createEmpty(messageType);
+        messageCreateFormDTO.message = EditableUtil.unSpanText(commentText.getText()).toString();
         messageCreateFormDTO.senderUserId = currentUserId.toUserBaseKey().key;
         return messageCreateFormDTO;
     }

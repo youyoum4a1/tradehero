@@ -33,16 +33,15 @@ public class SearchProviderSecurityListType extends ProviderSecurityListType
                 (searchString == null ? 0 : searchString.hashCode());
     }
 
-    @Override protected boolean equals(@NonNull ProviderSecurityListType other)
+    @Override protected boolean equalFields(@NonNull ProviderSecurityListType other)
     {
-        return super.equals(other)
-                && other instanceof SearchProviderSecurityListType
-                && equals((SearchProviderSecurityListType) other);
+        return other instanceof SearchProviderSecurityListType
+                && equalFields((SearchProviderSecurityListType) other);
     }
 
-    protected boolean equals(@NonNull SearchProviderSecurityListType other)
+    protected boolean equalFields(@NonNull SearchProviderSecurityListType other)
     {
-        return super.equals(other)
+        return super.equalFields(other)
                 && searchString.equals(other.searchString);
     }
 

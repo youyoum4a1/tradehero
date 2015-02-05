@@ -66,29 +66,6 @@ public class YahooChartDTO implements ChartDTO
         setChartTimeSpan(chartTimeSpan);
         this.movingAverageIntervals = movingAverageIntervals;
     }
-
-    public YahooChartDTO(
-            @NonNull String yahooSymbol,
-            @NonNull YahooChartSize size,
-            @NonNull YahooTimeSpan timeSpan)
-    {
-        this.yahooSymbol = yahooSymbol;
-        this.size = size;
-        this.timeSpan = timeSpan;
-        this.movingAverageIntervals = defaultMovingAverageIntervals();
-    }
-
-    public YahooChartDTO(
-            @NonNull String yahooSymbol,
-            @NonNull YahooChartSize size,
-            @NonNull YahooTimeSpan timeSpan,
-            @Nullable List<YahooMovingAverageInterval> movingAverageIntervals)
-    {
-        this.yahooSymbol = yahooSymbol;
-        this.size = size;
-        this.timeSpan = timeSpan;
-        this.movingAverageIntervals = movingAverageIntervals;
-    }
     //</editor-fold>
 
     @Override public void setSecurityCompactDTO(@Nullable SecurityCompactDTO securityCompactDTO)

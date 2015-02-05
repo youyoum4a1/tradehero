@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.news;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -22,6 +21,7 @@ import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
+import rx.Observable;
 
 public class NewsDialogLayout extends ShareDialogLayout
 {
@@ -46,13 +46,13 @@ public class NewsDialogLayout extends ShareDialogLayout
     }
     //</editor-fold>
 
-    @Override protected void fillData()
+    @Override protected void onAttachedToWindow()
     {
-        super.fillData();
+        super.onAttachedToWindow();
         String[] dataForFirst = {getContext().getString(R.string.sharing),
                 getContext().getString(R.string.translation)};
-        MyListAdapter adapterForFirst =
-                new MyListAdapter(getContext(), R.layout.common_dialog_item_layout, R.id.popup_text, dataForFirst);
+        ArrayAdapter<String> adapterForFirst =
+                new ArrayAdapter<>(getContext(), R.layout.common_dialog_item_layout, R.id.popup_text, dataForFirst);
         listViewOptions.setAdapter(adapterForFirst);
         listViewOptions.setDividerHeight(1);
         setNewsTitle();
@@ -140,56 +140,23 @@ public class NewsDialogLayout extends ShareDialogLayout
         }
         else if (position == 1)
         {
-            notifyTranslationClicked();
+            shareActionBehavior.onNext(new TranslateUserAction());
+            shareActionBehavior.onCompleted();
         }
     }
 
-    private class MyListAdapter extends ArrayAdapter<String>
+    @NonNull @Override public Observable<UserAction> show(@SuppressWarnings("NullableProblems") @NonNull DTO discussionToShare)
     {
-        public MyListAdapter(Context context, int resource, int textViewResourceId,
-                String[] objects)
-        {
-            super(context, resource, textViewResourceId, objects);
-        }
-    }
-
-    @Override public void setWhatToShare(@NonNull DTO discussionToShare)
-    {
-        super.setWhatToShare(discussionToShare);
+        Observable<UserAction> observable = super.show(discussionToShare);
         if (!(discussionToShare instanceof AbstractDiscussionCompactDTO))
         {
             throw new IllegalArgumentException("Cannot share " + discussionToShare.getClass().getName());
         }
         setNewsTitle();
+        return observable;
     }
 
-    @Override public void setMenuClickedListener(
-            @Nullable OnShareMenuClickedListener menuClickedListener)
+    public static class TranslateUserAction implements UserAction
     {
-        if (menuClickedListener != null &&
-                !(menuClickedListener instanceof OnMenuClickedListener))
-        {
-            throw new IllegalArgumentException("You can only set OnMenuClickedListener");
-        }
-        super.setMenuClickedListener(menuClickedListener);
-    }
-
-    public void setMenuClickedListener(OnMenuClickedListener menuClickedListener)
-    {
-        super.setMenuClickedListener(menuClickedListener);
-    }
-
-    protected void notifyTranslationClicked()
-    {
-        NewsDialogLayout.OnMenuClickedListener listenerCopy = (OnMenuClickedListener) menuClickedListener;
-        if (listenerCopy != null)
-        {
-            listenerCopy.onTranslationRequestedClicked((AbstractDiscussionCompactDTO) whatToShare);
-        }
-    }
-
-    public static interface OnMenuClickedListener extends OnShareMenuClickedListener
-    {
-        void onTranslationRequestedClicked(AbstractDiscussionCompactDTO toTranslate);
     }
 }

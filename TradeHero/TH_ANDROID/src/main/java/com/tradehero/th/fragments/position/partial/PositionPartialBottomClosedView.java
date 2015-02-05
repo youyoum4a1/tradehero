@@ -7,6 +7,7 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.utils.DateUtils;
 
 public class PositionPartialBottomClosedView extends AbstractPartialBottomView
@@ -117,13 +118,13 @@ public class PositionPartialBottomClosedView extends AbstractPartialBottomView
     {
         if (realisedPLValue != null)
         {
-            positionDTOUtils.setRealizedPLLook(realisedPLValue, positionDTO);
+            PositionDTOUtils.setRealizedPLLook(realisedPLValue, positionDTO);
         }
     }
 
     public void displayRoiValue()
     {
-        positionDTOUtils.setROISinceInception(roiValue, positionDTO);
+        PositionDTOUtils.setROISinceInception(roiValue, positionDTO);
     }
 
     public void displayTotalInvested()
@@ -132,7 +133,7 @@ public class PositionPartialBottomClosedView extends AbstractPartialBottomView
         {
             if (positionDTO != null)
             {
-                totalInvestedValue.setText(positionDTOUtils.getSumInvested(getResources(), positionDTO));
+                totalInvestedValue.setText(PositionDTOUtils.getSumInvested(getResources(), positionDTO));
             }
         }
     }

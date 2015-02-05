@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 
 public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 {
@@ -100,7 +100,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
             AchievementCategoryId achievementCategoryId = new AchievementCategoryId(
                     currentUserId.toUserBaseKey(),
                     userAchievementDTO.achievementDef.categoryId);
-            AndroidObservable.bindFragment(
+            AppObservable.bindFragment(
                     this,
                     achievementCategoryCache.get(achievementCategoryId))
                     .subscribe(new CategoryCacheObserver());

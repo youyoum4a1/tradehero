@@ -5,28 +5,20 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import com.android.internal.util.Predicate;
-import javax.inject.Inject;
 
 public class AdapterViewUtils
 {
-    //<editor-fold desc="Constructors">
-    @Inject public AdapterViewUtils()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    public <T> boolean updateSingleRowWhere(@NonNull AdapterView adapterView, @NonNull Class<T> type, @NonNull Predicate<T> predicate)
+    public static <T> boolean updateSingleRowWhere(@NonNull AdapterView adapterView, @NonNull Class<T> type, @NonNull Predicate<T> predicate)
     {
         return updateRowsWhere(adapterView, type, predicate, 1) == 1;
     }
 
-    public <T> int updateAllRowsWhere(@NonNull AdapterView adapterView, @NonNull Class<T> type, @NonNull Predicate<T> predicate)
+    public static <T> int updateAllRowsWhere(@NonNull AdapterView adapterView, @NonNull Class<T> type, @NonNull Predicate<T> predicate)
     {
         return updateRowsWhere(adapterView, type, predicate, Integer.MAX_VALUE);
     }
 
-    public <T> int updateRowsWhere(@NonNull AdapterView adapterView, @NonNull Class<T> type, @NonNull Predicate<T> predicate, int maxCount)
+    public static <T> int updateRowsWhere(@NonNull AdapterView adapterView, @NonNull Class<T> type, @NonNull Predicate<T> predicate, int maxCount)
     {
         if (maxCount < 1)
         {

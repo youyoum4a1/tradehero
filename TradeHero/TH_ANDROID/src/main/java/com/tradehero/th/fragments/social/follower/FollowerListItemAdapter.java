@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,18 +12,20 @@ import com.tradehero.th.api.social.UserFollowerDTO;
 
 public class FollowerListItemAdapter extends BaseAdapter
 {
-    protected final Context context;
+    @NonNull protected final Context context;
     protected final LayoutInflater inflater;
-    protected final int followerResId;
+    @LayoutRes protected final int followerResId;
     protected FollowerSummaryDTO followerSummaryDTO;
 
-    public FollowerListItemAdapter(Context context, LayoutInflater inflater, int followerResId)
+    //<editor-fold desc="Constructors">
+    public FollowerListItemAdapter(@NonNull Context context, @LayoutRes int followerResId)
     {
         super();
         this.context = context;
-        this.inflater = inflater;
+        this.inflater = LayoutInflater.from(context);
         this.followerResId = followerResId;
     }
+    //</editor-fold>
 
     public void setFollowerSummaryDTO(FollowerSummaryDTO followerSummaryDTO)
     {

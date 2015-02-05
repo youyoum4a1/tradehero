@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.CompoundButton;
@@ -9,37 +8,38 @@ import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnCheckedChanged;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.form.PublishableFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Actions;
 
 public class DiscussionPostActionButtonsView extends LinearLayout
 {
-    @InjectView(R.id.btn_share_fb) ToggleButton mFacebookShareButton;
-    @InjectView(R.id.btn_share_tw) ToggleButton mTwitterShareButton;
-    @InjectView(R.id.btn_share_li) ToggleButton mLinkedInShareButton;
-    @InjectView(R.id.btn_share_wb) ToggleButton mWeiboShareButton;
-    @InjectView(R.id.btn_share_wechat) ToggleButton mWechatShareButton;
-    @InjectView(R.id.btn_location) ToggleButton mLocationShareButton;
-    @InjectView(R.id.switch_share_public) ToggleButton mIsPublic;
+    @InjectView(R.id.btn_share_fb) ToggleButton facebookShareButton;
+    @InjectView(R.id.btn_share_tw) ToggleButton twitterShareButton;
+    @InjectView(R.id.btn_share_li) ToggleButton linkedInShareButton;
+    @InjectView(R.id.btn_share_wb) ToggleButton weiboShareButton;
+    @InjectView(R.id.btn_share_wechat) ToggleButton weChatShareButton;
+    @InjectView(R.id.btn_location) ToggleButton locationShareButton;
+    @InjectView(R.id.switch_share_public) ToggleButton isPublic;
     @InjectView(R.id.mention_widget) MentionActionButtonsView mentionActionButtonsView;
 
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject AlertDialogUtil alertDialogUtil;
     @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
-    @Inject DashboardNavigator navigator;
+    @Inject SocialShareHelper socialShareHelper;
 
     //<editor-fold desc="Constructors">
     public DiscussionPostActionButtonsView(Context context, AttributeSet attrs)
@@ -61,52 +61,32 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         if (!isInEditMode())
         {
             socialSharePreferenceHelperNew.reload();
-            initSocialButton(mFacebookShareButton, SocialNetworkEnum.FB);
-            initSocialButton(mTwitterShareButton, SocialNetworkEnum.TW);
-            initSocialButton(mLinkedInShareButton, SocialNetworkEnum.LN);
-            initSocialButton(mWechatShareButton, SocialNetworkEnum.WECHAT, createCheckedChangeListenerForWechat());
-            initSocialButton(mWeiboShareButton, SocialNetworkEnum.WB);
+            initSocialButton(facebookShareButton, SocialNetworkEnum.FB);
+            initSocialButton(twitterShareButton, SocialNetworkEnum.TW);
+            initSocialButton(linkedInShareButton, SocialNetworkEnum.LN);
+            initSocialButton(weChatShareButton, SocialNetworkEnum.WECHAT);
+            initSocialButton(weiboShareButton, SocialNetworkEnum.WB);
         }
     }
 
-    private void initSocialButton(CompoundButton compoundButton, SocialNetworkEnum socialNetworkEnum)
-    {
-        initSocialButton(compoundButton, socialNetworkEnum, createCheckedChangeListener());
-    }
-
-    private void initSocialButton(CompoundButton compoundButton, SocialNetworkEnum socialNetworkEnum, CompoundButton.OnCheckedChangeListener onCheckedChangeListener)
+    private void initSocialButton(
+            @NonNull CompoundButton compoundButton,
+            @NonNull SocialNetworkEnum socialNetworkEnum)
     {
         compoundButton.setChecked(initialSocialShareCheckedState(socialNetworkEnum));
         compoundButton.setTag(socialNetworkEnum);
-        compoundButton.setOnCheckedChangeListener(onCheckedChangeListener);
     }
 
-    private boolean initialSocialShareCheckedState(SocialNetworkEnum socialNetworkEnum)
+    private boolean initialSocialShareCheckedState(@NonNull SocialNetworkEnum socialNetworkEnum)
     {
         return socialSharePreferenceHelperNew.isShareEnabled(socialNetworkEnum, isSocialLinked(socialNetworkEnum));
     }
 
-    private boolean isSocialLinked(SocialNetworkEnum socialNetworkEnum)
+    private boolean isSocialLinked(@NonNull SocialNetworkEnum socialNetworkEnum)
     {
         UserProfileDTO userProfileDTO = userProfileCache.getCachedValue(currentUserId.toUserBaseKey());
-
-        if (userProfileDTO != null)
-        {
-            switch (socialNetworkEnum)
-            {
-                case FB:
-                    return userProfileDTO.fbLinked;
-                case TW:
-                    return userProfileDTO.twLinked;
-                case LN:
-                    return userProfileDTO.liLinked;
-                case WB:
-                    return userProfileDTO.wbLinked;
-                default:
-                    return false;
-            }
-        }
-        return false;
+        return userProfileDTO != null
+                && UserProfileDTOUtil.checkLinkedStatus(userProfileDTO, socialNetworkEnum);
     }
 
     @Override protected void onAttachedToWindow()
@@ -121,75 +101,64 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    private CompoundButton.OnCheckedChangeListener createCheckedChangeListener()
+    @SuppressWarnings("UnusedDeclaration")
+    @OnCheckedChanged({
+            R.id.btn_share_fb,
+            R.id.btn_share_li,
+            R.id.btn_share_tw,
+            R.id.btn_share_wb,
+    })
+    public void onSocialNetworkCheckedChanged(@NonNull CompoundButton compoundButton, boolean isChecked)
     {
-        return new CompoundButton.OnCheckedChangeListener()
+        SocialNetworkEnum socialNetworkEnum = (SocialNetworkEnum) compoundButton.getTag();
+        if (socialNetworkEnum != null)
         {
-            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
+            if (isChecked && !DiscussionPostActionButtonsView.this.isSocialLinked(socialNetworkEnum))
             {
-                SocialNetworkEnum socialNetworkEnum = (SocialNetworkEnum) compoundButton.getTag();
-                if (socialNetworkEnum != null)
-                {
-                    if(isChecked && !isSocialLinked(socialNetworkEnum))
-                    {
-                        askToLinkSocial(socialNetworkEnum);
-                        isChecked = false;
-                    }
-                    socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetworkEnum, isChecked);
-                    compoundButton.setChecked(isChecked);
-                }
+                DiscussionPostActionButtonsView.this.askToLinkSocial(compoundButton, socialNetworkEnum);
+                isChecked = false;
             }
-        };
+            socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetworkEnum, isChecked);
+            compoundButton.setChecked(isChecked);
+        }
     }
 
-    private CompoundButton.OnCheckedChangeListener createCheckedChangeListenerForWechat()
+    @SuppressWarnings("UnusedDeclaration")
+    @OnCheckedChanged(R.id.btn_share_wechat)
+    public void onWeChatCheckedChanged(@NonNull CompoundButton compoundButton, boolean isChecked)
     {
-        return new CompoundButton.OnCheckedChangeListener()
+        SocialNetworkEnum socialNetworkEnum = (SocialNetworkEnum) compoundButton.getTag();
+        if (socialNetworkEnum != null)
         {
-            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
-            {
-                SocialNetworkEnum socialNetworkEnum = (SocialNetworkEnum) compoundButton.getTag();
-                if (socialNetworkEnum != null)
-                {
-                    socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetworkEnum, isChecked);
-                    compoundButton.setChecked(isChecked);
-                }
-            }
-        };
+            socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetworkEnum, isChecked);
+            compoundButton.setChecked(isChecked);
+        }
     }
 
-    private void askToLinkSocial(SocialNetworkEnum socialNetworkEnum)
+    private void askToLinkSocial(
+            @NonNull CompoundButton compoundButton,
+            @NonNull SocialNetworkEnum socialNetworkEnum)
     {
-        alertDialogUtil.popWithOkCancelButton(
-                getContext(),
-                getContext().getString(R.string.link, socialNetworkEnum.getName()),
-                String.format(getContext().getString(R.string.link_description), socialNetworkEnum.getName()),
-                R.string.link_now,
-                R.string.later,
-                new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialog, int which)
-                    {
-                        openSettingScreen();
-                    }
-                },
-                null
-        );
+        socialShareHelper.offerToConnect(socialNetworkEnum)
+                .subscribe(
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO userProfileDTO)
+                            {
+                                compoundButton.setChecked(UserProfileDTOUtil.checkLinkedStatus(userProfileDTO, socialNetworkEnum));
+                            }
+                        },
+                        Actions.empty());
     }
 
-    private void openSettingScreen()
+    public void populate(@NonNull PublishableFormDTO publishableFormDTO)
     {
-        navigator.pushFragment(SettingsFragment.class);
-    }
+        publishableFormDTO.publishToFb = facebookShareButton.isChecked();
+        publishableFormDTO.publishToTw = twitterShareButton.isChecked();
+        publishableFormDTO.publishToLi = linkedInShareButton.isChecked();
+        publishableFormDTO.publishToWb = weiboShareButton.isChecked();
 
-    public void populate(PublishableFormDTO publishableFormDTO)
-    {
-        publishableFormDTO.publishToFb = mFacebookShareButton.isChecked();
-        publishableFormDTO.publishToTw = mTwitterShareButton.isChecked();
-        publishableFormDTO.publishToLi = mLinkedInShareButton.isChecked();
-        publishableFormDTO.publishToWb = mWeiboShareButton.isChecked();
-
-        publishableFormDTO.isPublic = mIsPublic.isChecked();
+        publishableFormDTO.isPublic = isPublic.isChecked();
 
         // TODO to be done
         publishableFormDTO.geo_alt = null;
@@ -197,7 +166,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         publishableFormDTO.geo_long = null;
     }
 
-    public boolean isShareEnabled(SocialNetworkEnum socialNetworkEnum)
+    public boolean isShareEnabled(@NonNull SocialNetworkEnum socialNetworkEnum)
     {
         return socialSharePreferenceHelperNew.isShareEnabled(socialNetworkEnum, isSocialLinked(socialNetworkEnum));
     }
@@ -209,11 +178,11 @@ public class DiscussionPostActionButtonsView extends LinearLayout
 
     public void hideSocialButtons()
     {
-        mFacebookShareButton.setVisibility(GONE);
-        mTwitterShareButton.setVisibility(GONE);
-        mLinkedInShareButton.setVisibility(GONE);
-        mWechatShareButton.setVisibility(GONE);
-        mWeiboShareButton.setVisibility(GONE);
+        facebookShareButton.setVisibility(GONE);
+        twitterShareButton.setVisibility(GONE);
+        linkedInShareButton.setVisibility(GONE);
+        weChatShareButton.setVisibility(GONE);
+        weiboShareButton.setVisibility(GONE);
     }
 
     public void setReturnFragmentName(@NonNull String returnFragmentName)

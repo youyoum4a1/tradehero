@@ -22,18 +22,15 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
     public final static int IS_PREMIUM_FOLLOWER = 2;
 
     @NonNull protected final SecurityAlertKnowledge securityAlertKnowledge;
-    @NonNull protected final PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @NonNull protected final TimingIntervalPreference firstShowOnBoardDialogPreference;
 
     //<editor-fold desc="Constructors">
     @Inject public UserProfileDTOUtil(
             @NonNull SecurityAlertKnowledge securityAlertKnowledge,
-            @NonNull PortfolioCompactDTOUtil portfolioCompactDTOUtil,
             @NonNull @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference)
     {
         super();
         this.securityAlertKnowledge = securityAlertKnowledge;
-        this.portfolioCompactDTOUtil = portfolioCompactDTOUtil;
         this.firstShowOnBoardDialogPreference = firstShowOnBoardDialogPreference;
     }
     //</editor-fold>
@@ -86,7 +83,7 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
         }
     }
 
-    public boolean checkLinkedStatus(@NonNull UserProfileCompactDTO userProfileCompactDTO, @NonNull SocialNetworkEnum socialNetwork)
+    public static boolean checkLinkedStatus(@NonNull UserProfileCompactDTO userProfileCompactDTO, @NonNull SocialNetworkEnum socialNetwork)
     {
         switch (socialNetwork)
         {

@@ -3,11 +3,9 @@ package com.tradehero.th.network.service;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
@@ -40,7 +38,6 @@ public class MessageServiceWrapper
     private static final long RETRY_DELAY_MILLIS = 1000;
 
     @NonNull private final MessageServiceRx messageServiceRx;
-    @NonNull private final DiscussionDTOFactory discussionDTOFactory;
     @NonNull private final CurrentUserId currentUserId;
 
     // We need Lazy here because MessageStatusCache also injects a MessageServiceWrapper
@@ -54,7 +51,6 @@ public class MessageServiceWrapper
     //<editor-fold desc="Constructors">
     @Inject MessageServiceWrapper(
             @NonNull MessageServiceRx messageServiceRx,
-            @NonNull DiscussionDTOFactory discussionDTOFactory,
             @NonNull CurrentUserId currentUserId,
             @NonNull Lazy<MessageHeaderListCacheRx> messageHeaderListCache,
             @NonNull Lazy<MessageHeaderCacheRx> messageHeaderCache,
@@ -64,7 +60,6 @@ public class MessageServiceWrapper
             @NonNull Lazy<HomeContentCacheRx> homeContentCache)
     {
         this.messageServiceRx = messageServiceRx;
-        this.discussionDTOFactory = discussionDTOFactory;
         this.currentUserId = currentUserId;
         this.messageHeaderListCache = messageHeaderListCache;
         this.messageHeaderCache = messageHeaderCache;
@@ -76,108 +71,82 @@ public class MessageServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Get Message Headers">
-    protected DTOProcessorReadablePaginatedMessageReceived<MessageHeaderDTO, ReadablePaginatedMessageHeaderDTO> createReadablePaginatedMessageHeaderReceivedProcessor()
+    @NonNull public Observable<ReadablePaginatedMessageHeaderDTO> getMessageHeadersRx(
+            @NonNull MessageListKey messageListKey)
     {
-        return new DTOProcessorReadablePaginatedMessageReceived<>(userProfileCache.get(), currentUserId.toUserBaseKey());
-    }
-
-    public Observable<ReadablePaginatedMessageHeaderDTO> getMessageHeadersRx(MessageListKey messageListKey)
-    {
-        if (messageListKey instanceof TypedMessageListKey)
-        {
-            return getMessageHeadersRx((TypedMessageListKey) messageListKey);
-        }
-        return messageServiceRx.getMessageHeaders(
-                messageListKey.page,
-                messageListKey.perPage)
-                .map(createReadablePaginatedMessageHeaderReceivedProcessor());
-    }
-
-    public Observable<ReadablePaginatedMessageHeaderDTO> getMessageHeadersRx(TypedMessageListKey messageListKey)
-    {
+        Observable<ReadablePaginatedMessageHeaderDTO> returned;
         if (messageListKey instanceof RecipientTypedMessageListKey)
         {
-            return getMessageHeadersRx((RecipientTypedMessageListKey) messageListKey);
+            returned = messageServiceRx.getMessageHeaders(
+                    ((RecipientTypedMessageListKey) messageListKey).discussionType.description,
+                    ((RecipientTypedMessageListKey) messageListKey).recipientId.key,
+                    messageListKey.page,
+                    messageListKey.perPage);
         }
-        return messageServiceRx.getMessageHeaders(
-                messageListKey.discussionType.description,
-                null,
-                messageListKey.page,
-                messageListKey.perPage)
-                .map(createReadablePaginatedMessageHeaderReceivedProcessor());
-    }
-
-    public Observable<ReadablePaginatedMessageHeaderDTO> getMessageHeadersRx(
-            RecipientTypedMessageListKey messageListKey)
-    {
-        return messageServiceRx.getMessageHeaders(
-                messageListKey.discussionType.description,
-                messageListKey.recipientId.key,
-                messageListKey.page,
-                messageListKey.perPage)
-                .map(createReadablePaginatedMessageHeaderReceivedProcessor());
+        else if (messageListKey instanceof TypedMessageListKey)
+        {
+            returned = messageServiceRx.getMessageHeaders(
+                    ((TypedMessageListKey) messageListKey).discussionType.description,
+                    null,
+                    messageListKey.page,
+                    messageListKey.perPage);
+        }
+        else
+        {
+            returned = messageServiceRx.getMessageHeaders(
+                    messageListKey.page,
+                    messageListKey.perPage);
+        }
+        return returned
+                .map(new DTOProcessorReadablePaginatedMessageReceived<>(
+                        userProfileCache.get(),
+                        currentUserId.toUserBaseKey()));
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Message Header">
-    public Observable<MessageHeaderDTO> getMessageHeaderRx(MessageHeaderId messageHeaderId)
+    @NonNull public Observable<MessageHeaderDTO> getMessageHeaderRx(@NonNull MessageHeaderId messageHeaderId)
     {
-        if (messageHeaderId instanceof MessageHeaderUserId && ((MessageHeaderUserId) messageHeaderId).userBaseKey != null)
+        Integer referencedUser = null;
+        if (messageHeaderId instanceof MessageHeaderUserId
+                && ((MessageHeaderUserId) messageHeaderId).userBaseKey != null)
         {
-            return messageServiceRx.getMessageHeader(
-                    messageHeaderId.commentId,
-                    ((MessageHeaderUserId) messageHeaderId).userBaseKey.key);
+            referencedUser =((MessageHeaderUserId) messageHeaderId).userBaseKey.key;
         }
-        return messageServiceRx.getMessageHeader(messageHeaderId.commentId, null);
+        return messageServiceRx.getMessageHeader(
+                messageHeaderId.commentId,
+                referencedUser);
     }
 
-    public Observable<MessageHeaderDTO> getMessageThreadRx(UserBaseKey correspondentId)
+    @NonNull public Observable<MessageHeaderDTO> getMessageThreadRx(@NonNull UserBaseKey correspondentId)
     {
         return messageServiceRx.getMessageThread(correspondentId.key);
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Messaging Relationship Status">
-    public Observable<UserMessagingRelationshipDTO> getMessagingRelationshipStatusRx(UserBaseKey recipient)
+    @NonNull public Observable<UserMessagingRelationshipDTO> getMessagingRelationshipStatusRx(
+            @NonNull UserBaseKey recipient)
     {
         return messageServiceRx.getMessagingRelationgshipStatus(recipient.key);
     }
     //</editor-fold>
 
     //<editor-fold desc="Create Message">
-    protected DTOProcessorDiscussionCreate createDiscussionCreateProcessor(DiscussionKey stubKey)
-    {
-        return new DTOProcessorDiscussionCreate(
-                discussionDTOFactory,
-                currentUserId,
-                discussionCache.get(),
-                userMessagingRelationshipCache.get(),
-                stubKey);
-    }
-
-    public Observable<DiscussionDTO> createMessageRx(MessageCreateFormDTO form)
+    @NonNull public Observable<DiscussionDTO> createMessageRx(@NonNull MessageCreateFormDTO form)
     {
         return messageServiceRx.createMessage(form)
                 .retryWhen(new DelayRetriesOrFailFunc1(RETRY_COUNT, RETRY_DELAY_MILLIS))
-                .map(createDiscussionCreateProcessor(null));
+                .map(new DTOProcessorDiscussionCreate(
+                        currentUserId,
+                        discussionCache.get(),
+                        userMessagingRelationshipCache.get(),
+                        null));
     }
     //</editor-fold>
 
     //<editor-fold desc="Delete Message">
-    protected DTOProcessorMessageDeleted createMessageHeaderDeletedProcessor(
-            @NonNull MessageHeaderId messageHeaderId,
-            @NonNull UserBaseKey readerId)
-    {
-        return new DTOProcessorMessageDeleted(
-                messageHeaderCache.get(),
-                userProfileCache.get(),
-                homeContentCache.get(),
-                messageHeaderListCache.get(),
-                messageHeaderId,
-                readerId);
-    }
-
-    public Observable<BaseResponseDTO> deleteMessageRx(
+    @NonNull public Observable<BaseResponseDTO> deleteMessageRx(
             @NonNull MessageHeaderId messageHeaderId,
             @NonNull UserBaseKey senderUserId,
             @NonNull UserBaseKey recipientUserId,
@@ -187,23 +156,17 @@ public class MessageServiceWrapper
                 messageHeaderId.commentId,
                 senderUserId.key,
                 recipientUserId.key)
-                .map(createMessageHeaderDeletedProcessor(messageHeaderId, readerId));
+                .map(new DTOProcessorMessageDeleted(
+                        messageHeaderCache.get(),
+                        userProfileCache.get(),
+                        homeContentCache.get(),
+                        messageHeaderListCache.get(),
+                        messageHeaderId,
+                        readerId));
     }
     //</editor-fold>
 
     //<editor-fold desc="Read Message">
-    protected DTOProcessorMessageRead createMessageHeaderReadProcessor(
-            @NonNull MessageHeaderId messageHeaderId,
-            @NonNull UserBaseKey readerId)
-    {
-        return new DTOProcessorMessageRead(
-                messageHeaderCache.get(),
-                userProfileCache.get(),
-                homeContentCache.get(),
-                messageHeaderId,
-                readerId);
-    }
-
     @NonNull public Observable<BaseResponseDTO> readMessageRx(
             @NonNull MessageHeaderId commentId,
             @NonNull UserBaseKey senderUserId,
@@ -215,26 +178,25 @@ public class MessageServiceWrapper
                 commentId.commentId,
                 senderUserId.key,
                 recipientUserId.key)
-                .map(createMessageHeaderReadProcessor(messageHeaderId, readerId));
+                .map(new DTOProcessorMessageRead(
+                        messageHeaderCache.get(),
+                        userProfileCache.get(),
+                        homeContentCache.get(),
+                        messageHeaderId,
+                        readerId));
     }
     //</editor-fold>
 
     //<editor-fold desc="Read All Message">
-    @NonNull protected DTOProcessorAllMessagesRead createMessageHeaderReadAllProcessor(
-            @NonNull UserBaseKey readerId)
-    {
-        return new DTOProcessorAllMessagesRead(
-                messageHeaderCache.get(),
-                userProfileCache.get(),
-                homeContentCache.get(),
-                readerId);
-    }
-
     @NonNull public Observable<BaseResponseDTO> readAllMessageRx(
             @NonNull UserBaseKey readerId)
     {
         return messageServiceRx.readAllMessage()
-                .map(createMessageHeaderReadAllProcessor(readerId));
+                .map(new DTOProcessorAllMessagesRead(
+                        messageHeaderCache.get(),
+                        userProfileCache.get(),
+                        homeContentCache.get(),
+                        readerId));
     }
     //</editor-fold>
 }

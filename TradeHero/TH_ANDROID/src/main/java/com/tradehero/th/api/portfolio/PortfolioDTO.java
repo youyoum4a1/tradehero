@@ -2,9 +2,7 @@ package com.tradehero.th.api.portfolio;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.quote.UpdatePricesQuoteDTO;
 import java.util.Date;
-import java.util.List;
 
 public class PortfolioDTO extends PortfolioCompactDTO implements DTO
 {
@@ -28,8 +26,6 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
     public Double roiY2DAnnualized;
     public double plY2D;
 
-    public List<UpdatePricesQuoteDTO> yahooSymbols;
-
     public int countTrades;
     public int countExchanges;
 
@@ -51,7 +47,6 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
                 ", roiY2D=" + roiY2D +
                 ", roiY2DAnnualized=" + roiY2DAnnualized +
                 ", plY2D=" + plY2D +
-                ", yahooSymbols=" + yahooSymbols +
                 ", countTrades=" + countTrades +
                 ']';
     }

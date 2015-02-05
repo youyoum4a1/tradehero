@@ -43,22 +43,22 @@ public class WarrantProviderSecurityListType extends ProviderSecurityListType
                 ^ (warrantType == null ? 0 : warrantType.hashCode());
     }
 
-    @Override public boolean equals(@NonNull SecurityListType other)
+    @Override public boolean equalFields(@NonNull SecurityListType other)
     {
-        return super.equals(other)
+        return super.equalFields(other)
                 && other instanceof WarrantProviderSecurityListType;
     }
 
-    @Override protected boolean equals(@NonNull ProviderSecurityListType other)
+    @Override protected boolean equalFields(@NonNull ProviderSecurityListType other)
     {
-        return super.equals(other)
+        return super.equalFields(other)
                 && other instanceof WarrantProviderSecurityListType
                 && equals((WarrantProviderSecurityListType) other);
     }
 
     protected boolean equals(@NonNull WarrantProviderSecurityListType other)
     {
-        return super.equals(other)
+        return super.equalFields(other)
                 && (this.warrantType == null ? other.warrantType == null : this.warrantType.equals(other.warrantType));
     }
 }

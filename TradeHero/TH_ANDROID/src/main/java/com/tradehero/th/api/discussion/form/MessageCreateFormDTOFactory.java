@@ -1,16 +1,11 @@
 package com.tradehero.th.api.discussion.form;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.discussion.MessageType;
-import javax.inject.Inject;
 
 public class MessageCreateFormDTOFactory
 {
-    @Inject public MessageCreateFormDTOFactory()
-    {
-        super();
-    }
-
-    public MessageCreateFormDTO createEmpty(MessageType messageType)
+    @NonNull public static MessageCreateFormDTO createEmpty(@NonNull MessageType messageType)
     {
         switch (messageType)
         {

@@ -4,22 +4,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
-import dagger.Lazy;
-import javax.inject.Inject;
 
 public class PortfolioDTOUtil
 {
-    @NonNull private final Lazy<PortfolioCompactDTOUtil> portfolioCompactDTOUtil;
-
-    //<editor-fold desc="Constructors">
-    @Inject public PortfolioDTOUtil(@NonNull Lazy<PortfolioCompactDTOUtil> portfolioCompactDTOUtil)
-    {
-        super();
-        this.portfolioCompactDTOUtil = portfolioCompactDTOUtil;
-    }
-    //</editor-fold>
-
-    @Nullable public String getLongTitle(@NonNull Context context, @NonNull PortfolioDTO portfolioDTO)
+    @Nullable public static String getLongTitle(@NonNull Context context, @NonNull PortfolioDTO portfolioDTO)
     {
         if (portfolioDTO.isWatchlist)
         {
@@ -36,13 +24,13 @@ public class PortfolioDTOUtil
         return null;
     }
 
-    public String getLongSubTitle(Context context, PortfolioDTO portfolioDTO)
+    @Nullable public static String getLongSubTitle(@NonNull Context context, @Nullable PortfolioDTO portfolioDTO)
     {
         return getLongSubTitle(context, portfolioDTO, null);
     }
 
-    public String getLongSubTitle(Context context, PortfolioDTO portfolioDTO, String userName)
+    @Nullable public static String getLongSubTitle(@NonNull Context context, @Nullable PortfolioDTO portfolioDTO, @Nullable String userName)
     {
-        return portfolioCompactDTOUtil.get().getPortfolioSubtitle(context, portfolioDTO, userName);
+        return PortfolioCompactDTOUtil.getPortfolioSubtitle(context, portfolioDTO, userName);
     }
 }

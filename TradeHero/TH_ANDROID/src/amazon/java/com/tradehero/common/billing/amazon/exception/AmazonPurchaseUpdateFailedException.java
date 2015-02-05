@@ -1,9 +1,15 @@
 package com.tradehero.common.billing.amazon.exception;
 
-public class AmazonPurchaseUpdateFailedException extends AmazonException
+import android.support.annotation.NonNull;
+import com.amazon.device.iap.model.PurchaseUpdatesResponse;
+
+public class AmazonPurchaseUpdateFailedException extends AmazonPurchaseUpdatesException
 {
-    public AmazonPurchaseUpdateFailedException(String message)
+    //<editor-fold desc="Constructors">
+    public AmazonPurchaseUpdateFailedException(String message,
+            @NonNull PurchaseUpdatesResponse purchaseUpdatesResponse)
     {
-        super(message);
+        super(message, purchaseUpdatesResponse);
     }
+    //</editor-fold>
 }

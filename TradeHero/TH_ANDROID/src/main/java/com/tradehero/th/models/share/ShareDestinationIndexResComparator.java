@@ -3,7 +3,6 @@ package com.tradehero.th.models.share;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -12,11 +11,10 @@ import javax.inject.Inject;
 
 public class ShareDestinationIndexResComparator implements Comparator<ShareDestination>
 {
-    public static final int ORDERED_SHARE_DESTINATION_IDS = R.array.ordered_share_destinations;
-
     @NonNull private final Resources resources;
     @NonNull private final List<Integer> destinationIds;
 
+    //<editor-fold desc="Constructors">
     @Inject public ShareDestinationIndexResComparator(
             @NonNull Context context,
             @NonNull @ShareDestinationId Set<Integer> destinationIds)
@@ -24,6 +22,7 @@ public class ShareDestinationIndexResComparator implements Comparator<ShareDesti
         this.resources = context.getResources();
         this.destinationIds = new ArrayList<>(destinationIds);
     }
+    //</editor-fold>
 
     @Override public int compare(ShareDestination left, ShareDestination right)
     {

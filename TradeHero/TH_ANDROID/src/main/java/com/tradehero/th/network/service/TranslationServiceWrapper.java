@@ -1,19 +1,23 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.api.translation.TranslationResult;
+import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Func1;
 
 @Singleton public class TranslationServiceWrapper
 {
     @NonNull private final TranslationTokenCacheRx translationTokenCache;
     @NonNull private final TranslationServiceBingWrapper translationServiceBingWrapper;
 
+    //<editor-fold desc="Constructors">
     @Inject public TranslationServiceWrapper(
             @NonNull TranslationTokenCacheRx translationTokenCache,
             @NonNull TranslationServiceBingWrapper translationServiceBingWrapper)
@@ -21,19 +25,24 @@ import rx.Observable;
         this.translationTokenCache = translationTokenCache;
         this.translationServiceBingWrapper = translationServiceBingWrapper;
     }
+    //</editor-fold>
 
-    public Observable<TranslationResult> translateRx(String from, String to, String text)
+    @NonNull public Observable<TranslationResult> translateRx(String from, String to, String text)
     {
         return translationTokenCache.get(new TranslationTokenKey())
-                .map(pair -> pair.second)
-                .flatMap(token -> {
-                    if (token instanceof BingTranslationToken)
+                .map(new PairGetSecond<>())
+                .flatMap(new Func1<TranslationToken, Observable<? extends TranslationResult>>()
+                {
+                    @Override public Observable<? extends TranslationResult> call(TranslationToken token)
                     {
-                        return translationServiceBingWrapper.translateRx((BingTranslationToken) token,
-                                from, to, text);
+                        if (token instanceof BingTranslationToken)
+                        {
+                            return translationServiceBingWrapper.translateRx(
+                                    (BingTranslationToken) token,
+                                    from, to, text);
+                        }
+                        throw new IllegalArgumentException("Unhandled TranslationToken " + token);
                     }
-                    throw new IllegalArgumentException("Unhandled TranslationToken " + token);
                 });
     }
-
 }

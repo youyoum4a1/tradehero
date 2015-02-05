@@ -1,9 +1,7 @@
 package com.tradehero.th.fragments.security;
 
 import android.support.annotation.NonNull;
-import android.view.View;
 import com.tradehero.common.persistence.DTOCacheRx;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.SecurityListType;
@@ -11,13 +9,12 @@ import com.tradehero.th.fragments.BasePagedListRxFragment;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import javax.inject.Inject;
 
-abstract public class SecurityListRxFragment<ViewType extends View & DTOView<SecurityCompactDTO>>
+abstract public class SecurityListRxFragment
         extends BasePagedListRxFragment<
         SecurityListType,
         SecurityCompactDTO,
         SecurityCompactDTOList,
-        SecurityCompactDTOList,
-        ViewType>
+        SecurityCompactDTOList>
 {
     @Inject protected SecurityCompactListCacheRx securityCompactListCache;
 

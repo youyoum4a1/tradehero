@@ -15,15 +15,12 @@ class CommunityPageDTOFactory
 {
     private static final boolean ENABLE_COUNTRY_LEADERBOARD_DEF = false;
     @NonNull private final LeaderboardDefListCacheRx leaderboardDefListCache;
-    @NonNull private final MainLeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
 
     //<editor-fold desc="Constructors">
     @Inject CommunityPageDTOFactory(
-            @NonNull LeaderboardDefListCacheRx leaderboardDefListCache,
-            @NonNull MainLeaderboardDefListKeyFactory leaderboardDefListKeyFactory)
+            @NonNull LeaderboardDefListCacheRx leaderboardDefListCache)
     {
         this.leaderboardDefListCache = leaderboardDefListCache;
-        this.leaderboardDefListKeyFactory = leaderboardDefListKeyFactory;
     }
     //</editor-fold>
 
@@ -34,19 +31,16 @@ class CommunityPageDTOFactory
         LeaderboardDefDTOList cached;
         for (LeaderboardCommunityType type : LeaderboardCommunityType.values())
         {
-            key = leaderboardDefListKeyFactory.createFrom(type);
+            key = MainLeaderboardDefListKeyFactory.createFrom(type);
             Timber.d("Type %s, key %s", type, key);
-            if (key != null)
+            cached = leaderboardDefListCache.getCachedValue(key);
+            if (cached != null)
             {
-                cached = leaderboardDefListCache.getCachedValue(key);
-                if (cached != null)
-                {
-                    collected.addAll(cached);
-                }
-                if (ENABLE_COUNTRY_LEADERBOARD_DEF && countryCode != null && key.equals(new MostSkilledLeaderboardDefListKey()))
-                {
-                    collected.addAll(collectForCountryCodeFromCaches(countryCode));
-                }
+                collected.addAll(cached);
+            }
+            if (ENABLE_COUNTRY_LEADERBOARD_DEF && countryCode != null && key.equals(new MostSkilledLeaderboardDefListKey(1)))
+            {
+                collected.addAll(collectForCountryCodeFromCaches(countryCode));
             }
         }
         return collected;
@@ -54,7 +48,7 @@ class CommunityPageDTOFactory
 
     @NonNull public LeaderboardDefDTOList collectForCountryCodeFromCaches(@NonNull String countryCode)
     {
-        LeaderboardDefDTOList allKeys = leaderboardDefListCache.getCachedValue(new LeaderboardDefListKey());
+        LeaderboardDefDTOList allKeys = leaderboardDefListCache.getCachedValue(new LeaderboardDefListKey(1));
         if (allKeys != null)
         {
             return allKeys.keepForCountryCode(countryCode);

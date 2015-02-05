@@ -25,27 +25,27 @@ public class LeaderboardDefListKeyTest
 
     @Test public void testEqualsItself()
     {
-        assertTrue(new MostSkilledLeaderboardDefListKey().equals(new MostSkilledLeaderboardDefListKey()));
-        assertEquals(new MostSkilledLeaderboardDefListKey(), new MostSkilledLeaderboardDefListKey());
+        assertTrue(new MostSkilledLeaderboardDefListKey(1).equals(new MostSkilledLeaderboardDefListKey(1)));
+        assertEquals(new MostSkilledLeaderboardDefListKey(1), new MostSkilledLeaderboardDefListKey(1));
 
-        assertTrue(new SectorLeaderboardDefListKey().equals(new SectorLeaderboardDefListKey()));
-        assertEquals(new SectorLeaderboardDefListKey(), new SectorLeaderboardDefListKey());
+        assertTrue(new SectorLeaderboardDefListKey(1).equals(new SectorLeaderboardDefListKey(1)));
+        assertEquals(new SectorLeaderboardDefListKey(1), new SectorLeaderboardDefListKey(1));
 
-        assertTrue(new ExchangeLeaderboardDefListKey().equals(new ExchangeLeaderboardDefListKey()));
-        assertEquals(new ExchangeLeaderboardDefListKey(), new ExchangeLeaderboardDefListKey());
+        assertTrue(new ExchangeLeaderboardDefListKey(1).equals(new ExchangeLeaderboardDefListKey(1)));
+        assertEquals(new ExchangeLeaderboardDefListKey(1), new ExchangeLeaderboardDefListKey(1));
 
-        assertTrue(new TimePeriodLeaderboardDefListKey().equals(new TimePeriodLeaderboardDefListKey()));
-        assertEquals(new TimePeriodLeaderboardDefListKey(), new TimePeriodLeaderboardDefListKey());
+        assertTrue(new TimePeriodLeaderboardDefListKey(1).equals(new TimePeriodLeaderboardDefListKey(1)));
+        assertEquals(new TimePeriodLeaderboardDefListKey(1), new TimePeriodLeaderboardDefListKey(1));
     }
 
     @Test public void testNotEqualsOthers()
     {
-        assertFalse(new MostSkilledLeaderboardDefListKey().equals(new SectorLeaderboardDefListKey()));
+        assertFalse(new MostSkilledLeaderboardDefListKey(1).equals(new SectorLeaderboardDefListKey(1)));
 
-        assertFalse(new SectorLeaderboardDefListKey().equals(new ExchangeLeaderboardDefListKey()));
+        assertFalse(new SectorLeaderboardDefListKey(1).equals(new ExchangeLeaderboardDefListKey(1)));
 
-        assertFalse(new ExchangeLeaderboardDefListKey().equals(new TimePeriodLeaderboardDefListKey()));
+        assertFalse(new ExchangeLeaderboardDefListKey(1).equals(new TimePeriodLeaderboardDefListKey(1)));
 
-        assertFalse(new TimePeriodLeaderboardDefListKey().equals(new ExchangeLeaderboardDefListKey()));
+        assertFalse(new TimePeriodLeaderboardDefListKey(1).equals(new ExchangeLeaderboardDefListKey(1)));
     }
 }

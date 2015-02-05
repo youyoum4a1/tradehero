@@ -4,29 +4,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIdList;
 import java.util.ArrayList;
 
 public class WatchlistPositionDTOList extends PositionDTOList<WatchlistPositionDTO>
 {
-    //<editor-fold desc="Constructors">
-    public WatchlistPositionDTOList()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @NonNull public SecurityIdList getSecurityIds()
-    {
-        SecurityIdList created = new SecurityIdList();
-        for (WatchlistPositionDTO watchlistPositionDTO : this)
-        {
-            //noinspection ConstantConditions
-            created.add(watchlistPositionDTO.securityDTO.getSecurityId());
-        }
-        return created;
-    }
-
     @Nullable public Double getInvestedUsd()
     {
         double total = 0;

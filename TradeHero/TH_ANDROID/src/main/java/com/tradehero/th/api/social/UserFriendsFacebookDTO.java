@@ -11,7 +11,8 @@ public class UserFriendsFacebookDTO extends UserFriendsDTO
     public String fbPicUrl;
 
     //<editor-fold desc="Constructors">
-    public UserFriendsFacebookDTO()
+    @SuppressWarnings("UnusedDeclaration") // Needed for deserialisation
+    UserFriendsFacebookDTO()
     {
         super();
     }
@@ -19,6 +20,13 @@ public class UserFriendsFacebookDTO extends UserFriendsDTO
     public UserFriendsFacebookDTO(@NonNull String fbId)
     {
         this.fbId = fbId;
+    }
+
+    public UserFriendsFacebookDTO(@NonNull String fbId, String fbPicUrl, String name)
+    {
+        this.name = name;
+        this.fbId = fbId;
+        this.fbPicUrl = fbPicUrl;
     }
     //</editor-fold>
 
@@ -42,9 +50,9 @@ public class UserFriendsFacebookDTO extends UserFriendsDTO
         return super.hashCode() ^ fbId.hashCode();
     }
 
-    @Override protected boolean equals(@NonNull UserFriendsDTO other)
+    @Override protected boolean equalFields(@NonNull UserFriendsDTO other)
     {
-        return super.equals(other) &&
+        return super.equalFields(other) &&
                 other instanceof UserFriendsFacebookDTO &&
                 fbId.equals(((UserFriendsFacebookDTO) other).fbId);
     }

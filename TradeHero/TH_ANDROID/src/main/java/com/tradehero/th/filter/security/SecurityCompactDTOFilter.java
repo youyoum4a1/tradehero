@@ -42,7 +42,7 @@ abstract public class SecurityCompactDTOFilter<SecurityCompactDTOType extends Se
 
     abstract protected void publishResults(CharSequence charSequence, SecurityFilterResults<SecurityCompactDTOType> filterResults);
 
-    protected class SecurityFilterResults<SecurityCompactDTOType extends SecurityCompactDTO> extends FilterResults
+    protected static class SecurityFilterResults<SecurityCompactDTOType extends SecurityCompactDTO> extends FilterResults
     {
         public List<SecurityCompactDTOType> castedValues;
     }

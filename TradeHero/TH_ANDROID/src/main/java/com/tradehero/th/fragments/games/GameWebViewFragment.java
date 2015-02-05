@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -31,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 @Routable({
@@ -165,10 +166,10 @@ public class GameWebViewFragment extends BaseWebViewFragment
     protected void fetchMiniGameDef()
     {
         unsubscribe(miniGameDefSubscription);
-        miniGameDefSubscription = AndroidObservable.bindFragment(
+        miniGameDefSubscription = AppObservable.bindFragment(
                 this,
                 miniGameDefCache.get(miniGameDefKey))
-                .map(pair -> pair.second)
+                .map(new PairGetSecond<>())
                 .subscribe(
                         this::linkWith,
                         this::handleFailedDef);
@@ -218,7 +219,7 @@ public class GameWebViewFragment extends BaseWebViewFragment
             else
             {
                 unsubscribe(scoreSubmitSubscription);
-                scoreSubmitSubscription = AndroidObservable.bindFragment(
+                scoreSubmitSubscription = AppObservable.bindFragment(
                         this,
                         gamesServiceWrapper.recordScore(new MiniGameDefKey(gameId), new GameScore(score, level)))
                         .subscribe(

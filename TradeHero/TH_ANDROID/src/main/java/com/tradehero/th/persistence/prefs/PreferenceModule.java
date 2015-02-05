@@ -11,7 +11,6 @@ import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.translation.UserTranslationSettingDTOFactory;
-import com.tradehero.th.models.share.preference.SocialSharePreferenceDTOFactory;
 import com.tradehero.th.models.share.preference.SocialShareSetPreference;
 import com.tradehero.th.persistence.market.ExchangeMarketPreference;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
@@ -68,25 +67,25 @@ public class PreferenceModule
     }
 
     @Provides @Singleton SocialShareSetPreference provideSocialSharePref(
-            @ForUser @NonNull SharedPreferences sharedPreferences,
-            @NonNull SocialSharePreferenceDTOFactory sharePreferenceDTOFactory)
+            @ForUser @NonNull SharedPreferences sharedPreferences)
     {
         return new SocialShareSetPreference(
-                sharePreferenceDTOFactory,
                 sharedPreferences,
                 PREF_SAVED_SOCIAL_SHARE_KEY,
-                new HashSet<String>());
+                new HashSet<>());
     }
 
     @Provides @Singleton UserTranslationSettingPreference provideUserTranslationSettingPref(
+            @NonNull Context context,
             @ForUser @NonNull SharedPreferences sharedPreferences,
             @NonNull UserTranslationSettingDTOFactory userTranslationSettingDTOFactory)
     {
         return new UserTranslationSettingPreference(
+                context.getResources(),
                 userTranslationSettingDTOFactory,
                 sharedPreferences,
                 PREF_SAVED_TRANSLATION_SETTING_KEY,
-                new HashSet<String>());
+                new HashSet<>());
     }
 
     @Provides @Singleton @ResetHelpScreens BooleanPreference provideResetHelpScreen(@ForUser SharedPreferences sharedPreferences)

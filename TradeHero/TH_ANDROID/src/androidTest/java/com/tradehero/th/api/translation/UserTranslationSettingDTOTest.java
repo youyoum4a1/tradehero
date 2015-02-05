@@ -4,18 +4,17 @@ import android.support.annotation.NonNull;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.i18n.LanguageDTOFactory;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
+import com.tradehero.th.base.TestTHApp;
 import java.util.HashSet;
 import java.util.Set;
-import javax.inject.Inject;
-import static org.fest.assertions.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
 public class UserTranslationSettingDTOTest
 {
-    @Inject LanguageDTOFactory languageDTOFactory;
-
     private class FakeSettingDTO extends UserTranslationSettingDTO
     {
         public FakeSettingDTO(@NonNull String languageCode)
@@ -39,7 +38,7 @@ public class UserTranslationSettingDTOTest
     @Test(expected = IllegalArgumentException.class)
     public void basicClassCannotCloneForLanguage()
     {
-        new UserTranslationSettingDTO("em").cloneForLanguage(languageDTOFactory.createFromCode("a"));
+        new UserTranslationSettingDTO("em").cloneForLanguage(LanguageDTOFactory.createFromCode(TestTHApp.context().getResources(), "a"));
     }
 
     @Test(expected = IllegalArgumentException.class)

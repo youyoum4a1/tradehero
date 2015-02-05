@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,13 +15,12 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -31,11 +29,9 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class LocationListFragment extends DashboardFragment
@@ -48,8 +44,6 @@ public class LocationListFragment extends DashboardFragment
     @Inject Context context;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
-    @Inject ListedLocationDTOFactory listedLocationDTOFactory;
     @Inject UserProfileCacheRx userProfileCache;
 
     @InjectView(android.R.id.list) ListView listView;
@@ -60,7 +54,7 @@ public class LocationListFragment extends DashboardFragment
         mListAdapter = new LocationAdapter(
                 context,
                 R.layout.settings_location_list_item);
-        mListAdapter.addAll(listedLocationDTOFactory.createListToShow());
+        mListAdapter.addAll(ListedLocationDTOFactory.createListToShow());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -123,34 +117,16 @@ public class LocationListFragment extends DashboardFragment
 
     protected void fetchUserProfile()
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createUserProfileObserver());
+        AppObservable.bindFragment(
+                this,
+                userProfileCache.get(currentUserId.toUserBaseKey())
+                        .map(new PairGetSecond<>()))
+                .subscribe(
+                        this::linkWith,
+                        e -> THToast.show(R.string.error_fetch_your_user_profile));
     }
 
-    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileObserver()
-    {
-        return new LocationListUserProfileObserver();
-    }
-
-    protected class LocationListUserProfileObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-        {
-            linkWith(pair.second, true);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_your_user_profile);
-        }
-    }
-
-    protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    protected void linkWith(UserProfileDTO userProfileDTO)
     {
         this.currentUserProfile = userProfileDTO;
         if (userProfileDTO != null && userProfileDTO.countryCode != null)
@@ -160,8 +136,7 @@ public class LocationListFragment extends DashboardFragment
                 Country currentCountry = Country.valueOf(userProfileDTO.countryCode);
                 mListAdapter.setCurrentCountry(currentCountry);
                 listView.smoothScrollToPosition(mListAdapter.getPosition(new ListedLocationDTO(currentCountry)));
-            }
-            catch (IllegalArgumentException e)
+            } catch (IllegalArgumentException e)
             {
                 Timber.e(e, "Does not have country code for ", userProfileDTO.countryCode);
                 mListAdapter.setCurrentCountry(null);
@@ -175,7 +150,11 @@ public class LocationListFragment extends DashboardFragment
     }
 
     @OnItemClick(android.R.id.list)
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
+    public void onItemClick(
+            @NonNull AdapterView<?> adapterView,
+            @SuppressWarnings("UnusedParameters") View view,
+            int position,
+            @SuppressWarnings("UnusedParameters") long l)
     {
         getProgressDialog().show();
         updateCountryCode(((ListedLocationDTO) adapterView.getItemAtPosition(position)).country.name());
@@ -194,26 +173,17 @@ public class LocationListFragment extends DashboardFragment
 
         UpdateCountryCodeFormDTO updateCountryCodeFormDTO = new UpdateCountryCodeFormDTO(countryCode);
         unsubscribe(updateCountryCodeSubscription);
-        updateCountryCodeSubscription = AndroidObservable.bindFragment(
+        updateCountryCodeSubscription = AppObservable.bindFragment(
                 this,
                 userServiceWrapperLazy.get().updateCountryCodeRx(
-                currentUserId.toUserBaseKey(), updateCountryCodeFormDTO))
+                        currentUserId.toUserBaseKey(), updateCountryCodeFormDTO))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new UpdateCountryCodeObserver());
-    }
-
-    private class UpdateCountryCodeObserver extends EmptyObserver<UpdateCountryCodeDTO>
-    {
-        @Override public void onNext(UpdateCountryCodeDTO args)
-        {
-            backToSettings();
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(new THException(e));
-            getProgressDialog().hide();
-        }
+                .subscribe(
+                        args -> backToSettings(),
+                        e -> {
+                            THToast.show(new THException(e));
+                            getProgressDialog().hide();
+                        });
     }
 
     private void backToSettings()
@@ -228,7 +198,7 @@ public class LocationListFragment extends DashboardFragment
         {
             return progressDialog;
         }
-        progressDialog = progressDialogUtilLazy.get().show(getActivity(), R.string.loading_loading,
+        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading,
                 R.string.alert_dialog_please_wait);
         progressDialog.hide();
         return progressDialog;

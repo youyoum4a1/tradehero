@@ -1,7 +1,6 @@
 package com.tradehero.th.persistence.security;
 
 import android.support.annotation.NonNull;
-import android.util.Pair;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
@@ -12,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.functions.Func1;
 
 public class SecurityMultiFetchAssistant
 {
@@ -32,50 +32,40 @@ public class SecurityMultiFetchAssistant
     }
     //</editor-fold>
 
-    public Observable<Map<SecurityIntegerId, SecurityCompactDTO>> get(List<SecurityIntegerId> keysToFetch)
+    @NonNull public Observable<Map<SecurityIntegerId, SecurityCompactDTO>> get(
+            @NonNull List<SecurityIntegerId> keysToFetch)
     {
+        Map<SecurityIntegerId, SecurityCompactDTO> returned = new HashMap<>();
         SecurityIntegerIdList remainingKeys = new SecurityIntegerIdList(keysToFetch, null);
-        return getCachedSecurities(keysToFetch)
-                .doOnNext(securityCompact -> remainingKeys.remove(securityCompact.getSecurityIntegerId()))
-                .toList()
-                .flatMap(cachedSecurityCompacts -> Observable.merge(
-                        Observable.from(cachedSecurityCompacts),
-                        securityServiceWrapper.getMultipleSecuritiesRx(remainingKeys)
-                                .flatMap(map -> Observable.from(map.values()))))
-                .toList()
-                .map(securityCompacts -> {
-                    Map<SecurityIntegerId, SecurityCompactDTO> map = new HashMap<>();
-                    for (SecurityCompactDTO securityCompact : securityCompacts)
+        SecurityId found;
+        SecurityCompactDTO cached;
+        for (SecurityIntegerId id : keysToFetch)
+        {
+            found = securityIdCache.getCachedValue(id);
+            if (found != null)
+            {
+                cached = securityCompactCache.getCachedValue(found);
+                if (cached != null)
+                {
+                    returned.put(id, cached);
+                    remainingKeys.remove(id);
+                }
+            }
+        }
+        return securityServiceWrapper.getMultipleSecuritiesRx(remainingKeys)
+                .map(new Func1<
+                        Map<Integer, SecurityCompactDTO>,
+                        Map<SecurityIntegerId, SecurityCompactDTO>>()
+                {
+                    @Override public Map<SecurityIntegerId, SecurityCompactDTO> call(Map<Integer, SecurityCompactDTO> fetchedMap)
                     {
-                        map.put(securityCompact.getSecurityIntegerId(), securityCompact);
+                        for (Map.Entry<Integer, SecurityCompactDTO> entry : fetchedMap.entrySet())
+                        {
+                            returned.put(new SecurityIntegerId(entry.getKey()),
+                                    entry.getValue());
+                        }
+                        return returned;
                     }
-                    return map;
                 });
-    }
-
-    @NonNull public Observable<SecurityCompactDTO> getCachedSecurities(@NonNull List<SecurityIntegerId> keysToFetch)
-    {
-        // Otherwise it cannot infer
-        //noinspection Convert2MethodRef
-        return Observable.from(keysToFetch)
-                .flatMap(securityIntegerId -> {
-                    SecurityId cached = securityIdCache.getCachedValue(securityIntegerId);
-                    if (cached != null)
-                    {
-                        return Observable.just(Pair.create(securityIntegerId, cached));
-                    }
-                    return securityIdCache.get(securityIntegerId).take(1);
-                })
-                //.flatMap(securityIntegerId -> securityIdCache.getFirstOrEmpty(securityIntegerId))
-                .map(pair -> pair.second)
-                .flatMap(securityId -> {
-                    SecurityCompactDTO cached = securityCompactCache.getCachedValue(securityId);
-                    if (cached != null)
-                    {
-                        return Observable.just(Pair.create(securityId, cached));
-                    }
-                    return securityCompactCache.get(securityId).take(1);
-                })
-                .map(pair -> pair.second);
     }
 }

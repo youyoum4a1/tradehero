@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.contestcenter;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,17 +16,14 @@ import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import javax.inject.Inject;
 
 public class ContestCenterFragment extends DashboardFragment
 {
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
+
     @InjectView(R.id.android_tabs) SlidingTabLayout pagerSlidingTabLayout;
     @InjectView(R.id.pager) ViewPager viewPager;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

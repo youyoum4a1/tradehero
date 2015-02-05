@@ -21,10 +21,9 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
@@ -48,7 +47,6 @@ public class HeroListItemView extends RelativeLayout
     private HeroDTO heroDTO;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
-    @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
     @Inject DashboardNavigator navigator;
@@ -140,16 +138,8 @@ public class HeroListItemView extends RelativeLayout
     public void display(HeroDTO heroDTO)
     {
         displayDefaultUserIcon();
-        linkWith(heroDTO, true);
-    }
-
-    public void linkWith(HeroDTO heroDTO, boolean andDisplay)
-    {
         this.heroDTO = heroDTO;
-        if (andDisplay)
-        {
-            display();
-        }
+        display();
     }
 
     //<editor-fold desc="Display Methods">
@@ -186,7 +176,7 @@ public class HeroListItemView extends RelativeLayout
 
     public void displayTitle()
     {
-        title.setText(userBaseDTOUtil.getShortDisplayName(getContext(), heroDTO));
+        title.setText(UserBaseDTOUtil.getShortDisplayName(getContext(), heroDTO));
     }
 
     public void displayDateInfo()
@@ -269,6 +259,7 @@ public class HeroListItemView extends RelativeLayout
     }
     //</editor-fold>
 
+    @Deprecated // Use Rx
     public static interface OnHeroStatusButtonClickedListener
     {
         void onHeroStatusButtonClicked(HeroListItemView heroListItemView, HeroDTO heroDTO);

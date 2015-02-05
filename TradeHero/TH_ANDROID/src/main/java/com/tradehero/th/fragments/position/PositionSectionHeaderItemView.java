@@ -10,13 +10,11 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.utils.AlertDialogUtil;
-import dagger.Lazy;
+import com.tradehero.th.utils.AlertDialogRxUtil;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import javax.inject.Inject;
+import rx.functions.Actions;
 
 public class PositionSectionHeaderItemView extends RelativeLayout
 {
@@ -24,7 +22,6 @@ public class PositionSectionHeaderItemView extends RelativeLayout
     public static final int INFO_TYPE_SHORT = 1;
     public static final int INFO_TYPE_CLOSED = 2;
 
-    @Inject protected Lazy<AlertDialogUtil> alertDialogUtil;
     @InjectView(R.id.header_text) protected TextView headerText;
     @InjectView(R.id.header_time_base) protected TextView timeBaseText;
     protected SimpleDateFormat sdf;
@@ -55,7 +52,6 @@ public class PositionSectionHeaderItemView extends RelativeLayout
     {
         super.onFinishInflate();
         sdf = new SimpleDateFormat(getContext().getString(R.string.data_format_dd_mmm_yyyy), Locale.ENGLISH);
-        HierarchyInjector.inject(this);
         ButterKnife.inject(this);
     }
 
@@ -110,7 +106,12 @@ public class PositionSectionHeaderItemView extends RelativeLayout
 
         if (resInt != -1)
         {
-            alertDialogUtil.get().popWithNegativeButton(getContext(), R.string.position_title_info, resInt, R.string.ok);
+            AlertDialogRxUtil.buildDefault(getContext())
+                    .setTitle(R.string.position_title_info)
+                    .setMessage(resInt)
+                    .setPositiveButton(R.string.ok)
+                    .build()
+                    .subscribe(Actions.empty(), Actions.empty());
         }
     }
 }

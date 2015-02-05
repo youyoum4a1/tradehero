@@ -22,11 +22,6 @@ public enum YahooChartSize
     }
     //</editor-fold>
 
-    public boolean equalsCode(String otherCode)
-    {
-        return (otherCode != null) && otherCode.equals(code);
-    }
-
     @NonNull public ChartSize getChartSize()
     {
         return new ChartSize(yahooPixelWidth, yahooPixelHeight);

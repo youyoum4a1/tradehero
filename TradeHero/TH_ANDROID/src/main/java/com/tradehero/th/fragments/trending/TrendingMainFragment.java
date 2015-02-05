@@ -21,6 +21,7 @@ import com.tradehero.th.api.games.ViralMiniGameDefDTO;
 import com.tradehero.th.api.games.ViralMiniGameDefDTOList;
 import com.tradehero.th.api.games.ViralMiniGameDefListKey;
 import com.tradehero.th.api.portfolio.AssetClass;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.games.ViralGamePopupDialogFragment;
@@ -32,7 +33,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class TrendingMainFragment extends DashboardFragment
@@ -43,6 +44,7 @@ public class TrendingMainFragment extends DashboardFragment
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
     @Inject @ShowViralGameDialog TimingIntervalPreference showViralGameTimingIntervalPreference;
     @Inject Lazy<ViralMiniGameDefListCache> viralMiniGameDefListCache;
+    @Inject CurrentUserId currentUserId;
 
     private static int lastType = 0;
 
@@ -70,7 +72,13 @@ public class TrendingMainFragment extends DashboardFragment
         AssetClass askedAssetClass = getAssetClass(getArguments());
         if (askedAssetClass != null)
         {
-            lastType = TrendingTabType.getForAssetClass(askedAssetClass).ordinal();
+            try
+            {
+                lastType = TrendingTabType.getForAssetClass(askedAssetClass).ordinal();
+            } catch (IllegalArgumentException e)
+            {
+                Timber.e(e, "Unhandled assetClass for user " + currentUserId.get());
+            }
         }
     }
 
@@ -102,7 +110,7 @@ public class TrendingMainFragment extends DashboardFragment
         super.onResume();
         if (showViralGameTimingIntervalPreference.isItTime())
         {
-            viralSubscription = AndroidObservable.bindFragment(this, viralMiniGameDefListCache.get().get(new ViralMiniGameDefListKey()))
+            viralSubscription = AppObservable.bindFragment(this, viralMiniGameDefListCache.get().get(new ViralMiniGameDefListKey()))
                     .take(1)
                     .subscribe(new Observer<Pair<ViralMiniGameDefListKey, ViralMiniGameDefDTOList>>()
                     {

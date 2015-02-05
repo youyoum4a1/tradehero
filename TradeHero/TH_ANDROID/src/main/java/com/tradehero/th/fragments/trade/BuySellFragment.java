@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -51,6 +52,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
+import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
@@ -58,9 +60,10 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
+import rx.functions.Action1;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 abstract public class BuySellFragment extends AbstractBuySellFragment
@@ -313,7 +316,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         if (purchaseApplicablePortfolioId != null)
         {
             portfolioObservable = portfolioCache.get(purchaseApplicablePortfolioId)
-                    .map(pair -> pair.second)
+                    .map(new PairGetSecond<>())
                     .publish()
                     .refCount();
             fetchPortfolio();
@@ -332,16 +335,17 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     protected void fetchPortfolio()
     {
         unsubscribe(portfolioCacheSubscription);
-        portfolioCacheSubscription = AndroidObservable.bindFragment(
+        portfolioCacheSubscription = AppObservable.bindFragment(
                 this,
                 portfolioObservable)
-                .subscribe(new EmptyObserver<PortfolioDTO>()
-                {
-                    @Override public void onNext(PortfolioDTO portfolioDTO)
-                    {
-                        linkWith(portfolioDTO);
-                    }
-                });
+                .subscribe(new Action1<PortfolioDTO>()
+                           {
+                               @Override public void call(PortfolioDTO portfolioDTO)
+                               {
+                                   linkWith(portfolioDTO);
+                               }
+                           },
+                        Actions.empty());
     }
 
     @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
@@ -430,10 +434,12 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     {
         if (isPortfolioChanged)
         {
-            alertDialogUtil.popWithNegativeButton(getActivity(),
-                    R.string.buy_sell_portfolio_changed_title,
-                    R.string.buy_sell_portfolio_changed_message,
-                    R.string.ok);
+            onStopSubscriptions.add(AlertDialogRxUtil.buildDefault(getActivity())
+                    .setTitle(R.string.buy_sell_portfolio_changed_title)
+                    .setMessage(R.string.buy_sell_portfolio_changed_message)
+                    .setPositiveButton(R.string.ok)
+                    .build()
+                    .subscribe(Actions.empty(), Actions.empty()));
         }
     }
 
@@ -498,17 +504,17 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     protected void showPortfolioSelector()
     {
         unsubscribe(portfolioMenuSubscription);
-        portfolioMenuSubscription = AndroidObservable.bindFragment(
+        portfolioMenuSubscription = AppObservable.bindFragment(
                 this,
                 mSelectedPortfolioContainer.createMenuObservable())
-                .subscribe(new EmptyObserver<MenuOwnedPortfolioId>()
-                {
-                    @Override public void onNext(MenuOwnedPortfolioId args)
-                    {
-                        super.onNext(args);
-                        linkWithApplicable(args, true);
-                    }
-                });
+                .subscribe(new Action1<MenuOwnedPortfolioId>()
+                           {
+                               public void call(MenuOwnedPortfolioId args)
+                               {
+                                   linkWithApplicable(args, true);
+                               }
+                           },
+                        Actions.empty());
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -566,20 +572,22 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             }
             else
             {
-                alertDialogUtil.popWithNegativeButton(
-                        getActivity(),
-                        R.string.buy_sell_no_portfolio_title,
-                        R.string.buy_sell_no_portfolio_message,
-                        R.string.buy_sell_no_portfolio_cancel);
+                onStopSubscriptions.add(AlertDialogRxUtil.buildDefault(getActivity())
+                        .setTitle(R.string.buy_sell_no_portfolio_title)
+                        .setMessage(R.string.buy_sell_no_portfolio_message)
+                        .setPositiveButton(R.string.buy_sell_no_portfolio_cancel)
+                        .build()
+                        .subscribe(Actions.empty(), Actions.empty()));
             }
         }
         else
         {
-            alertDialogUtil.popWithNegativeButton(
-                    getActivity(),
-                    R.string.buy_sell_no_quote_title,
-                    R.string.buy_sell_no_quote_message,
-                    R.string.buy_sell_no_quote_cancel);
+            onStopSubscriptions.add(AlertDialogRxUtil.buildDefault(getActivity())
+                    .setTitle(R.string.buy_sell_no_quote_title)
+                    .setMessage(R.string.buy_sell_no_quote_message)
+                    .setPositiveButton(R.string.buy_sell_no_quote_cancel)
+                    .build()
+                    .subscribe(Actions.empty(), Actions.empty()));
         }
     }
 
@@ -623,7 +631,8 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                         + securityCompactDTO.name + " " + abstractTransactionDialogFragment.getQuantityString() + getString(
                         R.string.buy_sell_share_count) + " @" + quoteDTO.bid;
             }
-            socialSharerLazy.get().share(weChatDTO); // TODO proper callback?
+            socialSharerLazy.get().share(weChatDTO)
+                    .subscribe(Actions.empty(), Actions.empty()); // TODO proper callback?
         }
     }
 

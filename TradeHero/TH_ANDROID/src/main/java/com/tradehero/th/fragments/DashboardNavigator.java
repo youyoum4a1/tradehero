@@ -19,6 +19,7 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
 
     private Set<DashboardFragmentWatcher> dashboardFragmentWatchers = new LinkedHashSet<>();
 
+    //<editor-fold desc="Constructors">
     public DashboardNavigator(FragmentActivity fragmentActivity, int fragmentContentId)
     {
         this(fragmentActivity, fragmentContentId, null, 1);
@@ -38,6 +39,7 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
                     .commit();
         }
     }
+    //</editor-fold>
 
     /**
      * To be called when we want it to be GC'ed
@@ -63,7 +65,14 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         Bundle args = new Bundle();
 
         manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        manager.executePendingTransactions();
+        try
+        {
+            manager.executePendingTransactions();
+        }
+        catch (java.lang.IllegalStateException e)
+        {
+            Timber.d("goToTab after popBackStack :"+e.toString());
+        }
 
         @SuppressWarnings("unchecked")
         Class<T> targetFragmentClass = (Class<T>) tabType.fragmentClass;
@@ -95,7 +104,14 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
 
     private void executePending()
     {
-        manager.executePendingTransactions();
+        try
+        {
+            manager.executePendingTransactions();
+        }
+        catch (java.lang.IllegalStateException e)
+        {
+            Timber.d("executePending "+e.toString());
+        }
     }
 
     @Override public void popFragment(String backStackName)

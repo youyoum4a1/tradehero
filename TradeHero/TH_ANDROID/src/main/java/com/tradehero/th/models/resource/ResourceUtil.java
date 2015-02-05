@@ -8,13 +8,7 @@ import javax.inject.Inject;
 
 public class ResourceUtil
 {
-    //<editor-fold desc="Constructors">
-    @Inject public ResourceUtil()
-    {
-    }
-    //</editor-fold>
-
-    public float getFloat(@NonNull Resources resources, @DimenRes int resId)
+    public static float getFloat(@NonNull Resources resources, @DimenRes int resId)
     {
         TypedValue outValue = new TypedValue();
         resources.getValue(resId, outValue, true);

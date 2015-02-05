@@ -17,6 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.BottomTabs;
@@ -42,7 +43,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
@@ -184,7 +185,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     protected void listenToFilterSubject()
     {
-        filteringSubscription = AndroidObservable.bindFragment(
+        filteringSubscription = AppObservable.bindFragment(
                 this,
                 filterSubject
                         .doOnNext(pair -> {
@@ -227,13 +228,18 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     protected void fetchAllFriends()
     {
         unsubscribe(friendsListCacheSubscription);
-        friendsListCacheSubscription = AndroidObservable.bindFragment(
+        friendsListCacheSubscription = AppObservable.bindFragment(
                 this,
-                friendsListCache.get(friendsListKey)
-                        .map(pair -> pair.second))
+                getFetchAllFriendsObservable())
                 .subscribe(
                         this::linkWith,
                         this::handleFriendListError);
+    }
+
+    @NonNull protected Observable<UserFriendsDTOList> getFetchAllFriendsObservable()
+    {
+        return friendsListCache.get(friendsListKey)
+                .map(new PairGetSecond<>());
     }
 
     protected void linkWith(@NonNull UserFriendsDTOList value)
@@ -332,7 +338,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     protected void handleFollowUsers(@NonNull List<UserFriendsDTO> usersToFollow)
     {
         createFriendHandler();
-        requestSubscriptions.add(AndroidObservable.bindFragment(
+        requestSubscriptions.add(AppObservable.bindFragment(
                 this,
                 socialFriendHandler.followFriends(usersToFollow))
                 .subscribe(new FollowFriendObserver(usersToFollow)));
@@ -443,7 +449,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     protected void handleInviteUsers(@NonNull List<UserFriendsDTO> usersToInvite)
     {
         createFriendHandler();
-        requestSubscriptions.add(AndroidObservable.bindFragment(
+        requestSubscriptions.add(AppObservable.bindFragment(
                 this,
                 socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite))
                 .subscribe(createInviteObserver(usersToInvite)));

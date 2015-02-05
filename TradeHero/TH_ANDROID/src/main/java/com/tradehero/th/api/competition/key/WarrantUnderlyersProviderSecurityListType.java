@@ -28,9 +28,9 @@ public class WarrantUnderlyersProviderSecurityListType extends ProviderSecurityL
     }
     //</editor-fold>
 
-    @Override public boolean equals(@NonNull SecurityListType other)
+    @Override public boolean equalFields(@NonNull SecurityListType other)
     {
-        return super.equals(other)
+        return super.equalFields(other)
                 && other instanceof WarrantUnderlyersProviderSecurityListType;
     }
 }

@@ -23,7 +23,6 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.position.PositionDTOUtils;
-import com.tradehero.th.models.trade.TradeDTOUtils;
 import com.tradehero.th.persistence.position.PositionCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
@@ -46,8 +45,6 @@ public class TradeListItemView extends LinearLayout
     private boolean prettyDate = true;
     @Nullable private String strDisplay;
 
-    @Inject TradeDTOUtils tradeDTOUtils;
-    @Inject Lazy<PositionDTOUtils> positionDTOUtils;
     @Inject PrettyTime prettyTime;
 
     // all the 3 caches below are needed to get the security currencyDisplay display
@@ -339,7 +336,7 @@ public class TradeListItemView extends LinearLayout
             Boolean isOpen = position.isOpen();
             if (tradeItem.isLastTrade() && isOpen != null && isOpen)
             {
-                positionDTOUtils.get().setUnrealizedPLLook(unrealizedPLValue, position);
+                PositionDTOUtils.setUnrealizedPLLook(unrealizedPLValue, position);
             }
             else
             {
@@ -367,7 +364,12 @@ public class TradeListItemView extends LinearLayout
     {
         if (this.realisedPLValue != null && trade != null && position != null)
         {
-            tradeDTOUtils.setRealizedPLLook(realisedPLValue, trade, position.getNiceCurrency());
+            THSignedMoney
+                    .builder(trade.realizedPLAfterTradeRefCcy)
+                    .withOutSign()
+                    .currency(position.getNiceCurrency())
+                    .build()
+                    .into(realisedPLValue);
         }
     }
 

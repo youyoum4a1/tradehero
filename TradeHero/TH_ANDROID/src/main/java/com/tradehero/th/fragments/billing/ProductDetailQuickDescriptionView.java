@@ -40,13 +40,10 @@ public class ProductDetailQuickDescriptionView extends RelativeLayout
         quickDescription = (TextView) findViewById(R.id.quick_description);
     }
 
-    public void linkWithProductDomain(ProductIdentifierDomain domain, boolean andDisplay)
+    public void linkWithProductDomain(ProductIdentifierDomain domain)
     {
         this.productDomain = domain;
-        if (andDisplay)
-        {
-            display();
-        }
+        display();
     }
 
     public void display()

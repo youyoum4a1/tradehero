@@ -18,7 +18,8 @@ import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.widgets.AspectRatioImageViewCallback;
-import com.tradehero.common.annotation.ViewVisibilityValueDef;
+import com.tradehero.common.annotation.ViewVisibilityValue;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -42,7 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
@@ -262,10 +263,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         if (securityId != null)
         {
             unsubscribe(securityCompactCacheSubscription);
-            securityCompactCacheSubscription = AndroidObservable.bindFragment(
+            securityCompactCacheSubscription = AppObservable.bindFragment(
                     this,
                     securityCompactCacheRx.get(securityId))
-                    .map(pair -> pair.second)
+                    .map(new PairGetSecond<>())
                     .subscribe(
                             this::linkWith,
                             e -> THToast.show(R.string.error_fetch_security_info)
@@ -418,7 +419,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         }
     }
 
-    @ViewVisibilityValueDef private int getWarrantVisibility()
+    @ViewVisibilityValue private int getWarrantVisibility()
     {
         return (warrantDTO == null) ? View.GONE : View.VISIBLE;
     }

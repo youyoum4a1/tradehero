@@ -9,16 +9,10 @@ import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
-import javax.inject.Inject;
 
 public class TimelineItemShareFormDTOFactory
 {
-    @Inject public TimelineItemShareFormDTOFactory()
-    {
-        super();
-    }
-
-    @NonNull public TimelineItemShareFormDTO createFrom(
+    @NonNull public static TimelineItemShareFormDTO createFrom(
             @NonNull SocialNetworkEnum socialNetwork,
             @NonNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {
@@ -27,7 +21,7 @@ public class TimelineItemShareFormDTOFactory
         return timelineItemShareFormDTO;
     }
 
-    protected void populateWith(
+    static void populateWith(
             @NonNull TimelineItemShareFormDTO timelineItemShareFormDTO,
             @NonNull SocialNetworkEnum socialNetwork,
             @NonNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)

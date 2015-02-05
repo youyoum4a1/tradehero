@@ -27,12 +27,11 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.AchievementMockServiceWrapper;
 import com.tradehero.th.persistence.achievement.QuestBonusListCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class QuestListTestingFragment extends DashboardFragment
@@ -42,7 +41,6 @@ public class QuestListTestingFragment extends DashboardFragment
     @InjectView(android.R.id.progress) protected ProgressBar emptyView;
 
     @Inject QuestBonusListCacheRx questBonusListCache;
-    @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject AchievementMockServiceWrapper achievementMockServiceWrapper;
 
     private List<QuestBonusDTO> list = new ArrayList<>();
@@ -79,7 +77,7 @@ public class QuestListTestingFragment extends DashboardFragment
         {
             @Override public void onNext(BaseResponseDTO baseResponseDTO)
             {
-                progressDialogUtilLazy.get().dismiss(getActivity());
+                ProgressDialogUtil.dismiss(getActivity());
             }
 
             @Override public void onCompleted()
@@ -88,11 +86,11 @@ public class QuestListTestingFragment extends DashboardFragment
 
             @Override public void onError(Throwable e)
             {
-                progressDialogUtilLazy.get().dismiss(getActivity());
+                ProgressDialogUtil.dismiss(getActivity());
             }
         });
 
-        progressDialogUtilLazy.get().show(getActivity(), "Fetching Mock Quest", "Loading...");
+        ProgressDialogUtil.show(getActivity(), "Fetching Mock Quest", "Loading...");
     }
 
     private View createHeaderView()
@@ -136,7 +134,7 @@ public class QuestListTestingFragment extends DashboardFragment
     protected void attachAndFetchAchievementCategory()
     {
         arrayAdapter.clear();
-        AndroidObservable.bindFragment(this,
+        AppObservable.bindFragment(this,
                 questBonusListCache.get(questBonusListId))
                 .subscribe(createAchievementCategoryListCacheObserver());
     }

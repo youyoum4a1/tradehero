@@ -8,17 +8,10 @@ import android.view.LayoutInflater;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import javax.inject.Inject;
 
 public class SecurityActionDialogFactory
 {
-    //<editor-fold desc="Constructors">
-    @Inject public SecurityActionDialogFactory()
-    {
-    }
-    //</editor-fold>
-
-    @NonNull public Pair<Dialog, SecurityActionListLinear> createSecurityActionDialog(
+    @NonNull public static Pair<Dialog, SecurityActionListLinear> createSecurityActionDialog(
             @NonNull Context context,
             @NonNull SecurityCompactDTO securityCompactDTO)
     {

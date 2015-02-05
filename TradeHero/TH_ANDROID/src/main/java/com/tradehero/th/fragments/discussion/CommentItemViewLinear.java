@@ -2,8 +2,10 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import com.tradehero.th.api.discussion.key.CommentKey;
+import rx.Observable;
 
 public class CommentItemViewLinear extends DiscussionItemViewLinear<CommentKey>
 {
@@ -23,28 +25,14 @@ public class CommentItemViewLinear extends DiscussionItemViewLinear<CommentKey>
         }
     }
 
-    @Override
-    protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
+    @NonNull @Override protected Observable<DiscussionActionButtonsView.UserAction> handleUserAction(
+            DiscussionActionButtonsView.UserAction userAction)
     {
-        return new CommentItemViewHolderMenuClickedListener()
-        {
-            @Override public void onShareButtonClicked()
-            {
-                // Nothing to do
-            }
-
-            @Override public void onTranslationRequested()
-            {
-                // Nothing to do
-            }
-        };
-    }
-
-    abstract protected class CommentItemViewHolderMenuClickedListener extends DiscussionItemViewMenuClickedListener
-    {
-        @Override public void onCommentButtonClicked()
+        if (userAction instanceof DiscussionActionButtonsView.CommentUserAction)
         {
             openDiscussion();
+            return Observable.empty();
         }
+        return super.handleUserAction(userAction);
     }
 }

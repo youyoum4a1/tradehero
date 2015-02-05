@@ -33,9 +33,9 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.ViewObservable;
+import rx.android.view.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
+import rx.functions.Actions;
 
 /**
  * Register using email.
@@ -45,7 +45,7 @@ public class EmailSignUpFragment extends Fragment
     @Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject UserServiceWrapper userServiceWrapper;
-    @Inject AuthDataAction authDataAction;
+    @Inject AuthDataAccountAction authDataAccountAction;
     @Inject ToastOnErrorAction toastOnErrorAction;
     @Inject THAppsFlyer thAppsFlyer;
 
@@ -99,7 +99,7 @@ public class EmailSignUpFragment extends Fragment
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .doOnNext(pair -> thAppsFlyer.sendTrackingWithEvent(AppsFlyerConstants.REGISTRATION_EMAIL))
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(authDataAction)
+                .doOnNext(authDataAccountAction)
                 .doOnNext(new OpenDashboardAction(getActivity()))
                 .doOnError(toastOnErrorAction)
                 .doOnUnsubscribe(() -> {
@@ -145,7 +145,7 @@ public class EmailSignUpFragment extends Fragment
         super.onResume();
         if (subscription == null || subscription.isUnsubscribed())
         {
-            subscription = signUpObservable.subscribe(new EmptyObserver<>());
+            subscription = signUpObservable.subscribe(Actions.empty(), Actions.empty());
         }
     }
 

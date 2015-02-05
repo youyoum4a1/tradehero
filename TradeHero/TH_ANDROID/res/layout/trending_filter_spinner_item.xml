@@ -13,7 +13,7 @@
       android:id="@+id/trending_filter_spinner_item_icon"
       android:layout_height="@dimen/small_image_w_h"
       android:layout_width="@dimen/small_image_w_h"
-      tools:src="@drawable/flag_country_round_united_states"
+      tools:src="@drawable/square_us"
       android:scaleType="centerInside"
       android:layout_marginRight="@dimen/margin_small"
       android:contentDescription="@null"

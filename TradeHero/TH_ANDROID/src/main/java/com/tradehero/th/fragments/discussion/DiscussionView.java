@@ -60,7 +60,6 @@ public class DiscussionView extends FrameLayout
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected DiscussionListCacheRx discussionListCache;
-    @Inject protected DiscussionListKeyFactory discussionListKeyFactory;
 
     @NonNull private List<Subscription> discussionListCacheSubscriptions;
     protected TextView discussionStatus;
@@ -252,7 +251,7 @@ public class DiscussionView extends FrameLayout
     {
         if (discussionKey != null)
         {
-            return new PaginatedDiscussionListKey(discussionListKeyFactory.create(discussionKey), 1);
+            return new PaginatedDiscussionListKey(DiscussionListKeyFactory.create(discussionKey), 1);
         }
         return null;
     }
@@ -380,7 +379,7 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    private void linkWith(DiscussionKeyList discussionKeyList, boolean andDisplay)
+    private void linkWith(DiscussionKeyList discussionKeyList)
     {
         if (discussionKeyList != null)
         {
@@ -389,10 +388,7 @@ public class DiscussionView extends FrameLayout
             discussionListAdapter.notifyDataSetChanged();
         }
 
-        if (andDisplay)
-        {
-            discussionStatus.setText(R.string.discussion_loaded);
-        }
+        discussionStatus.setText(R.string.discussion_loaded);
     }
 
     /**
@@ -482,7 +478,7 @@ public class DiscussionView extends FrameLayout
                     {
                         value.add(abstractDiscussionDTO.getDiscussionKey());
                     }
-                    linkWith(value, true);
+                    linkWith(value);
 
                     if (pair.first.equals(startingDiscussionListKey))
                     {

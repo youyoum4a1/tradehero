@@ -36,7 +36,7 @@ import java.util.Comparator;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -168,7 +168,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     private void fetchProviderIdList()
     {
         unsubscribe(providerListCacheSubscription);
-        providerListCacheSubscription = AndroidObservable.bindFragment(this, providerListCache.get(new ProviderListKey()))
+        providerListCacheSubscription = AppObservable.bindFragment(this, providerListCache.get(new ProviderListKey()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createProviderIdListObserver());
     }

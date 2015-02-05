@@ -27,7 +27,6 @@ import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import retrofit.client.Response;
 import retrofit.http.Body;
-import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
@@ -181,12 +180,6 @@ public interface UserServiceRx
             @Body UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO);
     //</editor-fold>
 
-    //<editor-fold desc="Delete User">
-    @DELETE("/users/{userId}")
-    Observable<BaseResponseDTO> deleteUser(
-            @Path("userId") int userId);
-    //</editor-fold>
-
     //<editor-fold desc="Get Friends">
     @GET("/users/{userId}/getFriends")
     Observable<UserFriendsDTOList> getFriends(
@@ -283,7 +276,6 @@ public interface UserServiceRx
     //<editor-fold desc="Create FX Portfolio">
     @POST("/users/{userId}/portfolios/createFX")
     Observable<PortfolioDTO> createFXPortfolioRx(
-            @Path("userId") int userId
-    );
+            @Path("userId") int userId);
     //</editor-fold>
 }

@@ -1,23 +1,26 @@
 package com.tradehero.th.api.social;
 
 import android.support.annotation.Nullable;
+import com.android.internal.util.Predicate;
 
-public class HeroDTOActiveFreePredicateImpl extends HeroDTOActiveFreePredicate
+public class HeroDTOActiveFreePredicateImpl implements Predicate<HeroDTO>
 {
-    private final Boolean active;
-    private final Boolean freeFollow;
+    @Nullable private final Boolean active;
+    @Nullable private final Boolean freeFollow;
 
+    //<editor-fold desc="Constructors">
     /**
      * A null parameter means that it is not tested.
      * @param active
      * @param freeFollow
      */
-    public HeroDTOActiveFreePredicateImpl(Boolean active, Boolean freeFollow)
+    public HeroDTOActiveFreePredicateImpl(@Nullable Boolean active, @Nullable Boolean freeFollow)
     {
         super();
         this.active = active;
         this.freeFollow = freeFollow;
     }
+    //</editor-fold>
 
     @Override public boolean apply(@Nullable HeroDTO heroDTO)
     {

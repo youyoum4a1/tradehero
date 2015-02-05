@@ -1,8 +1,8 @@
 package com.tradehero.th.fragments.authentication;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
@@ -26,6 +26,8 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -40,12 +42,14 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
+import rx.android.view.ViewObservable;
+import rx.android.widget.WidgetObservable;
+import rx.functions.Action1;
+import rx.functions.Actions;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class EmailSignInFragment extends Fragment
 {
@@ -53,13 +57,12 @@ public class EmailSignInFragment extends Fragment
     private View forgotDialogView;
 
     @Inject UserServiceWrapper userServiceWrapper;
-    @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject Provider<LoginSignUpFormDTO.Builder2> loginSignUpFormDTOProvider;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject ToastOnErrorAction toastOnErrorAction;
-    @Inject Provider<AuthDataAction> authDataActionProvider;
+    @Inject Provider<AuthDataAccountAction> authDataActionProvider;
     @Inject THAppsFlyer thAppsFlyer;
 
     @InjectView(R.id.authentication_sign_in_email) SelfValidatedText email;
@@ -79,35 +82,46 @@ public class EmailSignInFragment extends Fragment
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.authentication_sign_in_forgot_password) void showForgotPasswordUI()
     {
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        forgotDialogView = inflater.inflate(R.layout.forgot_password_dialog, null);
-
-        String message = getActivity().getString(R.string.authentication_ask_for_email);
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setMessage(message)
+        forgotDialogView = LayoutInflater.from(getActivity()).inflate(R.layout.forgot_password_dialog, null);
+        AlertDialogRxUtil.buildDefault(getActivity())
+                .setTitle(R.string.authentication_ask_for_email)
+                .setPositiveButton(R.string.ok)
+                .setNegativeButton(R.string.authentication_cancel)
                 .setView(forgotDialogView)
-                .setNegativeButton(R.string.authentication_cancel, (dialogInterface, which) -> dialogInterface.cancel())
-                .setPositiveButton(R.string.ok, (dialogInterface, which) -> {
+                .build()
+                .subscribe(
+                        new Action1<OnDialogClickEvent>()
+                        {
+                            @Override public void call(OnDialogClickEvent event)
+                            {
+                                if (event.isPositive())
+                                {
+                                    effectAskForgotEmail(forgotDialogView);
+                                }
+                            }
+                        }
+                );
+    }
 
-                    ServerValidatedEmailText serverValidatedEmailText =
-                            (ServerValidatedEmailText) forgotDialogView.findViewById(R.id.authentication_forgot_password_validated_email);
-                    if (serverValidatedEmailText == null)
-                    {
-                        return;
-                    }
-                    serverValidatedEmailText.forceValidate();
+    protected void effectAskForgotEmail(@NonNull View forgotDialogView)
+    {
+        ServerValidatedEmailText serverValidatedEmailText =
+                (ServerValidatedEmailText) forgotDialogView.findViewById(R.id.authentication_forgot_password_validated_email);
+        if (serverValidatedEmailText == null)
+        {
+            return;
+        }
+        serverValidatedEmailText.forceValidate();
 
-                    if (!serverValidatedEmailText.isValid())
-                    {
-                        THToast.show(R.string.forgot_email_incorrect_input_email);
-                    }
-                    else
-                    {
-                        String email1 = serverValidatedEmailText.getText().toString();
-                        doForgotPassword(email1);
-                        dialogInterface.dismiss();
-                    }
-                }).create().show();
+        if (!serverValidatedEmailText.isValid())
+        {
+            THToast.show(R.string.forgot_email_incorrect_input_email);
+        }
+        else
+        {
+            String email1 = serverValidatedEmailText.getText().toString();
+            doForgotPassword(email1);
+        }
     }
 
     @Nullable protected Subscription forgotPasswordSubscription;
@@ -143,25 +157,20 @@ public class EmailSignInFragment extends Fragment
         }
 
         validationSubscription = Observable.combineLatest(
-                ViewObservable.text(email),
-                ViewObservable.text(password),
+                WidgetObservable.text(email),
+                WidgetObservable.text(password),
                 (email1, password1) -> {
-                    email1.forceValidate();
-                    password1.forceValidate();
-                    return Pair.create(email1.isValid(), password1.isValid());
+                    email.forceValidate();
+                    password.forceValidate();
+                    return Pair.create(email.isValid(), password.isValid());
                 })
-                .subscribe(new EmptyObserver<Pair<Boolean, Boolean>>()
-                {
-                    @Override public void onNext(Pair<Boolean, Boolean> args)
-                    {
-                        loginButton.setEnabled(args.first && args.second);
-                        super.onNext(args);
-                    }
-                });
+                .subscribe(
+                        args -> loginButton.setEnabled(args.first && args.second),
+                        e -> Timber.e(e, "Error in validation"));
 
         signInObservable = ViewObservable.clicks(loginButton, false)
                 .map(view1 -> {
-                    DeviceUtil.dismissKeyboard(view1);
+                    DeviceUtil.dismissKeyboard(view1.view());
                     return new AuthData(email.getText().toString(), password.getText().toString());
                 })
                 .doOnNext(AuthData -> progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
@@ -201,7 +210,9 @@ public class EmailSignInFragment extends Fragment
         super.onResume();
         if (signInSubscription == null || signInSubscription.isUnsubscribed())
         {
-            signInSubscription = signInObservable.subscribe(new EmptyObserver<>());
+            signInSubscription = signInObservable.subscribe(
+                    Actions.empty(),
+                    Actions.empty());
         }
     }
 
@@ -239,7 +250,7 @@ public class EmailSignInFragment extends Fragment
         ForgotPasswordFormDTO forgotPasswordFormDTO = new ForgotPasswordFormDTO();
         forgotPasswordFormDTO.userEmail = email;
 
-        mProgressDialog = progressDialogUtil.show(
+        mProgressDialog = ProgressDialogUtil.show(
                 getActivity(),
                 R.string.alert_dialog_please_wait,
                 R.string.authentication_connecting_tradehero_only);
@@ -247,24 +258,20 @@ public class EmailSignInFragment extends Fragment
         unsubscribeForgotPassword();
         forgotPasswordSubscription = userServiceWrapper.forgotPasswordRx(forgotPasswordFormDTO)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createForgotPasswordObserver());
+                .subscribe(
+                        this::onReceivedForgotPassword,
+                        this::onForgotPasswordFailed);
     }
 
-    private Observer<ForgotPasswordDTO> createForgotPasswordObserver()
+    public void onReceivedForgotPassword(@NonNull ForgotPasswordDTO args)
     {
-        return new EmptyObserver<ForgotPasswordDTO>()
-        {
-            @Override public void onNext(ForgotPasswordDTO args)
-            {
-                mProgressDialog.dismiss();
-                THToast.show(R.string.authentication_thank_you_message_email);
-            }
+        mProgressDialog.dismiss();
+        THToast.show(R.string.authentication_thank_you_message_email);
+    }
 
-            @Override public void onError(Throwable e)
-            {
-                mProgressDialog.dismiss();
-                THToast.show(new THException(e));
-            }
-        };
+    public void onForgotPasswordFailed(Throwable e)
+    {
+        mProgressDialog.dismiss();
+        THToast.show(new THException(e));
     }
 }

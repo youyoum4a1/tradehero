@@ -65,12 +65,15 @@ abstract public class SecurityListType implements Comparable<SecurityListType>, 
 
     @Override public boolean equals(@Nullable Object other)
     {
-        return other != null
-                && ((Object) this).getClass().equals(other.getClass())
-                && equals(SecurityListType.class.cast(other));
+        if (other == this)
+        {
+            return true;
+        }
+        return other instanceof SecurityListType
+                && equalFields((SecurityListType) other);
     }
 
-    protected boolean equals(@NonNull SecurityListType other)
+    protected boolean equalFields(@NonNull SecurityListType other)
     {
         return (page == null ? other.page == null : page.equals(other.page))
                 && (perPage == null ? other.perPage == null : perPage.equals(other.perPage));

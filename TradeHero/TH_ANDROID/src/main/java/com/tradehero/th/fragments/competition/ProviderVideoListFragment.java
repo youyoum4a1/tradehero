@@ -32,8 +32,9 @@ import com.tradehero.th.persistence.competition.HelpVideoListCacheRx;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 @Routable(
@@ -51,6 +52,13 @@ public class ProviderVideoListFragment extends CompetitionFragment
     private HelpVideoDTOList helpVideoDTOs;
     private ProviderVideoAdapter providerVideoAdapter;
     private int currentDisplayedChild;
+    @NonNull protected SubscriptionList subscriptions;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        subscriptions = new SubscriptionList();
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -84,15 +92,20 @@ public class ProviderVideoListFragment extends CompetitionFragment
         }
 
         HelpVideoListKey key = new HelpVideoListKey(providerId);
-        AndroidObservable.bindFragment(this, helpVideoListCache.get(key))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createVideoListCacheObserver());
+        subscriptions.add(AppObservable.bindFragment(this, helpVideoListCache.get(key))
+                .subscribe(createVideoListCacheObserver()));
     }
 
     @Override public void onPause()
     {
         currentDisplayedChild = helpVideoListScreen.getDisplayedChildLayoutId();
         super.onPause();
+    }
+
+    @Override public void onStop()
+    {
+        subscriptions.unsubscribe();
+        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -113,13 +126,10 @@ public class ProviderVideoListFragment extends CompetitionFragment
         }
     }
 
-    private void linkWith(HelpVideoDTOList videoDTOs, boolean andDisplay)
+    private void linkWith(HelpVideoDTOList videoDTOs)
     {
         this.helpVideoDTOs = videoDTOs;
-        if (andDisplay)
-        {
-            updateAdapter();
-        }
+        updateAdapter();
     }
 
     private void updateAdapter()
@@ -182,7 +192,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
                 videoListView.setEmptyView(emptyView);
             }
 
-            linkWith(pair.second, true);
+            linkWith(pair.second);
         }
 
         @Override public void onCompleted()

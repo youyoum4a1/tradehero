@@ -11,7 +11,8 @@ public class UserFriendsTwitterDTO extends UserFriendsDTO
     public String twPicUrl;
 
     //<editor-fold desc="Constructors">
-    public UserFriendsTwitterDTO()
+    @SuppressWarnings("UnusedDeclaration") // Needed for deserialisation
+    UserFriendsTwitterDTO()
     {
         super();
     }
@@ -42,9 +43,9 @@ public class UserFriendsTwitterDTO extends UserFriendsDTO
         return super.hashCode() ^ twId.hashCode();
     }
 
-    @Override protected boolean equals(@NonNull UserFriendsDTO other)
+    @Override protected boolean equalFields(@NonNull UserFriendsDTO other)
     {
-        return super.equals(other) &&
+        return super.equalFields(other) &&
                 other instanceof UserFriendsTwitterDTO &&
                 twId.equals(((UserFriendsTwitterDTO) other).twId);
     }

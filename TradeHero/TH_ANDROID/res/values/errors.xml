@@ -7,5 +7,5 @@
 
   <string name="error_incomplete_info_title">Not enough info</string>
   <string name="error_incomplete_info_message">Try again in a moment</string>
-  <string name="error_incomplete_info_cancel">Ok</string>
+  <string name="error_incomplete_info_cancel">OK</string>
 </resources>

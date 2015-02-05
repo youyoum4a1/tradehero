@@ -1,8 +1,6 @@
 package com.tradehero.th.api.watchlist;
 
-import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIntegerId;
 
 public class WatchlistPositionFormDTO
@@ -17,11 +15,6 @@ public class WatchlistPositionFormDTO
         this.securityId = securityId;
         this.price = price;
         this.quantity = quantity;
-    }
-
-    public WatchlistPositionFormDTO(@NonNull SecurityCompactDTO securityCompactDTO, int quantity)
-    {
-        this(securityCompactDTO.id, securityCompactDTO.lastPrice, quantity);
     }
     //</editor-fold>
 

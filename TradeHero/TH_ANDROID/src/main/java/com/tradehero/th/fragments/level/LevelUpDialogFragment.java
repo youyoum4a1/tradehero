@@ -30,7 +30,7 @@ import com.tradehero.th.persistence.level.LevelDefCacheRx;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 
 public class LevelUpDialogFragment extends BaseDialogFragment
 {
@@ -104,7 +104,7 @@ public class LevelUpDialogFragment extends BaseDialogFragment
         mCurrentLevelDefId = getLevelId(getArguments(), BUNDLE_KEY_CURRENT);
         mNextLevelDefId = getLevelId(getArguments(), BUNDLE_KEY_NEXT);
 
-        AndroidObservable.bindFragment(
+        AppObservable.bindFragment(
                 this,
                 Observable.merge(
                         levelDefCache.get(mCurrentLevelDefId),

@@ -2,15 +2,18 @@ package com.tradehero.th.fragments.alert;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCacheRx;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class AlertEditFragment extends BaseAlertEditFragment
@@ -47,23 +50,19 @@ public class AlertEditFragment extends BaseAlertEditFragment
         super.onStop();
     }
 
-    @Override protected void saveAlertProper(AlertFormDTO alertFormDTO)
+    @NonNull @Override protected Observable<AlertCompactDTO> saveAlertProperRx(AlertFormDTO alertFormDTO)
     {
-        unsubscribe(saveAlertSubscription);
-        saveAlertSubscription = AndroidObservable.bindFragment(this, alertServiceWrapper.get().updateAlertRx(
+        return alertServiceWrapper.get().updateAlertRx(
                 alertId,
-                alertFormDTO))
-                .subscribe(
-                        this::handleAlertUpdated,
-                        this::handleAlertUpdateFailed);
+                alertFormDTO);
     }
 
     protected void linkWith(@NonNull AlertId alertId)
     {
         this.alertId = alertId;
         unsubscribe(getAlertSubscription);
-        getAlertSubscription = AndroidObservable.bindFragment(this, alertCache.get(alertId))
-                .map(pair -> pair.second)
+        getAlertSubscription = AppObservable.bindFragment(this, alertCache.get(alertId))
+                .map(new PairGetSecond<>())
                 .subscribe(
                         this::linkWith,
                         e -> {

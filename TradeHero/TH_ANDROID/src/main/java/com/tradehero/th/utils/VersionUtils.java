@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -24,17 +25,17 @@ public class VersionUtils
     }
     //</editor-fold>
 
-    public Intent getSupportEmailIntent(Context context)
+    @NonNull public Intent getSupportEmailIntent(@NonNull Context context)
     {
         return getSupportEmailIntent(context, false);
     }
 
-    public Intent getSupportEmailIntent(Context context, boolean longInfo)
+    @NonNull public Intent getSupportEmailIntent(@NonNull Context context, boolean longInfo)
     {
         return getSupportEmailIntent(getSupportEmailTraceParameters(context, longInfo));
     }
 
-    public static Intent getSupportEmailIntent(List<String> infoStrings)
+    @NonNull public static Intent getSupportEmailIntent(@NonNull List<String> infoStrings)
     {
         String deviceDetails = "\n\n-----\n" +
                 StringUtils.join("\n", infoStrings) +
@@ -47,7 +48,7 @@ public class VersionUtils
         return intent;
     }
 
-    public List<String> getSupportEmailTraceParameters(Context context, boolean longInfo)
+    @NonNull public List<String> getSupportEmailTraceParameters(@NonNull Context context, boolean longInfo)
     {
         List<String> parameters = new ArrayList<>();
         parameters.add("TradeHero: " + getAppVersion(context));
@@ -68,33 +69,44 @@ public class VersionUtils
         return parameters;
     }
 
-    public List<String> getExceptionStringsAndTraceParameters(Context context,
-            Exception exception)
+    @NonNull public List<String> getExceptionStringsAndTraceParameters(
+            @NonNull Context context,
+            @NonNull List<Throwable> exceptions)
+    {
+        List<String> reported = new ArrayList<>();
+        for (Throwable exception : exceptions)
+        {
+            reported.addAll(getExceptionStringsAndTraceParameters(context, exception));
+            reported.add("\n\n\n");
+        }
+        return reported;
+    }
+
+    @NonNull public List<String> getExceptionStringsAndTraceParameters(
+            @NonNull Context context,
+            @NonNull Throwable exception)
     {
         List<String> reported = getExceptionStrings(context, exception);
         reported.addAll(getSupportEmailTraceParameters(context, true));
         return reported;
     }
 
-    public static List<String> getExceptionStrings(Context context, Exception exception)
+    @NonNull public static List<String> getExceptionStrings(@NonNull Context context, @NonNull Throwable exception)
     {
         List<String> reported = new ArrayList<>();
 
-        if (exception != null)
-        {
-            reported.addAll(ExceptionUtils.getElements(exception));
-            reported.add("-----");
-        }
+        reported.addAll(ExceptionUtils.getElements(exception));
+        reported.add("-----");
 
         return reported;
     }
 
-    public static String getAppVersion(Context context)
+    @NonNull public static String getAppVersion(@NonNull Context context)
     {
         return getVersionName(context) + "(" + getVersionCode(context) + ")";
     }
 
-    public static String getVersionName(Context context)
+    @NonNull public static String getVersionName(@NonNull Context context)
     {
         String v = "";
         try
@@ -108,12 +120,13 @@ public class VersionUtils
                     v = v.substring(0, dashIndex);
                 }
             }
+        } catch (PackageManager.NameNotFoundException ignored)
+        {
         }
-        catch (PackageManager.NameNotFoundException ignored) { }
         return v;
     }
 
-    public static int getVersionCode(Context context)
+    public static int getVersionCode(@NonNull Context context)
     {
         int v = 0;
         try
@@ -138,7 +151,7 @@ public class VersionUtils
         }
     }
 
-    public static void logScreenMeasurements(Activity activity)
+    public static void logScreenMeasurements(@NonNull Activity activity)
     {
         Display display = activity.getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
@@ -149,7 +162,7 @@ public class VersionUtils
         float dpWidth = outMetrics.widthPixels / density;
     }
 
-    private static String capitalize(String s)
+    private static String capitalize(@Nullable String s)
     {
         if (s == null || s.length() == 0)
         {
@@ -166,7 +179,7 @@ public class VersionUtils
         }
     }
 
-    public static String getVersionId(Context context)
+    @NonNull public static String getVersionId(@NonNull Context context)
     {
         return getVersionName(context) + "." + getVersionCode(context);
     }

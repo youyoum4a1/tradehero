@@ -15,11 +15,11 @@ public enum WarrantType
 
     private static Map<String, WarrantType> shortCodeMap;
 
-    @NonNull @WarrantTypeShortCodeDef public final String shortCode;
+    @NonNull @WarrantTypeShortCode public final String shortCode;
     @StringRes public final int stringResId;
 
     //<editor-fold desc="Constructors">
-    WarrantType(@NonNull @WarrantTypeShortCodeDef String shortCode, int stringResId)
+    WarrantType(@NonNull @WarrantTypeShortCode String shortCode, int stringResId)
     {
         this.shortCode = shortCode;
         this.stringResId = stringResId;
@@ -39,7 +39,7 @@ public enum WarrantType
         return shortCodeMap;
     }
 
-    @Nullable public static WarrantType getByShortCode(@NonNull @WarrantTypeShortCodeDef String shortCode)
+    @Nullable public static WarrantType getByShortCode(@NonNull @WarrantTypeShortCode String shortCode)
     {
         return getShortCodeMap().get(shortCode);
     }

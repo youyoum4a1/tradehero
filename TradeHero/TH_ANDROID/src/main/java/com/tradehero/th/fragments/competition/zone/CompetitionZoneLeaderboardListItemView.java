@@ -91,7 +91,6 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
         return isActive == null || isActive ? COLOR_ACTIVE : COLOR_INACTIVE;
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @Nullable public Boolean isActive()
     {
         if (competitionZoneDTO == null)

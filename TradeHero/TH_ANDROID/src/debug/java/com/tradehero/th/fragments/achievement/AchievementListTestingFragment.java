@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class AchievementListTestingFragment extends DashboardFragment
@@ -91,7 +91,7 @@ public class AchievementListTestingFragment extends DashboardFragment
         arrayAdapter.clear();
 
         UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
-        AndroidObservable.bindFragment(this,
+        AppObservable.bindFragment(this,
                 achievementCategoryListCache.get(userBaseKey))
                 .subscribe(createAchievementCategoryListCacheObserver());
     }

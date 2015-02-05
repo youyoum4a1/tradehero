@@ -2,19 +2,22 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
@@ -27,148 +30,133 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class SettingsPayPalFragment extends DashboardFragment
 {
-    private View view;
-    private ServerValidatedEmailText paypalEmailText;
+    @InjectView(R.id.settings_paypal_email_text) protected ServerValidatedEmailText paypalEmailText;
+    @InjectView(R.id.settings_paypal_update_button) protected Button submitButton;
     private ProgressDialog progressDialog;
-    private Button submitButton;
 
+    @Nullable private Subscription userProfileSubscription;
     @Nullable private Subscription updatePayPalEmailSubscription;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
-    @Inject ProgressDialogUtil progressDialogUtil;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        super.onCreateView(inflater, container, savedInstanceState);
-        view = inflater.inflate(R.layout.fragment_settings_paypal, container, false);
+        return inflater.inflate(R.layout.fragment_settings_paypal, container, false);
+    }
 
-        setupSubmitButton();
-        setupPaypalEmailText();
-        return view;
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
+        // HACK: force this email to focus instead of the TabHost stealing focus..
+        paypalEmailText.setOnTouchListener(new FocusableOnTouchListener());
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        fetchUserProfile();
     }
 
     @Override public void onResume()
     {
         super.onResume();
-
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_PayPal));
     }
 
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        setActionBarTitle(getResources().getString(R.string.settings_paypal_header));
+        setActionBarTitle(R.string.settings_paypal_header);
         super.onCreateOptionsMenu(menu, inflater);
     }
     //</editor-fold>
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
+        super.onStop();
+        unsubscribe(userProfileSubscription);
+        userProfileSubscription = null;
         unsubscribe(updatePayPalEmailSubscription);
         updatePayPalEmailSubscription = null;
-        if (paypalEmailText != null)
-        {
-            paypalEmailText.setOnTouchListener(null);
-            paypalEmailText = null;
-        }
-        if (submitButton != null)
-        {
-            submitButton.setOnClickListener(null);
-            submitButton = null;
-        }
+    }
+
+    @Override public void onDestroyView()
+    {
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
-    private void setupSubmitButton()
+    protected void fetchUserProfile()
     {
-        submitButton = (Button) view.findViewById(R.id.settings_paypal_update_button);
-        submitButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View view)
-            {
-                progressDialog = progressDialogUtil.show(
-                        getActivity(),
-                        R.string.alert_dialog_please_wait,
-                        R.string.authentication_connecting_tradehero_only);
-                UpdatePayPalEmailFormDTO emailDTO = new UpdatePayPalEmailFormDTO();
-                emailDTO.newPayPalEmailAddress = paypalEmailText.getText().toString();
-                unsubscribe(updatePayPalEmailSubscription);
-                updatePayPalEmailSubscription = userServiceWrapper.updatePayPalEmailRx(currentUserId.toUserBaseKey(), emailDTO)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(createUpdatePayPalObserver());
-            }
-        });
+        unsubscribe(userProfileSubscription);
+        userProfileSubscription = AppObservable.bindFragment(
+                this,
+                userProfileCache.get(currentUserId.toUserBaseKey())
+                        .map(new PairGetSecond<>()))
+                .subscribe(
+                        this::onUserProfileReceived,
+                        this::onUserProfileError);
     }
 
-    private Observer<UpdatePayPalEmailDTO> createUpdatePayPalObserver()
+    protected void onUserProfileReceived(@NonNull UserProfileDTO profile)
     {
-        return new EmptyObserver<UpdatePayPalEmailDTO>()
-        {
-            @Override public void onNext(UpdatePayPalEmailDTO args)
-            {
-                if (!isDetached())
-                {
-                    THToast.show(getString(R.string.settings_paypal_successful_update));
-                    progressDialog.hide();
-                    navigator.get().popFragment();
-                }
-            }
-
-            @Override public void onError(Throwable e)
-            {
-                if (!isDetached())
-                {
-                    THToast.show(new THException(e));
-                    progressDialog.hide();
-                }
-            }
-        };
+        paypalEmailText.setText(profile.paypalEmailAddress);
     }
 
-    private void setupPaypalEmailText()
+    protected void onUserProfileError(@NonNull Throwable e)
     {
-        paypalEmailText = (ServerValidatedEmailText) view.findViewById(R.id.settings_paypal_email_text);
-        // HACK: force this email to focus instead of the TabHost stealing focus..
-        paypalEmailText.setOnTouchListener(new FocusableOnTouchListener());
-        AndroidObservable.bindFragment(this,
-                userProfileCache.get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createUserProfileCacheObserver());
+        if (!isDetached())
+        {
+            THToast.show(getString(R.string.error_fetch_your_user_profile));
+            Timber.e("Error fetching the user profile", e);
+        }
     }
 
-    private Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.settings_paypal_update_button)
+    public void onSubmitClicked(@SuppressWarnings("UnusedParameters") View view)
     {
-        return new Observer<Pair<UserBaseKey,UserProfileDTO>>()
+        progressDialog = ProgressDialogUtil.show(
+                getActivity(),
+                R.string.alert_dialog_please_wait,
+                R.string.authentication_connecting_tradehero_only);
+        UpdatePayPalEmailFormDTO emailDTO = new UpdatePayPalEmailFormDTO();
+        emailDTO.newPayPalEmailAddress = paypalEmailText.getText().toString();
+        unsubscribe(updatePayPalEmailSubscription);
+        updatePayPalEmailSubscription = AppObservable.bindFragment(
+                this,
+                userServiceWrapper.updatePayPalEmailRx(currentUserId.toUserBaseKey(), emailDTO))
+                .subscribe(
+                        this::onPayPalUpdated,
+                        this::onPayPalUpdateError);
+    }
+
+    protected void onPayPalUpdated(@SuppressWarnings("UnusedParameters") @NonNull UpdatePayPalEmailDTO args)
+    {
+        if (!isDetached())
         {
-            @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-            {
-                paypalEmailText.setText(pair.second.paypalEmailAddress);
-            }
+            THToast.show(getString(R.string.settings_paypal_successful_update));
+            progressDialog.hide();
+            navigator.get().popFragment();
+        }
+    }
 
-            @Override public void onCompleted()
-            {
-            }
-
-            @Override public void onError(Throwable e)
-            {
-                if (!isDetached())
-                {
-                    THToast.show(getString(R.string.error_fetch_your_user_profile));
-                    Timber.e("Error fetching the user profile", e);
-                }
-            }
-        };
+    protected void onPayPalUpdateError(@NonNull Throwable e)
+    {
+        if (!isDetached())
+        {
+            THToast.show(new THException(e));
+            progressDialog.hide();
+        }
     }
 }

@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -79,16 +78,8 @@ abstract public class ProductDetailView<
 
     @Override public void display(ProductDetailType productDetail)
     {
-        linkWith(productDetail, true);
-    }
-
-    public void linkWith(ProductDetailType productDetail, boolean andDisplay)
-    {
         this.skuDetails = productDetail;
-        if (andDisplay)
-        {
-            display();
-        }
+        display();
     }
 
     public void display()

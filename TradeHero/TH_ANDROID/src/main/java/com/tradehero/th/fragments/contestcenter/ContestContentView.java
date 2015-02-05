@@ -66,17 +66,14 @@ public class ContestContentView extends RelativeLayout
         this.communityPageDTO = dto;
         if (communityPageDTO != null)
         {
-            linkWith(((ProviderContestPageDTO) communityPageDTO).providerDTO, true);
+            linkWith(((ProviderContestPageDTO) communityPageDTO).providerDTO);
         }
     }
 
-    private void linkWith(@Nullable ProviderDTO providerDTO, boolean andDisplay)
+    private void linkWith(@Nullable ProviderDTO providerDTO)
     {
         this.providerDTO = providerDTO;
-        if (andDisplay)
-        {
-            displayView();
-        }
+        displayView();
     }
 
     protected void displayView()

@@ -1,20 +1,15 @@
 package com.tradehero.th.api.discussion.key;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
-import javax.inject.Inject;
 
 public class DiscussionKeyFactory
 {
-    @Inject public DiscussionKeyFactory()
-    {
-        super();
-    }
-
-    public DiscussionKey fromBundle(Bundle bundle)
+    @NonNull public static DiscussionKey fromBundle(@NonNull Bundle bundle)
     {
         ensureKeys(bundle);
 
@@ -39,7 +34,7 @@ public class DiscussionKeyFactory
         throw new IllegalStateException("Invalid type of DiscussionType " + discussionType);
     }
 
-    public DiscussionKey create(DiscussionType discussionType, int id)
+    @NonNull public static DiscussionKey create(@NonNull DiscussionType discussionType, int id)
     {
         switch (discussionType)
         {
@@ -60,12 +55,12 @@ public class DiscussionKeyFactory
         throw new IllegalStateException("Invalid type of DiscussionType " + discussionType);
     }
 
-    public DiscussionKey create(MessageHeaderDTO messageHeaderDTO)
+    @NonNull public static DiscussionKey create(@NonNull MessageHeaderDTO messageHeaderDTO)
     {
         return create(messageHeaderDTO.discussionType, messageHeaderDTO.id);
     }
 
-    private void ensureKeys(Bundle bundle)
+    private static void ensureKeys(@NonNull Bundle bundle)
     {
         if (!bundle.containsKey(DiscussionKey.BUNDLE_KEY_TYPE))
         {

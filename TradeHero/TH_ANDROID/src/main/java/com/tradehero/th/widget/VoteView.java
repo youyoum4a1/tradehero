@@ -60,7 +60,7 @@ abstract public class VoteView extends CompoundButton
         if (oldValue != checked)
         {
             // mutate to preserve the original drawable
-            Drawable drawableLeft = getResources().getDrawable(R.drawable.icn_upvote).mutate();
+            Drawable drawableLeft = getResources().getDrawable(R.drawable.icn_actions_upvote).mutate();
             if (checked)
             {
                 drawableLeft.setColorFilter(getCheckedColor(), PorterDuff.Mode.SRC_ATOP);

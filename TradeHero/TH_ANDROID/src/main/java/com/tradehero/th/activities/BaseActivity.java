@@ -6,7 +6,6 @@ import android.accounts.OnAccountsUpdateListener;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -17,7 +16,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.inject.Injector;
-import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.dagger.AppModule;
 import dagger.Lazy;
@@ -26,6 +26,8 @@ import dagger.Provides;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
+import rx.functions.Action1;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 public class BaseActivity extends FragmentActivity
@@ -40,7 +42,6 @@ public class BaseActivity extends FragmentActivity
     @Inject @ForSocialToken IntentFilter socialTokenIntentFilter;
     BroadcastReceiver socialTokenBroadcastListener;
     @Inject Lazy<MarketUtil> marketUtil;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtil;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -126,23 +127,23 @@ public class BaseActivity extends FragmentActivity
         }
     }
 
-    private void showUpgradeDialog()
+    protected void showUpgradeDialog()
     {
-        alertDialogUtil.get().popWithOkCancelButton(
-                this,
-                R.string.upgrade_needed,
-                R.string.please_update,
-                R.string.update_now,
-                R.string.later,
-                new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialog, int which)
-                    {
-                        THToast.show(R.string.update_guide);
-                        marketUtil.get().showAppOnMarket(BaseActivity.this);
-                        finish();
-                    }
-                });
+        AlertDialogRxUtil.popUpgradeRequired(this)
+                .subscribe(
+                        new Action1<OnDialogClickEvent>()
+                        {
+                            @Override public void call(OnDialogClickEvent event)
+                            {
+                                if (event.isPositive())
+                                {
+                                    THToast.show(R.string.update_guide);
+                                    marketUtil.get().showAppOnMarket(BaseActivity.this);
+                                    finish();
+                                }
+                            }
+                        },
+                        Actions.empty());
     }
 
     protected class SocialTokenListener extends BroadcastReceiver

@@ -14,6 +14,7 @@ import com.tradehero.th.api.share.achievement.AchievementShareFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.functions.Func1;
 
 public class AchievementServiceWrapper
 {
@@ -55,14 +56,18 @@ public class AchievementServiceWrapper
         return achievementServiceRx.getAchievementCategory(
                 achievementCategoryId.categoryId,
                 achievementCategoryId.userId)
-                .flatMap(achievementCategoryDTOs -> {
-                    if (achievementCategoryDTOs != null && !achievementCategoryDTOs.isEmpty())
+                .flatMap(new Func1<AchievementCategoryDTOList, Observable<? extends AchievementCategoryDTO>>()
+                {
+                    @Override public Observable<? extends AchievementCategoryDTO> call(AchievementCategoryDTOList achievementCategoryDTOs)
                     {
-                        return Observable.just(achievementCategoryDTOs.get(0));
-                    }
-                    else
-                    {
-                        return Observable.empty();
+                        if (achievementCategoryDTOs != null && !achievementCategoryDTOs.isEmpty())
+                        {
+                            return Observable.just(achievementCategoryDTOs.get(0));
+                        }
+                        else
+                        {
+                            return Observable.empty();
+                        }
                     }
                 });
     }

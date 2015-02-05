@@ -127,6 +127,7 @@ public class MessageItemView extends LinearLayout
         this.elementClickedListener = elementClickedListener;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick({R.id.message_item_icon, R.id.message_item_title})
     protected void handleUserClicked()
     {
@@ -142,6 +143,7 @@ public class MessageItemView extends LinearLayout
         }
     }
 
+    @Deprecated // Use Rx
     public static interface OnElementClickedListener
     {
         void onUserClicked(MessageHeaderDTO messageHeaderId);

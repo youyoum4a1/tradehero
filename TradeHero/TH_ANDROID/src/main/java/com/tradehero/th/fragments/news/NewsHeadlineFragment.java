@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -39,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 /**
@@ -145,10 +146,10 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     protected void fetchSecurity(@NonNull SecurityId securityId)
     {
         unsubscribe(securitySubscription);
-        securitySubscription = AndroidObservable.bindFragment(
+        securitySubscription = AppObservable.bindFragment(
                 this,
                 securityCompactCache.get(securityId))
-                .map(pair -> pair.second)
+                .map(new PairGetSecond<>())
                 .subscribe(
                         this::linkWith,
                         e -> {
@@ -171,10 +172,10 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
 
         unsubscribe(securityNewsSubscription);
         NewsItemListKey listKey = new NewsItemListSecurityKey(value.getSecurityIntegerId(), null, null);
-        securityNewsSubscription = AndroidObservable.bindFragment(
+        securityNewsSubscription = AppObservable.bindFragment(
                 this,
                 newsTitleCache.get(listKey))
-                .map(pair -> pair.second)
+                .map(new PairGetSecond<>())
                 .subscribe(
                         this::linkWith,
                         e -> THToast.show(R.string.error_fetch_security_info));

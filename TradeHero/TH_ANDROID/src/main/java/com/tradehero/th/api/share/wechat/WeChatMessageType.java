@@ -1,5 +1,6 @@
 package com.tradehero.th.api.share.wechat;
 
+import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 
 public enum WeChatMessageType
@@ -16,15 +17,15 @@ public enum WeChatMessageType
     Referral(10, R.string.share_to_wechat_referral);
 
     private final int value;
-    private final int titleResId;
+    @StringRes private final int titleResId;
 
-    WeChatMessageType(int value, int titleResId)
+    private WeChatMessageType(int value, @StringRes int titleResId)
     {
         this.value = value;
         this.titleResId = titleResId;
     }
 
-    public int getTitleResId()
+    @StringRes public int getTitleResId()
     {
         return titleResId;
     }

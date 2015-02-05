@@ -6,8 +6,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
-import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.AlertDialogRxUtil;
 import javax.inject.Inject;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 public class GooglePlayMarketUtil implements MarketUtil
@@ -16,13 +17,10 @@ public class GooglePlayMarketUtil implements MarketUtil
     public static final String PLAYSTORE_APP_ID = "com.tradehero.th";
     private static final String PLAYSTORE_URL = "https://play.google.com/store/apps/details?id=";
 
-    @NonNull protected final AlertDialogUtil alertDialogUtil;
-
     //<editor-fold desc="Constructors">
-    @Inject public GooglePlayMarketUtil(@NonNull AlertDialogUtil alertDialogUtil)
+    @Inject public GooglePlayMarketUtil()
     {
         super();
-        this.alertDialogUtil = alertDialogUtil;
     }
     //</editor-fold>
 
@@ -32,22 +30,21 @@ public class GooglePlayMarketUtil implements MarketUtil
         {
             activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
                     "market://details?id=" + PLAYSTORE_APP_ID)));
-        }
-        catch (ActivityNotFoundException ex)
+        } catch (ActivityNotFoundException ex)
         {
             try
             {
                 activity.startActivity(new Intent(Intent.ACTION_VIEW,
                         Uri.parse(getAppMarketUrl())));
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 Timber.e(e, "Cannot send to Google Play store");
-                alertDialogUtil.popWithNegativeButton(
-                        activity,
-                        R.string.webview_error_no_browser_for_intent_title,
-                        R.string.webview_error_no_browser_for_intent_description,
-                        R.string.cancel);
+                AlertDialogRxUtil.buildDefault(activity)
+                        .setTitle(R.string.webview_error_no_browser_for_intent_title)
+                        .setMessage(R.string.webview_error_no_browser_for_intent_description)
+                        .setPositiveButton(R.string.cancel)
+                        .build()
+                        .subscribe(Actions.empty(), Actions.empty());
             }
         }
     }

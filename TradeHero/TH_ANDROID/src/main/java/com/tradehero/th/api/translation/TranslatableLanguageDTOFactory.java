@@ -1,5 +1,6 @@
 package com.tradehero.th.api.translation;
 
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.i18n.LanguageDTOFactory;
@@ -10,32 +11,26 @@ import com.tradehero.th.api.i18n.LanguageDTOList;
  */
 abstract public class TranslatableLanguageDTOFactory
 {
-    @NonNull protected final LanguageDTOFactory languageDTOFactory;
-
-    //<editor-fold desc="Constructors">
-    protected TranslatableLanguageDTOFactory(@NonNull LanguageDTOFactory languageDTOFactory)
-    {
-        this.languageDTOFactory = languageDTOFactory;
-    }
-    //</editor-fold>
-
-    @NonNull public LanguageDTOList getTargetLanguages()
+    @NonNull public LanguageDTOList getTargetLanguages(@NonNull Resources resources)
     {
         LanguageDTOList targetLanguages = new LanguageDTOList();
-        String[] langCodes = getLanguageCodes();
+        String[] langCodes = getLanguageCodes(resources);
         for (String langCode : langCodes)
         {
-            targetLanguages.add(languageDTOFactory.createFromCode(langCode));
+            targetLanguages.add(LanguageDTOFactory.createFromCode(resources, langCode));
         }
         return targetLanguages;
     }
 
-    abstract protected String[] getLanguageCodes();
+    abstract protected String[] getLanguageCodes(@NonNull Resources resources);
 
-    @NonNull public LanguageDTO getBestMatch(@NonNull String languageCode, @NonNull String fallback)
+    @NonNull public LanguageDTO getBestMatch(
+            @NonNull Resources resources,
+            @NonNull String languageCode,
+            @NonNull String fallback)
     {
-        LanguageDTO bestMatch = languageDTOFactory.createFromCode(fallback);
-        for (LanguageDTO languageDTO : getTargetLanguages())
+        LanguageDTO bestMatch = LanguageDTOFactory.createFromCode(resources, fallback);
+        for (LanguageDTO languageDTO : getTargetLanguages(resources))
         {
             if (languageDTO.code.equals(languageCode))
             {

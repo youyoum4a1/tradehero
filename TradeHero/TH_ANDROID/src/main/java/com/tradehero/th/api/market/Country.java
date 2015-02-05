@@ -15,7 +15,7 @@ public enum Country
     AI(R.drawable.square_ai, R.string.location_name_ai),
     AL(R.drawable.square_al, R.string.location_name_al),
     AM(R.drawable.square_am, R.string.location_name_am),
-    //AN(R.drawable.square_an, R.string.location_name_an), Appears unrecognised on the server
+    //AN(R.drawable.square_an, R.string.location_name_an), // Appears unrecognised on the server
     AO(R.drawable.square_ao, R.string.location_name_ao),
     AQ(R.drawable.square_aq, R.string.location_name_aq),
     AR(R.drawable.square_ar, R.string.location_name_ar),

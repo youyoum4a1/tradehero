@@ -6,18 +6,13 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.view.View;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.tradehero.th.fragments.discussion.DiscussionActionButtonsView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
-import rx.Observer;
-import rx.observers.EmptyObserver;
+import rx.Observable;
 
 public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLinear<NewsItemCompactDTO>
 {
@@ -31,7 +26,7 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
     }
     //</editor-fold>
 
-    @Override protected NewsItemCompactViewHolder createViewHolder()
+    @NonNull @Override protected NewsItemCompactViewHolder createViewHolder()
     {
         return new NewsItemCompactViewHolder<>(getContext());
     }
@@ -57,6 +52,17 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
         this.securityId = securityId;
     }
 
+    @NonNull @Override protected Observable<DiscussionActionButtonsView.UserAction> handleUserAction(
+            DiscussionActionButtonsView.UserAction userAction)
+    {
+        if (userAction instanceof DiscussionActionButtonsView.CommentUserAction)
+        {
+            pushDiscussionFragment();
+            return Observable.empty();
+        }
+        return super.handleUserAction(userAction);
+    }
+
     protected void pushDiscussionFragment()
     {
         if (discussionKey != null)
@@ -75,45 +81,6 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
             }
 
             getNavigator().pushFragment(NewsDiscussionFragment.class, args);
-        }
-    }
-
-    @Override @NonNull
-    protected Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>> createDiscussionFetchObserver()
-    {
-        // We are ok with the NewsItemDTO being saved in cache, but we do not want
-        // to get it here...
-        return new EmptyObserver<>();
-    }
-
-    @Override
-    protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
-    {
-        return new NewsHeadlineViewHolderClickedListener()
-        {
-            @Override public void onShareButtonClicked()
-            {
-                // Nothing to do
-            }
-
-            @Override public void onUserClicked(UserBaseKey userClicked)
-            {
-                // Nothing to do
-            }
-
-            @Override public void onTranslationRequested()
-            {
-                // Nothing to do
-            }
-        };
-    }
-
-    abstract protected class NewsHeadlineViewHolderClickedListener extends AbstractDiscussionViewHolderClickedListener
-        implements NewsItemCompactViewHolder.OnMenuClickedListener
-    {
-        @Override public void onCommentButtonClicked()
-        {
-            pushDiscussionFragment();
         }
     }
 }

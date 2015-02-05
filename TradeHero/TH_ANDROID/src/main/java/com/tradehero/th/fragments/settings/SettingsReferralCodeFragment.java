@@ -17,12 +17,10 @@ import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.social.ReferralCodeDTO;
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -32,11 +30,10 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import java.util.List;
 import javax.inject.Inject;
-import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.functions.Actions;
+import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 public class SettingsReferralCodeFragment extends DashboardFragment
@@ -62,15 +59,13 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     @InjectView(R.id.settings_referral_code) TextView mReferralCode;
 
     private ClipboardManager clipboardManager;
-    @Nullable private Subscription profileCacheSubscription;
+    @NonNull protected SubscriptionList subscriptions;
     private UserProfileDTO userProfileDTO;
-    @Nullable private Subscription shareReqCodeSubscription;
-    @Nullable private Subscription systemStatusSubscription;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        socialShareHelper.setMenuClickedListener(createShareMenuListener());
+        subscriptions = new SubscriptionList();
     }
 
     @Override public void onAttach(Activity activity)
@@ -106,30 +101,25 @@ public class SettingsReferralCodeFragment extends DashboardFragment
 
     @Override public void onStop()
     {
-        unsubscribe(profileCacheSubscription);
-        profileCacheSubscription = null;
-        unsubscribe(shareReqCodeSubscription);
-        shareReqCodeSubscription = null;
-        unsubscribe(systemStatusSubscription);
-        systemStatusSubscription = null;
+        subscriptions.unsubscribe();
+        subscriptions = new SubscriptionList();
         super.onStop();
     }
 
     @Override public void onDestroyView()
     {
-        socialShareHelper.setMenuClickedListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }
 
     protected void fetchProfile()
     {
-        profileCacheSubscription = AndroidObservable.bindFragment(this,
+        subscriptions.add(AppObservable.bindFragment(this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
-                        this::handleFetchUserProfileFailed);
+                        this::handleFetchUserProfileFailed));
     }
 
     protected void linkWith(@NonNull UserProfileDTO userProfileDTO)
@@ -159,13 +149,13 @@ public class SettingsReferralCodeFragment extends DashboardFragment
 
     protected void fetchSystemStatus()
     {
-        systemStatusSubscription = AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 systemStatusCache.get(new SystemStatusKey())
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
-                        Actions.empty());
+                        Actions.empty()));
     }
 
     protected void linkWith(@NonNull SystemStatusDTO statusDTO)
@@ -194,43 +184,8 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     @OnClick(R.id.btn_referral_share)
     protected void shareToSocialNetwork(View view)
     {
-        socialShareHelper.share(new ReferralCodeDTO(userProfileDTO.referralCode));
-    }
-
-    @NonNull protected SocialShareHelper.OnMenuClickedListener createShareMenuListener()
-    {
-        return new ShareMenuClickedListener();
-    }
-
-    protected class ShareMenuClickedListener implements SocialShareHelper.OnMenuClickedListener
-    {
-        @Override public void onCancelClicked()
-        {
-            // Nothing to do
-        }
-
-        @Override public void onShareRequestedClicked(@NonNull SocialShareFormDTO socialShareFormDTO)
-        {
-            // Nothing to do
-            THToast.show(R.string.content_sharing_started);
-        }
-
-        @Override public void onConnectRequired(@NonNull SocialShareFormDTO shareFormDTO, @NonNull List<SocialNetworkEnum> toConnect)
-        {
-            // Nothing to do
-        }
-
-        @Override public void onShared(@NonNull SocialShareFormDTO shareFormDTO, @NonNull SocialShareResultDTO socialShareResultDTO)
-        {
-            // Nothing to do?
-            THToast.show(R.string.content_shared);
-        }
-
-        @Override public void onShareFailed(@NonNull SocialShareFormDTO shareFormDTO, @NonNull Throwable throwable)
-        {
-            THToast.show(R.string.error_share_referral_code_on_network);
-            Timber.e(throwable, "Failed to share " + shareFormDTO);
-        }
+        subscriptions.add(socialShareHelper.show(new ReferralCodeDTO(userProfileDTO.referralCode))
+                .subscribe(Actions.empty(), Actions.empty()));
     }
 
     @SuppressWarnings("UnusedParameters")

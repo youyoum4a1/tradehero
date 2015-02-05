@@ -28,7 +28,7 @@ public class TimelineDiscussionFragment extends AbstractDiscussionFragment
     @Override public <T extends Fragment> boolean allowNavigateTo(@NonNull Class<T> fragmentClass, Bundle args)
     {
         boolean basicCheck = !this.getClass().isAssignableFrom(fragmentClass) && super.allowNavigateTo(fragmentClass, args);
-        boolean sameKeyCheck = getDiscussionKey() != TimelineDiscussionFragment.getDiscussionKey(args, discussionKeyFactory);
+        boolean sameKeyCheck = getDiscussionKey() != TimelineDiscussionFragment.getDiscussionKey(args);
         return basicCheck && sameKeyCheck;
     }
 }

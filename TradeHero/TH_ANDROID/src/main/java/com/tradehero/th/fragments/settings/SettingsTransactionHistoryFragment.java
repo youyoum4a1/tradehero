@@ -27,7 +27,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 
 public class SettingsTransactionHistoryFragment extends DashboardFragment
 {
@@ -38,7 +38,6 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     @Inject UserTransactionHistoryListCacheRx userTransactionHistoryListCache;
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
-    @Inject ProgressDialogUtil progressDialogUtil;
 
     @Nullable protected Subscription transactionListCacheSubscription;
 
@@ -70,7 +69,7 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
         transactionListView.setAdapter(transactionListViewAdapter);
         transactionListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
 
-        progressDialog = progressDialogUtil.show(
+        progressDialog = ProgressDialogUtil.show(
                 getActivity(),
                 R.string.alert_dialog_please_wait,
                 R.string.authentication_connecting_tradehero_only);
@@ -105,7 +104,7 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     {
         UserTransactionHistoryListType key = new UserTransactionHistoryListType(currentUserId.toUserBaseKey());
         unsubscribe(transactionListCacheSubscription);
-        transactionListCacheSubscription = AndroidObservable.bindFragment(
+        transactionListCacheSubscription = AppObservable.bindFragment(
                 this,
                 userTransactionHistoryListCache.get(key))
                 .subscribe(createTransactionHistoryObserver());

@@ -5,16 +5,16 @@ import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.WarrantType;
-import com.tradehero.th.api.security.WarrantTypeShortCodeDef;
+import com.tradehero.th.api.security.WarrantTypeShortCode;
 import java.util.Date;
 
 public class WarrantDTO extends SecurityCompactDTO
 {
     public static final String DTO_DESERIALISING_TYPE = "3";
-    @WarrantTypeShortCodeDef public static final String CALL_SHORT_CODE = "C";
-    @WarrantTypeShortCodeDef public static final String PUT_SHORT_CODE = "P";
+    @WarrantTypeShortCode public static final String CALL_SHORT_CODE = "C";
+    @WarrantTypeShortCode public static final String PUT_SHORT_CODE = "P";
 
-    @WarrantTypeShortCodeDef public String warrantType;
+    @WarrantTypeShortCode public String warrantType;
     public Date expiryDate;
     public Double strikePrice;
     public String strikePriceCcy;

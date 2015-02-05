@@ -10,10 +10,6 @@ public class UserProfileCompactDTO extends UserBaseDTO
     public boolean twLinked;
     public boolean wbLinked;
 
-    public UserProfileCompactDTO()
-    {
-    }
-
     @Override public String toString()
     {
         return "UserProfileCompactDTO{" +

@@ -10,7 +10,6 @@ import com.tradehero.common.graphics.AbstractSequentialTransformation;
 import com.tradehero.common.graphics.AlphaTransformation;
 import com.tradehero.common.graphics.GradientTransformation;
 import com.tradehero.common.graphics.GrayscaleTransformation;
-import com.tradehero.common.graphics.RecyclerTransformation;
 import com.tradehero.common.graphics.RoundedCornerShaderTransformation;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.common.graphics.StackBlurTransformation;

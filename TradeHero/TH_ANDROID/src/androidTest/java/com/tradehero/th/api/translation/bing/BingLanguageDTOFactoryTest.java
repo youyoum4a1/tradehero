@@ -4,6 +4,7 @@ import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.i18n.LanguageCodePredicate;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.i18n.LanguageDTOList;
+import com.tradehero.th.base.TestTHApp;
 import javax.inject.Inject;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -18,14 +19,14 @@ public class BingLanguageDTOFactoryTest
 
     @Test public void getLanguagesShouldReturnFairAmount()
     {
-        LanguageDTOList languageDTOs = bingLanguageDTOFactory.getTargetLanguages();
+        LanguageDTOList languageDTOs = bingLanguageDTOFactory.getTargetLanguages(TestTHApp.context().getResources());
 
         assertThat(languageDTOs.size()).isGreaterThan(10);
     }
 
     @Test public void getLanguagesShouldPopulateAllFieldsFrench()
     {
-        LanguageDTOList languageDTOs = bingLanguageDTOFactory.getTargetLanguages();
+        LanguageDTOList languageDTOs = bingLanguageDTOFactory.getTargetLanguages(TestTHApp.context().getResources());
 
         LanguageDTO french = languageDTOs.findFirstWhere(new LanguageCodePredicate("fr"));
         assertThat(french).isNotNull();
@@ -39,7 +40,7 @@ public class BingLanguageDTOFactoryTest
     @Ignore("Should hard-code some conversion between languages")
     @Test public void getLanguagesShouldPopulateAllFieldsChinese()
     {
-        LanguageDTOList languageDTOs = bingLanguageDTOFactory.getTargetLanguages();
+        LanguageDTOList languageDTOs = bingLanguageDTOFactory.getTargetLanguages(TestTHApp.context().getResources());
 
         LanguageDTO chineseSimpl = languageDTOs.findFirstWhere(new LanguageCodePredicate("zh-hans"));
         assertThat(chineseSimpl).isNotNull();
@@ -52,7 +53,7 @@ public class BingLanguageDTOFactoryTest
     @Ignore("Should hard-code some conversion between languages")
     @Test public void getLanguagesShouldPopulateAllFieldsKlingon()
     {
-        LanguageDTOList languageDTOs = bingLanguageDTOFactory.getTargetLanguages();
+        LanguageDTOList languageDTOs = bingLanguageDTOFactory.getTargetLanguages(TestTHApp.context().getResources());
 
         LanguageDTO klingon = languageDTOs.findFirstWhere(new LanguageCodePredicate("tlh"));
         assertThat(klingon).isNotNull();

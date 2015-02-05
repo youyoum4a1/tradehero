@@ -217,20 +217,23 @@ public class AchievementDialogSwipeDismissTouchListener implements View.OnTouchL
                     break;
                 }
 
-                mView.animate()
-                        .translationX(0)
-                        .alpha(1)
-                        .scaleY(0)
-                        .scaleX(0)
-                        .setDuration(mAnimationTime)
-                        .setListener(null);
-                mVelocityTracker.recycle();
-                mVelocityTracker = null;
-                mTranslationX = 0;
-                mDownX = 0;
-                mDownY = 0;
-                mScale = 0;
-                mSwiping = false;
+                if(mSwiping)
+                {
+                    mView.animate()
+                            .translationX(0)
+                            .alpha(1)
+                            .scaleY(0)
+                            .scaleX(0)
+                            .setDuration(mAnimationTime)
+                            .setListener(null);
+                    mVelocityTracker.recycle();
+                    mVelocityTracker = null;
+                    mTranslationX = 0;
+                    mDownX = 0;
+                    mDownY = 0;
+                    mScale = 0;
+                    mSwiping = false;
+                }
                 break;
             }
 

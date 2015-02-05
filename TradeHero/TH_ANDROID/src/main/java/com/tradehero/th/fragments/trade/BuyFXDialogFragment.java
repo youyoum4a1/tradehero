@@ -11,7 +11,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 
 public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
 {
@@ -64,7 +64,6 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
         return (total * (double) mTransactionQuantity / Math.abs((double) shareCount));
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @Override @Nullable protected Boolean isClosingPosition()
     {
         if (positionDTOCompact == null)
@@ -106,7 +105,7 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
 
     @Override protected Subscription getTransactionSubscription(TransactionFormDTO transactionFormDTO)
     {
-        return AndroidObservable.bindFragment(
+        return AppObservable.bindFragment(
                 this,
                 securityServiceWrapper.doTransactionRx(securityId, transactionFormDTO, IS_BUY))
                 .subscribe(new BuySellObserver(IS_BUY));

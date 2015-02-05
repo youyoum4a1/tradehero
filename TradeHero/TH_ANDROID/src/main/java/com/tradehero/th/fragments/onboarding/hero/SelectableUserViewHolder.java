@@ -19,7 +19,6 @@ import com.tradehero.th.models.number.THSignedPercentage;
 class SelectableUserViewHolder implements DTOView<SelectableUserDTO>
 {
     @NonNull final Context context;
-    @NonNull final UserBaseDTOUtil userBaseDTOUtil;
     @NonNull final Picasso picasso;
     @NonNull final Transformation userImageTransformation;
 
@@ -33,12 +32,10 @@ class SelectableUserViewHolder implements DTOView<SelectableUserDTO>
     //<editor-fold desc="Constructors">
     SelectableUserViewHolder(
             @NonNull Context context,
-            @NonNull UserBaseDTOUtil userBaseDTOUtil,
             @NonNull Picasso picasso,
             @NonNull Transformation userImageTransformation)
     {
         this.context = context;
-        this.userBaseDTOUtil = userBaseDTOUtil;
         this.picasso = picasso;
         this.userImageTransformation = userImageTransformation;
     }
@@ -84,7 +81,7 @@ class SelectableUserViewHolder implements DTOView<SelectableUserDTO>
         {
             return context.getString(R.string.na);
         }
-        return userBaseDTOUtil.getShortDisplayName(context, selectableDTO.value);
+        return UserBaseDTOUtil.getShortDisplayName(context, selectableDTO.value);
     }
 
     void displayPicture()

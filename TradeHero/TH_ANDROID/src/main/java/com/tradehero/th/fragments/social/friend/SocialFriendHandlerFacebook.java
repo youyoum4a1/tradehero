@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 import com.facebook.Session;
 import com.facebook.widget.WebDialog;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
@@ -22,7 +23,6 @@ import com.tradehero.common.social.facebook.FacebookWebDialogOperator;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.MakePairFunc2;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -144,9 +144,9 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     @NonNull public Observable<Pair<UserProfileDTO, Session>> createProfileSessionObservable()
     {
         return Observable.combineLatest(
-                userProfileCache.get(currentUserId.toUserBaseKey()).map(pair -> pair.second),
+                userProfileCache.get(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
                 facebookAuthenticationProvider.createSessionObservable(activityProvider.get()),
-                new MakePairFunc2<>())
+                Pair::create)
                 .flatMap(pair -> {
                     if (pair.first.fbLinked)
                     {
@@ -158,7 +158,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
                                     .observeOn(Schedulers.io())
                                     .flatMap(socialServiceWrapper.connectFunc1(pair.first.getBaseKey())),
                             Observable.just(Session.getActiveSession()),
-                            new MakePairFunc2<>());
+                            Pair::create);
                 });
     }
 }

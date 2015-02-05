@@ -34,7 +34,6 @@ import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.inject.Injector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.network.service.WeChatServiceWrapper;
@@ -49,8 +48,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
-import rx.observers.EmptyObserver;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler //created by alex
@@ -61,7 +59,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     private static final String WECHAT_SHARE_NEWS_KEY = "news:";
     private static final String WECHAT_SHARE_TYPE_VALUE = "WeChat";
 
-    private Injector newInjector;
     private WeChatDTO weChatDTO;
     private Bitmap mBitmap;
     @Nullable private Subscription trackShareSubscription;
@@ -88,8 +85,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     {
         super.onCreate(savedInstanceState);
         THApp app = THApp.get(this);
-        newInjector = app.plus(new WXEntryActivityModule());
-        newInjector.inject(this);
+        app.plus(new WXEntryActivityModule()).inject(this);
 
         // TODO take this intent extraction into a separate method and use a new
         // WeChatDTO method to read from Intent.
@@ -263,10 +259,12 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         weChatTrackShareFormDTO.type = WECHAT_SHARE_TYPE_VALUE;
 
         detachTrackShareSubscription();
-        trackShareSubscription = AndroidObservable.bindActivity(
+        trackShareSubscription = AppObservable.bindActivity(
                 this,
                 weChatServiceWrapper.trackShareRx(currentUserId.toUserBaseKey(), weChatTrackShareFormDTO))
-                .subscribe(new TrackShareObserver());
+                .subscribe(
+                        this::onSharedToWeChat,
+                        this::onShareToWeChatError);
     }
 
     private void detachTrackShareSubscription()
@@ -285,18 +283,15 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         super.onDestroy();
     }
 
-    private class TrackShareObserver extends EmptyObserver<TrackShareDTO>
+    public void onSharedToWeChat(@SuppressWarnings("UnusedParameters") TrackShareDTO args)
     {
-        @Override public void onNext(TrackShareDTO args)
-        {
-            finish();
-        }
+        finish();
+    }
 
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(new THException(e));
-            finish();
-        }
+    public void onShareToWeChatError(Throwable e)
+    {
+        THToast.show(new THException(e));
+        finish();
     }
 
     /*

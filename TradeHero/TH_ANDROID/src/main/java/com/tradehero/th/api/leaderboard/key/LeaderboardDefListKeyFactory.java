@@ -2,18 +2,11 @@ package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import javax.inject.Inject;
+import android.support.annotation.Nullable;
 
 public class LeaderboardDefListKeyFactory
 {
-    //<editor-fold desc="Constructors">
-    @Inject public LeaderboardDefListKeyFactory()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    public LeaderboardDefListKey create(@NonNull Bundle args)
+    @NonNull public static LeaderboardDefListKey create(@NonNull Bundle args)
     {
         switch (args.getString(LeaderboardDefListKey.BUNDLE_KEY_KEY))
         {
@@ -38,5 +31,34 @@ public class LeaderboardDefListKeyFactory
             default:
                 throw new IllegalArgumentException("Unhandled key value " + args.getString(LeaderboardDefListKey.BUNDLE_KEY_KEY));
         }
+    }
+
+    @NonNull public static LeaderboardDefListKey create(@NonNull LeaderboardDefListKey origin, @Nullable Integer page)
+    {
+        if (origin instanceof ConnectedLeaderboardDefListKey)
+        {
+            return new ConnectedLeaderboardDefListKey(page);
+        }
+        if (origin instanceof DrillDownLeaderboardDefListKey)
+        {
+            return new DrillDownLeaderboardDefListKey(page);
+        }
+        if (origin instanceof ExchangeLeaderboardDefListKey)
+        {
+            return new ExchangeLeaderboardDefListKey(page);
+        }
+        if (origin instanceof MostSkilledLeaderboardDefListKey)
+        {
+            return new MostSkilledLeaderboardDefListKey(page);
+        }
+        if (origin instanceof SectorLeaderboardDefListKey)
+        {
+            return new SectorLeaderboardDefListKey(page);
+        }
+        if (origin instanceof TimePeriodLeaderboardDefListKey)
+        {
+            return new TimePeriodLeaderboardDefListKey(page);
+        }
+        throw new IllegalArgumentException("Unhandled type " + origin.getClass());
     }
 }

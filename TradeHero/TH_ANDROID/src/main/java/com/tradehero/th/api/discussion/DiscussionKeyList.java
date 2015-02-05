@@ -1,29 +1,12 @@
 package com.tradehero.th.api.discussion;
 
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTOKeyIdList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import java.util.Collection;
 
 public class DiscussionKeyList extends DTOKeyIdList<DiscussionKey>
 {
-    //<editor-fold desc="Constructors">
-    public DiscussionKeyList()
-    {
-        super();
-    }
-
-    public DiscussionKeyList(int capacity)
-    {
-        super(capacity);
-    }
-
-    public DiscussionKeyList(Collection<? extends DiscussionKey> collection)
-    {
-        super(collection);
-    }
-    //</editor-fold>
-
-    public DiscussionKey getLowestId()
+    @Nullable public DiscussionKey getLowestId()
     {
         DiscussionKey lowest = null;
         for (DiscussionKey discussionKey: this)
@@ -36,7 +19,7 @@ public class DiscussionKeyList extends DTOKeyIdList<DiscussionKey>
         return lowest;
     }
 
-    public DiscussionKey getHighestId()
+    @Nullable public DiscussionKey getHighestId()
     {
         DiscussionKey highest = null;
         for (DiscussionKey discussionKey: this)

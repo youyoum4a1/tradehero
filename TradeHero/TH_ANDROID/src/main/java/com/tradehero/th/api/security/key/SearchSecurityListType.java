@@ -32,16 +32,15 @@ public class SearchSecurityListType extends SecurityListType
                 super.hashCode();
     }
 
-    @Override protected boolean equals(@NonNull SecurityListType other)
+    @Override protected boolean equalFields(@NonNull SecurityListType other)
     {
-        return super.equals(other)
-                && other instanceof SearchSecurityListType
-                && equals((SearchSecurityListType) other);
+        return other instanceof SearchSecurityListType
+                && equalFields((SearchSecurityListType) other);
     }
 
-    protected boolean equals(@NonNull SearchSecurityListType other)
+    protected boolean equalFields(@NonNull SearchSecurityListType other)
     {
-        return super.equals(other) &&
+        return super.equalFields(other) &&
                 (searchString == null ? other.searchString == null : searchString.equals(other.searchString));
     }
 

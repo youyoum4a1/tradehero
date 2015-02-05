@@ -11,7 +11,6 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -23,10 +22,9 @@ class EmailNotificationSettingViewHolder extends UserProfileCheckBoxSettingViewH
     @Inject EmailNotificationSettingViewHolder(
             @NonNull CurrentUserId currentUserId,
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull UserServiceWrapper userServiceWrapper)
     {
-        super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper);
+        super(currentUserId, userProfileCache, userServiceWrapper);
     }
     //</editor-fold>
 
@@ -55,7 +53,7 @@ class EmailNotificationSettingViewHolder extends UserProfileCheckBoxSettingViewH
         PreferenceFragment preferenceFragmentCopy = preferenceFragment;
         if (preferenceFragmentCopy != null)
         {
-            progressDialog = progressDialogUtil.show(preferenceFragmentCopy.getActivity(),
+            progressDialog = ProgressDialogUtil.show(preferenceFragmentCopy.getActivity(),
                     R.string.settings_notifications_email_alert_title,
                     R.string.settings_notifications_email_alert_message);
             unsubscribe(changeStatusSubscription);
@@ -63,13 +61,10 @@ class EmailNotificationSettingViewHolder extends UserProfileCheckBoxSettingViewH
                     userServiceWrapper.updateProfilePropertyEmailNotificationsRx(
                             currentUserId.toUserBaseKey(), enable)
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(createUserProfileObserver());
+                            .subscribe(
+                                    this::onProfileUpdated,
+                                    this::onProfileUpdateFailed);
         }
         return false;
-    }
-
-    protected Observer<UserProfileDTO> createUserProfileObserver()
-    {
-        return new UserProfileUpdateObserver();
     }
 }

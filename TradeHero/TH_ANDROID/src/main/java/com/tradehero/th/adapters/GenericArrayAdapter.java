@@ -18,6 +18,7 @@ public class GenericArrayAdapter<T> extends BaseAdapter
     @NonNull private final Context context;
     @LayoutRes private final int layoutResourceId;
 
+    //<editor-fold desc="Constructors">
     public GenericArrayAdapter(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
         this.context = context;
@@ -25,6 +26,7 @@ public class GenericArrayAdapter<T> extends BaseAdapter
         this.layoutResourceId = layoutResourceId;
         this.items = new ArrayList<>();
     }
+    //</editor-fold>
 
     public void setItems(@NonNull List<T> items)
     {

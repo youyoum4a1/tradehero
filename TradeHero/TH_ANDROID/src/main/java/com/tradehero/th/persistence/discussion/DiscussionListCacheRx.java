@@ -27,6 +27,7 @@ public class DiscussionListCacheRx extends BaseFetchDTOCacheRx<DiscussionListKey
     @NonNull private final DiscussionCacheRx discussionCache;
     @NonNull private final DiscussionServiceWrapper discussionServiceWrapper;
 
+    //<editor-fold desc="Constructors">
     @Inject public DiscussionListCacheRx(
             @NonNull DiscussionServiceWrapper discussionServiceWrapper,
             @NonNull DiscussionCacheRx discussionCache,
@@ -36,6 +37,7 @@ public class DiscussionListCacheRx extends BaseFetchDTOCacheRx<DiscussionListKey
         this.discussionServiceWrapper = discussionServiceWrapper;
         this.discussionCache = discussionCache;
     }
+    //</editor-fold>
 
     @Override @NonNull protected Observable<PaginatedDTO<DiscussionDTO>> fetch(@NonNull DiscussionListKey discussionListKey)
     {
@@ -74,7 +76,7 @@ public class DiscussionListCacheRx extends BaseFetchDTOCacheRx<DiscussionListKey
      * TODO right
      * @param discussionType
      */
-    public void invalidateAllForDiscussionType(DiscussionType discussionType)
+    public void invalidateAllForDiscussionType(@NonNull DiscussionType discussionType)
     {
         for (DiscussionListKey discussionListKey : new ArrayList<>(snapshot().keySet()))
         {

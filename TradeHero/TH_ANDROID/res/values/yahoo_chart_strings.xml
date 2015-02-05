@@ -2,12 +2,6 @@
 <resources>
 
   <!-- Yahoo Charts -->
-  <string name="yahoo_chart_1min">1m</string>
-  <string name="yahoo_chart_5min">5m</string>
-  <string name="yahoo_chart_15min">15m</string>
-  <string name="yahoo_chart_30min">30m</string>
-  <string name="yahoo_chart_1h">1h</string>
-  <string name="yahoo_chart_4h">4h</string>
   <string name="yahoo_chart_1d">1d</string>
   <string name="yahoo_chart_5d">5d</string>
   <string name="yahoo_chart_3m">3m</string>

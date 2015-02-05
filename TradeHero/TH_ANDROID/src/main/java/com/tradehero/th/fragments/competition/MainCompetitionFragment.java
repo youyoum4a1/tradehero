@@ -19,9 +19,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
-import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.BottomTabs;
@@ -37,7 +37,6 @@ import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
@@ -51,7 +50,6 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePortfolioD
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePreSeasonDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
@@ -64,13 +62,11 @@ import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
 import com.tradehero.th.network.service.ProviderServiceWrapper;
 import com.tradehero.th.persistence.competition.CompetitionListCacheRx;
 import com.tradehero.th.persistence.competition.CompetitionPreseasonCacheRx;
-import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
-import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,7 +75,7 @@ import javax.inject.Inject;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 @Routable({
@@ -101,7 +97,6 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject ProviderDisplayCellListCacheRx providerDisplayListCellCache;
     @Inject ProviderUtil providerUtil;
     @Inject CompetitionZoneDTOUtil competitionZoneDTOUtil;
-    @Inject GraphicUtil graphicUtil;
     @Inject THIntentFactory thIntentFactory;
     @Inject CompetitionPreseasonCacheRx competitionPreSeasonCacheRx;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
@@ -235,10 +230,10 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void fetchCurrentUserProfile()
     {
         unsubscribe(userProfileCacheSubscription);
-        userProfileCacheSubscription = AndroidObservable.bindFragment(
+        userProfileCacheSubscription = AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         this::handleFetchCurrentUserProfileFailed);
@@ -263,10 +258,10 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void fetchCompetitionList()
     {
         unsubscribe(competitionListCacheSubscription);
-        competitionListCacheSubscription = AndroidObservable.bindFragment(
+        competitionListCacheSubscription = AppObservable.bindFragment(
                 this,
                 competitionListCache.get(providerId)
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         this::handleFetchCompetitionListFailed);
@@ -291,10 +286,10 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void fetchDisplayCells()
     {
         unsubscribe(displayCellListCacheFetchSubscription);
-        displayCellListCacheFetchSubscription = AndroidObservable.bindFragment(
+        displayCellListCacheFetchSubscription = AppObservable.bindFragment(
                 this,
                 providerDisplayListCellCache.get(new ProviderDisplayCellListKey(providerId))
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         this::handleFetchDisplayCellListFailed);
@@ -319,10 +314,10 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void fetchPreSeason()
     {
         unsubscribe(competitionPreSeasonSubscription);
-        competitionPreSeasonSubscription = AndroidObservable.bindFragment(
+        competitionPreSeasonSubscription = AppObservable.bindFragment(
                 this,
                 competitionPreSeasonCacheRx.get(providerId)
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         this::handleFetchPreSeasonFailed);
@@ -349,7 +344,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void fetchPrizePool()
     {
         unsubscribe(displayPrizePoolSubscription);
-        displayPrizePoolSubscription = AndroidObservable.bindFragment(
+        displayPrizePoolSubscription = AppObservable.bindFragment(
                 this, providerServiceWrapper.getProviderPrizePoolRx(providerId))
                 .subscribe(
                         this::linkWith,
@@ -433,12 +428,12 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             btnTradeNow.setVisibility(View.VISIBLE);
 
-            int bgColor = graphicUtil.parseColor(providerDTO.hexColor);
-            StateListDrawable stateListDrawable = graphicUtil.createStateListDrawable(getActivity(), bgColor);
+            int bgColor = GraphicUtil.parseColor(providerDTO.hexColor);
+            StateListDrawable stateListDrawable = GraphicUtil.createStateListDrawable(getActivity(), bgColor);
 
-            graphicUtil.setBackground(btnTradeNow, stateListDrawable);
+            GraphicUtil.setBackground(btnTradeNow, stateListDrawable);
 
-            int textColor = graphicUtil.parseColor(providerDTO.textHexColor, graphicUtil.getContrastingColor(bgColor));
+            int textColor = GraphicUtil.parseColor(providerDTO.textHexColor, GraphicUtil.getContrastingColor(bgColor));
             btnTradeNow.setTextColor(textColor);
         }
     }
@@ -589,7 +584,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
         else if (navigator != null)
         {
-            navigator.get().pushFragment(CompetitionLeaderboardMarkUserListClosedFragment.class, args);
+            navigator.get().pushFragment(CompetitionLeaderboardMarkUserListFragment.class, args);
         }
     }
 

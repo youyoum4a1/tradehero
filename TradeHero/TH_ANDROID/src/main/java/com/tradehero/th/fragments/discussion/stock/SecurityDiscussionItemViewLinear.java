@@ -2,11 +2,12 @@ package com.tradehero.th.fragments.discussion.stock;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
+import com.tradehero.th.fragments.discussion.DiscussionActionButtonsView;
 import com.tradehero.th.fragments.discussion.DiscussionItemViewLinear;
+import rx.Observable;
 
 public class SecurityDiscussionItemViewLinear
         extends DiscussionItemViewLinear<DiscussionKey>
@@ -30,37 +31,25 @@ public class SecurityDiscussionItemViewLinear
         viewHolder.setDownVote(false);
     }
 
+    @NonNull @Override protected Observable<DiscussionActionButtonsView.UserAction> handleUserAction(
+            DiscussionActionButtonsView.UserAction userAction)
+    {
+        if (userAction instanceof DiscussionActionButtonsView.CommentUserAction)
+        {
+            handleActionButtonCommentCountClicked();
+            return Observable.empty();
+        }
+        return super.handleUserAction(userAction);
+    }
+
     void handleActionButtonCommentCountClicked()
     {
         Bundle args = new Bundle();
         SecurityDiscussionCommentFragment.putDiscussionKey(args, discussionKey);
-        getNavigator().pushFragment(SecurityDiscussionCommentFragment.class, args);
-    }
-
-    @Override
-    protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
-    {
-        return new SecurityDiscussionItemViewMenuClickedListener()
+        if (getNavigator().getCurrentFragment() != null && getNavigator().getCurrentFragment() instanceof SecurityDiscussionCommentFragment)
         {
-            @Override public void onShareButtonClicked()
-            {
-                // Nothing to do
-            }
-
-            @Override public void onTranslationRequested()
-            {
-                // Nothing to do
-            }
-        };
-    }
-
-    abstract protected class SecurityDiscussionItemViewMenuClickedListener
-        extends DiscussionItemViewMenuClickedListener
-            implements AbstractDiscussionItemViewHolder.OnMenuClickedListener
-    {
-        @Override public void onCommentButtonClicked()
-        {
-            handleActionButtonCommentCountClicked();
+            return;
         }
+        getNavigator().pushFragment(SecurityDiscussionCommentFragment.class, args);
     }
 }

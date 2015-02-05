@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.message;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import com.tradehero.th.api.discussion.PrivateDiscussionDTO;
 import com.tradehero.th.api.discussion.key.PrivateMessageKey;
@@ -16,7 +17,7 @@ public class PrivateMessageBubbleViewLinear extends DiscussionItemViewLinear<Pri
     }
     //</editor-fold>
 
-    @Override protected DiscussionItemViewHolder createViewHolder()
+    @NonNull @Override protected DiscussionItemViewHolder createViewHolder()
     {
         return new DiscussionItemViewHolder<PrivateDiscussionDTO>(getContext());
     }

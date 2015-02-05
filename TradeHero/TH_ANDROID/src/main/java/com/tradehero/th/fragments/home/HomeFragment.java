@@ -46,9 +46,8 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable({
@@ -60,7 +59,6 @@ public final class HomeFragment extends BaseWebViewFragment
     @InjectView(android.R.id.progress) View progressBar;
     @InjectView(R.id.main_content_wrapper) BetterViewAnimator mainContentWrapper;
 
-    @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Provider<Activity> activityProvider;
     @Inject Lazy<UserProfileCacheRx> userProfileCacheLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
@@ -69,7 +67,6 @@ public final class HomeFragment extends BaseWebViewFragment
     @Inject CurrentUserId currentUserId;
     @Inject HomeContentCacheRx homeContentCache;
     @Inject THRouter thRouter;
-    @Inject Lazy<UserFriendsDTOFactory> userFriendsDTOFactory;
 
     @RouteProperty(ROUTER_SOCIALID) String socialId;
     @RouteProperty(ROUTER_SOCIALUSERID) String socialUserId;
@@ -185,7 +182,7 @@ public final class HomeFragment extends BaseWebViewFragment
     //<editor-fold desc="Windy's stuff, to be refactored">
     private void createInviteInHomePage()
     {
-        userFriendsDTO = userFriendsDTOFactory.get().createFrom(socialId, socialUserId);
+        userFriendsDTO = UserFriendsDTOFactory.createFrom(socialId, socialUserId);
         invite();
     }
 
@@ -210,7 +207,7 @@ public final class HomeFragment extends BaseWebViewFragment
             inviteFriendForm.add(userFriendsDTO);
             getProgressDialog().show();
             unsubscribe(inviteSubscription);
-            inviteSubscription = AndroidObservable.bindFragment(
+            inviteSubscription = AppObservable.bindFragment(
                     this,
                     userServiceWrapperLazy.get()
                             .inviteFriendsRx(currentUserId.toUserBaseKey(), inviteFriendForm))
@@ -262,19 +259,24 @@ public final class HomeFragment extends BaseWebViewFragment
         inviteFriendForm.add(userDto);
         getProgressDialog().show();
         unsubscribe(inviteSubscription);
-        inviteSubscription = AndroidObservable.bindFragment(
+        inviteSubscription = AppObservable.bindFragment(
                 this,
                 userServiceWrapperLazy.get()
                         .inviteFriendsRx(currentUserId.toUserBaseKey(), inviteFriendForm))
                 .subscribe(new TrackShareObserver());
     }
 
-    private class TrackShareObserver extends EmptyObserver<BaseResponseDTO>
+    private class TrackShareObserver implements Observer<BaseResponseDTO>
     {
         @Override public void onNext(BaseResponseDTO args)
         {
             THToast.show(R.string.invite_friend_success);
             getProgressDialog().hide();
+        }
+
+        @Override public void onCompleted()
+        {
+
         }
 
         @Override public void onError(Throwable e)
@@ -290,7 +292,7 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             return progressDialog;
         }
-        progressDialog = progressDialogUtilLazy.get().show(
+        progressDialog = ProgressDialogUtil.show(
                 activityProvider.get(),
                 R.string.loading_loading,
                 R.string.alert_dialog_please_wait);

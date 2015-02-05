@@ -1,6 +1,5 @@
 package com.tradehero.th.api.users;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
@@ -93,16 +92,6 @@ public class UserProfileDTO extends UserProfileCompactDTO
         return userBaseKey != null && isFollowingUser(userBaseKey.key);
     }
 
-    public boolean isFollowingUser(UserBaseDTO userBaseDTO)
-    {
-        return userBaseDTO != null && isFollowingUser(userBaseDTO.id);
-    }
-
-    public boolean isPremiumFollowingUser(@NonNull UserBaseKey userBaseKey)
-    {
-        return this.premiumHeroIds != null && this.premiumHeroIds.contains(userBaseKey.key);
-    }
-
     public int getFollowType(UserBaseKey userBaseKey)
     {
         return userBaseKey == null ? UserProfileDTOUtil.IS_NOT_FOLLOWER : getFollowType(userBaseKey.key);
@@ -150,36 +139,6 @@ public class UserProfileDTO extends UserProfileCompactDTO
             }
         }
         return userGenerated;
-    }
-
-    public List<UserBaseKey> getHeroBaseKeys()
-    {
-        if (heroIds == null)
-        {
-            return null;
-        }
-        List<UserBaseKey> heroKeys = new ArrayList<>();
-        for (Integer heroId: heroIds)
-        {
-            if (heroId != null)
-            {
-                heroKeys.add(new UserBaseKey(heroId));
-            }
-        }
-        return heroKeys;
-    }
-
-    public int getLeaderboardRanking(int leaderboardId)
-    {
-        for (UserLeaderboardRankingDTO userLeaderboardRankingDTO: rank)
-        {
-            if (userLeaderboardRankingDTO.leaderboardId == leaderboardId)
-            {
-                // 1st-base ranking
-                return (userLeaderboardRankingDTO.ordinalPosition + 1);
-            }
-        }
-        return 0;
     }
 
     public int getUserAlertPlansAlertCount()

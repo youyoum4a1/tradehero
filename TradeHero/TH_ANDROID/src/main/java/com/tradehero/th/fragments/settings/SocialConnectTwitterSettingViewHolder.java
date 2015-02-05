@@ -6,14 +6,11 @@ import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.auth.TwitterAuthenticationProvider;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -23,22 +20,16 @@ public class SocialConnectTwitterSettingViewHolder extends SocialConnectSettingV
     @Inject public SocialConnectTwitterSettingViewHolder(
             @NonNull CurrentUserId currentUserId,
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull UserServiceWrapper userServiceWrapper,
-            @NonNull AlertDialogUtil alertDialogUtil,
             @NonNull SocialServiceWrapper socialServiceWrapper,
             @NonNull Lazy<TwitterAuthenticationProvider> socialAuthenticationProvider,
-            @NonNull UserProfileDTOUtil userProfileDTOUtil,
             @NonNull @AuthHeader String authToken)
     {
         super(currentUserId,
                 userProfileCache,
-                progressDialogUtil,
                 userServiceWrapper,
-                alertDialogUtil,
                 socialServiceWrapper,
                 socialAuthenticationProvider,
-                userProfileDTOUtil,
                 authToken);
     }
     //</editor-fold>

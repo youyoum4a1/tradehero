@@ -50,7 +50,9 @@ import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
-import rx.Subscription;
+import rx.Observable;
+import rx.internal.util.SubscriptionList;
+import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
 import static com.tradehero.th.utils.Constants.MAX_OWN_LEADER_RANKING;
@@ -69,10 +71,9 @@ public class LeaderboardMarkUserItemView
     @Inject DashboardNavigator navigator;
 
     protected UserProfileDTO currentUserProfileDTO;
-    protected OnFollowRequestedListener followRequestedListener;
     protected OwnedPortfolioId applicablePortfolioId;
     // data
-    protected LeaderboardUserDTO leaderboardItem;
+    @Nullable protected LeaderboardUserDTO leaderboardItem;
 
     // top view
     @InjectView(R.id.leaderboard_user_item_display_name) protected TextView lbmuDisplayName;
@@ -92,27 +93,38 @@ public class LeaderboardMarkUserItemView
 
     @InjectView(R.id.lbmu_inner_view_container) @Optional @Nullable ViewGroup innerViewContainer;
 
-    @Nullable private Subscription leaderboardOwnUserRankingSubscription;
+    @NonNull protected SubscriptionList subscriptions;
+    @NonNull protected BehaviorSubject<UserBaseDTO> followRequestedBehavior;
 
+    //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
     {
         super(context);
+        init();
     }
 
     public LeaderboardMarkUserItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
+        init();
     }
 
     public LeaderboardMarkUserItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        init();
     }
+
+    private void init()
+    {
+        subscriptions = new SubscriptionList();
+        followRequestedBehavior = BehaviorSubject.create();
+    }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
         HierarchyInjector.inject(this);
         initViews();
     }
@@ -146,27 +158,22 @@ public class LeaderboardMarkUserItemView
         {
             lbmuFoF.setMovementMethod(null);
         }
-        loadDefaultUserImage();
 
         if (lbmuProfilePicture != null)
         {
             lbmuProfilePicture.setImageDrawable(null);
         }
-        detachOwnRankingLeaderboardCache();
-        leaderboardOwnUserRankingSubscription = null;
+        subscriptions.unsubscribe();
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
-    public void linkWith(UserProfileDTO currentUserProfileDTO, boolean andDisplay)
+    public void linkWith(@NonNull UserProfileDTO currentUserProfileDTO)
     {
         this.currentUserProfileDTO = currentUserProfileDTO;
-        if (andDisplay)
-        {
-            displayFollow();
-            displayIsFollowing();
-        }
+        displayFollow();
+        displayIsFollowing();
     }
 
     public void linkWith(OwnedPortfolioId applicablePortfolioId)
@@ -174,7 +181,6 @@ public class LeaderboardMarkUserItemView
         this.applicablePortfolioId = applicablePortfolioId;
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @Nullable public Boolean isCurrentUserFollowing()
     {
         if (currentUserProfileDTO == null || leaderboardItem == null)
@@ -184,34 +190,15 @@ public class LeaderboardMarkUserItemView
         return currentUserProfileDTO.isFollowingUser(leaderboardItem.getBaseKey());
     }
 
-    public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)
+    @NonNull public Observable<UserBaseDTO> getFollowRequestedObservable()
     {
-        this.followRequestedListener = followRequestedListener;
+        return followRequestedBehavior.asObservable();
     }
 
     @Override public void display(LeaderboardUserDTO leaderboardUserDTO)
     {
-        linkWith(leaderboardUserDTO, true);
-    }
-
-    private void detachOwnRankingLeaderboardCache()
-    {
-        Subscription copy = leaderboardOwnUserRankingSubscription;
-        if (copy != null)
-        {
-            copy.unsubscribe();
-        }
-        leaderboardOwnUserRankingSubscription = null;
-    }
-
-    protected void linkWith(LeaderboardUserDTO leaderboardUserDTO, boolean andDisplay)
-    {
         this.leaderboardItem = leaderboardUserDTO;
-
-        if (andDisplay)
-        {
-            display();
-        }
+        display();
     }
 
     private void display()
@@ -244,26 +231,21 @@ public class LeaderboardMarkUserItemView
             lbmuFoF.setText(leaderboardItem.friendOfMarkupString);
         }
 
-        linkWith(leaderboardItem);
-    }
+        displayRankingColor(leaderboardItem);
 
-    public void linkWith(@NonNull UserBaseDTO userBaseDTO)
-    {
-        displayRankingColor(userBaseDTO);
-
-        lbmuDisplayName.setText(userBaseDTO.displayName);
+        lbmuDisplayName.setText(leaderboardItem.displayName);
 
         loadDefaultUserImage();
-        if (userBaseDTO.picture != null)
+        if (leaderboardItem.picture != null)
         {
             picasso.get()
-                    .load(userBaseDTO.picture)
+                    .load(leaderboardItem.picture)
                     .transform(peopleIconTransformation)
                     .placeholder(lbmuProfilePicture.getDrawable())
                     .into(lbmuProfilePicture);
         }
 
-        displayCountryLogo(userBaseDTO);
+        displayCountryLogo(leaderboardItem);
     }
 
     private void displayRankingColor(@NonNull UserBaseDTO userBaseDTO)
@@ -341,7 +323,7 @@ public class LeaderboardMarkUserItemView
         if (lbmuFollowUser != null)
         {
             // you can't follow yourself
-            if (currentUserId.get() == leaderboardItem.id)
+            if (leaderboardItem != null && currentUserId.get() == leaderboardItem.id)
             {
                 lbmuFollowUser.setVisibility(GONE);
                 return;
@@ -364,67 +346,68 @@ public class LeaderboardMarkUserItemView
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.leaderboard_user_item_open_profile)
+    @OnClick({R.id.leaderboard_user_item_open_profile, R.id.leaderboard_user_item_profile_picture})
     protected void handleProfileClicked(View view)
     {
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Profile));
         handleOpenProfileButtonClicked();
     }
 
+    protected void handleOpenProfileButtonClicked()
+    {
+        if (leaderboardItem == null)
+        {
+            // TODO nicer
+            return;
+        }
+        int userId = leaderboardItem.id;
+
+        openTimeline(userId);
+    }
+
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.leaderboard_user_item_open_positions_list)
     protected void handlePositionButtonClicked(View view)
     {
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Positions));
-        handleOpenPositionListClicked();
+        if (leaderboardItem != null)
+        {
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Positions));
+            GetPositionsDTOKey getPositionsDTOKey = leaderboardItem.getGetPositionsDTOKey();
+            if (getPositionsDTOKey == null)
+            {
+                Timber.e(new NullPointerException(), "Unable to get positions %s", leaderboardItem);
+                THToast.show(R.string.leaderboard_friends_position_failed);
+                return;
+            }
+
+            // get leaderboard definition from cache, supposedly it exists coz this view appears after leaderboard definition list
+            LeaderboardDefDTO leaderboardDef = null;
+            Integer leaderboardId = leaderboardItem.getLeaderboardId();
+            if (leaderboardId != null)
+            {
+                leaderboardDef = leaderboardDefCache.get()
+                        .getCachedValue(new LeaderboardDefKey(leaderboardItem.getLeaderboardId()));
+            }
+
+            if (leaderboardItem.lbmuId != -1)
+            {
+                pushLeaderboardPositionListFragment(getPositionsDTOKey, leaderboardDef);
+            }
+            else
+            {
+                pushPositionListFragment(getPositionsDTOKey);
+            }
+        }
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.leaderboard_user_item_follow)
     protected void handleFollowButtonClicked(View view)
     {
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
-        follow(leaderboardItem);
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.leaderboard_user_item_profile_picture)
-    protected void handleUserIconClicked(View view)
-    {
-        handleOpenProfileButtonClicked();
-    }
-
-    protected void follow(@NonNull UserBaseDTO userBaseDTO)
-    {
-        notifyFollowRequested(userBaseDTO);
-    }
-
-    private void handleOpenPositionListClicked()
-    {
-        GetPositionsDTOKey getPositionsDTOKey = leaderboardItem.getGetPositionsDTOKey();
-        if (getPositionsDTOKey == null)
+        if (leaderboardItem != null)
         {
-            Timber.e(new NullPointerException(), "Unable to get positions %s", leaderboardItem);
-            THToast.show(R.string.leaderboard_friends_position_failed);
-            return;
-        }
-
-        // get leaderboard definition from cache, supposedly it exists coz this view appears after leaderboard definition list
-        LeaderboardDefDTO leaderboardDef = null;
-        Integer leaderboardId = leaderboardItem.getLeaderboardId();
-        if (leaderboardId != null)
-        {
-            leaderboardDef = leaderboardDefCache.get()
-                    .getCachedValue(new LeaderboardDefKey(leaderboardItem.getLeaderboardId()));
-        }
-
-        if (leaderboardItem.lbmuId != -1)
-        {
-            pushLeaderboardPositionListFragment(getPositionsDTOKey, leaderboardDef);
-        }
-        else
-        {
-            pushPositionListFragment(getPositionsDTOKey);
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
+            followRequestedBehavior.onNext(leaderboardItem);
         }
     }
 
@@ -465,18 +448,6 @@ public class LeaderboardMarkUserItemView
         navigator.pushFragment(PositionListFragment.class, bundle);
     }
 
-    protected void handleOpenProfileButtonClicked()
-    {
-        if (leaderboardItem == null)
-        {
-            // TODO nicer
-            return;
-        }
-        int userId = leaderboardItem.id;
-
-        openTimeline(userId);
-    }
-
     protected void openTimeline(int userId)
     {
         Bundle bundle = new Bundle();
@@ -489,15 +460,6 @@ public class LeaderboardMarkUserItemView
         else
         {
             navigator.pushFragment(PushableTimelineFragment.class, bundle);
-        }
-    }
-
-    protected void notifyFollowRequested(@NonNull UserBaseDTO userBaseDTO)
-    {
-        OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
-        if (followRequestedListenerCopy != null)
-        {
-            followRequestedListenerCopy.onFollowRequested(userBaseDTO);
         }
     }
 
@@ -570,10 +532,5 @@ public class LeaderboardMarkUserItemView
                 Timber.d("clearExpandAnimation");
             }
         }
-    }
-
-    public static interface OnFollowRequestedListener
-    {
-        void onFollowRequested(@NonNull UserBaseDTO userBaseKey);
     }
 }

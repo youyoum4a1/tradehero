@@ -11,28 +11,38 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
     public final static String BUNDLE_KEY_PER_PAGE = PerPagedLeaderboardKey.class.getName() + ".perPage";
     public static final String STRING_SET_LEFT_PER_PAGE = "perPage";
 
-    public final Integer perPage;
+    @Nullable public final Integer perPage;
 
     //<editor-fold desc="Constructors">
-    public PerPagedLeaderboardKey(Integer leaderboardKey, Integer page, Integer perPage)
+    public PerPagedLeaderboardKey(
+            @NonNull Integer leaderboardKey,
+            @Nullable Integer page,
+            @Nullable Integer perPage)
     {
         super(leaderboardKey, page);
         this.perPage = perPage;
     }
 
-    public PerPagedLeaderboardKey(PerPagedLeaderboardKey other, Integer overrideKey, Integer page)
+    public PerPagedLeaderboardKey(
+            @NonNull PerPagedLeaderboardKey other,
+            @NonNull Integer overrideKey,
+            @Nullable Integer page)
     {
         super(overrideKey, page);
         this.perPage = other.perPage;
     }
 
-    public PerPagedLeaderboardKey(@NonNull Bundle args, @Nullable PerPagedLeaderboardKey defaultValues)
+    public PerPagedLeaderboardKey(
+            @NonNull Bundle args,
+            @Nullable PerPagedLeaderboardKey defaultValues)
     {
         super(args, defaultValues);
         this.perPage = args.containsKey(BUNDLE_KEY_PER_PAGE) ? (Integer) args.getInt(BUNDLE_KEY_PER_PAGE) : ((defaultValues != null) ? defaultValues.perPage : null);
     }
 
-    public PerPagedLeaderboardKey(@NonNull Set<String> catValues, @Nullable PerPagedLeaderboardKey defaultValues)
+    public PerPagedLeaderboardKey(
+            @NonNull Set<String> catValues,
+            @Nullable PerPagedLeaderboardKey defaultValues)
     {
         super(catValues, defaultValues);
         this.perPage = findPerPage(catValues, defaultValues);
@@ -57,7 +67,7 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
                 (perPage == null ? other.perPage == null : perPage.equals(other.perPage));
     }
 
-    @Override public PagedLeaderboardKey cloneAtPage(int page)
+    @NonNull @Override public PagedLeaderboardKey cloneAtPage(int page)
     {
         return new PerPagedLeaderboardKey(this, id, page);
     }
@@ -96,7 +106,7 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
         return null;
     }
 
-    @Override public void putParameters(Set<String> catValues)
+    @Override public void putParameters(@NonNull Set<String> catValues)
     {
         super.putParameters(catValues);
         putPerPage(catValues, this.perPage);

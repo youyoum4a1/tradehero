@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-       >
-  <!--<corners android:bottomLeftRadius="@dimen/timeline_item_corner_radius" android:bottomRightRadius="@dimen/timeline_item_corner_radius"/>-->
-  <solid android:color="@color/discussion_action_buttons_border_top_color"/>
-    <stroke android:width="0.5dp"
-            android:color="@color/trending_gray_border"/>
-</shape>

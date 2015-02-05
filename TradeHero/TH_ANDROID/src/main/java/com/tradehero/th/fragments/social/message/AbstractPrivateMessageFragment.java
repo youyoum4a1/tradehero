@@ -40,10 +40,9 @@ import javax.inject.Inject;
 import retrofit.RetrofitError;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionFragment
@@ -149,11 +148,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         super.onPause();
     }
 
-    @Override public void onDetach()
-    {
-        super.onDetach();
-    }
-
     @Override public void onDestroyOptionsMenu()
     {
         setActionBarSubtitle(null);
@@ -186,7 +180,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         this.messageHeaderId = messageHeaderId;
         unsubscribe(messageHeaderFetchSubscription);
-        messageHeaderFetchSubscription = AndroidObservable.bindFragment(
+        messageHeaderFetchSubscription = AppObservable.bindFragment(
                 this,
                 messageHeaderCache.get(messageHeaderId))
                 .subscribe(createMessageHeaderCacheObserver());
@@ -212,7 +206,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     private void fetchCorrespondentProfile()
     {
         Timber.d("fetchCorrespondentProfile");
-        AndroidObservable.bindFragment(this, userProfileCache.get(correspondentId))
+        AppObservable.bindFragment(this, userProfileCache.get(correspondentId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createUserProfileCacheObserver());
     }
@@ -267,13 +261,21 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         return new MessageMarkAsReadObserver(messageHeaderId);
     }
 
-    private class MessageMarkAsReadObserver extends EmptyObserver<BaseResponseDTO>
+    private class MessageMarkAsReadObserver implements Observer<BaseResponseDTO>
     {
         private final MessageHeaderId messageHeaderId;
 
         public MessageMarkAsReadObserver(MessageHeaderId messageHeaderId)
         {
             this.messageHeaderId = messageHeaderId;
+        }
+
+        @Override public void onNext(BaseResponseDTO baseResponseDTO)
+        {
+        }
+
+        @Override public void onCompleted()
+        {
         }
 
         @Override public void onError(Throwable e)

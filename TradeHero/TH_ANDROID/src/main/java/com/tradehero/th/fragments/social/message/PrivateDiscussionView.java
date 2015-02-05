@@ -17,6 +17,7 @@ import com.tradehero.th.api.discussion.MessageHeaderDTOFactory;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.DiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageDiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
@@ -42,8 +43,6 @@ public class PrivateDiscussionView extends DiscussionView
     @Inject CurrentUserId currentUserId;
     @Inject DiscussionCacheRx discussionCache;
     @Inject protected MessageHeaderCacheRx messageHeaderCache;
-    @Inject protected MessageHeaderDTOFactory messageHeaderDTOFactory;
-    @Inject protected MessageDiscussionListKeyFactory messageDiscussionListKeyFactory;
     private MessageHeaderDTO messageHeaderDTO;
 
     private Subscription discussionFetchSubscription;
@@ -177,7 +176,7 @@ public class PrivateDiscussionView extends DiscussionView
 
     @Override protected DiscussionListKey createStartingDiscussionListKey()
     {
-        return discussionListKeyFactory.create(messageHeaderDTO);
+        return DiscussionListKeyFactory.create(messageHeaderDTO);
     }
 
     protected Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>> createDiscussionCacheObserver()
@@ -185,7 +184,7 @@ public class PrivateDiscussionView extends DiscussionView
         return new PrivateDiscussionViewDiscussionCacheObserver();
     }
 
-    protected void linkWithInitiating(DiscussionDTO discussionDTO, boolean andDisplay)
+    protected void linkWithInitiating(DiscussionDTO discussionDTO)
     {
         this.initiatingDiscussion = discussionDTO;
         int topicId;
@@ -199,10 +198,7 @@ public class PrivateDiscussionView extends DiscussionView
         }
         setTopicLayout(topicId);
         inflateDiscussionTopic();
-        if (andDisplay)
-        {
-            displayTopicView();
-        }
+        displayTopicView();
     }
 
     @Override protected void setTopicLayout(int topicLayout)
@@ -246,14 +242,14 @@ public class PrivateDiscussionView extends DiscussionView
 
     protected MessageHeaderDTO createStub(DiscussionDTO from)
     {
-        MessageHeaderDTO stub = messageHeaderDTOFactory.create(from);
+        MessageHeaderDTO stub = MessageHeaderDTOFactory.create(from);
         stub.recipientUserId = recipient.key;
         return stub;
     }
 
     @Override protected DiscussionListKey getNextDiscussionListKey(DiscussionListKey currentNext, DiscussionKeyList latestDiscussionKeys)
     {
-        DiscussionListKey next = messageDiscussionListKeyFactory.next((MessageDiscussionListKey) currentNext, latestDiscussionKeys);
+        DiscussionListKey next = MessageDiscussionListKeyFactory.next((MessageDiscussionListKey) currentNext, latestDiscussionKeys);
         if (next != null && next.equals(currentNext))
         {
             // This situation where next is equal to currentNext may happen
@@ -265,7 +261,7 @@ public class PrivateDiscussionView extends DiscussionView
 
     @Override protected DiscussionListKey getPrevDiscussionListKey(DiscussionListKey currentPrev, DiscussionKeyList latestDiscussionKeys)
     {
-        DiscussionListKey prev = messageDiscussionListKeyFactory.prev((MessageDiscussionListKey) currentPrev, latestDiscussionKeys);
+        DiscussionListKey prev = MessageDiscussionListKeyFactory.prev((MessageDiscussionListKey) currentPrev, latestDiscussionKeys);
         if (prev != null && prev.equals(currentPrev))
         {
             // This situation where next is equal to currentNext may happen
@@ -287,7 +283,7 @@ public class PrivateDiscussionView extends DiscussionView
             // Check with instanceof to avoid ClassCastException.
             if (pair.second instanceof DiscussionDTO)
             {
-                linkWithInitiating((DiscussionDTO) pair.second, true);
+                linkWithInitiating((DiscussionDTO) pair.second);
             }
         }
 

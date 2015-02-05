@@ -30,7 +30,7 @@ abstract public class DiscussionKey<T extends DiscussionKey>
     }
     //</editor-fold>
 
-    abstract public DiscussionType getType();
+    @NonNull abstract public DiscussionType getType();
 
     public Bundle getArgs()
     {

@@ -10,11 +10,13 @@ class SecurityEvent extends THAnalyticsEvent
 
     private final SecurityId securityId;
 
+    //<editor-fold desc="Constructors">
     public SecurityEvent(String name, SecurityId securityId)
     {
         super(name);
         this.securityId = securityId;
     }
+    //</editor-fold>
 
     @Override public Map<String, String> getAttributes()
     {

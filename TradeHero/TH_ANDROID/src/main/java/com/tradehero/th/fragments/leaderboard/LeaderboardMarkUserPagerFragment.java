@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,14 +15,35 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import javax.inject.Inject;
 
-public class LeaderboardMarkUserPagerFragment extends BaseLeaderboardFragment
+public class LeaderboardMarkUserPagerFragment extends DashboardFragment
 {
+    private static final String BUNDLE_KEY_LEADERBOARD_ID = LeaderboardMarkUserPagerFragment.class.getName() + ".leaderboardId";
+
     @Inject Context context;
     @InjectView(R.id.android_tabs) SlidingTabLayout pagerSlidingTabLayout;
     @InjectView(R.id.pager) ViewPager viewPager;
     private LeaderboardPagerAdapter leaderboardPagerAdapter;
+    @NonNull protected LeaderboardDefKey leaderboardDefKey;
+
+    public static void putLeaderboardDefKey(@NonNull Bundle args, @NonNull LeaderboardDefKey leaderboardDefKey)
+    {
+        args.putInt(BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefKey.key);
+    }
+
+    @NonNull public static LeaderboardDefKey getLeadboardDefKey(@NonNull Bundle args)
+    {
+        return new LeaderboardDefKey(args.getInt(BUNDLE_KEY_LEADERBOARD_ID));
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        leaderboardDefKey = getLeadboardDefKey(getArguments());
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {

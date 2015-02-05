@@ -121,8 +121,7 @@ public class PreferenceManagerCompat
         {
             Method m = PreferenceManager.class.getDeclaredMethod("inflateFromIntent", Intent.class, PreferenceScreen.class);
             m.setAccessible(true);
-            PreferenceScreen prefScreen = (PreferenceScreen) m.invoke(manager, intent, screen);
-            return prefScreen;
+            return (PreferenceScreen) m.invoke(manager, intent, screen);
         }
         catch (Exception e)
         {
@@ -137,8 +136,7 @@ public class PreferenceManagerCompat
         {
             Method m = PreferenceManager.class.getDeclaredMethod("inflateFromResource", Context.class, int.class, PreferenceScreen.class);
             m.setAccessible(true);
-            PreferenceScreen prefScreen = (PreferenceScreen) m.invoke(manager, activity, resId, screen);
-            return prefScreen;
+            return (PreferenceScreen) m.invoke(manager, activity, resId, screen);
         }
         catch (Exception e)
         {

@@ -14,11 +14,11 @@ import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.SortedPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
+import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsKey;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.models.leaderboard.def.DTOProcessorLeaderboardDefDTOList;
 import com.tradehero.th.models.position.DTOProcessorGetPositions;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -40,21 +40,11 @@ import rx.Observable;
     }
     //</editor-fold>
 
-    protected DTOProcessorGetPositions createProcessorReceivedGetPositions(LeaderboardMarkUserId leaderboardMarkUserId)
-    {
-        return new DTOProcessorGetPositions(leaderboardMarkUserId);
-    }
-
-    protected DTOProcessorLeaderboardDefDTOList createProcessorLeaderboardDefDTOList()
-    {
-        return new DTOProcessorLeaderboardDefDTOList(leaderboardDefDTOFactory);
-    }
-
     //<editor-fold desc="Get Leaderboard Definitions">
     @NonNull public Observable<LeaderboardDefDTOList> getLeaderboardDefinitionsRx()
     {
         return leaderboardServiceRx.getLeaderboardDefinitions()
-                .map(createProcessorLeaderboardDefDTOList());
+                .map(leaderboardDefDTOFactory);
     }
     //</editor-fold>
 
@@ -67,7 +57,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Leaderboard">
-    public Observable<LeaderboardDTO> getLeaderboardRx(@NonNull LeaderboardKey leaderboardKey)
+    @NonNull public Observable<LeaderboardDTO> getLeaderboardRx(@NonNull LeaderboardKey leaderboardKey)
     {
         Integer lbType =
                 leaderboardKey.getAssetClass() != null? leaderboardKey.getAssetClass().getValue() : null;
@@ -130,14 +120,18 @@ import rx.Observable;
         return leaderboardServiceRx.getLeaderboard(leaderboardKey.id, lbType, null, null);
     }
 
-    public Observable<LeaderboardFriendsDTO> getNewFriendsLeaderboardRx()
+    @NonNull public Observable<LeaderboardFriendsDTO> getNewFriendsLeaderboardRx(@NonNull LeaderboardFriendsKey key)
     {
+        if (!key.page.equals(1))
+        {
+            return Observable.just(new LeaderboardFriendsDTO());
+        }
         return leaderboardServiceRx.getNewFriendsLeaderboard();
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Positions For Leaderboard Mark User">
-    public Observable<GetPositionsDTO> getPositionsForLeaderboardMarkUserRx(
+    @NonNull public Observable<GetPositionsDTO> getPositionsForLeaderboardMarkUserRx(
             @NonNull LeaderboardMarkUserId key)
     {
         Observable<GetPositionsDTO> received;
@@ -164,7 +158,7 @@ import rx.Observable;
                     null,
                     null);
         }
-        return received.map(createProcessorReceivedGetPositions(key));
+        return received.map(new DTOProcessorGetPositions(key));
     }
     //</editor-fold>
 }

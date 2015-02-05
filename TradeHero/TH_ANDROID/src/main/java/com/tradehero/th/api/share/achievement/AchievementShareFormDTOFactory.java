@@ -1,22 +1,14 @@
 package com.tradehero.th.api.share.achievement;
 
-import com.tradehero.th.api.social.SocialShareReqFormDTO;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.SocialShareReqFormDTO;
 import java.util.List;
-import javax.inject.Inject;
 
 public class AchievementShareFormDTOFactory
 {
-    //<editor-fold desc="Constructors">
-    @Inject public AchievementShareFormDTOFactory()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @NonNull public AchievementShareFormDTO createFrom(
+    @NonNull public static AchievementShareFormDTO createFrom(
             @NonNull List<SocialNetworkEnum> shareDestinationWithEnums,
             @NonNull UserAchievementDTO userAchievementDTO)
     {
@@ -25,7 +17,7 @@ public class AchievementShareFormDTOFactory
         return timelineItemShareFormDTO;
     }
 
-    protected void populateWith(
+    public static void populateWith(
             @NonNull AchievementShareFormDTO timelineItemShareFormDTO,
             @NonNull List<SocialNetworkEnum> shareDestinationWithEnums,
             @NonNull UserAchievementDTO userAchievementDTO)

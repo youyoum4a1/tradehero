@@ -13,6 +13,8 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import com.tradehero.common.billing.purchase.PurchaseResult;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -21,52 +23,50 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
-import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
-import com.tradehero.th.fragments.billing.store.StoreItemDTOList;
 import com.tradehero.th.fragments.billing.store.StoreItemFactory;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
 import com.tradehero.th.fragments.social.follower.FollowerRevenueReportFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
+import rx.android.app.AppObservable;
+import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 @Routable({
         "store", "store/:action"
 })
 public class StoreScreenFragment extends BasePurchaseManagerFragment
-    implements WithTutorial
+        implements WithTutorial
 {
     public static boolean alreadyNotifiedNeedCreateAccount = false;
-    protected Integer showBillingAvailableRequestCode;
-    protected Integer showProductRequestCode;
 
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
-    @Inject StoreItemFactory storeItemFactory;
-    @Inject protected THBillingInteractor userInteractor;
+    @Inject SystemStatusCache systemStatusCache;
 
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
     @InjectView(R.id.store_option_list) protected ListView listView;
+    private Subscription testAvailableSubscription;
     private StoreItemAdapter storeItemAdapter;
     private Subscription storeItemSubscription;
+    @NonNull protected SubscriptionList subscriptions;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        subscriptions = new SubscriptionList();
         thRouter.inject(this);
         storeItemAdapter = new StoreItemAdapter(getActivity());
     }
@@ -87,7 +87,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         setActionBarTitle(R.string.store_option_menu_title);  // Add the changing cute icon
-        setActionBarSubtitle(userInteractor.getName());
+        setActionBarSubtitle(userInteractorRx.getName());
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -98,19 +98,18 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Store));
 
         storeItemAdapter.clear();
-        detachStoreItemSubscription();
-        storeItemSubscription = storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new EmptyObserver<StoreItemDTOList>()
-                {
-                    @Override public void onNext(StoreItemDTOList storeItemDTOs)
-                    {
-                        detachStoreItemSubscription();
-                        storeItemAdapter.clear();
-                        storeItemAdapter.addAll(storeItemDTOs);
-                        storeItemAdapter.notifyDataSetChanged();
-                    }
-                });
+        unsubscribe(storeItemSubscription);
+        storeItemSubscription = AppObservable.bindFragment(
+                this,
+                StoreItemFactory.createAll(systemStatusCache, StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS)
+                        .take(1))
+                .subscribe(
+                        storeItemDTOs -> {
+                            storeItemAdapter.clear();
+                            storeItemAdapter.addAll(storeItemDTOs);
+                            storeItemAdapter.notifyDataSetChanged();
+                        },
+                        e -> THToast.show(new THException(e)));
 
         cancelOthersAndShowBillingAvailable();
     }
@@ -123,7 +122,11 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @Override public void onStop()
     {
-        detachStoreItemSubscription();
+        subscriptions.unsubscribe();
+        unsubscribe(storeItemSubscription);
+        storeItemSubscription = null;
+        unsubscribe(testAvailableSubscription);
+        testAvailableSubscription = null;
         super.onStop();
     }
 
@@ -147,36 +150,17 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
             return;
         }
 
-        if (showBillingAvailableRequestCode != null)
-        {
-            userInteractor.forgetRequestCode(showBillingAvailableRequestCode);
-        }
-        showBillingAvailableRequestCode = showBillingAvailable();
-        alreadyNotifiedNeedCreateAccount = true;
-    }
-
-    protected void detachStoreItemSubscription()
-    {
-        Subscription subscriptionCopy = storeItemSubscription;
-        if (subscriptionCopy != null)
-        {
-            subscriptionCopy.unsubscribe();
-        }
-        storeItemSubscription = null;
-    }
-
-    public int showBillingAvailable()
-    {
-        return userInteractor.run(getShowBillingAvailableRequest());
-    }
-
-    public THUIBillingRequest getShowBillingAvailableRequest()
-    {
-        BaseTHUIBillingRequest.Builder request = uiBillingRequestBuilderProvider.get();
-        request.startWithProgressDialog(false);
-        request.popIfBillingNotAvailable(!alreadyNotifiedNeedCreateAccount);
-        request.testBillingAvailable(true);
-        return request.build();
+        unsubscribe(testAvailableSubscription);
+        //noinspection unchecked
+        testAvailableSubscription = AppObservable.bindFragment(
+                this,
+                userInteractorRx.testAndClear())
+                .finallyDo(() -> alreadyNotifiedNeedCreateAccount = true)
+                .subscribe(
+                        pair -> {
+                        },
+                        error -> {
+                        });
     }
 
     @Override protected void handleReceivedPortfolioCompactList(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
@@ -196,17 +180,15 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
             }
             else
             {
-                detachRequestCode();
-                THUIBillingRequest uiRequest = (THUIBillingRequest) uiBillingRequestBuilderProvider.get()
-                        .domainToPresent(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal])
-                        .applicablePortfolioId(applicablePortfolioId)
-                        .startWithProgressDialog(true)
-                        .popIfBillingNotAvailable(true)
-                        .popIfProductIdentifierFetchFailed(true)
-                        .popIfInventoryFetchFailed(true)
-                        .build();
                 //noinspection unchecked
-                requestCode = userInteractor.run(uiRequest);
+                subscriptions.add(AppObservable.bindFragment(
+                        this,
+                        userInteractorRx.purchase(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]))
+                        .subscribe(
+                                pair -> {
+                                },
+                                error -> THToast.show(new THException((Throwable) error))
+                        ));
             }
         }
     }
@@ -222,23 +204,13 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         if (clickedItem instanceof StoreItemPromptPurchaseDTO)
         {
-            if (showProductRequestCode != null)
-            {
-                userInteractor.forgetRequestCode(showProductRequestCode);
-            }
             //noinspection unchecked
-            showProductRequestCode = userInteractor.run(
-                    uiBillingRequestBuilderProvider.get()
-                            .domainToPresent(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain)
-                            .applicablePortfolioId(getApplicablePortfolioId())
-                            .startWithProgressDialog(true)
-                            .popIfBillingNotAvailable(true)
-                            .popIfProductIdentifierFetchFailed(true)
-                            .popIfInventoryFetchFailed(true)
-                            .doPurchase(true)
-                            .popIfPurchaseFailed(true)
-                            .popIfReportFailed(true)
-                            .build());
+            AppObservable.bindFragment(
+                    this,
+                    userInteractorRx.purchaseAndClear(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain))
+                    .subscribe(
+                            obj -> this.handlePurchaseFinished((PurchaseResult) obj),
+                            e -> this.handlePurchaseFailed((Throwable) e));
         }
         else if (clickedItem instanceof StoreItemHasFurtherDTO)
         {
@@ -248,6 +220,17 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         {
             throw new IllegalArgumentException("Unhandled type " + clickedItem);
         }
+    }
+
+    protected void handlePurchaseFinished(@SuppressWarnings("UnusedParameters") @NonNull PurchaseResult purchaseResult)
+    {
+        THToast.show("Purchase done");
+    }
+
+    protected void handlePurchaseFailed(@NonNull Throwable throwable)
+    {
+        THToast.show(new THException(throwable));
+        Timber.e(throwable, "Purchase failed");
     }
 
     private void pushFragment(Class<? extends Fragment> fragmentClass)

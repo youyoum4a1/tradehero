@@ -31,13 +31,6 @@ interface DiscussionServiceRx
             @Path("inReplyToId") int inReplyToId,
             @Query("page") Integer page, // = 1
             @Query("perPage") Integer perPage); // = 42
-
-    @Deprecated // Use getMessageThread
-    @GET("/discussions/{inReplyToType}/{inReplyToId}")
-    Observable<PaginatedDTO<DiscussionDTO>> getDiscussions(
-            @Path("inReplyToType") DiscussionType inReplyToType,
-            @Path("inReplyToId") int inReplyToId,
-            @QueryMap Map<String, Object> options);
     //</editor-fold>
 
     //<editor-fold desc="Get Message Thread">

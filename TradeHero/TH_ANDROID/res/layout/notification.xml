@@ -9,8 +9,8 @@
     >
   <!--android:background="@color/white"-->
   <ImageView android:id="@+id/notification_icon"
-      android:src="@drawable/icon"
-      tools:src="@drawable/icon"
+      android:src="@drawable/superman_facebook"
+      tools:src="@drawable/superman_facebook"
       android:layout_marginRight="@dimen/notification_margin"
       android:layout_marginLeft="@dimen/notification_margin"
       android:padding="@dimen/notification_logo_padding"

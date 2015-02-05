@@ -76,11 +76,6 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         displayPrize();
     }
 
-    @Override public void linkWith(@NonNull UserBaseDTO userBaseDTO)
-    {
-        super.linkWith(userBaseDTO);
-    }
-
     private ForegroundColorSpan createTextColorSpan()
     {
         return new ForegroundColorSpan(getResources().getColor(R.color.tradehero_blue));

@@ -1,8 +1,9 @@
 package com.tradehero.th.fragments.portfolio.header;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import rx.Observable;
 
 /**
  * Interface for the header displayed on a PositionListFragment
@@ -11,22 +12,32 @@ public interface PortfolioHeaderView
 {
     public void linkWith(UserProfileDTO userProfileDTO);
     public void linkWith(PortfolioCompactDTO portfolioCompactDTO);
-    void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener);
-    void setTimelineRequestedListener(OnTimelineRequestedListener timelineRequestedListener);
 
-    public static interface OnFollowRequestedListener
+    @NonNull Observable<UserAction> getUserActionObservable();
+
+    public static class UserAction
     {
-        void onFollowRequested(UserBaseKey userBaseKey);
+        @NonNull public final UserProfileDTO requested;
 
-        /**
-         * when the user follow the hero success
-         * @param hero
-         */
-        void onUserFollowed(UserBaseKey hero);
+        public UserAction(@NonNull UserProfileDTO requested)
+        {
+            this.requested = requested;
+        }
     }
 
-    public static interface OnTimelineRequestedListener
+    public static class FollowUserAction extends UserAction
     {
-        void onTimelineRequested(UserBaseKey userBaseKey);
+        public FollowUserAction(@NonNull UserProfileDTO requested)
+        {
+            super(requested);
+        }
+    }
+
+    public static class TimelineUserAction extends UserAction
+    {
+        public TimelineUserAction(@NonNull UserProfileDTO requested)
+        {
+            super(requested);
+        }
     }
 }

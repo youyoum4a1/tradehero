@@ -12,11 +12,6 @@ public class UserTransactionHistoryDTO implements DTO
     public Double value;
     public String comment;
 
-    public UserTransactionHistoryDTO()
-    {
-        super();
-    }
-
     @JsonIgnore
     public UserTransactionHistoryId getUserTransactionHistoryId()
     {

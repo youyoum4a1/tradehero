@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -40,7 +41,7 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
@@ -62,7 +63,6 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<AlertCacheRx> alertCache;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
     @Inject protected Lazy<Picasso> picasso;
-    @Inject protected ProgressDialogUtil progressDialogUtil;
     @Inject protected Lazy<UserProfileCacheRx> userProfileCache;
     @Inject protected CurrentUserId currentUserId;
 
@@ -171,12 +171,12 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         this.alertId = alertId;
         if (alertId != null)
         {
-            progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
+            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
             progressDialog.setCanceledOnTouchOutside(true);
             unsubscribe(alertCacheSubscription);
-            alertCacheSubscription = AndroidObservable.bindFragment(this,
+            alertCacheSubscription = AppObservable.bindFragment(this,
                     alertCache.get().get(alertId))
-                    .map(pair -> pair.second)
+                    .map(new PairGetSecond<>())
                     .finallyDo(this::hideProgressDialog)
                     .subscribe(
                             this::linkWith,
@@ -319,7 +319,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     private void handleAlertToggleChanged(boolean alertActive)
     {
-        progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
+        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
         progressDialog.setCanceledOnTouchOutside(true);
 
         if (alertDTO != null)
@@ -331,7 +331,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
             alertFormDTO.priceMovement = alertDTO.priceMovement;
             alertFormDTO.active = alertActive;
             unsubscribe(updateAlertSubscription);
-            updateAlertSubscription = AndroidObservable.bindFragment(
+            updateAlertSubscription = AppObservable.bindFragment(
                     this,
                     alertServiceWrapper.get().updateAlertRx(alertId, alertFormDTO))
                     .finallyDo(this::hideProgressDialog)

@@ -20,10 +20,4 @@ import javax.inject.Singleton;
         super(MAX_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
-
-    @Override public AmazonSKUListKey getKeyForAll()
-    {
-        // TODO any better?
-        return null;
-    }
 }

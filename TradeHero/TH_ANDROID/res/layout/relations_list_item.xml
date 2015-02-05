@@ -47,7 +47,7 @@
             android:layout_width="@dimen/small_image_w_h"
             android:layout_height="@dimen/small_image_w_h"
             android:layout_alignParentRight="true"
-            tools:src="@drawable/flag_country_round_canada"
+            tools:src="@drawable/square_ca"
             />
 
       </RelativeLayout>

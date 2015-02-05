@@ -80,5 +80,16 @@
   <!--string name="google_play_billing_send_intent_error_ok">Sure</string-->
   <string name="google_play_billing_send_intent_error_cancel">OK</string>
 
+  <string name="google_play_billing_already_owned_window_title">Already Owned</string>
+  <string name="google_play_billing_already_owned_window_description">You already own this item and cannot purchase it again before you restore it
+    \n\nDo you mind reporting the incident to TradeHero?</string>
+  <string name="google_play_billing_already_owned_ok">Sure</string>
+  <string name="google_play_billing_already_owned_cancel">Never Mind</string>
+
+  <string name="google_play_billing_developer_error_window_title">Developer Error</string>
+  <string name="google_play_billing_developer_error_window_description">Google Play Store reported an error by TradeHero
+    \n\nDo you mind reporting the incident to TradeHero?</string>
+  <string name="google_play_billing_developer_error_ok">Sure</string>
+  <string name="google_play_billing_developer_error_cancel">Never Mind</string>
 
 </resources>

@@ -3,14 +3,18 @@ package com.tradehero.th.fragments.settings;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,35 +25,45 @@ import butterknife.Optional;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityResultRequester;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.BitmapForProfileFactory;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.tradehero.th.utils.AlertDialogRxUtil;
+import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.ValidatedPasswordText;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
-import rx.android.observables.ViewObservable;
+import rx.android.widget.OnTextChangeEvent;
+import rx.android.widget.WidgetObservable;
+import rx.functions.Action1;
+import rx.functions.Actions;
 import rx.functions.Func8;
+import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
 
 public class ProfileInfoView extends LinearLayout
-    implements ActivityResultRequester
+        implements ActivityResultRequester
 {
+    public static final int REQUEST_GALLERY = 1309;
+    public static final int REQUEST_CAMERA = 1310;
+
     @InjectView(R.id.authentication_sign_up_email) ServerValidatedEmailText email;
     @InjectView(R.id.authentication_sign_up_password) ValidatedPasswordText password;
     @InjectView(R.id.authentication_sign_up_confirm_password) MatchingPasswordText confirmPassword;
@@ -59,24 +73,25 @@ public class ProfileInfoView extends LinearLayout
     @InjectView(R.id.et_lastname) EditText lastName;
     @InjectView(R.id.image_optional) @Optional ImageView profileImage;
 
-    @Inject AlertDialogUtil alertDialogUtil;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
-    @Inject BitmapForProfileFactory bitmapForProfileFactory;
-    @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
     @Inject Provider<UserFormDTO.Builder2> userFormBuilderProvider;
     @Inject AccountManager accountManager;
+    @Inject DashboardNavigator dashboardNavigator;
 
     ProgressDialog progressDialog;
     private UserProfileDTO userProfileDTO;
     private String newImagePath;
-    private AlertDialog imagePickerDialog;
+    @NonNull protected SubscriptionList subscriptions;
 
+    //<editor-fold desc="Constructors">
     public ProfileInfoView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         HierarchyInjector.inject(this);
+        subscriptions = new SubscriptionList();
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
@@ -97,6 +112,8 @@ public class ProfileInfoView extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
+        subscriptions.unsubscribe();
+        subscriptions = new SubscriptionList();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
@@ -119,10 +136,12 @@ public class ProfileInfoView extends LinearLayout
         }
         else
         {
-            alertDialogUtil.popWithNegativeButton(getContext(),
-                    R.string.error_fetch_image_library,
-                    R.string.error_fetch_image_library,
-                    R.string.cancel);
+            AlertDialogRxUtil.buildDefault(getContext())
+                    .setTitle(R.string.error_fetch_image_library)
+                    .setMessage(R.string.error_fetch_image_library)
+                    .setPositiveButton(R.string.cancel)
+                    .build()
+                    .subscribe(Actions.empty(), Actions.empty());
         }
     }
 
@@ -139,10 +158,9 @@ public class ProfileInfoView extends LinearLayout
         {
             try
             {
-                created = bitmapTypedOutputFactory.createForProfilePhoto(
-                        getResources(), bitmapForProfileFactory, newImagePath);
-            }
-            catch (OutOfMemoryError e)
+                created = BitmapTypedOutputFactory.createForProfilePhoto(
+                        getResources(), newImagePath);
+            } catch (OutOfMemoryError e)
             {
                 THToast.show(R.string.error_decode_image_memory);
             }
@@ -175,7 +193,7 @@ public class ProfileInfoView extends LinearLayout
     {
         if (newImagePath != null)
         {
-            Bitmap decoded = bitmapForProfileFactory.decodeBitmapForProfile(getResources(), newImagePath);
+            Bitmap decoded = GraphicUtil.decodeBitmapForProfile(getResources(), newImagePath);
             if (decoded != null)
             {
                 displayProfileImage(decoded);
@@ -247,7 +265,7 @@ public class ProfileInfoView extends LinearLayout
         if (accounts != null && accounts.length > 0)
         {
             String emailValue = null, passwordValue = null;
-            for (Account account: accounts)
+            for (Account account : accounts)
             {
                 if (account.name != null)
                 {
@@ -274,45 +292,100 @@ public class ProfileInfoView extends LinearLayout
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.image_optional) @Optional
     protected void showImageFromDialog()
     {
-        ImagePickerView imagePickerView = (ImagePickerView) LayoutInflater.from(getContext())
-                .inflate(R.layout.image_picker, null);
-        imagePickerDialog = new AlertDialog.Builder(getContext())
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                getContext(),
+                R.layout.image_picker_item,
+                new String[]{
+                        getContext().getString(R.string.user_profile_choose_image_from_camera),
+                        getContext().getString(R.string.user_profile_choose_image_from_library)
+                });
+        subscriptions.add(AlertDialogRxUtil.build(getContext())
                 .setTitle(R.string.user_profile_choose_image_from_choice)
-                .setNegativeButton(R.string.cancel, null)
-                .setView(imagePickerView)
-                .create();
-        imagePickerDialog.show();
+                .setNegativeButton(R.string.cancel)
+                .setSingleChoiceItems(adapter, -1)
+                .setCanceledOnTouchOutside(true)
+                .build()
+                .subscribe(new Action1<OnDialogClickEvent>()
+                {
+                    @Override public void call(OnDialogClickEvent event)
+                    {
+                        event.dialog.dismiss();
+                        switch (event.which)
+                        {
+                            case 0:
+                                onImageFromCameraRequested();
+                                break;
+                            case 1:
+                                onImageFromLibraryRequested();
+                                break;
+                        }
+                    }
+                }, Actions.empty()));
+    }
+
+    private void onImageFromCameraRequested()
+    {
+        PackageManager pm = getContext().getPackageManager();
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+
+        List<ResolveInfo> handlerActivities = pm.queryIntentActivities(cameraIntent, 0);
+        if (handlerActivities.size() > 0)
+        {
+            //cameraIntent.setType("image/jpeg");
+            Fragment currentFragment = dashboardNavigator.getCurrentFragment();
+            if (currentFragment != null)
+            {
+                currentFragment.startActivityForResult(cameraIntent, REQUEST_CAMERA);
+            }
+        }
+        else
+        {
+            THToast.show(R.string.device_no_camera);
+        }
+    }
+
+    private void onImageFromLibraryRequested()
+    {
+        Intent libraryIntent = new Intent(Intent.ACTION_PICK);
+        libraryIntent.setType("image/jpeg");
+        Fragment currentFragment = dashboardNavigator.getCurrentFragment();
+        if (currentFragment != null)
+        {
+            try
+            {
+                currentFragment.startActivityForResult(libraryIntent, REQUEST_GALLERY);
+            } catch (ActivityNotFoundException e)
+            {
+                Timber.e(e, "Could not request gallery");
+                THToast.show(R.string.error_launch_photo_library);
+            }
+        }
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (imagePickerDialog != null)
-        {
-            imagePickerDialog.dismiss();
-        }
         // handle image upload
         if (resultCode == Activity.RESULT_OK)
         {
-            if ((requestCode == ImagePickerView.REQUEST_CAMERA || requestCode == ImagePickerView.REQUEST_GALLERY) && data != null)
+            if ((requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) && data != null)
             {
                 try
                 {
                     handleDataFromLibrary(data);
-                }
-                catch (OutOfMemoryError e)
+                } catch (OutOfMemoryError e)
                 {
                     THToast.show(R.string.error_decode_image_memory);
-                }
-                catch (Exception e)
+                } catch (Exception e)
                 {
                     THToast.show(R.string.error_fetch_image_library);
                     Timber.e(e, "Failed to extract image from library");
                 }
             }
-            else if (requestCode == ImagePickerView.REQUEST_GALLERY)
+            else if (requestCode == REQUEST_GALLERY)
             {
                 Timber.e(new Exception("Got null data from library"), "");
             }
@@ -323,31 +396,37 @@ public class ProfileInfoView extends LinearLayout
         }
     }
 
-    public Observable<UserFormDTO> obtainUserFormDTO()
+    @NonNull public Observable<UserFormDTO> obtainUserFormDTO()
     {
         return Observable.combineLatest(
-                ViewObservable.text(email, true),
-                ViewObservable.text(password, true),
-                ViewObservable.text(confirmPassword, true),
-                ViewObservable.text(displayName, true),
-                ViewObservable.text(referralCode, true),
-                ViewObservable.text(firstName, true),
-                ViewObservable.text(lastName, true),
+                WidgetObservable.text(email, true),
+                WidgetObservable.text(password, true),
+                WidgetObservable.text(confirmPassword, true),
+                WidgetObservable.text(displayName, true),
+                WidgetObservable.text(referralCode, true),
+                WidgetObservable.text(firstName, true),
+                WidgetObservable.text(lastName, true),
                 Observable.just(profileImage),
-                new Func8<ServerValidatedEmailText, ValidatedPasswordText, MatchingPasswordText, ServerValidatedUsernameText, EditText, EditText, EditText, ImageView, UserFormDTO>()
+                new Func8<OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, ImageView, UserFormDTO>()
                 {
-                    @Override public UserFormDTO call(ServerValidatedEmailText serverValidatedEmailText, ValidatedPasswordText validatedPasswordText,
-                            MatchingPasswordText matchingPasswordText, ServerValidatedUsernameText serverValidatedUsernameText, EditText referralCode,
-                            EditText firstName, EditText lastName, ImageView profileImage)
+                    @Override public UserFormDTO call(
+                            OnTextChangeEvent serverValidatedEmailText,
+                            OnTextChangeEvent validatedPasswordText,
+                            OnTextChangeEvent matchingPasswordText,
+                            OnTextChangeEvent serverValidatedUsernameText,
+                            OnTextChangeEvent referralCode1,
+                            OnTextChangeEvent firstName1,
+                            OnTextChangeEvent lastName1,
+                            ImageView profileImage)
                     {
-                        serverValidatedEmailText.forceValidate();
-                        validatedPasswordText.forceValidate();
-                        matchingPasswordText.forceValidate();
-                        serverValidatedUsernameText.forceValidate();
+                        email.forceValidate();
+                        password.forceValidate();
+                        confirmPassword.forceValidate();
+                        displayName.forceValidate();
                         return userFormBuilderProvider.get()
-                                .email(serverValidatedEmailText.getText().toString())
-                                .password(validatedPasswordText.getText().toString())
-                                .displayName(serverValidatedUsernameText.getText().toString())
+                                .email(email.getText().toString())
+                                .password(password.getText().toString())
+                                .displayName(displayName.getText().toString())
                                 .inviteCode(referralCode.getText().toString())
                                 .firstName(firstName.getText().toString())
                                 .lastName(lastName.getText().toString())

@@ -11,7 +11,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 
 public class SellStockDialogFragment extends AbstractStockTransactionDialogFragment
 {
@@ -63,7 +63,6 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
         return netProceedsUsd - totalSpentUsd;
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @Override @Nullable protected Boolean isClosingPosition()
     {
         if (positionDTOCompact == null)
@@ -108,7 +107,7 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
 
     @Override protected Subscription getTransactionSubscription(TransactionFormDTO transactionFormDTO)
     {
-        return AndroidObservable.bindFragment(
+        return AppObservable.bindFragment(
                 this,
                 securityServiceWrapper.doTransactionRx(securityId, transactionFormDTO, IS_BUY))
                 .subscribe(new BuySellObserver(IS_BUY));

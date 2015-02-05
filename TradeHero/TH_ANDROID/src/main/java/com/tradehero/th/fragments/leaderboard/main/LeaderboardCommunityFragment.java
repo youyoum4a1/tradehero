@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClickSticky;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -24,11 +25,9 @@ import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardDefFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserPagerFragment;
@@ -47,7 +46,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -101,7 +100,9 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        leaderboardDefListAdapter = new LeaderboardCommunityAdapter(getActivity(), R.layout.leaderboard_definition_item_view);
+        leaderboardDefListAdapter = new LeaderboardCommunityAdapter(
+                getActivity(),
+                R.layout.leaderboard_definition_item_view);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -193,13 +194,13 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         unsubscribe(leaderboardDefListFetchSubscription);
 
         Observable<LeaderboardDefDTOList> leaderboardDefObservable =
-                leaderboardDefListCache.get().get(new LeaderboardDefListKey())
-                        .map(pair -> pair.second)
+                leaderboardDefListCache.get().get(new LeaderboardDefListKey(1))
+                        .map(new PairGetSecond<>())
                         .map(leaderboardDefDTOs -> communityPageDTOFactory.collectFromCaches(null)) // TODO remove communityPageDTOFactory
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread());
 
-        leaderboardDefListFetchSubscription = AndroidObservable.bindFragment(
+        leaderboardDefListFetchSubscription = AppObservable.bindFragment(
                 this,
                 leaderboardDefObservable)
                 .doOnNext((i) -> communityScreen.setDisplayedChildByLayoutId(R.id.leaderboard_community_list))
@@ -287,8 +288,8 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     private void pushLeaderboardDefExchange(LeaderboardDefDTO leaderboardDefDTOExchange)
     {
         Bundle bundle = new Bundle(getArguments());
-        (new ExchangeLeaderboardDefListKey()).putParameters(bundle);
-        LeaderboardDefFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOExchange.getLeaderboardDefKey());
+        (new ExchangeLeaderboardDefListKey(1)).putParameters(bundle);
+        LeaderboardDefListFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOExchange.getLeaderboardDefKey());
         if (navigator != null)
         {
             navigator.get().pushFragment(LeaderboardDefListFragment.class, bundle);

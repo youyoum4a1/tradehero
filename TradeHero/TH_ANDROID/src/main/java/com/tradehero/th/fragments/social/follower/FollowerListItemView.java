@@ -41,7 +41,6 @@ public class FollowerListItemView extends RelativeLayout
     protected UserFollowerDTO userFollowerDTO;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
-    @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject THRouter thRouter;
     @Inject DashboardNavigator navigator;
 
@@ -106,16 +105,8 @@ public class FollowerListItemView extends RelativeLayout
 
     public void display(UserFollowerDTO followerDTO)
     {
-        linkWith(followerDTO, true);
-    }
-
-    public void linkWith(UserFollowerDTO followerDTO, boolean andDisplay)
-    {
         this.userFollowerDTO = followerDTO;
-        if (andDisplay)
-        {
-            display();
-        }
+        display();
     }
 
     //<editor-fold desc="Display Methods">
@@ -167,7 +158,7 @@ public class FollowerListItemView extends RelativeLayout
     {
         if (title != null)
         {
-            title.setText(userBaseDTOUtil.getShortDisplayName(getContext(), userFollowerDTO));
+            title.setText(UserBaseDTOUtil.getShortDisplayName(getContext(), userFollowerDTO));
         }
     }
 

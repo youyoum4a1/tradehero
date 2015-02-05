@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import com.tradehero.th.R;
 import rx.Observable;
-import rx.android.observables.ViewObservable;
+import rx.android.view.ViewObservable;
 
 public class ActivateTradeView extends LinearLayout
     implements FxOnBoardView<Boolean>

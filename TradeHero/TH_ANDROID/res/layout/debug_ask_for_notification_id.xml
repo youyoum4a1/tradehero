@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="5dp"
     >
+
   <EditText
+      android:id="@+id/pushNotification"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:id="@+id/pushNotification"
       android:inputType="number"
       android:hint="Enter a push notification id"
       android:ems="10"
       android:layout_gravity="center_horizontal"
+      tools:ignore="HardcodedText"
       >
+
     <requestFocus/>
+
   </EditText>
 
   <TextView
@@ -23,6 +29,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="10dp"
       android:padding="5dp"
-      android:text="Example:\n\nPrivate message: 8143519\nBroadcast message: 8208452\nComment: 8145228\n"
+      tools:text="Example:\n\nPrivate message: 8143519\nBroadcast message: 8208452\nComment: 8145228\n"
       />
+
 </LinearLayout>

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
+import android.widget.SpinnerAdapter;
 import android.widget.WrapperListAdapter;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class ExtraTileAdapterNew extends BaseAdapter
     private static final int tileTypeCount = TileType.values().length;
 
     @NonNull private final LayoutInflater inflater;
-    @NonNull private final BaseAdapter wrappedAdapter;
+    @NonNull private final ListAdapter wrappedAdapter;
     @NonNull private final Random random;
 
     @NonNull private Map<Integer, TileType> extraTiles;
@@ -30,10 +31,14 @@ public class ExtraTileAdapterNew extends BaseAdapter
     private boolean isProviderEnabled = false;
 
     //<editor-fold desc="Constructors">
-    public ExtraTileAdapterNew(@NonNull Context context, @NonNull BaseAdapter wrappedAdapter)
+    public ExtraTileAdapterNew(@NonNull Context context, @NonNull ListAdapter wrappedAdapter)
     {
         this.inflater = LayoutInflater.from(context);
         this.wrappedAdapter = wrappedAdapter;
+        if (!(wrappedAdapter instanceof SpinnerAdapter))
+        {
+            throw new IllegalArgumentException("Adapter needs to be a Spinner Adapter " + wrappedAdapter.getClass());
+        }
         this.random = new Random(wrappedAdapter.hashCode());
         this.extraTiles = new LinkedHashMap<>();
         putFirstExtraTilePosition();
@@ -179,7 +184,7 @@ public class ExtraTileAdapterNew extends BaseAdapter
 
     @Override public View getDropDownView(int position, View convertView, ViewGroup parent)
     {
-        return wrappedAdapter.getDropDownView(position, convertView, parent);
+        return ((SpinnerAdapter) wrappedAdapter).getDropDownView(position, convertView, parent);
     }
 
     @NonNull protected TileType getRandomisedTile()

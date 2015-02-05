@@ -47,8 +47,6 @@ import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.share.achievement.AchievementShareFormDTOFactory;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
@@ -59,9 +57,12 @@ import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
+import com.tradehero.th.network.share.dto.ConnectRequired;
+import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.persistence.achievement.UserAchievementCacheRx;
 import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
+import com.tradehero.th.utils.SocialAlertDialogRxUtil;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.widget.UserLevelProgressBar;
@@ -72,7 +73,9 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
+import rx.functions.Action1;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 public abstract class AbstractAchievementDialogFragment extends BaseShareableDialogFragment
@@ -117,15 +120,12 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     @Inject UserAchievementCacheRx userAchievementCache;
     @Inject Picasso picasso;
-    @Inject GraphicUtil graphicUtil;
     @Inject LevelDefListCacheRx levelDefListCache;
 
     @Inject AchievementServiceWrapper achievementServiceWrapper;
-    @Inject AchievementShareFormDTOFactory achievementShareFormDTOFactory;
 
     @Inject BroadcastUtils broadcastUtils;
     @Inject Lazy<SocialSharer> socialSharerLazy;
-    @Inject Lazy<WeChatDTOFactory> weChatDTOFactoryLazy;
 
     @NonNull protected UserAchievementId userAchievementId;
     @Nullable protected UserAchievementDTO userAchievementDTO;
@@ -187,7 +187,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     {
         super.onStart();
         unsubscribe(levelDefSubscription);
-        levelDefSubscription = AndroidObservable.bindFragment(
+        levelDefSubscription = AppObservable.bindFragment(
                 this,
                 levelDefListCache.get(mLevelDefListId))
                 .subscribe(createLevelDefCacheObserver());
@@ -204,7 +204,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
         if (userAchievementDTOCopy != null && colorScheme == null)
         {
-            int color = graphicUtil.parseColor(userAchievementDTO.achievementDef.hexColor, Color.BLACK);
+            int color = GraphicUtil.parseColor(userAchievementDTO.achievementDef.hexColor, Color.BLACK);
             updateColor(color);
         }
         else if (colorScheme != null)
@@ -246,7 +246,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     private void setColor(int color)
     {
         pulsatingRing.setColorFilter(color, PorterDuff.Mode.SRC_IN);
-        graphicUtil.applyColorFilter(imagesToColorFilter, color);
+        GraphicUtil.applyColorFilter(imagesToColorFilter, color);
         title.setTextColor(color);
     }
 
@@ -325,17 +325,36 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             if (shareTos.contains(SocialNetworkEnum.WECHAT))
             {
                 shareTos.remove(SocialNetworkEnum.WECHAT);
-                WeChatDTO weChatDTO = weChatDTOFactoryLazy.get().createFrom(getActivity(), userAchievementDTOCopy);
-                socialSharerLazy.get().setSharedListener(createSocialSharedListener());
-                socialSharerLazy.get().share(weChatDTO);
+                WeChatDTO weChatDTO = WeChatDTOFactory.createFrom(getActivity(), userAchievementDTOCopy);
+                subscriptions.add(socialSharerLazy.get().share(weChatDTO)
+                        .subscribe(
+                                new Action1<SocialShareResult>()
+                                {
+                                    @Override public void call(SocialShareResult obj)
+                                    {
+                                        if (obj instanceof ConnectRequired)
+                                        {
+                                            throw new IllegalStateException("It should have been taken care of at the network button press");
+                                        }
+                                        showShareSuccess();
+                                    }
+                                },
+                                new Action1<Throwable>()
+                                {
+                                    @Override public void call(Throwable e)
+                                    {
+                                        Timber.e(e, "Failed when sharing");
+                                        showShareFailed();
+                                    }
+                                }));
             }
             if (!shareTos.isEmpty())
             {
                 //If only there are other social network to share to other than WeChat.
-                AndroidObservable.bindFragment(
+                AppObservable.bindFragment(
                         this,
                         achievementServiceWrapper.shareAchievementRx(
-                                achievementShareFormDTOFactory.createFrom(
+                                AchievementShareFormDTOFactory.createFrom(
                                         shareTos,
                                         userAchievementDTO)))
                         .subscribe(createShareAchievementObserver());
@@ -443,7 +462,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void setShareButtonColor()
     {
-        List<PropertyValuesHolder> propertyValuesHolders = graphicUtil.wiggleWiggle(1f);
+        List<PropertyValuesHolder> propertyValuesHolders = GraphicUtil.wiggleWiggle(1f);
 
         PropertyValuesHolder pvhColor = PropertyValuesHolder.ofObject(PROPERTY_BTN_COLOR,
                 new ArgbEvaluator(),
@@ -459,9 +478,9 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         btnColorAnimation.setDuration(getResources().getInteger(R.integer.achievement_share_button_animation_duration));
         btnColorAnimation.addUpdateListener(valueAnimator -> {
             int color = (Integer) valueAnimator.getAnimatedValue(PROPERTY_BTN_COLOR);
-            StateListDrawable drawable = graphicUtil.createStateListDrawable(getActivity(), color);
-            int textColor = graphicUtil.getContrastingColor(color);
-            graphicUtil.setBackground(btnShare, drawable);
+            StateListDrawable drawable = GraphicUtil.createStateListDrawable(getActivity(), color);
+            int textColor = GraphicUtil.getContrastingColor(color);
+            GraphicUtil.setBackground(btnShare, drawable);
             btnShare.setTextColor(textColor);
         });
         btnColorAnimation.setStartDelay(getResources().getInteger(R.integer.achievement_share_button_animation_delay));
@@ -507,11 +526,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         }
         else
         {
-            alertDialogUtil.popWithNegativeButton(
-                    getActivity(),
-                    R.string.link_select_one_social,
-                    R.string.link_select_one_social_description,
-                    R.string.ok);
+            subscriptions.add(SocialAlertDialogRxUtil.popSelectOneSocialNetwork(getActivity())
+                    .subscribe(Actions.empty(), Actions.empty()));
         }
     }
 
@@ -549,7 +565,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         mBadgeCallback = null;
         userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
 
-        socialSharerLazy.get().setSharedListener(null);
         super.onDestroyView();
     }
 
@@ -676,29 +691,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
                         dialogFragment.setArguments(args);
                         return dialogFragment;
                     });
-        }
-    }
-
-    protected SocialSharer.OnSharedListener createSocialSharedListener()
-    {
-        return new ShareAchievementListener();
-    }
-
-    protected class ShareAchievementListener implements SocialSharer.OnSharedListener
-    {
-        @Override public void onConnectRequired(@NonNull SocialShareFormDTO shareFormDTO, @NonNull List<SocialNetworkEnum> toConnect)
-        {
-            throw new IllegalStateException("It should have been taken care of at the network button press");
-        }
-
-        @Override public void onShared(@NonNull SocialShareFormDTO shareFormDTO, @NonNull SocialShareResultDTO socialShareResultDTO)
-        {
-            showShareSuccess();
-        }
-
-        @Override public void onShareFailed(@NonNull SocialShareFormDTO shareFormDTO, @NonNull Throwable throwable)
-        {
-            showShareFailed();
         }
     }
 

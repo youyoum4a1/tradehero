@@ -1,11 +1,16 @@
 package com.tradehero.th.api.translation.bing;
 
+import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.translation.TranslationResult;
 import org.simpleframework.xml.Text;
 
 public class BingTranslationResult extends TranslationResult
 {
+    private static final String PATTERN_FROM = "\\]\\s+\\([Tt]radehero://security/";
+    private static final String PATTERN_TO = "](tradehero://security/";
+
     private String fromLanguageCode;
     private String languageCode;
 
@@ -32,8 +37,13 @@ public class BingTranslationResult extends TranslationResult
         this.languageCode = languageCode;
     }
 
-    public String getContent()
+    @Nullable public String getContent()
     {
+        if (content != null)
+        {
+            content = content.replaceAll(PATTERN_FROM, PATTERN_TO);
+        }
+
         return content;
     }
 
@@ -42,7 +52,7 @@ public class BingTranslationResult extends TranslationResult
         this.content = content;
     }
 
-    @Override public int logoResId()
+    @Override @DrawableRes public int logoResId()
     {
         return R.drawable.logo_bing;
     }

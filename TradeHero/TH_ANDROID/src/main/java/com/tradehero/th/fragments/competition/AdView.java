@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.observers.EmptyObserver;
+import rx.functions.Actions;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -145,7 +145,7 @@ public class AdView extends RelativeLayout
                 .map(this::createBatchForm)
                 .flatMap(userServiceWrapper::sendAnalyticsRx)
                 .doOnError(e -> THToast.show(e.getMessage()))
-                .subscribe(new EmptyObserver<>());
+                .subscribe(Actions.empty(), Actions.empty());
     }
 
     @NonNull private BatchAnalyticsEventForm createBatchForm(@NonNull Pair<AdDTO, String> pair)

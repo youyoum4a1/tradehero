@@ -1,5 +1,8 @@
 package com.tradehero.th.api.timeline;
 
+import android.support.annotation.NonNull;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public enum TimeLineItemType
 {
     TLI_TRADE(1),
@@ -18,7 +21,7 @@ public enum TimeLineItemType
         this.value = value;
     }
 
-    public static TimeLineItemType valueOf(int value)
+    @JsonCreator @NonNull public static TimeLineItemType valueOf(int value)
     {
         for (TimeLineItemType timeLineItemType : TimeLineItemType.values())
         {

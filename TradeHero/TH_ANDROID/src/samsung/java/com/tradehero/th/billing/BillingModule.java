@@ -9,14 +9,12 @@ import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.billing.samsung.exception.SamsungExceptionFactory;
 import com.tradehero.common.billing.samsung.persistence.SamsungPurchaseCacheRx;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
-import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.billing.samsung.ForSamsungBillingMode;
 import com.tradehero.th.billing.samsung.ProcessingPurchase;
 import com.tradehero.th.billing.samsung.THSamsungConstants;
 import com.tradehero.th.billing.samsung.THSamsungSecurityAlertKnowledge;
 import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
 import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCacheRx;
-import com.tradehero.th.billing.samsung.request.THSamsungRequestFull;
 import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCacheRx;
 import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCacheRx;
 import dagger.Module;
@@ -74,11 +72,6 @@ public class BillingModule
     @Provides SecurityAlertKnowledge provideSecurityAlertKnowledge(THSamsungSecurityAlertKnowledge thiabSecurityAlertKnowledge)
     {
         return thiabSecurityAlertKnowledge;
-    }
-
-    @Provides THBillingRequest.Builder provideTHBillingRequestBuilder()
-    {
-        return THSamsungRequestFull.builder();
     }
 
     @Provides @Singleton @ProcessingPurchase

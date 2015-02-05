@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClickSticky;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.games.MiniGameDefDTO;
@@ -27,7 +28,7 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -104,9 +105,9 @@ public class DiscoveryGameFragment extends DashboardFragment
         subscriptions.add(
                 rxLoaderManager.create(
                         MINIGAMES_LIST_LOADER_ID,
-                        AndroidObservable.bindFragment(
+                        AppObservable.bindFragment(
                                 this,
-                                miniGameDefListCache.get(new MiniGameDefListKey()).map(pair -> pair.second)))
+                                miniGameDefListCache.get(new MiniGameDefListKey()).map(new PairGetSecond<>())))
                         .doOnError(toastOnErrorAction)
                         .onErrorResumeNext(Observable.empty())
                         .subscribe(miniGamesSubject));

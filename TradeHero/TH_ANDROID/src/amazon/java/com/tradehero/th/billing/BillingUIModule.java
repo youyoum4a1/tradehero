@@ -1,43 +1,27 @@
 package com.tradehero.th.billing;
 
-import com.tradehero.common.billing.BillingInteractor;
-import com.tradehero.common.billing.BillingLogicHolder;
-import com.tradehero.th.billing.amazon.AmazonAlertDialogUtil;
-import com.tradehero.th.billing.amazon.THAmazonAlertDialogUtil;
-import com.tradehero.th.billing.amazon.THAmazonBillingAvailableTester;
-import com.tradehero.th.billing.amazon.THAmazonBillingAvailableTesterHolder;
-import com.tradehero.th.billing.amazon.THAmazonInteractor;
-import com.tradehero.th.billing.amazon.THAmazonInventoryFetcher;
-import com.tradehero.th.billing.amazon.THAmazonInventoryFetcherHolder;
-import com.tradehero.th.billing.amazon.THAmazonLogicHolder;
-import com.tradehero.th.billing.amazon.THAmazonLogicHolderFull;
-import com.tradehero.th.billing.amazon.THAmazonProductIdentifierFetcher;
-import com.tradehero.th.billing.amazon.THAmazonProductIdentifierFetcherHolder;
-import com.tradehero.th.billing.amazon.THAmazonPurchaseConsumer;
-import com.tradehero.th.billing.amazon.THAmazonPurchaseConsumerHolder;
-import com.tradehero.th.billing.amazon.THAmazonPurchaseFetcher;
-import com.tradehero.th.billing.amazon.THAmazonPurchaseFetcherHolder;
-import com.tradehero.th.billing.amazon.THAmazonPurchaseReporter;
-import com.tradehero.th.billing.amazon.THAmazonPurchaseReporterHolder;
-import com.tradehero.th.billing.amazon.THAmazonPurchaser;
-import com.tradehero.th.billing.amazon.THAmazonPurchaserHolder;
-import com.tradehero.th.billing.amazon.THBaseAmazonBillingAvailableTester;
-import com.tradehero.th.billing.amazon.THBaseAmazonBillingAvailableTesterHolder;
-import com.tradehero.th.billing.amazon.THBaseAmazonInteractor;
-import com.tradehero.th.billing.amazon.THBaseAmazonInventoryFetcher;
-import com.tradehero.th.billing.amazon.THBaseAmazonInventoryFetcherHolder;
-import com.tradehero.th.billing.amazon.THBaseAmazonProductIdentifierFetcher;
-import com.tradehero.th.billing.amazon.THBaseAmazonProductIdentifierFetcherHolder;
-import com.tradehero.th.billing.amazon.THBaseAmazonPurchaseConsumer;
-import com.tradehero.th.billing.amazon.THBaseAmazonPurchaseConsumerHolder;
-import com.tradehero.th.billing.amazon.THBaseAmazonPurchaseFetcher;
-import com.tradehero.th.billing.amazon.THBaseAmazonPurchaseFetcherHolder;
-import com.tradehero.th.billing.amazon.THBaseAmazonPurchaseReporter;
-import com.tradehero.th.billing.amazon.THBaseAmazonPurchaseReporterHolder;
-import com.tradehero.th.billing.amazon.THBaseAmazonPurchaser;
-import com.tradehero.th.billing.amazon.THBaseAmazonPurchaserHolder;
-import com.tradehero.th.billing.amazon.request.BaseTHUIAmazonRequest;
-import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
+import com.tradehero.common.billing.BillingInteractorRx;
+import com.tradehero.common.billing.BillingLogicHolderRx;
+import com.tradehero.th.billing.amazon.AmazonAlertDialogRxUtil;
+import com.tradehero.th.billing.amazon.THAmazonAlertDialogRxUtil;
+import com.tradehero.th.billing.amazon.THAmazonLogicHolderRx;
+import com.tradehero.th.billing.amazon.THBaseAmazonInteractorRx;
+import com.tradehero.th.billing.amazon.THAmazonInteractorRx;
+import com.tradehero.th.billing.amazon.THBaseAmazonLogicHolderRx;
+import com.tradehero.th.billing.amazon.consume.THAmazonPurchaseConsumerHolderRx;
+import com.tradehero.th.billing.amazon.consume.THBaseAmazonPurchaseConsumerHolderRx;
+import com.tradehero.th.billing.amazon.identifier.THAmazonProductIdentifierFetcherHolderRx;
+import com.tradehero.th.billing.amazon.identifier.THBaseAmazonProductIdentifierFetcherHolderRx;
+import com.tradehero.th.billing.amazon.inventory.THAmazonInventoryFetcherHolderRx;
+import com.tradehero.th.billing.amazon.inventory.THBaseAmazonInventoryFetcherHolderRx;
+import com.tradehero.th.billing.amazon.purchase.THAmazonPurchaserHolderRx;
+import com.tradehero.th.billing.amazon.purchase.THBaseAmazonPurchaserHolderRx;
+import com.tradehero.th.billing.amazon.purchasefetch.THAmazonPurchaseFetcherHolderRx;
+import com.tradehero.th.billing.amazon.purchasefetch.THBaseAmazonPurchaseFetcherHolderRx;
+import com.tradehero.th.billing.amazon.report.THAmazonPurchaseReporterHolderRx;
+import com.tradehero.th.billing.amazon.report.THBaseAmazonPurchaseReporterHolderRx;
+import com.tradehero.th.billing.amazon.tester.THAmazonBillingAvailableTesterHolderRx;
+import com.tradehero.th.billing.amazon.tester.THBaseAmazonBillingAvailableTesterHolderRx;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -49,123 +33,80 @@ import javax.inject.Singleton;
 )
 public class BillingUIModule
 {
-    //<editor-fold desc="Actors and Action Holders">
-    @Provides THAmazonBillingAvailableTester provideBillingAvailableTest(THBaseAmazonBillingAvailableTester thBaseAmazonBillingAvailableTester)
-    {
-        return thBaseAmazonBillingAvailableTester;
-    }
-
-    @Provides
-    THAmazonBillingAvailableTesterHolder provideBillingAvailableTesterHolder(THBaseAmazonBillingAvailableTesterHolder thBaseAmazonBillingAvailableTesterHolder)
+    //<editor-fold desc="Actors and Action Holders Rx">
+    @Provides THAmazonBillingAvailableTesterHolderRx provideBillingAvailableTesterHolderRx(THBaseAmazonBillingAvailableTesterHolderRx thBaseAmazonBillingAvailableTesterHolder)
     {
         return thBaseAmazonBillingAvailableTesterHolder;
     }
 
-    @Provides
-    THAmazonProductIdentifierFetcher provideProductIdentifierFetcher(THBaseAmazonProductIdentifierFetcher thBaseAmazonProductIdentifierFetcher)
-    {
-        return thBaseAmazonProductIdentifierFetcher;
-    }
-
-    @Provides
-    THAmazonProductIdentifierFetcherHolder provideProductIdentifierFetcherHolder(THBaseAmazonProductIdentifierFetcherHolder thBaseAmazonProductIdentifierFetcherHolder)
+    @Provides THAmazonProductIdentifierFetcherHolderRx provideProductIdentifierFetcherHolderRx(THBaseAmazonProductIdentifierFetcherHolderRx thBaseAmazonProductIdentifierFetcherHolder)
     {
         return thBaseAmazonProductIdentifierFetcherHolder;
     }
 
-    @Provides THAmazonInventoryFetcher provideInventoryFetcher(THBaseAmazonInventoryFetcher thBaseIABInventoryFetcher)
-    {
-        return thBaseIABInventoryFetcher;
-    }
-
-    @Provides THAmazonInventoryFetcherHolder provideInventoryFetcherHolder(THBaseAmazonInventoryFetcherHolder thBaseAmazonInventoryFetcherHolder)
+    @Provides THAmazonInventoryFetcherHolderRx provideInventoryFetcherHolderRx(THBaseAmazonInventoryFetcherHolderRx thBaseAmazonInventoryFetcherHolder)
     {
         return thBaseAmazonInventoryFetcherHolder;
     }
 
-    @Provides THAmazonPurchaseFetcher providePurchaseFetcher(THBaseAmazonPurchaseFetcher thBaseAmazonPurchaseFetcher)
-    {
-        return thBaseAmazonPurchaseFetcher;
-    }
-
-    @Provides THAmazonPurchaseFetcherHolder providePurchaseFetcherHolder(THBaseAmazonPurchaseFetcherHolder thBaseAmazonPurchaseFetcherHolder)
+    @Provides THAmazonPurchaseFetcherHolderRx providePurchaseFetcherHolderRx(THBaseAmazonPurchaseFetcherHolderRx thBaseAmazonPurchaseFetcherHolder)
     {
         return thBaseAmazonPurchaseFetcherHolder;
     }
 
-    @Provides THAmazonPurchaser providePurchaser(THBaseAmazonPurchaser thBaseAmazonPurchaser)
-    {
-        return thBaseAmazonPurchaser;
-    }
-
-    @Provides THAmazonPurchaserHolder providePurchaserHolder(THBaseAmazonPurchaserHolder thBaseAmazonPurchaserHolder)
+    @Provides THAmazonPurchaserHolderRx providePurchaserHolderRx(THBaseAmazonPurchaserHolderRx thBaseAmazonPurchaserHolder)
     {
         return thBaseAmazonPurchaserHolder;
     }
 
-    @Provides THAmazonPurchaseReporter providePurchaseReporter(THBaseAmazonPurchaseReporter thBaseAmazonPurchaseReporter)
-    {
-        return thBaseAmazonPurchaseReporter;
-    }
-
-    @Provides THAmazonPurchaseReporterHolder providePurchaseReporterHolder(THBaseAmazonPurchaseReporterHolder thBaseAmazonPurchaseReporterHolder)
+    @Provides THAmazonPurchaseReporterHolderRx providePurchaseReporterHolderRx(THBaseAmazonPurchaseReporterHolderRx thBaseAmazonPurchaseReporterHolder)
     {
         return thBaseAmazonPurchaseReporterHolder;
     }
 
-    @Provides THAmazonPurchaseConsumer providePurchaseConsumer(THBaseAmazonPurchaseConsumer thBaseAmazonPurchaseConsumer)
-    {
-        return thBaseAmazonPurchaseConsumer;
-    }
-
-    @Provides THAmazonPurchaseConsumerHolder providePurchaseConsumerHolder(THBaseAmazonPurchaseConsumerHolder thBaseAmazonPurchaseConsumerHolder)
+    @Provides THAmazonPurchaseConsumerHolderRx providePurchaseConsumerHolderRx(THBaseAmazonPurchaseConsumerHolderRx thBaseAmazonPurchaseConsumerHolder)
     {
         return thBaseAmazonPurchaseConsumerHolder;
     }
     //</editor-fold>
 
-    @Provides @Singleton BillingLogicHolder provideBillingActor(THBillingLogicHolder logicHolder)
+    @Provides @Singleton BillingLogicHolderRx provideBillingActorRx(THBillingLogicHolderRx logicHolderRx)
     {
-        return logicHolder;
+        return logicHolderRx;
     }
 
-    @Provides @Singleton THBillingLogicHolder provideTHBillingActor(THAmazonLogicHolder logicHolder)
+    @Provides @Singleton THBillingLogicHolderRx provideTHBillingActorRx(THAmazonLogicHolderRx logicHolderRx)
     {
-        return logicHolder;
+        return logicHolderRx;
     }
 
-    @Provides @Singleton THAmazonLogicHolder provideTHIABLogicHolder(THAmazonLogicHolderFull thAmazonLogicHolderFull)
+    @Provides @Singleton THAmazonLogicHolderRx provideTHIABLogicHolderRx(THBaseAmazonLogicHolderRx logicHolderRx)
     {
-        return thAmazonLogicHolderFull;
+        return logicHolderRx;
     }
 
-    @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THAmazonAlertDialogUtil thAmazonAlertDialogUtil)
+    @Provides THBillingAlertDialogRxUtil provideBillingAlertDialogRxUtil(THAmazonAlertDialogRxUtil billingDialogRxUtil)
     {
-        return thAmazonAlertDialogUtil;
+        return billingDialogRxUtil;
     }
 
-    @Provides @Singleton BillingInteractor provideBillingInteractor(THBillingInteractor billingInteractor)
+    @Provides AmazonAlertDialogRxUtil provideAmazonAlertDialogRxUtil(THAmazonAlertDialogRxUtil billingDialogRxUtil)
     {
-        return billingInteractor;
+        return billingDialogRxUtil;
     }
 
-    @Provides @Singleton THBillingInteractor provideTHBillingInteractor(THAmazonInteractor thAmazonInteractor)
+    @Provides @Singleton BillingInteractorRx provideBillingInteractorRx(THBillingInteractorRx billingInteractorRx)
     {
-        return thAmazonInteractor;
+        return billingInteractorRx;
     }
 
-    @Provides @Singleton THAmazonInteractor provideTHIABInteractor(THBaseAmazonInteractor thBaseAmazonInteractor)
+    @Provides @Singleton THBillingInteractorRx provideBillingInteractorRx(THAmazonInteractorRx billingInteractorRx)
     {
-        return thBaseAmazonInteractor;
+        return billingInteractorRx;
     }
 
-    @Provides BaseTHUIBillingRequest.Builder provideTHUIBillingRequestBuilder()
+    @Provides @Singleton THAmazonInteractorRx provideBillingInteractorRx(THBaseAmazonInteractorRx billingInteractorRx)
     {
-        return BaseTHUIAmazonRequest.builder();
-    }
-
-    @Provides AmazonAlertDialogUtil provideAmazonAlertDialogUtil(THAmazonAlertDialogUtil dialogUtil)
-    {
-        return dialogUtil;
+        return billingInteractorRx;
     }
 }

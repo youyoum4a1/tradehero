@@ -8,10 +8,6 @@ import java.util.List;
 
 abstract public class THIntentFactory<THIntentType extends THIntent>
 {
-    public THIntentFactory()
-    {
-    }
-
     abstract public String getHost();
 
     public static String getString(int resId)

@@ -3,7 +3,6 @@ package com.tradehero.th.api.leaderboard.def;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.leaderboard.CountryCodeList;
-import com.tradehero.th.api.leaderboard.LeaderboardSortTypeDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardSortTypeDTOList;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
@@ -11,7 +10,6 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.TimePeriodLeaderboardDefListKey;
-import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import java.util.Date;
 
@@ -39,10 +37,12 @@ public class LeaderboardDefDTO implements DTO
     public Integer capAt;
     public CountryCodeList countryCodes;
 
+    //<editor-fold desc="Constructors">
     public LeaderboardDefDTO()
     {
         super();
     }
+    //</editor-fold>
 
     @NonNull public LeaderboardDefKey getLeaderboardDefKey()
     {
@@ -53,19 +53,19 @@ public class LeaderboardDefDTO implements DTO
     {
         if (exchangeRestrictions)
         {
-            return new ExchangeLeaderboardDefListKey();
+            return new ExchangeLeaderboardDefListKey(1);
         }
         if (sectorRestrictions)
         {
-            return new SectorLeaderboardDefListKey();
+            return new SectorLeaderboardDefListKey(1);
         }
         if (isTimeRestrictedLeaderboard())
         {
-            return new TimePeriodLeaderboardDefListKey();
+            return new TimePeriodLeaderboardDefListKey(1);
         }
         if (id == LeaderboardDefKeyKnowledge.MOST_SKILLED_ID)
         {
-            return new MostSkilledLeaderboardDefListKey();
+            return new MostSkilledLeaderboardDefListKey(1);
         }
         throw new IllegalStateException("Unhandled situation " + this);
     }
@@ -73,15 +73,6 @@ public class LeaderboardDefDTO implements DTO
     public boolean isTimeRestrictedLeaderboard()
     {
         return (this.fromUtcRestricted != null && this.toUtcRestricted != null) || (this.toDateDays != null && this.toDateDays > 0);
-    }
-
-    public boolean isUnrestrictedLeaderboard()
-    {
-        return !this.exchangeRestrictions &&
-                !this.sectorRestrictions &&
-                (this.fromUtcRestricted == null) &&
-                (this.toUtcRestricted == null) &&
-                (this.toDateDays == 0);
     }
 
     public long getTimeRestrictionRangeInMillis()
@@ -93,34 +84,6 @@ public class LeaderboardDefDTO implements DTO
         return toUtcRestricted.getTime() - fromUtcRestricted.getTime();
     }
 
-    public LeaderboardSortTypeDTO defaultSortType()
-    {
-        for (LeaderboardSortTypeDTO sortTypeDTO: sortTypes)
-        {
-            if (sortTypeDTO.sortTypeId == defaultSortTypeId)
-            {
-                return sortTypeDTO;
-            }
-        }
-        return null;
-    }
-
-    public int getSortOptionFlags()
-    {
-        switch (id)
-        {
-            case LeaderboardDefKeyKnowledge.MOST_SKILLED_ID:
-                return LeaderboardSortType.Roi.getFlag();
-            default:
-                return LeaderboardSortType.Roi.getFlag();
-        }
-    }
-
-    public LeaderboardSortType getDefaultSortType()
-    {
-        return defaultSortTypeId != null ? LeaderboardSortType.byServerFlag(defaultSortTypeId) : LeaderboardSortType.defaultSortType;
-    }
-
     public boolean isSectorRestricted()
     {
         return sectorRestrictions;
@@ -129,18 +92,6 @@ public class LeaderboardDefDTO implements DTO
     public boolean isExchangeRestricted()
     {
         return exchangeRestrictions;
-    }
-
-    // TODO datetime format
-    public String getPeriodStartString()
-    {
-        return fromUtcRestricted != null ? fromUtcRestricted.toString() : null;
-    }
-
-    // TODO datetime format
-    public String getPeriodEndString()
-    {
-        return toUtcRestricted != null ? toUtcRestricted.toString() : null;
     }
 
     @NonNull public Boolean isWithinUtcRestricted()

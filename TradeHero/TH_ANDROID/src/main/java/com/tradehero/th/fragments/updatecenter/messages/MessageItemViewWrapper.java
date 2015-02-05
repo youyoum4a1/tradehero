@@ -97,6 +97,7 @@ public class MessageItemViewWrapper extends FrameLayout implements DTOView<Messa
         return new MessageItemWrapperElementClickedListener();
     }
 
+    @Deprecated // Use Rx
     public class MessageItemWrapperElementClickedListener implements MessageItemView.OnElementClickedListener
     {
         @Override public void onUserClicked(MessageHeaderDTO messageHeaderDTO)
@@ -105,6 +106,7 @@ public class MessageItemViewWrapper extends FrameLayout implements DTOView<Messa
         }
     }
 
+    @Deprecated // Use Rx
     public static interface OnElementClickedListener extends MessageItemView.OnElementClickedListener
     {
         void onDeleteClicked(MessageHeaderDTO messageHeaderDTO);

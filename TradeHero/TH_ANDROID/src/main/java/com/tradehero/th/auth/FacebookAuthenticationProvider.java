@@ -12,7 +12,7 @@ import com.facebook.TokenCachingStrategy;
 import com.facebook.android.Facebook;
 import com.tradehero.common.social.facebook.FacebookRequestOperator;
 import com.tradehero.common.social.facebook.SubscriberCallback;
-import com.tradehero.th.activities.ActivityResultRequester;
+import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
@@ -29,8 +29,8 @@ import javax.inject.Singleton;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.observables.Assertions;
-import rx.android.subscriptions.AndroidSubscriptions;
+import rx.android.internal.Assertions;
+import rx.android.AndroidSubscriptions;
 import rx.functions.Action0;
 import timber.log.Timber;
 
@@ -166,7 +166,11 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
             if (activeSession != null && activeSession.isOpened())
             {
                 // if requesting permissions is just subset of activeSession.getPermissions() - existing one
-                if (isSubsetPermissions(activeSession.getPermissions(), permissions))
+                //if (isSubsetPermissions(activeSession.getPermissions(), permissions))
+                List<String> currentPermissions = activeSession.getPermissions();
+                if ((permissions == null)
+                        || ((currentPermissions != null) && (currentPermissions.containsAll(permissions)))
+                   )
                 {
                     subscriber.onNext(activeSession);
                     subscriber.onCompleted();
@@ -203,27 +207,5 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
 
             subscriber.add(subscription);
         }
-    }
-
-    private static boolean isSubsetPermissions(List<String> permissions, List<String> newPermissions)
-    {
-        if (newPermissions == null)
-        {
-            return true;
-        }
-        if (permissions == null)
-        {
-            return false;
-        }
-
-        List<String> temp = new ArrayList<>(permissions);
-        for (String permission : newPermissions)
-        {
-            if (!temp.remove(permission))
-            {
-                return false;
-            }
-        }
-        return true;
     }
 }

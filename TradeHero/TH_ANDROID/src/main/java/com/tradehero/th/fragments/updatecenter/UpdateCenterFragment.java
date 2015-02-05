@@ -43,7 +43,7 @@ import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.THTabView;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -62,7 +62,6 @@ public class UpdateCenterFragment extends DashboardFragment
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
-    @Inject GraphicUtil graphicUtil;
 
     @Inject THRouter thRouter;
 
@@ -119,7 +118,7 @@ public class UpdateCenterFragment extends DashboardFragment
 
     private void fetchUserProfile(boolean forceUpdate)
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
+        AppObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createUserProfileCacheObserver());
     }
@@ -233,7 +232,7 @@ public class UpdateCenterFragment extends DashboardFragment
         if (tabWidget != null)
         // It otherwise fails in Robolectric because it does not have R.id.tabs in the TabHost
         {
-            graphicUtil.setBackground(tabWidget, getResources().getDrawable(R.drawable.ab_background));
+            GraphicUtil.setBackground(tabWidget, getResources().getDrawable(R.drawable.ab_background));
         }
         Bundle args = getArguments();
         if (args == null)

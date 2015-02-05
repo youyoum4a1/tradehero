@@ -9,21 +9,9 @@ public class TrendingSecurityListType extends SecurityListType
     @Nullable public final String exchange;
 
     //<editor-fold desc="Constructors">
-    protected TrendingSecurityListType(@NonNull TrendingSecurityListType other)
-    {
-        super(other);
-        this.exchange = other.exchange;
-    }
-
     public TrendingSecurityListType(@Nullable String exchange, @Nullable Integer page, @Nullable Integer perPage)
     {
         super(page, perPage);
-        this.exchange = exchange;
-    }
-
-    public TrendingSecurityListType(@Nullable String exchange, @Nullable Integer page)
-    {
-        super(page);
         this.exchange = exchange;
     }
 
@@ -31,16 +19,6 @@ public class TrendingSecurityListType extends SecurityListType
     {
         super();
         this.exchange = exchange;
-    }
-
-    public TrendingSecurityListType(@Nullable Integer page, @Nullable Integer perPage)
-    {
-        this(null, page, perPage);
-    }
-
-    public TrendingSecurityListType(@Nullable Integer page)
-    {
-        this((String) null, page);
     }
 
     public TrendingSecurityListType()
@@ -55,16 +33,15 @@ public class TrendingSecurityListType extends SecurityListType
                 (exchange == null ? 0 : exchange.hashCode());
     }
 
-    @Override protected boolean equals(@NonNull SecurityListType other)
+    @Override protected boolean equalFields(@NonNull SecurityListType other)
     {
-        return super.equals(other)
-                && other instanceof TrendingSecurityListType
-                && equals((TrendingSecurityListType) other);
+        return other instanceof TrendingSecurityListType
+                && equalFields((TrendingSecurityListType) other);
     }
 
-    protected boolean equals(@NonNull TrendingSecurityListType other)
+    protected boolean equalFields(@NonNull TrendingSecurityListType other)
     {
-        return super.equals(other) &&
+        return super.equalFields(other) &&
                 (exchange == null ? other.exchange == null : exchange.equals(other.exchange));
     }
 

@@ -30,7 +30,7 @@ public class BaseIABProductDetail implements IABProductDetail<IABSKU>
         this(IABConstants.ITEM_TYPE_INAPP, jsonSkuDetails);
     }
 
-    public BaseIABProductDetail(@NonNull String itemType, @NonNull String jsonSkuDetails) throws JSONException
+    public BaseIABProductDetail(@NonNull @SkuTypeValue String itemType, @NonNull String jsonSkuDetails) throws JSONException
     {
         this.itemType = itemType;
         this.json = jsonSkuDetails;
@@ -55,12 +55,12 @@ public class BaseIABProductDetail implements IABProductDetail<IABSKU>
     }
 
     //<editor-fold desc="IABProductDetail<IABSKU>">
-    @Override public IABSKU getProductIdentifier()
+    @Override @NonNull public IABSKU getProductIdentifier()
     {
         return this.iabSKU;
     }
 
-    @Override public String getType()
+    @Override @NonNull public String getType()
     {
         return type;
     }

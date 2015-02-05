@@ -34,7 +34,7 @@ import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
@@ -45,7 +45,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             FollowerManagerTabFragment.class.getName() + ".heroId";
 
     @Inject protected CurrentUserId currentUserId;
-    @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     @Inject protected FollowerSummaryCacheRx followerSummaryCache;
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
     @InjectView(R.id.follower_list) ListView followerList;
@@ -80,7 +79,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         if (followerListAdapter == null)
         {
             followerListAdapter = new FollowerListItemAdapter(getActivity(),
-                    getActivity().getLayoutInflater(),
                     R.layout.follower_list_item
             );
         }
@@ -133,7 +131,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     protected void fetchFollowers()
     {
         unSubscribe();
-        followerSubscription = AndroidObservable.bindFragment(
+        followerSubscription = AppObservable.bindFragment(
                 this,
                 followerSummaryCache.get(heroId))
                 .subscribe(createFollowerSummaryCacheObserver());
@@ -169,7 +167,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     protected HeroTypeResourceDTO getHeroTypeResource()
     {
-        return heroTypeResourceDTOFactory.create(getFollowerType());
+        return HeroTypeResourceDTOFactory.create(getFollowerType());
     }
 
     abstract protected HeroType getFollowerType();

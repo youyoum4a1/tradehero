@@ -7,13 +7,14 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
@@ -39,7 +40,7 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
     protected void fetchMessageThreadHeader()
     {
         unsubscribe(messageThreadHeaderFetchSubscription);
-        messageThreadHeaderFetchSubscription = AndroidObservable.bindFragment(
+        messageThreadHeaderFetchSubscription = AppObservable.bindFragment(
                 this,
                 messageThreadHeaderCache.get(correspondentId))
                 .subscribe(createMessageThreadHeaderCacheObserver());
@@ -68,7 +69,7 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         {
             if (getDiscussionKey() == null)
             {
-                linkWith(discussionKeyFactory.create(pair.second), true);
+                linkWith(DiscussionKeyFactory.create(pair.second), true);
             }
         }
 

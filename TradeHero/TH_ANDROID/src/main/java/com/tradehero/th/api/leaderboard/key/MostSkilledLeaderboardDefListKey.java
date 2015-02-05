@@ -1,18 +1,20 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class MostSkilledLeaderboardDefListKey extends LeaderboardDefListKey
 {
     static final String MOST_SKILLED = "MostSkilled";
 
     //<editor-fold desc="Constructors">
-    public MostSkilledLeaderboardDefListKey()
+    public MostSkilledLeaderboardDefListKey(@Nullable Integer page)
     {
-        super(MOST_SKILLED);
+        super(MOST_SKILLED, page);
     }
 
-    public MostSkilledLeaderboardDefListKey(Bundle args)
+    public MostSkilledLeaderboardDefListKey(@NonNull Bundle args)
     {
         super(args);
         if (!key.equals(MOST_SKILLED))

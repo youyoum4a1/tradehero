@@ -324,13 +324,9 @@ public class UserLevelProgressBar extends RelativeLayout
         return aList;
     }
 
-    private boolean willLevelUp(int targetXp, LevelDefDTO levelDefDTO)
+    private boolean willLevelUp(int targetXp, @NonNull LevelDefDTO levelDefDTO)
     {
-        if (targetXp > levelDefDTO.xpTo)
-        {
-            return true;
-        }
-        return false;
+        return targetXp > levelDefDTO.xpTo;
     }
 
     private Animator.AnimatorListener createAnimationAdapter()

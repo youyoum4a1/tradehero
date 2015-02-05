@@ -18,9 +18,4 @@ public class DiscussionFormDTO extends PublishableFormDTO
     public String langCode;
     public String url; // to post a link
     public Integer recipientUserId;
-
-    public DiscussionFormDTO()
-    {
-        super();
-    }
 }

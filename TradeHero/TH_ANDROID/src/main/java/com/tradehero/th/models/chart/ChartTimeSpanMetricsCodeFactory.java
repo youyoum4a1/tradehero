@@ -4,15 +4,7 @@ import android.support.annotation.NonNull;
 
 public class ChartTimeSpanMetricsCodeFactory
 {
-    //<editor-fold desc="Constructors">
-    public ChartTimeSpanMetricsCodeFactory()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @NonNull
-    public static String createCode(@NonNull ChartTimeSpan timeSpan)
+    @NonNull public static String createCode(@NonNull ChartTimeSpan timeSpan)
     {
         if (timeSpan.duration <= ChartTimeSpan.DAY_1)
         {

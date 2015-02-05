@@ -54,7 +54,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 @Routable("security/:securityRawInfo")
@@ -73,8 +73,6 @@ public class BuySellStockFragment extends BuySellFragment
 
     @InjectView(R.id.btn_add_trigger) protected Button mBtnAddTrigger;
     @InjectView(R.id.btn_add_watch_list) protected Button mBtnAddWatchlist;
-
-    @Inject ProgressDialogUtil progressDialogUtil;
 
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
@@ -139,7 +137,7 @@ public class BuySellStockFragment extends BuySellFragment
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        progressDialogUtil.dismiss(getActivity());
+        ProgressDialogUtil.dismiss(getActivity());
         unsubscribe(userWatchlistPositionCacheSubscription);
         userWatchlistPositionCacheSubscription = null;
     }
@@ -147,7 +145,7 @@ public class BuySellStockFragment extends BuySellFragment
     public void fetchAlertCompactList()
     {
         unsubscribe(alertCompactListCacheSubscription);
-        alertCompactListCacheSubscription = AndroidObservable.bindFragment(
+        alertCompactListCacheSubscription = AppObservable.bindFragment(
                 this,
                 alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
                 .subscribe(new Observer<Map<SecurityId, AlertId>>()
@@ -173,7 +171,7 @@ public class BuySellStockFragment extends BuySellFragment
     public void fetchWatchlist()
     {
         unsubscribe(userWatchlistPositionCacheSubscription);
-        userWatchlistPositionCacheSubscription = AndroidObservable.bindFragment(
+        userWatchlistPositionCacheSubscription = AppObservable.bindFragment(
                 this,
                 userWatchlistPositionCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(createUserWatchlistCacheObserver());

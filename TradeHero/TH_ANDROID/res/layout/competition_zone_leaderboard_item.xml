@@ -29,7 +29,7 @@
       android:layout_alignParentStart="true"
       android:layout_centerVertical="true"
       android:scaleType="fitCenter"
-      tools:src="@drawable/icn_portfolio_pressed"
+      tools:src="@drawable/square_fi"
       android:contentDescription="@null"
       />
 

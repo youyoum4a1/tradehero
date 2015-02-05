@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
@@ -16,13 +18,17 @@ public class FollowerPaymentListItemAdapter extends ArrayDTOAdapter<FollowerTran
     public static final int POSITION_HEADER = 0;
     public static final int SUPER_POSITION_OFFSET = 1;
 
-    private final int headerResId;
+    @LayoutRes private final int headerResId;
 
-    public FollowerPaymentListItemAdapter(Context context, int followerPaymentLayoutResourceId, int headerResId)
+    //<editor-fold desc="Constructors">
+    public FollowerPaymentListItemAdapter(@NonNull Context context,
+            @LayoutRes int followerPaymentLayoutResourceId,
+            @LayoutRes int headerResId)
     {
         super(context, followerPaymentLayoutResourceId);
         this.headerResId = headerResId;
     }
+    //</editor-fold>
 
     @Override public boolean hasStableIds()
     {
@@ -93,10 +99,5 @@ public class FollowerPaymentListItemAdapter extends ArrayDTOAdapter<FollowerTran
     @Override public boolean isEnabled(int position)
     {
         return getItemViewType(position) != VIEW_TYPE_HEADER;
-    }
-
-    @Override protected void fineTune(int position, FollowerTransactionDTO dto, FollowerPaymentListItemView dtoView)
-    {
-        // Nothing to do
     }
 }

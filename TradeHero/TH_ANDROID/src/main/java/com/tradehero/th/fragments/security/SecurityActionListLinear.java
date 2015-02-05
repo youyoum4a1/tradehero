@@ -27,8 +27,6 @@ import rx.subjects.BehaviorSubject;
 
 public class SecurityActionListLinear extends LinearLayout
 {
-    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
-
     @InjectView(R.id.security_action_title2) protected TextView shareTitleView;
     @InjectView(R.id.security_action_list_sharing_items) protected ListView listViewActionOptions;
 
@@ -90,7 +88,7 @@ public class SecurityActionListLinear extends LinearLayout
                 securityIdToActOn));
 
         adapter.notifyDataSetChanged();
-        shareTitleView.setText(securityCompactDTOUtil.getShortSymbol(securityCompactDTO));
+        shareTitleView.setText(SecurityCompactDTOUtil.getShortSymbol(securityCompactDTO));
     }
 
     @SuppressWarnings("UnusedDeclaration")

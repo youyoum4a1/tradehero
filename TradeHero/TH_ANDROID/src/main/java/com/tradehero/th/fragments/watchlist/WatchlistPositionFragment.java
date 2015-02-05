@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +25,7 @@ import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScro
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.fortysevendeg.swipelistview.SwipeListViewListener;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.TwoStateView;
 import com.tradehero.metrics.Analytics;
@@ -34,7 +34,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -46,10 +45,8 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
-import rx.observers.EmptyObserver;
+import rx.android.app.AppObservable;
 
 public class WatchlistPositionFragment extends DashboardFragment
 {
@@ -247,32 +244,37 @@ public class WatchlistPositionFragment extends DashboardFragment
                 new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER, watchlistPortfolioHeaderView,
                         -trendingFilterHeight, null, 0);
 
-        return new MultiScrollListener(portfolioHeaderQuickReturnListener, dashboardBottomTabsListViewScrollListener.get(), new AbsListView.OnScrollListener() {
-            int maxOffsetY = 0;
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                int firstVisibleItem = view.getFirstVisiblePosition();
-                if (firstVisibleItem == 0)
+        return new MultiScrollListener(portfolioHeaderQuickReturnListener, dashboardBottomTabsListViewScrollListener.get(),
+                new AbsListView.OnScrollListener()
                 {
-                    // TODO https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/54b6827165f8dfea15989512
-                    int offsetY = view.getChildAt(firstVisibleItem).getTop();
-                    if (offsetY > maxOffsetY)
+                    int maxOffsetY = 0;
+
+                    @Override
+                    public void onScrollStateChanged(AbsListView view, int scrollState)
                     {
-                        maxOffsetY = offsetY;
+                        int firstVisibleItem = view.getFirstVisiblePosition();
+                        if (firstVisibleItem == 0)
+                        {
+                            // TODO https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/54b6827165f8dfea15989512
+                            int offsetY = view.getChildAt(firstVisibleItem).getTop();
+                            if (offsetY > maxOffsetY)
+                            {
+                                maxOffsetY = offsetY;
+                            }
+                            watchListRefreshableContainer.setEnabled(offsetY == maxOffsetY);
+                        }
+                        else
+                        {
+                            watchListRefreshableContainer.setEnabled(false);
+                        }
                     }
-                    watchListRefreshableContainer.setEnabled(offsetY == maxOffsetY);
-                }
-                else
-                {
-                    watchListRefreshableContainer.setEnabled(false);
-                }
-            }
 
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                    @Override
+                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+                    {
 
-            }
-        });
+                    }
+                });
     }
 
     public void setWatchlistOffset()
@@ -315,32 +317,27 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         if (portfolioCacheSubscription == null)
         {
-            portfolioCacheSubscription = AndroidObservable.bindFragment(
+            portfolioCacheSubscription = AppObservable.bindFragment(
                     this,
-                    portfolioCache.get(shownPortfolioId))
-                    .subscribe(createPortfolioCacheObserver());
+                    portfolioCache.get(shownPortfolioId)
+                            .map(new PairGetSecond<>()))
+                    .subscribe(
+                            this::onPortfolioReceived,
+                            this::onPortfolioError);
         }
     }
 
-    protected Observer<Pair<OwnedPortfolioId, PortfolioDTO>> createPortfolioCacheObserver()
+    protected void onPortfolioReceived(PortfolioDTO portfolio)
     {
-        return new PortfolioCacheObserver();
+        shownPortfolioDTO = portfolio;
+        displayHeader();
     }
 
-    protected class PortfolioCacheObserver extends EmptyObserver<Pair<OwnedPortfolioId, PortfolioDTO>>
+    public void onPortfolioError(Throwable e)
     {
-        @Override public void onNext(Pair<OwnedPortfolioId, PortfolioDTO> pair)
+        if (shownPortfolioDTO == null)
         {
-            shownPortfolioDTO = pair.second;
-            displayHeader();
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            if (shownPortfolioDTO == null)
-            {
-                THToast.show(R.string.error_fetch_portfolio_info);
-            }
+            THToast.show(R.string.error_fetch_portfolio_info);
         }
     }
 
@@ -348,32 +345,19 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         if (userWatchlistPositionFetchSubscription == null)
         {
-            userWatchlistPositionFetchSubscription = AndroidObservable.bindFragment(
+            userWatchlistPositionFetchSubscription = AppObservable.bindFragment(
                     this,
-                    userWatchlistPositionCache.get(currentUserId.toUserBaseKey()))
-                    .subscribe(createWatchlistObserver());
-        }
-    }
-
-    protected Observer<Pair<UserBaseKey, WatchlistPositionDTOList>> createWatchlistObserver()
-    {
-        return new WatchlistListCacheObserver();
-    }
-
-    protected class WatchlistListCacheObserver extends EmptyObserver<Pair<UserBaseKey, WatchlistPositionDTOList>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, WatchlistPositionDTOList> pair)
-        {
-            displayWatchlist(pair.second);
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            watchListRefreshableContainer.setRefreshing(false);
-            if (watchListAdapter == null || watchListAdapter.getCount() <= 0)
-            {
-                THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
-            }
+                    userWatchlistPositionCache.get(currentUserId.toUserBaseKey())
+                            .map(new PairGetSecond<>()))
+                    .subscribe(
+                            this::displayWatchlist,
+                            e -> {
+                                watchListRefreshableContainer.setRefreshing(false);
+                                if (watchListAdapter == null || watchListAdapter.getCount() <= 0)
+                                {
+                                    THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
+                                }
+                            });
         }
     }
 

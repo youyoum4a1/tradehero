@@ -22,7 +22,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override public SamsungSKUListKey getKeyForAll()
+    @NonNull public SamsungSKUListKey getKeyForAll()
     {
         return SamsungSKUListKey.getAllKey();
     }

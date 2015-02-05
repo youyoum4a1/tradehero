@@ -118,6 +118,16 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         return cachedValue;
     }
 
+    @NonNull public Observable<Pair<DTOKeyType, DTOType>> getOne(@NonNull DTOKeyType key)
+    {
+        DTOType cached = getCachedValue(key);
+        if (cached != null)
+        {
+            return Observable.just(Pair.create(key, cached));
+        }
+        return get(key).take(1);
+    }
+
     protected boolean isValid(@NonNull DTOType value)
     {
         //noinspection RedundantIfStatement

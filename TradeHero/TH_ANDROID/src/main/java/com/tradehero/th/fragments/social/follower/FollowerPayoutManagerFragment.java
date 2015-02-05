@@ -30,7 +30,7 @@ import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
@@ -51,7 +51,6 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<UserFollowerCacheRx> userFollowerCache;
-    @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject THRouter thRouter;
 
     public static void put(@NonNull Bundle args, @NonNull FollowerHeroRelationId followerHeroRelationId)
@@ -107,7 +106,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     protected void fetchFollowerSummary()
     {
-        AndroidObservable.bindFragment(this, userFollowerCache.get().get(followerHeroRelationId))
+        AppObservable.bindFragment(this, userFollowerCache.get().get(followerHeroRelationId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createFollowerObserver());
     }
@@ -125,12 +124,13 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
                 return followerHeroRelationId.followerName;
             }
         }
-        return userBaseDTOUtil.getShortDisplayName(getActivity(), userFollowerDTO);
+        return UserBaseDTOUtil.getShortDisplayName(getActivity(), userFollowerDTO);
     }
 
     public void display(UserFollowerDTO summaryDTO)
     {
-        linkWith(summaryDTO, true);
+        this.userFollowerDTO = summaryDTO;
+        display();
     }
 
     private void showErrorView()
@@ -142,15 +142,6 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         if (followerPaymentListView != null)
         {
             followerPaymentListView.setVisibility(View.GONE);
-        }
-    }
-
-    public void linkWith(UserFollowerDTO summaryDTO, boolean andDisplay)
-    {
-        this.userFollowerDTO = summaryDTO;
-        if (andDisplay)
-        {
-            display();
         }
     }
 

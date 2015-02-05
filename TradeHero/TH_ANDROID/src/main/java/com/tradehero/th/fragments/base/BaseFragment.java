@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import com.tradehero.th.inject.HierarchyInjector;
 import rx.Subscription;
+import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 public class BaseFragment extends Fragment
@@ -25,6 +26,7 @@ public class BaseFragment extends Fragment
     protected boolean isOptionMenuVisible;
 
     protected ActionBarOwnerMixin actionBarOwnerMixin;
+    @NonNull protected SubscriptionList onStopSubscriptions;
 
     public static boolean getHasOptionMenu(@Nullable Bundle args)
     {
@@ -64,6 +66,22 @@ public class BaseFragment extends Fragment
         isOptionMenuVisible = getIsOptionMenuVisible(getArguments());
         hasOptionMenu = getHasOptionMenu(getArguments());
         setHasOptionsMenu(hasOptionMenu);
+
+        this.onStopSubscriptions = new SubscriptionList();
+    }
+
+    @Override public void onStop()
+    {
+        this.onStopSubscriptions.unsubscribe();
+        this.onStopSubscriptions = new SubscriptionList();
+        super.onStop();
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        this.onStopSubscriptions.unsubscribe();
+        this.onStopSubscriptions = new SubscriptionList();
     }
 
     @Override public void onDestroy()

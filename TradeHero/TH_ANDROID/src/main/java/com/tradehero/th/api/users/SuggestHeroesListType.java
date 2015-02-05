@@ -41,14 +41,15 @@ public class SuggestHeroesListType extends UserListType
                 (perPage == null ? 0 : perPage.hashCode());
     }
 
-    @Override public boolean equalFields(UserListType other)
+    @Override protected boolean equalFields(@NonNull UserListType other)
     {
-        return equalFields ((SuggestHeroesListType) other);
+        return other instanceof SuggestHeroesListType
+                && equalFields((SuggestHeroesListType) other);
     }
 
-    public boolean equalFields(SuggestHeroesListType other)
+    protected boolean equalFields(@NonNull SuggestHeroesListType other)
     {
-        return (exchangeId == null ? other.exchangeId == null : exchangeId.equals(other.exchangeId))
+        return exchangeId == null ? other.exchangeId == null : exchangeId.equals(other.exchangeId)
                 && (sectorId == null ? other.sectorId == null : sectorId.equals(other.sectorId))
                 && (page == null ? other.page == null : page.equals(other.page))
                 && (perPage == null ? other.perPage == null : perPage.equals(other.perPage));

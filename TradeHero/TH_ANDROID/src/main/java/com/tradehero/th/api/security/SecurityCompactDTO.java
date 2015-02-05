@@ -23,10 +23,7 @@ import com.tradehero.th.api.security.compact.TradableRightsIssueDTO;
 import com.tradehero.th.api.security.compact.UnitCompactDTO;
 import com.tradehero.th.api.security.compact.UnitTrustSecurityCompactDTO;
 import com.tradehero.th.api.security.compact.WarrantDTO;
-import com.tradehero.th.utils.SecurityUtils;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import timber.log.Timber;
 
 @JsonTypeInfo(
@@ -175,11 +172,6 @@ public class SecurityCompactDTO implements DTO
         }
     }
 
-    public boolean isLastPriceNotNullOrZero()
-    {
-        return !Double.isNaN(lastPrice) && !(Double.compare(lastPrice, 0.0) == 0);
-    }
-
     @NonNull public SecurityIntegerId getSecurityIntegerId()
     {
         return new SecurityIntegerId(id);
@@ -188,36 +180,6 @@ public class SecurityCompactDTO implements DTO
     @NonNull public SecurityId getSecurityId()
     {
         return new SecurityId(exchange, symbol);
-    }
-
-    public static List<SecurityId> getSecurityIds(List<SecurityCompactDTO> values)
-    {
-        if (values == null)
-        {
-            return null;
-        }
-
-        List<SecurityId> securityIds = new ArrayList<>();
-        for (SecurityCompactDTO value: values)
-        {
-            securityIds.add(value.getSecurityId());
-        }
-        return securityIds;
-    }
-
-    public Double getLastPriceInUSD()
-    {
-        if (lastPrice == null || currencyISO.equalsIgnoreCase(SecurityUtils.DEFAULT_TRANSACTION_CURRENCY_ISO))
-        {
-            return lastPrice;
-        }
-
-        if (toUSDRate != null)
-        {
-            return lastPrice * toUSDRate;
-        }
-
-        return null;
     }
 
     @Override public String toString()

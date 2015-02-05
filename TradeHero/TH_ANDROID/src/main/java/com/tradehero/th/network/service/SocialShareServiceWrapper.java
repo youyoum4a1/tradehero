@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.share.BaseResponseSocialShareResultDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
@@ -9,6 +10,7 @@ import com.tradehero.th.api.social.ReferralCodeShareFormDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Func1;
 
 @Singleton public class SocialShareServiceWrapper
 {
@@ -30,12 +32,24 @@ import rx.Observable;
         if (socialShareFormDTO instanceof TimelineItemShareFormDTO)
         {
             return shareRx((TimelineItemShareFormDTO) socialShareFormDTO)
-                    .map(result -> result);
+                    .map(new Func1<BaseResponseSocialShareResultDTO, SocialShareResultDTO>()
+                    {
+                        @Override public SocialShareResultDTO call(BaseResponseSocialShareResultDTO result)
+                        {
+                            return result;
+                        }
+                    });
         }
         if (socialShareFormDTO instanceof ReferralCodeShareFormDTO)
         {
             return shareRx((ReferralCodeShareFormDTO) socialShareFormDTO)
-                    .map(result -> result);
+                    .map(new Func1<BaseResponseSocialShareResultDTO, SocialShareResultDTO>()
+                    {
+                        @Override public SocialShareResultDTO call(BaseResponseSocialShareResultDTO result)
+                        {
+                            return result;
+                        }
+                    });
         }
         throw new IllegalArgumentException("Unhandled type " + socialShareFormDTO.getClass());
     }
@@ -46,12 +60,24 @@ import rx.Observable;
         return discussionServiceWrapper.shareRx(
                 timelineItemShareFormDTO.discussionListKey,
                 timelineItemShareFormDTO.timelineItemShareRequestDTO)
-                .map(BaseResponseSocialShareResultDTO::new);
+                .map(new Func1<BaseResponseDTO, BaseResponseSocialShareResultDTO>()
+                {
+                    @Override public BaseResponseSocialShareResultDTO call(BaseResponseDTO t1)
+                    {
+                        return new BaseResponseSocialShareResultDTO(t1);
+                    }
+                });
     }
 
     @NonNull public Observable<BaseResponseSocialShareResultDTO> shareRx(@NonNull ReferralCodeShareFormDTO shareFormDTO)
     {
         return socialServiceWrapper.shareReferralCodeRx(shareFormDTO)
-                .map(BaseResponseSocialShareResultDTO::new);
+                .map(new Func1<BaseResponseDTO, BaseResponseSocialShareResultDTO>()
+                {
+                    @Override public BaseResponseSocialShareResultDTO call(BaseResponseDTO t1)
+                    {
+                        return new BaseResponseSocialShareResultDTO(t1);
+                    }
+                });
     }
 }

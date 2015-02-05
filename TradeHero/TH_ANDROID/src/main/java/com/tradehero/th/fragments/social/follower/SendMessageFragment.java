@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -44,7 +45,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -65,11 +66,8 @@ public class SendMessageFragment extends DashboardFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
-    @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject UserProfileCacheRx userProfileCache;
-    @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject Analytics analytics;
-    @Inject FollowerTypeDialogFactory followerTypeDialogFactory;
     @Inject UserProfileDTOUtil userProfileDTOUtil;
 
     @Nullable Subscription userProfileSubscription;
@@ -142,7 +140,7 @@ public class SendMessageFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         sendMessageSubscriptions.unsubscribe();
-        progressDialogUtilLazy.get().dismiss(getActivity());
+        ProgressDialogUtil.dismiss(getActivity());
         DeviceUtil.dismissKeyboard(inputText);
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -151,9 +149,9 @@ public class SendMessageFragment extends DashboardFragment
     private void fetchCurrentUserProfile()
     {
         unsubscribe(userProfileSubscription);
-        userProfileSubscription = AndroidObservable.bindFragment(
+        userProfileSubscription = AppObservable.bindFragment(
                 this,
-                userProfileCache.get(currentUserId.toUserBaseKey()).map(pair -> pair.second))
+                userProfileCache.get(currentUserId.toUserBaseKey()).map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         this::handleFetchUserProfileFailed);
@@ -191,7 +189,7 @@ public class SendMessageFragment extends DashboardFragment
     @OnClick(R.id.message_type)
     protected void showHeroTypeDialog(View view)
     {
-        Pair<Dialog, Observable<MessageType>> dialogPair = followerTypeDialogFactory.showHeroTypeDialog(getActivity());
+        Pair<Dialog, Observable<MessageType>> dialogPair = FollowerTypeDialogFactory.showHeroTypeDialog(getActivity());
         dialogPair.second
                 .subscribe(
                         messageType -> {
@@ -242,15 +240,15 @@ public class SendMessageFragment extends DashboardFragment
 
     private void sendMessage()
     {
-        progressDialogUtilLazy.get().dismiss(getActivity());
+        ProgressDialogUtil.dismiss(getActivity());
         String text = inputText.getText().toString();
         this.progressDialog =
-                progressDialogUtilLazy.get().show(getActivity(),
+                ProgressDialogUtil.show(getActivity(),
                         R.string.broadcast_message_waiting,
                         R.string.broadcast_message_sending_hint);
 
         sendMessageSubscriptions.add(
-                AndroidObservable.bindFragment(
+                AppObservable.bindFragment(
                         this,
                         messageServiceWrapper.get().createMessageRx(
                                 createMessageForm(text)))
@@ -261,7 +259,7 @@ public class SendMessageFragment extends DashboardFragment
 
     private MessageCreateFormDTO createMessageForm(@NonNull String messageText)
     {
-        MessageCreateFormDTO messageCreateFormDTO = messageCreateFormDTOFactory.createEmpty(messageType);
+        MessageCreateFormDTO messageCreateFormDTO = MessageCreateFormDTOFactory.createEmpty(messageType);
         messageCreateFormDTO.message = messageText;
         return messageCreateFormDTO;
     }

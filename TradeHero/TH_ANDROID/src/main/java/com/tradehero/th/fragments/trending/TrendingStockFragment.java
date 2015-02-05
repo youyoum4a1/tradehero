@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.trending;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +14,7 @@ import android.widget.AdapterView;
 import butterknife.InjectView;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -33,10 +33,8 @@ import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.key.SecurityListType;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
@@ -49,6 +47,7 @@ import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
@@ -60,10 +59,8 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
-import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable("trending-securities")
@@ -72,7 +69,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
 {
     @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
     @Inject ProviderListCacheRx providerListCache;
-    @Inject ExchangeCompactDTOUtil exchangeCompactDTOUtil;
     @Inject Analytics analytics;
     @Inject @PreferredExchangeMarket ExchangeMarketPreference preferredExchangeMarket;
 
@@ -183,7 +179,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchFilter()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 this.filterSelectorView.getObservableFilter())
                 .subscribe(
@@ -219,10 +215,10 @@ public class TrendingStockFragment extends TrendingBaseFragment
     private void fetchExchangeList()
     {
         ExchangeListType key = new ExchangeListType();
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 exchangeCompactListCache.get(key)
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         e -> {
@@ -235,7 +231,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         ExchangeCompactSpinnerDTOList spinnerList = new ExchangeCompactSpinnerDTOList(
                 getResources(),
-                exchangeCompactDTOUtil.filterAndOrderForTrending(
+                ExchangeCompactDTOUtil.filterAndOrderForTrending(
                         exchangeDTOs,
                         new ExchangeCompactDTODescriptionNameComparator<>()));
         // Adding the "All" choice
@@ -251,10 +247,10 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchUserProfile()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         e -> THToast.show(R.string.error_fetch_user_profile)));
@@ -269,10 +265,10 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchProviderList()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 providerListCache.get(new ProviderListKey())
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         e -> THToast.show(R.string.error_fetch_provider_competition_list)));
@@ -338,6 +334,10 @@ public class TrendingStockFragment extends TrendingBaseFragment
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         Object item = parent.getItemAtPosition(position);
+        if (isDetached() || item == null)
+        {
+            return;
+        }
         View child = parent.getChildAt(position - parent.getFirstVisiblePosition());
         if (item instanceof SecurityCompactDTO)
         {
@@ -399,45 +399,48 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void handleSurveyItemOnClick()
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                .first()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
-                {
-                    @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
-                    {
-                        if (args.second.activeSurveyURL != null)
-                        {
-                            Bundle bundle = new Bundle();
-                            WebViewFragment.putUrl(bundle, args.second.activeSurveyURL);
-                            navigator.get().pushFragment(WebViewFragment.class, bundle, null);
-                        }
-                    }
-                });
+        subscriptions.add(AppObservable.bindFragment(
+                this,
+                userProfileCache.get().get(currentUserId.toUserBaseKey())
+                        .map(new PairGetSecond<>())
+                        .first())
+                .subscribe(
+                        profile -> {
+                            if (profile.activeSurveyURL != null)
+                            {
+                                Bundle bundle = new Bundle();
+                                WebViewFragment.putUrl(bundle, profile.activeSurveyURL);
+                                navigator.get().pushFragment(WebViewFragment.class, bundle, null);
+                            }
+                        },
+                        error -> THToast.show(new THException((Throwable) error))
+                        ));
     }
 
     private void handleResetPortfolioItemOnClick()
     {
-        detachRequestCode();
         //noinspection unchecked
-        requestCode = userInteractor.run((THUIBillingRequest)
-                uiBillingRequestBuilderProvider.get()
-                        .domainToPresent(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO)
-                        .applicablePortfolioId(getApplicablePortfolioId())
-                        .startWithProgressDialog(true)
-                        .build());
+        subscriptions.add(AppObservable.bindFragment(
+                this,
+                userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO))
+                .subscribe(
+                        result -> {
+                        },
+                        error -> THToast.show(new THException((Throwable) error))
+                ));
     }
 
     protected void handleExtraCashItemOnClick()
     {
-        detachRequestCode();
         //noinspection unchecked
-        requestCode = userInteractor.run((THUIBillingRequest)
-                uiBillingRequestBuilderProvider.get()
-                        .domainToPresent(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR)
-                        .applicablePortfolioId(getApplicablePortfolioId())
-                        .startWithProgressDialog(true)
-                        .build());
+        subscriptions.add(AppObservable.bindFragment(
+                this,
+                userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
+                .subscribe(
+                        result -> {
+                        },
+                        error -> THToast.show(new THException((Throwable) error))
+                ));
     }
 
     private void handleEarnCreditItemOnClick()

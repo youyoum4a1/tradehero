@@ -2,7 +2,6 @@ package com.tradehero.th.api.social;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import javax.inject.Inject;
 import timber.log.Timber;
 
 public class UserFriendsDTOFactory
@@ -11,14 +10,7 @@ public class UserFriendsDTOFactory
     public static final String LINKEDIN_SOCIAL_ID = "li";
     public static final String TWITTER_SOCIAL_ID = "tw";
 
-    //<editor-fold desc="Constructors">
-    @Inject public UserFriendsDTOFactory()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @Nullable public UserFriendsDTO createFrom(@NonNull String socialId, @NonNull String socialUserId)
+    @Nullable public static UserFriendsDTO createFrom(@NonNull String socialId, @NonNull String socialUserId)
     {
         UserFriendsDTO created = null;
         switch (socialId)

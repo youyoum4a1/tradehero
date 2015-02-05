@@ -33,16 +33,14 @@ public class FileUtils
     }
 
     /**
-     * Get a file path from a Uri. This will get the the path for Storage Access Framework
-     * Documents, as well as the _data field for the MediaStore and other file-based
-     * ContentProviders.
+     * Get a file path from a Uri. This will get the the path for Storage Access Framework Documents, as well as the _data field for the MediaStore
+     * and other file-based ContentProviders.
      *
      * @param context The context.
      * @param uri The Uri to query.
      */
     public static String getPath(@NonNull final Context context, @NonNull final Uri uri)
     {
-
         // DocumentProvider
         if (SDKUtils.isKitKatOrHigher() && DocumentsContract.isDocumentUri(/*context, */uri))
         {
@@ -114,8 +112,7 @@ public class FileUtils
     }
 
     /**
-     * Get the value of the data column for this Uri. This is useful for MediaStore Uris, and other
-     * file-based ContentProviders.
+     * Get the value of the data column for this Uri. This is useful for MediaStore Uris, and other file-based ContentProviders.
      *
      * @param context The context.
      * @param uri The Uri to query.

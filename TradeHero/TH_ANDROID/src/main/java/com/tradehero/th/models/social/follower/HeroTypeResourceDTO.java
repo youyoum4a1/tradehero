@@ -3,7 +3,6 @@ package com.tradehero.th.models.social.follower;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
-import com.tradehero.th.persistence.social.HeroType;
 
 abstract public class HeroTypeResourceDTO
 {
@@ -15,6 +14,7 @@ abstract public class HeroTypeResourceDTO
     public final int followerTabIndex;
     @NonNull public final Class<? extends Fragment> followerContentFragmentClass;
 
+    //<editor-fold desc="Constructors">
     protected HeroTypeResourceDTO(
             @StringRes int heroTabTitleRes,
             int heroTabIndex,
@@ -32,6 +32,5 @@ abstract public class HeroTypeResourceDTO
         this.followerTabIndex = followerTabIndex;
         this.followerContentFragmentClass = followerContentFragmentClass;
     }
-
-    @NonNull abstract public HeroType getHeroType();
+    //</editor-fold>
 }

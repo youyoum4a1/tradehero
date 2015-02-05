@@ -24,12 +24,11 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
-import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -37,8 +36,6 @@ public class StockInfoFragment extends DashboardFragment
 {
     public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = StockInfoFragment.class.getName() + ".securityId";
     public final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = StockInfoFragment.class.getName() + ".providerId";
-
-    @Inject protected AlertDialogUtil alertDialogUtil;
 
     protected ProviderId providerId;
 
@@ -158,7 +155,7 @@ public class StockInfoFragment extends DashboardFragment
 
     private void queryCompactCache(final SecurityId securityId, final boolean andDisplay)
     {
-        AndroidObservable.bindFragment(this, securityCompactCache.get().get(securityId))
+        AppObservable.bindFragment(this, securityCompactCache.get().get(securityId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createSecurityCompactCacheObserver());
     }

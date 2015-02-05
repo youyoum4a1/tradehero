@@ -2,17 +2,18 @@ package com.tradehero.th.fragments.news;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.tradehero.th.fragments.discussion.DiscussionActionButtonsView;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import rx.Observable;
 
 public class NewsViewLinear extends AbstractDiscussionCompactItemViewLinear<NewsItemDTOKey>
 {
@@ -23,7 +24,7 @@ public class NewsViewLinear extends AbstractDiscussionCompactItemViewLinear<News
     }
     //</editor-fold>
 
-    @Override protected NewsItemViewHolder createViewHolder()
+    @NonNull @Override protected NewsItemViewHolder createViewHolder()
     {
         return new NewsItemViewHolder<>(getContext());
     }
@@ -39,6 +40,27 @@ public class NewsViewLinear extends AbstractDiscussionCompactItemViewLinear<News
         {
             viewHolder.setBackgroundResource(resId);
         }
+    }
+
+    @NonNull @Override protected Observable<DiscussionActionButtonsView.UserAction> handleUserAction(
+            DiscussionActionButtonsView.UserAction userAction)
+    {
+        if (userAction instanceof DiscussionActionButtonsView.CommentUserAction)
+        {
+            pushNewDiscussion();
+            return Observable.empty();
+        }
+        if (userAction instanceof NewsItemViewHolder.OpenWebUserAction)
+        {
+            pushWebFragment();
+            return Observable.empty();
+        }
+        if (userAction instanceof NewsItemViewHolder.SecurityUserAction)
+        {
+            pushBuySellFragment(((NewsItemViewHolder.SecurityUserAction) userAction).securityId);
+            return Observable.empty();
+        }
+        return super.handleUserAction(userAction);
     }
 
     protected void pushWebFragment()
@@ -64,46 +86,5 @@ public class NewsViewLinear extends AbstractDiscussionCompactItemViewLinear<News
         Bundle bundle = new Bundle();
         bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE, discussionKey.getArgs());
         getNavigator().pushFragment(DiscussionEditPostFragment.class, bundle);
-    }
-
-    @Override
-    protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
-    {
-        return new NewsViewHolderClickedListener()
-        {
-            @Override public void onShareButtonClicked()
-            {
-                // Nothing to do
-            }
-
-            @Override public void onUserClicked(UserBaseKey userClicked)
-            {
-                // Nothing to do
-            }
-
-            @Override public void onTranslationRequested()
-            {
-                // Nothing to do
-            }
-        };
-    }
-
-    abstract protected class NewsViewHolderClickedListener extends AbstractDiscussionViewHolderClickedListener
-        implements NewsItemViewHolder.OnMenuClickedListener
-    {
-        @Override public void onCommentButtonClicked()
-        {
-            pushNewDiscussion();
-        }
-
-        @Override public void onOpenOnWebClicked()
-        {
-            pushWebFragment();
-        }
-
-        @Override public void onSecurityClicked(SecurityId securityId)
-        {
-            pushBuySellFragment(securityId);
-        }
     }
 }

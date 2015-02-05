@@ -9,10 +9,12 @@ import com.tradehero.th.api.DTOView;
 
 public class ArrayDTOAdapter<T, V extends DTOView<T>> extends GenericArrayAdapter<T>
 {
+    //<editor-fold desc="Constructors">
     public ArrayDTOAdapter(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
     }
+    //</editor-fold>
 
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {

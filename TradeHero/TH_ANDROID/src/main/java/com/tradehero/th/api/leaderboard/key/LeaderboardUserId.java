@@ -3,15 +3,12 @@ package com.tradehero.th.api.leaderboard.key;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 
 public class LeaderboardUserId implements Comparable, DTOKey
 {
-    public static final String BUNDLE_KEY_USER_ID = LeaderboardUserId.class.getName() + ".userId";
-    public static final String BUNDLE_KEY_LBMUID = LeaderboardUserId.class.getName() + ".lbmuid";
+    private static final String BUNDLE_KEY_USER_ID = LeaderboardUserId.class.getName() + ".userId";
+    private static final String BUNDLE_KEY_LBMUID = LeaderboardUserId.class.getName() + ".lbmuid";
 
     public final int userId;
     public final long lbmuid;
@@ -23,24 +20,12 @@ public class LeaderboardUserId implements Comparable, DTOKey
         this.lbmuid = lbmuid;
     }
 
-    public LeaderboardUserId(Bundle args)
+    public LeaderboardUserId(@NonNull Bundle args)
     {
         this.userId = args.getInt(BUNDLE_KEY_USER_ID);
         this.lbmuid = args.getLong(BUNDLE_KEY_LBMUID);
     }
     //</editor-fold>
-
-    @JsonIgnore @NonNull
-    public UserBaseKey createUserBaseKey()
-    {
-        return new UserBaseKey(userId);
-    }
-
-    @JsonIgnore @NonNull
-    public LeaderboardMarkUserId createLeaderboardMarkUserId()
-    {
-        return new LeaderboardMarkUserId((int) lbmuid);
-    }
 
     @Override public int hashCode()
     {

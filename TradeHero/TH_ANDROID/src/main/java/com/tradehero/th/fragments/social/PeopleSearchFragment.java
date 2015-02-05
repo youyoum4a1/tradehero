@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.social;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
 import com.tradehero.common.fragment.HasSelectedItem;
@@ -20,21 +19,18 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trending.PeopleItemViewAdapter;
-import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.persistence.user.UserBaseKeyListCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
-import rx.Observer;
 import timber.log.Timber;
 
 public class PeopleSearchFragment extends BaseSearchRxFragment<
         UserListType,
         UserSearchResultDTO,
         UserSearchResultDTOList,
-        UserSearchResultDTOList,
-        SearchPeopleItemView>
+        UserSearchResultDTOList>
         implements HasSelectedItem
 {
     @Inject UserBaseKeyListCacheRx userBaseKeyListCache;

@@ -1,6 +1,8 @@
 package com.tradehero.th.api.watchlist.key;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.utils.THJsonAdapter;
 import java.io.IOException;
 import timber.log.Timber;
@@ -9,15 +11,15 @@ public class PagedWatchlistKey
 {
     public static final String BUNDLE_KEY_PAGE = PagedWatchlistKey.class.getName() + ".page";
 
-    public final Integer page;
+    @Nullable public final Integer page;
 
     //<editor-fold desc="Constructors">
-    public PagedWatchlistKey(Integer page)
+    public PagedWatchlistKey(@Nullable Integer page)
     {
         this.page = page;
     }
 
-    public PagedWatchlistKey(Bundle args)
+    public PagedWatchlistKey(@NonNull Bundle args)
     {
         this.page = args.containsKey(BUNDLE_KEY_PAGE) ? args.getInt(BUNDLE_KEY_PAGE) : null;
     }
@@ -28,20 +30,19 @@ public class PagedWatchlistKey
         return page == null ? 0 : page.hashCode();
     }
 
-    @Override public boolean equals(Object other)
+    @Override public boolean equals(@Nullable Object other)
     {
-        return other != null &&
-            getClass().isInstance(other) &&
-            other.getClass().isInstance(this) &&
-            equals(getClass().cast(other));
+        if (other == this)
+        {
+            return true;
+        }
+        return other instanceof PagedWatchlistKey
+                && equals(getClass().cast(other));
     }
 
-    protected boolean equals(PagedWatchlistKey other)
+    protected boolean equalFields(@NonNull PagedWatchlistKey other)
     {
-        return other != null &&
-                getClass().isInstance(other) &&
-                other.getClass().isInstance(this) &&
-                (page == null ? other.page == null : page.equals(other.page));
+        return (page == null ? other.page == null : page.equals(other.page));
     }
 
     @Override public String toString()
@@ -49,8 +50,7 @@ public class PagedWatchlistKey
         try
         {
             return THJsonAdapter.getInstance().toStringBody(this);
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             Timber.e("Failed toString", e);
         }

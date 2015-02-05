@@ -1,5 +1,6 @@
 package com.tradehero.th.api.discussion.form;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.discussion.MessageType;
 
 public class PrivateMessageCreateFormDTO extends MessageCreateFormDTO
@@ -8,17 +9,14 @@ public class PrivateMessageCreateFormDTO extends MessageCreateFormDTO
 
     public int recipientUserId;
 
+    //<editor-fold desc="Constructors">
     public PrivateMessageCreateFormDTO()
     {
         super();
     }
+    //</editor-fold>
 
-    public PrivateMessageCreateFormDTO(String message)
-    {
-        super(message);
-    }
-
-    @Override public MessageType getMessageType()
+    @NonNull @Override public MessageType getMessageType()
     {
         return TYPE;
     }

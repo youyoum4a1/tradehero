@@ -25,7 +25,7 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragment
@@ -88,7 +88,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         unsubscribe(leaderboardDefCacheSubscription);
         if (leaderboardDefKey.key > 0)
         {
-            leaderboardDefCacheSubscription = AndroidObservable.bindFragment(
+            leaderboardDefCacheSubscription = AppObservable.bindFragment(
                     this,
                     leaderboardDefCache.get(leaderboardDefKey))
                     .subscribe(createLeaderboardDefCacheObserver()
@@ -103,7 +103,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     protected void fetchCurrentUserProfile()
     {
         unsubscribe(currentUserProfileSubscription);
-        currentUserProfileSubscription = AndroidObservable.bindFragment(
+        currentUserProfileSubscription = AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(createUserProfileObserver());

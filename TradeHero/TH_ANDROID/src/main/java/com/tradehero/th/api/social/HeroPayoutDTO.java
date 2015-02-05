@@ -7,9 +7,4 @@ public class HeroPayoutDTO
     public Date payoutDateTimeUtc;
     public double usd_NetValueToHero;
     public String comments;
-
-    public HeroPayoutDTO()
-    {
-        super();
-    }
 }

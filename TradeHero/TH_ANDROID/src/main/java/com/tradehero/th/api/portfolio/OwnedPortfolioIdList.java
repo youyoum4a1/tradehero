@@ -13,12 +13,6 @@ public class OwnedPortfolioIdList extends DTOKeyIdList<OwnedPortfolioId>
     }
 
     public OwnedPortfolioIdList(
-            @NonNull Collection<? extends OwnedPortfolioId> ownedPortfolioIds)
-    {
-        super(ownedPortfolioIds);
-    }
-
-    public OwnedPortfolioIdList(
             @NonNull Collection<? extends PortfolioCompactDTO> portfolioCompactDTOs,
             @SuppressWarnings("UnusedParameters") @NonNull PortfolioCompactDTO typeQualifier)
     {
@@ -29,14 +23,4 @@ public class OwnedPortfolioIdList extends DTOKeyIdList<OwnedPortfolioId>
         }
     }
     //</editor-fold>
-
-    public PortfolioIdList getPortfolioIds()
-    {
-        PortfolioIdList ids = new PortfolioIdList();
-        for (OwnedPortfolioId ownedPortfolioId: this)
-        {
-            ids.add(ownedPortfolioId.getPortfolioIdKey());
-        }
-        return ids;
-    }
 }

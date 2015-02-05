@@ -1,30 +1,34 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnItemClick;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.ArrayDTOAdapter;
+import com.tradehero.th.adapters.PagedViewDTOAdapterImpl;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import java.util.List;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKeyFactory;
+import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
+import dagger.Lazy;
+import javax.inject.Inject;
 
-public class LeaderboardDefListFragment extends LeaderboardDefFragment
+public class LeaderboardDefListFragment extends BaseLeaderboardPagedListRxFragment<
+        LeaderboardDefListKey,
+        LeaderboardDefDTO,
+        LeaderboardDefDTOList,
+        LeaderboardDefDTOList>
 {
-    private ArrayDTOAdapter<LeaderboardDefDTO, LeaderboardDefView> leaderboardDefListAdapter;
-    @InjectView(android.R.id.list) protected ListView contentListView;
+    @Inject Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache;
+
+    @NonNull LeaderboardDefListKey baseKey;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        leaderboardDefListAdapter = new ArrayDTOAdapter<>(
-                getActivity(),
-                R.layout.leaderboard_definition_item_view);
+        baseKey = LeaderboardDefListKeyFactory.create(getArguments());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -32,36 +36,37 @@ public class LeaderboardDefListFragment extends LeaderboardDefFragment
         return inflater.inflate(R.layout.leaderboard_def_listview, container, false);
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    @Override public void onStart()
     {
-        super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
-        contentListView.setAdapter(leaderboardDefListAdapter);
-        contentListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        super.onStart();
+        requestDtos();
     }
 
-
-    @Override public void onDestroy()
+    @NonNull @Override protected LeaderboardDefListCacheRx getCache()
     {
-        leaderboardDefListAdapter = null;
-        super.onDestroy();
+        return leaderboardDefListCache.get();
     }
 
-    @Override protected void onLeaderboardDefListLoaded(List<LeaderboardDefDTO> leaderboardDefDTOs)
+    @NonNull @Override protected PagedViewDTOAdapterImpl<LeaderboardDefDTO, LeaderboardDefView> createItemViewAdapter()
     {
-        leaderboardDefListAdapter.setItems(leaderboardDefDTOs);
+        return new PagedViewDTOAdapterImpl<>(
+                getActivity(),
+                R.layout.leaderboard_definition_item_view);
     }
 
-    @Override public void onDestroyView()
+    @Override public boolean canMakePagedDtoKey()
     {
-        contentListView.setOnScrollListener(null);
-        ButterKnife.reset(this);
-        super.onDestroyView();
+        return true;
     }
 
-    @OnItemClick(android.R.id.list)
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    @NonNull @Override public LeaderboardDefListKey makePagedDtoKey(int page)
     {
-        pushLeaderboardListViewFragment((LeaderboardDefDTO) parent.getItemAtPosition(position));
+        return LeaderboardDefListKeyFactory.create(baseKey, page);
+    }
+
+    @Override protected void handleDtoClicked(LeaderboardDefDTO clicked)
+    {
+        super.handleDtoClicked(clicked);
+        pushLeaderboardListViewFragment(clicked);
     }
 }

@@ -18,6 +18,7 @@ import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 import javax.inject.Inject;
+import rx.functions.Action1;
 
 public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
     extends AbstractDiscussionItemViewHolder<TimelineItemDTOType>
@@ -28,7 +29,7 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
     @Inject WatchlistPositionCacheRx watchlistPositionCache;
 
     //<editor-fold desc="Constructors">
-    public TimelineItemViewHolder(Context context)
+    public TimelineItemViewHolder(@NonNull Context context)
     {
         super(context);
     }
@@ -43,10 +44,16 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
     //<editor-fold desc="Display Methods">
     protected void displayMoreButton()
     {
-        if (discussionActionButtonsView != null)
+        if (discussionActionButtonsView != null && discussionDTO != null)
         {
-            discussionActionButtonsView.setShowMore(
-                    socialShareHelper.canTranslate(discussionDTO) || canShowStockMenu());
+            subscriptions.add(socialShareHelper.canTranslate(discussionDTO)
+            .subscribe(new Action1<Boolean>()
+            {
+                @Override public void call(Boolean canTranslate)
+                {
+                    discussionActionButtonsView.setShowMore(canTranslate || canShowStockMenu());
+                }
+            }));
         }
     }
 
@@ -156,33 +163,13 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
     //</editor-fold>
 
     @SuppressWarnings("UnusedDeclaration")
-    @Optional @OnClick({R.id.discussion_user_picture, R.id.user_profile_name})
-    protected void handleUserClicked(View view)
-    {
-        if (discussionDTO != null)
-        {
-            notifyUserClicked(discussionDTO.getSenderKey());
-        }
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
     @Optional @OnClick(R.id.timeline_vendor_picture)
     protected void handleSecurityClicked(View view)
     {
-        notifySecurityClicked();
+        userActionBehavior.onNext(new SecurityUserAction());
     }
 
-    protected void notifySecurityClicked()
+    public static class SecurityUserAction implements DiscussionActionButtonsView.UserAction
     {
-        AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
-        if (menuClickedListenerCopy instanceof OnMenuClickedListener)
-        {
-            ((OnMenuClickedListener) menuClickedListenerCopy).onSecurityClicked();
-        }
-    }
-
-    public static interface OnMenuClickedListener extends AbstractDiscussionItemViewHolder.OnMenuClickedListener
-    {
-        void onSecurityClicked();
     }
 }

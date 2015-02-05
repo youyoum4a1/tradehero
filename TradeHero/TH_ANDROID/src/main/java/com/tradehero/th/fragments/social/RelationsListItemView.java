@@ -2,12 +2,15 @@ package com.tradehero.th.fragments.social;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -19,19 +22,17 @@ import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.utils.route.THRouter;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import dagger.Lazy;
+import javax.inject.Inject;
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 public class RelationsListItemView extends RelativeLayout
-        implements DTOView<AllowableRecipientDTO>, View.OnClickListener
+        implements DTOView<AllowableRecipientDTO>
 {
     @InjectView(R.id.user_name) TextView name;
     @InjectView(R.id.user_profile_avatar) ImageView avatar;
@@ -39,7 +40,7 @@ public class RelationsListItemView extends RelativeLayout
     @InjectView(R.id.user_type) TextView userType;
     @InjectView(R.id.upgrade_now) TextView upgradeNow;
     private AllowableRecipientDTO allowableRecipientDTO;
-    private OnPremiumFollowRequestedListener premiumFollowRequestedListener;
+    @NonNull private BehaviorSubject<FollowRequest> followRequestedBehavior;
 
     @Inject protected Lazy<Picasso> picassoLazy;
     @Inject @ForUserPhoto protected Lazy<Transformation> peopleIconTransformationLazy;
@@ -50,16 +51,19 @@ public class RelationsListItemView extends RelativeLayout
     public RelationsListItemView(Context context)
     {
         super(context);
+        this.followRequestedBehavior = BehaviorSubject.create();
     }
 
     public RelationsListItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        this.followRequestedBehavior = BehaviorSubject.create();
     }
 
     public RelationsListItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
+        this.followRequestedBehavior = BehaviorSubject.create();
     }
     //</editor-fold>
 
@@ -68,36 +72,31 @@ public class RelationsListItemView extends RelativeLayout
         super.onFinishInflate();
         HierarchyInjector.inject(this);
         ButterKnife.inject(this);
-        initViews();
+        loadDefaultPicture();
     }
 
-    private void initViews()
+    @Override protected void onAttachedToWindow()
     {
-        upgradeNow.setOnClickListener(this);
-        avatar.setOnClickListener(this);
-        loadDefaultPicture();
+        super.onAttachedToWindow();
+        ButterKnife.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        premiumFollowRequestedListener = null;
+        this.followRequestedBehavior.onCompleted();
+        this.followRequestedBehavior = BehaviorSubject.create();
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
-    @Override public void onClick(View v)
+    @NonNull public Observable<FollowRequest> getFollowRequestObservable()
     {
-        switch (v.getId())
-        {
-            case R.id.user_profile_avatar:
-                handleOpenProfileButtonClicked();
-                break;
-            case R.id.upgrade_now:
-                handleUpgradeNowButtonClicked();
-                break;
-        }
+        return followRequestedBehavior.asObservable();
     }
 
-    private void handleOpenProfileButtonClicked()
+    @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
+    @OnClick(R.id.user_profile_avatar)
+    protected void handleOpenProfileButtonClicked(View view)
     {
         int userId = allowableRecipientDTO.user.id;
 
@@ -106,36 +105,30 @@ public class RelationsListItemView extends RelativeLayout
         navigator.pushFragment(PushableTimelineFragment.class, bundle);
     }
 
-    private void handleUpgradeNowButtonClicked()
+    @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
+    @OnClick(R.id.upgrade_now)
+    protected void handleUpgradeNowButtonClicked(View view)
     {
-        notifyFollowRequested();
-    }
-
-    public void setPremiumFollowRequestedListener(
-            OnPremiumFollowRequestedListener premiumFollowRequestedListener)
-    {
-        this.premiumFollowRequestedListener = premiumFollowRequestedListener;
+        if (allowableRecipientDTO == null || allowableRecipientDTO.user == null)
+        {
+            THToast.show(R.string.error_incomplete_info_title);
+        }
+        else
+        {
+            followRequestedBehavior.onNext(new FollowRequest(allowableRecipientDTO.user.getBaseKey(), true));
+        }
     }
 
     @Override public void display(AllowableRecipientDTO allowableRecipientDTO)
     {
-        linkWith(allowableRecipientDTO, true);
-    }
-
-    public void linkWith(AllowableRecipientDTO allowableRecipientDTO, boolean andDisplay)
-    {
         this.allowableRecipientDTO = allowableRecipientDTO;
-        if (andDisplay)
-        {
-            displayPicture();
-            displayTitle();
-            displayUpgradeNow();
-            displayUserType();
-            displayCountryLogo();
-        }
+        displayPicture();
+        displayTitle();
+        displayUpgradeNow();
+        displayUserType();
+        displayCountryLogo();
     }
 
-    //<editor-fold desc="Display Methods">
     public void display()
     {
         displayPicture();
@@ -147,7 +140,7 @@ public class RelationsListItemView extends RelativeLayout
 
     public void displayPicture()
     {
-        if (avatar != null)
+        if (avatar != null && !isInEditMode())
         {
             loadDefaultPicture();
             if (allowableRecipientDTO != null && allowableRecipientDTO.user.picture != null)
@@ -172,7 +165,7 @@ public class RelationsListItemView extends RelativeLayout
 
     protected void loadDefaultPicture()
     {
-        if (avatar != null)
+        if (avatar != null && !isInEditMode())
         {
             picassoLazy.get().load(R.drawable.superman_facebook)
                     .transform(peopleIconTransformationLazy.get())
@@ -284,22 +277,6 @@ public class RelationsListItemView extends RelativeLayout
         else if (countryLogo != null)
         {
             countryLogo.setImageResource(R.drawable.default_image);
-        }
-    }
-
-    protected void notifyFollowRequested()
-    {
-        OnPremiumFollowRequestedListener listener = premiumFollowRequestedListener;
-        if (listener != null)
-        {
-            if (allowableRecipientDTO == null || allowableRecipientDTO.user == null)
-            {
-                THToast.show(R.string.error_incomplete_info_title);
-            }
-            else
-            {
-                listener.premiumFollowRequested(allowableRecipientDTO.user.getBaseKey());
-            }
         }
     }
 }

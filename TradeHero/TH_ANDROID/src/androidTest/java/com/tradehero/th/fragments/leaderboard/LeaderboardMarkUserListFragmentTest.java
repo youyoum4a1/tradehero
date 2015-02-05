@@ -2,11 +2,9 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
 import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
@@ -19,7 +17,6 @@ public class LeaderboardMarkUserListFragmentTest
 {
     @Inject DashboardNavigator dashboardNavigator;
     private LeaderboardMarkUserListFragment leaderboardMarkUserListFragment;
-    private HeroAlertDialogUtil heroAlertDialogUtil;
 
     @Before public void setUp()
     {
@@ -34,7 +31,6 @@ public class LeaderboardMarkUserListFragmentTest
         }
         dashboardNavigator = null;
         leaderboardMarkUserListFragment = null;
-        heroAlertDialogUtil = null;
     }
 
     @Test public void handleFollowRequestedCallsAlertDialog()

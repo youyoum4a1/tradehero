@@ -18,7 +18,7 @@
       android:layout_alignParentLeft="true"
       tools:layout_height="80dp"
       tools:background="#ffffee"
-      tools:src="@drawable/flag_country_round_united_kingdom"
+      tools:src="@drawable/square_gb"
       />
 
   <TextView

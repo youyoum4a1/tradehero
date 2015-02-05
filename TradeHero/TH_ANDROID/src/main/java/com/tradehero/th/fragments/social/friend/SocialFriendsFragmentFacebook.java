@@ -1,27 +1,23 @@
 package com.tradehero.th.fragments.social.friend;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.facebook.HttpMethod;
-import com.facebook.Response;
-import com.tradehero.common.social.facebook.FacebookRequestException;
-import com.tradehero.common.utils.THToast;
-import com.tradehero.th.BuildConfig;
+import com.tradehero.common.social.facebook.FacebookConstants;
+import com.tradehero.common.social.facebook.FacebookRequestOperator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
-import com.tradehero.common.social.facebook.FacebookRequestOperator;
+import com.tradehero.th.models.social.facebook.UserFriendsFacebookUtil;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
-import timber.log.Timber;
+import rx.functions.Func2;
 
 public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
 {
-    private static final String API_INVITABLE_FRIENDS = "/me/invitable_friends";
-
     @Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
 
     @Nullable Subscription invitableFriendsSubscription;
@@ -33,14 +29,12 @@ public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
         super.onDestroyView();
     }
 
-    @Override
-    protected SocialNetworkEnum getSocialNetwork()
+    @Override protected SocialNetworkEnum getSocialNetwork()
     {
         return SocialNetworkEnum.FB;
     }
 
-    @Override
-    protected String getTitle()
+    @Override protected String getTitle()
     {
         return getString(R.string.invite_social_friend, getString(R.string.facebook));
     }
@@ -51,47 +45,46 @@ public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
         return facebookSocialFriendHandlerProvider.get();
     }
 
-    @Override protected void linkWith(@NonNull UserFriendsDTOList value)
+    @NonNull @Override protected Observable<UserFriendsDTOList> getFetchAllFriendsObservable()
     {
-        super.linkWith(value);
-        if (this.invitableFriends.isEmpty())
-        {
-            fetchInvitableFriends();
-        }
+        return Observable.zip(
+                super.getFetchAllFriendsObservable(),
+                getFetchFacebookInvitableObservable(),
+                new Func2<UserFriendsDTOList, UserFriendsDTOList, UserFriendsDTOList>()
+                {
+                    @Override public UserFriendsDTOList call(
+                            UserFriendsDTOList thUsers, UserFriendsDTOList fbInvitable)
+                    {
+                        UserFriendsDTOList all = new UserFriendsDTOList();
+                        all.addAll(thUsers.getTradeHeroUsers());
+                        all.addAll(fbInvitable);
+                        return all;
+                    }
+                });
     }
 
-    protected void fetchInvitableFriends()
+    @NonNull protected Observable<UserFriendsDTOList> getFetchFacebookInvitableObservable()
     {
-        unsubscribe(invitableFriendsSubscription);
-        invitableFriendsSubscription = AndroidObservable.bindFragment(
-                this,
-                facebookSocialFriendHandlerProvider.get().createProfileSessionObservable()
-                        .take(1)
-                        .flatMap(pair -> Observable.create(
-                                FacebookRequestOperator
-                                        .builder(pair.second, API_INVITABLE_FRIENDS)
-                                        .setHttpMethod(HttpMethod.GET)
-                                        .build())))
-                .subscribe(
-                        this::onInvitableFriendsReceived,
-                        this::onInvitableFriendsFailed);
+
+        return facebookSocialFriendHandlerProvider.get().createProfileSessionObservable()
+                .take(1)
+                .flatMap(pair -> Observable.create(
+                        FacebookRequestOperator
+                                .builder(pair.second, FacebookConstants.API_INVITABLE_FRIENDS)
+                                .setParameters(getFriendsFields())
+                                .setHttpMethod(HttpMethod.GET)
+                                .build()))
+                .map(UserFriendsFacebookUtil::convert);
     }
 
-    protected void onInvitableFriendsReceived(Response response)
+    @NonNull protected Bundle getFriendsFields()
     {
-        Timber.d("InvitableFriends response %s", response);
-        if (BuildConfig.DEBUG)
-        {
-            THToast.show("Parse invitable friends");
-        }
-    }
-
-    protected void onInvitableFriendsFailed(Throwable e)
-    {
-        Timber.e(e, "InvitableFriends error");
-        if (e instanceof FacebookRequestException)
-        {
-            Timber.e(new Exception(), ((FacebookRequestException) e).facebookCause.getErrorMessage());
-        }
+        Bundle params = new Bundle();
+        params.putString(FacebookConstants.QUERY_KEY_FIELDS,
+                String.format(
+                        FacebookConstants.FIELDS_VALUE_USER_NAME + FacebookConstants.QUERY_KEY_FIELDS_SEPARATOR +
+                                FacebookConstants.FIELDS_VALUE_USER_PICTURE + FacebookConstants.FIELDS_VALUE_USER_PICTURE_WIDTH,
+                        (int) getResources().getDimension(R.dimen.medium_image_w_h)));
+        return params;
     }
 }

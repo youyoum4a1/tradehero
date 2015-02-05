@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.security.SecurityMediaDTOList;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
@@ -14,7 +13,7 @@ import java.util.Date;
 
 public class TimelineItemDTO extends AbstractDiscussionDTO<TimelineItemDTO>
 {
-    public int type;
+    public TimeLineItemType type;
     public Date userViewedAtUtc;
     private SecurityMediaDTOList medias;
     public Integer pushTypeId;
@@ -26,7 +25,8 @@ public class TimelineItemDTO extends AbstractDiscussionDTO<TimelineItemDTO>
     private UserProfileCompactDTO user;
 
     //<editor-fold desc="Constructors">
-    public TimelineItemDTO()
+    @SuppressWarnings("UnusedDeclaration") // Needed for deserialiser
+    TimelineItemDTO()
     {
     }
 
@@ -40,20 +40,6 @@ public class TimelineItemDTO extends AbstractDiscussionDTO<TimelineItemDTO>
     public void setMedias(SecurityMediaDTOList medias)
     {
         this.medias = medias;
-    }
-
-    public SecurityMediaDTOList getMedias()
-    {
-        return medias;
-    }
-
-    public SecurityIdList getMediaSecurityIds()
-    {
-        if (medias == null)
-        {
-            return null;
-        }
-        return medias.getMediaSecurityIds();
     }
 
     @JsonIgnore

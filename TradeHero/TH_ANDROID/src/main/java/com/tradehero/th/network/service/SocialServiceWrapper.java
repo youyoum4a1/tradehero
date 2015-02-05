@@ -45,13 +45,19 @@ import rx.functions.Func1;
 
     @NonNull public Func1<AuthData, Observable<UserProfileDTO>> connectFunc1(@NonNull final UserBaseKey userBaseKey)
     {
-        return accessTokenForm -> connectRx(userBaseKey, new AccessTokenForm(accessTokenForm));
+        return new Func1<AuthData, Observable<UserProfileDTO>>()
+        {
+            @Override public Observable<UserProfileDTO> call(AuthData accessTokenForm)
+            {
+                return SocialServiceWrapper.this.connectRx(userBaseKey, new AccessTokenForm(accessTokenForm));
+            }
+        };
     }
 
     @NonNull public Observable<UserProfileDTO> connectRx(@NonNull UserBaseKey userBaseKey, AccessTokenForm accessTokenForm)
     {
         return socialServiceRx.connect(userBaseKey.key, accessTokenForm)
-                .map(userProfileDTO -> dtoProcessorUpdateUserProfileProvider.get().process(userProfileDTO));
+                .map(dtoProcessorUpdateUserProfileProvider.get());
     }
 
     @Override @NonNull public Observable<UserProfileDTO> link(AccessTokenForm accessTokenForm)
@@ -61,7 +67,9 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Disconnect">
-    public Observable<UserProfileDTO> disconnectRx(@NonNull UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO)
+    @NonNull public Observable<UserProfileDTO> disconnectRx(
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull SocialNetworkFormDTO socialNetworkFormDTO)
     {
         return socialServiceRx.disconnect(userBaseKey.key, socialNetworkFormDTO)
                 .map(dtoProcessorUpdateUserProfileProvider.get());

@@ -52,18 +52,10 @@ public class ProviderVideoListItemView extends RelativeLayout
 
     @Override public void display(HelpVideoDTO helpVideoDTO)
     {
-        this.linkWith(helpVideoDTO, true);
-    }
-
-    public void linkWith(HelpVideoDTO videoDto, boolean andDisplay)
-    {
-        this.videoDTO = videoDto;
-        if (andDisplay)
-        {
-            this.displayThumbnail();
-            displayTitle();
-            displayDescription();
-        }
+        this.videoDTO = helpVideoDTO;
+        this.displayThumbnail();
+        displayTitle();
+        displayDescription();
     }
 
     public void displayThumbnail()

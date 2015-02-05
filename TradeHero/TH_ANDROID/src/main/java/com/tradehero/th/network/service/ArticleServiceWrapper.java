@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.article.ArticleInfoDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.PaginationDTO;
@@ -10,14 +11,16 @@ import rx.Observable;
 @Singleton
 public class ArticleServiceWrapper
 {
-    private final ArticleServiceRx articleServiceRx;
+    @NonNull private final ArticleServiceRx articleServiceRx;
 
-    @Inject ArticleServiceWrapper(ArticleServiceRx articleServiceRx)
+    //<editor-fold desc="Constructor">
+    @Inject ArticleServiceWrapper(@NonNull ArticleServiceRx articleServiceRx)
     {
         this.articleServiceRx = articleServiceRx;
     }
+    //</editor-fold>
 
-    public Observable<PaginatedDTO<ArticleInfoDTO>> getAllArticlesRx(PaginationDTO paginationDTO)
+    @NonNull public Observable<PaginatedDTO<ArticleInfoDTO>> getAllArticlesRx(@NonNull PaginationDTO paginationDTO)
     {
         return articleServiceRx.getAllArticles(paginationDTO.page, paginationDTO.perPage);
     }

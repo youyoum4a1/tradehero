@@ -18,7 +18,7 @@ import com.tradehero.th.widget.QuestIndicatorGroupView;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 
 public class QuestDialogFragment extends AbstractAchievementDialogFragment
 {
@@ -50,9 +50,9 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
 
     private void fetchQuestBonusList()
     {
-        AndroidObservable.bindFragment(
+        AppObservable.bindFragment(
                 this,
-                questBonusListCache.get(questBonusListId))
+                questBonusListCache.getOne(questBonusListId))
                 .subscribe(new QuestBonusCacheObserver());
     }
 
@@ -95,7 +95,6 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
         {
         }
 
-        @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
         @Nullable private Boolean firstIsCurrentLevel(List<QuestBonusDTO> questBonusDTOList)
         {
             UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;

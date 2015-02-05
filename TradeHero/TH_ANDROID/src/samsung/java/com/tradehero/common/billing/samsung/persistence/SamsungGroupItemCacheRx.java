@@ -18,7 +18,7 @@ abstract public class SamsungGroupItemCacheRx<
     public SamsungGroupItemCacheRx(int maxSize,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(maxSize, 5, dtoCacheUtil);
+        super(maxSize, dtoCacheUtil);
     }
     //</editor-fold>
 

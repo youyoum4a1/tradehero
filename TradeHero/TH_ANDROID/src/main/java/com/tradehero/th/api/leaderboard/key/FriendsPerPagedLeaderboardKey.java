@@ -48,7 +48,7 @@ public class FriendsPerPagedLeaderboardKey extends PerPagedLeaderboardKey
                 (includeFoF == null ? other.includeFoF == null : includeFoF.equals(other.includeFoF));
     }
 
-    @Override public PagedLeaderboardKey cloneAtPage(int page)
+    @NonNull @Override public PagedLeaderboardKey cloneAtPage(int page)
     {
         return new FriendsPerPagedLeaderboardKey(this, id, page);
     }

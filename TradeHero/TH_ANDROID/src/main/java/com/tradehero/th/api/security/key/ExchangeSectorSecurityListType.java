@@ -36,16 +36,15 @@ public class ExchangeSectorSecurityListType extends SecurityListType
     }
     //</editor-fold>
 
-    @Override protected boolean equals(@NonNull SecurityListType other)
+    @Override protected boolean equalFields(@NonNull SecurityListType other)
     {
-        return super.equals(other)
-                && other instanceof ExchangeSectorSecurityListType
-                && equals((ExchangeSectorSecurityListType) other);
+        return other instanceof ExchangeSectorSecurityListType
+                && equalFields((ExchangeSectorSecurityListType) other);
     }
 
-    protected boolean equals(@NonNull ExchangeSectorSecurityListType other)
+    protected boolean equalFields(@NonNull ExchangeSectorSecurityListType other)
     {
-        return super.equals(other)
+        return super.equalFields(other)
                 && (exchangeId == null ? other.exchangeId == null : exchangeId.equals(other.exchangeId))
                 && (sectorId == null ? other.sectorId == null : sectorId.equals(other.sectorId));
     }

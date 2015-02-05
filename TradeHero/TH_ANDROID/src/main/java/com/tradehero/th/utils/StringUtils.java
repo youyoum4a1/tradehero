@@ -5,11 +5,12 @@ import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
+import android.support.annotation.Nullable;
 import java.util.List;
 
 public class StringUtils
 {
-    public static String join(String glue, List elements)
+    @Nullable public static String join(String glue, @Nullable List elements)
     {
         if (elements == null)
         {
@@ -30,7 +31,7 @@ public class StringUtils
         return out.toString();
     }
 
-    public static String join(String glue, Object... elements)
+    @Nullable public static String join(String glue, Object... elements)
     {
         if (elements == null)
         {

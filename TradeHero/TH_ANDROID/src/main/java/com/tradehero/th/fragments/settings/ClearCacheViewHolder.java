@@ -6,25 +6,31 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.preference.PreferenceFragment;
+import android.util.Pair;
 import com.squareup.picasso.LruCache;
-import com.tradehero.common.utils.SlowedAsyncTask;
+import com.tradehero.common.rx.MinimumApparentDelayer;
+import com.tradehero.common.rx.DurationMeasurer;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.dagger.ForPicasso;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class ClearCacheViewHolder extends OneSettingViewHolder
 {
-    @NonNull private final ProgressDialogUtil progressDialogUtil;
+    private static final Pair<Long, TimeUnit> APPARENT_DURATION = Pair.create(500l, TimeUnit.MILLISECONDS);
+
     @NonNull private final LruCache lruCache;
     @Nullable private ProgressDialog progressDialog;
 
     //<editor-fold desc="Constructors">
     @Inject public ClearCacheViewHolder(
-            @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull @ForPicasso LruCache lruCache)
     {
-        this.progressDialogUtil = progressDialogUtil;
         this.lruCache = lruCache;
     }
     //</editor-fold>
@@ -44,7 +50,7 @@ public class ClearCacheViewHolder extends OneSettingViewHolder
                 Context activityContext = preferenceFragmentCopy.getActivity();
                 if (activityContext != null)
                 {
-                    progressDialog = progressDialogUtil.show(
+                    progressDialog = ProgressDialogUtil.show(
                             activityContext,
                             R.string.settings_misc_cache_clearing_alert_title,
                             R.string.settings_misc_cache_clearing_alert_message);
@@ -61,20 +67,17 @@ public class ClearCacheViewHolder extends OneSettingViewHolder
             progressDialog.show();
         }
 
-        new SlowedAsyncTask<Void, Void, Void>(500)
-        {
-            @Override protected Void doBackgroundAction(Void... params)
-            {
-                flushCache();
-                return null;
-            }
-
-            @Override protected void onPostExecute(Void aVoid)
-            {
-                handleCacheCleared();
-            }
-        }.execute();
-
+        Observable.just(1)
+                .flatMap(new DurationMeasurer<>(
+                        integer -> flushCache(),
+                        APPARENT_DURATION.second,
+                        Schedulers.computation()))
+                .flatMap(new MinimumApparentDelayer<>(1, APPARENT_DURATION))
+                .doOnNext(ignored -> showCacheCleared())
+                .delay(APPARENT_DURATION.first, APPARENT_DURATION.second, AndroidSchedulers.mainThread())
+                .subscribe(
+                        ignored -> dismissProgress(),
+                        e -> Timber.e(e, "Failed to clear cache"));
     }
 
     private void flushCache()
@@ -82,7 +85,7 @@ public class ClearCacheViewHolder extends OneSettingViewHolder
         lruCache.clear();
     }
 
-    private void handleCacheCleared()
+    private void showCacheCleared()
     {
         PreferenceFragment preferenceFragmentCopy = preferenceFragment;
         if (preferenceFragmentCopy != null)
@@ -92,7 +95,7 @@ public class ClearCacheViewHolder extends OneSettingViewHolder
             {
                 if (progressDialog == null)
                 {
-                    progressDialog = progressDialogUtil.show(
+                    progressDialog = ProgressDialogUtil.show(
                             activity,
                             R.string.settings_misc_cache_cleared_alert_title,
                             R.string.empty);
@@ -103,18 +106,16 @@ public class ClearCacheViewHolder extends OneSettingViewHolder
                     progressDialog.setMessage("");
                     progressDialog.show();
                 }
-                preferenceFragmentCopy.getView().postDelayed(new Runnable()
-                {
-                    @Override public void run()
-                    {
-                        ProgressDialog progressDialogCopy = progressDialog;
-                        if (progressDialogCopy != null)
-                        {
-                            progressDialogCopy.hide();
-                        }
-                    }
-                }, 500);
             }
+        }
+    }
+
+    private void dismissProgress()
+    {
+        ProgressDialog progressDialogCopy = progressDialog;
+        if (progressDialogCopy != null)
+        {
+            progressDialogCopy.hide();
         }
     }
 }

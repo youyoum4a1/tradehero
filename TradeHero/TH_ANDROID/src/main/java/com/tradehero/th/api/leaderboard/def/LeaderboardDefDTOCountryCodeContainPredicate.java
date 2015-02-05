@@ -10,18 +10,17 @@ public class LeaderboardDefDTOCountryCodeContainPredicate implements Predicate<L
     @NonNull
     private final CountryCodeListContainCodePredicate countryCodeListContainCodePredicate;
 
+    //<editor-fold desc="Constructors">
     public LeaderboardDefDTOCountryCodeContainPredicate(@NonNull String countryCode)
     {
         super();
         this.countryCodeListContainCodePredicate = new CountryCodeListContainCodePredicate(countryCode);
     }
+    //</editor-fold>
 
     @Override public boolean apply(@Nullable LeaderboardDefDTO leaderboardDefDTO)
     {
-        if (leaderboardDefDTO == null)
-        {
-            return false;
-        }
-        return countryCodeListContainCodePredicate.apply(leaderboardDefDTO.countryCodes);
+        return leaderboardDefDTO != null
+                && countryCodeListContainCodePredicate.apply(leaderboardDefDTO.countryCodes);
     }
 }

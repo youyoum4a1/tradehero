@@ -44,7 +44,8 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 public class DiscussionEditPostFragment extends DashboardFragment
@@ -54,14 +55,9 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
     @Inject SecurityCompactCacheRx securityCompactCache;
-    @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<SocialSharer> socialSharerLazy;
-    @Inject DiscussionKeyFactory discussionKeyFactory;
-    @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
     @Inject DiscussionCacheRx discussionCache;
-    @Inject WeChatDTOFactory weChatDTOFactory;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
-    @Inject EditableUtil editableUtil;
     @Inject MentionTaggedStockHandler mentionTaggedStockHandler;
 
     private DiscussionDTO discussionDTO;
@@ -139,8 +135,8 @@ public class DiscussionEditPostFragment extends DashboardFragment
         {
             if (args.containsKey(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE))
             {
-                DiscussionKey discussionKey = discussionKeyFactory.fromBundle(args.getBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE));
-                linkWith(discussionKey, true);
+                DiscussionKey discussionKey = DiscussionKeyFactory.fromBundle(args.getBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE));
+                linkWith(discussionKey);
             }
         }
 
@@ -182,7 +178,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         discussionEditSubscription = null;
     }
 
-    private void linkWith(DiscussionDTO discussionDTO, boolean andDisplay)
+    private void linkWith(DiscussionDTO discussionDTO)
     {
         this.discussionDTO = discussionDTO;
     }
@@ -207,9 +203,9 @@ public class DiscussionEditPostFragment extends DashboardFragment
             discussionPostActionButtonsView.populate(discussionFormDTO);
             discussionPostActionButtonsView.onPostDiscussion();
 
-            progressDialog = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
+            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
             unsubscribe(discussionEditSubscription);
-            discussionEditSubscription = AndroidObservable.bindFragment(
+            discussionEditSubscription = AppObservable.bindFragment(
                     this,
                     discussionServiceWrapper.createDiscussionRx(discussionFormDTO))
                     .subscribe(new SecurityDiscussionEditCallback());
@@ -222,7 +218,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         DiscussionType discussionType = getDiscussionType();
         if (discussionType != null)
         {
-            discussionFormDTO = discussionFormDTOFactory.createEmpty(discussionType);
+            discussionFormDTO = DiscussionFormDTOFactory.createEmpty(discussionType);
         }
         else
         {
@@ -232,7 +228,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         {
             ((ReplyDiscussionFormDTO) discussionFormDTO).inReplyToId = discussionKey.id;
         }
-        discussionFormDTO.text = editableUtil.unSpanText(discussionPostContent.getText()).toString();
+        discussionFormDTO.text = EditableUtil.unSpanText(discussionPostContent.getText()).toString();
         return discussionFormDTO;
     }
 
@@ -279,31 +275,28 @@ public class DiscussionEditPostFragment extends DashboardFragment
         };
     }
 
-    private void linkWith(@NonNull DiscussionKey discussionKey, boolean andDisplay)
+    private void linkWith(@NonNull DiscussionKey discussionKey)
     {
         this.discussionKey = discussionKey;
         AbstractDiscussionCompactDTO abstractDiscussionDTO = discussionCache.getCachedValue(discussionKey);
-        linkWith(abstractDiscussionDTO, andDisplay);
+        linkWith(abstractDiscussionDTO);
     }
 
-    private void linkWith(@Nullable AbstractDiscussionCompactDTO abstractDiscussionCompactDTO, boolean andDisplay)
+    private void linkWith(@Nullable AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {
         // TODO question, should we subclass this to have a NewsEditPostFragment?
         if (abstractDiscussionCompactDTO instanceof NewsItemDTO)
         {
-            linkWith((NewsItemDTO) abstractDiscussionCompactDTO, andDisplay);
+            linkWith((NewsItemDTO) abstractDiscussionCompactDTO);
         }
     }
 
-    private void linkWith(@NonNull NewsItemDTO newsItemDTO, boolean andDisplay)
+    private void linkWith(@NonNull NewsItemDTO newsItemDTO)
     {
-        if (andDisplay)
+        setActionBarSubtitle(getString(R.string.discussion_edit_post_subtitle, newsItemDTO.title));
+        if (getActivity() != null)
         {
-            setActionBarSubtitle(getString(R.string.discussion_edit_post_subtitle, newsItemDTO.title));
-            if (getActivity() != null)
-            {
-                getActivity().invalidateOptionsMenu();
-            }
+            getActivity().invalidateOptionsMenu();
         }
     }
 
@@ -318,11 +311,12 @@ public class DiscussionEditPostFragment extends DashboardFragment
         {
             onFinish();
 
-            linkWith(discussionDTO, true);
+            linkWith(discussionDTO);
 
             if (discussionPostActionButtonsView.isShareEnabled(SocialNetworkEnum.WECHAT))
             {
-                socialSharerLazy.get().share(weChatDTOFactory.createFrom(discussionDTO)); // Proper callback?
+                socialSharerLazy.get().share(WeChatDTOFactory.createFrom(discussionDTO))
+                        .subscribe(Actions.empty(), Actions.empty()); // Proper callback?
             }
 
             DeviceUtil.dismissKeyboard(getActivity());

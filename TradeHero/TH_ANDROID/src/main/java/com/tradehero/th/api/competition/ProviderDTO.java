@@ -151,15 +151,6 @@ public class ProviderDTO implements DTO
         return currencyDisplay != null && !currencyDisplay.isEmpty();
     }
 
-    public static List<ProviderId> getProviderIds(List<? extends ProviderDTO> providerDTOs)
-    {
-        if (providerDTOs == null)
-        {
-            return null;
-        }
-        return new ProviderIdList(providerDTOs);
-    }
-
     public boolean hasAdvertisement()
     {
         return advertisements != null && !advertisements.isEmpty();

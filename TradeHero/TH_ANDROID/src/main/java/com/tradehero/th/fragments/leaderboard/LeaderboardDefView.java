@@ -11,13 +11,10 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.ConnectedLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.leaderboard.LeaderboardDefDTOKnowledge;
-import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.models.number.THSignedPercentage;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Subscription;
@@ -83,7 +80,13 @@ public class LeaderboardDefView extends RelativeLayout
     {
         dto = leaderboardDefDTO;
         fetchUserRank();
-        linkWith(leaderboardDefDTO, true);
+
+        if (leaderboardDefDTO == null)
+        {
+            return;
+        }
+
+        display();
     }
 
     private void fetchUserRank()
@@ -106,20 +109,6 @@ public class LeaderboardDefView extends RelativeLayout
             leaderboardDefUserRankWrapper.setVisibility(GONE);
         }*/
         leaderboardDefUserRankWrapper.setVisibility(GONE);
-    }
-
-    protected void linkWith(LeaderboardDefDTO dto, boolean andDisplay)
-    {
-        this.dto = dto;
-        if (dto == null)
-        {
-            return;
-        }
-
-        if (andDisplay)
-        {
-            display();
-        }
     }
 
     private void display()

@@ -28,19 +28,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.inject.Inject;
 
-public class GraphicUtil implements BitmapForProfileFactory
+public class GraphicUtil
 {
-    //<editor-fold desc="Constructors">
-    @Inject public GraphicUtil()
-    {
-        super();
-    }
-    //</editor-fold>
-
     //<editor-fold desc="EXIF Rotation">
-    public Integer getOrientationCode(String imagePath)
+    public static Integer getOrientationCode(String imagePath)
     {
         return getOrientationCode(new File(imagePath));
     }
@@ -50,7 +42,7 @@ public class GraphicUtil implements BitmapForProfileFactory
      * ExifInterface.ORIENTATION_ROTATE_90, ExifInterface.ORIENTATION_NORMAL, null when unsure
      */
     @Nullable
-    public Integer getOrientationCode(@NonNull File imageFile)
+    public static Integer getOrientationCode(@NonNull File imageFile)
     {
         try
         {
@@ -65,17 +57,17 @@ public class GraphicUtil implements BitmapForProfileFactory
         }
     }
 
-    public int getRotationDegree(@NonNull String imagePath)
+    public static int getRotationDegree(@NonNull String imagePath)
     {
         return getRotationDegree(new File(imagePath));
     }
 
-    public int getRotationDegree(@NonNull File imageFile)
+    public static int getRotationDegree(@NonNull File imageFile)
     {
         return getRotationDegree(getOrientationCode(imageFile));
     }
 
-    public int getRotationDegree(@Nullable Integer orientationCode)
+    public static int getRotationDegree(@Nullable Integer orientationCode)
     {
         int rotation = 0;
         if (orientationCode != null)
@@ -97,8 +89,9 @@ public class GraphicUtil implements BitmapForProfileFactory
     }
     //</editor-fold>
 
-    @Nullable
-    @Override public Bitmap decodeBitmapForProfile(Resources resources, @NonNull String selectedPath)
+    @Nullable public static Bitmap decodeBitmapForProfile(
+            @NonNull Resources resources,
+            @NonNull String selectedPath)
     {
         File imageFile = new File(selectedPath);
         BitmapFactory.Options options;
@@ -118,14 +111,14 @@ public class GraphicUtil implements BitmapForProfileFactory
     }
 
     @Nullable
-    public Bitmap decodeFileForDisplay(@NonNull Context context, @NonNull File f)
+    public static Bitmap decodeFileForDisplay(@NonNull Context context, @NonNull File f)
     {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         return decodeFileWithinSize(f, metrics.widthPixels, metrics.heightPixels);
     }
 
     @Nullable
-    public Bitmap decodeFileWithinSize(@NonNull File f, int width, int height)
+    public static Bitmap decodeFileWithinSize(@NonNull File f, int width, int height)
     {
         try
         {
@@ -160,7 +153,7 @@ public class GraphicUtil implements BitmapForProfileFactory
     }
 
     @Nullable
-    public Bitmap decodeFileWithOrientation(@NonNull File f, int rotationDegree,
+    public static Bitmap decodeFileWithOrientation(@NonNull File f, int rotationDegree,
             BitmapFactory.Options options)
     {
         try
@@ -174,12 +167,12 @@ public class GraphicUtil implements BitmapForProfileFactory
         return null;
     }
 
-    public int parseColor(@Nullable String argbHexColorString)
+    public static int parseColor(@Nullable String argbHexColorString)
     {
         return parseColor(argbHexColorString, Color.WHITE);
     }
 
-    public int parseColor(@Nullable String argbHexColorString, int defaultColor)
+    public static int parseColor(@Nullable String argbHexColorString, int defaultColor)
     {
         if (argbHexColorString != null && !argbHexColorString.startsWith("#"))
         {
@@ -197,7 +190,7 @@ public class GraphicUtil implements BitmapForProfileFactory
         return color;
     }
 
-    public int getContrastingColor(int color)
+    public static int getContrastingColor(int color)
     {
         //Reference http://stackoverflow.com/questions/1855884/determine-font-color-based-on-background-color
 
@@ -215,7 +208,7 @@ public class GraphicUtil implements BitmapForProfileFactory
         return Color.rgb(d, d, d);
     }
 
-    private boolean isBright(int color)
+    private static boolean isBright(int color)
     {
         // Counting the perceptive luminance - human eye favors green color...
         double a = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255;
@@ -226,7 +219,7 @@ public class GraphicUtil implements BitmapForProfileFactory
         return false;
     }
 
-    public int getLighterColor(int color)
+    public static int getLighterColor(int color)
     {
         float hsvVals[] = new float[3];
         Color.colorToHSV(color, hsvVals);
@@ -234,7 +227,7 @@ public class GraphicUtil implements BitmapForProfileFactory
         return Color.HSVToColor(hsvVals);
     }
 
-    public int getDarkerColor(int color)
+    public static int getDarkerColor(int color)
     {
         float hsvVals[] = new float[3];
         Color.colorToHSV(color, hsvVals);
@@ -243,7 +236,7 @@ public class GraphicUtil implements BitmapForProfileFactory
     }
 
     //<editor-fold desc="Color Filter">
-    public void applyColorFilter(@NonNull ImageView[] imageViews, int color)
+    public static void applyColorFilter(@NonNull ImageView[] imageViews, int color)
     {
         for (ImageView imageView : imageViews)
         {
@@ -251,7 +244,7 @@ public class GraphicUtil implements BitmapForProfileFactory
         }
     }
 
-    public void applyColorFilter(@NonNull Collection<? extends ImageView> imageViews, int color)
+    public static void applyColorFilter(@NonNull Collection<? extends ImageView> imageViews, int color)
     {
         for (ImageView imageView : imageViews)
         {
@@ -259,19 +252,19 @@ public class GraphicUtil implements BitmapForProfileFactory
         }
     }
 
-    public void applyColorFilter(@NonNull ImageView imageView, int color)
+    public static void applyColorFilter(@NonNull ImageView imageView, int color)
     {
         applyColorFilter(imageView.getDrawable(), color);
     }
 
-    public void applyColorFilter(@NonNull Drawable d, int color)
+    public static void applyColorFilter(@NonNull Drawable d, int color)
     {
         d.clearColorFilter();
         d.setColorFilter(color, PorterDuff.Mode.SRC_IN);
     }
     //</editor-fold>
 
-    public StateListDrawable createStateListDrawable(@NonNull Context context, int normal)
+    public static StateListDrawable createStateListDrawable(@NonNull Context context, int normal)
     {
         int pressed;
         if (isBright(normal))
@@ -285,7 +278,7 @@ public class GraphicUtil implements BitmapForProfileFactory
         return createStateListDrawable(context, normal, pressed);
     }
 
-    public StateListDrawable createStateListDrawable(@NonNull Context context, int normal, int pressed)
+    public static StateListDrawable createStateListDrawable(@NonNull Context context, int normal, int pressed)
     {
         int focused;
         if (isBright(normal))
@@ -299,7 +292,7 @@ public class GraphicUtil implements BitmapForProfileFactory
         return createStateListDrawable(context, normal, pressed, focused);
     }
 
-    public StateListDrawable createStateListDrawable(@NonNull Context context, int normal, int pressed, int focused)
+    public static StateListDrawable createStateListDrawable(@NonNull Context context, int normal, int pressed, int focused)
     {
         StateListDrawable states = new StateListDrawable();
         states.setExitFadeDuration(context.getResources().getInteger(android.R.integer.config_mediumAnimTime));
@@ -309,13 +302,13 @@ public class GraphicUtil implements BitmapForProfileFactory
         return states;
     }
 
-    public void setBackground(@NonNull View view, int color)
+    public static void setBackground(@NonNull View view, int color)
     {
-        this.setBackground(view, new ColorDrawable(color));
+        setBackground(view, new ColorDrawable(color));
     }
 
     @SuppressLint("NewApi")
-    public void setBackground(@NonNull View view, Drawable drawable)
+    public static void setBackground(@NonNull View view, Drawable drawable)
     {
         if (SDKUtils.isJellyBeanOrHigher())
         {
@@ -327,7 +320,7 @@ public class GraphicUtil implements BitmapForProfileFactory
         }
     }
 
-    public List<PropertyValuesHolder> wiggleWiggle(float shakeFactor)
+    public static List<PropertyValuesHolder> wiggleWiggle(float shakeFactor)
     {
         PropertyValuesHolder pvhScaleX = PropertyValuesHolder.ofKeyframe(View.SCALE_X,
                 Keyframe.ofFloat(0f, 1f),

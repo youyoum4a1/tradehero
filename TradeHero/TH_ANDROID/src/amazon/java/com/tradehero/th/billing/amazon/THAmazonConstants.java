@@ -3,7 +3,7 @@ package com.tradehero.th.billing.amazon;
 import com.tradehero.common.billing.amazon.AmazonConstants;
 import com.tradehero.th.billing.THBillingConstants;
 
-class THAmazonConstants
+public class THAmazonConstants
         extends AmazonConstants
         implements THBillingConstants
 {

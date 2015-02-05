@@ -1,15 +1,21 @@
 package com.tradehero.th.api.users;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 public class SearchUserListType extends UserListType
 {
     //<editor-fold desc="Fields">
-    public final String searchString;
-    public final Integer page;
-    public final Integer perPage;
+    @Nullable public final String searchString;
+    @Nullable public final Integer page;
+    @Nullable public final Integer perPage;
     //</editor-fold>
 
     //<editor-fold desc="Constructors">
-    public SearchUserListType(String searchString, Integer page, Integer perPage)
+    public SearchUserListType(
+            @Nullable String searchString,
+            @Nullable Integer page,
+            @Nullable Integer perPage)
     {
         this.searchString = searchString;
         this.page = page;
@@ -17,7 +23,7 @@ public class SearchUserListType extends UserListType
     }
     //</editor-fold>
 
-    @Override public Integer getPage()
+    @Override @Nullable public Integer getPage()
     {
         return page;
     }
@@ -29,12 +35,13 @@ public class SearchUserListType extends UserListType
                 (perPage == null ? 0 : perPage.hashCode());
     }
 
-    @Override public boolean equalFields(UserListType other)
+    @Override public boolean equalFields(@NonNull UserListType other)
     {
-        return equalFields ((SearchUserListType) other);
+        return other instanceof SearchUserListType
+                && equalFields((SearchUserListType) other);
     }
 
-    public boolean equalFields(SearchUserListType other)
+    public boolean equalFields(@NonNull SearchUserListType other)
     {
         return (searchString == null ? other.searchString == null : searchString.equals(other.searchString)) &&
                 (page == null ? other.page == null : page.equals(other.page)) &&
@@ -42,12 +49,8 @@ public class SearchUserListType extends UserListType
     }
 
     //<editor-fold desc="Comparable">
-    @Override public int compareTo(UserListType other)
+    @Override public int compareTo(@NonNull UserListType other)
     {
-        if (other == null)
-        {
-            return 1;
-        }
         if (!(other instanceof SearchUserListType))
         {
             return SearchUserListType.class.getName().compareTo(((Object) other).getClass().getName());

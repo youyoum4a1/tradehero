@@ -1,6 +1,7 @@
 package com.tradehero.th.api.form;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.misc.DeviceType;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
@@ -33,7 +34,7 @@ public class UserFormDTO extends LoginSignUpFormDTO
 
     public TypedOutput profilePicture;
 
-    public UserFormDTO(AuthData authData, String email, boolean useOnlyHeroCount, String deviceToken,
+    public UserFormDTO(@NonNull AuthData authData, String email, boolean useOnlyHeroCount, String deviceToken,
             DeviceType clientType, String clientVersion, String username, String password, String passwordConfirmation, String firstName,
             String lastName, String displayName, String inviteCode, BitmapTypedOutput profilePicture, Boolean pushNotificationsEnabled,
             Boolean emailNotificationsEnabled)
@@ -82,60 +83,62 @@ public class UserFormDTO extends LoginSignUpFormDTO
         private BitmapTypedOutput profilePicture;
         private String inviteCode;
 
-        public Builder(Context context, StringPreference savedPushIdentifier)
+        //<editor-fold desc="Constructors">
+        public Builder(@NonNull Context context, @NonNull StringPreference savedPushIdentifier)
         {
             super(context, savedPushIdentifier);
         }
+        //</editor-fold>
 
-        public UserFormDTO build()
+        @NonNull public UserFormDTO build()
         {
             return new UserFormDTO(authData, email, useOnlyHeroCount, savedPushIdentifier.get(), Constants.DEVICE_TYPE, versionId, displayName, password,
                     password, firstName, lastName, displayName, inviteCode, profilePicture, pushNotificationsEnabled, emailNotificationsEnabled);
         }
 
-        public T password(String password)
+        @NonNull public T password(String password)
         {
             this.password = password;
             return self();
         }
 
-        public T pushNotificationsEnabled(Boolean pushNotificationsEnabled)
+        @NonNull public T pushNotificationsEnabled(Boolean pushNotificationsEnabled)
         {
             this.pushNotificationsEnabled = pushNotificationsEnabled;
             return self();
         }
 
-        public T emailNotificationsEnabled(boolean emailNotificationsEnabled)
+        @NonNull public T emailNotificationsEnabled(boolean emailNotificationsEnabled)
         {
             this.emailNotificationsEnabled = emailNotificationsEnabled;
             return self();
         }
 
-        public T displayName(String displayName)
+        @NonNull public T displayName(String displayName)
         {
             this.displayName = displayName;
             return self();
         }
 
-        public T firstName(String firstName)
+        @NonNull public T firstName(String firstName)
         {
             this.firstName = firstName;
             return self();
         }
 
-        public T lastName(String lastName)
+        @NonNull public T lastName(String lastName)
         {
             this.lastName = lastName;
             return self();
         }
 
-        public T profilePicture(BitmapTypedOutput profilePicture)
+        @NonNull public T profilePicture(BitmapTypedOutput profilePicture)
         {
             this.profilePicture = profilePicture;
             return self();
         }
 
-        public T inviteCode(String inviteCode)
+        @NonNull public T inviteCode(String inviteCode)
         {
             this.inviteCode = inviteCode;
             return self();
@@ -144,12 +147,12 @@ public class UserFormDTO extends LoginSignUpFormDTO
 
     public static class Builder2 extends Builder<Builder2>
     {
-        @Inject public Builder2(Context context, @SavedPushDeviceIdentifier StringPreference savedPushIdentifier)
+        @Inject public Builder2(@NonNull Context context, @SavedPushDeviceIdentifier StringPreference savedPushIdentifier)
         {
             super(context, savedPushIdentifier);
         }
 
-        @Override protected Builder2 self()
+        @Override @NonNull protected Builder2 self()
         {
             return this;
         }

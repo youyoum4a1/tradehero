@@ -34,9 +34,8 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class WatchlistEditFragment extends DashboardFragment
@@ -62,7 +61,6 @@ public class WatchlistEditFragment extends DashboardFragment
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
-    @Inject ProgressDialogUtil progressDialogUtil;
 
     public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
     {
@@ -144,7 +142,7 @@ public class WatchlistEditFragment extends DashboardFragment
             unsubscribe(updateSubscription);
             if (existingWatchlistPosition != null)
             {
-                updateSubscription = AndroidObservable.bindFragment(
+                updateSubscription = AppObservable.bindFragment(
                         this,
                         watchlistServiceWrapper.updateWatchlistEntryRx(
                         existingWatchlistPosition.getPositionCompactId(),
@@ -153,7 +151,7 @@ public class WatchlistEditFragment extends DashboardFragment
             }
             else
             {
-                updateSubscription = AndroidObservable.bindFragment(
+                updateSubscription = AppObservable.bindFragment(
                         this,
                         watchlistServiceWrapper.createWatchlistEntryRx(
                         watchPositionItemForm))
@@ -181,7 +179,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
         else
         {
-            progressBar = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.watchlist_updating);
+            progressBar = ProgressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.watchlist_updating);
         }
     }
 
@@ -204,7 +202,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             showProgressBar();
             unsubscribe(deleteSubscription);
-            deleteSubscription = AndroidObservable.bindFragment(
+            deleteSubscription = AppObservable.bindFragment(
                     this,
                     watchlistServiceWrapper.deleteWatchlistRx(watchlistPositionDTO.getPositionCompactId()))
                     .subscribe(createWatchlistDeleteObserver());
@@ -295,7 +293,7 @@ public class WatchlistEditFragment extends DashboardFragment
             progressBar = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait), getString(R.string.loading_loading), true);
         }
 
-        AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
+        AppObservable.bindFragment(this, securityCompactCache.get(securityId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createSecurityCompactCacheObserver());
     }
@@ -377,7 +375,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    protected class WatchlistEditTHObserver extends EmptyObserver<WatchlistPositionDTO>
+    protected class WatchlistEditTHObserver implements Observer<WatchlistPositionDTO>
     {
         @Override public void onNext(WatchlistPositionDTO args)
         {
@@ -386,6 +384,10 @@ public class WatchlistEditFragment extends DashboardFragment
                 navigator.get().popFragment();
             }
             dismissProgress();
+        }
+
+        @Override public void onCompleted()
+        {
         }
 
         @Override public void onError(Throwable e)

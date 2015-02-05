@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,11 +18,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnCheckedChanged;
 import com.special.residemenu.ResideMenu;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.billing.ProductPurchase;
-import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.NotifyingStickyScrollView;
 import com.tradehero.th.R;
@@ -31,10 +32,7 @@ import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THPurchaseReporter;
-import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.AlertSlotDTO;
@@ -47,8 +45,9 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
@@ -80,7 +79,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     @Inject protected Picasso picasso;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected SecurityAlertCountingHelper securityAlertCountingHelper;
-    @Inject ProgressDialogUtil progressDialogUtil;
     @Inject ResideMenu resideMenu;
 
     protected SecurityId securityId;
@@ -120,11 +118,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         };
     }
 
-    protected CompoundButton.OnCheckedChangeListener createPercentageCheckedChangeListener()
-    {
-        return (buttonView, isChecked) -> handlePercentageCheckedChange(isChecked);
-    }
-
     protected SeekBar.OnSeekBarChangeListener createPercentageSeekBarChangeListener()
     {
         return new SeekBar.OnSeekBarChangeListener()
@@ -155,7 +148,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         ButterKnife.inject(this, view);
         scrollView.setOnScrollChangedListener(dashboardBottomTabScrollViewScrollListener.get());
         alertToggle.setVisibility(View.GONE);
-        targetPercentageChangeToggle.setOnCheckedChangeListener(createPercentageCheckedChangeListener());
         targetPriceToggle.setOnCheckedChangeListener(createTargetPriceCheckedChangeListener());
         resideMenu.addIgnoredView(targetPriceSeekBar);
         resideMenu.addIgnoredView(percentageSeekBar);
@@ -192,7 +184,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     {
         scrollView.setOnScrollChangedListener(null);
         targetPriceToggle.setOnCheckedChangeListener(null);
-        targetPercentageChangeToggle.setOnCheckedChangeListener(null);
         percentageSeekBar.setOnSeekBarChangeListener(null);
         targetPriceSeekBar.setOnSeekBarChangeListener(null);
         resideMenu.removeIgnoredView(targetPriceSeekBar);
@@ -209,15 +200,15 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
         this.securityId = securityId;
 
-        progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
+        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
         fetchSecurityCompact();
     }
 
     protected void fetchSecurityCompact()
     {
         unsubscribe(securitySubscription);
-        securitySubscription = AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
-                .map(pair -> pair.second)
+        securitySubscription = AppObservable.bindFragment(this, securityCompactCache.get(securityId))
+                .map(new PairGetSecond<>())
                 .subscribe(
                         value -> {
                             hideDialog();
@@ -229,7 +220,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
                         });
     }
 
-    protected AlertFormDTO getFormDTO()
+    @Nullable protected AlertFormDTO getFormDTO()
     {
         if (targetPriceToggle == null || targetPercentageChangeToggle == null || securityCompactDTO == null || securityCompactDTO.lastPrice == null)
         {
@@ -263,65 +254,46 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         else
         {
             unsubscribe(alertSlotSubscription);
-            alertSlotSubscription = AndroidObservable.bindFragment(
+            alertSlotSubscription = AppObservable.bindFragment(
                     this,
-                    securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey()))
+                    securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey())
                     .take(1)
+                    .flatMap(this::conditionalPopPurchaseRx)
+                    .flatMap(alertSlot -> this.saveAlertRx(alertFormDTO)))
                     .subscribe(
-                            this::handleAlertSlotForSave,
-                            e -> THToast.show(new THException(e)));
+                            this::handleAlertUpdated,
+                            this::handleAlertUpdateFailed);
         }
     }
 
-    protected void handleAlertSlotForSave(@NonNull AlertSlotDTO alertSlotDTO)
+    @NonNull protected Observable<AlertSlotDTO> conditionalPopPurchaseRx(@NonNull AlertSlotDTO alertSlot)
     {
-        if (alertSlotDTO.freeAlertSlots <= 0)
+        if (alertSlot.freeAlertSlots <= 0)
         {
-            popPurchase();
+            //noinspection unchecked
+            return userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)
+                    .map(result -> alertSlot);
+        }
+        return Observable.just(alertSlot);
+    }
+
+    @NonNull protected Observable<AlertCompactDTO> saveAlertRx(@NonNull AlertFormDTO alertFormDTO)
+    {
+        if (alertFormDTO.active) // TODO decide whether we need to submit even when it is inactive
+        {
+            progressDialog = ProgressDialogUtil.create(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
+            progressDialog.show();
+            progressDialog.setCanceledOnTouchOutside(true);
+            return saveAlertProperRx(alertFormDTO);
         }
         else
         {
-            saveAlert();
+            THToast.show(R.string.error_alert_save_inactive);
+            return Observable.error(new IllegalArgumentException(getString(R.string.error_alert_save_inactive)));
         }
     }
 
-    protected void popPurchase()
-    {
-        detachRequestCode();
-        //noinspection unchecked
-        requestCode = userInteractor.run((THUIBillingRequest) uiBillingRequestBuilderProvider.get()
-                .domainToPresent(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)
-                .purchaseReportedListener(new THPurchaseReporter.OnPurchaseReportedListener()
-                {
-                    @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
-                    {
-                        saveAlert();
-                    }
-
-                    @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
-                    {
-                    }
-                })
-                .build());
-    }
-
-    protected void saveAlert()
-    {
-        AlertFormDTO alertFormDTO = getFormDTO();
-        if (alertFormDTO == null)
-        {
-            THToast.show(R.string.error_alert_insufficient_info);
-        }
-        else if (alertFormDTO.active) // TODO decide whether we need to submit even when it is inactive
-        {
-            progressDialog = progressDialogUtil.create(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
-            progressDialog.show();
-            progressDialog.setCanceledOnTouchOutside(true);
-            saveAlertProper(alertFormDTO);
-        }
-    }
-
-    abstract protected void saveAlertProper(AlertFormDTO alertFormDTO);
+    @NonNull abstract protected Observable<AlertCompactDTO> saveAlertProperRx(AlertFormDTO alertFormDTO);
 
     protected void linkWith(AlertDTO alertDTO)
     {
@@ -459,12 +431,12 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected int getFormattedTargetPriceChange()
+    @StringRes protected int getFormattedTargetPriceChange()
     {
         return R.string.stock_alert_target_price_change_format;
     }
 
-    protected int getPercentageChangeFormatResId()
+    @StringRes protected int getPercentageChangeFormatResId()
     {
         return R.string.stock_alert_percentage_change_format;
     }
@@ -556,7 +528,9 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     }
 
     //region Handling percentage changes
-    protected void handlePercentageCheckedChange(boolean isChecked)
+    @SuppressWarnings("UnusedDeclaration")
+    @OnCheckedChanged(R.id.alert_edit_toggle_percentage_change)
+    protected void handlePercentageCheckedChange(CompoundButton button, boolean isChecked)
     {
         if (isChecked && targetPriceToggle.isChecked())
         {
@@ -624,7 +598,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         return percentageSeekBar.getProgress() - 50;
     }
 
-    protected int getFormattedPercentageChangeTargetValue()
+    @StringRes protected int getFormattedPercentageChangeTargetValue()
     {
         return R.string.stock_alert_percentage_change_target_value_format;
     }

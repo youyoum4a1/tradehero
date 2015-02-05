@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.special.residemenu.ResideMenu;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.route.Routable;
@@ -41,6 +42,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
@@ -52,9 +54,8 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable("messages")
@@ -68,7 +69,6 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject Lazy<DiscussionListCacheRx> discussionListCache;
     @Inject Lazy<DiscussionCacheRx> discussionCache;
     @Inject CurrentUserId currentUserId;
-    @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject THRouter thRouter;
 
     @Nullable private MessageListKey nextMoreRecentMessageListKey;
@@ -273,7 +273,7 @@ public class MessagesCenterFragment extends DashboardFragment
         if (messageHeaderDTO != null)
         {
             pushMessageFragment(
-                    discussionKeyFactory.create(messageHeaderDTO),
+                    DiscussionKeyFactory.create(messageHeaderDTO),
                     messageHeaderDTO.getCorrespondentId(currentUserId.toUserBaseKey()));
         }
     }
@@ -339,7 +339,7 @@ public class MessagesCenterFragment extends DashboardFragment
         if (nextMoreRecentMessageListKey != null)
         {
             listSubscriptions.add(
-                    AndroidObservable.bindFragment(
+                    AppObservable.bindFragment(
                             this,
                             messageListCache.get().get(nextMoreRecentMessageListKey))
                             .subscribe(createMessageHeaderIdListCacheObserver()));
@@ -359,7 +359,7 @@ public class MessagesCenterFragment extends DashboardFragment
         MessageListKey messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE);
         Timber.d("refreshContent %s", messageListKey);
         listSubscriptions.add(
-                AndroidObservable.bindFragment(
+                AppObservable.bindFragment(
                         this,
                         messageListCache.get().get(messageListKey))
                         .subscribe(createMessageHeaderIdListCacheObserver()));
@@ -469,7 +469,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void removeMessageOnServer(@NonNull MessageHeaderDTO messageHeaderDTO)
     {
-        listSubscriptions.add(AndroidObservable.bindFragment(
+        listSubscriptions.add(AppObservable.bindFragment(
                 this,
                 messageServiceWrapper.get().deleteMessageRx(
                         messageHeaderDTO.getDTOKey(),
@@ -622,27 +622,20 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         Timber.d("reportMessageAllRead...");
         listSubscriptions.add(
-                AndroidObservable.bindFragment(
+                AppObservable.bindFragment(
                         this,
                         messageServiceWrapper.get().readAllMessageRx(
                                 currentUserId.toUserBaseKey()))
-                        .subscribe(createMessageAsReadAllObserver()));
+                        .subscribe(
+                                args -> this.updateAllAsRead(),
+                                e -> THToast.show(new THException(e))
+                        ));
 
         //Mark this locally as read, makes the user feels it's marked instantly for better experience
         updateAllAsRead();
     }
 
-    @NonNull private Observer<BaseResponseDTO> createMessageAsReadObserver(MessageHeaderDTO messageHeaderDTO)
-    {
-        return new MessageMarkAsReadObserver(messageHeaderDTO);
-    }
-
-    @NonNull private Observer<BaseResponseDTO> createMessageAsReadAllObserver()
-    {
-        return new MessageMarkAsReadAllObserver();
-    }
-
-    private class MessageMarkAsReadObserver extends EmptyObserver<BaseResponseDTO>
+    private class MessageMarkAsReadObserver implements Observer<BaseResponseDTO>
     {
         private final MessageHeaderDTO messageHeaderDTO;
 
@@ -664,14 +657,13 @@ public class MessagesCenterFragment extends DashboardFragment
                 requestUpdateTabCounter();
             }
         }
-    }
 
-    private class MessageMarkAsReadAllObserver extends EmptyObserver<BaseResponseDTO>
-    {
-        @Override public void onNext(BaseResponseDTO args)
+        @Override public void onCompleted()
         {
-            Timber.d("Message are reported as read all ");
-            updateAllAsRead();
+        }
+
+        @Override public void onError(Throwable e)
+        {
         }
     }
 

@@ -18,7 +18,7 @@ public class PositionDTODeserialiser extends UniqueFieldDTODeserialiser<Position
     }
     //</editor-fold>
 
-    private static Map<String, Class<? extends PositionDTO>> createUniqueAttributes()
+    @NonNull private static Map<String, Class<? extends PositionDTO>> createUniqueAttributes()
     {
         Map<String, Class<? extends PositionDTO>> uniqueAttributes = new HashMap<>();
         uniqueAttributes.put(PositionInPeriodDTO.TOTAL_PL_IN_PERIOD_REF_CCY, PositionInPeriodDTO.class);

@@ -6,45 +6,15 @@ import android.support.annotation.Nullable;
 public class TrendingVolumeSecurityListType extends TrendingSecurityListType
 {
     //<editor-fold desc="Constructors">
-    public TrendingVolumeSecurityListType(@NonNull TrendingSecurityListType other)
-    {
-        super(other);
-    }
-
     public TrendingVolumeSecurityListType(@Nullable String exchange, @Nullable Integer page, @Nullable Integer perPage)
     {
         super(exchange, page, perPage);
     }
-
-    public TrendingVolumeSecurityListType(@Nullable String exchange, @Nullable Integer page)
-    {
-        super(exchange, page);
-    }
-
-    public TrendingVolumeSecurityListType(@Nullable String exchange)
-    {
-        super(exchange);
-    }
-
-    public TrendingVolumeSecurityListType(@Nullable Integer page, @Nullable Integer perPage)
-    {
-        super(page, perPage);
-    }
-
-    public TrendingVolumeSecurityListType(@Nullable Integer page)
-    {
-        super(page);
-    }
-
-    public TrendingVolumeSecurityListType()
-    {
-        super();
-    }
     //</editor-fold>
 
-    @Override protected boolean equals(@NonNull TrendingSecurityListType other)
+    @Override protected boolean equalFields(@NonNull TrendingSecurityListType other)
     {
-        return super.equals(other)
+        return super.equalFields(other)
                 && other instanceof TrendingVolumeSecurityListType;
     }
 

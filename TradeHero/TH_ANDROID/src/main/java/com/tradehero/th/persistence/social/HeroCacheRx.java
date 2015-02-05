@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.social.FollowerHeroRelationIdList;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
@@ -29,16 +28,5 @@ import javax.inject.Singleton;
         {
             onNext(value.getHeroId(followerId), value);
         }
-    }
-
-    @Deprecated
-    @NonNull HeroDTOList getValue(@NonNull FollowerHeroRelationIdList keys)
-    {
-        HeroDTOList list = new HeroDTOList();
-        for (FollowerHeroRelationId key : keys)
-        {
-            list.add(getCachedValue(key));
-        }
-        return list;
     }
 }

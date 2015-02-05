@@ -1,9 +1,10 @@
 package com.tradehero.th.activities;
 
+import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
-import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.wxapi.WXEntryActivity;
 import dagger.Module;
 import dagger.Provides;
@@ -30,7 +31,7 @@ public class ActivityModule
     @Provides(type = Provides.Type.SET_VALUES) @Singleton
     Set<ActivityResultRequester> provideActivityResultRequesters(
             @SocialAuth Set<ActivityResultRequester> socialAuthActivityResultRequesters,
-            THBillingInteractor thBillingInteractor
+            THBillingInteractorRx thBillingInteractor
     )
     {
         Set<ActivityResultRequester> requests = new HashSet<>();

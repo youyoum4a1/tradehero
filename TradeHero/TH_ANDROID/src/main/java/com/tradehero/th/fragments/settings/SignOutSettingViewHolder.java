@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.settings;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -16,21 +15,22 @@ import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.prefs.AuthHeader;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
+import rx.functions.Action1;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 public class SignOutSettingViewHolder extends OneSettingViewHolder
 {
-    @NonNull private final ProgressDialogUtil progressDialogUtil;
     @NonNull private final SessionServiceWrapper sessionServiceWrapper;
     @NonNull private final String authHeader;
     @NonNull private final Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap;
@@ -40,13 +40,11 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
 
     //<editor-fold desc="Constructors">
     @Inject public SignOutSettingViewHolder(
-            @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull SessionServiceWrapper sessionServiceWrapper,
             @NonNull @AuthHeader String authHeader,
             @NonNull @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap,
             @NonNull AccountManager accountManager)
     {
-        this.progressDialogUtil = progressDialogUtil;
         this.sessionServiceWrapper = sessionServiceWrapper;
         this.authHeader = authHeader;
         this.authenticationProviderMap = authenticationProviderMap;
@@ -73,17 +71,24 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
             Context activityContext = preferenceFragmentCopy.getActivity();
             if (activityContext != null)
             {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activityContext);
-                alertDialogBuilder
+                AlertDialogRxUtil.buildDefault(activityContext)
                         .setTitle(R.string.settings_misc_sign_out_are_you_sure)
                         .setCancelable(true)
-                        .setNegativeButton(R.string.settings_misc_sign_out_no,
-                                (dialog, id) -> dialog.cancel())
-                        .setPositiveButton(R.string.settings_misc_sign_out_yes,
-                                (dialogInterface, i) -> effectSignOut());
-
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+                        .setNegativeButton(R.string.settings_misc_sign_out_no)
+                        .setPositiveButton(R.string.settings_misc_sign_out_yes)
+                        .build()
+                        .subscribe(
+                                new Action1<OnDialogClickEvent>()
+                                {
+                                    @Override public void call(OnDialogClickEvent event)
+                                    {
+                                        if (event.isPositive())
+                                        {
+                                            effectSignOut();
+                                        }
+                                    }
+                                },
+                                Actions.empty());
             }
         }
     }
@@ -100,7 +105,7 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
         {
             if (activityContext != null)
             {
-                progressDialog = progressDialogUtil.show(
+                progressDialog = ProgressDialogUtil.show(
                         activityContext,
                         R.string.settings_misc_sign_out_alert_title,
                         R.string.settings_misc_sign_out_alert_message);
@@ -119,52 +124,46 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
         unsubscribe(logoutSubscription);
         logoutSubscription = sessionServiceWrapper.logoutRx()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createSignOutObserver());
+                .subscribe(
+                        this::onSignedOut,
+                        this::onSignOutError);
     }
 
-    private Observer<UserProfileDTO> createSignOutObserver()
+    protected void onSignedOut(@SuppressWarnings("UnusedParameters") UserProfileDTO userProfileDTO)
     {
-        return new SignOutObserver();
+        for (Map.Entry<SocialNetworkEnum, AuthenticationProvider> entry : authenticationProviderMap.entrySet())
+        {
+            if (authHeader.startsWith(entry.getKey().getAuthHeader()))
+            {
+                entry.getValue().logout();
+            }
+        }
+
+        Account[] accounts = accountManager.getAccountsByType(Constants.Auth.PARAM_ACCOUNT_TYPE);
+        if (accounts != null)
+        {
+            for (Account account : accounts)
+            {
+                accountManager.removeAccount(account, null, null);
+            }
+        }
+
+        dismissProgressDialog();
     }
 
-    protected class SignOutObserver extends EmptyObserver<UserProfileDTO>
+    protected void onSignOutError(Throwable e)
     {
-        @Override public void onNext(UserProfileDTO userProfileDTO)
+        Timber.e(e, "Failed to sign out");
+        ProgressDialog progressDialogCopy = progressDialog;
+        if (progressDialogCopy != null)
         {
-            for (Map.Entry<SocialNetworkEnum, AuthenticationProvider> entry : authenticationProviderMap.entrySet())
-            {
-                if (authHeader.startsWith(entry.getKey().getAuthHeader()))
-                {
-                    entry.getValue().logout();
-                }
-            }
-
-            Account[] accounts = accountManager.getAccountsByType(Constants.Auth.PARAM_ACCOUNT_TYPE);
-            if (accounts != null)
-            {
-                for (Account account : accounts)
-                {
-                    accountManager.removeAccount(account, null, null);
-                }
-            }
-
-            dismissProgressDialog();
+            progressDialog.setTitle(R.string.settings_misc_sign_out_failed);
+            progressDialog.setMessage("");
         }
-
-        @Override public void onError(Throwable e)
-        {
-            Timber.e(e, "Failed to sign out");
-            ProgressDialog progressDialogCopy = progressDialog;
-            if (progressDialogCopy != null)
-            {
-                progressDialog.setTitle(R.string.settings_misc_sign_out_failed);
-                progressDialog.setMessage("");
-            }
-            Observable.just(0)
-                    .delay(3000, TimeUnit.MILLISECONDS)
-                    .doOnCompleted(SignOutSettingViewHolder.this::dismissProgressDialog)
-                    .subscribe(new EmptyObserver<>());
-        }
+        Observable.just(0)
+                .delay(3000, TimeUnit.MILLISECONDS)
+                .doOnCompleted(SignOutSettingViewHolder.this::dismissProgressDialog)
+                .subscribe(Actions.empty(), Actions.empty());
     }
 
     private void dismissProgressDialog()

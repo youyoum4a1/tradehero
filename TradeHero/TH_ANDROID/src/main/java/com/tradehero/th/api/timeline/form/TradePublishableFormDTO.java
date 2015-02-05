@@ -1,11 +1,13 @@
 package com.tradehero.th.api.timeline.form;
 
+import android.support.annotation.NonNull;
 import java.util.Map;
 
 public class TradePublishableFormDTO extends PublishableFormDTO
 {
     public String tradeComment;
 
+    //<editor-fold desc="Constructors">
     public TradePublishableFormDTO()
     {
         super();
@@ -18,8 +20,9 @@ public class TradePublishableFormDTO extends PublishableFormDTO
         super(publishToFb, publishToTw, publishToLi,publishToWb, geo_alt, geo_lat, geo_long, aPublic);
         this.tradeComment = tradeComment;
     }
+    //</editor-fold>
 
-    @Override public Map<String, String> toStringMap()
+    @NonNull @Override public Map<String, String> toStringMap()
     {
         Map<String, String> map = super.toStringMap();
         if (tradeComment != null)

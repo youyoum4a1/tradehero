@@ -11,8 +11,7 @@ import oauth.signpost.OAuth;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.subscriptions.AndroidSubscriptions;
-import rx.functions.Action0;
+import rx.android.AndroidSubscriptions;
 
 public class OperatorOAuthDialog implements Observable.OnSubscribe<String>
 {
@@ -61,13 +60,7 @@ public class OperatorOAuthDialog implements Observable.OnSubscribe<String>
         });
         dialog.show();
 
-        Subscription subscription = AndroidSubscriptions.unsubscribeInUiThread(new Action0()
-        {
-            @Override public void call()
-            {
-                dialog.dismiss();
-            }
-        });
+        Subscription subscription = AndroidSubscriptions.unsubscribeInUiThread(dialog::dismiss);
 
         subscriber.add(subscription);
     }

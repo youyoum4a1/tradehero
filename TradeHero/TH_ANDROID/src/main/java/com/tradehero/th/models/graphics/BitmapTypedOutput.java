@@ -1,6 +1,7 @@
 package com.tradehero.th.models.graphics;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import java.io.ByteArrayOutputStream;
 import retrofit.mime.TypedByteArray;
 
@@ -8,27 +9,29 @@ public class BitmapTypedOutput extends TypedByteArray
 {
     public static final String TYPE_JPEG = "jpeg";
 
-    private final String fileName;
+    @NonNull private final String fileName;
 
-    public BitmapTypedOutput(String type, Bitmap bitmap, String fileName, int compressQuality)
+    //<editor-fold desc="Constructors">
+    public BitmapTypedOutput(@NonNull String type, @NonNull Bitmap bitmap, @NonNull String fileName, int compressQuality)
     {
         super(getMimeType(type), makeByteArray(type, bitmap, compressQuality));
         this.fileName = fileName;
     }
+    //</editor-fold>
 
-    private static byte[] makeByteArray(String type, Bitmap bitmap, int compressQuality)
+    @NonNull private static byte[] makeByteArray(@NonNull String type, @NonNull Bitmap bitmap, int compressQuality)
     {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         bitmap.compress(getCompressType(type), compressQuality, bos);
         return bos.toByteArray();
     }
 
-    @Override public String fileName()
+    @Override @NonNull public String fileName()
     {
         return this.fileName;
     }
 
-    private static String getMimeType(String type)
+    @NonNull private static String getMimeType(@NonNull String type)
     {
         switch(type)
         {
@@ -38,7 +41,7 @@ public class BitmapTypedOutput extends TypedByteArray
         throw new IllegalArgumentException("Unhandled type " + type);
     }
 
-    private static Bitmap.CompressFormat getCompressType(String type)
+    @NonNull private static Bitmap.CompressFormat getCompressType(@NonNull String type)
     {
         switch(type)
         {

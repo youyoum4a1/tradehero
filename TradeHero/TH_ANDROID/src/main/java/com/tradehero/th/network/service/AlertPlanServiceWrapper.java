@@ -6,29 +6,19 @@ import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.users.RestorePurchaseForm;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
-import com.tradehero.th.persistence.home.HomeContentCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import rx.Observable;
 
 public class AlertPlanServiceWrapper
 {
     @NonNull protected final AlertPlanServiceRx alertPlanServiceRx;
-    @NonNull protected final UserProfileCacheRx userProfileCache;
-    @NonNull protected final HomeContentCacheRx homeContentCache;
 
     //<editor-fold desc="Constructors">
     @Inject public AlertPlanServiceWrapper(
-            @NonNull AlertPlanServiceRx alertPlanServiceRx,
-            @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull HomeContentCacheRx homeContentCache)
+            @NonNull AlertPlanServiceRx alertPlanServiceRx)
     {
         super();
         this.alertPlanServiceRx = alertPlanServiceRx;
-        this.userProfileCache = userProfileCache;
-        this.homeContentCache = homeContentCache;
     }
     //</editor-fold>
 
@@ -64,9 +54,4 @@ public class AlertPlanServiceWrapper
         return alertPlanServiceRx.restorePurchases(userBaseKey.key, restorePurchaseForm);
     }
     //</editor-fold>
-
-    protected DTOProcessor<UserProfileDTO> createDTOProcessorUserProfile()
-    {
-        return new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache);
-    }
 }

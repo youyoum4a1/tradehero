@@ -4,16 +4,10 @@ import android.support.annotation.NonNull;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.news.form.NewsItemReplyDiscussionFormDTO;
 import com.tradehero.th.api.timeline.form.TimelineItemReplyCommentFormDTO;
-import javax.inject.Inject;
 
 public class DiscussionFormDTOFactory
 {
-    @Inject public DiscussionFormDTOFactory()
-    {
-        super();
-    }
-
-    @NonNull public DiscussionFormDTO createEmpty(@NonNull DiscussionType discussionType)
+    @NonNull public static DiscussionFormDTO createEmpty(@NonNull DiscussionType discussionType)
     {
         DiscussionFormDTO created;
         switch (discussionType)

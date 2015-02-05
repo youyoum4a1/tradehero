@@ -24,8 +24,6 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
     @InjectView(R.id.fx_price_buy) TextView buyPrice;
     @InjectView(R.id.fx_price_sell) TextView sellPrice;
 
-    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
-
     protected FxSecurityCompactDTO fxSecurityCompactDTO;
     private int mBlinkDuration;
     @ColorRes private int mDefaultTextColor;
@@ -79,7 +77,7 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
     {
         if(fxSecurityCompactDTO.askPrice != null && fxSecurityCompactDTO.bidPrice != null)
         {
-            int precision = securityCompactDTOUtil.getExpectedPrecision(fxSecurityCompactDTO);
+            int precision = SecurityCompactDTOUtil.getExpectedPrecision(fxSecurityCompactDTO);
             coloredText(buyPrice, fxSecurityCompactDTO.askPrice, fxSecurityCompactDTO.fxAskTextColorResId, precision);
             coloredText(sellPrice, fxSecurityCompactDTO.bidPrice, fxSecurityCompactDTO.fxBidTextColorResId, precision);
         }

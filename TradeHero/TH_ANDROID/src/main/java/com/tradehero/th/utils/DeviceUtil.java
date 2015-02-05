@@ -2,6 +2,7 @@ package com.tradehero.th.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -11,13 +12,13 @@ public final class DeviceUtil
 {
     public static final long DEFAULT_DELAY = 998;
 
-    public static InputMethodManager getInputMethodManager(Context ctx)
+    public static InputMethodManager getInputMethodManager(@NonNull Context ctx)
     {
         return (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     // Attempt
-    public static boolean isKeyboardVisible(Context ctx)
+    public static boolean isKeyboardVisible(@NonNull Context ctx)
     {
         InputMethodManager imm = getInputMethodManager(ctx);
         return imm != null && imm.isAcceptingText();
@@ -40,12 +41,12 @@ public final class DeviceUtil
         }
     }
 
-    public static void showKeyboardDelayed(View view)
+    public static void showKeyboardDelayed(@NonNull View view)
     {
         showKeyboardDelayed(view, DEFAULT_DELAY);
     }
 
-    public static void showKeyboardDelayed(View view, long delayMilliSec)
+    public static void showKeyboardDelayed(@NonNull View view, long delayMilliSec)
     {
         final WeakReference<View> viewRef = new WeakReference<>(view);
         view.postDelayed(new Runnable()

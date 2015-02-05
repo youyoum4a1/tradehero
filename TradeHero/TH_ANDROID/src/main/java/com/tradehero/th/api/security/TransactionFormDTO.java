@@ -1,5 +1,6 @@
 package com.tradehero.th.api.security;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.timeline.form.TradePublishableFormDTO;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ public class TransactionFormDTO extends TradePublishableFormDTO
     public int quantity;
     public int portfolio;
 
+    //<editor-fold desc="Constructors">
     public TransactionFormDTO()
     {
     }
@@ -25,8 +27,9 @@ public class TransactionFormDTO extends TradePublishableFormDTO
         this.quantity = quantity;
         this.signedQuoteDto = signedQuoteDto;
     }
+    //</editor-fold>
 
-    @Override public Map<String, String> toStringMap()
+    @NonNull @Override public Map<String, String> toStringMap()
     {
         Map<String, String> map = super.toStringMap();
         if (signedQuoteDto != null)

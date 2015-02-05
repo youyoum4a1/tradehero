@@ -1,6 +1,7 @@
 package com.tradehero.th.billing.amazon;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.th.billing.BillingUtils;
 import com.tradehero.th.utils.VersionUtils;
@@ -20,12 +21,12 @@ public class AmazonStoreUtils
         super(versionUtils);
     }
 
-    @Override public String getStoreName()
+    @Override @NonNull public String getStoreName()
     {
         return "Amazon Store";
     }
 
-    @Override protected List<String> getPurchaseReportStrings(THAmazonPurchase purchase)
+    @Override @NonNull protected List<String> getPurchaseReportStrings(@Nullable THAmazonPurchase purchase)
     {
         List<String> reported = new ArrayList<>();
 

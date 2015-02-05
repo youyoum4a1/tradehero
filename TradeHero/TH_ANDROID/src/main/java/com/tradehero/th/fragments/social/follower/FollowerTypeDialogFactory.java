@@ -14,19 +14,11 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.rx.view.list.ListViewObservable;
-import javax.inject.Inject;
 import rx.Observable;
 
 public class FollowerTypeDialogFactory
 {
-    //<editor-fold desc="Constructors">
-    @Inject public FollowerTypeDialogFactory()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @NonNull protected Pair<Dialog, Observable<MessageType>> showHeroTypeDialog(@NonNull Activity activity)
+    @NonNull public static Pair<Dialog, Observable<MessageType>> showHeroTypeDialog(@NonNull Activity activity)
     {
         LayoutInflater inflater = LayoutInflater.from(activity);
         LinearLayout expanded = (LinearLayout) inflater
@@ -43,12 +35,12 @@ public class FollowerTypeDialogFactory
                         .map(object -> (MessageType) object));
     }
 
-    @NonNull protected ArrayAdapter createMessageTypeAdapter(@NonNull Activity activity)
+    @NonNull public static ArrayAdapter createMessageTypeAdapter(@NonNull Activity activity)
     {
         return new MessageTypeAdapter(
                 activity,
                 R.layout.common_dialog_item_layout,
                 R.id.popup_text,
-                MessageType.getShowingTypes());
+                MessageType.getBroadcastTypes());
     }
 }

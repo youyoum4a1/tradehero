@@ -6,10 +6,4 @@ import com.tradehero.common.persistence.DTO;
 public class UserTransactionHistoryDTOList extends BaseArrayList<UserTransactionHistoryDTO>
     implements DTO
 {
-    //<editor-fold desc="Constructors">
-    public UserTransactionHistoryDTOList()
-    {
-        super();
-    }
-    //</editor-fold>
 }

@@ -25,8 +25,10 @@ import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScro
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnScrollViewOnScrollChangedListener;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.special.residemenu.ResideMenu;
-import com.tradehero.common.billing.BillingPurchaseRestorer;
+import com.tradehero.common.activities.ActivityResultRequester;
+import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
@@ -46,15 +48,11 @@ import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
-import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.NavigationAnalyticsReporter;
@@ -100,13 +98,12 @@ import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.ui.AppContainer;
-import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
-import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.XpToast;
@@ -124,7 +121,7 @@ import javax.inject.Singleton;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
+import rx.functions.Actions;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -136,8 +133,8 @@ import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_BROADCA
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.ONBOARD_INTENT_FILTER;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.SEND_LOVE_INTENT_FILTER;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP_INTENT_FILTER;
-import static rx.android.observables.AndroidObservable.bindActivity;
-import static rx.android.observables.AndroidObservable.fromLocalBroadcast;
+import static rx.android.app.AppObservable.bindActivity;
+import static rx.android.content.ContentObservable.fromLocalBroadcast;
 
 public class DashboardActivity extends BaseActivity
         implements ResideMenu.OnMenuListener
@@ -147,20 +144,13 @@ public class DashboardActivity extends BaseActivity
 
     // It is important to have Lazy here because we set the current Activity after the injection
     // and the LogicHolder creator needs the current Activity...
-    @Inject Lazy<THBillingInteractor> billingInteractor;
-    @Inject Provider<BaseTHUIBillingRequest.Builder> thUiBillingRequestBuilderProvider;
-
-    private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
-    private Integer restoreRequestCode;
+    @Inject Lazy<THBillingInteractorRx> billingInteractorRx;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserProfileDTOUtil> userProfileDTOUtilLazy;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtil;
-    @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject Lazy<NotificationCacheRx> notificationCache;
     @Inject SystemStatusCache systemStatusCache;
-    @Inject Lazy<MarketUtil> marketUtilLazy;
 
     @Inject AppContainer appContainer;
     @Inject ResideMenu resideMenu;
@@ -172,7 +162,7 @@ public class DashboardActivity extends BaseActivity
     @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
     @Inject @IsOnBoardShown BooleanPreference isOnboardShown;
     @Inject @IsFxShown BooleanPreference isFxShown;
-    @Inject @SocialAuth Set<ActivityResultRequester> activityResultRequesters;
+    @Inject Set<ActivityResultRequester> activityResultRequesters;
     @Inject @ForAnalytics Lazy<DashboardNavigator.DashboardFragmentWatcher> analyticsReporter;
     @Inject THAppsFlyer thAppsFlyer;
 
@@ -206,13 +196,6 @@ public class DashboardActivity extends BaseActivity
         }
 
         appContainer.wrap(this);
-
-        purchaseRestorerFinishedListener = (requestCode, restoredPurchases, failedRestorePurchases, failExceptions) -> {
-            if (Integer.valueOf(requestCode).equals(restoreRequestCode))
-            {
-                restoreRequestCode = null;
-            }
-        };
 
         if (Constants.RELEASE)
         {
@@ -258,8 +241,15 @@ public class DashboardActivity extends BaseActivity
         dashboardTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
         dashboardTabHost.setup();
         dashboardTabHost.setOnTabChangedListener(tabId -> {
-            RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
-            navigator.goToTab(selectedFragmentType);
+            try
+            {
+                RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
+                navigator.goToTab(selectedFragmentType);
+            }
+            catch (java.lang.IllegalStateException e)
+            {
+                Timber.d("setOnTabChangedListener goToTab "+e.toString());
+            }
         });
         navigator.addDashboardFragmentWatcher(analyticsReporter.get());
         navigator.addDashboardFragmentWatcher(dashboardTabHost);
@@ -284,24 +274,29 @@ public class DashboardActivity extends BaseActivity
 
     private void launchBilling()
     {
-        if (restoreRequestCode != null)
-        {
-            billingInteractor.get().forgetRequestCode(restoreRequestCode);
-        }
-        restoreRequestCode = billingInteractor.get().run(createRestoreRequest());
         // TODO fetch more stuff?
-    }
+        //noinspection unchecked
+        bindActivity(
+                this,
+                billingInteractorRx.get().restorePurchasesAndClear())
+                .subscribe(new Observer<PurchaseRestoreTotalResult>()
+                {
+                    @Override public void onNext(PurchaseRestoreTotalResult args)
+                    {
+                        //TODO
+                    }
 
-    protected THUIBillingRequest createRestoreRequest()
-    {
-        BaseTHUIBillingRequest.Builder builder = thUiBillingRequestBuilderProvider.get();
-        //noinspection unchecked,PointlessBooleanExpression
-        builder.restorePurchase(true)
-                .startWithProgressDialog(!Constants.RELEASE)
-                .popRestorePurchaseOutcome(true)
-                .popRestorePurchaseOutcomeVerbose(false)
-                .purchaseRestorerListener(purchaseRestorerFinishedListener);
-        return builder.build();
+                    @Override public void onCompleted()
+                    {
+                        THToast.show("Restore completed");
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+                        THToast.show("Restore failed");
+                        Timber.e(e, "Restore failed");
+                    }
+                });
     }
 
     @Override public void onBackPressed()
@@ -313,13 +308,7 @@ public class DashboardActivity extends BaseActivity
     {
         if (getIntent() != null && getIntent().getBooleanExtra(UserLoginDTO.SUGGEST_UPGRADE, false))
         {
-            alertDialogUtil.get().popWithOkCancelButton(
-                    this, R.string.upgrade_needed, R.string.suggest_to_upgrade, R.string.update_now,
-                    R.string.later,
-                    (dialog, which) -> {
-                        THToast.show(R.string.update_guide);
-                        marketUtilLazy.get().showAppOnMarket(DashboardActivity.this);
-                    });
+            showUpgradeDialog();
         }
     }
 
@@ -352,7 +341,7 @@ public class DashboardActivity extends BaseActivity
         switch (item.getItemId())
         {
             case R.id.menu_network:
-                alertDialogUtil.get().popNetworkUnavailable(this);
+                AlertDialogRxUtil.popNetworkUnavailable(this).subscribe(Actions.empty(), Actions.empty());
                 return true;
             case R.id.admin_settings:
                 navigator.pushFragment(AdminSettingsFragment.class);
@@ -406,21 +395,23 @@ public class DashboardActivity extends BaseActivity
         subscriptions.add(fromLocalBroadcast(this, XP_INTENT_FILTER)
                 .filter(intent -> (intent != null) && (intent.getBundleExtra(KEY_XP_BROADCAST) != null))
                 .map(intent -> new UserXPAchievementDTO(intent.getBundleExtra(KEY_XP_BROADCAST)))
-                .subscribe(xpToast::showWhenReady, throwable -> {}, () -> broadcastUtilsLazy.get().nextPlease()));
+                .subscribe(xpToast::showWhenReady, throwable -> {
+                }, () -> broadcastUtilsLazy.get().nextPlease()));
 
         subscriptions.add(fromLocalBroadcast(this, ONBOARD_INTENT_FILTER)
                 .subscribe(intent -> {
                     isOnboardShown.set(true);
                     OnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
-                }, throwable -> {}));
+                }, throwable -> {
+                }));
 
         // get providers for enrollment page
         subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
                         .flatMap(intent -> providerListCache.get().get(new ProviderListKey()))
-                        .flatMapIterable(pair -> pair.second)
+                        .flatMapIterable(new PairGetSecond<>())
                         .filter(providerDTO -> {
                             boolean r = !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerDTO.id);
-                            if(!r)
+                            if (!r)
                             {
                                 broadcastUtilsLazy.get().nextPlease();
                             }
@@ -446,7 +437,8 @@ public class DashboardActivity extends BaseActivity
 
         subscriptions.add(fromLocalBroadcast(this, SEND_LOVE_INTENT_FILTER)
                 .subscribe(intent ->
-                        AskForReviewSuggestedDialogFragment.showReviewDialog(getFragmentManager()), throwable -> {} ));
+                        AskForReviewSuggestedDialogFragment.showReviewDialog(getFragmentManager()), throwable -> {
+                }));
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -461,7 +453,7 @@ public class DashboardActivity extends BaseActivity
     {
         if (extras != null && extras.containsKey(NotificationKey.BUNDLE_KEY_KEY))
         {
-            progressDialog = progressDialogUtil.get().show(this, "", "");
+            progressDialog = ProgressDialogUtil.show(this, "", "");
 
             detachNotificationFetchTask();
             NotificationKey key = new NotificationKey(extras);
@@ -494,18 +486,11 @@ public class DashboardActivity extends BaseActivity
 
     @Override protected void onDestroy()
     {
-        purchaseRestorerFinishedListener = null;
         notificationFetchSubscription = null;
 
         xpToast.destroy();
 
         networkIndicator = null;
-
-        THBillingInteractor billingInteractorCopy = billingInteractor.get();
-        if (billingInteractorCopy != null && restoreRequestCode != null)
-        {
-            billingInteractorCopy.forgetRequestCode(restoreRequestCode);
-        }
 
         if (navigator != null)
         {
@@ -529,31 +514,29 @@ public class DashboardActivity extends BaseActivity
 
     private void showStartDialogsPlease()
     {
-        bindActivity(this,
-                userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
+        bindActivity(
+                this,
+                userProfileCache.get().get(currentUserId.toUserBaseKey())
+                        .map(new PairGetSecond<>()))
                 .first()
-                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
-                {
-                    @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
-                    {
-                        UserProfileDTO userProfileDTO = args.second;
-                        if (!isOnboardShown.get() && userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
-                        {
-                            broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
-                            return;
-                        }
+                .subscribe(
+                        userProfileDTO -> {
+                            if (!isOnboardShown.get() && userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
+                            {
+                                broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
+                                return;
+                            }
 
-                        if (!isFxShown.get() && userProfileDTO.fxPortfolio == null)
-                        {
-                            isFxShown.set(true);
-                            FxOnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
-                            return;
-                        }
+                            if (!isFxShown.get() && userProfileDTO != null && userProfileDTO.fxPortfolio == null)
+                            {
+                                isFxShown.set(true);
+                                FxOnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
+                                return;
+                            }
 
-                        broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
-                    }
-                });
+                            broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
+                        },
+                        e -> THToast.show(new THException(e)));
     }
 
     @Override protected List<Object> getModules()
@@ -587,8 +570,6 @@ public class DashboardActivity extends BaseActivity
     {
         super.onActivityResult(requestCode, resultCode, data);
         CollectionUtils.apply(activityResultRequesters, requester -> requester.onActivityResult(requestCode, resultCode, data));
-        // Passing it on just in case it is expecting something
-        billingInteractor.get().onActivityResult(requestCode, resultCode, data);
     }
 
     @Override public void openMenu()

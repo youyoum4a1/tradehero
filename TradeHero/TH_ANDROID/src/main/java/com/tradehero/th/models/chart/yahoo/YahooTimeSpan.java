@@ -1,43 +1,29 @@
 package com.tradehero.th.models.chart.yahoo;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 
 public enum YahooTimeSpan
 {
-    min1("M1", R.string.yahoo_chart_1min, ChartTimeSpan.MIN_1),
-    min5("M5", R.string.yahoo_chart_5min, ChartTimeSpan.MIN_5),
-    min15("M15", R.string.yahoo_chart_15min, ChartTimeSpan.MIN_15),
-    min30("M30", R.string.yahoo_chart_30min, ChartTimeSpan.MIN_30),
-    hour1("H1", R.string.yahoo_chart_1h, ChartTimeSpan.HOUR_1),
-    hour4("H4", R.string.yahoo_chart_4h, ChartTimeSpan.HOUR_4),
-    day1("1d", R.string.yahoo_chart_1d, ChartTimeSpan.DAY_1),
-    day5("5d", R.string.yahoo_chart_5d, ChartTimeSpan.DAY_5),
-    month3("3m", R.string.yahoo_chart_3m, ChartTimeSpan.MONTH_3),
-    month6("6m", R.string.yahoo_chart_6m, ChartTimeSpan.MONTH_6),
-    year1("1y", R.string.yahoo_chart_1y, ChartTimeSpan.YEAR_1),
-    year2("2y", R.string.yahoo_chart_2y, ChartTimeSpan.YEAR_2),
-    year5("5y", R.string.yahoo_chart_5y, ChartTimeSpan.YEAR_5),
-    yearMax("my", R.string.yahoo_chart_max, ChartTimeSpan.MAX);
+    day1("1d", ChartTimeSpan.DAY_1),
+    day5("5d", ChartTimeSpan.DAY_5),
+    month3("3m", ChartTimeSpan.MONTH_3),
+    month6("6m", ChartTimeSpan.MONTH_6),
+    year1("1y", ChartTimeSpan.YEAR_1),
+    year2("2y", ChartTimeSpan.YEAR_2),
+    year5("5y", ChartTimeSpan.YEAR_5),
+    yearMax("my", ChartTimeSpan.MAX);
 
     @NonNull public final String code;
-    public final int stringResId;
     public final long chartTimeSpanDuration;
 
     //<editor-fold desc="Constructors">
-    private YahooTimeSpan(@NonNull String c, int stringResId, long chartTimeSpanDuration)
+    private YahooTimeSpan(@NonNull String c, long chartTimeSpanDuration)
     {
         code = c;
-        this.stringResId = stringResId;
         this.chartTimeSpanDuration = chartTimeSpanDuration;
     }
     //</editor-fold>
-
-    public boolean equalsCode(String otherCode)
-    {
-        return (otherCode != null) && otherCode.equals(code);
-    }
 
     @NonNull public ChartTimeSpan getChartTimeSpan()
     {

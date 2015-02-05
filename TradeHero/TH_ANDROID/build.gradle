@@ -273,7 +273,7 @@ dependencies {
   debugProvided fileTree(dir: 'libs/qq', include: ['*.jar'])
   releaseCompile fileTree(dir: 'libs/qq', include: ['*.jar'])
 
-  samsungCompile project(':samsung_iap')
+  samsungCompile 'com.sec.android.iap:library:2.0@aar'
   // TODO confirm on a hardware that it is "provided" and not "compile"
   amazonCompile 'com.amazon:in-app-purchasing:2.0.0'
   androidTestAmazonCompile 'com.amazon:in-app-purchasing:2.0.0'
@@ -285,9 +285,9 @@ dependencies {
   //  exclude group: 'com.android.support', module: 'support-v4'
   //}
 
-  debugCompile 'com.facebook.android:library:3.18.1@aar' // 3.19.1 gives 65k error
+  debugCompile 'com.facebook.android:library:3.15.0@aar' // 3.19.1 gives 65k error
   releaseCompile 'com.facebook.android:library:3.22.0@aar'
-  //compile 'com.parse.bolts:bolts-android:1.1.4' // For Facebook
+  compile 'com.parse.bolts:bolts-android:1.1.4' // For Facebook
 
   compile('com.android.support:support-v13:21.0.3')
   provided 'proguard:annotations:4.6'
@@ -325,7 +325,7 @@ dependencies {
   compile 'com.tradehero:metrics:2.0-SNAPSHOT'
   compile 'com.squareup.dagger:dagger:1.2.2'
   provided 'com.squareup.dagger:dagger-compiler:1.2.2'
-  compile 'io.reactivex:rxandroid:0.21.0'
+  compile 'io.reactivex:rxandroid:0.24.0'
   //compile 'io.reactivex:rxjava-joins:0.21.0'
   compile 'com.jakewharton.timber:timber:2.5.0'
   compile 'com.urbanairship:urbanairship-lib:3.2.1'

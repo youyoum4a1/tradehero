@@ -309,7 +309,7 @@
   <string name="position_title_info">Info</string>
   <string name="position_short_info">Profit goes up when open asset value drops.</string>
   <string name="position_long_info">Profit goes up when open asset value rises.</string>
-  <string name="position_close_info">Action of selling the entire long asset or buying the entire short asset to to generate cash back to your portfolio.</string>
+  <string name="position_close_info">Action of selling the entire long asset or buying the entire short asset to generate cash back to your portfolio.</string>
 
   <string name="facebook_app_id">431745923529834</string>
   <string name="image_load_failed">Failed to load image</string>

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -57,7 +58,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
@@ -71,12 +72,9 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
     @Inject CurrentUserId currentUserId;
-    @Inject PositionDTOKeyFactory positionDTOKeyFactory;
     @Inject THRouter thRouter;
     @Inject WatchlistPositionCacheRx watchlistPositionCache;
     @Inject Analytics analytics;
-    @Inject SecurityActionDialogFactory securityActionDialogFactory;
-    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
     @InjectView(R.id.trade_list) protected ListView tradeListView;
 
@@ -107,9 +105,9 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     }
 
     @NonNull
-    private static PositionDTOKey getPositionDTOKey(@NonNull Bundle args, @NonNull PositionDTOKeyFactory positionDTOKeyFactory)
+    private static PositionDTOKey getPositionDTOKey(@NonNull Bundle args)
     {
-        return positionDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE));
+        return PositionDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE));
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -122,7 +120,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         }
         else
         {
-            positionDTOKey = getPositionDTOKey(getArguments(), positionDTOKeyFactory);
+            positionDTOKey = getPositionDTOKey(getArguments());
         }
         adapter = createAdapter();
     }
@@ -217,7 +215,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         if (alertsSubscription == null)
         {
-            alertsSubscription = AndroidObservable.bindFragment(
+            alertsSubscription = AppObservable.bindFragment(
                     this,
                     alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
                     .subscribe(
@@ -236,8 +234,8 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         if (positionSubscription == null)
         {
-            positionSubscription = AndroidObservable.bindFragment(this, positionCache.get(positionDTOKey))
-                    .map(pair -> pair.second)
+            positionSubscription = AppObservable.bindFragment(this, positionCache.get(positionDTOKey))
+                    .map(new PairGetSecond<>())
                     .subscribe(
                             this::linkWith,
                             error -> THToast.show(R.string.error_fetch_position_list_info));
@@ -257,8 +255,8 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         if (positionDTO != null && tradesSubscription == null)
         {
-            tradesSubscription = AndroidObservable.bindFragment(this, tradeListCache.get(positionDTO.getOwnedPositionId()))
-                    .map(pair -> pair.second)
+            tradesSubscription = AppObservable.bindFragment(this, tradeListCache.get(positionDTO.getOwnedPositionId()))
+                    .map(new PairGetSecond<>())
                     .subscribe(
                             this::linkWith,
                             error -> {
@@ -296,10 +294,10 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             }
             else if (securityIdSubscription == null)
             {
-                securityIdSubscription = AndroidObservable.bindFragment(
+                securityIdSubscription = AppObservable.bindFragment(
                         this,
                         securityIdCache.get(new SecurityIntegerId(positionDTO.securityId)))
-                        .map(pair -> pair.second)
+                        .map(new PairGetSecond<>())
                         .subscribe(
                                 this::linkWith,
                                 error -> {
@@ -318,8 +316,8 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         if (securityId != null && securityCompactSubscription == null)
         {
-            securityCompactSubscription = AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
-                    .map(pair -> pair.second)
+            securityCompactSubscription = AppObservable.bindFragment(this, securityCompactCache.get(securityId))
+                    .map(new PairGetSecond<>())
                     .subscribe(
                             this::linkWith,
                             error -> THToast.show(new THException(error)));
@@ -383,7 +381,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         else
         {
             unsubscribe(actionDialogSubscription);
-            Pair<Dialog, SecurityActionListLinear> pair = securityActionDialogFactory.createSecurityActionDialog(getActivity(), securityCompactDTO);
+            Pair<Dialog, SecurityActionListLinear> pair = SecurityActionDialogFactory.createSecurityActionDialog(getActivity(), securityCompactDTO);
             securityActionDialog = pair.first;
             actionDialogSubscription = pair.second.getMenuActionObservable()
                     .subscribe(
@@ -480,7 +478,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (navigator != null)
         {
             // TODO add command to go direct to pop-up
-            navigator.get().pushFragment(securityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
+            navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
         }
     }
 

@@ -8,7 +8,6 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -32,6 +31,7 @@ import com.tradehero.th.network.service.ProviderServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.competition.CompetitionPreseasonCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
+import com.tradehero.th.utils.SocialAlertDialogRxUtil;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.util.List;
@@ -39,7 +39,8 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragment
@@ -57,8 +58,6 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     @Inject CompetitionPreseasonCacheRx competitionPreseasonCacheRx;
     @Inject DashboardNavigator navigator;
     @Inject ProviderServiceWrapper providerServiceWrapper;
-    @Inject Lazy<CompetitionPreseasonShareFormDTOFactory> competitionPreseasonShareFormDTOFactoryLazy;
-    @Inject Lazy<WeChatDTOFactory> weChatDTOFactoryLazy;
     @Inject Lazy<SocialSharer> socialSharerLazy;
 
     @InjectView(R.id.preseason_viewflipper) ViewFlipper viewFlipper;
@@ -87,23 +86,22 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
         return inflater.inflate(R.layout.competition_preseason_dialog, container, false);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.close)
     public void onCloseClicked()
     {
         getDialog().dismiss();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.preseason_share)
     public void onShareClicked()
     {
         List<SocialNetworkEnum> shareList = getEnabledSharePreferences();
         if (shareList.isEmpty())
         {
-            alertDialogUtil.popWithNegativeButton(
-                    getActivity(),
-                    R.string.link_select_one_social,
-                    R.string.link_select_one_social_description,
-                    R.string.ok);
+            subscriptions.add(SocialAlertDialogRxUtil.popSelectOneSocialNetwork(getActivity())
+                    .subscribe(Actions.empty(), Actions.empty()));
         }
         else if (providerDTO != null)
         {
@@ -122,8 +120,8 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
         if (!shareList.isEmpty())
         {
-            shareSubscription = AndroidObservable.bindFragment(this,
-                    providerServiceWrapper.sharePreSeason(competitionPreseasonShareFormDTOFactoryLazy.get().createFrom(shareList, providerId)))
+            shareSubscription = AppObservable.bindFragment(this,
+                    providerServiceWrapper.sharePreSeason(CompetitionPreseasonShareFormDTOFactory.createFrom(shareList, providerId)))
                     .subscribe(new Observer<BaseResponseDTO>()
                     {
                         @Override public void onCompleted()
@@ -151,10 +149,12 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
     private void shareToWeChat()
     {
-        WeChatDTO weChatDTO = weChatDTOFactoryLazy.get().createFrom(getActivity(), competitionPreSeasonDTO, providerDTO);
-        socialSharerLazy.get().share(weChatDTO);
+        WeChatDTO weChatDTO = WeChatDTOFactory.createFrom(getActivity(), competitionPreSeasonDTO, providerDTO);
+        subscriptions.add(socialSharerLazy.get().share(weChatDTO)
+                .subscribe(Actions.empty(), Actions.empty()));
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.preseason_prize_tncs)
     public void onTncsClicked()
     {
@@ -167,6 +167,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.preseason_share_retry)
     public void onRetryClicked()
     {
@@ -187,7 +188,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        AndroidObservable.bindFragment(this, providerCacheRx.get(providerId))
+        AppObservable.bindFragment(this, providerCacheRx.get(providerId))
                 .subscribe(new Subscriber<Pair<ProviderId, ProviderDTO>>()
                 {
                     @Override public void onStart()
@@ -211,7 +212,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
                         linkAndShowLogo(providerIdProviderDTOPair.second);
                     }
                 });
-        AndroidObservable.bindFragment(this, competitionPreseasonCacheRx.get(providerId))
+        AppObservable.bindFragment(this, competitionPreseasonCacheRx.get(providerId))
                 .subscribe(new Subscriber<Pair<ProviderId, CompetitionPreSeasonDTO>>()
                 {
                     @Override public void onCompleted()

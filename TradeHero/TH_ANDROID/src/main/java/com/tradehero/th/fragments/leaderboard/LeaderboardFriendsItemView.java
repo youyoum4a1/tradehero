@@ -48,7 +48,6 @@ import javax.inject.Provider;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class LeaderboardFriendsItemView extends RelativeLayout
@@ -70,7 +69,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @Inject Picasso picasso;
     @Inject Provider<Activity> activityProvider;
     @Inject Lazy<SocialFriendHandlerFacebook> socialFriendHandlerFacebookLazy;
-    @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject THRouter thRouter;
@@ -214,7 +212,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         }
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @Nullable public Boolean isCurrentUserFollowing()
     {
         if (currentUserProfileDTO == null || userFriendsDTO == null || !userFriendsDTO.isTradeHeroUser())
@@ -263,7 +260,9 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             inviteSubscription = userServiceWrapperLazy.get()
                     .inviteFriendsRx(currentUserId.toUserBaseKey(), inviteFriendForm)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new TrackShareObserver());
+                    .subscribe(
+                            this::onInvitationDone,
+                            this::onInvitationError);
         }
         else if (userFriendsDTO instanceof UserFriendsFacebookDTO)
         {
@@ -326,19 +325,17 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         facebookInvitationSubscription = null;
     }
 
-    private class TrackShareObserver extends EmptyObserver<BaseResponseDTO>
+    @SuppressWarnings("UnusedParameters")
+    protected void onInvitationDone(BaseResponseDTO args)
     {
-        @Override public void onNext(BaseResponseDTO args)
-        {
-            THToast.show(R.string.invite_friend_success);
-            getProgressDialog().hide();
-        }
+        THToast.show(R.string.invite_friend_success);
+        getProgressDialog().hide();
+    }
 
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(new THException(e));
-            getProgressDialog().hide();
-        }
+    protected void onInvitationError(Throwable e)
+    {
+        THToast.show(new THException(e));
+        getProgressDialog().hide();
     }
 
     private ProgressDialog getProgressDialog()
@@ -347,7 +344,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         {
             return progressDialog;
         }
-        progressDialog = progressDialogUtilLazy.get().show(
+        progressDialog = ProgressDialogUtil.show(
                 activityProvider.get(),
                 R.string.loading_loading,
                 R.string.alert_dialog_please_wait);

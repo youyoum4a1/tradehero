@@ -4,18 +4,10 @@ import android.support.annotation.NonNull;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
-import javax.inject.Inject;
 
 public class ExchangeCompactDTOUtil
 {
-    //<editor-fold desc="Constructors">
-    @Inject public ExchangeCompactDTOUtil()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @NonNull public ExchangeCompactDTOList filterAndOrderForTrending(
+    @NonNull public static ExchangeCompactDTOList filterAndOrderForTrending(
             @NonNull List<? extends ExchangeCompactDTO> rough,
             @NonNull Comparator<ExchangeCompactDTO> comparator)
     {

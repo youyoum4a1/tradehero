@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -29,7 +30,7 @@ public class AbstractDiscussionItemViewHolder<DiscussionDTOType extends Abstract
 
     //<editor-fold desc="Constructors">
 
-    public AbstractDiscussionItemViewHolder(Context context)
+    public AbstractDiscussionItemViewHolder(@NonNull Context context)
     {
         super(context);
     }
@@ -155,17 +156,23 @@ public class AbstractDiscussionItemViewHolder<DiscussionDTOType extends Abstract
     }
     //</editor-fold>
 
-    protected void notifyUserClicked(UserBaseKey userBaseKey)
+    @SuppressWarnings("UnusedDeclaration")
+    @Optional @OnClick({R.id.discussion_user_picture, R.id.user_profile_name})
+    protected void handleUserClicked(View view)
     {
-        AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
-        if (menuClickedListenerCopy instanceof OnMenuClickedListener)
+        if (discussionDTO != null)
         {
-            ((OnMenuClickedListener) menuClickedListenerCopy).onUserClicked(userBaseKey);
+            userActionBehavior.onNext(new PlayerUserAction(discussionDTO.getSenderKey()));
         }
     }
 
-    public static interface OnMenuClickedListener extends AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener
+    public static class PlayerUserAction implements DiscussionActionButtonsView.UserAction
     {
-        void onUserClicked(UserBaseKey userClicked);
+        @NonNull public final UserBaseKey userClicked;
+
+        public PlayerUserAction(@NonNull UserBaseKey userClicked)
+        {
+            this.userClicked = userClicked;
+        }
     }
 }

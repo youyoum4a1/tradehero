@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -28,7 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 
 public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
@@ -134,10 +135,10 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         if (securityId != null)
         {
             unsubscribe(securityCompactCacheSubscription);
-            securityCompactCacheSubscription = AndroidObservable.bindFragment(
+            securityCompactCacheSubscription = AppObservable.bindFragment(
                     this,
                     securityCompactCache.get(securityId))
-                    .map(pair -> pair.second)
+                    .map(new PairGetSecond<>())
                     .subscribe(
                             this::linkWith,
                             e -> THToast.show(R.string.error_fetch_security_info));

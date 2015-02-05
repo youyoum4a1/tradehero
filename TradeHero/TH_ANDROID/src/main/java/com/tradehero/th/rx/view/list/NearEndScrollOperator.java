@@ -3,7 +3,7 @@ package com.tradehero.th.rx.view.list;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import rx.Subscriber;
-import rx.android.observables.Assertions;
+import rx.android.internal.Assertions;
 import rx.functions.Func0;
 
 final class NearEndScrollOperator<T> implements AbsListView.OnScrollListener

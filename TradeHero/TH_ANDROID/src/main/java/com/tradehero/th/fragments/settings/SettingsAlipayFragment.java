@@ -2,19 +2,21 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
@@ -27,37 +29,45 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
+import rx.android.app.AppObservable;
+import timber.log.Timber;
 
 public class SettingsAlipayFragment extends DashboardFragment
 {
-    private View view;
-    private ServerValidatedEmailText alipayAccountText;
-    private ServerValidatedEmailText alipayAccountIDText;
-    private ServerValidatedEmailText alipayAccountRealNameText;
+    @InjectView(R.id.settings_alipay_email_text) protected ServerValidatedEmailText alipayAccountText;
+    @InjectView(R.id.settings_alipay_id_text) protected ServerValidatedEmailText alipayAccountIDText;
+    @InjectView(R.id.settings_alipay_realname_text) protected ServerValidatedEmailText alipayAccountRealNameText;
     private ProgressDialog progressDialog;
-    private Button submitButton;
 
+    @Nullable private Subscription userProfileCacheSubscription;
     @Nullable private Subscription updateAlipayAccountSubscription;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
-    @Inject ProgressDialogUtil progressDialogUtil;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        super.onCreateView(inflater, container, savedInstanceState);
-        view = inflater.inflate(R.layout.fragment_settings_alipay, container, false);
+        return inflater.inflate(R.layout.fragment_settings_alipay, container, false);
+    }
 
-        setupSubmitButton();
-        setupAlipayAccountText();
-        return view;
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
+
+        // HACK: force this email to focus instead of the TabHost stealing focus..
+        alipayAccountText.setOnTouchListener(new FocusableOnTouchListener());
+        alipayAccountIDText.setOnTouchListener(new FocusableOnTouchListener());
+        alipayAccountRealNameText.setOnTouchListener(new FocusableOnTouchListener());
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        fetchUserProfile();
     }
 
     @Override public void onResume()
@@ -70,121 +80,90 @@ public class SettingsAlipayFragment extends DashboardFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        setActionBarTitle(getResources().getString(R.string.settings_alipay_header));
+        setActionBarTitle(R.string.settings_alipay_header);
         super.onCreateOptionsMenu(menu, inflater);
     }
     //</editor-fold>
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
+        super.onStop();
+        unsubscribe(userProfileCacheSubscription);
+        userProfileCacheSubscription = null;
         unsubscribe(updateAlipayAccountSubscription);
         updateAlipayAccountSubscription = null;
-        if (alipayAccountText != null)
-        {
-            alipayAccountText.setOnTouchListener(null);
-            alipayAccountText = null;
-        }
-        if (alipayAccountIDText != null)
-        {
-            alipayAccountIDText.setOnTouchListener(null);
-            alipayAccountIDText = null;
-        }
-        if (alipayAccountRealNameText != null)
-        {
-            alipayAccountRealNameText.setOnTouchListener(null);
-            alipayAccountRealNameText = null;
-        }
-        if (submitButton != null)
-        {
-            submitButton.setOnClickListener(null);
-            submitButton = null;
-        }
+    }
+
+    @Override public void onDestroyView()
+    {
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
-    private void setupSubmitButton()
+    protected void fetchUserProfile()
     {
-        submitButton = (Button) view.findViewById(R.id.settings_alipay_update_button);
-        submitButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View view)
-            {
-                progressDialog = progressDialogUtil.show(
-                        getActivity(),
-                        R.string.alert_dialog_please_wait,
-                        R.string.authentication_connecting_tradehero_only);
-                UpdateAlipayAccountFormDTO accountDTO = new UpdateAlipayAccountFormDTO();
-                accountDTO.newAlipayAccount = alipayAccountText.getText().toString();
-                accountDTO.userIdentityNumber = alipayAccountIDText.getText().toString();
-                accountDTO.userRealName = alipayAccountRealNameText.getText().toString();
-                unsubscribe(updateAlipayAccountSubscription);
-                updateAlipayAccountSubscription = userServiceWrapper.updateAlipayAccountRx(
-                        currentUserId.toUserBaseKey(), accountDTO)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(createUpdatePayPalObserver());
-            }
-        });
+        unsubscribe(userProfileCacheSubscription);
+        userProfileCacheSubscription = AppObservable.bindFragment(
+                this,
+                userProfileCache.get(currentUserId.toUserBaseKey())
+                        .map(new PairGetSecond<>()))
+                .subscribe(
+                        this::onUserProfileReceived,
+                        this::onUserProfileError);
     }
 
-    private Observer<UpdateAlipayAccountDTO> createUpdatePayPalObserver()
+    protected void onUserProfileReceived(@NonNull UserProfileDTO profileDTO)
     {
-        return new EmptyObserver<UpdateAlipayAccountDTO>()
-        {
-            @Override public void onNext(UpdateAlipayAccountDTO args)
-            {
-                if (!isDetached())
-                {
-                    THToast.show(getString(R.string.settings_alipay_successful_update));
-                    progressDialog.hide();
-                    navigator.get().popFragment();
-                }
-            }
-
-            @Override public void onError(Throwable e)
-            {
-                if (!isDetached())
-                {
-                    THToast.show(new THException(e));
-                    progressDialog.hide();
-                }
-            }
-        };
+        alipayAccountText.setText(profileDTO.alipayAccount);
+        alipayAccountIDText.setText(profileDTO.alipayIdentityNumber);
+        alipayAccountRealNameText.setText(profileDTO.alipayRealName);
     }
 
-    private void setupAlipayAccountText()
+    @SuppressWarnings("UnusedParameters")
+    protected void onUserProfileError(@NonNull Throwable e)
     {
-        alipayAccountText = (ServerValidatedEmailText) view.findViewById(R.id.settings_alipay_email_text);
-        // HACK: force this email to focus instead of the TabHost stealing focus..
-        alipayAccountText.setOnTouchListener(new FocusableOnTouchListener());
-        alipayAccountIDText = (ServerValidatedEmailText) view.findViewById(R.id.settings_alipay_id_text);
-        alipayAccountIDText.setOnTouchListener(new FocusableOnTouchListener());
-        alipayAccountRealNameText = (ServerValidatedEmailText) view.findViewById(R.id.settings_alipay_realname_text);
-        alipayAccountRealNameText.setOnTouchListener(new FocusableOnTouchListener());
-        AndroidObservable.bindFragment(this,
-                userProfileCache.get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createUserProfileCacheObserver());
+        THToast.show(getString(R.string.error_fetch_your_user_profile));
     }
 
-    private Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.settings_alipay_update_button)
+    public void onSubmitClicked(@SuppressWarnings("UnusedParameters") View view)
     {
-        return new Observer<Pair<UserBaseKey,UserProfileDTO>>()
+        progressDialog = ProgressDialogUtil.show(
+                getActivity(),
+                R.string.alert_dialog_please_wait,
+                R.string.authentication_connecting_tradehero_only);
+        UpdateAlipayAccountFormDTO accountDTO = new UpdateAlipayAccountFormDTO();
+        accountDTO.newAlipayAccount = alipayAccountText.getText().toString();
+        accountDTO.userIdentityNumber = alipayAccountIDText.getText().toString();
+        accountDTO.userRealName = alipayAccountRealNameText.getText().toString();
+        unsubscribe(updateAlipayAccountSubscription);
+        updateAlipayAccountSubscription = AppObservable.bindFragment(
+                this,
+                userServiceWrapper.updateAlipayAccountRx(
+                        currentUserId.toUserBaseKey(), accountDTO))
+                .subscribe(
+                        this::onAlipayUpdateReceived,
+                        this::onAlipayUpdateError);
+    }
+
+    protected void onAlipayUpdateReceived(@NonNull UpdateAlipayAccountDTO args)
+    {
+        if (!isDetached())
         {
-            @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-            {
-                alipayAccountText.setText(pair.second.alipayAccount);
-                alipayAccountIDText.setText(pair.second.alipayIdentityNumber);
-                alipayAccountRealNameText.setText(pair.second.alipayRealName);
-            }
+            THToast.show(getString(R.string.settings_alipay_successful_update));
+            progressDialog.hide();
+            navigator.get().popFragment();
+        }
+    }
 
-            @Override public void onCompleted()
-            {
-            }
-
-            @Override public void onError(Throwable e)
-            {
-                THToast.show(getString(R.string.error_fetch_your_user_profile));
-            }
-        };
+    protected void onAlipayUpdateError(@NonNull Throwable e)
+    {
+        Timber.e(e, "Failed to update the Alipay account");
+        if (!isDetached())
+        {
+            THToast.show(new THException(e));
+            progressDialog.hide();
+        }
     }
 }

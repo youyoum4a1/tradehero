@@ -9,11 +9,6 @@ public class BroadcastReplyDiscussionFormDTO extends ReplyDiscussionFormDTO
 {
     public static final DiscussionType TYPE = DiscussionType.BROADCAST_MESSAGE;
 
-    public BroadcastReplyDiscussionFormDTO()
-    {
-        super();
-    }
-
     @Override @NonNull public DiscussionType getInReplyToType()
     {
         return TYPE;

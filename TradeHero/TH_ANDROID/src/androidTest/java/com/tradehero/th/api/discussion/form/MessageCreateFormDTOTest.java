@@ -17,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 public class MessageCreateFormDTOTest
 {
     @Inject Converter converter;
-    @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
 
     @Before public void setUp()
     {
@@ -40,7 +39,7 @@ public class MessageCreateFormDTOTest
 
     @Test public void testSerialiseCorrecPrivateFromFactory() throws Exception
     {
-        MessageCreateFormDTO formDTO = messageCreateFormDTOFactory.createEmpty(MessageType.PRIVATE);
+        MessageCreateFormDTO formDTO = MessageCreateFormDTOFactory.createEmpty(MessageType.PRIVATE);
         formDTO.message = "test";
         assertEquals("{\"message\":\"test\",\"senderUserId\":0,\"recipientUserId\":0,\"messageType\":1}", asString(converter.toBody(formDTO)));
     }
@@ -68,7 +67,7 @@ public class MessageCreateFormDTOTest
 
     @Test public void testSerialiseCorrectBroadcastAllFromFactory() throws Exception
     {
-        MessageCreateFormDTO formDTO = messageCreateFormDTOFactory.createEmpty(MessageType.BROADCAST_ALL_FOLLOWERS);
+        MessageCreateFormDTO formDTO = MessageCreateFormDTOFactory.createEmpty(MessageType.BROADCAST_ALL_FOLLOWERS);
         formDTO.message = "test";
         assertEquals("{\"message\":\"test\",\"senderUserId\":0,\"messageType\":4}", asString(converter.toBody(formDTO)));
     }

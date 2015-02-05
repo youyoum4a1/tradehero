@@ -1,25 +1,16 @@
 package com.tradehero.th.api.discussion.key;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import javax.inject.Inject;
 
 public class DiscussionListKeyFactory
 {
-    private final CurrentUserId currentUserId;
-
-    //<editor-fold desc="Constructors">
-    @Inject public DiscussionListKeyFactory(CurrentUserId currentUserId)
-    {
-        super();
-        this.currentUserId = currentUserId;
-    }
-    //</editor-fold>
-
-    public DiscussionListKey create(Bundle args)
+    @Nullable public static DiscussionListKey create(@Nullable Bundle args)
     {
         DiscussionListKey discussionListKey = null;
         if (args != null)
@@ -45,7 +36,9 @@ public class DiscussionListKeyFactory
         return discussionListKey;
     }
 
-    public DiscussionListKey create(DiscussionDTO discussionDTO)
+    @Nullable public static DiscussionListKey create(
+            @Nullable DiscussionDTO discussionDTO,
+            @NonNull CurrentUserId currentUserId)
     {
         if (discussionDTO == null || discussionDTO.type == null)
         {
@@ -69,12 +62,12 @@ public class DiscussionListKeyFactory
         return create(discussionDTO.getDiscussionKey());
     }
 
-    public DiscussionListKey create(DiscussionKey discussionKey)
+    @Nullable public static DiscussionListKey create(@NonNull DiscussionKey discussionKey)
     {
         return new DiscussionListKey(discussionKey.getType(), discussionKey.id);
     }
 
-    public DiscussionListKey create(MessageHeaderDTO messageHeaderDTO)
+    @Nullable public static DiscussionListKey create(@Nullable MessageHeaderDTO messageHeaderDTO)
     {
         if (messageHeaderDTO == null || messageHeaderDTO.discussionType == null)
         {

@@ -9,25 +9,26 @@ public class SortedPerPagedLeaderboardKey extends PerPagedLeaderboardKey
 {
     public final static String BUNDLE_KEY_SORT_TYPE = SortedPerPagedLeaderboardKey.class.getName() + ".sortType";
 
-    public final Integer sortType;
+    @Nullable public final Integer sortType;
 
     //<editor-fold desc="Constructors">
-    public SortedPerPagedLeaderboardKey(Integer leaderboardDefKey, Integer page, Integer perPage, Integer sortType)
+    public SortedPerPagedLeaderboardKey(
+            @NonNull Integer leaderboardDefKey,
+            @Nullable Integer page,
+            @Nullable Integer perPage,
+            @Nullable Integer sortType)
     {
         super(leaderboardDefKey, page, perPage);
         this.sortType = sortType;
     }
 
-    public SortedPerPagedLeaderboardKey(SortedPerPagedLeaderboardKey other, Integer overrideKey, Integer page)
+    public SortedPerPagedLeaderboardKey(
+            @NonNull SortedPerPagedLeaderboardKey other,
+            @NonNull Integer overrideKey,
+            @Nullable Integer page)
     {
         super(other, overrideKey, page);
         this.sortType = other.sortType;
-    }
-
-    public SortedPerPagedLeaderboardKey(Bundle args, @Nullable SortedPerPagedLeaderboardKey defaultValues)
-    {
-        super(args, defaultValues);
-        this.sortType = args.containsKey(BUNDLE_KEY_SORT_TYPE) ? args.getInt(BUNDLE_KEY_SORT_TYPE) : ((defaultValues != null) ? defaultValues.sortType : null);
     }
     //</editor-fold>
 
@@ -49,7 +50,7 @@ public class SortedPerPagedLeaderboardKey extends PerPagedLeaderboardKey
                 (sortType == null ? other.sortType == null : sortType.equals(other.sortType));
     }
 
-    @Override public PagedLeaderboardKey cloneAtPage(int page)
+    @NonNull @Override public PagedLeaderboardKey cloneAtPage(int page)
     {
         return new SortedPerPagedLeaderboardKey(this, id, page);
     }

@@ -1,13 +1,23 @@
 package com.tradehero.th.api.leaderboard.position;
 
-import com.tradehero.common.persistence.DTOKey;
+import android.support.annotation.NonNull;
+import com.tradehero.common.api.PagedDTOKey;
 
-public class LeaderboardFriendsKey implements DTOKey
+public class LeaderboardFriendsKey implements PagedDTOKey
 {
+    @NonNull public final Integer page;
+
+    //<editor-fold desc="Constructors">
     public LeaderboardFriendsKey()
     {
-        super();
+        this(1);
     }
+
+    public LeaderboardFriendsKey(@NonNull Integer page)
+    {
+        this.page = page;
+    }
+    //</editor-fold>
 
     @Override public boolean equals(Object o)
     {
@@ -17,5 +27,10 @@ public class LeaderboardFriendsKey implements DTOKey
     @Override public int hashCode()
     {
         return 0;
+    }
+
+    @NonNull @Override public Integer getPage()
+    {
+        return page;
     }
 }

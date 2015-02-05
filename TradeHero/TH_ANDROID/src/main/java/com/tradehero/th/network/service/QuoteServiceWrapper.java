@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.quote.RawQuoteParser;
 import com.tradehero.th.api.security.SecurityId;
@@ -24,7 +25,7 @@ import rx.Observable;
     }
     //</editor-fold>
 
-    private void basicCheck(SecurityId securityId)
+    private void basicCheck(@Nullable SecurityId securityId)
     {
         if (securityId == null)
         {
@@ -45,16 +46,7 @@ import rx.Observable;
     {
         basicCheck(securityId);
         return quoteServiceRx.getRawQuote(securityId.getExchange(), securityId.getPathSafeSymbol())
-                .flatMap(response -> {
-                    try
-                    {
-                        QuoteDTO parsed = rawQuoteParser.parse(response);
-                        return Observable.just(parsed);
-                    } catch (Throwable e)
-                    {
-                        return Observable.error(e);
-                    }
-                });
+                .flatMap(rawQuoteParser);
     }
     //</editor-fold>
 }

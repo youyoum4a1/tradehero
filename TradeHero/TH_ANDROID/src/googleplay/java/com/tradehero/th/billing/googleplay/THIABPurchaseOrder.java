@@ -16,22 +16,38 @@ import timber.log.Timber;
 
 public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseOrder<IABSKU>
 {
-    @NonNull private IABSKU sku;
-    private int quantity;
-    @NonNull private OwnedPortfolioId developerPayload;
+    @NonNull private final IABSKU sku;
+    private final int quantity;
+    @NonNull private final OwnedPortfolioId developerPayload;
+    @NonNull private final String type;
     @Nullable private UserBaseKey userToFollow;
 
     //<editor-fold desc="Constructors">
-    public THIABPurchaseOrder (@NonNull IABSKU sku, @NonNull OwnedPortfolioId developerPayload)
+    public THIABPurchaseOrder(@NonNull IABSKU sku, @NonNull String type, @NonNull OwnedPortfolioId developerPayload)
     {
-        this(sku, 1, developerPayload);
+        this(sku, type, developerPayload, null);
+    }
+
+    public THIABPurchaseOrder(@NonNull IABSKU sku, @NonNull String type, @NonNull OwnedPortfolioId developerPayload,
+            @Nullable UserBaseKey heroId)
+    {
+        this(sku, 1, type, developerPayload);
+        this.userToFollow = heroId;
         Timber.d("THIABPurchaseOrder with %s", developerPayload);
     }
 
-    public THIABPurchaseOrder (@NonNull IABSKU sku, int quantity, @NonNull OwnedPortfolioId developerPayload)
+    public THIABPurchaseOrder(@NonNull IABSKU sku, int quantity, @NonNull String type, @NonNull OwnedPortfolioId developerPayload)
+    {
+        this(sku, quantity, type, developerPayload, null);
+    }
+
+    public THIABPurchaseOrder(@NonNull IABSKU sku, int quantity, @NonNull String type, @NonNull OwnedPortfolioId developerPayload,
+            @Nullable UserBaseKey heroId)
     {
         this.sku = sku;
         this.quantity = quantity;
+        this.type = type;
+        this.userToFollow = heroId;
         if (quantity <= 0)
         {
             throw new IABInvalidQuantityException("Quantity " + quantity + " is invalid");
@@ -65,22 +81,21 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseO
         try
         {
             return THJsonAdapter.getInstance().toStringBody(this.developerPayload);
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             Timber.e("Failed to stringify developerPayload", e);
             throw new IABMissingApplicablePortfolioIdException("DeveloperPayload is invalid " + developerPayload);
         }
     }
 
-    @Override public void setApplicablePortfolioId(@NonNull OwnedPortfolioId applicablePortfolioId)
-    {
-        this.developerPayload = applicablePortfolioId;
-    }
-
     @NonNull @Override public OwnedPortfolioId getApplicablePortfolioId()
     {
         return developerPayload;
+    }
+
+    @Override @NonNull public String getType()
+    {
+        return type;
     }
 
     @JsonIgnore

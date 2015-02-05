@@ -2,6 +2,7 @@ package com.tradehero.th.api.translation;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.common.persistence.DTO;
@@ -57,7 +58,7 @@ public class UserTranslationSettingDTO implements DTO
         throw new IllegalArgumentException("Not implemented");
     }
 
-    public int getProviderStringResId()
+    @StringRes public int getProviderStringResId()
     {
         throw new IllegalArgumentException("Not implemented");
     }

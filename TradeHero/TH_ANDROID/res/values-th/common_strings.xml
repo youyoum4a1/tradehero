@@ -73,7 +73,7 @@
   <string name="translation_result">ผลการแปล:</string>
 
   <string name="ok">โอเค</string>
-  <string name="downloading_relations">กำลังดาวน์โหลดความสัมพันธ์...</string>
+  <string name="downloading_relations">กำลังดาวน์โหลดความสัมพันธ์…</string>
   <string name="upgrade_now">อัพเกรดเลย!</string>
 
   <string name="device_no_camera">ไม่สามารถตรวจพบกล้องถ่ายรูป</string>

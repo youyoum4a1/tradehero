@@ -2,12 +2,10 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
-import android.util.Pair;
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
-import com.tradehero.th.api.competition.key.CompetitionId;
 import javax.inject.Inject;
-import rx.Observer;
 
 public class CompetitionLeaderboardMarkUserListOnGoingFragment extends CompetitionLeaderboardMarkUserListFragment
 {
@@ -29,23 +27,9 @@ public class CompetitionLeaderboardMarkUserListOnGoingFragment extends Competiti
         headerView.linkWith(providerDTO);
     }
 
-    @Override public void onDestroyView()
+    @Override protected void linkWith(@NonNull CompetitionDTO competitionDTO)
     {
-        this.headerView = null;
-        super.onDestroyView();
-    }
-
-    @Override protected Observer<Pair<CompetitionId, CompetitionDTO>> createCompetitionObserver()
-    {
-        return new CompetitionOnGoingObserver();
-    }
-
-    protected class CompetitionOnGoingObserver extends CompetitionObserver
-    {
-        @Override public void onNext(Pair<CompetitionId, CompetitionDTO> pair)
-        {
-            super.onNext(pair);
-            initHeaderView();
-        }
+        super.linkWith(competitionDTO);
+        initHeaderView();
     }
 }

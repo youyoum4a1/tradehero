@@ -1,5 +1,6 @@
 package com.tradehero.th.api.social;
 
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +10,6 @@ public class FollowerSummaryDTO implements DTO
     public List<UserFollowerDTO> userFollowers;
     public double totalRevenue;
     public HeroPayoutSummaryDTO payoutSummary;
-
-    public FollowerSummaryDTO()
-    {
-        super();
-    }
 
     public int getPaidFollowerCount()
     {
@@ -32,7 +28,7 @@ public class FollowerSummaryDTO implements DTO
         return count;
     }
 
-    public FollowerSummaryDTO getPaidFollowerSummaryDTO()
+    @Nullable public FollowerSummaryDTO getPaidFollowerSummaryDTO()
     {
         if (userFollowers == null)
         {
@@ -68,7 +64,7 @@ public class FollowerSummaryDTO implements DTO
         return count;
     }
 
-    public FollowerSummaryDTO getFreeFollowerSummaryDTO()
+    @Nullable public FollowerSummaryDTO getFreeFollowerSummaryDTO()
     {
         if (userFollowers == null)
         {
