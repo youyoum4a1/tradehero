@@ -56,7 +56,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         LevelDefListId levelDefListId = new LevelDefListId();
         if(!view.isInEditMode())
         {
-            levelDefDTOListSubscription = levelDefListCache.get(levelDefListId)
+            levelDefDTOListSubscription = levelDefListCache.getOne(levelDefListId)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new LevelDefListCacheObserver());
         }

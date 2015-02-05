@@ -52,7 +52,7 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
     {
         AppObservable.bindFragment(
                 this,
-                questBonusListCache.get(questBonusListId))
+                questBonusListCache.getOne(questBonusListId))
                 .subscribe(new QuestBonusCacheObserver());
     }
 
