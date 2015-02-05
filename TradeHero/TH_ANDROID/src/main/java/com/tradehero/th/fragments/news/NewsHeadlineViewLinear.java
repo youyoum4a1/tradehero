@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
@@ -51,12 +50,6 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
     public void linkWithSecurityId(SecurityId securityId)
     {
         this.securityId = securityId;
-    }
-
-    @Override protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO)
-    {
-        // We are ok with the NewsItemDTO being saved in cache, but we do not want
-        // to get it here...
     }
 
     @NonNull @Override protected Observable<DiscussionActionButtonsView.UserAction> handleUserAction(

@@ -24,7 +24,9 @@ import com.tradehero.th.network.share.dto.TranslateResult;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.internal.util.SubscriptionList;
 import rx.subjects.BehaviorSubject;
@@ -214,9 +216,10 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         if (discussionDTO != null)
         {
             subscriptions.add(socialShareHelper.translate(discussionDTO)
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             this::handleSocialResult,
-                            e -> {}
+                            Actions.empty()
                     ));
         }
         userActionBehavior.onNext(new TranslateUserAction());
