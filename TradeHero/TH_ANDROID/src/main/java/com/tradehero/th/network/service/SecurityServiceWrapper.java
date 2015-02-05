@@ -1,10 +1,10 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.fx.FXChartDTO;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -156,30 +156,9 @@ import rx.Observable;
     //<editor-fold desc="Get Security">
     @NonNull public Observable<SecurityCompactDTO> getSecurityCompactRx(@NonNull SecurityId securityId)
     {
-        return securityServiceRx.getCompactSecurity(securityId.getExchange(), securityId.getPathSafeSymbol());
-    }
-
-    @Deprecated
-    @NonNull public Observable<SecurityPositionDetailDTO> getSecurityPositionDetailRx(
-            @NonNull SecurityId securityId)
-    {
-        return securityServiceRx.getSecurity(
+        return securityServiceRx.getCompactSecurity(
                 securityId.getExchange(),
-                securityId.getPathSafeSymbol())
-                .map(securityPositionDetailDTO -> {
-                    if (securityPositionDetailDTO.providers != null)
-                    {
-                        for (ProviderDTO providerDTO : securityPositionDetailDTO.providers)
-                        {
-                            if (providerDTO.associatedPortfolio != null)
-                            {
-                                providerDTO.associatedPortfolio.userId = currentUserId.get();
-                            }
-                        }
-                    }
-
-                    return securityPositionDetailDTO;
-                });
+                securityId.getSecuritySymbol());
     }
 
     @NonNull public Observable<SecurityCompactDTO> getSecurityRx(@NonNull final SecurityIntegerId securityIntegerId)
@@ -191,6 +170,21 @@ import rx.Observable;
                 .filter(compact -> compact != null);
     }
     //</editor-fold>
+
+    @NonNull public Observable<OwnedPortfolioIdList> getApplicablePortfolioIdsRx(
+            @NonNull SecurityId securityId)
+    {
+        return securityServiceRx.getApplicablePortfolioIds(
+                securityId.getExchange(),
+                securityId.getSecuritySymbol());
+    }
+
+    @NonNull public Observable<PositionDTOCompactList> getSecurityPositionCompacts(@NonNull SecurityId securityId)
+    {
+        return securityServiceRx.getPositionCompacts(
+                securityId.getExchange(),
+                securityId.getSecuritySymbol());
+    }
 
     //<editor-fold desc="Buy Security">
     @NonNull private DTOProcessorSecurityPositionTransactionUpdated createSecurityPositionTransactionUpdatedProcessor(@NonNull SecurityId securityId)

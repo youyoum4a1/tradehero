@@ -100,6 +100,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     @Inject protected OwnedPortfolioIdListCacheRx ownedPortfolioIdListCache;
+    @Nullable protected OwnedPortfolioIdList applicableOwnedPortfolioIds;
     @Nullable protected Subscription securityApplicableOwnedPortfolioIdListSubscription;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -704,6 +705,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                 ownedPortfolioIdListCache.get(securityId)
                         .map(pair -> pair.second))
                 .subscribe(ids -> {
+                            applicableOwnedPortfolioIds = ids;
                             PortfolioCompactDTO candidate;
                             for (OwnedPortfolioId id : ids)
                             {
@@ -714,6 +716,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                                             new MenuOwnedPortfolioId(id, candidate));
                                 }
                             }
+                            displayBuySellContainer();
                         },
                         e -> Timber.e(e, "Failed to get the applicable portfolio ids"));
     }

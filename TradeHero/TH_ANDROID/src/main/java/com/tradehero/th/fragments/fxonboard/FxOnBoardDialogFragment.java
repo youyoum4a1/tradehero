@@ -26,7 +26,6 @@ import com.tradehero.th.fragments.education.VideoAdapter;
 import com.tradehero.th.fragments.education.VideoDTOUtil;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.VideoServiceWrapper;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -53,7 +52,6 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
-    @Inject protected SecurityPositionDetailCacheRx securityPositionDetailCache;
     @Inject VideoServiceWrapper videoServiceWrapper;
     @Inject Lazy<DashboardNavigator> navigator;
     private SubscriptionList subscriptionList;
@@ -193,7 +191,6 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
                     public void onNext(PortfolioDTO portfolioDTO)
                     {
                         userProfileCache.get().get(currentUserId.toUserBaseKey());
-                        securityPositionDetailCache.invalidateAll();
                     }
                 }));
     }

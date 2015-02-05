@@ -294,7 +294,7 @@ public class BuySellFXFragment extends BuySellFragment
 
     @Override public boolean isBuySellReady()
     {
-        return quoteDTO != null && positionDTOCompactList != null;
+        return quoteDTO != null && positionDTOCompactList != null && applicableOwnedPortfolioIds != null;
     }
 
     @Override

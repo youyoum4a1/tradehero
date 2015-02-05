@@ -312,7 +312,7 @@ public class BuySellStockFragment extends BuySellFragment
 
     public boolean isBuySellReady()
     {
-        return quoteDTO != null && positionDTOCompactList != null;
+        return quoteDTO != null && positionDTOCompactList != null && applicableOwnedPortfolioIds != null;
     }
 
     public void displayTriggerButton()

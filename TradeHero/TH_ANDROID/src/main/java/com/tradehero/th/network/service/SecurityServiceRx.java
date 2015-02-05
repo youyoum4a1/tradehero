@@ -1,7 +1,8 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.fx.FXChartDTO;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -23,7 +24,6 @@ public interface SecurityServiceRx
     Observable<Map<Integer, SecurityCompactDTO>> getMultipleSecurities(
             @Query("securityIds") String commaSeparatedIntegerIds);
     //</editor-fold>
-
 
     //<editor-fold desc="Get Basic Trending">
     @GET("/securities/trending/")
@@ -75,15 +75,20 @@ public interface SecurityServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Get Security">
-    @GET("/securities/{exchange}/{pathSafeSecuritySymbol}") @Deprecated
-    Observable<SecurityPositionDetailDTO> getSecurity(
-            @Path("exchange") String exchange,
-            @Path("pathSafeSecuritySymbol") String pathSafeSecuritySymbol);
+    @GET("/securities/applicablePortfolios")
+    Observable<OwnedPortfolioIdList> getApplicablePortfolioIds(
+            @Query("exch") String exchange,
+            @Query("symbol") String securitySymbol);
+
+    @GET("/securities/positionCompacts")
+    Observable<PositionDTOCompactList> getPositionCompacts(
+            @Query("exch") String exchange,
+            @Query("symbol") String securitySymbol);
 
     @GET("/securities/compact")
     Observable<SecurityCompactDTO> getCompactSecurity(
             @Query("exch") String exchange,
-            @Query("symbol") String pathSafeSecuritySymbol);
+            @Query("symbol") String securitySymbol);
     //</editor-fold>
 
     //<editor-fold desc="Buy Security">
@@ -130,7 +135,5 @@ public interface SecurityServiceRx
     @GET("/FX/batchFxQuote")
     Observable<List<QuoteDTO>> getFXSecuritiesAllPrice();
     //</editor-fold>
-
-
 }
 

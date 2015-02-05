@@ -37,7 +37,7 @@ import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
-abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragment
+public class AbstractBuySellFragment extends BasePurchaseManagerFragment
 {
     private final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".securityId";
     private final static String BUNDLE_KEY_IS_BUY = AbstractBuySellFragment.class.getName() + ".isBuy";

@@ -6,7 +6,7 @@ import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.network.service.PositionServiceWrapper;
+import com.tradehero.th.network.service.SecurityServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
@@ -16,20 +16,20 @@ public class PositionCompactListCacheRx extends BaseFetchDTOCacheRx<SecurityId, 
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
 
-    @NonNull private final PositionServiceWrapper positionServiceWrapper;
+    @NonNull private final SecurityServiceWrapper securityServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public PositionCompactListCacheRx(
             @NonNull DTOCacheUtilRx dtoCacheUtilRx,
-            @NonNull PositionServiceWrapper positionServiceWrapper)
+            @NonNull SecurityServiceWrapper securityServiceWrapper)
     {
         super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtilRx);
-        this.positionServiceWrapper = positionServiceWrapper;
+        this.securityServiceWrapper = securityServiceWrapper;
     }
     //</editor-fold>
 
     @NonNull @Override protected Observable<PositionDTOCompactList> fetch(@NonNull SecurityId key)
     {
-        return positionServiceWrapper.getSecurityPositions(key);
+        return securityServiceWrapper.getSecurityPositionCompacts(key);
     }
 }

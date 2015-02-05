@@ -5,10 +5,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PagedOwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PerPagedOwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.api.position.PositionDTOCompactList;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
-import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
@@ -16,16 +12,13 @@ import rx.Observable;
 @Singleton public class PositionServiceWrapper
 {
     @NonNull private final PositionServiceRx positionServiceRx;
-    @NonNull private final Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCacheRx;
 
     //<editor-fold desc="Constructors">
     @Inject public PositionServiceWrapper(
-            @NonNull PositionServiceRx positionServiceRx,
-            @NonNull Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCacheRx)
+            @NonNull PositionServiceRx positionServiceRx)
     {
         super();
         this.positionServiceRx = positionServiceRx;
-        this.securityPositionDetailCacheRx = securityPositionDetailCacheRx;
     }
     //</editor-fold>
 
@@ -62,19 +55,4 @@ import rx.Observable;
         return returned;
     }
     //</editor-fold>
-
-    @NonNull public Observable<PositionDTOCompactList> getSecurityPositions(@NonNull SecurityId securityId)
-    {
-        return positionServiceRx.getPositions(
-                securityId.getExchange(),
-                securityId.getPathSafeSymbol())
-                .onErrorResumeNext(securityPositionDetailCacheRx.get().get(securityId)
-                        .map(pair -> {
-                            if (pair.second.positions != null)
-                            {
-                                return pair.second.positions;
-                            }
-                            return new PositionDTOCompactList();
-                        }));
-    }
 }
