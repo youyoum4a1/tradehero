@@ -437,7 +437,8 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
         if (applicablePortfolioId != null)
         {
-            BaseAlertEditFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+//            BaseAlertEditFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+            args.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolioId.getArgs());
         }
         if (mappedAlerts != null)
         {
