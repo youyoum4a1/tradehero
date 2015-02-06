@@ -449,7 +449,7 @@ public class PositionListFragment
                     userProfileCache.get(shownUser))
                     .subscribe(
                             pair -> linkWith(pair.second),
-                            this::handleUserProfileError);
+                            e -> THToast.show(R.string.error_fetch_user_profile));
         }
     }
 
@@ -458,16 +458,6 @@ public class PositionListFragment
         this.userProfileDTO = userProfileDTO;
         displayHeaderView();
         positionItemAdapter.linkWith(userProfileDTO);
-    }
-
-    public void handleUserProfileError(Throwable e)
-    {
-        THToast.show(R.string.error_fetch_user_profile);
-    }
-
-    public boolean isShownOwnedPortfolioIdForOtherPeople(@Nullable OwnedPortfolioId ownedPortfolioId)
-    {
-        return ownedPortfolioId != null && ownedPortfolioId.portfolioId <= 0;
     }
 
     protected void fetchPortfolio()
