@@ -96,11 +96,6 @@ public enum LeaderboardSortType
         return null;
     }
 
-    public int getSelectedResourceIcon()
-    {
-        return selectedResourceIcon;
-    }
-
     public int getLayoutResourceId()
     {
         return layoutResourceId;

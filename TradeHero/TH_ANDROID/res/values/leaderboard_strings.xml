@@ -48,7 +48,6 @@
   <string name="leaderboard_connect_accounts">Connect Accounts…</string>
   <string name="leaderboard_follow">@string/follow</string>
 
-  <string name="error_fetch_leaderboard_def_list_key">There was an error when fetching the definition list of leaderboards</string>
 
   <string name="leaderboard_community_followers">Followers</string>
   <string name="leaderboard_community_heros">Heroes</string>

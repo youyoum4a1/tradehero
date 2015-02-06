@@ -52,8 +52,6 @@ import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.home.HomeWebView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView;
-import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
-import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.location.LocationListFragment;
 import com.tradehero.th.fragments.news.*;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
@@ -233,10 +231,8 @@ import java.util.Locale;
                         UserProfileCompactViewHolder.class,
                         UserProfileDetailViewHolder.class,
 
-                        LeaderboardCommunityFragment.class,
                         PeopleSearchFragment.class,
                         LeaderboardMarkUserItemView.class,
-                        LeaderboardFilterFragment.class,
 
                         WebViewFragment.class,
 

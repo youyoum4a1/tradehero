@@ -9,14 +9,14 @@ import com.special.ResideMenu.ResideMenu;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.utils.DaggerUtils;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class DashboardNavigator extends Navigator
 {
@@ -38,36 +38,6 @@ public class DashboardNavigator extends Navigator
      */
     public void onDestroy()
     {
-    }
-
-    public void goToPage(final THIntent thIntent)
-    {
-        if (thIntent == null)
-        {
-            return;
-        }
-
-        if (thIntent.getDashboardType() == null)
-        {
-            Fragment currentDashboardFragment = manager.findFragmentById(R.id.realtabcontent);
-            currentDashboardFragment.getArguments().putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_THINTENT_BUNDLE, thIntent.getBundle());
-            //currentDashboardFragment.onResume();
-            return;
-        }
-
-        final String expectedTag = context.getString(thIntent.getDashboardType().stringKeyResId);
-        goToTab(
-                thIntent.getDashboardType(),
-                new TabHost.OnTabChangeListener()
-                {
-                    @Override public void onTabChanged(String tabTag)
-                    {
-                        if (expectedTag.equals(tabTag))
-                        {
-                            postPushActionFragment(thIntent);
-                        }
-                    }
-                });
     }
 
     private void goToTab(@NotNull DashboardTabType tabType, TabHost.OnTabChangeListener changeListener)

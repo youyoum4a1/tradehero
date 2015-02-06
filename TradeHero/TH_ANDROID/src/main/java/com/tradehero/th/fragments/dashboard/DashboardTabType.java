@@ -5,7 +5,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
-import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
@@ -28,9 +27,6 @@ public enum DashboardTabType
     TRENDING(R.layout.tab_indicator_holo,
             R.string.dashboard_trending, R.string.dashboard_trending_key,
             R.drawable.launcher, TrendingFragment.class),
-    COMMUNITY(R.layout.tab_indicator_holo,
-            R.string.dashboard_community, R.string.dashboard_community_key,
-            R.drawable.launcher, LeaderboardCommunityFragment.class),
     UPDATE_CENTER(R.layout.update_center_selector,
             R.string.dashboard_message_center, R.string.dashboard_message_center_key,
             R.color.transparent, UpdateCenterFragment.class),

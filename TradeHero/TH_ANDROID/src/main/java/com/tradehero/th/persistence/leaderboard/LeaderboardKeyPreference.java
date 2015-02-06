@@ -4,8 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
-import java.util.Set;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
 
 public class LeaderboardKeyPreference extends StringSetPreference
 {
@@ -23,10 +24,6 @@ public class LeaderboardKeyPreference extends StringSetPreference
     }
     //</editor-fold>
 
-    @NotNull public LeaderboardKey getLeaderboardKey()
-    {
-        return new LeaderboardKey(get(), createDefaultValues());
-    }
 
     @NotNull public LeaderboardKey createDefaultValues()
     {

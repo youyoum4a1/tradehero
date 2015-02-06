@@ -20,6 +20,6 @@ public class ProviderIntent extends THIntent
 
     @Override public DashboardTabType getDashboardType()
     {
-        return DashboardTabType.COMMUNITY;
+        return null;
     }
 }
