@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.chinabuild.data.AdsDTO;
+import com.tradehero.chinabuild.data.TimeLineTotalInfo;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
@@ -101,5 +102,10 @@ import java.util.List;
     public void downloadAdvertisements(Callback<List<AdsDTO>> callback){
         userTimelineServiceAsync.downloadAdvertisements(callback);
     }
+
+    public void retrieveTimeLineTotalInfo(Callback<TimeLineTotalInfo> callback){
+        userTimelineServiceAsync.retrieveTimeLineTotalInfo(callback);
+    }
+
     //</editor-fold>
 }

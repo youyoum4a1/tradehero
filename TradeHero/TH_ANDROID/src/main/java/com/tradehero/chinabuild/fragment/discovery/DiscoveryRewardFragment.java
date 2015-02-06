@@ -158,6 +158,9 @@ public class DiscoveryRewardFragment extends DashboardFragment {
         titleHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_title);
         titleHeadTV.setText(R.string.discovery_discuss_send_reward);
         totalHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_total);
+        if(DiscoverySquareFragment.NUMBER_ACTIVITY_TIMELINES_REWRAD> 0){
+            totalHeadTV.setText("(" + DiscoverySquareFragment.NUMBER_ACTIVITY_TIMELINES_REWRAD + ")");
+        }
         numberTimelinesHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_number_timeline);
         if(DiscoverySquareFragment.NUMBER_TIMELINES_REWRAD > 0){
             numberTimelinesHeadTV.setText(String.valueOf(DiscoverySquareFragment.NUMBER_TIMELINES_REWRAD));

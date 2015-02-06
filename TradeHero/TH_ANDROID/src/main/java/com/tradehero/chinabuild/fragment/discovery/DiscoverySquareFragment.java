@@ -9,16 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.chinabuild.cache.NoticeNewsCache;
 import com.tradehero.chinabuild.data.AdsDTO;
+import com.tradehero.chinabuild.data.TimeLineTotalInfo;
 import com.tradehero.chinabuild.fragment.competition.CompetitionDetailFragment;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
@@ -51,15 +49,19 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
 
     //Square Reward Views
     private LinearLayout rewardLL;
+    private TextView numberOfRewardTV;
 
     //Square Recent Views
     private LinearLayout recentLL;
+    private TextView numberOfRecentTV;
 
     //Square Favorite Views
     private LinearLayout favoriteLL;
+    private TextView numberOfEssentialTV;
 
     //Square Novice Views
     private LinearLayout noviceLL;
+    private TextView numberOfLearningTV;
 
     @Inject Lazy<Picasso> picasso;
     @InjectView(R.id.rlTopBanner) RelativeLayout rlTopBanner;
@@ -75,10 +77,14 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
     //Advertisement Record
     public static boolean SHOW_ADVERTISEMENT = true;
 
-    public static int NUMBER_TIMELINES_NOTICE = 0;
-    public static int NUMBER_TIMELINES_ESSENTIAL = 0;
-    public static int NUMBER_TIMELINES_REWRAD = 0;
-    public static int NUMBER_TIMELINES_RECENT = 0;
+    public static long NUMBER_TIMELINES_NOTICE = 0;
+    public static long NUMBER_TIMELINES_ESSENTIAL = 0;
+    public static long NUMBER_TIMELINES_REWRAD = 0;
+    public static long NUMBER_TIMELINES_RECENT = 0;
+    public static long NUMBER_ACTIVITY_TIMELINES_NOTICE = 0;
+    public static long NUMBER_ACTIVITY_TIMELINES_ESSENTIAL = 0;
+    public static long NUMBER_ACTIVITY_TIMELINES_REWRAD = 0;
+    public static long NUMBER_ACTIVITY_TIMELINES_RECENT = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -93,12 +99,20 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
         rewardLL.setOnClickListener(this);
         favoriteLL.setOnClickListener(this);
         noviceLL.setOnClickListener(this);
+        numberOfEssentialTV = (TextView)view.findViewById(R.id.textview_timelines_head_total_favorite);
+        numberOfLearningTV = (TextView)view.findViewById(R.id.textview_timelines_head_total_learning);
+        numberOfRewardTV = (TextView)view.findViewById(R.id.textview_timelines_head_total_reward);
+        numberOfRecentTV = (TextView)view.findViewById(R.id.textview_timelines_head_total_discuss);
+        initNumberViews();
 
         //Download Advertisement
         downloadAdvertisements();
 
         //Download Notice News
         retrieveNoticeNews();
+
+        //Retrieve Total TimeLine
+        retrieveTimeLineTotalInfo();
 
         return view;
     }
@@ -296,6 +310,44 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
             public void failure(RetrofitError retrofitError) {
             }
         });
+    }
+
+    private void retrieveTimeLineTotalInfo(){
+        timelineServiceWrapper.get().retrieveTimeLineTotalInfo(new Callback<TimeLineTotalInfo>() {
+            @Override
+            public void success(TimeLineTotalInfo timeLineTotalInfo, Response response) {
+                NUMBER_TIMELINES_NOTICE = timeLineTotalInfo.guideCount;
+                NUMBER_TIMELINES_ESSENTIAL = timeLineTotalInfo.essentialCount;
+                NUMBER_TIMELINES_REWRAD = timeLineTotalInfo.questionCount;
+                NUMBER_TIMELINES_RECENT = timeLineTotalInfo.originalCount;
+                NUMBER_ACTIVITY_TIMELINES_NOTICE = timeLineTotalInfo.guideActivity;
+                NUMBER_ACTIVITY_TIMELINES_ESSENTIAL = timeLineTotalInfo.essentialActivity;
+                NUMBER_ACTIVITY_TIMELINES_REWRAD = timeLineTotalInfo.questionActivity;
+                NUMBER_ACTIVITY_TIMELINES_RECENT = timeLineTotalInfo.originalActivity;
+                initNumberViews();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
+
+    private void initNumberViews(){
+        if(NUMBER_ACTIVITY_TIMELINES_NOTICE > 0 && numberOfLearningTV !=null){
+            numberOfLearningTV.setText("(" + NUMBER_ACTIVITY_TIMELINES_NOTICE + ")");
+        }
+        if(NUMBER_ACTIVITY_TIMELINES_ESSENTIAL > 0 && numberOfEssentialTV!=null){
+            numberOfEssentialTV.setText("(" + NUMBER_ACTIVITY_TIMELINES_ESSENTIAL + ")");
+        }
+        if(NUMBER_ACTIVITY_TIMELINES_REWRAD > 0 && numberOfRewardTV !=null){
+            numberOfRewardTV.setText("(" + NUMBER_ACTIVITY_TIMELINES_REWRAD + ")");
+        }
+        if(NUMBER_ACTIVITY_TIMELINES_RECENT > 0 && numberOfRecentTV !=null){
+            numberOfRecentTV.setText("(" + NUMBER_ACTIVITY_TIMELINES_RECENT + ")");
+        }
+
     }
 
     private void enterTargetTopic(AdsDTO adsDTO){

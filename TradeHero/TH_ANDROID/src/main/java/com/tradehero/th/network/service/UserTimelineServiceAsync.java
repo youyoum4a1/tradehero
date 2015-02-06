@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.chinabuild.data.AdsDTO;
+import com.tradehero.chinabuild.data.TimeLineTotalInfo;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import retrofit.Callback;
 import retrofit.http.GET;
@@ -86,4 +87,8 @@ interface UserTimelineServiceAsync
     @GET("/misc/ads")
     void downloadAdvertisements(Callback<List<AdsDTO>> callback);
     //</editor-fold>
+
+    //TimeLine Total Information
+    @GET("/misc/timelineActivity")
+    void retrieveTimeLineTotalInfo(Callback<TimeLineTotalInfo> callback);
 }

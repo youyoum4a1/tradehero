@@ -160,6 +160,9 @@ public class DiscoveryEssentialFragment extends DashboardFragment
         titleHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_title);
         titleHeadTV.setText(R.string.discovery_square_favorite);
         totalHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_total);
+        if(DiscoverySquareFragment.NUMBER_ACTIVITY_TIMELINES_ESSENTIAL > 0){
+            totalHeadTV.setText("(" + DiscoverySquareFragment.NUMBER_ACTIVITY_TIMELINES_ESSENTIAL + ")");
+        }
         numberTimelinesHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_number_timeline);
         if(DiscoverySquareFragment.NUMBER_TIMELINES_ESSENTIAL > 0){
             numberTimelinesHeadTV.setText(String.valueOf(DiscoverySquareFragment.NUMBER_TIMELINES_ESSENTIAL));
