@@ -7,10 +7,8 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.PositionDTOCompactList;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -18,7 +16,7 @@ import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.TestTHApp;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
+import com.tradehero.th.persistence.position.PositionCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
@@ -36,7 +34,7 @@ public abstract class AbstractTransactionDialogFragmentTestBase
 
     @Inject UserProfileCacheRx userProfileCache;
     @Inject SecurityCompactCacheRx securityCompactCache;
-    @Inject SecurityPositionDetailCacheRx securityPositionDetailCache;
+    @Inject PositionCompactListCacheRx positionCompactListCache;
 
     @Inject CurrentUserId currentUserId;
 
@@ -79,18 +77,10 @@ public abstract class AbstractTransactionDialogFragmentTestBase
         SecurityCompactDTO mockSecurityCompactDTO = new SecurityCompactDTO();
         mockSecurityCompactDTO.id = sId;
         mockSecurityCompactDTO.name = "Security Name";
-        PositionDTOCompactList mockPositionsDTOCompactList = new PositionDTOCompactList();
-        ProviderDTOList mockProvidersDTOList = new ProviderDTOList();
-        int firstTradeAllTime = 0;
-
-        SecurityPositionDetailDTO mockPositionDetailDTO = new SecurityPositionDetailDTO();
-        mockPositionDetailDTO.security = mockSecurityCompactDTO;
-        mockPositionDetailDTO.positions = mockPositionsDTOCompactList;
-        mockPositionDetailDTO.firstTradeAllTime = firstTradeAllTime;
-        mockPositionDetailDTO.providers = mockProvidersDTOList;
-
         securityCompactCache.onNext(securityId, mockSecurityCompactDTO);
-        //securityPositionDetailCache.put(securityId, mockPositionDetailDTO); // TODO find way to enforce values
+
+        PositionDTOCompactList mockPositionsDTOCompactList = new PositionDTOCompactList();
+        positionCompactListCache.onNext(securityId, mockPositionsDTOCompactList);
 
         activity = Robolectric.setupActivity(DashboardActivity.class);
         abstractTransactionDialogFragment

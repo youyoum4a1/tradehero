@@ -19,15 +19,15 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOCompactList;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
+import com.tradehero.th.persistence.position.PositionCompactListCacheRx;
 import com.tradehero.th.persistence.prefs.ShowMarketClosed;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
@@ -40,7 +40,7 @@ import rx.functions.Action1;
 import rx.functions.Actions;
 import timber.log.Timber;
 
-abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragment
+public class AbstractBuySellFragment extends BasePurchaseManagerFragment
 {
     private final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".securityId";
     private final static String BUNDLE_KEY_IS_BUY = AbstractBuySellFragment.class.getName() + ".isBuy";
@@ -52,8 +52,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected QuoteServiceWrapper quoteServiceWrapper;
-    @Inject protected SecurityPositionDetailCacheRx securityPositionDetailCache;
+    @Inject protected SecurityCompactCacheRx securityCompactCache;
     @Inject protected UserProfileCacheRx userProfileCache;
+    @Inject protected PositionCompactListCacheRx positionCompactListCache;
     @Inject protected THRouter thRouter;
     @Inject @ShowMarketClosed TimingIntervalPreference showMarketClosedIntervalPreference;
     @Inject protected ToastOnErrorAction toastOnErrorAction;
@@ -62,9 +63,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @InjectRoute protected SecurityId securityId;
     @Nullable protected QuoteDTO quoteDTO;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
-
-    protected Observable<SecurityPositionDetailDTO> securityPositionDetailObservable;
-    @Nullable protected SecurityPositionDetailDTO securityPositionDetailDTO;
 
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
     @Nullable protected PositionDTOCompact positionDTOCompact;
@@ -101,11 +99,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         {
             thRouter.inject(this);
         }
-        securityPositionDetailObservable = securityPositionDetailCache
-                .get(this.securityId)
-                .map(new PairGetSecond<>())
-                .share()
-                .cache(1);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -126,7 +119,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onStart();
         fetchQuote();
         fetchSecurityCompact();
-        fetchSecurityPositionDetail();
+        fetchPositionCompactList();
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -148,12 +141,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         quoteDTO = null;
         super.onStop();
-    }
-
-    @Override public void onDestroy()
-    {
-        securityPositionDetailObservable = null;
-        super.onDestroy();
     }
 
     protected void collectFromParameters(Bundle args)
@@ -206,13 +193,13 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected void fetchSecurityCompact()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(this, securityPositionDetailCache
+        onStopSubscriptions.add(AppObservable.bindFragment(this, securityCompactCache
                 .get(this.securityId))
-                .subscribe(new Action1<Pair<SecurityId, SecurityPositionDetailDTO>>()
+                .subscribe(new Action1<Pair<SecurityId, SecurityCompactDTO>>()
                            {
-                               @Override public void call(Pair<SecurityId, SecurityPositionDetailDTO> pair)
+                               @Override public void call(Pair<SecurityId, SecurityCompactDTO> pair)
                                {
-                                   linkWith(pair.second.security, true);
+                                   linkWith(pair.second, true);
                                }
                            },
                         Actions.empty()));
@@ -231,27 +218,18 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected void fetchSecurityPositionDetail()
+    protected void fetchPositionCompactList()
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                securityPositionDetailObservable)
+                positionCompactListCache.get(securityId)
+                        .map(pair -> pair.second))
                 .subscribe(
                         this::linkWith,
-                        this::handleFailedFetchSecurityPositionDetail));
-    }
-
-    public void linkWith(@NonNull final SecurityPositionDetailDTO securityPositionDetailDTO)
-    {
-        this.securityPositionDetailDTO = securityPositionDetailDTO;
-        linkWith(securityPositionDetailDTO.security, true);
-        linkWith(securityPositionDetailDTO.positions);
-    }
-
-    protected void handleFailedFetchSecurityPositionDetail(@NonNull Throwable e)
-    {
-        THToast.show(R.string.error_fetch_detailed_security_info);
-        Timber.e(e, "getting %s", securityId);
+                        e -> {
+                            THToast.show("Failed to fetch positions for this security");
+                            Timber.e(e, "Failed to fetch positions for this security");
+                        }));
     }
 
     public void linkWith(final PositionDTOCompactList positionDTOCompacts)

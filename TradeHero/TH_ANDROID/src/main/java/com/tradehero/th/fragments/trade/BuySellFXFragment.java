@@ -15,14 +15,12 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.fx.FXChartGranularity;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.PositionStatus;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOUtil;
@@ -124,12 +122,6 @@ public class BuySellFXFragment extends BuySellFragment
         this.oldQuoteDTO = null;
     }
 
-    @Override public void linkWith(@NonNull SecurityPositionDetailDTO securityPositionDetailDTO)
-    {
-        super.linkWith(securityPositionDetailDTO);
-        displayPositionStatus();
-    }
-
     @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
     {
         MenuOwnedPortfolioId currentMenu = mSelectedPortfolioContainer.getCurrentMenu();
@@ -176,7 +168,7 @@ public class BuySellFXFragment extends BuySellFragment
 
     public void displayPositionStatus()
     {
-        if (securityPositionDetailDTO == null)
+        if (positionDTOCompact == null)
         {
             // Not enough info
             return;
@@ -184,8 +176,7 @@ public class BuySellFXFragment extends BuySellFragment
 
         if (llPositionStatus != null)
         {
-            boolean toShow = positionDTOCompact != null
-                    && positionDTOCompact.shares != null
+            boolean toShow = positionDTOCompact.shares != null
                     && positionDTOCompact.positionStatus != null;
             llPositionStatus.setVisibility(toShow ? View.VISIBLE : View.GONE);
             if (toShow)
@@ -282,7 +273,7 @@ public class BuySellFXFragment extends BuySellFragment
 
     @Override public boolean isBuySellReady()
     {
-        return quoteDTO != null && securityPositionDetailDTO != null;
+        return quoteDTO != null && positionDTOCompactList != null && applicableOwnedPortfolioIds != null;
     }
 
     @Override
@@ -330,12 +321,6 @@ public class BuySellFXFragment extends BuySellFragment
         {
             THToast.show(R.string.error_fx_candle_charts_load_fail);
         }
-    }
-
-    @Override protected void processPortfolioForProvider(ProviderDTO providerDTO)
-    {
-        super.processPortfolioForProvider(providerDTO);
-        showCloseDialog();
     }
 
     @Override

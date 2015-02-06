@@ -28,6 +28,7 @@ import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
+import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -309,7 +310,7 @@ public class BuySellStockFragment extends BuySellFragment
 
     public boolean isBuySellReady()
     {
-        return quoteDTO != null && securityPositionDetailDTO != null;
+        return quoteDTO != null && positionDTOCompactList != null && applicableOwnedPortfolioIds != null;
     }
 
     public void displayTriggerButton()

@@ -14,7 +14,8 @@ import rx.Observable;
     @NonNull private final PositionServiceRx positionServiceRx;
 
     //<editor-fold desc="Constructors">
-    @Inject public PositionServiceWrapper(@NonNull PositionServiceRx positionServiceRx)
+    @Inject public PositionServiceWrapper(
+            @NonNull PositionServiceRx positionServiceRx)
     {
         super();
         this.positionServiceRx = positionServiceRx;
@@ -42,7 +43,6 @@ import rx.Observable;
                     pagedOwnedPortfolioId.portfolioId,
                     pagedOwnedPortfolioId.page,
                     null);
-
         }
         else
         {

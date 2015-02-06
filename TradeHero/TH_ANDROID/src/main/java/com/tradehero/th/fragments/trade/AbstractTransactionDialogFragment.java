@@ -30,7 +30,6 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOCompactList;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -52,7 +51,7 @@ import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
+import com.tradehero.th.persistence.position.PositionCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.DeviceUtil;
@@ -96,7 +95,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject PortfolioCompactCacheRx portfolioCompactCache;
     @Inject SecurityServiceWrapper securityServiceWrapper;
-    @Inject Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache;
+    @Inject Lazy<PositionCompactListCacheRx> positionCompactListCache;
     @Inject Analytics analytics;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
     @Inject ToastOnErrorAction toastOnErrorAction;
@@ -114,7 +113,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     protected QuoteDTO quoteDTO;
     protected Integer mTransactionQuantity = 0;
-    @Nullable protected SecurityPositionDetailDTO securityPositionDetailDTO;
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
     @Nullable protected PositionDTOCompact positionDTOCompact;
     protected boolean showProfitLossUsd = true; // false will show in RefCcy
@@ -272,7 +270,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         fetchPortfolioCompact();
         quoteDTO = getBundledQuoteDTO();
         fetchQuote();
-        fetchSecurityPositionDetail();
+        fetchPositionCompactList();
     }
 
     private void fetchSecurityCompact()
@@ -332,11 +330,11 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         displayCashShareLabel();
     }
 
-    private void fetchSecurityPositionDetail()
+    private void fetchPositionCompactList()
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                securityPositionDetailCache.get()
+                positionCompactListCache.get()
                         .get(this.securityId)
                         .map(new PairGetSecond<>()))
                 .subscribe(
@@ -344,10 +342,9 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                         toastOnErrorAction));
     }
 
-    protected void linkWith(SecurityPositionDetailDTO securityPositionDetailDTO)
+    protected void linkWith(PositionDTOCompactList positionDTOCompacts)
     {
-        this.securityPositionDetailDTO = securityPositionDetailDTO;
-        this.positionDTOCompactList = securityPositionDetailDTO.positions;
+        this.positionDTOCompactList = positionDTOCompacts;
         setPositionDTO();
         initPortfolioRelatedInfo();
         clampQuantity();
@@ -454,11 +451,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     @Nullable protected Integer getMaxPurchasableShares()
     {
-        if (securityPositionDetailDTO == null)
-        {
-            // This means we have incomplete information
-            return null;
-        }
         return PortfolioCompactDTOUtil.getMaxPurchasableShares(
                 portfolioCompactDTO,
                 quoteDTO,
@@ -467,11 +459,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     @Nullable protected Integer getMaxSellableShares()
     {
-        if (securityPositionDetailDTO == null)
-        {
-            // This means we have incomplete information
-            return null;
-        }
         return PortfolioCompactDTOUtil.getMaxSellableShares(
                 portfolioCompactDTO,
                 quoteDTO,
