@@ -23,6 +23,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemFactory;
@@ -62,6 +63,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     private StoreItemAdapter storeItemAdapter;
     private Subscription storeItemSubscription;
     @NonNull protected SubscriptionList subscriptions;
+    @Inject protected THBillingInteractorRx userInteractorRx;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

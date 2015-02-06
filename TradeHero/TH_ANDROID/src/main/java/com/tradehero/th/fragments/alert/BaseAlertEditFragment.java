@@ -33,6 +33,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.AlertSlotDTO;
@@ -87,6 +88,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     protected SecurityCompactDTO securityCompactDTO;
     @Nullable protected Subscription alertSlotSubscription;
     protected ProgressDialog progressDialog;
+    @Inject protected THBillingInteractorRx userInteractorRx;
 
     protected CompoundButton.OnCheckedChangeListener createTargetPriceCheckedChangeListener()
     {

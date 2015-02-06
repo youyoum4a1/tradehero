@@ -38,6 +38,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
@@ -127,6 +128,7 @@ public class PositionListFragment
     protected PositionItemAdapter positionItemAdapter;
 
     private int firstPositionVisible = 0;
+    @Inject protected THBillingInteractorRx userInteractorRx;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)

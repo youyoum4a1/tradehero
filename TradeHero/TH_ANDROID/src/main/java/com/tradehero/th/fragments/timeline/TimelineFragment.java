@@ -37,6 +37,7 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.achievement.AchievementListFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -141,6 +142,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     //TODO need move to pushableTimelineFragment
     private int mFollowType;//0 not follow, 1 free follow, 2 premium follow
     private boolean mIsHero = false;//whether the showUser follow the user
+    @Inject protected THBillingInteractorRx userInteractorRx;
+
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

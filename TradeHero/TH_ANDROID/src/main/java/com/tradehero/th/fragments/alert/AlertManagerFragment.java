@@ -25,6 +25,7 @@ import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.SecurityAlertKnowledge;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
@@ -54,6 +55,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @NonNull SubscriptionList subscriptions;
     protected UserProfileDTO currentUserProfile;
     private AlertListItemAdapter alertListItemAdapter;
+    @Inject protected THBillingInteractorRx userInteractorRx;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

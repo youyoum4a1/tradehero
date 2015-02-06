@@ -24,6 +24,7 @@ import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
@@ -66,6 +67,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @InjectView(R.id.heros_list) public ListView heroListView;
     @InjectView(R.id.swipe_to_refresh_layout) public SwipeRefreshLayout swipeRefreshLayout;
     @NonNull private SubscriptionList subscriptions;
+    @Inject protected THBillingInteractorRx userInteractorRx;
 
     //<editor-fold desc="Argument Passing">
     public static void putFollowerId(Bundle args, UserBaseKey followerId)

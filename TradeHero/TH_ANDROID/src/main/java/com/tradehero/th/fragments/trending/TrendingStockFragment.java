@@ -35,6 +35,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
@@ -82,6 +83,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     @NonNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
 
     private ExtraTileAdapterNew wrapperAdapter;
+    @Inject protected THBillingInteractorRx userInteractorRx;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

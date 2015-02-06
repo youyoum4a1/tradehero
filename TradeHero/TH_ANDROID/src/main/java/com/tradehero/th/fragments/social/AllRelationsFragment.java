@@ -21,6 +21,7 @@ import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
@@ -52,6 +53,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     @InjectView(R.id.relations_list) ListView mRelationsListView;
 
     @NonNull SubscriptionList subscriptions;
+    @Inject protected THBillingInteractorRx userInteractorRx;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
