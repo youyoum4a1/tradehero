@@ -129,7 +129,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:id="@+id/linearlayout_usertlnotrade"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="10dp"
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">

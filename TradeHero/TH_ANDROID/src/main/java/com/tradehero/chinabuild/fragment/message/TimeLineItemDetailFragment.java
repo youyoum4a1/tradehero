@@ -679,7 +679,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
     public void clickedPraise() {
         AbstractDiscussionCompactDTO item = getAbstractDiscussionCompactDTO();
-
+        if(item==null){
+            return;
+        }
         if (item.voteDirection == 1) {
             item.voteDirection = 0;
             item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
@@ -707,7 +709,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
     public void clickedPraiseDown() {
         AbstractDiscussionCompactDTO item = getAbstractDiscussionCompactDTO();
-
+        if(item==null){
+            return;
+        }
         if (item.voteDirection == 1) {
             item.voteDirection = -1;
             item.downvoteCount += 1;
