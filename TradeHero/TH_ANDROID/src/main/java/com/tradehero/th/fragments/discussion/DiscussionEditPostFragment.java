@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnTextChanged;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.utils.EditableUtil;
 import com.tradehero.common.utils.THToast;
@@ -64,7 +64,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private Subscription discussionEditSubscription;
     private ProgressDialog progressDialog;
     protected MenuItem postMenuButton;
-    private TextWatcher discussionEditTextWatcher;
     private Subscription hasSelectedSubscription;
 
     @Nullable private DiscussionKey discussionKey;
@@ -86,8 +85,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     protected void initView()
     {
-        discussionEditTextWatcher = new DiscussionEditTextWatcher();
-        discussionPostContent.addTextChangedListener(discussionEditTextWatcher);
         discussionPostActionButtonsView.setReturnFragmentName(this.getClass().getName());
         mentionTaggedStockHandler.setDiscussionPostContent(discussionPostContent);
         subscribeHasSelected();
@@ -157,7 +154,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
         discussionEditSubscription = null;
         unsubscribe(hasSelectedSubscription);
         hasSelectedSubscription = null;
-        discussionPostContent.removeTextChangedListener(discussionEditTextWatcher);
         mentionTaggedStockHandler.setDiscussionPostContent(null);
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -347,26 +343,18 @@ public class DiscussionEditPostFragment extends DashboardFragment
         }
     }
 
-    private class DiscussionEditTextWatcher implements TextWatcher
+    @SuppressWarnings("UnusedDeclaration")
+    @OnTextChanged(value = R.id.discussion_post_content,
+            callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
+    public void afterTextChanged(Editable s)
     {
-        @Override public void beforeTextChanged(CharSequence s, int start, int count, int after)
+        if (postMenuButton != null)
         {
-        }
-
-        @Override public void onTextChanged(CharSequence s, int start, int before, int count)
-        {
-        }
-
-        @Override public void afterTextChanged(Editable s)
-        {
-            if (postMenuButton != null)
+            boolean notEmptyText = validateNotEmptyText();
+            if (notEmptyText != postMenuButton.isVisible())
             {
-                boolean notEmptyText = validateNotEmptyText();
-                if (notEmptyText != postMenuButton.isVisible())
-                {
-                    // TODO do something to enable Post menu button
-                    getActivity().invalidateOptionsMenu();
-                }
+                // TODO do something to enable Post menu button
+                getActivity().invalidateOptionsMenu();
             }
         }
     }

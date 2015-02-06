@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
@@ -34,7 +33,6 @@ import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.route.THRouter;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
-import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
 import rx.functions.Actions;
@@ -57,7 +55,6 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
     @Inject protected PositionCompactListCacheRx positionCompactListCache;
     @Inject protected THRouter thRouter;
     @Inject @ShowMarketClosed TimingIntervalPreference showMarketClosedIntervalPreference;
-    @Inject protected ToastOnErrorAction toastOnErrorAction;
 
     protected ProviderId providerId;
     @InjectRoute protected SecurityId securityId;
@@ -178,7 +175,7 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
                         .repeatWhen(observable -> observable.delay(getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS)))
                 .subscribe(
                         this::linkWith,
-                        toastOnErrorAction));
+                        new ToastOnErrorAction()));
     }
 
     protected void linkWith(QuoteDTO quoteDTO)

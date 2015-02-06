@@ -59,7 +59,6 @@ public class DiscoveryDiscussionFragment extends Fragment
     @Inject RxLoaderManager rxLoaderManager;
     @Inject CurrentUserId currentUserId;
     @Inject UserTimelineServiceWrapper userTimelineServiceWrapper;
-    @Inject ToastOnErrorAction toastOnErrorAction;
     @Inject Lazy<DashboardNavigator> navigator;
 
     private ProgressBar mBottomLoadingView;
@@ -163,7 +162,7 @@ public class DiscoveryDiscussionFragment extends Fragment
                                 .toList()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError(toastOnErrorAction)
+                .doOnError(new ToastOnErrorAction())
                 .onErrorResumeNext(Observable.empty())
                 .doOnUnsubscribe(() ->
                 {

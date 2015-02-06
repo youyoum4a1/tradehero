@@ -61,7 +61,6 @@ public class EmailSignInFragment extends Fragment
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject Provider<LoginSignUpFormDTO.Builder2> loginSignUpFormDTOProvider;
     @Inject SessionServiceWrapper sessionServiceWrapper;
-    @Inject ToastOnErrorAction toastOnErrorAction;
     @Inject Provider<AuthDataAccountAction> authDataActionProvider;
     @Inject THAppsFlyer thAppsFlyer;
 
@@ -195,7 +194,7 @@ public class EmailSignInFragment extends Fragment
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(authDataActionProvider.get())
                 .doOnNext(new OpenDashboardAction(getActivity()))
-                .doOnError(toastOnErrorAction)
+                .doOnError(new ToastOnErrorAction())
                 .doOnUnsubscribe(() -> {
                     if (progressDialog != null)
                     {

@@ -6,6 +6,8 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 /**
  * This view will auto determine the width or height by determining if the height or width is set and scale the other dimension depending on the
@@ -17,8 +19,8 @@ import android.widget.RelativeLayout;
  */
 public class ScaleImageView extends ImageView
 {
-    private ImageChangeListener imageChangeListener;
     private boolean scaleToWidth = false; // this flag determines if should measure height manually dependent of width
+    private BehaviorSubject<Boolean> imageChangedToEmptySubject;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -46,42 +48,27 @@ public class ScaleImageView extends ImageView
     private void init()
     {
         this.setScaleType(ScaleType.CENTER_INSIDE);
+        imageChangedToEmptySubject = BehaviorSubject.create();
     }
 
     @Override
     public void setImageBitmap(Bitmap bm)
     {
         super.setImageBitmap(bm);
-        if (imageChangeListener != null)
-        {
-            imageChangeListener.changed((bm == null));
-        }
+        imageChangedToEmptySubject.onNext(bm == null);
     }
 
     @Override
     public void setImageDrawable(Drawable d)
     {
         super.setImageDrawable(d);
-        if (imageChangeListener != null)
-        {
-            imageChangeListener.changed((d == null));
-        }
+        imageChangedToEmptySubject.onNext(d == null);
     }
 
-    public interface ImageChangeListener
+    // a callback for when a change has been made to this imageView
+    public Observable<Boolean> getImageChangedToEmptyObservable()
     {
-        // a callback for when a change has been made to this imageView
-        void changed(boolean isEmpty);
-    }
-
-    public ImageChangeListener getImageChangeListener()
-    {
-        return imageChangeListener;
-    }
-
-    public void setImageChangeListener(ImageChangeListener imageChangeListener)
-    {
-        this.imageChangeListener = imageChangeListener;
+        return imageChangedToEmptySubject.asObservable();
     }
 
     @Override

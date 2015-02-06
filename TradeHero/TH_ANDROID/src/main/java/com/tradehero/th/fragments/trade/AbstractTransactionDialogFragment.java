@@ -98,7 +98,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Inject Lazy<PositionCompactListCacheRx> positionCompactListCache;
     @Inject Analytics analytics;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
-    @Inject ToastOnErrorAction toastOnErrorAction;
 
     @Inject THBillingInteractorRx userInteractor;
     @Inject Lazy<DashboardNavigator> navigator;
@@ -317,7 +316,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                         .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS)))
                 .subscribe(
                         this::linkWith,
-                        toastOnErrorAction));
+                        new ToastOnErrorAction()));
     }
 
     protected void linkWith(QuoteDTO quoteDTO)
@@ -339,7 +338,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                         .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
-                        toastOnErrorAction));
+                        new ToastOnErrorAction()));
     }
 
     protected void linkWith(PositionDTOCompactList positionDTOCompacts)

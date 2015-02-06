@@ -357,7 +357,21 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
                                 AchievementShareFormDTOFactory.createFrom(
                                         shareTos,
                                         userAchievementDTO)))
-                        .subscribe(createShareAchievementObserver());
+                        .subscribe(
+                                new Action1<BaseResponseDTO>()
+                                {
+                                    @Override public void call(BaseResponseDTO o)
+                                    {
+                                        showShareSuccess();
+                                    }
+                                },
+                                new Action1<Throwable>()
+                                {
+                                    @Override public void call(Throwable throwable)
+                                    {
+                                        showShareFailed();
+                                    }
+                                });
                 showSharing();
             }
             else
@@ -691,28 +705,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
                         dialogFragment.setArguments(args);
                         return dialogFragment;
                     });
-        }
-    }
-
-    protected Observer<BaseResponseDTO> createShareAchievementObserver()
-    {
-        return new ShareAchievementObserver();
-    }
-
-    protected class ShareAchievementObserver implements Observer<BaseResponseDTO>
-    {
-        @Override public void onNext(BaseResponseDTO baseResponseDTO)
-        {
-            showShareSuccess();
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            showShareFailed();
         }
     }
 }

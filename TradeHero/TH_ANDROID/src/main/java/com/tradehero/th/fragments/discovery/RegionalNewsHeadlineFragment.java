@@ -22,7 +22,6 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
 
     @Inject Locale locale;
     @Inject @RegionalNews CountryLanguagePreference countryLanguagePreference;
-    @Inject ToastOnErrorAction toastOnErrorAction;
 
     @Override protected void initView(View view)
     {
@@ -35,7 +34,7 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
                                 .map((Func1<Intent, NewsItemListKey>) intent -> newsItemListKeyFromPref())
                                 .subscribeOn(Schedulers.io()))
                         .onErrorResumeNext(Observable.empty())
-                        .subscribe(this::replaceNewsItemListView, toastOnErrorAction));
+                        .subscribe(this::replaceNewsItemListView, new ToastOnErrorAction()));
     }
 
     private NewsItemListRegionalKey newsItemListKeyFromPref()

@@ -17,8 +17,8 @@ import com.tradehero.th.persistence.achievement.QuestBonusListCacheRx;
 import com.tradehero.th.widget.QuestIndicatorGroupView;
 import java.util.List;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.functions.Actions;
 
 public class QuestDialogFragment extends AbstractAchievementDialogFragment
 {
@@ -42,18 +42,20 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
         return inflater.inflate(R.layout.quest_dialog_fragment, container, false);
     }
 
-    @Override protected void initView()
+    @Override public void onStart()
     {
-        super.initView();
+        super.onStart();
         fetchQuestBonusList();
     }
 
     private void fetchQuestBonusList()
     {
-        AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 questBonusListCache.getOne(questBonusListId))
-                .subscribe(new QuestBonusCacheObserver());
+                .subscribe(
+                        this::onReceivedQuestBonusList,
+                        Actions.empty()));
     }
 
     @Override protected void handleBadgeSuccess()
@@ -62,47 +64,36 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
         questIndicatorGroupView.delayedColorUpdate(mCurrentColor);
     }
 
-    private class QuestBonusCacheObserver implements Observer<Pair<QuestBonusListId, QuestBonusDTOList>>
+    protected void onReceivedQuestBonusList(Pair<QuestBonusListId, QuestBonusDTOList> pair)
     {
-        @Override public void onNext(Pair<QuestBonusListId, QuestBonusDTOList> pair)
+        UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+        if (userAchievementDTOCopy != null)
         {
-            UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
-            if (userAchievementDTOCopy != null)
+            List<QuestBonusDTO> questBonusDTOList = pair.second.getInclusive(
+                    userAchievementDTOCopy.contiguousCount,
+                    questIndicatorGroupView.getNumberOfIndicators());
+            Boolean first = firstIsCurrentLevel(questBonusDTOList);
+            if (first != null && first)
             {
-                List<QuestBonusDTO> questBonusDTOList = pair.second.getInclusive(
-                        userAchievementDTOCopy.contiguousCount,
-                        questIndicatorGroupView.getNumberOfIndicators());
-                Boolean first = firstIsCurrentLevel(questBonusDTOList);
-                if (first != null && first)
+                //Get previous
+                List<QuestBonusDTO> questBonusDTO = pair.second.getPrevious(userAchievementDTO.contiguousCount, NO_OF_QUEST_BEFORE_CURRENT);
+                if (!questBonusDTO.isEmpty())
                 {
-                    //Get previous
-                    List<QuestBonusDTO> questBonusDTO = pair.second.getPrevious(userAchievementDTO.contiguousCount, NO_OF_QUEST_BEFORE_CURRENT);
-                    if (!questBonusDTO.isEmpty())
-                    {
-                        questBonusDTOList.addAll(0, questBonusDTO);
-                    }
+                    questBonusDTOList.addAll(0, questBonusDTO);
                 }
-                questIndicatorGroupView.setQuestBonusDef(questBonusDTOList, userAchievementDTO.contiguousCount);
-                questIndicatorGroupView.revealNext();
             }
+            questIndicatorGroupView.setQuestBonusDef(questBonusDTOList, userAchievementDTO.contiguousCount);
+            questIndicatorGroupView.revealNext();
         }
+    }
 
-        @Override public void onCompleted()
+    @Nullable private Boolean firstIsCurrentLevel(@NonNull List<QuestBonusDTO> questBonusDTOList)
+    {
+        UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+        if (userAchievementDTOCopy == null)
         {
+            return null;
         }
-
-        @Override public void onError(Throwable e)
-        {
-        }
-
-        @Nullable private Boolean firstIsCurrentLevel(List<QuestBonusDTO> questBonusDTOList)
-        {
-            UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
-            if (userAchievementDTOCopy == null)
-            {
-                return null;
-            }
-            return !questBonusDTOList.isEmpty() && questBonusDTOList.get(0).level == userAchievementDTOCopy.contiguousCount;
-        }
+        return !questBonusDTOList.isEmpty() && questBonusDTOList.get(0).level == userAchievementDTOCopy.contiguousCount;
     }
 }

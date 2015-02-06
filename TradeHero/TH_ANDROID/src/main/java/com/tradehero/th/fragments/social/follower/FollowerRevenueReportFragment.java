@@ -33,7 +33,6 @@ public class FollowerRevenueReportFragment extends DashboardFragment
 {
     @Inject CurrentUserId currentUserId;
     @Inject FollowerSummaryCacheRx followerSummaryCache;
-    @Inject ToastOnErrorAction toastOnErrorAction;
 
     @InjectView(R.id.manage_followers_header) View headerView;
     @InjectView(R.id.follower_list) AbsListView followerListView;
@@ -77,7 +76,7 @@ public class FollowerRevenueReportFragment extends DashboardFragment
         AppObservable.bindFragment(
                 this,
                 followerManagerViewContainer.getClickedUserFollower())
-                .subscribe(this::onListItemClick, toastOnErrorAction);
+                .subscribe(this::onListItemClick, new ToastOnErrorAction());
     }
 
     @Override public void onDestroyView()
