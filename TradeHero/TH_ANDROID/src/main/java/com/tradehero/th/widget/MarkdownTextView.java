@@ -13,6 +13,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.intent.THIntentFactory;
@@ -104,9 +105,9 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     private void openSecurityProfile(String exchange, String symbol)
     {
         SecurityId securityId = new SecurityId(exchange, symbol);
-        Bundle args = new Bundle();
-        BuySellStockFragment.putSecurityId(args, securityId);
-            navigator.pushFragment(BuySellStockFragment.class, args);
+        navigator.pushFragment(
+                BuySellStockFragment.class,
+                new BuySellStockFragment.Param(null, securityId, null).getArgs());
     }
 
     private void openUserProfile(int userId)

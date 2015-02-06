@@ -11,7 +11,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.AssetClass;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTOUtil;
@@ -158,14 +157,12 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
 
     protected void pushTradeFragmentIn(SecurityCompactDTO securityCompactDTO)
     {
-        Bundle args = new Bundle();
-        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-        if (applicablePortfolioId != null)
-        {
-            BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-        }
-        BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-        navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
+        navigator.get().pushFragment(
+                SecurityCompactDTOUtil.fragmentFor(securityCompactDTO),
+                new BuySellFragment.Param(
+                        getApplicablePortfolioId(),
+                        securityCompactDTO.getSecurityId(),
+                        null).getArgs());
     }
 
     @Override protected void onNext(@NonNull SecurityListType key, @NonNull SecurityCompactDTOList value)

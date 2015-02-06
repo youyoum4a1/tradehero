@@ -182,15 +182,12 @@ public class ProviderSecurityListRxFragment
     @Override protected void handleDtoClicked(SecurityCompactDTO clicked)
     {
         super.handleDtoClicked(clicked);
-        Bundle args = new Bundle();
-        BuySellFragment.putSecurityId(args, clicked.getSecurityId());
-        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-        if (applicablePortfolioId != null)
-        {
-            BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-        }
-        args.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
-        navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(clicked), args);
+        navigator.get().pushFragment(
+                SecurityCompactDTOUtil.fragmentFor(clicked),
+                new BuySellFragment.Param(
+                        getApplicablePortfolioId(),
+                        clicked.getSecurityId(),
+                        providerId).getArgs());
     }
 
     protected void pushWizardElement()

@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.position.partial;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -197,16 +196,28 @@ public class PositionPartialTopView extends LinearLayout
     @OnClick(R.id.btn_position_close)
     protected void handleBtnCloseClicked(@SuppressWarnings("UnusedParameters") View view)
     {
-        Bundle args = new Bundle();
-        BuySellFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
-        BuySellFragment.putSecurityId(args, securityId);
         Class<? extends BuySellFragment> fragmentClass = SecurityCompactDTOUtil.fragmentFor(securityCompactDTO);
         if (securityCompactDTO.getClass().equals(FxSecurityCompactDTO.class))
         {
-            BuySellFXFragment.putCloseAttribute(args, positionDTO.shares);
+            navigator.pushFragment(
+                    fragmentClass,
+                    new BuySellFXFragment.Param(
+                            positionDTO.getOwnedPortfolioId(),
+                            securityId,
+                            null,
+                            positionDTO.shares == null ? 0 : positionDTO.shares)
+                            .getArgs());
         }
-        // TODO add command to go direct to pop-up
-        navigator.pushFragment(fragmentClass, args);
+        else
+        {
+            // TODO add command to go direct to pop-up
+            navigator.pushFragment(
+                    fragmentClass,
+                    new BuySellFragment.Param(
+                            positionDTO.getOwnedPortfolioId(),
+                            securityId,
+                            null).getArgs());
+        }
     }
 
     //<editor-fold desc="Display Methods">

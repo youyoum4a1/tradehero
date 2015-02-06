@@ -15,8 +15,10 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.fx.FXChartGranularity;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.position.PositionDTOCompactList;
@@ -24,6 +26,7 @@ import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOUtil;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -68,14 +71,30 @@ public class BuySellFXFragment extends BuySellFragment
     private int closeUnits;
     private QuoteDTO oldQuoteDTO;
 
-    public static void putCloseAttribute(@NonNull Bundle args, int units)
+    public static class Param extends AbstractBuySellFragment.Param
     {
-        args.putInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, units);
-    }
+        public final int units;
 
-    private static int getCloseAttribute(@NonNull Bundle args)
-    {
-        return args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
+        public Param(
+                @Nullable OwnedPortfolioId ownedPortfolioId,
+                @NonNull SecurityId securityId,
+                @Nullable ProviderId providerId,
+                int units)
+        {
+            super(ownedPortfolioId, securityId, providerId);
+            this.units = units;
+        }
+
+        @Override protected void populate(@NonNull Bundle args)
+        {
+            super.populate(args);
+            args.putInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, units);
+        }
+
+        static int getCloseAttribute(@NonNull Bundle args)
+        {
+            return args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
+        }
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -89,7 +108,7 @@ public class BuySellFXFragment extends BuySellFragment
         super.onViewCreated(view, savedInstanceState);
         fetchKChart(FXChartGranularity.min1);
         initTimeSpanButton();
-        closeUnits = getCloseAttribute(getArguments());
+        closeUnits = Param.getCloseAttribute(getArguments());
     }
 
     @Nullable @Override protected PortfolioCompactDTO getPreferredApplicablePortfolio(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)

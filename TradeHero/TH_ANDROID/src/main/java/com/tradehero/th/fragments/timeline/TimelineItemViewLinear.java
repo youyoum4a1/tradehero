@@ -33,10 +33,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.functions.Func1;
-import timber.log.Timber;
 
 public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLinear<TimelineItemDTO>
 {
@@ -194,10 +191,12 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
             if (flavorSecurityForDisplay != null && flavorSecurityForDisplay.securityId != 0)
             {
                 SecurityId securityId = new SecurityId(flavorSecurityForDisplay.exchange, flavorSecurityForDisplay.symbol);
-                Bundle args = new Bundle();
-                BuySellStockFragment.putSecurityId(args, securityId);
-
-                getNavigator().pushFragment(BuySellStockFragment.class, args);
+                getNavigator().pushFragment(
+                        BuySellStockFragment.class,
+                        new BuySellStockFragment.Param(
+                                null,
+                                securityId,
+                                null).getArgs());
             }
         }
     }

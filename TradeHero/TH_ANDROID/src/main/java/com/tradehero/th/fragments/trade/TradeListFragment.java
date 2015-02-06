@@ -463,22 +463,21 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     protected void handleBuySellRequested(@NonNull SecurityCompactDTO securityCompactDTO)
     {
-        Bundle args = new Bundle();
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-        if (applicablePortfolioId != null)
-        {
-            BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-        }
         if (positionDTO != null && positionDTO.getOwnedPortfolioId() != null)
         {
-            BuySellFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
+            applicablePortfolioId = positionDTO.getOwnedPortfolioId();
         }
-        BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
 
         if (navigator != null)
         {
             // TODO add command to go direct to pop-up
-            navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
+            navigator.get().pushFragment(
+                    SecurityCompactDTOUtil.fragmentFor(securityCompactDTO),
+                    new BuySellFragment.Param(
+                            applicablePortfolioId,
+                            securityCompactDTO.getSecurityId(),
+                            null).getArgs());
         }
     }
 

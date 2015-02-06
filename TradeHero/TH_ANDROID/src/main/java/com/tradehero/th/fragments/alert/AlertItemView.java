@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.alert;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.Spanned;
@@ -187,9 +186,13 @@ public class AlertItemView extends RelativeLayout
         if (alertCompactDTO != null && alertCompactDTO.security != null &&
                 alertCompactDTO.security.getSecurityId() != null)
         {
-            Bundle args = new Bundle();
-            BuySellStockFragment.putSecurityId(args, alertCompactDTO.security.getSecurityId());
-            navigator.pushFragment(BuySellStockFragment.class, args);
+            navigator.pushFragment(
+                    BuySellStockFragment.class,
+                    new BuySellStockFragment.Param(
+                            null,
+                            alertCompactDTO.security.getSecurityId(),
+                            null)
+                            .getArgs());
         }
     }
 }

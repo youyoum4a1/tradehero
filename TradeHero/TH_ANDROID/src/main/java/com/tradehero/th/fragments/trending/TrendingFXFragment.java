@@ -214,17 +214,14 @@ public class TrendingFXFragment extends TrendingBaseFragment
 
     private void handleSecurityItemOnClick(@NonNull SecurityCompactDTO securityCompactDTO)
     {
-        Bundle args = new Bundle();
-        BuySellFXFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-
-        if (ownedPortfolioId != null)
-        {
-            BuySellFXFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        }
-
-        navigator.get().pushFragment(BuySellFXFragment.class, args);
+        navigator.get().pushFragment(
+                BuySellFXFragment.class,
+                new BuySellFXFragment.Param(
+                        ownedPortfolioId,
+                        securityCompactDTO.getSecurityId(),
+                        null,
+                        0).getArgs());
     }
 
     @Override public void setUserVisibleHint(boolean isVisibleToUser)

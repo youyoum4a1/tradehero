@@ -46,7 +46,7 @@ public class SecurityPushBuyIntent extends THIntent
         return Uri.parse(getSecurityActionUriPath(securityIntegerId, securityId));
     }
 
-    public String getSecurityActionUriPath(@NonNull SecurityIntegerId securityIntegerId, @NonNull SecurityId securityId)
+    @NonNull public String getSecurityActionUriPath(@NonNull SecurityIntegerId securityIntegerId, @NonNull SecurityId securityId)
     {
         return resources.getString(
                 R.string.intent_security_push_buy_action,
@@ -57,19 +57,19 @@ public class SecurityPushBuyIntent extends THIntent
                 securityId.getSecuritySymbol());
     }
 
-    public SecurityIntegerId getSecurityIntegerId()
+    @NonNull public SecurityIntegerId getSecurityIntegerId()
     {
         return getSecurityIntegerId(resources, getData());
     }
 
-    public static SecurityIntegerId getSecurityIntegerId(
+    @NonNull public static SecurityIntegerId getSecurityIntegerId(
             @NonNull Resources resources,
             @NonNull Uri data)
     {
         return getSecurityIntegerId(resources, data.getPathSegments());
     }
 
-    public static SecurityIntegerId getSecurityIntegerId(
+    @NonNull public static SecurityIntegerId getSecurityIntegerId(
             @NonNull Resources resources,
             @NonNull List<String> pathSegments)
     {
@@ -78,19 +78,19 @@ public class SecurityPushBuyIntent extends THIntent
                 R.integer.intent_security_push_buy_split_index_security_num_key)]));
     }
 
-    public SecurityId getSecurityId()
+    @NonNull public SecurityId getSecurityId()
     {
         return getSecurityId(resources, getData());
     }
 
-    public static SecurityId getSecurityId(
+    @NonNull public static SecurityId getSecurityId(
             @NonNull Resources resources,
             @NonNull Uri data)
     {
         return getSecurityId(resources, data.getPathSegments());
     }
 
-    public static SecurityId getSecurityId(
+    @NonNull public static SecurityId getSecurityId(
             @NonNull Resources resources,
             @NonNull List<String> pathSegments)
     {
@@ -100,7 +100,7 @@ public class SecurityPushBuyIntent extends THIntent
                 splitElements[resources.getInteger(R.integer.intent_security_push_buy_split_index_security_symbol_key)]);
     }
 
-    public static String[] getSplitElements(String elements)
+    @NonNull public static String[] getSplitElements(@NonNull String elements)
     {
         return elements.split("_");
     }
@@ -110,9 +110,12 @@ public class SecurityPushBuyIntent extends THIntent
         return BuySellStockFragment.class;
     }
 
-    @Override public void populate(Bundle bundle)
+    @NonNull @Override public Bundle getBundle()
     {
-        super.populate(bundle);
-        AbstractBuySellFragment.putSecurityId(bundle, getSecurityId());
+        return new AbstractBuySellFragment.Param(
+                null,
+                getSecurityId(),
+                null)
+                .getArgs();
     }
 }

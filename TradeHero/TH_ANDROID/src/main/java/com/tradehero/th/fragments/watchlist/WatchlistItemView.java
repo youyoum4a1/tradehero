@@ -491,9 +491,12 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
 
     private void openSecurityProfile()
     {
-        Bundle args = new Bundle();
-        BuySellStockFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
-        navigator.pushFragment(BuySellStockFragment.class, args);
+        navigator.pushFragment(
+                BuySellStockFragment.class,
+                new BuySellStockFragment.Param(
+                        null,
+                        watchlistPositionDTO.securityDTO.getSecurityId(),
+                        null).getArgs());
     }
 
     private void openSecurityGraph()

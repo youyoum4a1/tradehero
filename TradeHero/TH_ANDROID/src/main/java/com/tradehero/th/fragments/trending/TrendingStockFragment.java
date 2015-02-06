@@ -442,17 +442,13 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         analytics.fireEvent(new TrendingStockEvent(securityCompactDTO.getSecurityId()));
 
-        Bundle args = new Bundle();
-        BuySellStockFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-
-        if (ownedPortfolioId != null)
-        {
-            BuySellStockFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        }
-
-        navigator.get().pushFragment(BuySellStockFragment.class, args);
+        navigator.get().pushFragment(
+                BuySellStockFragment.class,
+                new BuySellStockFragment.Param(
+                        ownedPortfolioId,
+                        securityCompactDTO.getSecurityId(),
+                        null).getArgs());
     }
 
     @Override protected void populateArgumentForSearch(@NonNull Bundle args)

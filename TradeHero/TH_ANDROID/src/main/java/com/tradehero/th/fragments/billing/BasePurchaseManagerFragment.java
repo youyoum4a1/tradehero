@@ -37,22 +37,52 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         args.putBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
     }
 
-    public static OwnedPortfolioId getApplicablePortfolioId(@Nullable Bundle args)
+    @Nullable public static OwnedPortfolioId getApplicablePortfolioId(@Nullable Bundle args)
     {
-        if (args != null)
+        return Param.getApplicablePortfolioId(args);
+    }
+
+    public static class Param
+    {
+        @Nullable public final OwnedPortfolioId ownedPortfolioId;
+
+        public Param(@Nullable OwnedPortfolioId ownedPortfolioId)
         {
-            if (args.containsKey(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE))
+            this.ownedPortfolioId = ownedPortfolioId;
+        }
+
+        @NonNull public Bundle getArgs()
+        {
+            Bundle args = new Bundle();
+            populate(args);
+            return args;
+        }
+
+        protected void populate(@NonNull Bundle args)
+        {
+            if (ownedPortfolioId != null)
             {
-                return new OwnedPortfolioId(args.getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE));
+                args.putBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
             }
         }
-        return null;
+
+        @Nullable static OwnedPortfolioId getApplicablePortfolioId(@Nullable Bundle args)
+        {
+            if (args != null)
+            {
+                if (args.containsKey(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE))
+                {
+                    return new OwnedPortfolioId(args.getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE));
+                }
+            }
+            return null;
+        }
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
+        purchaseApplicableOwnedPortfolioId = Param.getApplicablePortfolioId(getArguments());
         currentUserPortfolioCompactListObservable = portfolioCompactListCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>())
                         .publish()
@@ -111,7 +141,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected void prepareApplicableOwnedPortolioId(@Nullable PortfolioCompactDTO defaultIfNotInArgs)
     {
         Bundle args = getArguments();
-        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId(args);
+        OwnedPortfolioId applicablePortfolioId = Param.getApplicablePortfolioId(args);
 
         if (applicablePortfolioId == null && defaultIfNotInArgs != null)
         {

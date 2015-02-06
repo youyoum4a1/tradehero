@@ -62,8 +62,10 @@ abstract public class CompetitionWebFragmentTHIntentPassedListener implements TH
         Bundle argsBundle = thIntent.getBundle();
         if (thIntent.getActionFragment().equals(BuySellStockFragment.class))
         {
-            BuySellStockFragment.putApplicablePortfolioId(argsBundle, getApplicablePortfolioId());
-            argsBundle.putBundle(BuySellStockFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, getProviderId().getArgs());
+            argsBundle = new BuySellStockFragment.Param(
+                    getApplicablePortfolioId(),
+                    thIntent.getSecurityId(),
+                    getProviderId()).getArgs();
         }
         getNavigator().pushFragment(thIntent.getActionFragment(), argsBundle, null);
         Timber.d("onIntentPassed %s", thIntent);

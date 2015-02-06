@@ -74,11 +74,14 @@ public class NewsViewLinear extends AbstractDiscussionCompactItemViewLinear<News
         }
     }
 
-    protected void pushBuySellFragment(SecurityId securityId)
+    protected void pushBuySellFragment(@NonNull SecurityId securityId)
     {
-        Bundle args = new Bundle();
-        BuySellStockFragment.putSecurityId(args, securityId);
-        getNavigator().pushFragment(BuySellStockFragment.class, args);
+        getNavigator().pushFragment(
+                BuySellStockFragment.class,
+                new BuySellStockFragment.Param(
+                        null,
+                        securityId,
+                        null).getArgs());
     }
 
     protected void pushNewDiscussion()

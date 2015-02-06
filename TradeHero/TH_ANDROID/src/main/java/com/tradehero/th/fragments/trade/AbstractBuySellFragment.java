@@ -44,7 +44,7 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
     private final static String BUNDLE_KEY_IS_BUY = AbstractBuySellFragment.class.getName() + ".isBuy";
     private final static String BUNDLE_KEY_QUANTITY_BUY = AbstractBuySellFragment.class.getName() + ".quantityBuy";
     private final static String BUNDLE_KEY_QUANTITY_SELL = AbstractBuySellFragment.class.getName() + ".quantitySell";
-    public final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".providerId";
+    private final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".providerId";
 
     private final static long MILLISECOND_QUOTE_REFRESH = 30000;
 
@@ -71,19 +71,50 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
 
     protected MenuItem marketCloseIcon;
 
-    public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
+    public static class Param extends BasePurchaseManagerFragment.Param
     {
-        args.putBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-    }
+        @NonNull public final SecurityId securityId;
+        @Nullable public final ProviderId providerId;
 
-    @Nullable public static SecurityId getSecurityId(@NonNull Bundle args)
-    {
-        Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
-        if (securityIdBundle == null)
+        public Param(
+                @Nullable OwnedPortfolioId ownedPortfolioId,
+                @NonNull SecurityId securityId,
+                @Nullable ProviderId providerId)
         {
-            return null;
+            super(ownedPortfolioId);
+            this.securityId = securityId;
+            this.providerId = providerId;
         }
-        return new SecurityId(securityIdBundle);
+
+        @Override protected void populate(@NonNull Bundle args)
+        {
+            super.populate(args);
+            args.putBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            if (providerId != null)
+            {
+                args.putBundle(BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
+            }
+        }
+
+        @Nullable static SecurityId getSecurityId(@NonNull Bundle args)
+        {
+            Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
+            if (securityIdBundle == null)
+            {
+                return null;
+            }
+            return new SecurityId(securityIdBundle);
+        }
+
+        @Nullable static ProviderId getProviderId(@NonNull Bundle args)
+        {
+            Bundle providerIdBundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID_BUNDLE);
+            if (providerIdBundle == null)
+            {
+                return null;
+            }
+            return new ProviderId(providerIdBundle);
+        }
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -91,7 +122,7 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
         super.onCreate(savedInstanceState);
         collectFromParameters(getArguments());
         collectFromParameters(savedInstanceState);
-        securityId = getSecurityId(getArguments());
+        securityId = Param.getSecurityId(getArguments());
         if (securityId == null)
         {
             thRouter.inject(this);
@@ -154,10 +185,10 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
                 linkWithSellQuantity(args.getInt(BUNDLE_KEY_QUANTITY_SELL));
             }
 
-            Bundle providerIdBundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID_BUNDLE);
-            if (providerIdBundle != null)
+            ProviderId collected = Param.getProviderId(args);
+            if (collected != null)
             {
-                providerId = new ProviderId(providerIdBundle);
+                providerId = collected;
             }
         }
     }
