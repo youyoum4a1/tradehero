@@ -33,8 +33,6 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 @Routable(
@@ -52,13 +50,6 @@ public class ProviderVideoListFragment extends CompetitionFragment
     private HelpVideoDTOList helpVideoDTOs;
     private ProviderVideoAdapter providerVideoAdapter;
     private int currentDisplayedChild;
-    @NonNull protected SubscriptionList subscriptions;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        subscriptions = new SubscriptionList();
-    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -92,7 +83,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
         }
 
         HelpVideoListKey key = new HelpVideoListKey(providerId);
-        subscriptions.add(AppObservable.bindFragment(this, helpVideoListCache.get(key))
+        onStopSubscriptions.add(AppObservable.bindFragment(this, helpVideoListCache.get(key))
                 .subscribe(createVideoListCacheObserver()));
     }
 
@@ -100,12 +91,6 @@ public class ProviderVideoListFragment extends CompetitionFragment
     {
         currentDisplayedChild = helpVideoListScreen.getDisplayedChildLayoutId();
         super.onPause();
-    }
-
-    @Override public void onStop()
-    {
-        subscriptions.unsubscribe();
-        super.onStop();
     }
 
     @Override public void onDestroyView()

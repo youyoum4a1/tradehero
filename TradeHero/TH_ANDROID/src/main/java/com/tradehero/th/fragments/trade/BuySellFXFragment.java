@@ -44,7 +44,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
-import rx.internal.util.SubscriptionList;
 
 @Routable("securityFx/:securityRawInfo")
 public class BuySellFXFragment extends BuySellFragment
@@ -68,7 +67,6 @@ public class BuySellFXFragment extends BuySellFragment
     @InjectView(R.id.tv_position_units) protected TextView tvPositionUnits;
     @InjectView(R.id.tv_position_money) protected TextView tvPositionMoney;
 
-    @NonNull private SubscriptionList subscriptionList;
     private int closeUnits;
     private QuoteDTO oldQuoteDTO;
 
@@ -80,12 +78,6 @@ public class BuySellFXFragment extends BuySellFragment
     private static int getCloseAttribute(@NonNull Bundle args)
     {
         return args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
-    }
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        subscriptionList = new SubscriptionList();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -126,18 +118,6 @@ public class BuySellFXFragment extends BuySellFragment
         mTimeSpanButtonSet.setActive(new ChartTimeSpan(ChartTimeSpan.MIN_1));
     }
 
-    @Override public void onStop()
-    {
-        subscriptionList.unsubscribe();
-        super.onStop();
-    }
-
-    @Override public void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        subscriptionList.unsubscribe();
-    }
-
     @Override public void onDestroyView()
     {
         super.onDestroyView();
@@ -169,7 +149,7 @@ public class BuySellFXFragment extends BuySellFragment
 
     private void fetchKChart(@NonNull FXChartGranularity granularity)
     {
-        subscriptionList.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXHistory(securityId, granularity)
                         .repeatWhen(observable -> observable.delay(MILLISECOND_FX_CANDLE_CHART_REFRESH, TimeUnit.MILLISECONDS)))

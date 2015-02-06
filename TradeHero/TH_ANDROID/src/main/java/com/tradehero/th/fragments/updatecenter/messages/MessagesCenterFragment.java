@@ -55,7 +55,6 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
-import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 @Routable("messages")
@@ -76,7 +75,6 @@ public class MessagesCenterFragment extends DashboardFragment
     private MessagesView messagesView;
     private SwipeListener swipeListener;
     @Nullable private MessageListAdapter messageListAdapter;
-    @NonNull private SubscriptionList listSubscriptions;
     private boolean hasMorePage = true;
     @Nullable private BroadcastReceiver broadcastReceiver;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
@@ -85,7 +83,6 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        listSubscriptions = new SubscriptionList();
         registerMessageReceiver();
         Timber.d("onCreate hasCode %d", this.hashCode());
     }
@@ -192,7 +189,6 @@ public class MessagesCenterFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        listSubscriptions.unsubscribe();
         SwipeListView swipeListView = messagesView.getListView();
         swipeListView.setSwipeListViewListener(null);
         swipeListView.setOnScrollListener(null);
@@ -338,7 +334,7 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         if (nextMoreRecentMessageListKey != null)
         {
-            listSubscriptions.add(
+            onStopSubscriptions.add(
                     AppObservable.bindFragment(
                             this,
                             messageListCache.get().get(nextMoreRecentMessageListKey))
@@ -358,7 +354,7 @@ public class MessagesCenterFragment extends DashboardFragment
         discussionListCache.get().invalidateAll();
         MessageListKey messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE);
         Timber.d("refreshContent %s", messageListKey);
-        listSubscriptions.add(
+        onStopSubscriptions.add(
                 AppObservable.bindFragment(
                         this,
                         messageListCache.get().get(messageListKey))
@@ -469,7 +465,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void removeMessageOnServer(@NonNull MessageHeaderDTO messageHeaderDTO)
     {
-        listSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 messageServiceWrapper.get().deleteMessageRx(
                         messageHeaderDTO.getDTOKey(),
@@ -621,7 +617,7 @@ public class MessagesCenterFragment extends DashboardFragment
     private void reportMessageAllRead()
     {
         Timber.d("reportMessageAllRead...");
-        listSubscriptions.add(
+        onStopSubscriptions.add(
                 AppObservable.bindFragment(
                         this,
                         messageServiceWrapper.get().readAllMessageRx(

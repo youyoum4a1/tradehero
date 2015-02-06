@@ -34,7 +34,6 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.functions.Actions;
-import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 public class AllRelationsFragment extends BasePurchaseManagerFragment
@@ -50,14 +49,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     private RelationsListItemAdapter mRelationsListItemAdapter;
     @InjectView(R.id.relations_list) ListView mRelationsListView;
-
-    @NonNull SubscriptionList subscriptions;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        subscriptions = new SubscriptionList();
-    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -89,7 +80,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     {
         super.onStart();
         downloadRelations();
-        subscriptions.add(mRelationsListItemAdapter.getFollowRequestObservable()
+        onStopSubscriptions.add(mRelationsListItemAdapter.getFollowRequestObservable()
                 .subscribe(
                         request -> handlePremiumFollowRequested(request.heroId),
                         Actions.empty()
@@ -100,12 +91,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     {
         AlertDialogUtil.dismissProgressDialog();
         super.onPause();
-    }
-
-    @Override public void onStop()
-    {
-        subscriptions.unsubscribe();
-        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -135,7 +120,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     {
         AlertDialogUtil
                 .showProgressDialog(getActivity(), getString(R.string.downloading_relations));
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 allowableRecipientPaginatedCache.get(new SearchAllowableRecipientListType(null, null, null)))
                 .subscribe(
@@ -179,7 +164,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     protected void handlePremiumFollowRequested(UserBaseKey userBaseKey)
     {
         //noinspection unchecked,RedundantCast
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.purchaseAndPremiumFollowAndClear(userBaseKey))
                 .subscribe(
@@ -190,7 +175,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     protected void forceUpdateLook(@NonNull final UserBaseKey userFollowed)
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userMessagingRelationshipCache.get(userFollowed))
                 .subscribe(new Observer<Pair<UserBaseKey, UserMessagingRelationshipDTO>>()

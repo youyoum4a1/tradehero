@@ -60,7 +60,6 @@ import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
-import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 @Routable("trending-securities")
@@ -75,7 +74,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
     @InjectView(R.id.trending_filter_selector_view) protected TrendingFilterSelectorView filterSelectorView;
     private DTOAdapterNew<ExchangeCompactSpinnerDTO> exchangeAdapter;
 
-    private SubscriptionList subscriptions;
     private UserProfileDTO userProfileDTO;
     private ProviderDTOList providerDTOs;
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs;
@@ -112,7 +110,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
     @Override public void onStart()
     {
         super.onStart();
-        subscriptions = new SubscriptionList();
         fetchFilter();
         fetchExchangeList();
         fetchUserProfile();
@@ -144,13 +141,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void onStop()
-    {
-        subscriptions.unsubscribe();
-        subscriptions = null;
-        super.onStop();
-    }
-
     @Override public void onDestroy()
     {
         exchangeAdapter = null;
@@ -179,7 +169,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchFilter()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 this.filterSelectorView.getObservableFilter())
                 .subscribe(
@@ -215,7 +205,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     private void fetchExchangeList()
     {
         ExchangeListType key = new ExchangeListType();
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 exchangeCompactListCache.get(key)
                         .map(new PairGetSecond<>()))
@@ -247,7 +237,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchUserProfile()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>()))
@@ -265,7 +255,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchProviderList()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 providerListCache.get(new ProviderListKey())
                         .map(new PairGetSecond<>()))
@@ -399,7 +389,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void handleSurveyItemOnClick()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>())
@@ -414,13 +404,13 @@ public class TrendingStockFragment extends TrendingBaseFragment
                             }
                         },
                         error -> THToast.show(new THException((Throwable) error))
-                        ));
+                ));
     }
 
     private void handleResetPortfolioItemOnClick()
     {
         //noinspection unchecked
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO))
                 .subscribe(
@@ -433,7 +423,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     protected void handleExtraCashItemOnClick()
     {
         //noinspection unchecked
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
                 .subscribe(

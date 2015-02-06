@@ -12,11 +12,13 @@ import com.tradehero.th.R;
 import com.tradehero.th.inject.HierarchyInjector;
 import rx.Observable;
 import rx.Subscription;
+import rx.internal.util.SubscriptionList;
 import rx.subjects.BehaviorSubject;
 
 public abstract class BaseDialogFragment extends DialogFragment
 {
     private BehaviorSubject<DialogInterface> dismissedSubject;
+    @NonNull protected SubscriptionList onStopSubscriptions;
 
     //<editor-fold desc="Constructors">
     public BaseDialogFragment()
@@ -39,10 +41,23 @@ public abstract class BaseDialogFragment extends DialogFragment
         return true;
     }
 
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        onStopSubscriptions = new SubscriptionList();
+    }
+
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
         HierarchyInjector.inject(this);
+    }
+
+    @Override public void onStop()
+    {
+        onStopSubscriptions.unsubscribe();
+        onStopSubscriptions = new SubscriptionList();
+        super.onStop();
     }
 
     @Override public void onDestroyView()

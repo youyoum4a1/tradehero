@@ -30,7 +30,6 @@ import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
-import rx.internal.util.SubscriptionList;
 
 public class ProviderSecurityListRxFragment
         extends SecurityListRxFragment
@@ -41,7 +40,6 @@ public class ProviderSecurityListRxFragment
     private static final String BUNDLE_PROVIDER_ID_KEY = ProviderSecurityListRxFragment.class.getName()+".providerId";
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
-    @NonNull protected SubscriptionList subscriptions;
     private THIntentPassedListener webViewTHIntentPassedListener;
     private BaseWebViewFragment webViewFragment;
 
@@ -59,7 +57,6 @@ public class ProviderSecurityListRxFragment
     {
         super.onCreate(savedInstanceState);
         this.providerId = getProviderId(getArguments());
-        subscriptions = new SubscriptionList();
         this.webViewTHIntentPassedListener = new ProviderSecurityListWebViewTHIntentPassedListener();
     }
 
@@ -124,12 +121,6 @@ public class ProviderSecurityListRxFragment
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void onStop()
-    {
-        subscriptions.unsubscribe();
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         DeviceUtil.dismissKeyboard(getActivity());
@@ -159,10 +150,10 @@ public class ProviderSecurityListRxFragment
 
     protected void fetchProviderDTO()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 providerCache.get(this.providerId)
-                .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         e -> THToast.show(getString(R.string.error_fetch_provider_info))));

@@ -67,7 +67,6 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Actions;
-import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 abstract public class AbstractTransactionDialogFragment extends BaseShareableDialogFragment
@@ -107,7 +106,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     protected ProgressDialog mTransactionDialog;
 
-    @NonNull protected final SubscriptionList subscriptions;
     protected Subscription buySellSubscription;
     protected SecurityId securityId;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
@@ -149,7 +147,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     protected AbstractTransactionDialogFragment()
     {
         super();
-        subscriptions = new SubscriptionList();
     }
 
     public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
@@ -248,12 +245,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         super.onDetach();
     }
 
-    @Override public void onStop()
-    {
-        subscriptions.unsubscribe();
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         mQuantityEditText.removeTextChangedListener(mQuantityTextWatcher);
@@ -286,7 +277,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void fetchSecurityCompact()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 securityCompactCache.get(getSecurityId()))
                 .take(1)
@@ -303,7 +294,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void fetchPortfolioCompact()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 portfolioCompactCache.get(getPortfolioId())
                         .map(new PairGetSecond<>()))
@@ -322,7 +313,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void fetchQuote()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 quoteServiceWrapper.getQuoteRx(securityId)
                         .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS)))
@@ -343,7 +334,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void fetchSecurityPositionDetail()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 securityPositionDetailCache.get()
                         .get(this.securityId)
@@ -365,7 +356,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     protected void fetchPortfolioCompactList()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 portfolioCompactListCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>()))
@@ -679,7 +670,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         DeviceUtil.dismissKeyboard(mCommentsEditText);
         //noinspection unchecked
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractor.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
                 .subscribe(
@@ -994,7 +985,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         if (mQuickPriceButtonSet != null)
         {
-            subscriptions.add(mQuickPriceButtonSet.getPriceSelectedObservable()
+            onStopSubscriptions.add(mQuickPriceButtonSet.getPriceSelectedObservable()
                     .subscribe(
                             this::handleQuickPriceSelected,
                             error -> Timber.e(error, "")));

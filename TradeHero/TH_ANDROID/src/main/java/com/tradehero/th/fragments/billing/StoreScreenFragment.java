@@ -37,9 +37,8 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
-import rx.Subscription;
 import rx.android.app.AppObservable;
-import rx.internal.util.SubscriptionList;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 @Routable({
@@ -58,15 +57,11 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
     @InjectView(R.id.store_option_list) protected ListView listView;
-    private Subscription testAvailableSubscription;
     private StoreItemAdapter storeItemAdapter;
-    private Subscription storeItemSubscription;
-    @NonNull protected SubscriptionList subscriptions;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        subscriptions = new SubscriptionList();
         thRouter.inject(this);
         storeItemAdapter = new StoreItemAdapter(getActivity());
     }
@@ -98,8 +93,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Store));
 
         storeItemAdapter.clear();
-        unsubscribe(storeItemSubscription);
-        storeItemSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 StoreItemFactory.createAll(systemStatusCache, StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS)
                         .take(1))
@@ -109,7 +103,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                             storeItemAdapter.addAll(storeItemDTOs);
                             storeItemAdapter.notifyDataSetChanged();
                         },
-                        e -> THToast.show(new THException(e)));
+                        e -> THToast.show(new THException(e))));
 
         cancelOthersAndShowBillingAvailable();
     }
@@ -118,16 +112,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         setActionBarSubtitle(null);
         super.onDestroyOptionsMenu();
-    }
-
-    @Override public void onStop()
-    {
-        subscriptions.unsubscribe();
-        unsubscribe(storeItemSubscription);
-        storeItemSubscription = null;
-        unsubscribe(testAvailableSubscription);
-        testAvailableSubscription = null;
-        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -150,17 +134,14 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
             return;
         }
 
-        unsubscribe(testAvailableSubscription);
         //noinspection unchecked
-        testAvailableSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.testAndClear())
                 .finallyDo(() -> alreadyNotifiedNeedCreateAccount = true)
                 .subscribe(
-                        pair -> {
-                        },
-                        error -> {
-                        });
+                        Actions.empty(),
+                        Actions.empty()));
     }
 
     @Override protected void handleReceivedPortfolioCompactList(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
@@ -181,7 +162,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
             else
             {
                 //noinspection unchecked
-                subscriptions.add(AppObservable.bindFragment(
+                onStopSubscriptions.add(AppObservable.bindFragment(
                         this,
                         userInteractorRx.purchase(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]))
                         .subscribe(

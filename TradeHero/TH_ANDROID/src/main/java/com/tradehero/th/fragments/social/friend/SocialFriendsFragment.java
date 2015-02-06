@@ -42,9 +42,7 @@ import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.app.AppObservable;
-import rx.internal.util.SubscriptionList;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
@@ -66,17 +64,14 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     protected SocialFriendHandler socialFriendHandler;
-    @NonNull protected SubscriptionList requestSubscriptions;
 
     private FriendsListKey friendsListKey;
     @Nullable protected UserFriendsDTOList friendDTOList;
     protected List<UserFriendsDTO> followableFriends;
     protected List<UserFriendsDTO> invitableFriends;
     protected List<SocialFriendListItemDTO> listedSocialItems;
-    @Nullable private Subscription friendsListCacheSubscription;
     protected SocialFriendsAdapter socialFriendsListAdapter;
     protected String filterText = "";
-    @Nullable private Subscription filteringSubscription;
 
     BehaviorSubject<Pair<String, List<SocialFriendListItemDTO>>> filterSubject;
 
@@ -86,7 +81,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         friendsListKey = new FriendsListKey(currentUserId.toUserBaseKey(), getSocialNetwork());
         socialFriendsListAdapter = createSocialFriendsAdapter();
         socialFriendHandler = createFriendHandler();
-        requestSubscriptions = new SubscriptionList();
     }
 
     @Override
@@ -112,7 +106,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
             filterSubject = BehaviorSubject.create();
         }
         filterTextView.setText(filterText);
-        listenToFilterSubject();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -125,6 +118,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         super.onStart();
         fetchAllFriends();
+        listenToFilterSubject();
     }
 
     @Override public void onResume()
@@ -142,18 +136,8 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         DeviceUtil.dismissKeyboard(getActivity());
     }
 
-    @Override public void onStop()
-    {
-        unsubscribe(friendsListCacheSubscription);
-        friendsListCacheSubscription = null;
-        requestSubscriptions.unsubscribe();
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
-        unsubscribe(filteringSubscription);
-        filteringSubscription = null;
         listView.setOnScrollListener(null);
         filterSubject = null;
         super.onDestroyView();
@@ -185,7 +169,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     protected void listenToFilterSubject()
     {
-        filteringSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 filterSubject
                         .doOnNext(pair -> {
@@ -196,7 +180,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
                 .doOnNext(list -> displayContentView())
                 .subscribe(
                         socialFriendsListAdapter::setItemsToShow,
-                        e -> Timber.e(e, "error when filtering"));
+                        e -> Timber.e(e, "error when filtering")));
     }
 
     @NonNull protected Observable<List<SocialFriendListItemDTO>> getFilteredObservable(
@@ -227,13 +211,12 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     protected void fetchAllFriends()
     {
-        unsubscribe(friendsListCacheSubscription);
-        friendsListCacheSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 getFetchAllFriendsObservable())
                 .subscribe(
                         this::linkWith,
-                        this::handleFriendListError);
+                        this::handleFriendListError));
     }
 
     @NonNull protected Observable<UserFriendsDTOList> getFetchAllFriendsObservable()
@@ -338,7 +321,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     protected void handleFollowUsers(@NonNull List<UserFriendsDTO> usersToFollow)
     {
         createFriendHandler();
-        requestSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 socialFriendHandler.followFriends(usersToFollow))
                 .subscribe(new FollowFriendObserver(usersToFollow)));
@@ -449,7 +432,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     protected void handleInviteUsers(@NonNull List<UserFriendsDTO> usersToInvite)
     {
         createFriendHandler();
-        requestSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite))
                 .subscribe(createInviteObserver(usersToInvite)));

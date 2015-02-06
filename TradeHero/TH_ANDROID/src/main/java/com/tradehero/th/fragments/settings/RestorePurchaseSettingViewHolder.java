@@ -16,14 +16,12 @@ import rx.internal.util.SubscriptionList;
 public class RestorePurchaseSettingViewHolder extends OneSettingViewHolder
 {
     @NonNull protected final THBillingInteractorRx billingInteractorRx;
-    @NonNull protected SubscriptionList subscriptions;
 
     //<editor-fold desc="Constructors">
     @Inject public RestorePurchaseSettingViewHolder(
             @NonNull THBillingInteractorRx billingInteractorRx)
     {
         this.billingInteractorRx = billingInteractorRx;
-        this.subscriptions = new SubscriptionList();
     }
     //</editor-fold>
 
@@ -40,12 +38,6 @@ public class RestorePurchaseSettingViewHolder extends OneSettingViewHolder
                 container.removePreference(clickablePref);
             }
         }
-    }
-
-    @Override public void destroyViews()
-    {
-        subscriptions.unsubscribe();
-        super.destroyViews();
     }
 
     @Override protected int getStringKeyResId()

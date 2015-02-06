@@ -100,7 +100,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
         List<SocialNetworkEnum> shareList = getEnabledSharePreferences();
         if (shareList.isEmpty())
         {
-            subscriptions.add(SocialAlertDialogRxUtil.popSelectOneSocialNetwork(getActivity())
+            onStopSubscriptions.add(SocialAlertDialogRxUtil.popSelectOneSocialNetwork(getActivity())
                     .subscribe(Actions.empty(), Actions.empty()));
         }
         else if (providerDTO != null)
@@ -150,7 +150,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     private void shareToWeChat()
     {
         WeChatDTO weChatDTO = WeChatDTOFactory.createFrom(getActivity(), competitionPreSeasonDTO, providerDTO);
-        subscriptions.add(socialSharerLazy.get().share(weChatDTO)
+        onStopSubscriptions.add(socialSharerLazy.get().share(weChatDTO)
                 .subscribe(Actions.empty(), Actions.empty()));
     }
 

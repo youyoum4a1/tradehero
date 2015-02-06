@@ -73,13 +73,11 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Actions;
 import rx.functions.Func1;
-import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId")
@@ -115,14 +113,10 @@ public class PositionListFragment
 
     private PortfolioHeaderView portfolioHeaderView;
     @NonNull protected GetPositionsDTOKey getPositionsDTOKey;
-    @Nullable protected Subscription portfolioSubscription;
     protected PortfolioDTO portfolioDTO;
-    @Nullable protected Subscription getPositionsSubscription;
     protected GetPositionsDTO getPositionsDTO;
     protected UserBaseKey shownUser;
-    @Nullable protected Subscription userProfileSubscription;
     @Nullable protected UserProfileDTO userProfileDTO;
-    @NonNull protected SubscriptionList subscriptions;
 
     protected PositionItemAdapter positionItemAdapter;
 
@@ -153,7 +147,6 @@ public class PositionListFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        subscriptions = new SubscriptionList();
         thRouter.inject(this);
         Bundle args = getArguments();
         if (args.containsKey(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE))
@@ -203,7 +196,7 @@ public class PositionListFragment
         }
         else if (view instanceof PositionLockedView && userProfileDTO != null)
         {
-            subscriptions.add(showFollowDialog(userProfileDTO)
+            onStopSubscriptions.add(showFollowDialog(userProfileDTO)
                     .subscribe(
                             Actions.empty(), // TODO ?
                             e -> {
@@ -276,19 +269,6 @@ public class PositionListFragment
         super.onPause();
     }
 
-    @Override public void onStop()
-    {
-        subscriptions.unsubscribe();
-        subscriptions = new SubscriptionList();
-        unsubscribe(portfolioSubscription);
-        portfolioSubscription = null;
-        unsubscribe(userProfileSubscription);
-        userProfileSubscription = null;
-        unsubscribe(getPositionsSubscription);
-        getPositionsSubscription = null;
-        super.onStop();
-    }
-
     @Override public void onDestroyOptionsMenu()
     {
         setActionBarSubtitle(null);
@@ -343,7 +323,7 @@ public class PositionListFragment
     {
         if (portfolioHeaderView != null)
         {
-            subscriptions.add(portfolioHeaderView.getUserActionObservable()
+            onStopSubscriptions.add(portfolioHeaderView.getUserActionObservable()
                     .flatMap(this::handleHeaderUserAction)
                     .subscribe(
                             Actions.empty(), // TODO ?
@@ -440,15 +420,12 @@ public class PositionListFragment
 
     protected void fetchUserProfile()
     {
-        if (userProfileSubscription == null)
-        {
-            userProfileSubscription = AppObservable.bindFragment(
-                    this,
-                    userProfileCache.get(shownUser))
-                    .subscribe(
-                            pair -> linkWith(pair.second),
-                            this::handleUserProfileError);
-        }
+        onStopSubscriptions.add(AppObservable.bindFragment(
+                this,
+                userProfileCache.get(shownUser))
+                .subscribe(
+                        pair -> linkWith(pair.second),
+                        this::handleUserProfileError));
     }
 
     public void linkWith(UserProfileDTO userProfileDTO)
@@ -472,16 +449,13 @@ public class PositionListFragment
     {
         if (getPositionsDTOKey instanceof OwnedPortfolioId)
         {
-            if (portfolioSubscription == null)
-            {
-                portfolioSubscription = AppObservable.bindFragment(
-                        this,
-                        portfolioCache.get(((OwnedPortfolioId) getPositionsDTOKey)))
-                        .subscribe(
-                                pair -> linkWith(pair.second),
-                                error -> THToast.show(R.string.error_fetch_portfolio_info)
-                        );
-            }
+            onStopSubscriptions.add(AppObservable.bindFragment(
+                    this,
+                    portfolioCache.get(((OwnedPortfolioId) getPositionsDTOKey)))
+                    .subscribe(
+                            pair -> linkWith(pair.second),
+                            error -> THToast.show(R.string.error_fetch_portfolio_info)
+                    ));
         }
         // We do not care for now about those that are loaded with LeaderboardMarkUserId
     }
@@ -561,14 +535,14 @@ public class PositionListFragment
 
     protected void fetchSimplePage()
     {
-        if (getPositionsDTOKey.isValid() && getPositionsSubscription == null)
+        if (getPositionsDTOKey.isValid())
         {
-            getPositionsSubscription = AppObservable.bindFragment(
+            onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
                     getPositionsCache.get(getPositionsDTOKey))
                     .subscribe(
                             pair -> this.linkWith(pair.second),
-                            this::handleGetPositionsError);
+                            this::handleGetPositionsError));
         }
     }
 
@@ -586,9 +560,11 @@ public class PositionListFragment
     public void linkWith(GetPositionsDTO getPositionsDTO)
     {
         this.getPositionsDTO = getPositionsDTO;
+        positionItemAdapter.setNotifyOnChange(false);
         positionItemAdapter.clear();
         positionItemAdapter.addAll(getPositionsDTO.positions);
         positionItemAdapter.notifyDataSetChanged();
+        positionItemAdapter.setNotifyOnChange(true);
         swipeToRefreshLayout.setRefreshing(false);
         listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
         positionListView.smoothScrollToPosition(0);

@@ -326,7 +326,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             {
                 shareTos.remove(SocialNetworkEnum.WECHAT);
                 WeChatDTO weChatDTO = WeChatDTOFactory.createFrom(getActivity(), userAchievementDTOCopy);
-                subscriptions.add(socialSharerLazy.get().share(weChatDTO)
+                onStopSubscriptions.add(socialSharerLazy.get().share(weChatDTO)
                         .subscribe(
                                 new Action1<SocialShareResult>()
                                 {
@@ -526,7 +526,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         }
         else
         {
-            subscriptions.add(SocialAlertDialogRxUtil.popSelectOneSocialNetwork(getActivity())
+            onStopSubscriptions.add(SocialAlertDialogRxUtil.popSelectOneSocialNetwork(getActivity())
                     .subscribe(Actions.empty(), Actions.empty()));
         }
     }

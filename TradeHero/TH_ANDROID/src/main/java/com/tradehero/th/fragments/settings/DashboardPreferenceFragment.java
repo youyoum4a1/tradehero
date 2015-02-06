@@ -1,8 +1,8 @@
 package com.tradehero.th.fragments.settings;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.preference.PreferenceFragment;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,10 +11,9 @@ import com.special.residemenu.ResideMenu;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-
-import javax.inject.Inject;
-
 import dagger.Lazy;
+import javax.inject.Inject;
+import rx.internal.util.SubscriptionList;
 
 public class DashboardPreferenceFragment extends PreferenceFragment
 {
@@ -22,12 +21,14 @@ public class DashboardPreferenceFragment extends PreferenceFragment
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject @BottomTabsQuickReturnListViewListener protected Lazy<AbsListView.OnScrollListener> dashboardBottomTabsScrollListener;
     private ActionBarOwnerMixin actionBarOwnerMixin;
+    @NonNull protected SubscriptionList onStopSubscriptions;
 
     @Override public void onCreate(Bundle paramBundle)
     {
         super.onCreate(paramBundle);
 
         actionBarOwnerMixin = ActionBarOwnerMixin.of(this);
+        this.onStopSubscriptions = new SubscriptionList();
     }
 
     @Override public void onDestroy()
@@ -60,6 +61,13 @@ public class DashboardPreferenceFragment extends PreferenceFragment
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override public void onStop()
+    {
+        this.onStopSubscriptions.unsubscribe();
+        this.onStopSubscriptions = new SubscriptionList();
+        super.onStop();
     }
 
     // Should inject navigator instead of using this method

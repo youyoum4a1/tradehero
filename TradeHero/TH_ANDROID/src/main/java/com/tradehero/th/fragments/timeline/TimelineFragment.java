@@ -69,11 +69,9 @@ import javax.inject.Provider;
 import retrofit.RetrofitError;
 import rx.Observable;
 import rx.Observer;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Actions;
-import rx.internal.util.SubscriptionList;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
@@ -118,17 +116,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @InjectRoute UserBaseKey shownUserBaseKey;
 
-    @Nullable private Subscription followerSummaryCacheSubscription;
-    @Nullable private Subscription userProfileCacheSubscription;
-    @Nullable private Subscription portfolioSubscription;
-    @Nullable protected Subscription messageThreadHeaderFetchSubscription;
-    @NonNull protected SubscriptionList subscriptions;
-
     protected MessageHeaderDTO messageThreadHeaderDTO;
     @Nullable protected UserProfileDTO shownProfile;
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
     private MainTimelineAdapter mainTimelineAdapter;
-    @Nullable private Subscription freeFollowSubscription;
     private UserProfileView userProfileView;
     private View loadingView;
     protected ChoiceFollowUserAssistantWithDialog choiceFollowUserAssistantWithDialog;
@@ -145,7 +136,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        subscriptions = new SubscriptionList();
         shownUserBaseKey = getUserBaseKey(getArguments());
         if (shownUserBaseKey == null)
         {
@@ -194,7 +184,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         timelineListView.setAdapter(mainTimelineAdapter);
         displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
-        fetchPortfolioList();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -242,12 +231,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
         fetchUserProfile();
         fetchMessageThreadHeader();
+        fetchPortfolioList();
 
-        if (followerSummaryCacheSubscription == null)
-        {
-            followerSummaryCacheSubscription = AppObservable.bindFragment(this, followerSummaryCache.get(currentUserId.toUserBaseKey()))
-                    .subscribe(new FollowerSummaryObserver());
-        }
+        onStopSubscriptions.add(AppObservable.bindFragment(this, followerSummaryCache.get(currentUserId.toUserBaseKey()))
+                .subscribe(new FollowerSummaryObserver()));
     }
 
     @Override public void onResume()
@@ -326,25 +313,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         super.onPause();
     }
 
-    @Override public void onStop()
-    {
-        unsubscribe(freeFollowSubscription);
-        freeFollowSubscription = null;
-        unsubscribe(messageThreadHeaderFetchSubscription);
-        messageThreadHeaderFetchSubscription = null;
-
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
-        unsubscribe(followerSummaryCacheSubscription);
-        followerSummaryCacheSubscription = null;
-        unsubscribe(userProfileCacheSubscription);
-        userProfileCacheSubscription = null;
-        unsubscribe(portfolioSubscription);
-        portfolioSubscription = null;
-        subscriptions.unsubscribe();
         displayablePortfolioFetchAssistant = null;
 
         if (userProfileView != null)
@@ -361,44 +331,39 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onDestroy()
     {
         mainTimelineAdapter = null;
-        messageThreadHeaderFetchSubscription = null;
         super.onDestroy();
     }
 
     protected void fetchMessageThreadHeader()
     {
-        unsubscribe(messageThreadHeaderFetchSubscription);
-        messageThreadHeaderFetchSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 messageThreadHeaderCache.get(shownUserBaseKey))
-                .subscribe(new TimelineMessageThreadHeaderCacheObserver());
+                .subscribe(new TimelineMessageThreadHeaderCacheObserver()));
     }
 
     //<editor-fold desc="Display methods">
     private void fetchPortfolioList()
     {
-        if (portfolioSubscription == null)
-        {
-            portfolioSubscription = AppObservable.bindFragment(this, displayablePortfolioFetchAssistant.get(shownUserBaseKey))
-                    .subscribe(new Observer<DisplayablePortfolioDTOList>()
+        onStopSubscriptions.add(AppObservable.bindFragment(this, displayablePortfolioFetchAssistant.get(shownUserBaseKey))
+                .subscribe(new Observer<DisplayablePortfolioDTOList>()
+                {
+                    @Override public void onCompleted()
                     {
-                        @Override public void onCompleted()
-                        {
-                            Timber.d("completed");
-                        }
+                        Timber.d("completed");
+                    }
 
-                        @Override public void onError(Throwable e)
-                        {
-                            Timber.e(e, "error");
-                        }
+                    @Override public void onError(Throwable e)
+                    {
+                        Timber.e(e, "error");
+                    }
 
-                        @Override public void onNext(DisplayablePortfolioDTOList displayablePortfolioDTOs)
-                        {
-                            onLoadFinished();
-                            displayPortfolios(displayablePortfolioDTOs);
-                        }
-                    });
-        }
+                    @Override public void onNext(DisplayablePortfolioDTOList displayablePortfolioDTOs)
+                    {
+                        onLoadFinished();
+                        displayPortfolios(displayablePortfolioDTOs);
+                    }
+                }));
     }
 
     protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -455,11 +420,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void fetchUserProfile()
     {
-        if (userProfileCacheSubscription == null)
-        {
-            userProfileCacheSubscription = AppObservable.bindFragment(this, userProfileCache.get().get(shownUserBaseKey))
-                    .subscribe(new TimelineFragmentUserProfileCacheObserver());
-        }
+        onStopSubscriptions.add(AppObservable.bindFragment(this, userProfileCache.get().get(shownUserBaseKey))
+                .subscribe(new TimelineFragmentUserProfileCacheObserver()));
     }
 
     /** item of Portfolio tab is clicked */
@@ -604,7 +566,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             if (!mIsHero && (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER
                     || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG))
             {
-                subscriptions.add(HeroAlertDialogRxUtil.showFollowDialog(
+                onStopSubscriptions.add(HeroAlertDialogRxUtil.showFollowDialog(
                         getActivity(),
                         shownProfile,
                         UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
@@ -643,7 +605,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         else
         {
-            subscriptions.add(
+            onStopSubscriptions.add(
                     new ChoiceFollowUserAssistantWithDialog(
                             getActivity(),
                             shownProfile,
