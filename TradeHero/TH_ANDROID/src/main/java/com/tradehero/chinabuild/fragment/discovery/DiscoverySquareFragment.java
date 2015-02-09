@@ -149,6 +149,7 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
     public void onClickBanner()
     {
         dismissTopBanner();
+        stopTimer();
         SHOW_ADVERTISEMENT = false;
     }
 
