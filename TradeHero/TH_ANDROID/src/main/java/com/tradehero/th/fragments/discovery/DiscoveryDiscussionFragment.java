@@ -73,7 +73,6 @@ public class DiscoveryDiscussionFragment extends Fragment
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         discoveryDiscussionAdapter = new ArrayDTOAdapter<>(getActivity(), R.layout.timeline_item_view);
-//        timelineSubscriptions = new CompositeSubscription();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -99,7 +98,13 @@ public class DiscoveryDiscussionFragment extends Fragment
         if (item.getItemId() == R.id.discussion_edit_post)
         {
             DiscussionEditPostFragment discussionEditPostFragment = navigator.get().pushFragment(DiscussionEditPostFragment.class);
-            discussionEditPostFragment.setCommentPostedListener(this::refresh);
+            discussionEditPostFragment.setCommentPostedListener(new DiscussionEditPostFragment.DiscussionPostedListener()
+            {
+                @Override public void onDiscussionPosted()
+                {
+                    DiscoveryDiscussionFragment.this.refresh();
+                }
+            });
             return true;
         }
         return super.onOptionsItemSelected(item);
