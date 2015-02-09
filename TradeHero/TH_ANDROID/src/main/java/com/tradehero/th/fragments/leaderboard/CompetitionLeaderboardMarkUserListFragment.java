@@ -31,7 +31,7 @@ import javax.inject.Inject;
 import rx.android.app.AppObservable;
 import timber.log.Timber;
 
-abstract public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
+public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
 {
     private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".providerId";
     private static final String BUNDLE_KEY_COMPETITION_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".competitionId";
