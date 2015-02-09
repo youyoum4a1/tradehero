@@ -28,7 +28,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected Integer requestCode;
 
     @Inject protected CurrentUserId currentUserId;
-//    @Inject protected THBillingInteractorRx userInteractorRx;
     @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
 
     protected Observable<PortfolioCompactDTOList> currentUserPortfolioCompactListObservable;
