@@ -13,7 +13,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.BasePagedListRxFragment;
@@ -180,11 +179,6 @@ abstract public class BaseLeaderboardPagedListRxFragment<
     {
         Bundle bundle = new Bundle();
         HeroManagerFragment.putFollowerId(bundle, currentUserId.toUserBaseKey());
-//        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
-//        if (applicablePortfolio != null)
-//        {
-//            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
-//        }
         navigator.get().pushFragment(HeroManagerFragment.class, bundle);
     }
 
@@ -192,11 +186,6 @@ abstract public class BaseLeaderboardPagedListRxFragment<
     {
         Bundle bundle = new Bundle();
         FollowerManagerFragment.putHeroId(bundle, currentUserId.toUserBaseKey());
-        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
-        if (applicablePortfolio != null)
-        {
-            //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
-        }
         navigator.get().pushFragment(FollowerManagerFragment.class, bundle);
     }
 
