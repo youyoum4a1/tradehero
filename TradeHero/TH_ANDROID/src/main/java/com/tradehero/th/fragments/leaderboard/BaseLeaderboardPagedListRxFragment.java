@@ -180,11 +180,11 @@ abstract public class BaseLeaderboardPagedListRxFragment<
     {
         Bundle bundle = new Bundle();
         HeroManagerFragment.putFollowerId(bundle, currentUserId.toUserBaseKey());
-        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
-        if (applicablePortfolio != null)
-        {
-            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
-        }
+//        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
+//        if (applicablePortfolio != null)
+//        {
+//            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
+//        }
         navigator.get().pushFragment(HeroManagerFragment.class, bundle);
     }
 

@@ -514,8 +514,9 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
                 this,
                 new ChoiceFollowUserAssistantWithDialog(
                         getActivity(),
-                        userBaseDTO,
-                        getApplicablePortfolioId()).launchChoiceRx())
+                        userBaseDTO
+//                        ,getApplicablePortfolioId()
+                ).launchChoiceRx())
                 .subscribe(
                         pair -> {
                             setCurrentUserProfileDTO(pair.second);

@@ -209,8 +209,9 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
                 this,
                 new ChoiceFollowUserAssistantWithDialog(
                         getActivity(),
-                        userBaseDTO,
-                        getApplicablePortfolioId()).launchChoiceRx())
+                        userBaseDTO
+//                        getApplicablePortfolioId()
+                ).launchChoiceRx())
                 .subscribe(
                         pair -> {
                             setCurrentUserProfileDTO(pair.second);

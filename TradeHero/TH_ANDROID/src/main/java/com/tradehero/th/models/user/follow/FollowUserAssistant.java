@@ -20,17 +20,18 @@ public class FollowUserAssistant extends SimpleFollowUserAssistant
     @Inject protected UserProfileCacheRx userProfileCache;
     @Inject protected THBillingInteractorRx billingInteractorRx;
 
-    @NonNull protected final OwnedPortfolioId applicablePortfolioId;
+//    @NonNull protected final OwnedPortfolioId applicablePortfolioId;
     @Nullable protected Integer requestCode;
 
     //<editor-fold desc="Constructors">
     public FollowUserAssistant(
             @NonNull Context context,
-            @NonNull UserBaseKey heroId,
-            @NonNull OwnedPortfolioId applicablePortfolioId)
+            @NonNull UserBaseKey heroId
+//            @NonNull OwnedPortfolioId applicablePortfolioId
+    )
     {
         super(context, heroId);
-        this.applicablePortfolioId = applicablePortfolioId;
+//        this.applicablePortfolioId = applicablePortfolioId;
     }
     //</editor-fold>
 

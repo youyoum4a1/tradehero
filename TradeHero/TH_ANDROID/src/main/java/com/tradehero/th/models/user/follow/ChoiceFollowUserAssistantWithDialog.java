@@ -28,13 +28,14 @@ public class ChoiceFollowUserAssistantWithDialog
     //<editor-fold desc="Constructors">
     public ChoiceFollowUserAssistantWithDialog(
             @NonNull Activity activity,
-            @NonNull UserBaseDTO heroDTO,
-            @NonNull OwnedPortfolioId applicablePortfolioId)
+            @NonNull UserBaseDTO heroDTO
+//            @NonNull OwnedPortfolioId applicablePortfolioId
+    )
     {
         super();
         this.activity = activity;
         this.heroBaseInfo = heroDTO;
-        this.followUserAssistant = new FollowUserAssistant(activity, heroDTO.getBaseKey(), applicablePortfolioId);
+        this.followUserAssistant = new FollowUserAssistant(activity, heroDTO.getBaseKey());
         HierarchyInjector.inject(activity, this);
     }
     //</editor-fold>

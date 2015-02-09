@@ -33,6 +33,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -40,6 +41,7 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.achievement.AchievementListFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
@@ -57,6 +59,7 @@ import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -78,7 +81,7 @@ import rx.internal.util.SubscriptionList;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
-public class TimelineFragment extends BasePurchaseManagerFragment
+public class TimelineFragment extends DashboardFragment
         implements UserProfileCompactViewHolder.OnProfileClickedListener
 {
     private static final String USER_BASE_KEY_BUNDLE_KEY = TimelineFragment.class.getName() + ".userBaseKey";
@@ -143,6 +146,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private int mFollowType;//0 not follow, 1 free follow, 2 premium follow
     private boolean mIsHero = false;//whether the showUser follow the user
     @Inject protected THBillingInteractorRx userInteractorRx;
+    @Inject CurrentUserId currentUserId;
+    @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
 
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -647,10 +652,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         else
         {
             subscriptions.add(
-                    new ChoiceFollowUserAssistantWithDialog(
+                    new ChoiceFollowUserAssistantWithDialog
+                            (
                             getActivity(),
-                            shownProfile,
-                            getApplicablePortfolioId()).launchChoiceRx()
+                            shownProfile
+//                            getApplicablePortfolioId()
+                            )
+                            .launchChoiceRx()
                             .finallyDo(AlertDialogUtil::dismissProgressDialog)
                             .subscribe(
                                     pair -> {
@@ -699,10 +707,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
-            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-            if (applicablePortfolioId != null)
-            {
-                UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
+//            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+//            if (applicablePortfolioId != null)
+//            {
+//                UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
+                UserBaseKey purchaserKey = currentUserId.toUserBaseKey();
                 if (purchaserKey != null)
                 {
                     UserProfileDTO purchaserProfile = userProfileCache.get().getCachedValue(purchaserKey);
@@ -711,11 +720,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                         return purchaserProfile.getFollowType(shownUserBaseKey);
                     }
                 }
-            }
-            else
-            {
-                return userProfileDTO.getFollowType(shownUserBaseKey);
-            }
+//            }
+//            else
+//            {
+//                return userProfileDTO.getFollowType(shownUserBaseKey);
+//            }
         }
         return 0;
     }
@@ -758,11 +767,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         HeroManagerFragment.putFollowerId(
                 bundle,
                 mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
-        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
-        if (applicablePortfolio != null)
-        {
-            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
-        }
+//        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
+//        if (applicablePortfolio != null)
+//        {
+//            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
+//        }
         navigator.get().pushFragment(HeroManagerFragment.class, bundle);
     }
 
@@ -772,11 +781,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         FollowerManagerFragment.putHeroId(
                 bundle,
                 mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
-        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
-        if (applicablePortfolio != null)
-        {
-            //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
-        }
+//        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
+//        if (applicablePortfolio != null)
+//        {
+//            //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
+//        }
         navigator.get().pushFragment(FollowerManagerFragment.class, bundle);
     }
 
