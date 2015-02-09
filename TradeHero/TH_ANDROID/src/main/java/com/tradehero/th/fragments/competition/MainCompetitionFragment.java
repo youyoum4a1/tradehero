@@ -541,11 +541,6 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         Bundle args = new Bundle();
         ProviderVideoListFragment.putProviderId(args, providerId);
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if (ownedPortfolioId != null)
-        {
-            ProviderVideoListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        }
         navigator.get().pushFragment(ProviderVideoListFragment.class, args);
     }
 

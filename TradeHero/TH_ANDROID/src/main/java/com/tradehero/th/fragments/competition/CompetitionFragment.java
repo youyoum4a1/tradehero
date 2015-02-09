@@ -19,6 +19,7 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import timber.log.Timber;
 
+//TODO this class only load providerDTO, should be deleted
 abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 {
     private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionFragment.class.getName() + ".providerId";

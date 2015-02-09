@@ -33,7 +33,6 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
