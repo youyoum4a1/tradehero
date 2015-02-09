@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.updatecenter.messages;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,10 +16,12 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.graphics.ForUserPhoto;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 public class MessageItemView extends LinearLayout
         implements DTOView<MessageHeaderDTO>
@@ -35,17 +38,19 @@ public class MessageItemView extends LinearLayout
     @InjectView(R.id.message_unread_flag) View mUnreadFlag;
 
     private MessageHeaderDTO messageHeaderDTO;
-    private OnElementClickedListener elementClickedListener;
+    @NonNull private BehaviorSubject<UserAction> userActionBehavior;
 
     //<editor-fold desc="Constructors">
     public MessageItemView(Context context)
     {
         super(context);
+        userActionBehavior = BehaviorSubject.create();
     }
 
     public MessageItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        userActionBehavior = BehaviorSubject.create();
     }
     //</editor-fold>
 
@@ -64,10 +69,14 @@ public class MessageItemView extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        setElementClickedListener(null);
         resetMessageIcon();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
+    }
+
+    @NonNull public Observable<UserAction> getUserActionObservable()
+    {
+        return userActionBehavior.asObservable();
     }
 
     @Override public void display(MessageHeaderDTO dto)
@@ -122,30 +131,32 @@ public class MessageItemView extends LinearLayout
         }
     }
 
-    public void setElementClickedListener(OnElementClickedListener elementClickedListener)
-    {
-        this.elementClickedListener = elementClickedListener;
-    }
-
     @SuppressWarnings("UnusedDeclaration")
     @OnClick({R.id.message_item_icon, R.id.message_item_title})
     protected void handleUserClicked()
     {
-        notifyUserClicked();
+        userActionBehavior.onNext(new UserActionUserClicked(messageHeaderDTO));
     }
 
-    protected void notifyUserClicked()
+    abstract public static class UserAction
     {
-        OnElementClickedListener userClickedListenerCopy = elementClickedListener;
-        if (userClickedListenerCopy != null)
+        @NonNull public MessageHeaderDTO messageHeaderDTO;
+
+        //<editor-fold desc="Constructors">
+        public UserAction(@NonNull MessageHeaderDTO messageHeaderDTO)
         {
-            userClickedListenerCopy.onUserClicked(messageHeaderDTO);
+            this.messageHeaderDTO = messageHeaderDTO;
         }
+        //</editor-fold>
     }
 
-    @Deprecated // Use Rx
-    public static interface OnElementClickedListener
+    public static class UserActionUserClicked extends UserAction
     {
-        void onUserClicked(MessageHeaderDTO messageHeaderId);
+        //<editor-fold desc="Constructors">
+        public UserActionUserClicked(@NonNull MessageHeaderDTO messageHeaderDTO)
+        {
+            super(messageHeaderDTO);
+        }
+        //</editor-fold>
     }
 }

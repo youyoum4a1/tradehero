@@ -46,7 +46,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
-import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 public class SendMessageFragment extends DashboardFragment
@@ -56,7 +55,6 @@ public class SendMessageFragment extends DashboardFragment
     @NonNull private MessageType messageType = MessageType.BROADCAST_ALL_FOLLOWERS;
     /** ProgressDialog to show progress when sending message */
     private Dialog progressDialog;
-    @NonNull protected SubscriptionList sendMessageSubscriptions;
 
     @InjectView(R.id.message_input_edittext) EditText inputText;
     @InjectView(R.id.message_type) TextView messageTypeView;
@@ -87,7 +85,6 @@ public class SendMessageFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         messageType = getMessageType(getArguments());
-        sendMessageSubscriptions = new SubscriptionList();
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.MessageComposer_Show));
     }
 
@@ -139,7 +136,6 @@ public class SendMessageFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        sendMessageSubscriptions.unsubscribe();
         ProgressDialogUtil.dismiss(getActivity());
         DeviceUtil.dismissKeyboard(inputText);
         ButterKnife.reset(this);
@@ -247,7 +243,7 @@ public class SendMessageFragment extends DashboardFragment
                         R.string.broadcast_message_waiting,
                         R.string.broadcast_message_sending_hint);
 
-        sendMessageSubscriptions.add(
+        onStopSubscriptions.add(
                 AppObservable.bindFragment(
                         this,
                         messageServiceWrapper.get().createMessageRx(

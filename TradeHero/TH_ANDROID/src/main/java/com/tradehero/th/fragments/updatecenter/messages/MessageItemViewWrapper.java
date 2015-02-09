@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.updatecenter.messages;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -9,106 +10,68 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import rx.Observable;
+import rx.Subscription;
+import rx.subjects.BehaviorSubject;
 
 public class MessageItemViewWrapper extends FrameLayout implements DTOView<MessageHeaderDTO>
 {
     @InjectView(R.id.swipelist_frontview) MessageItemView messageItemView;
     @InjectView(R.id.swipelist_backview) View messageItemBackView;
 
-    private MessageHeaderDTO messageHeaderDTO;
-    private OnElementClickedListener elementClickedListener;
+    @NonNull private BehaviorSubject<MessageItemView.UserAction> userActionBehavior;
+    private Subscription itemViewSubscription;
 
     //<editor-fold desc="Constructors">
     public MessageItemViewWrapper(Context context)
     {
         super(context);
+        userActionBehavior = BehaviorSubject.create();
     }
 
     public MessageItemViewWrapper(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        userActionBehavior = BehaviorSubject.create();
     }
 
     public MessageItemViewWrapper(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
+        userActionBehavior = BehaviorSubject.create();
     }
     //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        initView();
+        ButterKnife.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        initView();
+        ButterKnife.inject(this);
+        itemViewSubscription = messageItemView.getUserActionObservable().subscribe(userActionBehavior);
     }
 
     @Override protected void onDetachedFromWindow()
     {
+        itemViewSubscription.unsubscribe();
         ButterKnife.reset(this);
-        setElementClickedListener(null);
         super.onDetachedFromWindow();
     }
 
-    protected void initView()
+    @NonNull public Observable<MessageItemView.UserAction> getUserActionObservable()
     {
-        ButterKnife.inject(this);
-        messageItemView.setElementClickedListener(createMessageItemViewUserClickedListener());
+        return userActionBehavior.asObservable();
     }
 
     @Override public void display(MessageHeaderDTO dto)
     {
-        this.messageHeaderDTO = dto;
         if (messageItemView != null)
         {
             messageItemView.display(dto);
         }
-    }
-
-    public void setElementClickedListener(OnElementClickedListener elementClickedListener)
-    {
-        this.elementClickedListener = elementClickedListener;
-    }
-
-    protected void notifyUserClicked(MessageHeaderDTO messageHeaderDTO)
-    {
-        OnElementClickedListener elementClickedListenerCopy = elementClickedListener;
-        if (elementClickedListenerCopy != null)
-        {
-            elementClickedListenerCopy.onUserClicked(messageHeaderDTO);
-        }
-    }
-
-    protected void notifyDeleteClicked(MessageHeaderDTO messageHeaderDTO)
-    {
-        OnElementClickedListener elementClickedListenerCopy = elementClickedListener;
-        if (elementClickedListenerCopy != null)
-        {
-            elementClickedListenerCopy.onDeleteClicked(messageHeaderDTO);
-        }
-    }
-
-    protected MessageItemView.OnElementClickedListener createMessageItemViewUserClickedListener()
-    {
-        return new MessageItemWrapperElementClickedListener();
-    }
-
-    @Deprecated // Use Rx
-    public class MessageItemWrapperElementClickedListener implements MessageItemView.OnElementClickedListener
-    {
-        @Override public void onUserClicked(MessageHeaderDTO messageHeaderDTO)
-        {
-            notifyUserClicked(messageHeaderDTO);
-        }
-    }
-
-    @Deprecated // Use Rx
-    public static interface OnElementClickedListener extends MessageItemView.OnElementClickedListener
-    {
-        void onDeleteClicked(MessageHeaderDTO messageHeaderDTO);
     }
 }

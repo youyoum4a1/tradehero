@@ -39,7 +39,6 @@ import rx.android.view.ViewObservable;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Actions;
-import rx.internal.util.SubscriptionList;
 
 public class BaseShareableDialogFragment extends BaseDialogFragment
 {
@@ -59,14 +58,12 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
             R.id.btn_share_wb})
     SocialLinkToggleButton[] socialLinkingButtons;
     Subscription socialLinkingSubscription;
-    @NonNull protected SubscriptionList subscriptions;
 
     @Nullable protected UserProfileDTO userProfileDTO;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        subscriptions = new SubscriptionList();
         socialSharePreferenceHelperNew.reload();
     }
 
@@ -84,12 +81,6 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
         fetchUserProfile();
     }
 
-    @Override public void onStop()
-    {
-        subscriptions.unsubscribe();
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         unsubscribeWeChatButton();
@@ -101,7 +92,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     //<editor-fold desc="User Profile">
     protected void fetchUserProfile()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(createUserProfileCacheObserver()));

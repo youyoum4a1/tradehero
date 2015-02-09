@@ -42,7 +42,6 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionFragment
@@ -67,7 +66,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @InjectView(R.id.post_comment_text) protected EditText messageToSend;
 
     @Nullable private Subscription messageHeaderFetchSubscription;
-    @NonNull private SubscriptionList subscriptionList;
     private MessageHeaderId messageHeaderId;
 
     public static void putCorrespondentUserBaseKey(@NonNull Bundle args, @NonNull UserBaseKey correspondentBaseKey)
@@ -84,7 +82,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         super.onCreate(savedInstanceState);
         correspondentId = collectCorrespondentId(getArguments());
-        subscriptionList = new SubscriptionList();
     }
 
     protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
@@ -158,7 +155,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         unsubscribe(messageHeaderFetchSubscription);
         messageHeaderFetchSubscription = null;
-        subscriptionList.unsubscribe();
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -247,7 +243,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     private void reportMessageRead(MessageHeaderDTO messageHeaderDTO)
     {
         messageHeaderCache.setUnread(messageHeaderDTO.getDTOKey(), false);
-        subscriptionList.add(messageServiceWrapper.get().readMessageRx(
+        onStopSubscriptions.add(messageServiceWrapper.get().readMessageRx(
                 messageHeaderDTO.getDTOKey(),
                 messageHeaderDTO.getSenderId(),
                 messageHeaderDTO.getRecipientId(),

@@ -23,7 +23,6 @@ import com.tradehero.th.fragments.education.VideoAdapter;
 import com.tradehero.th.fragments.education.VideoDTOUtil;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.VideoServiceWrapper;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.app.AppObservable;
-import rx.internal.util.SubscriptionList;
+import rx.functions.Actions;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
@@ -48,10 +47,8 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
-    @Inject protected SecurityPositionDetailCacheRx securityPositionDetailCache;
     @Inject VideoServiceWrapper videoServiceWrapper;
     @Inject Lazy<DashboardNavigator> navigator;
-    private SubscriptionList subscriptionList;
     private VideoAdapter videoAdapter;
     @NonNull private BehaviorSubject<UserActionType> userActionTypeBehaviorSubject;
 
@@ -77,8 +74,16 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
         videoAdapter = new VideoAdapter(getActivity(), null, R.layout.video_view);
         videosGrid.setAdapter(videoAdapter);
 
-        subscriptionList = new SubscriptionList();
-        Observable.just(viewAnimator)
+        videosGrid.setOnItemClickListener((parent, view1, position, id) -> {
+            VideoDTO videoDTO = videoAdapter.getItem(position);
+            VideoDTOUtil.openVideoDTO(getActivity(), navigator.get(), videoDTO);
+        });
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        onStopSubscriptions.add(Observable.just(viewAnimator)
                 .flatMapIterable(animator -> {
                     List<FxOnBoardView<Boolean>> onBoardViews = new ArrayList<>();
                     for (int i = 0; i < animator.getChildCount(); ++i)
@@ -109,8 +114,8 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
                                 onCloseClicked();
                             }
                         },
-                        throwable -> Timber.e(throwable, "Unable to handle Forex onboard views"));
-        subscriptionList.add(AppObservable.bindFragment(this, videoServiceWrapper.getFXVideosRx())
+                        throwable -> Timber.e(throwable, "Unable to handle Forex onboard views")));
+        onStopSubscriptions.add(AppObservable.bindFragment(this, videoServiceWrapper.getFXVideosRx())
                 .subscribe(new Subscriber<List<VideoDTO>>()
                 {
                     @Override public void onCompleted()
@@ -140,10 +145,6 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
                         videoAdapter.notifyDataSetChanged();
                     }
                 }));
-        videosGrid.setOnItemClickListener((parent, view1, position, id) -> {
-            VideoDTO videoDTO = videoAdapter.getItem(position);
-            VideoDTOUtil.openVideoDTO(getActivity(), navigator.get(), videoDTO);
-        });
     }
 
     @Override public void onDismiss(DialogInterface dialog)
@@ -160,7 +161,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
     private void checkFXPortfolio()
     {
         notifyUserAction(UserActionType.ENROLLED);
-        subscriptionList.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>()))
@@ -171,22 +172,19 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
                                 createFXPortfolio();
                             }
                         },
-                        e -> {
-                        }));
+                        Actions.empty()));
     }
 
     private void createFXPortfolio()
     {
-        subscriptionList.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userServiceWrapper.get().createFXPortfolioRx(currentUserId.toUserBaseKey()))
                 .subscribe(
                         portfolio -> {
                             userProfileCache.get().get(currentUserId.toUserBaseKey());
-                            securityPositionDetailCache.invalidateAll();
                         },
-                        e -> {
-                        }));
+                        Actions.empty()));
     }
 
     @OnClick(R.id.close)

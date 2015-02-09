@@ -2,13 +2,16 @@ package com.tradehero.th.rx;
 
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.misc.exception.THException;
-import javax.inject.Inject;
 import rx.functions.Action1;
 import timber.log.Timber;
 
 public class ToastOnErrorAction implements Action1<Throwable>
 {
-    @Inject ToastOnErrorAction() {}
+    //<editor-fold desc="Constructors">
+    public ToastOnErrorAction()
+    {
+    }
+    //</editor-fold>
 
     @Override public void call(Throwable throwable)
     {

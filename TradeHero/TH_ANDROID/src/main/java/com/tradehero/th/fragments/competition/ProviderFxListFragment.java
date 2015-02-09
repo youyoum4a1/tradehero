@@ -32,7 +32,7 @@ public class ProviderFxListFragment extends ProviderSecurityListRxFragment
 
     private void fetchFXPrice()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXSecuritiesAllPriceRx()
                         .repeatWhen(observable -> observable.delay(TrendingFXFragment.MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS)))

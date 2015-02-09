@@ -33,7 +33,6 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
 import rx.functions.Actions;
-import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 public class SettingsReferralCodeFragment extends DashboardFragment
@@ -59,14 +58,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     @InjectView(R.id.settings_referral_code) TextView mReferralCode;
 
     private ClipboardManager clipboardManager;
-    @NonNull protected SubscriptionList subscriptions;
     private UserProfileDTO userProfileDTO;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        subscriptions = new SubscriptionList();
-    }
 
     @Override public void onAttach(Activity activity)
     {
@@ -99,13 +91,6 @@ public class SettingsReferralCodeFragment extends DashboardFragment
         fetchSystemStatus();
     }
 
-    @Override public void onStop()
-    {
-        subscriptions.unsubscribe();
-        subscriptions = new SubscriptionList();
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
@@ -114,7 +99,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
 
     protected void fetchProfile()
     {
-        subscriptions.add(AppObservable.bindFragment(this,
+        onStopSubscriptions.add(AppObservable.bindFragment(this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>()))
                 .subscribe(
@@ -149,7 +134,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
 
     protected void fetchSystemStatus()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 systemStatusCache.get(new SystemStatusKey())
                         .map(new PairGetSecond<>()))
@@ -184,7 +169,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     @OnClick(R.id.btn_referral_share)
     protected void shareToSocialNetwork(View view)
     {
-        subscriptions.add(socialShareHelper.show(new ReferralCodeDTO(userProfileDTO.referralCode))
+        onStopSubscriptions.add(socialShareHelper.show(new ReferralCodeDTO(userProfileDTO.referralCode))
                 .subscribe(Actions.empty(), Actions.empty()));
     }
 

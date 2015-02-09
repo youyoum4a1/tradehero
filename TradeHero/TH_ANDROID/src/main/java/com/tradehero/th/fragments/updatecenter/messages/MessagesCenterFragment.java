@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.updatecenter.messages;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -20,11 +19,9 @@ import com.fortysevendeg.swipelistview.SwipeListView;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
-import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.route.Routable;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
-import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DirtyNewFirstMessageHeaderDTOComparator;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTOList;
@@ -48,6 +45,7 @@ import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
@@ -55,13 +53,11 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
-import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 @Routable("messages")
 public class MessagesCenterFragment extends DashboardFragment
         implements
-        MessageItemViewWrapper.OnElementClickedListener,
         ResideMenu.OnMenuListener
 {
     @Inject Lazy<MessageHeaderListCacheRx> messageListCache;
@@ -76,7 +72,6 @@ public class MessagesCenterFragment extends DashboardFragment
     private MessagesView messagesView;
     private SwipeListener swipeListener;
     @Nullable private MessageListAdapter messageListAdapter;
-    @NonNull private SubscriptionList listSubscriptions;
     private boolean hasMorePage = true;
     @Nullable private BroadcastReceiver broadcastReceiver;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
@@ -85,7 +80,6 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        listSubscriptions = new SubscriptionList();
         registerMessageReceiver();
         Timber.d("onCreate hasCode %d", this.hashCode());
     }
@@ -192,7 +186,6 @@ public class MessagesCenterFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        listSubscriptions.unsubscribe();
         SwipeListView swipeListView = messagesView.getListView();
         swipeListView.setSwipeListViewListener(null);
         swipeListView.setOnScrollListener(null);
@@ -200,7 +193,7 @@ public class MessagesCenterFragment extends DashboardFragment
         messagesView = null;
         if (messageListAdapter != null)
         {
-            messageListAdapter.setElementClickedListener(null);
+            messageListAdapter.onDestroy();
             messageListAdapter = null;
         }
         Timber.d("onDestroyView");
@@ -215,41 +208,6 @@ public class MessagesCenterFragment extends DashboardFragment
         unregisterMessageReceiver();
 
         super.onDestroy();
-        Timber.d("onDestroy");
-    }
-
-    private void createDeleteMessageDialog(final int position)
-    {
-        THDialog.showCenterDialog(getActivity(), null,
-                getResources().getString(R.string.sure_to_delete_message),
-                getResources().getString(android.R.string.cancel),
-                getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(@NonNull DialogInterface dialog, int which)
-                    {
-                        if (which == DialogInterface.BUTTON_POSITIVE)
-                        {
-                            dialog.dismiss();
-                            removeMessageIfNecessary(position);
-                        }
-                        else if (which == DialogInterface.BUTTON_NEGATIVE)
-                        {
-                            dialog.dismiss();
-                        }
-                    }
-                }
-        );
-    }
-
-    @Override public void onUserClicked(@NonNull MessageHeaderDTO messageHeaderDTO)
-    {
-        pushUserProfileFragment(messageHeaderDTO);
-    }
-
-    @Override public void onDeleteClicked(@NonNull MessageHeaderDTO messageHeaderDTO)
-    {
-        removeMessageOnServer(messageHeaderDTO);
     }
 
     private void onRefreshCompleted()
@@ -267,15 +225,18 @@ public class MessagesCenterFragment extends DashboardFragment
 
     protected void pushMessageFragment(int position)
     {
-        MessageHeaderDTO messageHeaderDTO = getListAdapter().getItem(position);
-        Timber.d("pushMessageFragment=%s", messageHeaderDTO);
-
-        if (messageHeaderDTO != null)
+        MessageListAdapter adapter = getListAdapter();
+        if (adapter != null)
         {
-            pushMessageFragment(
-                    DiscussionKeyFactory.create(messageHeaderDTO),
-                    messageHeaderDTO.getCorrespondentId(currentUserId.toUserBaseKey()));
+            MessageHeaderDTO messageHeaderDTO = adapter.getItem(position);
+            if (messageHeaderDTO != null)
+            {
+                pushMessageFragment(
+                        DiscussionKeyFactory.create(messageHeaderDTO),
+                        messageHeaderDTO.getCorrespondentId(currentUserId.toUserBaseKey()));
+            }
         }
+
     }
 
     private void pushUserProfileFragment(@Nullable MessageHeaderDTO messageHeaderDTO)
@@ -338,7 +299,7 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         if (nextMoreRecentMessageListKey != null)
         {
-            listSubscriptions.add(
+            onStopSubscriptions.add(
                     AppObservable.bindFragment(
                             this,
                             messageListCache.get().get(nextMoreRecentMessageListKey))
@@ -358,7 +319,7 @@ public class MessagesCenterFragment extends DashboardFragment
         discussionListCache.get().invalidateAll();
         MessageListKey messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE);
         Timber.d("refreshContent %s", messageListKey);
-        listSubscriptions.add(
+        onStopSubscriptions.add(
                 AppObservable.bindFragment(
                         this,
                         messageListCache.get().get(messageListKey))
@@ -419,9 +380,24 @@ public class MessagesCenterFragment extends DashboardFragment
                         messageHeaderDTOs,
                         R.layout.message_list_item_wrapper,
                         new DirtyNewFirstMessageHeaderDTOComparator());
-        messageListAdapter.setElementClickedListener(this);
+        onStopSubscriptions.add(messageListAdapter.getUserActionObservable()
+                .subscribe(
+                        this::handleUserAction,
+                        new ToastOnErrorAction()));
 
         messagesView.getListView().setAdapter(messageListAdapter);
+    }
+
+    protected void handleUserAction(MessageItemView.UserAction userAction)
+    {
+        if (userAction instanceof MessageItemView.UserActionUserClicked)
+        {
+            pushUserProfileFragment(userAction.messageHeaderDTO);
+        }
+        else
+        {
+            Timber.e(new Exception("Unhandled userAction"), "%s", userAction);
+        }
     }
 
     @Nullable private MessageListAdapter getListAdapter()
@@ -463,20 +439,47 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void removeMessageIfNecessary(int position)
     {
-        MessageHeaderDTO messageHeaderDTO = getListAdapter().getItem(position);
-        removeMessageOnServer(messageHeaderDTO);
+        MessageListAdapter adapter = getListAdapter();
+        if (adapter != null)
+        {
+            MessageHeaderDTO messageHeaderDTO = adapter.getItem(position);
+            removeMessageOnServer(messageHeaderDTO);
+        }
     }
 
     private void removeMessageOnServer(@NonNull MessageHeaderDTO messageHeaderDTO)
     {
-        listSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 messageServiceWrapper.get().deleteMessageRx(
                         messageHeaderDTO.getDTOKey(),
                         messageHeaderDTO.getSenderId(),
                         messageHeaderDTO.getRecipientId(),
                         currentUserId.toUserBaseKey()))
-                .subscribe(new MessageDeletionObserver(messageHeaderDTO)));
+                .subscribe(
+                        response -> onMessageDeleted(messageHeaderDTO),
+                        new ToastOnErrorAction()));
+    }
+
+    public void onMessageDeleted(@NonNull MessageHeaderDTO messageHeaderDTO)
+    {
+        // mark message as deleted
+        if (getListAdapter() != null)
+        {
+            if (alreadyFetched != null)
+            {
+                alreadyFetched.remove(messageHeaderDTO);
+            }
+
+            requestUpdateTabCounter();
+            MessageListAdapter adapter = getListAdapter();
+            if (adapter != null)
+            {
+                adapter.remove(messageHeaderDTO);
+                adapter.notifyDataSetChanged();
+                messagesView.getListView().closeOpenedItems();
+            }
+        }
     }
 
     private void saveNewPage(List<MessageHeaderDTO> value)
@@ -621,7 +624,7 @@ public class MessagesCenterFragment extends DashboardFragment
     private void reportMessageAllRead()
     {
         Timber.d("reportMessageAllRead...");
-        listSubscriptions.add(
+        onStopSubscriptions.add(
                 AppObservable.bindFragment(
                         this,
                         messageServiceWrapper.get().readAllMessageRx(
@@ -633,38 +636,6 @@ public class MessagesCenterFragment extends DashboardFragment
 
         //Mark this locally as read, makes the user feels it's marked instantly for better experience
         updateAllAsRead();
-    }
-
-    private class MessageMarkAsReadObserver implements Observer<BaseResponseDTO>
-    {
-        private final MessageHeaderDTO messageHeaderDTO;
-
-        public MessageMarkAsReadObserver(MessageHeaderDTO messageHeaderDTO)
-        {
-            this.messageHeaderDTO = messageHeaderDTO;
-        }
-
-        @Override public void onNext(BaseResponseDTO baseResponseDTO)
-        {
-            Timber.d("Message %d is reported as read");
-            // TODO update title
-
-            // mark it as read in the cache
-            if (messageHeaderDTO != null && messageHeaderDTO.unread)
-            {
-                messageHeaderDTO.unread = false;
-                setReadAllLayoutVisable();
-                requestUpdateTabCounter();
-            }
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-        }
     }
 
     private void updateAllAsRead()
@@ -679,53 +650,6 @@ public class MessagesCenterFragment extends DashboardFragment
         // TODO remove this hack after refactor messagecenterfragment
         Intent requestUpdateIntent = new Intent(UpdateCenterFragment.REQUEST_UPDATE_UNREAD_COUNTER);
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(requestUpdateIntent);
-    }
-
-    private class MessageDeletionObserver implements Observer<BaseResponseDTO>
-    {
-        @NonNull private final MessageHeaderDTO messageHeaderDTO;
-
-        //<editor-fold desc="Constructors">
-        MessageDeletionObserver(@NonNull MessageHeaderDTO messageHeaderDTO)
-        {
-            this.messageHeaderDTO = messageHeaderDTO;
-        }
-        //</editor-fold>
-
-        @Override public void onNext(BaseResponseDTO baseResponseDTO)
-        {
-            // mark message as deleted
-            if (getListAdapter() != null)
-            {
-                if (alreadyFetched != null)
-                {
-                    alreadyFetched.remove(messageHeaderDTO);
-                }
-
-                requestUpdateTabCounter();
-                MessageListAdapter adapter = getListAdapter();
-                if (adapter != null)
-                {
-                    adapter.remove(messageHeaderDTO);
-                    adapter.notifyDataSetChanged();
-                    messagesView.getListView().closeOpenedItems();
-                }
-            }
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            Timber.e(e, "Message is deleted unsuccessfully");
-            if (getListAdapter() != null)
-            {
-                //MessageListAdapter adapter = getListAdapter();
-                //adapter.markDeleted(messageId,false);
-            }
-        }
     }
 
     private void setReadAllLayoutClickListener()

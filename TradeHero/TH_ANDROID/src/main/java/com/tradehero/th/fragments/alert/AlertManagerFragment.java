@@ -36,7 +36,6 @@ import com.tradehero.th.widget.list.BaseListHeaderView;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
-import rx.internal.util.SubscriptionList;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class AlertManagerFragment extends DashboardFragment
@@ -54,7 +53,6 @@ public class AlertManagerFragment extends DashboardFragment
     @Inject protected Lazy<UserProfileCacheRx> userProfileCache;
     @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
 
-    @NonNull SubscriptionList subscriptions;
     protected UserProfileDTO currentUserProfile;
     private AlertListItemAdapter alertListItemAdapter;
     @Inject protected THBillingInteractorRx userInteractorRx;
@@ -64,7 +62,6 @@ public class AlertManagerFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         alertListItemAdapter = new AlertListItemAdapter(getActivity(), currentUserId, R.layout.alert_list_item);
-        subscriptions = new SubscriptionList();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -135,7 +132,7 @@ public class AlertManagerFragment extends DashboardFragment
 
     protected void fetchUserProfile()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .subscribe(
@@ -153,7 +150,7 @@ public class AlertManagerFragment extends DashboardFragment
 
     protected void fetchAlertCompactList()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 alertCompactListCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(
@@ -174,7 +171,7 @@ public class AlertManagerFragment extends DashboardFragment
     protected void handleBtnPlanUpgradeClicked(@SuppressWarnings("UnusedParameters") View view)
     {
         //noinspection unchecked
-        subscriptions.add(userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)
+        onStopSubscriptions.add(userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)
                 .subscribe(
                         result -> {
                             displayAlertCount();

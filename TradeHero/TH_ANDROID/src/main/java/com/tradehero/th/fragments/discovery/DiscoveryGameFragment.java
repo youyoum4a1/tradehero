@@ -70,7 +70,6 @@ public class DiscoveryGameFragment extends DashboardFragment
 
     @Inject MiniGameDefListCache miniGameDefListCache;
     @Inject RxLoaderManager rxLoaderManager;
-    @Inject ToastOnErrorAction toastOnErrorAction;
 
     private CompositeSubscription subscriptions;
 
@@ -108,7 +107,7 @@ public class DiscoveryGameFragment extends DashboardFragment
                         AppObservable.bindFragment(
                                 this,
                                 miniGameDefListCache.get(new MiniGameDefListKey()).map(new PairGetSecond<>())))
-                        .doOnError(toastOnErrorAction)
+                        .doOnError(new ToastOnErrorAction())
                         .onErrorResumeNext(Observable.empty())
                         .subscribe(miniGamesSubject));
     }

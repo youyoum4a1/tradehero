@@ -22,7 +22,6 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -41,7 +40,6 @@ public class RegionalNewsSelectorView extends LinearLayout
 
     @Inject NewsServiceWrapper mNewsServiceWrapper;
     @Inject CurrentUserId currentUserId;
-    @Inject Provider<ToastOnErrorAction> toastOnErrorAction;
     @Inject UserProfileCacheRx userProfileCacheRx;
     @Inject @RegionalNews CountryLanguagePreference countryLanguagePreference;
 
@@ -104,7 +102,7 @@ public class RegionalNewsSelectorView extends LinearLayout
                             }
                             mCountryAdapter.setItems(countryLanguageListPair.first);
                         },
-                        toastOnErrorAction.get());
+                        new ToastOnErrorAction());
     }
 
     @Override protected void onDetachedFromWindow()

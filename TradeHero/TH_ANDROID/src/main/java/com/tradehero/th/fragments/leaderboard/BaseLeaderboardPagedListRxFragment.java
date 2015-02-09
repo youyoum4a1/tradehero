@@ -25,7 +25,6 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import java.util.List;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
-import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 abstract public class BaseLeaderboardPagedListRxFragment<
@@ -45,7 +44,6 @@ abstract public class BaseLeaderboardPagedListRxFragment<
     @Inject UserProfileCacheRx userProfileCache;
     @Inject LeaderboardDefCacheRx leaderboardDefCache;
 
-    @NonNull protected SubscriptionList subscriptions;
     @NonNull protected LeaderboardDefKey leaderboardDefKey;
     protected LeaderboardDefDTO leaderboardDefDTO;
     protected UserProfileDTO currentUserProfileDTO;
@@ -64,7 +62,6 @@ abstract public class BaseLeaderboardPagedListRxFragment<
     {
         leaderboardDefKey = getLeadboardDefKey(getArguments());
         super.onCreate(savedInstanceState);
-        subscriptions = new SubscriptionList();
     }
 
     //<editor-fold desc="ActionBar">
@@ -82,21 +79,14 @@ abstract public class BaseLeaderboardPagedListRxFragment<
         fetchCurrentUserProfile();
     }
 
-    @Override public void onStop()
-    {
-        subscriptions.unsubscribe();
-        subscriptions = new SubscriptionList();
-        super.onStop();
-    }
-
     protected void fetchLeaderboardDef()
     {
         if (leaderboardDefKey.key > 0)
         {
-            subscriptions.add(AppObservable.bindFragment(
+            onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
                     leaderboardDefCache.get(leaderboardDefKey)
-            .map(new PairGetSecond<>()))
+                            .map(new PairGetSecond<>()))
                     .subscribe(
                             this::linkWith,
                             e -> THToast.show(R.string.error_fetch_leaderboard_def)));
@@ -120,10 +110,10 @@ abstract public class BaseLeaderboardPagedListRxFragment<
 
     protected void fetchCurrentUserProfile()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
-        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::setCurrentUserProfileDTO,
                         e -> {

@@ -31,7 +31,7 @@ import javax.inject.Inject;
 import rx.android.app.AppObservable;
 import timber.log.Timber;
 
-abstract public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
+public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
 {
     private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".providerId";
     private static final String BUNDLE_KEY_COMPETITION_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".competitionId";
@@ -192,7 +192,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     protected void fetchProvider()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 providerCache.get(providerId)
                         .map(new PairGetSecond<>()))
@@ -219,7 +219,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     protected void fetchCompetition()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 competitionCache.get(competitionId)
                         .map(new PairGetSecond<>()))
@@ -235,7 +235,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         this.competitionDTO = competitionDTO;
 
         CompetitionLeaderboardId key = new CompetitionLeaderboardId(providerId.key, competitionDTO.getCompetitionId().key);
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 competitionLeaderboardCache.get(key)
                         .map(new PairGetSecond<>()))

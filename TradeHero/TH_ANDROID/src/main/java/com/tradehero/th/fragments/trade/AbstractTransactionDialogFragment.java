@@ -30,7 +30,6 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOCompactList;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -52,7 +51,7 @@ import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
+import com.tradehero.th.persistence.position.PositionCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.DeviceUtil;
@@ -67,7 +66,6 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Actions;
-import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 abstract public class AbstractTransactionDialogFragment extends BaseShareableDialogFragment
@@ -97,17 +95,15 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject PortfolioCompactCacheRx portfolioCompactCache;
     @Inject SecurityServiceWrapper securityServiceWrapper;
-    @Inject Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache;
+    @Inject Lazy<PositionCompactListCacheRx> positionCompactListCache;
     @Inject Analytics analytics;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
-    @Inject ToastOnErrorAction toastOnErrorAction;
 
     @Inject THBillingInteractorRx userInteractor;
     @Inject Lazy<DashboardNavigator> navigator;
 
     protected ProgressDialog mTransactionDialog;
 
-    @NonNull protected final SubscriptionList subscriptions;
     protected Subscription buySellSubscription;
     protected SecurityId securityId;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
@@ -116,7 +112,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     protected QuoteDTO quoteDTO;
     protected Integer mTransactionQuantity = 0;
-    @Nullable protected SecurityPositionDetailDTO securityPositionDetailDTO;
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
     @Nullable protected PositionDTOCompact positionDTOCompact;
     protected boolean showProfitLossUsd = true; // false will show in RefCcy
@@ -149,7 +144,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     protected AbstractTransactionDialogFragment()
     {
         super();
-        subscriptions = new SubscriptionList();
     }
 
     public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
@@ -248,12 +242,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         super.onDetach();
     }
 
-    @Override public void onStop()
-    {
-        subscriptions.unsubscribe();
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         mQuantityEditText.removeTextChangedListener(mQuantityTextWatcher);
@@ -281,12 +269,12 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         fetchPortfolioCompact();
         quoteDTO = getBundledQuoteDTO();
         fetchQuote();
-        fetchSecurityPositionDetail();
+        fetchPositionCompactList();
     }
 
     private void fetchSecurityCompact()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 securityCompactCache.get(getSecurityId()))
                 .take(1)
@@ -303,7 +291,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void fetchPortfolioCompact()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 portfolioCompactCache.get(getPortfolioId())
                         .map(new PairGetSecond<>()))
@@ -322,13 +310,13 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void fetchQuote()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 quoteServiceWrapper.getQuoteRx(securityId)
                         .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS)))
                 .subscribe(
                         this::linkWith,
-                        toastOnErrorAction));
+                        new ToastOnErrorAction()));
     }
 
     protected void linkWith(QuoteDTO quoteDTO)
@@ -341,22 +329,21 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         displayCashShareLabel();
     }
 
-    private void fetchSecurityPositionDetail()
+    private void fetchPositionCompactList()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                securityPositionDetailCache.get()
+                positionCompactListCache.get()
                         .get(this.securityId)
                         .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
-                        toastOnErrorAction));
+                        new ToastOnErrorAction()));
     }
 
-    protected void linkWith(SecurityPositionDetailDTO securityPositionDetailDTO)
+    protected void linkWith(PositionDTOCompactList positionDTOCompacts)
     {
-        this.securityPositionDetailDTO = securityPositionDetailDTO;
-        this.positionDTOCompactList = securityPositionDetailDTO.positions;
+        this.positionDTOCompactList = positionDTOCompacts;
         setPositionDTO();
         initPortfolioRelatedInfo();
         clampQuantity();
@@ -365,7 +352,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     protected void fetchPortfolioCompactList()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 portfolioCompactListCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>()))
@@ -463,11 +450,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     @Nullable protected Integer getMaxPurchasableShares()
     {
-        if (securityPositionDetailDTO == null)
-        {
-            // This means we have incomplete information
-            return null;
-        }
         return PortfolioCompactDTOUtil.getMaxPurchasableShares(
                 portfolioCompactDTO,
                 quoteDTO,
@@ -476,11 +458,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     @Nullable protected Integer getMaxSellableShares()
     {
-        if (securityPositionDetailDTO == null)
-        {
-            // This means we have incomplete information
-            return null;
-        }
         return PortfolioCompactDTOUtil.getMaxSellableShares(
                 portfolioCompactDTO,
                 quoteDTO,
@@ -679,7 +656,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         DeviceUtil.dismissKeyboard(mCommentsEditText);
         //noinspection unchecked
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractor.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
                 .subscribe(
@@ -994,7 +971,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         if (mQuickPriceButtonSet != null)
         {
-            subscriptions.add(mQuickPriceButtonSet.getPriceSelectedObservable()
+            onStopSubscriptions.add(mQuickPriceButtonSet.getPriceSelectedObservable()
                     .subscribe(
                             this::handleQuickPriceSelected,
                             error -> Timber.e(error, "")));

@@ -12,6 +12,7 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -176,7 +177,6 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     @Override public void onStart()
     {
         super.onStart();
-        contestListView.setOnItemClickListener(createItemClickListener());
         contestListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         if (currentDisplayedChildLayoutId != 0)
         {
@@ -187,7 +187,6 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     @Override public void onStop()
     {
         currentDisplayedChildLayoutId = contest_center_content_screen.getDisplayedChildLayoutId();
-        contestListView.setOnItemClickListener(null);
         contestListView.setOnScrollListener(null);
         super.onStop();
     }
@@ -223,24 +222,18 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
         this.webFragment = null;
     }
 
-    protected AdapterView.OnItemClickListener createItemClickListener()
+    @SuppressWarnings("UnusedDeclaration")
+    @OnItemClick(android.R.id.list)
+    public void onContestListItemClick(AdapterView<?> adapterView, View view, int position, long id)
     {
-        return new ContestOnItemClickListener();
-    }
-
-    protected class ContestOnItemClickListener implements AdapterView.OnItemClickListener
-    {
-        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
+        Object item = adapterView.getItemAtPosition(position);
+        if (item instanceof ProviderContestPageDTO)
         {
-            Object item = adapterView.getItemAtPosition(position);
-            if (item instanceof ProviderContestPageDTO)
-            {
-                handleCompetitionItemClicked(((ProviderContestPageDTO) item).providerDTO);
-            }
-            else
-            {
-                throw new IllegalArgumentException("Unhandled item type " + item);
-            }
+            handleCompetitionItemClicked(((ProviderContestPageDTO) item).providerDTO);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled item type " + item);
         }
     }
 

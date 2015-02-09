@@ -42,6 +42,7 @@ import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.functions.Actions;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -62,9 +63,7 @@ public class StoreScreenFragment extends DashboardFragment
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
     @InjectView(R.id.store_option_list) protected ListView listView;
-    private Subscription testAvailableSubscription;
     private StoreItemAdapter storeItemAdapter;
-    private Subscription storeItemSubscription;
     @NonNull protected SubscriptionList subscriptions;
     @Inject protected THBillingInteractorRx userInteractorRx;
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
@@ -72,7 +71,6 @@ public class StoreScreenFragment extends DashboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        subscriptions = new SubscriptionList();
         thRouter.inject(this);
         storeItemAdapter = new StoreItemAdapter(getActivity());
 
@@ -111,8 +109,7 @@ public class StoreScreenFragment extends DashboardFragment
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Store));
 
         storeItemAdapter.clear();
-        unsubscribe(storeItemSubscription);
-        storeItemSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 StoreItemFactory.createAll(systemStatusCache, StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS)
                         .take(1))
@@ -122,7 +119,7 @@ public class StoreScreenFragment extends DashboardFragment
                             storeItemAdapter.addAll(storeItemDTOs);
                             storeItemAdapter.notifyDataSetChanged();
                         },
-                        e -> THToast.show(new THException(e)));
+                        e -> THToast.show(new THException(e))));
 
         cancelOthersAndShowBillingAvailable();
     }
@@ -131,16 +128,6 @@ public class StoreScreenFragment extends DashboardFragment
     {
         setActionBarSubtitle(null);
         super.onDestroyOptionsMenu();
-    }
-
-    @Override public void onStop()
-    {
-        subscriptions.unsubscribe();
-        unsubscribe(storeItemSubscription);
-        storeItemSubscription = null;
-        unsubscribe(testAvailableSubscription);
-        testAvailableSubscription = null;
-        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -163,17 +150,14 @@ public class StoreScreenFragment extends DashboardFragment
             return;
         }
 
-        unsubscribe(testAvailableSubscription);
         //noinspection unchecked
-        testAvailableSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.testAndClear())
                 .finallyDo(() -> alreadyNotifiedNeedCreateAccount = true)
                 .subscribe(
-                        pair -> {
-                        },
-                        error -> {
-                        });
+                        Actions.empty(),
+                        Actions.empty()));
     }
 
     protected void launchRoutedAction()
@@ -188,7 +172,7 @@ public class StoreScreenFragment extends DashboardFragment
             else
             {
                 //noinspection unchecked
-                subscriptions.add(AppObservable.bindFragment(
+                onStopSubscriptions.add(AppObservable.bindFragment(
                         this,
                         userInteractorRx.purchase(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]))
                         .subscribe(

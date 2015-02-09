@@ -25,7 +25,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
 
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
-    protected Integer requestCode;
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;

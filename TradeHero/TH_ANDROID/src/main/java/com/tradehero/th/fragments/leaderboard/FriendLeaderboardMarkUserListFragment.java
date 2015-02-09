@@ -99,7 +99,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
     @Override public void onStart()
     {
         super.onStart();
-        subscriptions.add(((LeaderboardFriendsSetAdapter) itemViewAdapter).getFollowRequestObservable()
+        onStopSubscriptions.add(((LeaderboardFriendsSetAdapter) itemViewAdapter).getFollowRequestObservable()
                 .subscribe(
                         this::handleFollowRequested,
                         e -> Timber.e(e, "Error on follow requested")));
@@ -131,7 +131,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
 
     @Override public void onStop()
     {
-        subscriptions.unsubscribe();
+        onStopSubscriptions.unsubscribe();
         super.onStop();
     }
 
@@ -205,7 +205,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
 
     protected void handleFollowRequested(@NonNull final UserBaseDTO userBaseDTO)
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 new ChoiceFollowUserAssistantWithDialog(
                         getActivity(),

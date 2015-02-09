@@ -84,7 +84,6 @@ public class SignInOrUpFragment extends Fragment
 
     private Subscription socialButtonsSubscription;
     private Observable<Pair<AuthData, UserProfileDTO>> authenticationObservable;
-    @Inject Provider<ToastOnErrorAction> toastOnErrorActionProvider;
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick({
@@ -276,7 +275,7 @@ public class SignInOrUpFragment extends Fragment
                         loginSignUpFormDTO.authData.getTHToken(), loginSignUpFormDTO))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError(toastOnErrorActionProvider.get())
+                .doOnError(new ToastOnErrorAction())
                 .retry()
                 .doOnNext(userLoginDTO -> progressDialog.show())
                 .doOnCompleted(this::resubscribe);

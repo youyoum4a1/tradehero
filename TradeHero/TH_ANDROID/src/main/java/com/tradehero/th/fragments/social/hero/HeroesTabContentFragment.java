@@ -45,7 +45,6 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
-import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 abstract public class HeroesTabContentFragment extends DashboardFragment
@@ -67,7 +66,6 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
     @InjectView(android.R.id.progress) public ProgressBar progressBar;
     @InjectView(R.id.heros_list) public ListView heroListView;
     @InjectView(R.id.swipe_to_refresh_layout) public SwipeRefreshLayout swipeRefreshLayout;
-    @NonNull private SubscriptionList subscriptions;
     @Inject protected THBillingInteractorRx userInteractorRx;
 
     //<editor-fold desc="Argument Passing">
@@ -86,7 +84,6 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         this.followerId = getFollowerId(getArguments());
-        this.subscriptions = new SubscriptionList();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -199,12 +196,6 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
 
     @NonNull abstract protected HeroType getHeroType();
 
-    @Override public void onStop()
-    {
-        subscriptions.unsubscribe();
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         if (this.heroListAdapter != null)
@@ -224,7 +215,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
 
     protected void fetchHeroes()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 heroListCache.get(followerId))
                 .subscribe(new HeroManagerHeroListCacheObserver()));
@@ -245,7 +236,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
         if (!clickedHeroDTO.active)
         {
             //noinspection unchecked
-            subscriptions.add(AppObservable.bindFragment(
+            onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
                     HeroAlertDialogRxUtil.popAlertFollowHero(getActivity()))
                     .filter(OnDialogClickEvent::isPositive)
@@ -272,7 +263,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
         }
         else
         {
-            subscriptions.add(HeroAlertDialogRxUtil.popAlertUnFollowHero(getActivity())
+            onStopSubscriptions.add(HeroAlertDialogRxUtil.popAlertUnFollowHero(getActivity())
                     .filter(OnDialogClickEvent::isPositive)
                     .subscribe(
                             pair -> {
@@ -286,7 +277,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
 
     protected void unfollow(@NonNull UserBaseKey userBaseKey)
     {
-        subscriptions.add(
+        onStopSubscriptions.add(
                 AppObservable.bindFragment(
                         this,
                         new SimpleFollowUserAssistant(getActivity(), userBaseKey)

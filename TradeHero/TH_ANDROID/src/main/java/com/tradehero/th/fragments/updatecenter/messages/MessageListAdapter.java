@@ -10,11 +10,15 @@ import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import java.util.Collection;
 import java.util.Comparator;
+import rx.Observable;
+import rx.internal.util.SubscriptionList;
+import rx.subjects.BehaviorSubject;
 
 public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderDTO, MessageItemViewWrapper>
 {
     @LayoutRes private final int layoutResourceId;
-    private MessageItemViewWrapper.OnElementClickedListener elementClickedListener;
+    @NonNull private BehaviorSubject<MessageItemView.UserAction> userActionBehavior;
+    @NonNull private SubscriptionList subscriptions;
 
     //<editor-fold desc="Constructors">
     public MessageListAdapter(
@@ -25,13 +29,23 @@ public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderDTO, Mess
     {
         super(context, comparator, objects);
         this.layoutResourceId = layoutResourceId;
+        userActionBehavior = BehaviorSubject.create();
+        subscriptions = new SubscriptionList();
     }
     //</editor-fold>
+
+    public void onDestroy()
+    {
+        subscriptions.unsubscribe();
+    }
 
     @Override public MessageItemViewWrapper getView(int position, View convertView, ViewGroup parent)
     {
         MessageItemViewWrapper view = super.getView(position, convertView, parent);
-        view.setElementClickedListener(createUserClickedListener());
+        if (convertView == null)
+        {
+            subscriptions.add(view.getUserActionObservable().subscribe(userActionBehavior));
+        }
         return view;
     }
 
@@ -40,57 +54,8 @@ public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderDTO, Mess
         return layoutResourceId;
     }
 
-    public void setElementClickedListener(
-            MessageItemViewWrapper.OnElementClickedListener elementClickedListener)
+    @NonNull public Observable<MessageItemView.UserAction> getUserActionObservable()
     {
-        this.elementClickedListener = elementClickedListener;
-    }
-
-    protected void handleUserClicked(MessageHeaderDTO messageHeaderDTO)
-    {
-        notifyUserClicked(messageHeaderDTO);
-    }
-
-    protected void handleDeleteClicked(MessageHeaderDTO messageHeaderDTO)
-    {
-        notifyDeleteClicked(messageHeaderDTO);
-    }
-
-    protected void notifyUserClicked(MessageHeaderDTO messageHeaderDTO)
-    {
-        MessageItemViewWrapper.OnElementClickedListener elementClickedListenerCopy =
-                elementClickedListener;
-        if (elementClickedListenerCopy != null)
-        {
-            elementClickedListenerCopy.onUserClicked(messageHeaderDTO);
-        }
-    }
-
-    protected void notifyDeleteClicked(MessageHeaderDTO messageHeaderDTO)
-    {
-        MessageItemViewWrapper.OnElementClickedListener elementClickedListener =
-                this.elementClickedListener;
-        if (elementClickedListener != null)
-        {
-            elementClickedListener.onDeleteClicked(messageHeaderDTO);
-        }
-    }
-
-    protected MessageItemViewWrapper.OnElementClickedListener createUserClickedListener()
-    {
-        return new MessageListAdapterOnElementClickedListener();
-    }
-
-    protected class MessageListAdapterOnElementClickedListener implements MessageItemViewWrapper.OnElementClickedListener
-    {
-        @Override public void onUserClicked(MessageHeaderDTO messageHeaderDTO)
-        {
-            handleUserClicked(messageHeaderDTO);
-        }
-
-        @Override public void onDeleteClicked(MessageHeaderDTO messageHeaderDTO)
-        {
-            handleDeleteClicked(messageHeaderDTO);
-        }
+        return userActionBehavior.asObservable();
     }
 }

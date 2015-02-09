@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -41,7 +40,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
-import rx.internal.util.SubscriptionList;
 
 public class AdminSettingsFragment extends DashboardPreferenceFragment
 {
@@ -67,8 +65,6 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     @Inject CurrentUserId currentUserId;
     @Inject Provider<Activity> currentActivity;
 
-    @NonNull SubscriptionList subscriptions;
-
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -76,21 +72,20 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         setHasOptionsMenu(true);
         HierarchyInjector.inject(this);
         addPreferencesFromResource(R.xml.admin_settings);
-        subscriptions = new SubscriptionList();
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         initPreferenceClickHandlers();
-        initDefaultValue();
         ListView listView = (ListView) view.findViewById(android.R.id.list);
         listView.setOnScrollListener(dashboardBottomTabsScrollListener.get());
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private void initDefaultValue()
+    @Override public void onStart()
     {
-        subscriptions.add(AppObservable.bindFragment(
+        super.onStart();
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(

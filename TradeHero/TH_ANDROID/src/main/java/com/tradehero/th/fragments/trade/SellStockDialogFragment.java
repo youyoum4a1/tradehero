@@ -65,13 +65,12 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
 
     @Override @Nullable protected Boolean isClosingPosition()
     {
-        if (securityPositionDetailDTO == null)
+        if (positionDTOCompact == null)
         {
             // This means we have incomplete information
             return null;
         }
-        return positionDTOCompact != null
-                && positionDTOCompact.positionStatus != null
+        return positionDTOCompact.positionStatus != null
                 && positionDTOCompact.positionStatus.equals(PositionStatus.LONG);
     }
 

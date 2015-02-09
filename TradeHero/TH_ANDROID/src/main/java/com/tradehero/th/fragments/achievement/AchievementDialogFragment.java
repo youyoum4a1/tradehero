@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.functions.Actions;
 
 public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 {
@@ -103,7 +103,19 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
             AppObservable.bindFragment(
                     this,
                     achievementCategoryCache.get(achievementCategoryId))
-                    .subscribe(new CategoryCacheObserver());
+                    .subscribe(
+                            this::onReceivedAchievementCategory,
+                            Actions.empty());
+        }
+    }
+
+    public void onReceivedAchievementCategory(Pair<AchievementCategoryId, AchievementCategoryDTO> pair)
+    {
+        UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
+        if (userAchievementDTOCopy != null)
+        {
+            achievementProgressIndicator.setAchievementDef(pair.second.achievementDefs, userAchievementDTO.achievementDef.achievementLevel);
+            achievementProgressIndicator.animateCurrentLevel();
         }
     }
 
@@ -116,27 +128,6 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
                 .relevantDigitCount(1)
                 .build()
                 .into(dollarEarned);
-    }
-
-    private class CategoryCacheObserver implements Observer<Pair<AchievementCategoryId, AchievementCategoryDTO>>
-    {
-        @Override public void onNext(Pair<AchievementCategoryId, AchievementCategoryDTO> pair)
-        {
-            UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
-            if (userAchievementDTOCopy != null)
-            {
-                achievementProgressIndicator.setAchievementDef(pair.second.achievementDefs, userAchievementDTO.achievementDef.achievementLevel);
-                achievementProgressIndicator.animateCurrentLevel();
-            }
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-        }
     }
 
     private void reportAnalytics(UserAchievementDTO userAchievementDTOCopy)

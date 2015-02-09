@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.social.friend;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,12 +48,10 @@ import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observer;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Actions;
-import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 @Routable("refer-friends")
@@ -82,7 +79,6 @@ public class FriendsInvitationFragment extends DashboardFragment
     @NonNull private UserFriendsDTOList userFriendsDTOs = new UserFriendsDTOList();
     private SocialFriendListItemDTOList socialFriendListItemDTOs;
     private Runnable searchTask;
-    @Nullable private Subscription searchSubscription;
 
     private static final String KEY_BUNDLE = "key_bundle";
     private static final String KEY_LIST_TYPE = "key_list_type";
@@ -90,7 +86,6 @@ public class FriendsInvitationFragment extends DashboardFragment
     private static final int LIST_TYPE_FRIEND_LIST = 2;
 
     private Bundle savedState;
-    private SubscriptionList subscriptions;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -99,7 +94,6 @@ public class FriendsInvitationFragment extends DashboardFragment
         socialFriendHandler = socialFriendHandlerProvider.get();
         socialFriendHandlerFacebook = facebookSocialFriendHandlerProvider.get();
         mShowAskForInviteDialogPreference.pushInFuture(TimingIntervalPreference.YEAR);
-        subscriptions = new SubscriptionList();
     }
 
     @Override
@@ -130,15 +124,6 @@ public class FriendsInvitationFragment extends DashboardFragment
     {
         outState.putBundle(KEY_BUNDLE, savedState != null ? savedState : saveState());
         super.onSaveInstanceState(outState);
-    }
-
-    @Override public void onStop()
-    {
-        unsubscribe(searchSubscription);
-        searchSubscription = null;
-        subscriptions.unsubscribe();
-        subscriptions = new SubscriptionList();
-        super.onStop();
     }
 
     @Override
@@ -230,7 +215,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
         else
         {
-            subscriptions.add(socialShareHelper.offerToConnect(item.socialNetwork)
+            onStopSubscriptions.add(socialShareHelper.offerToConnect(item.socialNetwork)
                     .subscribe(
                             new Action1<UserProfileDTO>()
                             {
@@ -507,12 +492,11 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     private void searchSocialFriends(String query)
     {
-        unsubscribe(searchSubscription);
-        searchSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userServiceWrapper.searchSocialFriendsRx(
                         currentUserId.toUserBaseKey(), null, query))
-                .subscribe(new SearchFriendsObserver());
+                .subscribe(new SearchFriendsObserver()));
     }
 
     private void showSocialTypeList()

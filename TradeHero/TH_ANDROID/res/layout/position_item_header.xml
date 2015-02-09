@@ -20,7 +20,7 @@
       tools:text="OPEN"
       />
 
-  <TextView
+  <ImageButton
       android:id="@+id/header_get_info"
       android:layout_width="@dimen/small_image_w_h"
       android:layout_height="@dimen/small_image_w_h"
@@ -29,10 +29,10 @@
       android:layout_toRightOf="@id/header_text"
       android:layout_toEndOf="@id/header_text"
       android:layout_centerVertical="true"
-      style="@style/TH.Subhead"
       android:visibility="visible"
       tools:visibility="visible"
-      android:background="@drawable/ic_action_action_about"
+      android:src="@drawable/ic_action_action_about"
+      android:background="@drawable/basic_transparent_selector"
       />
 
   <TextView
