@@ -37,7 +37,6 @@ import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
-import com.tradehero.th.fragments.alert.BaseAlertEditFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.security.SecurityActionDialogFactory;
@@ -434,11 +433,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     protected void handleAddAlertRequested(@NonNull SecurityCompactDTO securityCompactDTO)
     {
         Bundle args = new Bundle();
-        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-        if (applicablePortfolioId != null)
-        {
-            BaseAlertEditFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-        }
         if (mappedAlerts != null)
         {
             AlertId alertId = mappedAlerts.get(securityCompactDTO.getSecurityId());

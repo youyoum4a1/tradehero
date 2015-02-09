@@ -24,6 +24,8 @@ import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.billing.THBillingInteractorRx;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
@@ -45,7 +47,7 @@ import rx.Observer;
 import rx.android.app.AppObservable;
 import timber.log.Timber;
 
-abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragment
+abstract public class HeroesTabContentFragment extends DashboardFragment
         implements SwipeRefreshLayout.OnRefreshListener
 {
     private static final String BUNDLE_KEY_FOLLOWER_ID =
@@ -64,6 +66,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @InjectView(android.R.id.progress) public ProgressBar progressBar;
     @InjectView(R.id.heros_list) public ListView heroListView;
     @InjectView(R.id.swipe_to_refresh_layout) public SwipeRefreshLayout swipeRefreshLayout;
+    @Inject protected THBillingInteractorRx userInteractorRx;
 
     //<editor-fold desc="Argument Passing">
     public static void putFollowerId(Bundle args, UserBaseKey followerId)

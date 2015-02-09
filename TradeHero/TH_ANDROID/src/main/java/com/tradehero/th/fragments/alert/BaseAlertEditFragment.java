@@ -33,6 +33,8 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THBillingInteractorRx;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.AlertSlotDTO;
@@ -50,7 +52,7 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import timber.log.Timber;
 
-abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
+abstract public class BaseAlertEditFragment extends DashboardFragment
 {
     @InjectView(R.id.alert_scroll_view) NotifyingStickyScrollView scrollView;
 
@@ -87,6 +89,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     protected SecurityCompactDTO securityCompactDTO;
     @Nullable protected Subscription alertSlotSubscription;
     protected ProgressDialog progressDialog;
+    @Inject protected THBillingInteractorRx userInteractorRx;
 
     protected CompoundButton.OnCheckedChangeListener createTargetPriceCheckedChangeListener()
     {

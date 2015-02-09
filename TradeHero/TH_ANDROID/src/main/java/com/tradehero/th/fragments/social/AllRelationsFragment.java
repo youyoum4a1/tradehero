@@ -21,7 +21,9 @@ import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -36,7 +38,7 @@ import rx.android.app.AppObservable;
 import rx.functions.Actions;
 import timber.log.Timber;
 
-public class AllRelationsFragment extends BasePurchaseManagerFragment
+public class AllRelationsFragment extends DashboardFragment
         implements AdapterView.OnItemClickListener, HasSelectedItem
 {
     List<AllowableRecipientDTO> mRelationsList;
@@ -49,6 +51,8 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     private RelationsListItemAdapter mRelationsListItemAdapter;
     @InjectView(R.id.relations_list) ListView mRelationsListView;
+
+    @Inject protected THBillingInteractorRx userInteractorRx;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)

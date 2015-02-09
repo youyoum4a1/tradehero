@@ -20,14 +20,13 @@ import timber.log.Timber;
 
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
 {
-    private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
+    public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
             BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
     public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
 
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
     @Inject protected CurrentUserId currentUserId;
-    @Inject protected THBillingInteractorRx userInteractorRx;
     @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
 
     protected Observable<PortfolioCompactDTOList> currentUserPortfolioCompactListObservable;

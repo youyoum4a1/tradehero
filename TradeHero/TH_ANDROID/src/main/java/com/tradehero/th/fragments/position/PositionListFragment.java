@@ -38,6 +38,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
@@ -121,6 +122,7 @@ public class PositionListFragment
     protected PositionItemAdapter positionItemAdapter;
 
     private int firstPositionVisible = 0;
+    @Inject protected THBillingInteractorRx userInteractorRx;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
@@ -425,7 +427,7 @@ public class PositionListFragment
                 userProfileCache.get(shownUser))
                 .subscribe(
                         pair -> linkWith(pair.second),
-                        this::handleUserProfileError));
+                        e -> THToast.show(R.string.error_fetch_user_profile)));
     }
 
     public void linkWith(UserProfileDTO userProfileDTO)
@@ -433,16 +435,6 @@ public class PositionListFragment
         this.userProfileDTO = userProfileDTO;
         displayHeaderView();
         positionItemAdapter.linkWith(userProfileDTO);
-    }
-
-    public void handleUserProfileError(Throwable e)
-    {
-        THToast.show(R.string.error_fetch_user_profile);
-    }
-
-    public boolean isShownOwnedPortfolioIdForOtherPeople(@Nullable OwnedPortfolioId ownedPortfolioId)
-    {
-        return ownedPortfolioId != null && ownedPortfolioId.portfolioId <= 0;
     }
 
     protected void fetchPortfolio()

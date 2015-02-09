@@ -21,6 +21,7 @@ import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
@@ -33,7 +34,7 @@ import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
+public class FollowerPayoutManagerFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_FOLLOWER_ID_BUNDLE =
             FollowerPayoutManagerFragment.class.getName() + ".followerId";

@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,10 +21,11 @@ import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemFactory;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
@@ -33,18 +35,21 @@ import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.system.SystemStatusCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
+import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Actions;
+import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 @Routable({
         "store", "store/:action"
 })
-public class StoreScreenFragment extends BasePurchaseManagerFragment
+public class StoreScreenFragment extends DashboardFragment
         implements WithTutorial
 {
     public static boolean alreadyNotifiedNeedCreateAccount = false;
@@ -53,17 +58,28 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
     @Inject SystemStatusCache systemStatusCache;
+    @Inject UserProfileCacheRx userProfileCacheRx;
 
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
     @InjectView(R.id.store_option_list) protected ListView listView;
     private StoreItemAdapter storeItemAdapter;
+    @NonNull protected SubscriptionList subscriptions;
+    @Inject protected THBillingInteractorRx userInteractorRx;
+    @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         thRouter.inject(this);
         storeItemAdapter = new StoreItemAdapter(getActivity());
+
+        subscriptions.add(AppObservable.bindFragment(this, userProfileCacheRx.get(currentUserId.toUserBaseKey()))
+                .subscribe(userProfileDTO-> {
+                    purchaseApplicableOwnedPortfolioId =
+                            new OwnedPortfolioId(userProfileDTO.second.portfolio.id, currentUserId.get());
+                    launchRoutedAction();
+                }));
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -144,17 +160,11 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                         Actions.empty()));
     }
 
-    @Override protected void handleReceivedPortfolioCompactList(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
-    {
-        super.handleReceivedPortfolioCompactList(portfolioCompactDTOs);
-        launchRoutedAction();
-    }
-
     protected void launchRoutedAction()
     {
         if (productDomainIdentifierOrdinal != null)
         {
-            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+            OwnedPortfolioId applicablePortfolioId = purchaseApplicableOwnedPortfolioId;
             if (applicablePortfolioId == null)
             {
                 Timber.e(new Exception("Null portfolio id"), "Even when received portfolio list");
@@ -245,11 +255,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle();
         HeroManagerFragment.putFollowerId(bundle, currentUserId.toUserBaseKey());
-        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
-        if (applicablePortfolio != null)
-        {
-            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
-        }
         pushFragment(HeroManagerFragment.class, bundle);
     }
 

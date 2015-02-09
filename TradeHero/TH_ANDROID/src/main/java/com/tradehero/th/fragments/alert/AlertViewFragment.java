@@ -25,11 +25,10 @@ import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -45,7 +44,7 @@ import rx.android.app.AppObservable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
-public class AlertViewFragment extends BasePurchaseManagerFragment
+public class AlertViewFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_ALERT_ID_BUNDLE = AlertViewFragment.class.getName() + ".alertId";
 
@@ -130,11 +129,12 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         {
             case R.id.alert_menu_edit:
                 Bundle bundle = new Bundle();
-                OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-                if (applicablePortfolioId != null)
-                {
-                    AlertEditFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
-                }
+//                OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+//                if (applicablePortfolioId != null)
+//                {
+////                    AlertEditFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
+//                    bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolioId.getArgs());
+//                }
                 AlertEditFragment.putAlertId(bundle, alertId);
                 navigator.get().pushFragment(AlertEditFragment.class, bundle, null);
                 return true;
