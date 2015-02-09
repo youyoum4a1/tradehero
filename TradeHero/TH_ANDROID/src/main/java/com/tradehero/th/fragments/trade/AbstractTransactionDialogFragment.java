@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.trade;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -55,7 +54,6 @@ import com.tradehero.th.persistence.position.PositionCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
@@ -101,8 +99,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     @Inject THBillingInteractorRx userInteractor;
     @Inject Lazy<DashboardNavigator> navigator;
-
-    protected ProgressDialog mTransactionDialog;
 
     protected Subscription buySellSubscription;
     protected SecurityId securityId;
@@ -246,7 +242,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         mQuantityEditText.removeTextChangedListener(mQuantityTextWatcher);
         mQuantityTextWatcher = null;
-        destroyTransactionDialog();
         unsubscribe(buySellSubscription);
         buySellSubscription = null;
         ButterKnife.reset(this);
@@ -432,15 +427,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     }
 
     protected abstract void displayQuickPriceButtonSet();
-
-    protected void dismissTransactionProgress()
-    {
-        if (mTransactionDialog != null)
-        {
-            mTransactionDialog.dismiss();
-        }
-        mTransactionDialog = null;
-    }
 
     protected abstract String getLabel();
 
@@ -661,11 +647,10 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 userInteractor.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
                 .subscribe(
                         result -> {
-                            dismissTransactionProgress();
                             userProfileCache.get(currentUserId.toUserBaseKey());
                             portfolioCompactListCache.get(currentUserId.toUserBaseKey());
                         },
-                        error -> dismissTransactionProgress()
+                        Actions.empty()
                 ));
     }
 
@@ -774,10 +759,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             TransactionFormDTO transactionFormDTO = getBuySellOrder();
             if (transactionFormDTO != null)
             {
-                dismissTransactionProgress();
-                mTransactionDialog = ProgressDialogUtil.show(getActivity(),
-                        R.string.processing, R.string.alert_dialog_please_wait);
-
                 unsubscribe(buySellSubscription);
                 buySellSubscription = getTransactionSubscription(transactionFormDTO);
             }
@@ -840,15 +821,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     }
 
     protected abstract void setBuyEventFor(SharingOptionsEvent.Builder builder);
-
-    private void destroyTransactionDialog()
-    {
-        if (mTransactionDialog != null && mTransactionDialog.isShowing())
-        {
-            mTransactionDialog.dismiss();
-        }
-        mTransactionDialog = null;
-    }
 
     private ActionMode.Callback createActionModeCallBackForQuantityEditText()
     {
@@ -1037,11 +1009,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
         @Override public void onCompleted()
         {
-            if (mTransactionDialog != null)
-            {
-                mTransactionDialog.dismiss();
-            }
-
             // FIXME should we dismiss the dialog on failure?
             getDialog().dismiss();
 

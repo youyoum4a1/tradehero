@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.settings;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -79,7 +78,6 @@ public class ProfileInfoView extends LinearLayout
     @Inject AccountManager accountManager;
     @Inject DashboardNavigator dashboardNavigator;
 
-    ProgressDialog progressDialog;
     private UserProfileDTO userProfileDTO;
     private String newImagePath;
     @NonNull protected SubscriptionList subscriptions;

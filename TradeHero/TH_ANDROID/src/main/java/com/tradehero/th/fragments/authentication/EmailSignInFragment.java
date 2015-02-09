@@ -22,7 +22,6 @@ import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.rx.ToastOnErrorAction;
@@ -30,7 +29,6 @@ import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.appsflyer.AppsFlyerConstants;
 import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
@@ -44,6 +42,7 @@ import javax.inject.Provider;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
@@ -53,7 +52,6 @@ import timber.log.Timber;
 
 public class EmailSignInFragment extends Fragment
 {
-    private ProgressDialog mProgressDialog;
     private View forgotDialogView;
 
     @Inject UserServiceWrapper userServiceWrapper;
@@ -68,7 +66,6 @@ public class EmailSignInFragment extends Fragment
     @InjectView(R.id.et_pwd_login) ValidatedPasswordText password;
     @InjectView(R.id.btn_login) View loginButton;
     Subscription validationSubscription;
-    private ProgressDialog progressDialog;
     private Observable<Pair<AuthData, UserProfileDTO>> signInObservable;
     private Subscription signInSubscription;
 
@@ -168,40 +165,37 @@ public class EmailSignInFragment extends Fragment
                         e -> Timber.e(e, "Error in validation"));
 
         signInObservable = ViewObservable.clicks(loginButton, false)
-                .map(view1 -> {
-                    DeviceUtil.dismissKeyboard(view1.view());
-                    return new AuthData(email.getText().toString(), password.getText().toString());
-                })
-                .doOnNext(AuthData -> progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
-                        getString(R.string.authentication_connecting_tradehero_only), true))
-                .map(authData -> loginSignUpFormDTOProvider.get()
-                        .authData(authData)
-                        .build())
-                .flatMap(loginSignUpFormDTO -> {
-                    AuthData authData = loginSignUpFormDTO.authData;
-                    Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
-                            authData.getTHToken(), loginSignUpFormDTO)
-                            .subscribeOn(AndroidSchedulers.mainThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .map(userLoginDTO -> userLoginDTO.profileDTO);
+                .flatMap(this::handleClick)
+                .retry();
+    }
 
-                    return Observable.zip(Observable.just(authData), userLoginDTOObservable, Pair::create)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread());
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
+    @NonNull protected Observable<Pair<AuthData, UserProfileDTO>> handleClick(@NonNull OnClickEvent event)
+    {
+        DeviceUtil.dismissKeyboard(event.view());
+        AuthData authData = new AuthData(email.getText().toString(), password.getText().toString());
+        LoginSignUpFormDTO signUpFormDTO = loginSignUpFormDTOProvider.get()
+                .authData(authData)
+                .build();
+        return signInProper(signUpFormDTO);
+    }
+
+    @NonNull protected Observable<Pair<AuthData, UserProfileDTO>> signInProper(LoginSignUpFormDTO loginSignUpFormDTO)
+    {
+        ProgressDialog progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
+            getString(R.string.authentication_connecting_tradehero_only), true);
+        AuthData authData = loginSignUpFormDTO.authData;
+        Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
+                authData.getTHToken(), loginSignUpFormDTO)
+                .map(userLoginDTO -> userLoginDTO.profileDTO);
+
+        return Observable.zip(Observable.just(authData), userLoginDTOObservable, Pair::create)
+                .subscribeOn(Schedulers.io())
                 .doOnNext(pair -> thAppsFlyer.sendTrackingWithEvent(AppsFlyerConstants.REGISTRATION_EMAIL))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(authDataActionProvider.get())
                 .doOnNext(new OpenDashboardAction(getActivity()))
                 .doOnError(new ToastOnErrorAction())
-                .doOnUnsubscribe(() -> {
-                    if (progressDialog != null)
-                    {
-                        progressDialog.dismiss();
-                    }
-                })
-                .retry();
+                .doOnUnsubscribe(progressDialog::dismiss);
     }
 
     @Override public void onResume()
@@ -249,28 +243,23 @@ public class EmailSignInFragment extends Fragment
         ForgotPasswordFormDTO forgotPasswordFormDTO = new ForgotPasswordFormDTO();
         forgotPasswordFormDTO.userEmail = email;
 
-        mProgressDialog = ProgressDialogUtil.show(
+        ProgressDialog mProgressDialog = ProgressDialog.show(
                 getActivity(),
-                R.string.alert_dialog_please_wait,
-                R.string.authentication_connecting_tradehero_only);
+                getString(R.string.alert_dialog_please_wait),
+                getString(R.string.authentication_connecting_tradehero_only),
+                true);
 
         unsubscribeForgotPassword();
         forgotPasswordSubscription = userServiceWrapper.forgotPasswordRx(forgotPasswordFormDTO)
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnEach(notification -> mProgressDialog.dismiss())
                 .subscribe(
                         this::onReceivedForgotPassword,
-                        this::onForgotPasswordFailed);
+                        new ToastOnErrorAction());
     }
 
     public void onReceivedForgotPassword(@NonNull ForgotPasswordDTO args)
     {
-        mProgressDialog.dismiss();
         THToast.show(R.string.authentication_thank_you_message_email);
-    }
-
-    public void onForgotPasswordFailed(Throwable e)
-    {
-        mProgressDialog.dismiss();
-        THToast.show(new THException(e));
     }
 }

@@ -4,16 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.preference.PreferenceFragment;
+import android.view.View;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
 
 public class ResetHelpScreensViewHolder extends OneSettingViewHolder
 {
     @NonNull private final BooleanPreference resetHelpScreen;
-    private ProgressDialog progressDialog;
 
     //<editor-fold desc="Constructors">
     @Inject public ResetHelpScreensViewHolder(
@@ -30,37 +29,31 @@ public class ResetHelpScreensViewHolder extends OneSettingViewHolder
 
     @Override protected void handlePrefClicked()
     {
+        ProgressDialog progressDialog = null;
+        View view = null;
         PreferenceFragment preferenceFragmentCopy = preferenceFragment;
         resetHelpScreen.set(true);
-        if (progressDialog == null)
-        {
-            if (preferenceFragmentCopy != null)
-            {
-                Context activityContext = preferenceFragmentCopy.getActivity();
-                if (activityContext != null)
-                {
-                    progressDialog = ProgressDialogUtil.show(
-                            activityContext,
-                            preferenceFragmentCopy.getString(R.string.settings_misc_reset_help_screen),
-                            "");
-                }
-            }
-        }
-        else
-        {
-            progressDialog.show();
-        }
         if (preferenceFragmentCopy != null)
         {
-            preferenceFragmentCopy.getView().postDelayed(new Runnable()
+            view = preferenceFragmentCopy.getView();
+            Context activityContext = preferenceFragmentCopy.getActivity();
+            if (activityContext != null)
+            {
+                progressDialog = ProgressDialog.show(activityContext,
+                        preferenceFragmentCopy.getString(R.string.settings_misc_reset_help_screen),
+                        "",
+                        true);
+            }
+        }
+
+        if (view != null && progressDialog != null)
+        {
+            final ProgressDialog finalProgressDialog = progressDialog;
+            view.postDelayed(new Runnable()
             {
                 @Override public void run()
                 {
-                    ProgressDialog progressDialogCopy = progressDialog;
-                    if (progressDialogCopy != null)
-                    {
-                        progressDialogCopy.hide();
-                    }
+                    finalProgressDialog.hide();
                 }
             }, 500);
         }

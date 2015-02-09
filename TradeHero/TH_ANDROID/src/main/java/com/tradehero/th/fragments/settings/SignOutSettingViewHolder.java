@@ -8,23 +8,24 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.preference.PreferenceFragment;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Actions;
 import timber.log.Timber;
@@ -35,8 +36,6 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
     @NonNull private final String authHeader;
     @NonNull private final Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap;
     @NonNull private final AccountManager accountManager;
-    @Nullable private ProgressDialog progressDialog;
-    @Nullable private Subscription logoutSubscription;
 
     //<editor-fold desc="Constructors">
     @Inject public SignOutSettingViewHolder(
@@ -51,12 +50,6 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
         this.accountManager = accountManager;
     }
     //</editor-fold>
-
-    @Override public void destroyViews()
-    {
-        dismissProgressDialog();
-        super.destroyViews();
-    }
 
     @Override protected int getStringKeyResId()
     {
@@ -95,41 +88,42 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
 
     protected void effectSignOut()
     {
+        ProgressDialog progressDialog = null;
         PreferenceFragment preferenceFragmentCopy = preferenceFragment;
-        Activity activityContext = null;
         if (preferenceFragmentCopy != null)
         {
-            activityContext = preferenceFragmentCopy.getActivity();
-        }
-        if (progressDialog == null)
-        {
+            Activity activityContext = preferenceFragmentCopy.getActivity();
             if (activityContext != null)
             {
-                progressDialog = ProgressDialogUtil.show(
+                progressDialog = ProgressDialog.show(
                         activityContext,
-                        R.string.settings_misc_sign_out_alert_title,
-                        R.string.settings_misc_sign_out_alert_message);
+                        activityContext.getString(R.string.settings_misc_sign_out_alert_title),
+                        activityContext.getString(R.string.settings_misc_sign_out_alert_message),
+                        true);
+                progressDialog.setCancelable(true);
+                progressDialog.setCanceledOnTouchOutside(true);
             }
         }
-        else
-        {
-            progressDialog.show();
-        }
-        if (progressDialog != null)
-        {
-            progressDialog.setCancelable(true);
-            progressDialog.setCanceledOnTouchOutside(true);
-        }
 
-        unsubscribe(logoutSubscription);
-        logoutSubscription = sessionServiceWrapper.logoutRx()
+        final ProgressDialog finalProgressDialog = progressDialog;
+        subscriptions.add(sessionServiceWrapper.logoutRx()
                 .observeOn(AndroidSchedulers.mainThread())
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        if (finalProgressDialog != null)
+                        {
+                            finalProgressDialog.dismiss();
+                        }
+                    }
+                })
                 .subscribe(
-                        this::onSignedOut,
-                        this::onSignOutError);
+                        profile -> onSignedOut(profile, finalProgressDialog),
+                        e -> onSignOutError(e, finalProgressDialog)));
     }
 
-    protected void onSignedOut(@SuppressWarnings("UnusedParameters") UserProfileDTO userProfileDTO)
+    protected void onSignedOut(@SuppressWarnings("UnusedParameters") UserProfileDTO userProfileDTO, @Nullable ProgressDialog progressDialog)
     {
         for (Map.Entry<SocialNetworkEnum, AuthenticationProvider> entry : authenticationProviderMap.entrySet())
         {
@@ -148,31 +142,27 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
             }
         }
 
-        dismissProgressDialog();
+        if (progressDialog != null)
+        {
+            progressDialog.dismiss();
+        }
     }
 
-    protected void onSignOutError(Throwable e)
+    protected void onSignOutError(Throwable e, @Nullable ProgressDialog progressDialog)
     {
         Timber.e(e, "Failed to sign out");
-        ProgressDialog progressDialogCopy = progressDialog;
-        if (progressDialogCopy != null)
+        if (progressDialog != null)
         {
             progressDialog.setTitle(R.string.settings_misc_sign_out_failed);
             progressDialog.setMessage("");
+            Observable.just(0)
+                    .delay(3000, TimeUnit.MILLISECONDS)
+                    .doOnCompleted(progressDialog::dismiss)
+                    .subscribe(Actions.empty(), Actions.empty());
         }
-        Observable.just(0)
-                .delay(3000, TimeUnit.MILLISECONDS)
-                .doOnCompleted(SignOutSettingViewHolder.this::dismissProgressDialog)
-                .subscribe(Actions.empty(), Actions.empty());
-    }
-
-    private void dismissProgressDialog()
-    {
-        ProgressDialog progressDialogCopy = progressDialog;
-        if (progressDialogCopy != null)
+        else
         {
-            progressDialogCopy.dismiss();
+            THToast.show(new THException(e));
         }
-        progressDialog = null;
     }
 }

@@ -27,7 +27,6 @@ import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -45,13 +44,11 @@ import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 import timber.log.Timber;
 
@@ -80,7 +77,6 @@ public class BuySellStockFragment extends BuySellFragment
 
     private PortfolioCompactDTO defaultPortfolio;
 
-    @Nullable protected Subscription userWatchlistPositionCacheSubscription;
     @Nullable protected WatchlistPositionDTOList watchedList;
 
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
@@ -118,26 +114,11 @@ public class BuySellStockFragment extends BuySellFragment
         analytics.fireEvent(new ChartTimeEvent(securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
     }
 
-    @Override public void onStop()
-    {
-        unsubscribe(userWatchlistPositionCacheSubscription);
-        userWatchlistPositionCacheSubscription = null;
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         bottomViewPagerAdapter = null;
         defaultPortfolio = null;
         super.onDestroyView();
-    }
-
-    @Override public void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        ProgressDialogUtil.dismiss(getActivity());
-        unsubscribe(userWatchlistPositionCacheSubscription);
-        userWatchlistPositionCacheSubscription = null;
     }
 
     public void fetchAlertCompactList()
@@ -168,11 +149,10 @@ public class BuySellStockFragment extends BuySellFragment
 
     public void fetchWatchlist()
     {
-        unsubscribe(userWatchlistPositionCacheSubscription);
-        userWatchlistPositionCacheSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userWatchlistPositionCache.get(currentUserId.toUserBaseKey()))
-                .subscribe(createUserWatchlistCacheObserver());
+                .subscribe(createUserWatchlistCacheObserver()));
     }
 
     @NonNull protected Observer<Pair<UserBaseKey, WatchlistPositionDTOList>> createUserWatchlistCacheObserver()

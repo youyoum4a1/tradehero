@@ -23,10 +23,9 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
@@ -38,7 +37,6 @@ public class LocationListFragment extends DashboardFragment
 {
     private LocationAdapter mListAdapter;
     @Nullable private Subscription updateCountryCodeSubscription;
-    private ProgressDialog progressDialog;
     protected UserProfileDTO currentUserProfile;
 
     @Inject Context context;
@@ -102,7 +100,6 @@ public class LocationListFragment extends DashboardFragment
         listView.setOnScrollListener(null);
         listView.setEmptyView(null);
         ButterKnife.reset(this);
-        progressDialog = null;
         super.onDestroyView();
     }
 
@@ -156,7 +153,6 @@ public class LocationListFragment extends DashboardFragment
             int position,
             @SuppressWarnings("UnusedParameters") long l)
     {
-        getProgressDialog().show();
         updateCountryCode(((ListedLocationDTO) adapterView.getItemAtPosition(position)).country.name());
     }
 
@@ -171,6 +167,8 @@ public class LocationListFragment extends DashboardFragment
             return;
         }
 
+        ProgressDialog progressDialog = getProgressDialogOld();
+
         UpdateCountryCodeFormDTO updateCountryCodeFormDTO = new UpdateCountryCodeFormDTO(countryCode);
         unsubscribe(updateCountryCodeSubscription);
         updateCountryCodeSubscription = AppObservable.bindFragment(
@@ -178,29 +176,23 @@ public class LocationListFragment extends DashboardFragment
                 userServiceWrapperLazy.get().updateCountryCodeRx(
                         currentUserId.toUserBaseKey(), updateCountryCodeFormDTO))
                 .observeOn(AndroidSchedulers.mainThread())
+                .finallyDo(progressDialog::dismiss)
                 .subscribe(
                         args -> backToSettings(),
-                        e -> {
-                            THToast.show(new THException(e));
-                            getProgressDialog().hide();
-                        });
+                        new ToastOnErrorAction());
     }
 
     private void backToSettings()
     {
-        getProgressDialog().hide();
         navigator.get().popFragment();
     }
 
-    private ProgressDialog getProgressDialog()
+    private ProgressDialog getProgressDialogOld()
     {
-        if (progressDialog != null)
-        {
-            return progressDialog;
-        }
-        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading,
-                R.string.alert_dialog_please_wait);
-        progressDialog.hide();
-        return progressDialog;
+        return ProgressDialog.show(
+                getActivity(),
+                getString(R.string.loading_loading),
+                getString(R.string.alert_dialog_please_wait),
+                true);
     }
 }

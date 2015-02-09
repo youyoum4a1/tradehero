@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.app.ProgressDialog;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.support.annotation.NonNull;
@@ -12,7 +13,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -117,16 +117,18 @@ public class PushNotificationSettingViewHolder extends UserProfileCheckBoxSettin
         PreferenceFragment preferenceFragmentCopy = preferenceFragment;
         if (preferenceFragmentCopy != null)
         {
-            progressDialog = ProgressDialogUtil.show(preferenceFragmentCopy.getActivity(),
-                    R.string.settings_notifications_push_alert_title,
-                    R.string.settings_notifications_push_alert_message);
-            unsubscribe(updatePropertySubscription);
-            updatePropertySubscription = userServiceWrapper.updateProfilePropertyPushNotificationsRx(
+            ProgressDialog progressDialog = ProgressDialog.show(
+                    preferenceFragmentCopy.getActivity(),
+                    preferenceFragmentCopy.getActivity().getString(R.string.settings_notifications_push_alert_title),
+                    preferenceFragmentCopy.getActivity().getString(R.string.settings_notifications_push_alert_message),
+                    true);
+            subscriptions.add(userServiceWrapper.updateProfilePropertyPushNotificationsRx(
                     currentUserId.toUserBaseKey(), enable)
                     .observeOn(AndroidSchedulers.mainThread())
+                    .finallyDo(progressDialog::dismiss)
                     .subscribe(
                             this::onProfileUpdated,
-                            this::onProfileUpdateFailed);
+                            this::onProfileUpdateFailed));
         }
         return false;
     }

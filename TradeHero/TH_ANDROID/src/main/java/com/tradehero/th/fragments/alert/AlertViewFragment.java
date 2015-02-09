@@ -29,14 +29,13 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
@@ -72,7 +71,6 @@ public class AlertViewFragment extends DashboardFragment
     private SecurityCompactDTO securityCompactDTO;
     private AlertEventAdapter alertEventAdapter;
     private AlertId alertId;
-    private ProgressDialog progressDialog;
 
     private CompoundButton.OnCheckedChangeListener alertToggleCheckedChangeListener;
 
@@ -171,13 +169,17 @@ public class AlertViewFragment extends DashboardFragment
         this.alertId = alertId;
         if (alertId != null)
         {
-            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
+            ProgressDialog progressDialog = ProgressDialog.show(
+                    getActivity(),
+                    getString(R.string.loading_loading),
+                    getString(R.string.alert_dialog_please_wait),
+                    true);
             progressDialog.setCanceledOnTouchOutside(true);
             unsubscribe(alertCacheSubscription);
             alertCacheSubscription = AppObservable.bindFragment(this,
                     alertCache.get().get(alertId))
                     .map(new PairGetSecond<>())
-                    .finallyDo(this::hideProgressDialog)
+                    .finallyDo(progressDialog::dismiss)
                     .subscribe(
                             this::linkWith,
                             e -> {
@@ -319,7 +321,11 @@ public class AlertViewFragment extends DashboardFragment
 
     private void handleAlertToggleChanged(boolean alertActive)
     {
-        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
+        ProgressDialog progressDialog = ProgressDialog.show(
+                getActivity(),
+                getString(R.string.loading_loading),
+                getString(R.string.alert_dialog_please_wait),
+                true);
         progressDialog.setCanceledOnTouchOutside(true);
 
         if (alertDTO != null)
@@ -334,23 +340,15 @@ public class AlertViewFragment extends DashboardFragment
             updateAlertSubscription = AppObservable.bindFragment(
                     this,
                     alertServiceWrapper.get().updateAlertRx(alertId, alertFormDTO))
-                    .finallyDo(this::hideProgressDialog)
+                    .finallyDo(progressDialog::dismiss)
                     .subscribe(
                             this::handleAlertUpdated,
-                            e -> THToast.show(new THException(e)));
+                            new ToastOnErrorAction());
         }
     }
 
     public void handleAlertUpdated(@NonNull AlertCompactDTO alertCompactDTO)
     {
         displayActiveUntil();
-    }
-
-    protected void hideProgressDialog()
-    {
-        if (progressDialog != null)
-        {
-            progressDialog.dismiss();
-        }
     }
 }

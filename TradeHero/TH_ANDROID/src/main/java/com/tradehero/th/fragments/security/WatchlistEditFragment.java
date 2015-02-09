@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.security;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,16 +25,14 @@ import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Observer;
-import rx.Subscription;
 import rx.android.app.AppObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class WatchlistEditFragment extends DashboardFragment
@@ -51,10 +48,6 @@ public class WatchlistEditFragment extends DashboardFragment
     private SecurityCompactDTO securityCompactDTO;
     private TextView watchAction;
     private TextView deleteButton;
-    @Nullable private ProgressDialog progressBar;
-
-    @Nullable private Subscription updateSubscription;
-    @Nullable private Subscription deleteSubscription;
 
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject Lazy<WatchlistPositionCacheRx> watchlistPositionCache;
@@ -126,61 +119,53 @@ public class WatchlistEditFragment extends DashboardFragment
 
     private void handleWatchButtonClicked()
     {
-        showProgressBar();
+        ProgressDialog progressDialog = showProgressBarOld();
         try
         {
             double price = Double.parseDouble(watchPrice.getText().toString());
             int quantity = Integer.parseInt(watchQuantity.getText().toString());
             if (quantity == 0)
             {
-                 throw new Exception(getString(R.string.watchlist_quantity_should_not_be_zero));
+                throw new Exception(getString(R.string.watchlist_quantity_should_not_be_zero));
             }
             // add new watchlist
             WatchlistPositionFormDTO watchPositionItemForm = new WatchlistPositionFormDTO(securityCompactDTO.id, price, quantity);
 
             WatchlistPositionDTO existingWatchlistPosition = watchlistPositionCache.get().getCachedValue(securityCompactDTO.getSecurityId());
-            unsubscribe(updateSubscription);
+            Observable<WatchlistPositionDTO> updateObservable;
             if (existingWatchlistPosition != null)
             {
-                updateSubscription = AppObservable.bindFragment(
-                        this,
-                        watchlistServiceWrapper.updateWatchlistEntryRx(
+                updateObservable = watchlistServiceWrapper.updateWatchlistEntryRx(
                         existingWatchlistPosition.getPositionCompactId(),
-                        watchPositionItemForm))
-                        .subscribe(createWatchlistUpdateObserver());
+                        watchPositionItemForm);
             }
             else
             {
-                updateSubscription = AppObservable.bindFragment(
-                        this,
-                        watchlistServiceWrapper.createWatchlistEntryRx(
-                        watchPositionItemForm))
-                        .subscribe(createWatchlistUpdateObserver());
+                updateObservable = watchlistServiceWrapper.createWatchlistEntryRx(watchPositionItemForm);
             }
-        }
-        catch (NumberFormatException ex)
+            onStopSubscriptions.add(AppObservable.bindFragment(this, updateObservable)
+                    .finallyDo(progressDialog::dismiss)
+                    .subscribe(createWatchlistUpdateObserver()));
+        } catch (NumberFormatException ex)
         {
             THToast.show(getString(R.string.wrong_number_format));
             Timber.e("Parsing error", ex);
-            dismissProgress();
-        }
-        catch (Exception ex)
+        } catch (Exception ex)
         {
             THToast.show(ex.getMessage());
-            dismissProgress();
+        } finally
+        {
+            progressDialog.dismiss();
         }
     }
 
-    private void showProgressBar()
+    private ProgressDialog showProgressBarOld()
     {
-        if (progressBar != null)
-        {
-            progressBar.show();
-        }
-        else
-        {
-            progressBar = ProgressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.watchlist_updating);
-        }
+        return ProgressDialog.show(
+                getActivity(),
+                getString(R.string.alert_dialog_please_wait),
+                getString(R.string.watchlist_updating),
+                true);
     }
 
     @NonNull private View.OnClickListener createOnDeleteButtonClickedListener()
@@ -200,44 +185,23 @@ public class WatchlistEditFragment extends DashboardFragment
         WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().getCachedValue(securityKeyId);
         if (watchlistPositionDTO != null)
         {
-            showProgressBar();
-            unsubscribe(deleteSubscription);
-            deleteSubscription = AppObservable.bindFragment(
+            ProgressDialog progressDialog = showProgressBarOld();
+            onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
                     watchlistServiceWrapper.deleteWatchlistRx(watchlistPositionDTO.getPositionCompactId()))
-                    .subscribe(createWatchlistDeleteObserver());
+                    .finallyDo(progressDialog::dismiss)
+                    .subscribe(createWatchlistDeleteObserver()));
         }
         else
         {
             THToast.show(R.string.error_fetch_portfolio_watchlist);
         }
-
     }
-
 
     @Override public void onResume()
     {
         super.onResume();
         linkWith(getSecurityId(getArguments()), true);
-    }
-
-    @Override public void onDestroyView()
-    {
-        unsubscribe(updateSubscription);
-        updateSubscription = null;
-        unsubscribe(deleteSubscription);
-        deleteSubscription = null;
-        dismissProgress();
-        super.onDestroyView();
-    }
-
-    @Override public void onSaveInstanceState(Bundle outState)
-    {
-        unsubscribe(updateSubscription);
-        updateSubscription = null;
-        unsubscribe(deleteSubscription);
-        deleteSubscription = null;
-        super.onSaveInstanceState(outState);
     }
 
     private void linkWith(@NonNull SecurityId securityId, boolean andDisplay)
@@ -272,30 +236,19 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    private void dismissProgress()
-    {
-        ProgressDialog progressBarCopy = progressBar;
-        if (progressBarCopy != null)
-        {
-            progressBarCopy.dismiss();
-        }
-        progressBar = null;
-    }
-
     private void querySecurity(@NonNull SecurityId securityId, final boolean andDisplay)
     {
-        if (progressBar != null)
-        {
-            progressBar.show();
-        }
-        else
-        {
-            progressBar = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait), getString(R.string.loading_loading), true);
-        }
+        ProgressDialog progressDialog = ProgressDialog.show(
+                getActivity(),
+                getString(R.string.alert_dialog_please_wait),
+                getString(R.string.loading_loading),
+                true);
 
-        AppObservable.bindFragment(this, securityCompactCache.get(securityId))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createSecurityCompactCacheObserver());
+        onStopSubscriptions.add(AppObservable.bindFragment(
+                this,
+                securityCompactCache.get(securityId))
+                .finallyDo(progressDialog::dismiss)
+                .subscribe(createSecurityCompactCacheObserver()));
     }
 
     private void linkWith(@NonNull SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -368,10 +321,6 @@ public class WatchlistEditFragment extends DashboardFragment
             {
                 navigator.get().popFragment();
             }
-            else
-            {
-                dismissProgress();
-            }
         }
     }
 
@@ -383,7 +332,6 @@ public class WatchlistEditFragment extends DashboardFragment
             {
                 navigator.get().popFragment();
             }
-            dismissProgress();
         }
 
         @Override public void onCompleted()
@@ -394,7 +342,6 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             Timber.e(e, "Failed to update watchlist position");
             THToast.show(new THException(e));
-            dismissProgress();
         }
     }
 
@@ -407,7 +354,6 @@ public class WatchlistEditFragment extends DashboardFragment
     {
         @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
         {
-            dismissProgress();
             linkWith(pair.second, true);
         }
 
@@ -417,7 +363,6 @@ public class WatchlistEditFragment extends DashboardFragment
 
         @Override public void onError(Throwable e)
         {
-            dismissProgress();
             THToast.show(R.string.error_fetch_security_info);
             Timber.e("Failed to fetch SecurityCompact for", e);
         }

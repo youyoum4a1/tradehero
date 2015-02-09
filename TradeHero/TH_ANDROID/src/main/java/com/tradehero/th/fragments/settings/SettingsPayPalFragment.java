@@ -22,15 +22,13 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 import timber.log.Timber;
 
@@ -38,10 +36,6 @@ public class SettingsPayPalFragment extends DashboardFragment
 {
     @InjectView(R.id.settings_paypal_email_text) protected ServerValidatedEmailText paypalEmailText;
     @InjectView(R.id.settings_paypal_update_button) protected Button submitButton;
-    private ProgressDialog progressDialog;
-
-    @Nullable private Subscription userProfileSubscription;
-    @Nullable private Subscription updatePayPalEmailSubscription;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject UserProfileCacheRx userProfileCache;
@@ -81,15 +75,6 @@ public class SettingsPayPalFragment extends DashboardFragment
     }
     //</editor-fold>
 
-    @Override public void onStop()
-    {
-        super.onStop();
-        unsubscribe(userProfileSubscription);
-        userProfileSubscription = null;
-        unsubscribe(updatePayPalEmailSubscription);
-        updatePayPalEmailSubscription = null;
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
@@ -98,14 +83,13 @@ public class SettingsPayPalFragment extends DashboardFragment
 
     protected void fetchUserProfile()
     {
-        unsubscribe(userProfileSubscription);
-        userProfileSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>()))
                 .subscribe(
                         this::onUserProfileReceived,
-                        this::onUserProfileError);
+                        this::onUserProfileError));
     }
 
     protected void onUserProfileReceived(@NonNull UserProfileDTO profile)
@@ -126,19 +110,20 @@ public class SettingsPayPalFragment extends DashboardFragment
     @OnClick(R.id.settings_paypal_update_button)
     public void onSubmitClicked(@SuppressWarnings("UnusedParameters") View view)
     {
-        progressDialog = ProgressDialogUtil.show(
+        ProgressDialog progressDialog = ProgressDialog.show(
                 getActivity(),
-                R.string.alert_dialog_please_wait,
-                R.string.authentication_connecting_tradehero_only);
+                getString(R.string.alert_dialog_please_wait),
+                getString(R.string.authentication_connecting_tradehero_only),
+                true);
         UpdatePayPalEmailFormDTO emailDTO = new UpdatePayPalEmailFormDTO();
         emailDTO.newPayPalEmailAddress = paypalEmailText.getText().toString();
-        unsubscribe(updatePayPalEmailSubscription);
-        updatePayPalEmailSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userServiceWrapper.updatePayPalEmailRx(currentUserId.toUserBaseKey(), emailDTO))
+                .finallyDo(progressDialog::dismiss)
                 .subscribe(
                         this::onPayPalUpdated,
-                        this::onPayPalUpdateError);
+                        new ToastOnErrorAction()));
     }
 
     protected void onPayPalUpdated(@SuppressWarnings("UnusedParameters") @NonNull UpdatePayPalEmailDTO args)
@@ -146,17 +131,7 @@ public class SettingsPayPalFragment extends DashboardFragment
         if (!isDetached())
         {
             THToast.show(getString(R.string.settings_paypal_successful_update));
-            progressDialog.hide();
             navigator.get().popFragment();
-        }
-    }
-
-    protected void onPayPalUpdateError(@NonNull Throwable e)
-    {
-        if (!isDetached())
-        {
-            THToast.show(new THException(e));
-            progressDialog.hide();
         }
     }
 }

@@ -43,13 +43,14 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
-import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import rx.Notification;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 abstract public class BaseAlertEditFragment extends DashboardFragment
@@ -85,10 +86,7 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
 
     protected SecurityId securityId;
     protected AlertDTO alertDTO;
-    @Nullable protected Subscription securitySubscription;
     protected SecurityCompactDTO securityCompactDTO;
-    @Nullable protected Subscription alertSlotSubscription;
-    protected ProgressDialog progressDialog;
     @Inject protected THBillingInteractorRx userInteractorRx;
 
     protected CompoundButton.OnCheckedChangeListener createTargetPriceCheckedChangeListener()
@@ -174,15 +172,6 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void onStop()
-    {
-        unsubscribe(securitySubscription);
-        securitySubscription = null;
-        unsubscribe(alertSlotSubscription);
-        alertSlotSubscription = null;
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         scrollView.setOnScrollChangedListener(null);
@@ -196,31 +185,29 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
 
     protected void linkWith(@NonNull SecurityId securityId)
     {
-        if (!securityId.equals(this.securityId))
-        {
-            unsubscribe(securitySubscription);
-            securitySubscription = null;
-        }
         this.securityId = securityId;
-
-        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
         fetchSecurityCompact();
     }
 
     protected void fetchSecurityCompact()
     {
-        unsubscribe(securitySubscription);
-        securitySubscription = AppObservable.bindFragment(this, securityCompactCache.get(securityId))
+        ProgressDialog progressDialog = ProgressDialog.show(
+                getActivity(),
+                getString(R.string.loading_loading),
+                getString(R.string.alert_dialog_please_wait),
+                true);
+        onStopSubscriptions.add(AppObservable.bindFragment(this, securityCompactCache.get(securityId))
                 .map(new PairGetSecond<>())
+                .doOnEach(new Action1<Notification<? super SecurityCompactDTO>>()
+                {
+                    @Override public void call(Notification<? super SecurityCompactDTO> notif)
+                    {
+                        progressDialog.dismiss();
+                    }
+                })
                 .subscribe(
-                        value -> {
-                            hideDialog();
-                            linkWith(value);
-                        },
-                        e -> {
-                            hideDialog();
-                            THToast.show(new THException(e));
-                        });
+                        this::linkWith,
+                        new ToastOnErrorAction()));
     }
 
     @Nullable protected AlertFormDTO getFormDTO()
@@ -256,16 +243,23 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
         }
         else
         {
-            unsubscribe(alertSlotSubscription);
-            alertSlotSubscription = AppObservable.bindFragment(
+            ProgressDialog progressDialog = ProgressDialog.show(
+                    getActivity(),
+                    getString(R.string.loading_loading),
+                    getString(R.string.alert_dialog_please_wait),
+                    true);
+            progressDialog.show();
+            progressDialog.setCanceledOnTouchOutside(true);
+            onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
                     securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey())
-                    .take(1)
-                    .flatMap(this::conditionalPopPurchaseRx)
-                    .flatMap(alertSlot -> this.saveAlertRx(alertFormDTO)))
+                            .take(1)
+                            .flatMap(this::conditionalPopPurchaseRx)
+                            .flatMap(alertSlot -> this.saveAlertRx(alertFormDTO)))
+                    .finallyDo(progressDialog::dismiss)
                     .subscribe(
                             this::handleAlertUpdated,
-                            this::handleAlertUpdateFailed);
+                            this::handleAlertUpdateFailed));
         }
     }
 
@@ -284,9 +278,6 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
     {
         if (alertFormDTO.active) // TODO decide whether we need to submit even when it is inactive
         {
-            progressDialog = ProgressDialogUtil.create(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
-            progressDialog.show();
-            progressDialog.setCanceledOnTouchOutside(true);
             return saveAlertProperRx(alertFormDTO);
         }
         else
@@ -655,20 +646,10 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
     protected void handleAlertUpdated(@NonNull AlertCompactDTO alertCompactDTO)
     {
         navigator.get().popFragment();
-        hideDialog();
     }
 
     protected void handleAlertUpdateFailed(@NonNull Throwable e)
     {
         THToast.show(new THException(e));
-        hideDialog();
-    }
-
-    private void hideDialog()
-    {
-        if (progressDialog != null)
-        {
-            progressDialog.hide();
-        }
     }
 }

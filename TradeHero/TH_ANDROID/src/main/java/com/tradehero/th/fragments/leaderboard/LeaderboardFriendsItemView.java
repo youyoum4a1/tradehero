@@ -34,10 +34,9 @@ import com.tradehero.th.fragments.social.friend.SocialFriendHandlerFacebook;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -63,7 +62,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     @Nullable private UserFriendsDTO userFriendsDTO;
     @Nullable private Subscription inviteSubscription;
-    private ProgressDialog progressDialog;
     protected UserProfileDTO currentUserProfileDTO;
     @Inject CurrentUserId currentUserId;
     @Inject Picasso picasso;
@@ -255,14 +253,15 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             }
             InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
             inviteFriendForm.add(userFriendsDTO);
-            getProgressDialog().show();
+            ProgressDialog progressDialog = getProgressDialog();
             detachInviteSubscription();
             inviteSubscription = userServiceWrapperLazy.get()
                     .inviteFriendsRx(currentUserId.toUserBaseKey(), inviteFriendForm)
                     .observeOn(AndroidSchedulers.mainThread())
+                    .finallyDo(progressDialog::dismiss)
                     .subscribe(
                             this::onInvitationDone,
-                            this::onInvitationError);
+                            new ToastOnErrorAction());
         }
         else if (userFriendsDTO instanceof UserFriendsFacebookDTO)
         {
@@ -329,26 +328,14 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     protected void onInvitationDone(BaseResponseDTO args)
     {
         THToast.show(R.string.invite_friend_success);
-        getProgressDialog().hide();
-    }
-
-    protected void onInvitationError(Throwable e)
-    {
-        THToast.show(new THException(e));
-        getProgressDialog().hide();
     }
 
     private ProgressDialog getProgressDialog()
     {
-        if (progressDialog != null)
-        {
-            return progressDialog;
-        }
-        progressDialog = ProgressDialogUtil.show(
+        return ProgressDialog.show(
                 activityProvider.get(),
-                R.string.loading_loading,
-                R.string.alert_dialog_please_wait);
-        progressDialog.hide();
-        return progressDialog;
+                activityProvider.get().getString(R.string.loading_loading),
+                activityProvider.get().getString(R.string.alert_dialog_please_wait),
+                true);
     }
 }

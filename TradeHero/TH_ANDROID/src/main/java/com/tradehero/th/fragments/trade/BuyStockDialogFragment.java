@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -90,9 +91,16 @@ public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragme
 
     @Override protected Subscription getTransactionSubscription(TransactionFormDTO transactionFormDTO)
     {
+        ProgressDialog progressDialog = ProgressDialog.show(
+                getActivity(),
+                getActivity().getString(R.string.processing),
+                getActivity().getString(R.string.alert_dialog_please_wait),
+                true);
+
         return AppObservable.bindFragment(
                 this,
                 securityServiceWrapper.doTransactionRx(securityId, transactionFormDTO, IS_BUY))
+                .finallyDo(progressDialog::dismiss)
                 .subscribe(new BuySellObserver(IS_BUY));
     }
 

@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -27,7 +28,6 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.MakePairFunc2;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
 import dagger.Lazy;
@@ -116,11 +116,12 @@ public class SettingsProfileFragment extends DashboardFragment implements Valida
         }
         else
         {
-            profileView.progressDialog = ProgressDialogUtil.show(
+            ProgressDialog progressDialog = ProgressDialog.show(
                     getActivity(),
-                    R.string.alert_dialog_please_wait,
-                    R.string.authentication_connecting_tradehero_only);
-            profileView.progressDialog.setCancelable(true);
+                    getString(R.string.alert_dialog_please_wait),
+                    getString(R.string.authentication_connecting_tradehero_only),
+                    true);
+            progressDialog.setCancelable(true);
 
             onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
@@ -135,12 +136,12 @@ public class SettingsProfileFragment extends DashboardFragment implements Valida
                                         new MakePairFunc2<>());
                             }))
                     .doOnNext(pair -> {
-                        profileView.progressDialog.hide(); // Before otherwise it is reset
                         THToast.show(R.string.settings_update_profile_successful);
                         authDataActionProvider.get().call(pair);
                         navigator.get().popFragment();
                     })
                     .doOnError(error -> THToast.show(R.string.error_update_your_user_profile))
+                    .finallyDo(progressDialog::dismiss)
                     .subscribe(Actions.empty(), Actions.empty()));
         }
     }

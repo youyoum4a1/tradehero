@@ -21,27 +21,20 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
-import rx.Subscription;
 import rx.android.app.AppObservable;
-import timber.log.Timber;
 
 public class SettingsAlipayFragment extends DashboardFragment
 {
     @InjectView(R.id.settings_alipay_email_text) protected ServerValidatedEmailText alipayAccountText;
     @InjectView(R.id.settings_alipay_id_text) protected ServerValidatedEmailText alipayAccountIDText;
     @InjectView(R.id.settings_alipay_realname_text) protected ServerValidatedEmailText alipayAccountRealNameText;
-    private ProgressDialog progressDialog;
-
-    @Nullable private Subscription userProfileCacheSubscription;
-    @Nullable private Subscription updateAlipayAccountSubscription;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject UserProfileCacheRx userProfileCache;
@@ -85,15 +78,6 @@ public class SettingsAlipayFragment extends DashboardFragment
     }
     //</editor-fold>
 
-    @Override public void onStop()
-    {
-        super.onStop();
-        unsubscribe(userProfileCacheSubscription);
-        userProfileCacheSubscription = null;
-        unsubscribe(updateAlipayAccountSubscription);
-        updateAlipayAccountSubscription = null;
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
@@ -102,14 +86,13 @@ public class SettingsAlipayFragment extends DashboardFragment
 
     protected void fetchUserProfile()
     {
-        unsubscribe(userProfileCacheSubscription);
-        userProfileCacheSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>()))
                 .subscribe(
                         this::onUserProfileReceived,
-                        this::onUserProfileError);
+                        this::onUserProfileError));
     }
 
     protected void onUserProfileReceived(@NonNull UserProfileDTO profileDTO)
@@ -129,22 +112,23 @@ public class SettingsAlipayFragment extends DashboardFragment
     @OnClick(R.id.settings_alipay_update_button)
     public void onSubmitClicked(@SuppressWarnings("UnusedParameters") View view)
     {
-        progressDialog = ProgressDialogUtil.show(
+        ProgressDialog progressDialog = ProgressDialog.show(
                 getActivity(),
-                R.string.alert_dialog_please_wait,
-                R.string.authentication_connecting_tradehero_only);
+                getString(R.string.alert_dialog_please_wait),
+                getString(R.string.authentication_connecting_tradehero_only),
+                true);
         UpdateAlipayAccountFormDTO accountDTO = new UpdateAlipayAccountFormDTO();
         accountDTO.newAlipayAccount = alipayAccountText.getText().toString();
         accountDTO.userIdentityNumber = alipayAccountIDText.getText().toString();
         accountDTO.userRealName = alipayAccountRealNameText.getText().toString();
-        unsubscribe(updateAlipayAccountSubscription);
-        updateAlipayAccountSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userServiceWrapper.updateAlipayAccountRx(
                         currentUserId.toUserBaseKey(), accountDTO))
+                .finallyDo(progressDialog::dismiss)
                 .subscribe(
                         this::onAlipayUpdateReceived,
-                        this::onAlipayUpdateError);
+                        new ToastOnErrorAction()));
     }
 
     protected void onAlipayUpdateReceived(@NonNull UpdateAlipayAccountDTO args)
@@ -152,18 +136,7 @@ public class SettingsAlipayFragment extends DashboardFragment
         if (!isDetached())
         {
             THToast.show(getString(R.string.settings_alipay_successful_update));
-            progressDialog.hide();
             navigator.get().popFragment();
-        }
-    }
-
-    protected void onAlipayUpdateError(@NonNull Throwable e)
-    {
-        Timber.e(e, "Failed to update the Alipay account");
-        if (!isDetached())
-        {
-            THToast.show(new THException(e));
-            progressDialog.hide();
         }
     }
 }

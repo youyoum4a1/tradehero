@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.settings;
 
-import android.app.ProgressDialog;
 import android.support.annotation.NonNull;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
@@ -19,7 +18,6 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
     @NonNull protected final UserProfileCacheRx userProfileCache;
     @NonNull protected final UserServiceWrapper userServiceWrapper;
 
-    protected ProgressDialog progressDialog;
     protected Subscription userProfileCacheSubscription;
 
     //<editor-fold desc="Constructors">
@@ -44,18 +42,7 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
     {
         unsubscribe(userProfileCacheSubscription);
         userProfileCacheSubscription = null;
-        dismissProgress();
         super.destroyViews();
-    }
-
-    protected void dismissProgress()
-    {
-        ProgressDialog progressDialogCopy = progressDialog;
-        if (progressDialogCopy != null)
-        {
-            progressDialogCopy.dismiss();
-        }
-        progressDialog = null;
     }
 
     protected void fetchUserProfile()
@@ -73,13 +60,11 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
 
     public void onProfileUpdated(@NonNull UserProfileDTO args)
     {
-        dismissProgress();
         updateStatus(args);
     }
 
     public void onProfileUpdateFailed(@NonNull Throwable e)
     {
-        dismissProgress();
         THToast.show(new THException(e));
     }
 }

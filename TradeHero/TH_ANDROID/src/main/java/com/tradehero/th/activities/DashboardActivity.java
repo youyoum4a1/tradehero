@@ -97,10 +97,10 @@ import com.tradehero.th.persistence.prefs.IsFxShown;
 import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
@@ -174,7 +174,6 @@ public class DashboardActivity extends BaseActivity
 
     private Subscription notificationFetchSubscription;
 
-    private ProgressDialog progressDialog;
     private DashboardTabHost dashboardTabHost;
     private int tabHostHeight;
     private BroadcastReceiver onlineStateReceiver;
@@ -453,15 +452,24 @@ public class DashboardActivity extends BaseActivity
     {
         if (extras != null && extras.containsKey(NotificationKey.BUNDLE_KEY_KEY))
         {
-            progressDialog = ProgressDialogUtil.show(this, "", "");
+            ProgressDialog progressDialog = ProgressDialog.show(this, "", "", true);
 
             detachNotificationFetchTask();
             NotificationKey key = new NotificationKey(extras);
             notificationFetchSubscription = bindActivity(
                     this,
                     notificationCache.get().get(key))
-                    .subscribe(createNotificationFetchObserver());
+                    .finallyDo(progressDialog::dismiss)
+                    .subscribe(
+                            this::onNotificationReceived,
+                            new ToastOnErrorAction());
         }
+    }
+
+    public void onNotificationReceived(Pair<NotificationKey, NotificationDTO> pair)
+    {
+        NotificationClickHandler notificationClickHandler = new NotificationClickHandler(DashboardActivity.this, pair.second);
+        notificationClickHandler.handleNotificationItemClicked();
     }
 
     private void detachNotificationFetchTask()
@@ -608,41 +616,6 @@ public class DashboardActivity extends BaseActivity
         {
             Resources r = getResources();
             getActionBar().setBackgroundDrawable(r.getDrawable((connected ? R.drawable.ab_background : R.drawable.ab_background_state_disabled)));
-        }
-    }
-
-    protected Observer<Pair<NotificationKey, NotificationDTO>> createNotificationFetchObserver()
-    {
-        return new NotificationFetchObserver();
-    }
-
-    protected class NotificationFetchObserver
-            implements Observer<Pair<NotificationKey, NotificationDTO>>
-    {
-        @Override public void onNext(Pair<NotificationKey, NotificationDTO> pair)
-        {
-            onFinish();
-
-            NotificationClickHandler notificationClickHandler = new NotificationClickHandler(DashboardActivity.this, pair.second);
-            notificationClickHandler.handleNotificationItemClicked();
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            onFinish();
-            THToast.show(new THException(e));
-        }
-
-        private void onFinish()
-        {
-            if (progressDialog != null)
-            {
-                progressDialog.hide();
-            }
         }
     }
 

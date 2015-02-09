@@ -1,9 +1,9 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -37,14 +37,12 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TypeEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 import timber.log.Timber;
 
@@ -54,7 +52,6 @@ public class SendMessageFragment extends DashboardFragment
 
     @NonNull private MessageType messageType = MessageType.BROADCAST_ALL_FOLLOWERS;
     /** ProgressDialog to show progress when sending message */
-    private Dialog progressDialog;
 
     @InjectView(R.id.message_input_edittext) EditText inputText;
     @InjectView(R.id.message_type) TextView messageTypeView;
@@ -68,7 +65,6 @@ public class SendMessageFragment extends DashboardFragment
     @Inject Analytics analytics;
     @Inject UserProfileDTOUtil userProfileDTOUtil;
 
-    @Nullable Subscription userProfileSubscription;
     protected UserProfileDTO currentUserProfileDTO;
 
     public static void putMessageType(@NonNull Bundle args, @NonNull MessageType messageType)
@@ -127,16 +123,8 @@ public class SendMessageFragment extends DashboardFragment
         fetchCurrentUserProfile();
     }
 
-    @Override public void onStop()
-    {
-        unsubscribe(userProfileSubscription);
-        userProfileSubscription = null;
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
-        ProgressDialogUtil.dismiss(getActivity());
         DeviceUtil.dismissKeyboard(inputText);
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -144,13 +132,12 @@ public class SendMessageFragment extends DashboardFragment
 
     private void fetchCurrentUserProfile()
     {
-        unsubscribe(userProfileSubscription);
-        userProfileSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()).map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
-                        this::handleFetchUserProfileFailed);
+                        this::handleFetchUserProfileFailed));
     }
 
     protected void linkWith(@NonNull UserProfileDTO currentUserProfileDTO)
@@ -236,18 +223,19 @@ public class SendMessageFragment extends DashboardFragment
 
     private void sendMessage()
     {
-        ProgressDialogUtil.dismiss(getActivity());
         String text = inputText.getText().toString();
-        this.progressDialog =
-                ProgressDialogUtil.show(getActivity(),
-                        R.string.broadcast_message_waiting,
-                        R.string.broadcast_message_sending_hint);
+        ProgressDialog progressDialog = ProgressDialog.show(
+                        getActivity(),
+                        getActivity().getString(R.string.broadcast_message_waiting),
+                        getActivity().getString(R.string.broadcast_message_sending_hint),
+                        true);
 
         onStopSubscriptions.add(
                 AppObservable.bindFragment(
                         this,
                         messageServiceWrapper.get().createMessageRx(
                                 createMessageForm(text)))
+                        .finallyDo(progressDialog::dismiss)
                         .subscribe(
                                 this::handleDiscussionPosted,
                                 this::handleDiscussionPostFailed));
@@ -262,7 +250,6 @@ public class SendMessageFragment extends DashboardFragment
 
     protected void handleDiscussionPosted(@NonNull DiscussionDTO discussionDTO)
     {
-        dismissDialog(progressDialog);
         THToast.show(R.string.broadcast_success);
         analytics.addEvent(new TypeEvent(AnalyticsConstants.MessageComposer_Send, messageType.localyticsResource));
         navigator.get().popFragment();
@@ -271,7 +258,6 @@ public class SendMessageFragment extends DashboardFragment
     protected void handleDiscussionPostFailed(@NonNull Throwable e)
     {
         Timber.e(e, "Error posting message");
-        dismissDialog(progressDialog);
         THToast.show(getString(R.string.broadcast_error));
     }
 

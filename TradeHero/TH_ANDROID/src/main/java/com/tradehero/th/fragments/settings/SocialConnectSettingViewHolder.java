@@ -121,10 +121,11 @@ abstract public class SocialConnectSettingViewHolder
 
     @NonNull protected Observable<UserProfileDTO> effectUnlinkRx(@NonNull Context activityContext)
     {
-        ProgressDialog progressDialog = ProgressDialogUtil.show(
+        ProgressDialog progressDialog = ProgressDialog.show(
                 activityContext,
-                getSocialNetworkEnum().nameResId,
-                getUnlinkingProgressDialogMessage());
+                activityContext.getString(getSocialNetworkEnum().nameResId),
+                activityContext.getString(getUnlinkingProgressDialogMessage()),
+                true);
         progressDialog.setCancelable(true);
         progressDialog.setCanceledOnTouchOutside(true);
 
