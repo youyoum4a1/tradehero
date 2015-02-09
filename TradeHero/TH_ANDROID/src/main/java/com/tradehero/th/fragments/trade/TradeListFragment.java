@@ -49,6 +49,7 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
+import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -237,7 +238,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                     .map(new PairGetSecond<>())
                     .subscribe(
                             this::linkWith,
-                            error -> THToast.show(R.string.error_fetch_position_list_info));
+                            new ToastAction<>(getString(R.string.error_fetch_position_list_info)));
         }
     }
 

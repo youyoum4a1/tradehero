@@ -27,6 +27,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.MakePairFunc2;
+import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
@@ -140,7 +141,7 @@ public class SettingsProfileFragment extends DashboardFragment implements Valida
                         authDataActionProvider.get().call(pair);
                         navigator.get().popFragment();
                     })
-                    .doOnError(error -> THToast.show(R.string.error_update_your_user_profile))
+                    .doOnError(new ToastAction<>(getString(R.string.error_update_your_user_profile)))
                     .finallyDo(progressDialog::dismiss)
                     .subscribe(Actions.empty(), Actions.empty()));
         }

@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -15,6 +14,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.rx.ToastAction;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -85,7 +85,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
                     .map(new PairGetSecond<>())
                     .subscribe(
                             this::linkWith,
-                            e -> THToast.show(R.string.error_fetch_security_info));
+                            new ToastAction<>(getString(R.string.error_fetch_security_info)));
         }
     }
 

@@ -10,7 +10,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
@@ -20,7 +19,7 @@ import timber.log.Timber;
 
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
 {
-    public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
+    private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
             BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
     public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
 

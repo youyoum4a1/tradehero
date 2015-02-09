@@ -14,7 +14,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
@@ -34,6 +33,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -178,7 +178,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
                 .map(new PairGetSecond<>())
                 .subscribe(
                         this::linkWith,
-                        e -> THToast.show(R.string.error_fetch_security_info));
+                        new ToastAction<>(getString(R.string.error_fetch_security_info)));
     }
 
     public void linkWith(PaginatedDTO<NewsItemCompactDTO> news)

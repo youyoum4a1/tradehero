@@ -36,11 +36,11 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Actions;
 import rx.internal.util.SubscriptionList;
@@ -176,10 +176,8 @@ public class StoreScreenFragment extends DashboardFragment
                         this,
                         userInteractorRx.purchase(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]))
                         .subscribe(
-                                pair -> {
-                                },
-                                error -> THToast.show(new THException((Throwable) error))
-                        ));
+                                Actions.empty(),
+                                new ToastOnErrorAction()));
             }
         }
     }

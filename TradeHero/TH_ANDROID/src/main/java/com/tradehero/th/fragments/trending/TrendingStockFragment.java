@@ -55,6 +55,7 @@ import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeMarketPreference;
 import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
+import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
@@ -245,7 +246,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                         .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
-                        e -> THToast.show(R.string.error_fetch_user_profile)));
+                        new ToastAction<>(getString(R.string.error_fetch_user_profile))));
     }
 
     private void linkWith(UserProfileDTO userProfileDTO)
@@ -263,7 +264,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                         .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
-                        e -> THToast.show(R.string.error_fetch_provider_competition_list)));
+                        new ToastAction<>(getString(R.string.error_fetch_provider_competition_list))));
     }
 
     protected void linkWith(@NonNull ProviderDTOList providers)

@@ -9,6 +9,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ToastAction;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -53,7 +54,7 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         this::updateStatus,
-                        e -> THToast.show(R.string.error_fetch_your_user_profile));
+                        new ToastAction<>(getString(R.string.error_fetch_your_user_profile)));
     }
 
     abstract protected void updateStatus(@NonNull UserProfileDTO userProfileDTO);

@@ -31,6 +31,7 @@ import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
+import com.tradehero.th.rx.ToastAction;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -175,7 +176,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
                         .repeatWhen(observable -> observable.delay(MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS)))
                 .subscribe(
                         this::handlePricesReceived,
-                        error -> THToast.show(R.string.error_fetch_fx_list_price));
+                        new ToastAction<>(getString(R.string.error_fetch_fx_list_price)));
     }
 
     private void handlePricesReceived(List<QuoteDTO> list)

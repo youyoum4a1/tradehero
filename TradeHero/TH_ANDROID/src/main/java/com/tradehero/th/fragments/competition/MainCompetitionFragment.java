@@ -84,7 +84,7 @@ import timber.log.Timber;
 })
 public class MainCompetitionFragment extends CompetitionFragment
 {
-    public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
+    private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
             MainCompetitionFragment.class.getName() + ".purchaseApplicablePortfolioId";
 
     @InjectView(android.R.id.progress) ProgressBar progressBar;
@@ -129,7 +129,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         args.putBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
     }
 
-    public static OwnedPortfolioId getApplicablePortfolioId(@Nullable Bundle args)
+    private static OwnedPortfolioId getApplicablePortfolioId(@Nullable Bundle args)
     {
         if (args != null)
         {
@@ -669,7 +669,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         return new Intent(Intent.ACTION_VIEW, Uri.parse(url));
     }
 
-    public OwnedPortfolioId getApplicablePortfolioId()
+    @Nullable public OwnedPortfolioId getApplicablePortfolioId()
     {
         if ((mApplicablePortfolioId == null) && (providerDTO != null))
         {

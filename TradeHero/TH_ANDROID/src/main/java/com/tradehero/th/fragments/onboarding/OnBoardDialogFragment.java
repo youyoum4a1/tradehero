@@ -14,7 +14,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
@@ -45,6 +44,7 @@ import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -125,11 +125,13 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         subscriptions = new CompositeSubscription();
 
         subscriptions.add(bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()).map(new PairGetSecond<>()))
-                .subscribe(this::linkWith, e -> THToast.show(R.string.error_fetch_your_user_profile)));
+                .subscribe(this::linkWith,
+                        new ToastAction<>(getString(R.string.error_fetch_your_user_profile))));
 
         subscriptions.add(bindFragment(
                 this, exchangeSectorCompactListCache.get(new ExchangeSectorCompactKey()).map(new PairGetSecond<>()))
-                .subscribe(this::linkWith, e -> THToast.show(R.string.market_on_board_error_fetch_exchange_sector)));
+                .subscribe(this::linkWith,
+                        new ToastAction<>(getString(R.string.market_on_board_error_fetch_exchange_sector))));
     }
 
     @Override public void onStop()
@@ -236,7 +238,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
                     leaderboardUserListCache.get(key)
                             .map(new PairGetSecond<>()))
                     .subscribe(this::linkWith,
-                            e -> THToast.show(R.string.error_fetch_leaderboard_info));
+                            new ToastAction<>(getString(R.string.error_fetch_leaderboard_info)));
         }
     }
 
@@ -255,7 +257,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
                             .map(new PairGetSecond<>()))
                     .subscribe(
                             this::linkWith,
-                            e -> THToast.show(R.string.error_fetch_security_list_info));
+                            new ToastAction<>(getString(R.string.error_fetch_security_list_info)));
         }
     }
 

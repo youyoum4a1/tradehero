@@ -16,7 +16,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -25,6 +24,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -120,7 +120,7 @@ public class LocationListFragment extends DashboardFragment
                         .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
-                        e -> THToast.show(R.string.error_fetch_your_user_profile));
+                        new ToastAction<>(getString(R.string.error_fetch_your_user_profile)));
     }
 
     protected void linkWith(UserProfileDTO userProfileDTO)

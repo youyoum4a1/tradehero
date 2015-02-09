@@ -61,6 +61,7 @@ import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
@@ -427,7 +428,7 @@ public class PositionListFragment
                 userProfileCache.get(shownUser))
                 .subscribe(
                         pair -> linkWith(pair.second),
-                        e -> THToast.show(R.string.error_fetch_user_profile)));
+                        new ToastAction<>(getString(R.string.error_fetch_user_profile))));
     }
 
     public void linkWith(UserProfileDTO userProfileDTO)
@@ -446,7 +447,7 @@ public class PositionListFragment
                     portfolioCache.get(((OwnedPortfolioId) getPositionsDTOKey)))
                     .subscribe(
                             pair -> linkWith(pair.second),
-                            error -> THToast.show(R.string.error_fetch_portfolio_info)
+                            new ToastAction<>(getString(R.string.error_fetch_portfolio_info))
                     ));
         }
         // We do not care for now about those that are loaded with LeaderboardMarkUserId

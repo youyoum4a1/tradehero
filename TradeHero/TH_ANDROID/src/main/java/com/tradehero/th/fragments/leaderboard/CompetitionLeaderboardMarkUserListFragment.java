@@ -27,6 +27,7 @@ import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.CompetitionCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCacheRx;
+import com.tradehero.th.rx.ToastAction;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
 import timber.log.Timber;
@@ -198,7 +199,7 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
                         .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
-                        e -> THToast.show(R.string.error_fetch_provider_info)));
+                        new ToastAction<>(getString(R.string.error_fetch_provider_info))));
     }
 
     protected void linkWith(ProviderDTO providerDTO)

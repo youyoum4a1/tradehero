@@ -139,7 +139,6 @@ public class TimelineFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
 
-
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -616,8 +615,8 @@ public class TimelineFragment extends DashboardFragment
                     new ChoiceFollowUserAssistantWithDialog(
                             getActivity(),
                             shownProfile
-//                            getApplicablePortfolioId()
-                            )
+                            //                            getApplicablePortfolioId()
+                    )
                             .launchChoiceRx()
                             .finallyDo(AlertDialogUtil::dismissProgressDialog)
                             .subscribe(
@@ -667,24 +666,24 @@ public class TimelineFragment extends DashboardFragment
                 userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
-//            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-//            if (applicablePortfolioId != null)
-//            {
-//                UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
-                UserBaseKey purchaserKey = currentUserId.toUserBaseKey();
-                if (purchaserKey != null)
+            //            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+            //            if (applicablePortfolioId != null)
+            //            {
+            //                UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
+            UserBaseKey purchaserKey = currentUserId.toUserBaseKey();
+            if (purchaserKey != null)
+            {
+                UserProfileDTO purchaserProfile = userProfileCache.get().getCachedValue(purchaserKey);
+                if (purchaserProfile != null)
                 {
-                    UserProfileDTO purchaserProfile = userProfileCache.get().getCachedValue(purchaserKey);
-                    if (purchaserProfile != null)
-                    {
-                        return purchaserProfile.getFollowType(shownUserBaseKey);
-                    }
+                    return purchaserProfile.getFollowType(shownUserBaseKey);
                 }
-//            }
-//            else
-//            {
-//                return userProfileDTO.getFollowType(shownUserBaseKey);
-//            }
+            }
+            //            }
+            //            else
+            //            {
+            //                return userProfileDTO.getFollowType(shownUserBaseKey);
+            //            }
         }
         return 0;
     }
@@ -727,11 +726,11 @@ public class TimelineFragment extends DashboardFragment
         HeroManagerFragment.putFollowerId(
                 bundle,
                 mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
-//        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
-//        if (applicablePortfolio != null)
-//        {
-//            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
-//        }
+        //        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
+        //        if (applicablePortfolio != null)
+        //        {
+        //            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
+        //        }
         navigator.get().pushFragment(HeroManagerFragment.class, bundle);
     }
 
@@ -741,11 +740,11 @@ public class TimelineFragment extends DashboardFragment
         FollowerManagerFragment.putHeroId(
                 bundle,
                 mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
-//        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
-//        if (applicablePortfolio != null)
-//        {
-//            //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
-//        }
+        //        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
+        //        if (applicablePortfolio != null)
+        //        {
+        //            //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
+        //        }
         navigator.get().pushFragment(FollowerManagerFragment.class, bundle);
     }
 

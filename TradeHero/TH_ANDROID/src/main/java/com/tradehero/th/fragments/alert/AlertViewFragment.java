@@ -127,12 +127,6 @@ public class AlertViewFragment extends DashboardFragment
         {
             case R.id.alert_menu_edit:
                 Bundle bundle = new Bundle();
-//                OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-//                if (applicablePortfolioId != null)
-//                {
-////                    AlertEditFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
-//                    bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolioId.getArgs());
-//                }
                 AlertEditFragment.putAlertId(bundle, alertId);
                 navigator.get().pushFragment(AlertEditFragment.class, bundle, null);
                 return true;

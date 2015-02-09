@@ -20,7 +20,6 @@ import com.squareup.picasso.Picasso;
 import com.squareup.widgets.AspectRatioImageViewCallback;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
@@ -37,6 +36,7 @@ import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import java.text.SimpleDateFormat;
@@ -269,8 +269,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
                     .map(new PairGetSecond<>())
                     .subscribe(
                             this::linkWith,
-                            e -> THToast.show(R.string.error_fetch_security_info)
-                    );
+                            new ToastAction<>(getString(R.string.error_fetch_security_info)));
         }
     }
 

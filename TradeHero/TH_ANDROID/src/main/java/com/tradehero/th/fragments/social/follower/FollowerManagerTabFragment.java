@@ -17,14 +17,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
@@ -163,7 +161,6 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
         {
             return R.string.manage_followers_title;
         }
-
     }
 
     protected HeroTypeResourceDTO getHeroTypeResource()
@@ -199,7 +196,7 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
     {
         if (this.followerListAdapter != null)
         {
-            if(this.followerSummaryDTO.userFollowers.isEmpty())
+            if (this.followerSummaryDTO.userFollowers.isEmpty())
             {
                 emptyView.setVisibility(View.VISIBLE);
             }
@@ -226,7 +223,7 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
 
     @Override public void onRefresh()
     {
-        if(followerSummaryDTO == null || followerSummaryDTO.userFollowers == null || followerSummaryDTO.userFollowers.size() == 0)
+        if (followerSummaryDTO == null || followerSummaryDTO.userFollowers == null || followerSummaryDTO.userFollowers.size() == 0)
         {
             displayProgress(true);
         }
@@ -261,16 +258,12 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
 
     private void pushPayoutFragment(UserFollowerDTO followerDTO)
     {
-//        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-//        if (applicablePortfolioId != null)
-//        {
-            FollowerHeroRelationId followerHeroRelationId =
-                    new FollowerHeroRelationId(currentUserId.get(),
-                            followerDTO.id, followerDTO.displayName);
-            Bundle args = new Bundle();
-            FollowerPayoutManagerFragment.put(args, followerHeroRelationId);
-            navigator.get().pushFragment(FollowerPayoutManagerFragment.class, args);
-//        }
+        FollowerHeroRelationId followerHeroRelationId =
+                new FollowerHeroRelationId(currentUserId.get(),
+                        followerDTO.id, followerDTO.displayName);
+        Bundle args = new Bundle();
+        FollowerPayoutManagerFragment.put(args, followerHeroRelationId);
+        navigator.get().pushFragment(FollowerPayoutManagerFragment.class, args);
     }
 
     private void handleFollowerItemClicked(
