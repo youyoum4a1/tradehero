@@ -37,6 +37,7 @@ import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
@@ -83,6 +84,9 @@ import timber.log.Timber;
 })
 public class MainCompetitionFragment extends CompetitionFragment
 {
+    public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
+            MainCompetitionFragment.class.getName() + ".purchaseApplicablePortfolioId";
+
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.competition_zone_list) AbsListView listView;
     @InjectView(R.id.btn_trade_now) Button btnTradeNow;
@@ -117,6 +121,26 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Nullable private Subscription competitionPreSeasonSubscription;
     private List<CompetitionPreSeasonDTO> competitionPreSeasonDTOs;
 
+    @Inject protected CurrentUserId currentUserId;
+    private OwnedPortfolioId mApplicablePortfolioId;
+
+    public static void putApplicablePortfolioId(@NonNull Bundle args, @NonNull OwnedPortfolioId ownedPortfolioId)
+    {
+        args.putBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+    }
+
+    public static OwnedPortfolioId getApplicablePortfolioId(@Nullable Bundle args)
+    {
+        if (args != null)
+        {
+            if (args.containsKey(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE))
+            {
+                return new OwnedPortfolioId(args.getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE));
+            }
+        }
+        return null;
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         thRouter.inject(this);
@@ -127,7 +151,10 @@ public class MainCompetitionFragment extends CompetitionFragment
         super.onCreate(savedInstanceState);
         this.webViewTHIntentPassedListener = new MainCompetitionWebViewTHIntentPassedListener();
         competitionZoneListItemAdapter = createAdapter();
-        analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.Competition_Home, AnalyticsConstants.ProviderId, String.valueOf(providerId.key)));
+        analytics.fireEvent(
+                new SingleAttributeEvent(AnalyticsConstants.Competition_Home, AnalyticsConstants.ProviderId, String.valueOf(providerId.key)));
+
+        mApplicablePortfolioId = getApplicablePortfolioId(getArguments());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -627,7 +654,8 @@ public class MainCompetitionFragment extends CompetitionFragment
                     try
                     {
                         thIntentFactory.create(getPassedIntent(redirectUrl));
-                    } catch (IndexOutOfBoundsException e)
+                    }
+                    catch (IndexOutOfBoundsException e)
                     {
                         Timber.e(e, "Failed to create intent with string %s", redirectUrl);
                     }
@@ -639,6 +667,15 @@ public class MainCompetitionFragment extends CompetitionFragment
     public Intent getPassedIntent(String url)
     {
         return new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+    }
+
+    public OwnedPortfolioId getApplicablePortfolioId()
+    {
+        if ((mApplicablePortfolioId == null) && (providerDTO != null))
+        {
+            mApplicablePortfolioId = providerDTO.getAssociatedOwnedPortfolioId();
+        }
+        return mApplicablePortfolioId;
     }
     //</editor-fold>
 

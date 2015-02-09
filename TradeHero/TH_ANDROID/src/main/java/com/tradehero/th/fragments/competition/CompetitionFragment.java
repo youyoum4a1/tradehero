@@ -10,6 +10,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.utils.route.THRouter;
@@ -20,7 +21,7 @@ import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 //TODO this class only load providerDTO, should be deleted
-abstract public class CompetitionFragment extends BasePurchaseManagerFragment
+abstract public class CompetitionFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionFragment.class.getName() + ".providerId";
 
@@ -78,15 +79,6 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
     protected void linkWith(@NonNull ProviderDTO providerDTO, boolean andDisplay)
     {
         this.providerDTO = providerDTO;
-
-        OwnedPortfolioId associatedPortfolioId = providerDTO.associatedPortfolio.getOwnedPortfolioId();
-        putApplicablePortfolioId(getArguments(), associatedPortfolioId);
-
-        prepareApplicableOwnedPortolioId(null);
-
-        if (andDisplay)
-        {
-        }
     }
 
     @NonNull protected Observer<Pair<ProviderId, ProviderDTO>> createProviderCacheObserver()
