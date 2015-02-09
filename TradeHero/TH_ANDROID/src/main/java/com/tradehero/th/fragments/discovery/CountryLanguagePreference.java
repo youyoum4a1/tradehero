@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.prefs.AbstractPreference;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
-import javax.inject.Inject;
 
 public class CountryLanguagePreference extends AbstractPreference<CountryLanguagePairDTO>
 {
@@ -15,7 +14,7 @@ public class CountryLanguagePreference extends AbstractPreference<CountryLanguag
     private final String countryKey;
     private final String languageKey;
 
-    @Inject public CountryLanguagePreference(@NonNull SharedPreferences preference, @NonNull String key, @NonNull CountryLanguagePairDTO defaultValue)
+    public CountryLanguagePreference(@NonNull SharedPreferences preference, @NonNull String key, @NonNull CountryLanguagePairDTO defaultValue)
     {
         super(preference, key, defaultValue);
 
