@@ -23,6 +23,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -38,7 +39,7 @@ import rx.functions.Actions;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
-public class AllRelationsFragment extends BasePurchaseManagerFragment
+public class AllRelationsFragment extends DashboardFragment
         implements AdapterView.OnItemClickListener, HasSelectedItem
 {
     List<AllowableRecipientDTO> mRelationsList;
