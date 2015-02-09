@@ -23,6 +23,7 @@ import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -37,7 +38,7 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import timber.log.Timber;
 
-abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
+abstract public class FollowerManagerTabFragment extends DashboardFragment
         implements SwipeRefreshLayout.OnRefreshListener
 {
     public static final int ITEM_ID_REFRESH_MENU = 0;
@@ -260,16 +261,16 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     private void pushPayoutFragment(UserFollowerDTO followerDTO)
     {
-        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-        if (applicablePortfolioId != null)
-        {
+//        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+//        if (applicablePortfolioId != null)
+//        {
             FollowerHeroRelationId followerHeroRelationId =
-                    new FollowerHeroRelationId(applicablePortfolioId.userId,
+                    new FollowerHeroRelationId(currentUserId.get(),
                             followerDTO.id, followerDTO.displayName);
             Bundle args = new Bundle();
             FollowerPayoutManagerFragment.put(args, followerHeroRelationId);
             navigator.get().pushFragment(FollowerPayoutManagerFragment.class, args);
-        }
+//        }
     }
 
     private void handleFollowerItemClicked(
