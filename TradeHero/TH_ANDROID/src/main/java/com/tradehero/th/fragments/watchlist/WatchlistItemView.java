@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.watchlist;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.Spanned;
@@ -21,11 +20,6 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
-import com.tradehero.th.fragments.alert.AlertCreateFragment;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.security.StockInfoFragment;
-import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
@@ -469,42 +463,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         PopupMenu popupMenu = new PopupMenu(getContext(), moreButton);
         popupMenu.setOnMenuItemClickListener(createMoreButtonPopupMenuClickHandler());
         return popupMenu;
-    }
-
-    private void openAlertEditor()
-    {
-        Bundle args = new Bundle();
-        //args.putBundle(AlertCreateFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
-        AlertCreateFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
-        getNavigator().pushFragment(AlertCreateFragment.class, args);
-    }
-
-    private void openSecurityProfile()
-    {
-        Bundle args = new Bundle();
-        BuySellFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
-        getNavigator().pushFragment(BuySellFragment.class, args);
-    }
-
-    private void openSecurityGraph()
-    {
-        Bundle args = new Bundle();
-        if (watchlistPositionDTO != null)
-        {
-            args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, watchlistPositionDTO.securityDTO.getSecurityId().getArgs());
-        }
-        getNavigator().pushFragment(StockInfoFragment.class, args);
-    }
-
-    private void openWatchlistEditor()
-    {
-        Bundle args = new Bundle();
-        if (watchlistPositionDTO != null)
-        {
-            WatchlistEditFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
-            DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
-        }
-        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM, null);
     }
 
     private Navigator getNavigator()

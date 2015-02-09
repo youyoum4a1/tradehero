@@ -15,13 +15,10 @@ import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
-import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.route.THRouter;
@@ -96,11 +93,6 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
         }
     }
 
-    private void translate()
-    {
-        socialShareHelper.translate(abstractDiscussionCompactDTO);
-    }
-
     //<editor-fold desc="Popup dialog">
     private PopupMenu createActionPopupMenu()
     {
@@ -164,32 +156,6 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
         }
     }
 
-    private void openStockAlertEditor()
-    {
-        Bundle args = new Bundle();
-        AlertCreateFragment.putSecurityId(args, getSecurityId());
-        getNavigator().pushFragment(AlertCreateFragment.class, args);
-    }
-
-    private void openWatchlistEditor()
-    {
-        // TODO make it so that it needs SecurityId
-        Bundle args = new Bundle();
-        SecurityId securityId = getSecurityId();
-        if (securityId != null)
-        {
-            WatchlistEditFragment.putSecurityId(args, securityId);
-            if (watchlistPositionCache.get().get(securityId) != null)
-            {
-                WatchlistEditFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
-            }
-            else
-            {
-                WatchlistEditFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_add_title));
-            }
-        }
-        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM, null);
-    }
 
     @Override
     protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()

@@ -5,11 +5,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -78,7 +74,7 @@ public class SecurityActionListLinear extends LinearLayout
                 securityIdToActOn));
         adapter.add(new SecurityActionDTO(
                 SecurityActionDTO.ACTION_ID_ALERT,
-                getContext().getString(R.string.stock_alert_add_alert),
+                "",
                 securityIdToActOn));
         adapter.add(new SecurityActionDTO(
                 SecurityActionDTO.ACTION_ID_TRADE,

@@ -23,7 +23,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.request.THUIBillingRequest;
-import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemFactory;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
@@ -33,8 +32,9 @@ import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
-import javax.inject.Inject;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 @Routable({
         "store", "store/:action"
@@ -172,11 +172,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     private void pushFragment(Class<? extends Fragment> fragmentClass)
     {
-        if (fragmentClass.equals(AlertManagerFragment.class))
-        {
-            pushStockAlertFragment();
-        }
-        else if (fragmentClass.equals(HeroManagerFragment.class))
+        if (fragmentClass.equals(HeroManagerFragment.class))
         {
             pushHeroFragment();
         }
@@ -188,13 +184,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         {
             throw new IllegalArgumentException("Unhandled class " + fragmentClass);
         }
-    }
-
-    private void pushStockAlertFragment()
-    {
-        Bundle bundle = new Bundle();
-        bundle.putInt(AlertManagerFragment.BUNDLE_KEY_USER_ID, currentUserId.get());
-        pushFragment(AlertManagerFragment.class, bundle);
     }
 
     protected void pushHeroFragment()

@@ -52,4 +52,5 @@
   <string name="security_action_bar_title" translatable="false">%1$s (%2$s)</string>
 
   <string name="auth_wechat">wechat auth</string>
+  <string name="share_fail">Share failed</string>
 </resources>

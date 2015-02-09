@@ -35,9 +35,6 @@ import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.alert.AlertCreateFragment;
-import com.tradehero.th.fragments.alert.AlertEditFragment;
-import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.authentication.PasswordResetFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
@@ -258,10 +255,6 @@ import java.util.Locale;
                         WatchlistPortfolioHeaderView.class,
 
                         ProviderPageIntent.class,
-
-                        AlertManagerFragment.class,
-                        AlertEditFragment.class,
-                        AlertCreateFragment.class,
 
                         InviteFriendFragment.class,
 

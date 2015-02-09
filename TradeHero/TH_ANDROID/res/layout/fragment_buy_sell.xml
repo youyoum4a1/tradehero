@@ -164,7 +164,6 @@
       <Button
           android:id="@+id/btn_add_trigger"
           style="@style/TH.Btn_BuySell_Action"
-          android:text="@string/stock_alert_add_alert"
           />
 
       <Button

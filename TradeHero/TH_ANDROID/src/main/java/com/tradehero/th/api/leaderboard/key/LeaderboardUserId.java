@@ -4,7 +4,6 @@ import android.os.Bundle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,11 +29,6 @@ public class LeaderboardUserId implements Comparable, DTOKey
     }
     //</editor-fold>
 
-    @JsonIgnore @NotNull
-    public UserBaseKey createUserBaseKey()
-    {
-        return new UserBaseKey(userId);
-    }
 
     @JsonIgnore @NotNull
     public LeaderboardMarkUserId createLeaderboardMarkUserId()

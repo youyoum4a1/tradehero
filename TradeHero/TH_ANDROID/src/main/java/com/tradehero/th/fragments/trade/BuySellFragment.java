@@ -28,7 +28,6 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -45,9 +44,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.alert.AlertCreateFragment;
-import com.tradehero.th.fragments.alert.AlertEditFragment;
-import com.tradehero.th.fragments.alert.BaseAlertEditFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
@@ -56,7 +52,6 @@ import com.tradehero.th.fragments.social.SocialLinkHelper;
 import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -88,7 +83,7 @@ import java.util.TreeSet;
 
 @Routable("security/:securityRawInfo")
 public class BuySellFragment extends AbstractBuySellFragment
-        implements SecurityAlertAssistant.OnPopulatedListener, ViewPager.OnPageChangeListener,
+        implements ViewPager.OnPageChangeListener,
         WithTutorial
 {
     public static final String EVENT_CHART_IMAGE_CLICKED = BuySellFragment.class.getName() + ".chartButtonClicked";
@@ -144,7 +139,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     private PopupMenu mPortfolioSelectorMenu;
     private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
 
-    @Inject protected SecurityAlertAssistant securityAlertAssistant;
     protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionCacheFetchListener;
 
     private int mQuantity = 0;
@@ -250,7 +244,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        securityAlertAssistant.setOnPopulatedListener(this);
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)
@@ -286,8 +279,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                         new IntentFilter(EVENT_CHART_IMAGE_CLICKED));
 
         mBottomViewPager.setCurrentItem(selectedPageIndex);
-        securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
-        securityAlertAssistant.populate();
 
         if (abstractTransactionDialogFragment != null && abstractTransactionDialogFragment.getDialog() != null)
         {
@@ -309,8 +300,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         detachSocialLinkHelper();
         detachWatchlistFetchTask();
         detachBuySellMiddleCallback();
-
-        securityAlertAssistant.setOnPopulatedListener(null);
 
         mSelectedPortfolio = null;
 
@@ -335,7 +324,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         userWatchlistPositionCacheFetchListener = null;
         chartImageButtonClickReceiver = null;
-        securityAlertAssistant = null;
         super.onDestroy();
     }
 
@@ -743,25 +731,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void displayTriggerButton()
     {
-        if (mBtnAddTrigger != null)
-        {
-            if (securityAlertAssistant.isPopulated())
-            {
-                mBtnAddTrigger.setEnabled(true);
-                if (securityAlertAssistant.getAlertId(securityId) != null)
-                {
-                    mBtnAddTrigger.setText(R.string.stock_alert_edit_alert);
-                }
-                else
-                {
-                    mBtnAddTrigger.setText(R.string.stock_alert_add_alert);
-                }
-            }
-            else // TODO check if failed
-            {
-                mBtnAddTrigger.setEnabled(false);
-            }
-        }
+
     }
 
     public void displayWatchlistButton()
@@ -983,37 +953,8 @@ public class BuySellFragment extends AbstractBuySellFragment
     }
 
     @OnClick(R.id.btn_add_trigger)
-    protected void handleBtnAddTriggerClicked()
-    {
-        if (securityAlertAssistant.isPopulated())
-        {
-            Bundle args = new Bundle();
-            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-            if (applicablePortfolioId != null)
-            {
-                BaseAlertEditFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-            }
-            AlertId alertId = securityAlertAssistant.getAlertId(securityId);
-            if (alertId != null)
-            {
-                AlertEditFragment.putAlertId(args, alertId);
-                getDashboardNavigator().pushFragment(AlertEditFragment.class, args);
-            }
-            else
-            {
-                AlertCreateFragment.putSecurityId(args, securityId);
-                getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
-            }
-        }
-        else if (securityAlertAssistant.isFailed())
-        {
-            THToast.show("We do not know if you already have an alert on it");
-        }
-        else
-        {
-            THToast.show("Try again in a moment");
-        }
-    }
+    protected void handleBtnAddTriggerClicked(){}
+
 
     @OnClick(R.id.btn_add_watch_list)
     protected void handleBtnWatchlistClicked()
@@ -1312,21 +1253,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             }
         };
     }
-    //</editor-fold>
-
-    //<editor-fold desc="SecurityAlertAssistant.OnPopulatedListener">
-    @Override
-    public void onPopulateFailed(SecurityAlertAssistant securityAlertAssistant, Throwable error)
-    {
-        Timber.e("There was an error getting the alert ids", error);
-        displayTriggerButton();
-    }
-
-    @Override public void onPopulated(SecurityAlertAssistant securityAlertAssistant)
-    {
-        displayTriggerButton();
-    }
-    //</editor-fold>
 
     @Override protected FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener()
     {
