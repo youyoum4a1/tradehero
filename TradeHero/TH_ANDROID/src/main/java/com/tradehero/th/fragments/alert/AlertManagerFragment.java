@@ -22,10 +22,12 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertCompactDTOList;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.SecurityAlertKnowledge;
 import com.tradehero.th.billing.THBillingInteractorRx;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
@@ -37,7 +39,7 @@ import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-public class AlertManagerFragment extends BasePurchaseManagerFragment
+public class AlertManagerFragment extends DashboardFragment
 {
     public static final String BUNDLE_KEY_USER_ID = AlertManagerFragment.class.getName() + ".userId";
 
@@ -56,6 +58,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     protected UserProfileDTO currentUserProfile;
     private AlertListItemAdapter alertListItemAdapter;
     @Inject protected THBillingInteractorRx userInteractorRx;
+    @Inject CurrentUserId currentUserId;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
