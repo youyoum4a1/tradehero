@@ -1,18 +1,15 @@
 package com.tradehero.th.auth;
 
 import android.content.Context;
-import com.facebook.SharedPreferencesTokenCachingStrategy;
 import com.facebook.TokenCachingStrategy;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.linkedin.LinkedInAuthenticationProvider;
 import com.tradehero.th.auth.tencent_qq.QQAuthenticationProvider;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
-import com.tradehero.th.utils.Constants;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Singleton;
 
@@ -31,20 +28,17 @@ public class AuthenticationModule
             Lazy<QQAuthenticationProvider> qqAuthenticationProvider
     )
     {
-        Map<SocialNetworkEnum, AuthenticationProvider> enumToUtilMap = new HashMap<>();
-        enumToUtilMap.put(SocialNetworkEnum.FB, facebookAuthenticationProvider.get());
-        enumToUtilMap.put(SocialNetworkEnum.TW, twitterAuthenticationProvider.get());
-        enumToUtilMap.put(SocialNetworkEnum.LN, linkedInAuthenticationProvider.get());
-        enumToUtilMap.put(SocialNetworkEnum.WB, weiboAuthenticationProvider.get());
-        if (Constants.RELEASE)
-        {
-            enumToUtilMap.put(SocialNetworkEnum.QQ, qqAuthenticationProvider.get());
-        }
+        Map<SocialNetworkEnum, AuthenticationProvider> enumToUtilMap = AuthenticationModuleBase.provideSocialAuthTypeToSocialProviderMap(
+                facebookAuthenticationProvider,
+                twitterAuthenticationProvider,
+                linkedInAuthenticationProvider,
+                weiboAuthenticationProvider);
+        enumToUtilMap.put(SocialNetworkEnum.QQ, qqAuthenticationProvider.get());
         return Collections.unmodifiableMap(enumToUtilMap);
     }
 
     @Provides @Singleton TokenCachingStrategy provideFacebookTokenCachingStrategy(Context context)
     {
-        return new SharedPreferencesTokenCachingStrategy(context);
+        return AuthenticationModuleBase.provideFacebookTokenCachingStrategy(context);
     }
 }
