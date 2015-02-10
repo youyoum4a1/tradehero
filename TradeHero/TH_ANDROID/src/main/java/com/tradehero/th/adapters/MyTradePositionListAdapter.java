@@ -6,11 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import com.tradehero.chinabuild.data.PositionHeadItem;
-import com.tradehero.chinabuild.data.PositionInterface;
-import com.tradehero.chinabuild.data.PositionLockedItem;
-import com.tradehero.chinabuild.data.SecurityPositionItem;
-import com.tradehero.chinabuild.data.WatchPositionItem;
+import com.tradehero.chinabuild.data.*;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
@@ -22,8 +18,9 @@ import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
-import java.util.ArrayList;
+
 import javax.inject.Inject;
+import java.util.ArrayList;
 
 /*
     我的交易持仓，平仓，自选股，列表
@@ -59,47 +56,37 @@ public class MyTradePositionListAdapter extends BaseAdapter
         doRefreshData();
     }
 
+    public void addSecurityPositionListClosed(ArrayList<SecurityPositionItem> list){
+        if(list!=null && list.size() > 0){
+            for(SecurityPositionItem item : list){
+                if(!isContain(item)){
+                    securityPositionListClosed.add(item);
+                }
+            }
+            doRefreshData();
+        }
+    }
+
+    private boolean isContain(SecurityPositionItem item){
+        if(securityPositionListClosed == null || securityPositionListClosed.size() <=0){
+            return false;
+        }
+        for(SecurityPositionItem oldItem :securityPositionListClosed ){
+            if(oldItem.position == null || item.position == null){
+                return false;
+            }
+            if(oldItem.position.id == item.position.id){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public void setSecurityPositionList(ArrayList<SecurityPositionItem> list)
     {
         securityPositionList = list;
         doRefreshData();
-    }
-
-    public void setWatchPositionList(ArrayList<WatchPositionItem> list)
-    {
-        watchPositionList = list;
-        doRefreshData();
-    }
-
-    public String getHeadText(int i)
-    {
-        if (i > getLevel1())
-        {
-            return getHeadStrOfWatchPosition();
-        }
-        else if (i > getLevel0())
-        {
-            return getHeadStrOfSecurityClosedPosition();
-        }
-        else
-        {
-            return getHeadStrOfSecurityPosition();
-        }
-    }
-
-    public int getLevel0()
-    {
-        return 1 + getSecurityPositionCount();
-    }
-
-    public int getLevel1()
-    {
-        return 2 + getSecurityPositionCount() + getSecurityPositionClosedCount();
-    }
-
-    public int getLevel2()
-    {
-        return 3 + getSecurityPositionCount() + getSecurityPositionClosedCount() + getWatchPositionCount();
     }
 
     private void doRefreshData()

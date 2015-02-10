@@ -22,8 +22,8 @@ interface PositionServiceAsync
     @GET("/users/{userId}/positions")
     void getPositionsDirect(
             @Path("userId") int userId,
-            //@Query("pageNumber") Integer pageNumber,
-            //@Query("perPage") Integer perPage,
+            @Query("pageNumber") Integer pageNumber,
+            @Query("perPage") Integer perPage,
             Callback<GetPositionsDTO> callback);
     //</editor-fold>
 }

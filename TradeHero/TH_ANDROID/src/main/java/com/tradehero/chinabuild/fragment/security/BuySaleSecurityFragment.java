@@ -991,7 +991,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
         detachGetPositionMiddleCallback();
         getPositionDTOCallback =
                 positionServiceWrapper.get()
-                        .getPositionsDirect(heroId.key, new GetPositionCallback());
+                        .getPositionsDirect(heroId.key, 1, 20, new GetPositionCallback());
     }
 
     private void detachGetPositionMiddleCallback()
@@ -1008,7 +1008,6 @@ public class BuySaleSecurityFragment extends DashboardFragment
         @Override public void success(GetPositionsDTO getPositionsDTO, Response response)
         {
             onFinish();
-            Timber.d("WINDY : GetPositionsDTO success");
             MainActivity.setGetPositionDTO(getPositionsDTO);
             popCurrentFragment();
         }

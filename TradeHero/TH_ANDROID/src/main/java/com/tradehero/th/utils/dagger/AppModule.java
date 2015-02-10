@@ -22,7 +22,6 @@ import com.tradehero.chinabuild.fragment.userCenter.UserAccountPage;
 import com.tradehero.chinabuild.fragment.userCenter.UserFriendsListFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
-import com.tradehero.chinabuild.listview.SecurityExpandableListView;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.billing.googleplay.IABBillingAvailableTester;
 import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
@@ -328,7 +327,6 @@ import java.util.Locale;
                         SettingFragment.class,
 
                         SecurityListView.class,
-                        SecurityExpandableListView.class,
 
                         LeaderboardListAdapter.class,
                         UserFriendsListAdapter.class,

@@ -25,8 +25,6 @@ import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.MyTradePositionListAdapter;
-import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
-import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -61,7 +59,6 @@ import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -82,7 +79,6 @@ public class PortfolioFragment extends DashboardFragment
     public int portfolioUserKey = 0;//通过查看他人主账户进入持仓，需要知道UserID
     public PortfolioCompactDTO portfolioCompactDTO;//直接查看portforlioCompactDTO
     public int competitionId;
-    public int leaderboardPage = 1;
 
     @Inject Analytics analytics;
 
@@ -102,7 +98,6 @@ public class PortfolioFragment extends DashboardFragment
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
 
-    private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
 
     @InjectView(R.id.listPortfilio) SecurityListView listView;
@@ -115,11 +110,13 @@ public class PortfolioFragment extends DashboardFragment
     public int portfolio_type = 0;
     public boolean isNeedShowMainPage = true;
 
-    private PortfolioCompactDTO defaultPortfolio;
     @Inject @BindGuestUser BooleanPreference mBindGuestUserDialogKeyPreference;
 
     private int user_id = 0;
     private int portfolio_id = 0;
+
+    private int currentPage = 1;
+    private final int perPage = 20;
 
     private MiddleCallback<GetPositionsDTO> getPositionDTOCallback;
     @Inject Lazy<PositionServiceWrapper> positionServiceWrapper;
@@ -140,7 +137,6 @@ public class PortfolioFragment extends DashboardFragment
         currentUserProfileCacheListener = createCurrentUserProfileFetchListener();
         initArgment();
         adapter = new MyTradePositionListAdapter(getActivity());
-        //startLoadding();
         isNeedShowMainPage = getIsNeedShowPortfolio();
     }
 
@@ -188,20 +184,32 @@ public class PortfolioFragment extends DashboardFragment
         {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
             {
-                Timber.d("POSITION = " + position);
                 PositionInterface item = adapter.getItem((int) position);
                 dealSecurityItem(item);
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.BUTTON_PORTFOLIO_POSITION_CLICKED, "" + position));
             }
         });
+        listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
 
-        //fetchCurrentUserProfile();
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
 
-        showUserPorfolioHead();
+            }
+
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+                getDataFromNormalUserMore();
+            }
+        });
+
+        showUserPortfolioHead();
+
+        fetchCurrentUserProfile();
+        getDataFromNormalUser();
         return view;
     }
 
-    public void showUserPorfolioHead()
+    public void showUserPortfolioHead()
     {
         llUserAccountHead.setVisibility(portfolio_type == PORTFOLIO_TYPE_MINE ? View.VISIBLE : View.GONE);
         if (portfolio_type == PORTFOLIO_TYPE_MINE)
@@ -213,7 +221,7 @@ public class PortfolioFragment extends DashboardFragment
         }
     }
 
-    public void startLoadding()
+    public void startLoading()
     {
         if (getActivity() != null)
         {
@@ -265,7 +273,6 @@ public class PortfolioFragment extends DashboardFragment
 
     public void toPlayCompetition()
     {
-        Timber.d("去比赛");
         Bundle bundle = new Bundle();
         bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, competitionId);
         pushFragment(CompetitionSecuritySearchFragment.class, bundle);
@@ -279,15 +286,6 @@ public class PortfolioFragment extends DashboardFragment
         pushFragment(UserMainPage.class, bundle);
     }
 
-    //public void enterSecurity(SecurityId securityId, String securityName)
-    //{
-    //    Bundle bundle = new Bundle();
-    //    bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-    //    bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
-    //    bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE, competitionId);
-    //    pushFragment(SecurityDetailFragment.class, bundle);
-    //}
-
     public void setPortfolioInfo(int user_id, int porfolio_id)
     {
         this.user_id = user_id;
@@ -300,12 +298,6 @@ public class PortfolioFragment extends DashboardFragment
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
         bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE, competitionId);
-        //SecurityDetailFragment.putPositionDTOKey(bundle, positionDTO.getPositionDTOKey());
-        //OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(user_id, portfolio_id);
-        //if (ownedPortfolioId != null)
-        //{
-        //    SecurityDetailFragment.putApplicablePortfolioId(bundle, ownedPortfolioId);
-        //}
         pushFragment(SecurityDetailFragment.class, bundle);
     }
 
@@ -324,11 +316,6 @@ public class PortfolioFragment extends DashboardFragment
         pushFragment(PositionDetailFragment.class, bundle);
     }
 
-    @Override public void onStop()
-    {
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         detachGetPositionsTask();
@@ -345,13 +332,6 @@ public class PortfolioFragment extends DashboardFragment
         super.onDestroy();
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-        fetchCurrentUserProfile();
-        getDataFromNormalUser();
-    }
-
     public void initArgment()
     {
         Bundle bundle = getArguments();
@@ -365,9 +345,7 @@ public class PortfolioFragment extends DashboardFragment
             {   //来自比赛的榜单进入持仓
                 portfolio_type = PORTFOLIO_TYPE_COMPETITION;
                 showUserBaseKey = new UserBaseKey(portfolioUserKey);
-                //getPositionsDTOKey = new LeaderboardMarkUserId((int) leaderboardUserMarkId);
-                //getPositionsDTOKey = new PagedLeaderboardMarkUserId((int) leaderboardUserMarkId, leaderboardPage );
-                getPositionsDTOKey = new PerPagedLeaderboardMarkUserId((int) leaderboardUserMarkId, 1, 100);
+                getPositionsDTOKey = new PerPagedLeaderboardMarkUserId((int) leaderboardUserMarkId, 1, perPage);
             }
             else if (portfolioUserKey != 0)
             {
@@ -387,10 +365,29 @@ public class PortfolioFragment extends DashboardFragment
     public void getDataFromNormalUser()
     {
         //来自股神持仓，股神的主账户持仓
-        //getDefaultPortfolio();
+        currentPage = 1;
         if (portfolio_type == PORTFOLIO_TYPE_OTHER_USER)
         {
-            getPositionDirectly(showUserBaseKey);
+            getPositionDirectly(showUserBaseKey, currentPage);
+        }
+        else
+        {
+            getPositionsDTOKey = new PerPagedLeaderboardMarkUserId((int) leaderboardUserMarkId, currentPage, perPage);
+            if (getPositionsDTOKey != null && getPositionsDTOKey.isValid())
+            {
+                detachGetPositionsTask();
+                getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
+                getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, true);
+            }
+        }
+    }
+
+    public void getDataFromNormalUserMore(){
+        //来自股神持仓，股神的主账户持仓
+        currentPage++;
+        if (portfolio_type == PORTFOLIO_TYPE_OTHER_USER)
+        {
+            getPositionDirectly(showUserBaseKey, currentPage);
         }
         else
         {
@@ -409,48 +406,6 @@ public class PortfolioFragment extends DashboardFragment
         fetchSimplePage(true);
     }
 
-    private void getDefaultPortfolio()
-    {
-        PortfolioCompactDTO defaultPortfolio = portfolioCompactListCache.get().getDefaultPortfolio(showUserBaseKey);
-        this.defaultPortfolio = defaultPortfolio;
-        if (defaultPortfolio != null)
-        {
-            getPositionsDTOKey = new OwnedPortfolioId(showUserBaseKey.key, defaultPortfolio.id);
-            fetchSimplePage(false);
-            setPortfolioInfo(defaultPortfolio.userId, defaultPortfolio.id);
-        }
-        else
-        {
-            refreshPortfolioList();
-        }
-    }
-
-    private void FetchedDefaultPortfolio()
-    {
-        PortfolioCompactDTO defaultPortfolio = portfolioCompactListCache.get().getDefaultPortfolio(showUserBaseKey);
-        this.defaultPortfolio = defaultPortfolio;
-        if (defaultPortfolio != null)
-        {
-            getPositionsDTOKey = new OwnedPortfolioId(showUserBaseKey.key, defaultPortfolio.id);
-            fetchSimplePage(false);
-            setPortfolioInfo(defaultPortfolio.userId, defaultPortfolio.id);
-        }
-    }
-
-    private void refreshPortfolioList()
-    {
-        displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
-        portfolioCompactListCache.get().invalidate(showUserBaseKey);
-        displayablePortfolioFetchAssistant.fetch(getUserBaseKeys());
-        displayablePortfolioFetchAssistant.setFetchedListener(new DisplayablePortfolioFetchAssistant.OnFetchedListener()
-        {
-            @Override public void onFetched()
-            {
-                FetchedDefaultPortfolio();
-            }
-        });
-    }
-
     public boolean getIsNeedShowPortfolio()
     {
         Bundle bundle = getArguments();
@@ -461,19 +416,12 @@ public class PortfolioFragment extends DashboardFragment
         return isNeedShowMainPage;
     }
 
-    protected List<UserBaseKey> getUserBaseKeys()
-    {
-        List<UserBaseKey> list = new ArrayList<>();
-        list.add(showUserBaseKey);
-        return list;
-    }
-
     @NotNull protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheListener()
     {
         return new GetPositionsListener();
     }
 
-    private void linkWith(GetPositionsDTO value, boolean setPorfolio)
+    private void linkWith(GetPositionsDTO value)
     {
         try
         {//来自比赛的profolio信息从GetPositionDTO里获取
@@ -481,6 +429,7 @@ public class PortfolioFragment extends DashboardFragment
             portfolio_id = value.positions.get(0).portfolioId;
         } catch (Exception e)
         {
+            e.printStackTrace();
         }
         initPositionSecurity(value);
     }
@@ -492,30 +441,34 @@ public class PortfolioFragment extends DashboardFragment
                 @NotNull GetPositionsDTOKey key,
                 @NotNull GetPositionsDTO value)
         {
-            linkWith(value, true);
+            linkWith(value);
             finished();
-            //showResultIfNecessary();
         }
 
         @Override public void onDTOReceived(
                 @NotNull GetPositionsDTOKey key,
                 @NotNull GetPositionsDTO value)
         {
-            linkWith(value, true);
+            linkWith(value);
             finished();
-            //showResultIfNecessary();
         }
 
         @Override public void onErrorThrown(
                 @NotNull GetPositionsDTOKey key,
                 @NotNull Throwable error)
         {
-            Timber.d(error, "Error fetching the positionList info %s", key);
+            if(currentPage>1) {
+                currentPage--;
+            }else{
+                currentPage = 1;
+            }
             finished();
         }
 
         public void finished()
         {
+            listView.setMode(PullToRefreshBase.Mode.PULL_FROM_END);
+            listView.onRefreshComplete();
             alertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
@@ -529,7 +482,6 @@ public class PortfolioFragment extends DashboardFragment
     {
         if (getPositionsDTOKey != null && getPositionsDTOKey.isValid())
         {
-            //startLoadding();
             detachGetPositionsTask();
             getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
             getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, force);
@@ -537,7 +489,7 @@ public class PortfolioFragment extends DashboardFragment
 
         if (adapter != null && adapter.getCount() == 0)
         {
-            startLoadding();
+            startLoading();
         }
     }
 
@@ -566,7 +518,6 @@ public class PortfolioFragment extends DashboardFragment
 
     private void initPositionSecurityOpened(GetPositionsDTO psList)
     {
-
         if (isNeedShowLock() && (!isFollowUserOrMe()))
         {
             if (adapter != null)
@@ -619,7 +570,11 @@ public class PortfolioFragment extends DashboardFragment
             }
             if (adapter != null)
             {
-                adapter.setSecurityPositionListClosed(list);
+                if(currentPage == 1) {
+                    adapter.setSecurityPositionListClosed(list);
+                }else{
+                    adapter.addSecurityPositionListClosed(list);
+                }
             }
         }
     }
@@ -637,10 +592,8 @@ public class PortfolioFragment extends DashboardFragment
             setCurrentUserDTO(value);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-        {
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error){}
 
-        }
     }
 
     public void setCurrentUserDTO(UserProfileDTO userDTO)
@@ -701,7 +654,6 @@ public class PortfolioFragment extends DashboardFragment
 
         @Override public void failure(RetrofitError retrofitError)
         {
-            //THToast.show(new THException(retrofitError));
             THToast.show(R.string.error_network_connection);
             alertDialogUtilLazy.get().dismissProgressDialog();
         }
@@ -712,15 +664,27 @@ public class PortfolioFragment extends DashboardFragment
 
         @Override public void success(GetPositionsDTO getPositionsDTO, Response response)
         {
-            linkWith(getPositionsDTO, false);
+            linkWith(getPositionsDTO);
             alertDialogUtilLazy.get().dismissProgressDialog();
+            onFinish();
         }
 
         @Override public void failure(RetrofitError retrofitError)
         {
-            Timber.d("get PositionDTO failed!");
             alertDialogUtilLazy.get().dismissProgressDialog();
+            if(currentPage>1) {
+                currentPage--;
+            }else{
+                currentPage = 1;
+            }
+            onFinish();
         }
+
+        private void onFinish(){
+            listView.setMode(PullToRefreshBase.Mode.PULL_FROM_END);
+            listView.onRefreshComplete();
+        }
+
     }
 
     private void detachGetPositionMiddleCallback()
@@ -732,12 +696,12 @@ public class PortfolioFragment extends DashboardFragment
         getPositionDTOCallback = null;
     }
 
-    protected void getPositionDirectly(@NotNull UserBaseKey heroId)
+    protected void getPositionDirectly(@NotNull UserBaseKey heroId, int currentPage)
     {
         detachGetPositionMiddleCallback();
         getPositionDTOCallback =
                 positionServiceWrapper.get()
-                        .getPositionsDirect(heroId.key, new GetPositionCallback());
+                        .getPositionsDirect(heroId.key, currentPage, perPage, new GetPositionCallback());
     }
 
     private void displayPortfolio(PortfolioDTO portfolio)

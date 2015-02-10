@@ -596,7 +596,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         detachGetPositionMiddleCallback();
         getPositionDTOCallback =
                 positionServiceWrapper.get()
-                        .getPositionsDirect(heroId.key, new GetPositionCallback());
+                        .getPositionsDirect(heroId.key, 1, 20,  new GetPositionCallback());
     }
 
     public static PositionDTOKey getSecurityPositionDTOKey(SecurityId securityId)

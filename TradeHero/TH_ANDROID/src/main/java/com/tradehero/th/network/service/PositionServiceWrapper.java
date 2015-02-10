@@ -6,11 +6,12 @@ import com.tradehero.th.api.portfolio.PerPagedOwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton public class PositionServiceWrapper
 {
@@ -110,15 +111,15 @@ import retrofit.Callback;
     //</editor-fold>
 
     @NotNull public MiddleCallback<GetPositionsDTO> getPositionsDirect(
-            @NotNull int userId,
+            @NotNull int userId, int page, int perPage,
             @Nullable Callback<GetPositionsDTO> callback)
     {
         MiddleCallback<GetPositionsDTO> middleCallback = new BaseMiddleCallback<>(callback);
 
         this.positionServiceAsync.getPositionsDirect(
                 userId,
-                //page,
-                //perpage,
+                page,
+                perPage,
                 middleCallback);
 
         return middleCallback;
