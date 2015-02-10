@@ -25,9 +25,10 @@ import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
 
 @Routable("settings")
 public final class SettingsFragment extends DashboardPreferenceFragment
@@ -44,7 +45,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject protected SendFeedbackViewHolder sendFeedbackViewHolder;
     @Inject protected FaqViewHolder faqViewHolder;
     @Inject protected ProfilePreferenceViewHolder profilePreferenceViewHolder;
-    @Inject protected LocationCountrySettingsViewHolder locationCountrySettingsViewHolder;
     @Inject protected PayPalSettingViewHolder payPalSettingViewHolder;
     @Inject protected AlipaySettingViewHolder alipaySettingViewHolder;
     @Inject protected TransactionHistoryViewHolder transactionHistoryViewHolder;
@@ -164,7 +164,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         transactionHistoryViewHolder.destroyViews();
         alipaySettingViewHolder.destroyViews();
         payPalSettingViewHolder.destroyViews();
-        locationCountrySettingsViewHolder.destroyViews();
         profilePreferenceViewHolder.destroyViews();
         faqViewHolder.destroyViews();
         sendFeedbackViewHolder.destroyViews();
@@ -189,7 +188,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         transactionHistoryViewHolder = null;
         alipaySettingViewHolder = null;
         payPalSettingViewHolder = null;
-        locationCountrySettingsViewHolder = null;
         profilePreferenceViewHolder = null;
         faqViewHolder = null;
         sendFeedbackViewHolder = null;
@@ -214,7 +212,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         // Account
         profilePreferenceViewHolder.initViews(this);
-        locationCountrySettingsViewHolder.initViews(this);
         payPalSettingViewHolder.initViews(this);
         alipaySettingViewHolder.initViews(this);
         transactionHistoryViewHolder.initViews(this);

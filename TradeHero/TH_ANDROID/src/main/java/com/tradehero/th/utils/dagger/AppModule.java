@@ -49,7 +49,6 @@ import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.home.HomeWebView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView;
-import com.tradehero.th.fragments.location.LocationListFragment;
 import com.tradehero.th.fragments.news.*;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
@@ -148,7 +147,6 @@ import java.util.Locale;
                         PremiumFollowUserAssistant.class,
                         SettingsFragment.class,
                         TranslatableLanguageListFragment.class,
-                        LocationListFragment.class,
                         SettingsReferralCodeFragment.class,
                         AboutFragment.class,
                         EmailSignInFragment.class,
