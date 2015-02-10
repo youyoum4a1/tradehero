@@ -576,6 +576,12 @@ public class PortfolioFragment extends DashboardFragment
                     adapter.addSecurityPositionListClosed(list);
                 }
             }
+        }else{
+            if(currentPage > 1){
+                currentPage --;
+            }else{
+                currentPage = 1;
+            }
         }
     }
 
