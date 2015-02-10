@@ -333,7 +333,7 @@
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          style="@style/TH.Body.Inverse"
+          style="@style/TH.Body1.Inverse"
           android:textStyle="bold"
           android:layout_marginBottom="@dimen/margin_medium"
           android:text="Body 2\n-14sp\n-Medium"
@@ -342,7 +342,7 @@
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          style="@style/TH.Body.Inverse"
+          style="@style/TH.Body1.Inverse"
           android:layout_marginBottom="@dimen/margin_medium"
           android:text="Body 1\n-14sp\n-Light"
           tools:ignore="HardcodedText"/>

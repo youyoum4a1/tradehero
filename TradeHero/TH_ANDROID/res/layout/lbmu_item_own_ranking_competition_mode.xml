@@ -50,7 +50,7 @@
         android:layout_marginEnd="@dimen/margin_small"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_gravity="center_vertical"
-        style="@style/TH.Body.Inverse"
+        style="@style/TH.Body1.Inverse"
         tools:text="Move up by '12442' ranks to win!"
         android:gravity="right|end"
         android:visibility="gone"

@@ -10,61 +10,50 @@
 
 
   <style name="TH.TextPrimary" parent="TH">
-    <item name="android:textColor">@color/text_primary</item>
+    <!--<item name="android:textColor">@color/text_primary</item>-->
+    <item name="android:textColor">?android:textColorPrimary</item>
   </style>
 
   <style name="TH.TextSecondary" parent="TH">
-    <item name="android:textColor">@color/text_secondary</item>
+    <!--<item name="android:textColor">@color/text_secondary</item>-->
+    <item name="android:textColor">?android:textColorSecondary</item>
   </style>
 
   <!-- Primary Text Styles -->
-  <style name="TH.Display4" parent="TH.TextSecondary">
-    <item name="android:textSize">@dimen/text_display4</item>
+  <style name="TH.Display4" parent="TextAppearance.AppCompat.Display4">
   </style>
 
-  <style name="TH.Display3" parent="TH.TextSecondary">
-    <item name="android:textSize">@dimen/text_display3</item>
+  <style name="TH.Display3" parent="TextAppearance.AppCompat.Display3">
   </style>
 
-  <style name="TH.Display2" parent="TH.TextSecondary">
-    <item name="android:textSize">@dimen/text_display2</item>
+  <style name="TH.Display2" parent="TextAppearance.AppCompat.Display2">
   </style>
 
-  <style name="TH.Display1" parent="TH.TextSecondary">
-    <item name="android:textSize">@dimen/text_display1</item>
+  <style name="TH.Display1" parent="TextAppearance.AppCompat.Display1">
   </style>
 
-  <style name="TH.Headline" parent="TH.TextPrimary">
-    <item name="android:textSize">@dimen/text_headline</item>
-    <item name="android:lineSpacingExtra">5sp</item>
+  <style name="TH.Headline" parent="TextAppearance.AppCompat.Headline">
   </style>
 
-  <style name="TH.Title" parent="TH.TextPrimary">
-    <item name="android:textSize">@dimen/text_title</item>
+  <style name="TH.Title" parent="TextAppearance.AppCompat.Title">
   </style>
 
-  <style name="TH.Subhead" parent="TH.TextPrimary">
-    <item name="android:textSize">@dimen/text_subhead</item>
-    <item name="android:lineSpacingExtra">4sp</item>
+  <style name="TH.Subhead" parent="TextAppearance.AppCompat.Subhead">
   </style>
 
-  <style name="TH.Caption" parent="TH.TextSecondary">
-    <item name="android:textSize">@dimen/text_caption</item>
-    <item name="android:lineSpacingExtra">3sp</item>
+  <style name="TH.Caption" parent="TextAppearance.AppCompat.Caption">
   </style>
 
-  <style name="TH.Body" parent="TH.TextPrimary">
-    <item name="android:textSize">@dimen/text_body</item>
-    <item name="android:lineSpacingExtra">3sp</item>
+  <style name="TH.Body" parent="TextAppearance.AppCompat.Body1">
   </style>
 
-  <style name="TH.Menu" parent="TH.Body">
+  <style name="TH.Body2" parent="TextAppearance.AppCompat.Body2">
   </style>
 
-  <style name="TH.Button" parent="TH.Body">
-    <item name="android:textAllCaps">true</item>
-    <item name="android:gravity">center</item>
-    <item name="android:textStyle">bold</item>
+  <style name="TH.Menu" parent="TextAppearance.AppCompat.Menu">
+  </style>
+
+  <style name="TH.Button" parent="TextAppearance.AppCompat.Button">
     <item name="android:minWidth">@dimen/button_min_width</item>
   </style>
 
@@ -74,104 +63,105 @@
 
   <!-- Inverses -->
   <style name="TH.Display4.Inverse" parent="TH.Display4">
-    <item name="android:textColor">@color/text_secondary_inverse</item>
+    <item name="android:textColor">?android:textColorSecondaryInverse</item>
   </style>
 
   <style name="TH.Display3.Inverse" parent="TH.Display3">
-    <item name="android:textColor">@color/text_secondary_inverse</item>
+    <item name="android:textColor">?android:textColorSecondaryInverse</item>
   </style>
 
   <style name="TH.Display2.Inverse" parent="TH.Display2">
-    <item name="android:textColor">@color/text_secondary_inverse</item>
+    <item name="android:textColor">?android:textColorSecondaryInverse</item>
   </style>
 
   <style name="TH.Display1.Inverse" parent="TH.Display1">
-    <item name="android:textColor">@color/text_secondary_inverse</item>
+    <item name="android:textColor">?android:textColorSecondaryInverse</item>
   </style>
 
   <style name="TH.Headline.Inverse" parent="TH.Headline">
-    <item name="android:textColor">@color/text_primary_inverse</item>
+    <item name="android:textColor">?android:textColorSecondaryInverse</item>
   </style>
 
-  <style name="TH.Title.Inverse" parent="TH.Title">
-    <item name="android:textColor">@color/text_primary_inverse</item>
+  <style name="TH.Title.Inverse" parent="TextAppearance.AppCompat.Title.Inverse">
   </style>
 
-  <style name="TH.Subhead.Inverse" parent="TH.Subhead">
-    <item name="android:textColor">@color/text_primary_inverse</item>
+  <style name="TH.Subhead.Inverse" parent="TextAppearance.AppCompat.Subhead.Inverse">
   </style>
 
   <style name="TH.Caption.Inverse" parent="TH.Caption">
-    <item name="android:textColor">@color/text_secondary_inverse</item>
+    <item name="android:textColor">?android:textColorSecondaryInverse</item>
   </style>
 
-  <style name="TH.Body.Inverse" parent="TH.Body">
-    <item name="android:textColor">@color/text_primary_inverse</item>
+  <style name="TH.Body1.Inverse" parent="TH.Body">
+    <item name="android:textColor">?android:textColorSecondaryInverse</item>
+  </style>
+
+  <style name="TH.Body2.Inverse" parent="TH.Body2">
+    <item name="android:textColor">?android:textColorSecondaryInverse</item>
   </style>
 
   <style name="TH.Menu.Inverse" parent="TH.Menu">
-    <item name="android:textColor">@color/text_primary_inverse</item>
+    <item name="android:textColor">?android:textColorSecondaryInverse</item>
   </style>
 
   <style name="TH.Button.Inverse" parent="TH.Button">
-    <item name="android:textColor">@color/text_primary_inverse</item>
+    <item name="android:textColor">?android:textColorSecondaryInverse</item>
   </style>
 
   <style name="TH.Button.Inverse.Small" parent="TH.Button.Small">
-    <item name="android:textColor">@color/text_primary_inverse</item>
+    <item name="android:textColor">?android:textColorSecondaryInverse</item>
   </style>
 
   <!-- Accented Styles -->
   <style name="TH.Display4.Accented" parent="TH.Display4">
-    <item name="android:textColor">@color/text_secondary_accented</item>
+    <item name="android:textColor">?android:textColorHighlightInverse</item>
   </style>
 
   <style name="TH.Display3.Accented" parent="TH.Display3">
-    <item name="android:textColor">@color/text_secondary_accented</item>
+    <item name="android:textColor">?android:textColorHighlightInverse</item>
   </style>
 
   <style name="TH.Display2.Accented" parent="TH.Display2">
-    <item name="android:textColor">@color/text_secondary_accented</item>
+    <item name="android:textColor">?android:textColorHighlightInverse</item>
   </style>
 
   <style name="TH.Display1.Accented" parent="TH.Display1">
-    <item name="android:textColor">@color/text_secondary_accented</item>
+    <item name="android:textColor">?android:textColorHighlightInverse</item>
   </style>
 
   <style name="TH.Headline.Accented" parent="TH.Headline">
-    <item name="android:textColor">@color/text_primary_accented</item>
+    <item name="android:textColor">?android:textColorHighlight</item>
   </style>
 
   <style name="TH.Title.Accented" parent="TH.Title">
-    <item name="android:textColor">@color/text_primary_accented</item>
+    <item name="android:textColor">?android:textColorHighlight</item>
   </style>
 
   <style name="TH.Subhead.Accented" parent="TH.Subhead">
-    <item name="android:textColor">@color/text_primary_accented</item>
+    <item name="android:textColor">?android:textColorHighlight</item>
   </style>
 
   <style name="TH.Caption.Accented" parent="TH.Caption">
-    <item name="android:textColor">@color/text_secondary_accented</item>
+    <item name="android:textColor">?android:textColorHighlight</item>
   </style>
 
   <style name="TH.Body.Accented" parent="TH.Body">
-    <item name="android:textColor">@color/text_primary_accented</item>
+    <item name="android:textColor">?android:textColorHighlight</item>
   </style>
 
   <style name="TH.Menu.Accented" parent="TH.Menu">
-    <item name="android:textColor">@color/text_primary_accented</item>
+    <item name="android:textColor">?android:textColorHighlight</item>
   </style>
 
   <style name="TH.Button.Accented" parent="TH.Button">
-    <item name="android:textColor">@color/text_primary_accented</item>
+    <item name="android:textColor">?android:textColorHighlight</item>
   </style>
 
   <style name="TH.Button.Small.Accented" parent="TH.Button.Small">
-    <item name="android:textColor">@color/text_primary_accented</item>
+    <item name="android:textColor">?android:textColorHighlight</item>
   </style>
 
   <!--  -->
-
 
   <style name="TH.InfoKey" parent="TH.Body">
     <item name="android:padding">2dp</item>
@@ -182,7 +172,7 @@
     <item name="android:padding">2dp</item>
   </style>
 
-  <style name="TutorialTextContent" parent="TH.Body.Inverse">
+  <style name="TutorialTextContent" parent="TH.Body1.Inverse">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
   </style>
