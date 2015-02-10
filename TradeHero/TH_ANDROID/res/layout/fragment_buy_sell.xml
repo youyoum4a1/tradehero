@@ -7,6 +7,7 @@
     android:orientation="vertical"
     android:background="@color/transparent"
     android:animateLayoutChanges="true"
+    tools:context=".activities.DashboardActivity"
     >
 
   <ProgressBar
@@ -152,13 +153,6 @@
           android:text="@string/stock_alert_add_alert"
           />
 
-      <Button
-          android:id="@+id/btn_add_watch_list"
-          style="@style/TH.Btn_BuySell_Action"
-          android:text="@string/watchlist_add_title"
-          android:enabled="false"
-          />
-
     </LinearLayout>
 
 
@@ -185,6 +179,16 @@
         />
 
     <include layout="@layout/buy_sell_buttons"/>
+
+    <Button
+        android:id="@+id/btn_add_watch_list"
+        style="@style/TH.Btn_BuySell_Action"
+        android:text="@string/watchlist_add_title"
+        android:enabled="false"
+        android:layout_alignBottom="@+id/buy_sell_action_buttons_bottom_margin"
+        android:layout_toRightOf="@+id/vprice_as_of"
+        android:layout_toEndOf="@+id/vprice_as_of"
+        />
 
   </RelativeLayout>
 
