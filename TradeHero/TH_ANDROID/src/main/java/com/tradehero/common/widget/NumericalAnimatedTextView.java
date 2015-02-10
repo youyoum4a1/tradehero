@@ -15,8 +15,9 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import com.tradehero.th.R;
-import java.text.NumberFormat;
 import timber.log.Timber;
+
+import java.text.NumberFormat;
 
 public class NumericalAnimatedTextView extends TextSwitcher
         implements ViewSwitcher.ViewFactory
@@ -135,16 +136,9 @@ public class NumericalAnimatedTextView extends TextSwitcher
         t.setTypeface(t.getTypeface(), Typeface.BOLD);
         t.getPaint().setTextSize(textSize);
         t.setIncludeFontPadding(false);
-        //t.setPadding(0,0,0,-5);
-        //Timber.d("makeView padding bottom %s",t.getPaddingBottom());
-        //t.setTextSize(textSize);
         return t;
     }
 
-    public void setStartValue(float startValue)
-    {
-        this.mStartValue = startValue;
-    }
 
     public void setEndValue(float endValue)
     {

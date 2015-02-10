@@ -118,37 +118,6 @@ public class BaseMilestoneGroup extends BaseMilestone implements MilestoneGroup
         return false;
     }
 
-    @Override public int getMilestoneCount()
-    {
-        return milestones.size();
-    }
-
-    @Override public int getCompleteMilestoneCount()
-    {
-        int total = 0;
-        for (Milestone milestone : milestones)
-        {
-            if (milestone.isComplete())
-            {
-                total++;
-            }
-        }
-        return total;
-    }
-
-    @Override public int getFailedMilestoneCount()
-    {
-        int total = 0;
-        for (Milestone milestone : milestones)
-        {
-            if (milestone.isFailed())
-            {
-                total++;
-            }
-        }
-        return total;
-    }
-
     @Override protected void conditionalNotifyFailedListener(Throwable throwable)
     {
         if (!failedReported)

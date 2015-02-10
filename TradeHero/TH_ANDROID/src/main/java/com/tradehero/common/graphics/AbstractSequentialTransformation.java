@@ -2,6 +2,7 @@ package com.tradehero.common.graphics;
 
 import android.graphics.Bitmap;
 import com.squareup.picasso.Transformation;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,11 +13,6 @@ abstract public class AbstractSequentialTransformation implements Transformation
     public AbstractSequentialTransformation ()
     {
         this.transformationList = new ArrayList<>();
-    }
-
-    public AbstractSequentialTransformation (List<Transformation> transformationList)
-    {
-        this.transformationList = transformationList;
     }
 
     public void add(Transformation transformation)
