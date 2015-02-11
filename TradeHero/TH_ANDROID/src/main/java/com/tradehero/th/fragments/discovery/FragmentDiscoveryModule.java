@@ -13,7 +13,6 @@ import javax.inject.Singleton;
                 DiscoveryMainFragment.class,
 
                 NewsHeadlineFragment.class,
-                RegionalNewsHeadlineFragment.class,
                 DiscoveryDiscussionFragment.class,
                 LearningFragment.class,
 

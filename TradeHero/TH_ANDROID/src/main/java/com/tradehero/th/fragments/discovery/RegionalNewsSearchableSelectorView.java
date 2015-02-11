@@ -138,7 +138,7 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
     private void sendRegionalNewsChangedEvent(CountryLanguagePairDTO countryLanguagePair)
     {
         countryLanguagePreference.set(countryLanguagePair);
-        Intent regionalNewsChangedIntent = new Intent(RegionalNewsHeadlineFragment.REGION_CHANGED);
+        Intent regionalNewsChangedIntent = new Intent(NewsHeadlineFragment.REGION_CHANGED);
 
         LocalBroadcastManager.getInstance(getContext())
                 .sendBroadcast(regionalNewsChangedIntent);
