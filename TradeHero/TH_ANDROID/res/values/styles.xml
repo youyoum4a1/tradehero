@@ -6,7 +6,7 @@
   -->
 
   <style name="Base.TradeHero"
-      parent="Theme.AppCompat.Light.DarkActionBar">
+      parent="Theme.AppCompat.Light.NoActionBar">
     <item name="colorAccent">@color/text_secondary_accented</item>
     <item name="colorPrimary">@color/tradehero_blue</item>
     <item name="colorPrimaryDark">#ff0812c6</item>
@@ -23,7 +23,19 @@
   <style name="TradeHero"
       parent="Base.TradeHero">
     <item name="android:windowNoTitle">true</item>
+    <item name="android:windowActionBarOverlay">false</item>
+  </style>
+
+  <style name="TradeHero.ActionBar" parent="Widget.AppCompat.Toolbar">
+    <item name="android:background">?attr/colorPrimary</item>
+    <item name="theme">@style/ThemeOverlay.ActionBar.TradeHero</item>
+    <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+  </style>
+
+  <style name="ThemeOverlay.ActionBar.TradeHero" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
     <item name="android:windowActionBarOverlay">true</item>
+    <!-- Support library compatibility -->
+    <item name="windowActionBarOverlay">true</item>
   </style>
 
   <style name="TradeHero.Settings"
