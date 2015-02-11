@@ -14,7 +14,6 @@ import javax.inject.Singleton;
 
                 NewsHeadlineFragment.class,
                 DiscoveryDiscussionFragment.class,
-                LearningFragment.class,
 
                 RegionalNewsSelectorView.class,
                 RegionalNewsSearchableSelectorView.class,
