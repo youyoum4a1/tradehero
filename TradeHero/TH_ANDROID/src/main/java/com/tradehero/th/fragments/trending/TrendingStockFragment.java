@@ -36,7 +36,7 @@ import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractorRx;
-import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
+import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
@@ -386,7 +386,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
         }
         else if (providerDTO != null)
         {
-            navigator.get().pushFragment(CompetitionEnrollmentWebViewFragment.class, providerDTO.getProviderId().getArgs());
+            navigator.get().pushFragment(CompetitionWebViewFragment.class, providerDTO.getProviderId().getArgs());
         }
     }
 

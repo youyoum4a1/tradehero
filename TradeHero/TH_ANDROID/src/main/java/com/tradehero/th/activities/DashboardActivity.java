@@ -59,7 +59,6 @@ import com.tradehero.th.fragments.NavigationAnalyticsReporter;
 import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentBroadcastSignal;
-import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
@@ -424,7 +423,7 @@ public class DashboardActivity extends BaseActivity
                                     {
                                         enrollmentScreenIsOpened = true;
                                         enrollmentScreenOpened.add(providerDTO.id);
-                                        navigator.pushFragment(CompetitionEnrollmentWebViewFragment.class, providerDTO.getProviderId().getArgs());
+                                        navigator.pushFragment(CompetitionWebViewFragment.class, providerDTO.getProviderId().getArgs());
                                     }
                                 },
                                 throwable -> {
