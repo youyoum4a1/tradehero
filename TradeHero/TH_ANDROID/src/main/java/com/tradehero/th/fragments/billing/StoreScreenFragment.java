@@ -43,7 +43,6 @@ import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
 import rx.functions.Actions;
-import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 @Routable({
@@ -64,7 +63,6 @@ public class StoreScreenFragment extends DashboardFragment
 
     @InjectView(R.id.store_option_list) protected ListView listView;
     private StoreItemAdapter storeItemAdapter;
-    @NonNull protected SubscriptionList subscriptions;
     @Inject protected THBillingInteractorRx userInteractorRx;
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
@@ -73,13 +71,6 @@ public class StoreScreenFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         thRouter.inject(this);
         storeItemAdapter = new StoreItemAdapter(getActivity());
-
-        subscriptions.add(AppObservable.bindFragment(this, userProfileCacheRx.get(currentUserId.toUserBaseKey()))
-                .subscribe(userProfileDTO-> {
-                    purchaseApplicableOwnedPortfolioId =
-                            new OwnedPortfolioId(userProfileDTO.second.portfolio.id, currentUserId.get());
-                    launchRoutedAction();
-                }));
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -108,6 +99,7 @@ public class StoreScreenFragment extends DashboardFragment
 
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Store));
 
+        fetchUserProfile();
         storeItemAdapter.clear();
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
@@ -141,6 +133,16 @@ public class StoreScreenFragment extends DashboardFragment
     {
         storeItemAdapter = null;
         super.onDestroy();
+    }
+
+    protected void fetchUserProfile()
+    {
+        onStopSubscriptions.add(AppObservable.bindFragment(this, userProfileCacheRx.get(currentUserId.toUserBaseKey()))
+                .subscribe(userProfileDTO-> {
+                    purchaseApplicableOwnedPortfolioId =
+                            new OwnedPortfolioId(userProfileDTO.second.portfolio.id, currentUserId.get());
+                    launchRoutedAction();
+                }));
     }
 
     public void cancelOthersAndShowBillingAvailable()
