@@ -55,7 +55,7 @@
         android:layout_height="@dimen/big_image_w_h"
         android:scaleType="fitCenter"
         android:contentDescription="@null"
-        tools:src="@drawable/google_play_store"
+        tools:src="@drawable/square_sg"
         />
 
     <RelativeLayout
