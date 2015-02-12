@@ -132,11 +132,6 @@ public class RetrofitProtectedModule
         return adapter.create(UserServiceRx.class);
     }
 
-    @Provides @Singleton UserTimelineMarkerServiceRx provideUserTimelineMarkerServiceRx(RestAdapter adapter)
-    {
-        return adapter.create(UserTimelineMarkerServiceRx.class);
-    }
-
     @Provides @Singleton UserTimelineServiceRx provideUserTimelineServiceRx(RestAdapter adapter)
     {
         return adapter.create(UserTimelineServiceRx.class);
@@ -155,11 +150,6 @@ public class RetrofitProtectedModule
     @Provides @Singleton WeChatServiceRx provideWeChatServiceRx(RestAdapter adapter)
     {
         return adapter.create(WeChatServiceRx.class);
-    }
-
-    @Provides @Singleton YahooNewsServiceRx provideYahooServiceRx(RestAdapter.Builder builder)
-    {
-        return builder.setEndpoint(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsServiceRx.class);
     }
 
     @Provides @Singleton HomeServiceRx provideHomeServiceRx(RestAdapter.Builder builder, RequestHeaders requestHeaders)
