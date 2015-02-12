@@ -290,7 +290,6 @@ dependencies {
   }
 
   // for qq
-  debugProvided fileTree(dir: 'libs/qq', include: ['*.jar'])
   releaseCompile fileTree(dir: 'libs/qq', include: ['*.jar'])
 
   samsungCompile 'com.sec.android.iap:library:2.0@aar'

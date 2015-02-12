@@ -5,7 +5,7 @@ import dagger.Module;
 @Module(
         injects = {
                 PeopleSearchFragmentTest.class,
-                PublicPeopleSearchFragment.class,
+                //PublicPeopleSearchFragment.class,
         },
         complete = false,
         library = true

@@ -21,7 +21,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
             BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
-    public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
 
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
@@ -129,9 +128,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
     {
         this.purchaseApplicableOwnedPortfolioId = purchaseApplicablePortfolioId;
-        if (andDisplay)
-        {
-        }
     }
 
     @Nullable public OwnedPortfolioId getApplicablePortfolioId()

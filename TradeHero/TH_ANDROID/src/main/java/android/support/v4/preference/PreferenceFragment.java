@@ -346,8 +346,8 @@ public abstract class PreferenceFragment extends Fragment implements
                 Object selectedItem = mList.getSelectedItem();
                 if (selectedItem instanceof Preference)
                 {
-                    @SuppressWarnings("unused")
-                    View selectedView = mList.getSelectedView();
+                    //@SuppressWarnings("unused")
+                    //View selectedView = mList.getSelectedView();
                     //return ((Preference)selectedItem).onKey(
                     //        selectedView, keyCode, event);
                     return false;

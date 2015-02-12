@@ -118,12 +118,6 @@ public class QuoteDTO implements RawResponseKeeper, Cloneable
         return new SecurityIntegerId(securityId);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    @JsonIgnore public Double getPrice(boolean isBuy)
-    {
-        return isBuy ? ask : bid;
-    }
-
     @JsonIgnore public Double getBidUSD()
     {
         if (bid == null || toUSDRate == null)
@@ -140,12 +134,6 @@ public class QuoteDTO implements RawResponseKeeper, Cloneable
             return null;
         }
         return ask * toUSDRate;
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    @JsonIgnore public Double getPriceUSD(boolean isBuy)
-    {
-        return isBuy ? getAskUSD() : getBidUSD();
     }
 
     /**
@@ -172,12 +160,6 @@ public class QuoteDTO implements RawResponseKeeper, Cloneable
             return null;
         }
         return askUSD / refCcyToUsdRate;
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    @JsonIgnore public Double getPriceRefCcy(Double refCcyToUsdRate, boolean isBuy)
-    {
-        return isBuy ? getAskRefCcy(refCcyToUsdRate) : getBidRefCcy(refCcyToUsdRate);
     }
 
     @JsonIgnore public Double getBidRefCcy(PortfolioCompactDTO portfolioCompactDTO)

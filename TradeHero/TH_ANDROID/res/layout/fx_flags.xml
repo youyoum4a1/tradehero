@@ -11,8 +11,8 @@
   <ImageView
       android:id="@+id/flag_left"
       android:layout_gravity="center_vertical|right"
-      android:layout_width="@dimen/medium_image_w_h"
-      android:layout_height="@dimen/medium_image_w_h"
+      android:layout_width="@dimen/small_image_w_h"
+      android:layout_height="@dimen/small_image_w_h"
       tools:src="@drawable/square_de"
       />
 
@@ -24,8 +24,8 @@
   <ImageView
       android:id="@+id/flag_right"
       android:layout_gravity="center_vertical|left"
-      android:layout_width="@dimen/medium_image_w_h"
-      android:layout_height="@dimen/medium_image_w_h"
+      android:layout_width="@dimen/small_image_w_h"
+      android:layout_height="@dimen/small_image_w_h"
       tools:src="@drawable/square_fr"
       />
 
