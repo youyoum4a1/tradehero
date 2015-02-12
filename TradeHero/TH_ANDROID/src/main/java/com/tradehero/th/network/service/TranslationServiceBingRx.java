@@ -1,6 +1,5 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.translation.bing.BingTranslationResult;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Query;
@@ -10,8 +9,8 @@ import static com.tradehero.th.utils.Constants.AUTHORIZATION;
 
 interface TranslationServiceBingRx
 {
-    @GET("/v2/Http.svc/Translate")
-    Observable<BingTranslationResult> requestForTranslation(
+    @GET("/v2/Ajax.svc/Translate")
+    Observable<String> requestForTranslation(
             @Header(AUTHORIZATION) String authorization,
             @Query("from") String from,
             @Query("to") String to,

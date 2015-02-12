@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
+import retrofit.converter.JacksonConverter;
 import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
 import timber.log.Timber;
