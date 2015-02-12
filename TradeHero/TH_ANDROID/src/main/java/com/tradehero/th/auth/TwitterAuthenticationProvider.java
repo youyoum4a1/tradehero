@@ -5,10 +5,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.webkit.CookieSyncManager;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.auth.operator.ConsumerKey;
-import com.tradehero.th.auth.operator.ConsumerSecret;
 import com.tradehero.th.auth.operator.OperatorOAuthDialog;
 import com.tradehero.th.network.service.SocialLinker;
+import com.tradehero.th.network.share.SocialConstants;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import oauth.signpost.OAuthProvider;
@@ -36,9 +35,7 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
     private final OAuthProvider provider;
     private final CommonsHttpOAuthConsumer consumer;
 
-    @Inject public TwitterAuthenticationProvider(@NonNull SocialLinker socialLinker,
-            @ConsumerKey(SocialNetworkEnum.TW) String consumerKey,
-            @ConsumerSecret(SocialNetworkEnum.TW) String consumerSecret)
+    @Inject public TwitterAuthenticationProvider(@NonNull SocialLinker socialLinker)
     {
         super(socialLinker);
         provider = new CommonsHttpOAuthProvider(
@@ -46,7 +43,7 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
                 ACCESS_TOKEN_URL,
                 AUTHORIZE_URL);
 
-        consumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
+        consumer = new CommonsHttpOAuthConsumer(SocialConstants.TWITTER_CONSUMER_KEY, SocialConstants.TWITTER_CONSUMER_SECRET);
     }
 
     @Override protected Observable<AuthData> createAuthDataObservable(Activity activity)

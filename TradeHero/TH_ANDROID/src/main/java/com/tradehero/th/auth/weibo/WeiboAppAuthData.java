@@ -1,12 +1,16 @@
 package com.tradehero.th.auth.weibo;
 
+import android.support.annotation.NonNull;
+
 public class WeiboAppAuthData
 {
-    public String appId;
-    public String redirectUrl;
-    public String scope;
+    @NonNull public final String appId;
+    @NonNull public final String redirectUrl;
+    @NonNull public final String scope;
 
-    public WeiboAppAuthData(String appId, String redirectUrl, String scope)
+    public WeiboAppAuthData(@NonNull String appId,
+            @NonNull String redirectUrl,
+            @NonNull String scope)
     {
         this.appId = appId;
         this.redirectUrl = redirectUrl;
