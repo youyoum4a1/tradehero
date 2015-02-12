@@ -6,10 +6,9 @@ import android.webkit.CookieSyncManager;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
-import com.tradehero.th.auth.operator.ConsumerKey;
-import com.tradehero.th.auth.operator.ConsumerSecret;
 import com.tradehero.th.auth.operator.OperatorOAuthDialog;
 import com.tradehero.th.network.service.SocialLinker;
+import com.tradehero.th.network.share.SocialConstants;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import javax.inject.Inject;
@@ -37,19 +36,13 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
     private static final String CALLBACK_URL = "x-oauthflow-linkedin://callback";
     private static final String SERVICE_URL_ID = "www.linkedin";
 
-    @NonNull final String consumerKey;
-    @NonNull final String consumerSecret;
     @NonNull final CommonsHttpOAuthProvider oAuthProvider;
     @NonNull final CommonsHttpOAuthConsumer oAuthConsumer;
 
     @Inject public LinkedInAuthenticationProvider(
-            @NonNull SocialLinker socialLinker,
-            @ConsumerKey(SocialNetworkEnum.LN) @NonNull String consumerKey,
-            @ConsumerSecret(SocialNetworkEnum.LN) @NonNull String consumerSecret)
+            @NonNull SocialLinker socialLinker)
     {
         super(socialLinker);
-        this.consumerKey = consumerKey;
-        this.consumerSecret = consumerSecret;
         this.oAuthProvider = createOAuthProvider();
         this.oAuthConsumer = createOAuthConsumer();
     }
@@ -74,7 +67,7 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
 
     @NonNull private CommonsHttpOAuthConsumer createOAuthConsumer()
     {
-        return new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
+        return new CommonsHttpOAuthConsumer(SocialConstants.LINKEDIN_CONSUMER_KEY, SocialConstants.LINKEDIN_CONSUMER_SECRET);
     }
 
     @Override public Observable<AuthData> createAuthDataObservable(final Activity activity)

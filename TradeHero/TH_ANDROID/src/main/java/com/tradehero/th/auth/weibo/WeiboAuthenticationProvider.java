@@ -11,8 +11,8 @@ import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
-import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
 import com.tradehero.th.network.service.SocialLinker;
+import com.tradehero.th.network.share.SocialConstants;
 import com.tradehero.th.utils.Constants;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -34,11 +34,10 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
 
     //<editor-fold desc="Constructors">
     @Inject public WeiboAuthenticationProvider(
-            @NonNull SocialLinker socialLinker,
-            @NonNull @ForWeiboAppAuthData WeiboAppAuthData appAuthData)
+            @NonNull SocialLinker socialLinker)
     {
         super(socialLinker);
-        this.appAuthData = appAuthData;
+        this.appAuthData = SocialConstants.weiboAppAuthData;
     }
     //</editor-fold>
 
