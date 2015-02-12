@@ -6,6 +6,7 @@ import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Func1;
 
 @Singleton public class TranslationServiceBingWrapper
 {
@@ -25,6 +26,13 @@ import rx.Observable;
     {
         return translationServiceBingRx.requestForTranslation(
                 token.getPrefixedAccessToken(),
-                from, to, PREFERRED_CONTENT_TYPE, text);
+                from, to, PREFERRED_CONTENT_TYPE, text)
+                .map(new Func1<String, BingTranslationResult>()
+                {
+                    @Override public BingTranslationResult call(String translated)
+                    {
+                        return new BingTranslationResult(from, to, translated);
+                    }
+                });
     }
 }
