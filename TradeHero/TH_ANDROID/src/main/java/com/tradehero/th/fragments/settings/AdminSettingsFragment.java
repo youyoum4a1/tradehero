@@ -129,7 +129,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         }
 
         Preference sendFakePush = findPreference(KEY_SEND_FAKE_PUSH);
-        sendFakePush.setOnPreferenceClickListener(preference -> askForNotificationId());
+        sendFakePush.setOnPreferenceClickListener(preference -> sendFakeAction());
 
         Preference showReviewDialog = findPreference("show_review_dialog");
         showReviewDialog.setOnPreferenceClickListener(preference -> {
@@ -204,6 +204,8 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         AlertDialogRxUtil.build(getActivity())
                 .setView(view)
                 .setPositiveButton(R.string.ok)
+                .setCancelable(true)
+                .setCanceledOnTouchOutside(true)
                 .build()
                 .subscribe(new Action1<OnDialogClickEvent>()
                 {
@@ -232,6 +234,12 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         Intent fakeIntent = new Intent();
         fakeIntent.putExtra(PushConstants.KEY_PUSH_ID, String.valueOf(notificationId));
         notificationOpenedHandler.get().handle(fakeIntent);
+    }
+
+    private boolean sendFakeAction()
+    {
+        FakePushNotificationUtil.showDialogAndSend(getActivity());
+        return true;
     }
 
     private boolean onServerEndpointChanged(String serverEndpoint)

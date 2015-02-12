@@ -165,6 +165,7 @@ public class DashboardActivity extends BaseActivity
     @Inject Set<ActivityResultRequester> activityResultRequesters;
     @Inject @ForAnalytics Lazy<DashboardNavigator.DashboardFragmentWatcher> analyticsReporter;
     @Inject THAppsFlyer thAppsFlyer;
+    @Inject MarketUtil marketUtil;
 
     @Inject Lazy<ProviderListCacheRx> providerListCache;
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
@@ -220,6 +221,7 @@ public class DashboardActivity extends BaseActivity
         }
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
+        pushNotificationManager.get().verify(this);
         pushNotificationManager.get().enablePush();
 
         initBroadcastReceivers();
@@ -369,6 +371,7 @@ public class DashboardActivity extends BaseActivity
         super.onStart();
         systemStatusCache.get(new SystemStatusKey());
         thAppsFlyer.sendTracking();
+        marketUtil.testMarketValid(this);
     }
 
     @Override protected void onResume()

@@ -7,18 +7,18 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.AlertDialogRxUtil;
-import javax.inject.Inject;
 import rx.functions.Actions;
 import timber.log.Timber;
 
-public class GooglePlayMarketUtil implements MarketUtil
+abstract class GooglePlayMarketUtilBase implements MarketUtil
 {
     // Google PlayStore
     public static final String PLAYSTORE_APP_ID = "com.tradehero.th";
     private static final String PLAYSTORE_URL = "https://play.google.com/store/apps/details?id=";
+    public static final int REQUEST_CODE_UPDATE_PLAY_SERVICE = 43;
 
     //<editor-fold desc="Constructors">
-    @Inject public GooglePlayMarketUtil()
+    public GooglePlayMarketUtilBase()
     {
         super();
     }

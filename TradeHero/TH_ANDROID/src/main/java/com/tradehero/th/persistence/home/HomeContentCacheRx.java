@@ -16,7 +16,9 @@ import java.util.zip.GZIPInputStream;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.client.Header;
+import retrofit.client.Response;
 import rx.Observable;
+import rx.functions.Func1;
 
 @Singleton @UserCache
 public class HomeContentCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, HomeContentDTO>
@@ -40,20 +42,24 @@ public class HomeContentCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, HomeCon
     @NonNull @Override protected Observable<HomeContentDTO> fetch(@NonNull UserBaseKey key)
     {
         return homeServiceWrapper.getHomePageContentRx(key)
-                .flatMap(response -> {
-                    try
+                .flatMap(new Func1<Response, Observable<? extends HomeContentDTO>>()
+                {
+                    @Override public Observable<? extends HomeContentDTO> call(Response response)
                     {
-                        InputStream responseStream = response.getBody().in();
-                        Header header = retrofitHelper.findHeaderByName(response.getHeaders(), Constants.CONTENT_ENCODING);
-                        if (header != null && header.getValue().equalsIgnoreCase(Constants.CONTENT_ENCODING_GZIP))
+                        try
                         {
-                            responseStream = new GZIPInputStream(responseStream);
+                            InputStream responseStream = response.getBody().in();
+                            Header header = retrofitHelper.findHeaderByName(response.getHeaders(), Constants.CONTENT_ENCODING);
+                            if (header != null && header.getValue().equalsIgnoreCase(Constants.CONTENT_ENCODING_GZIP))
+                            {
+                                responseStream = new GZIPInputStream(responseStream);
+                            }
+                            byte[] content = IOUtils.streamToBytes(responseStream);
+                            return Observable.just(new HomeContentDTO(new String(content)));
+                        } catch (IOException e)
+                        {
+                            return Observable.error(e);
                         }
-                        byte[] content = IOUtils.streamToBytes(responseStream);
-                        return Observable.just(new HomeContentDTO(new String(content)));
-                    } catch (IOException e)
-                    {
-                        return Observable.error(e);
                     }
                 });
     }
