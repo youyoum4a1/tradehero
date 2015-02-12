@@ -16,7 +16,6 @@
       android:layout_weight="1"
       android:padding="@dimen/margin_xsmall"
       style="@style/TH.Subhead.Inverse"
-      tools:background="@color/orange"
       tools:text="Margin is approaching"
       android:gravity="center"
       android:visibility="gone"
@@ -45,7 +44,6 @@
           android:layout_height="wrap_content"
           android:text="@string/portfolio_header_total_asset_value"
           android:layout_gravity="center_vertical"
-          android:textColor="@color/gray_normal"
           style="@style/TH.Caption"/>
 
       <Space
@@ -58,7 +56,6 @@
           android:layout_height="wrap_content"
           android:text="@string/portfolio_header_total_profit"
           android:layout_gravity="center_vertical"
-          android:textColor="@color/gray_normal"
           style="@style/TH.Caption"
           />
 
@@ -84,7 +81,6 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           style="@style/TH.Subhead"
-          android:textColor="@color/black"
           tools:text="US$ 8,695"
           />
 
@@ -98,7 +94,6 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           style="@style/TH.Subhead"
-          android:textColor="@color/black"
           android:layout_gravity="center_vertical"
           tools:text="US$ 85,695"
           />
@@ -125,7 +120,6 @@
           android:layout_height="wrap_content"
           android:text="@string/portfolio_header_margin_available_title"
           android:layout_gravity="center_vertical"
-          android:textColor="@color/gray_normal"
           style="@style/TH.Caption"
           />
 
@@ -139,7 +133,6 @@
           android:layout_height="wrap_content"
           android:text="@string/portfolio_header_margin_used_title"
           android:layout_gravity="center_vertical"
-          android:textColor="@color/gray_normal"
           style="@style/TH.Caption"
           />
 
@@ -165,7 +158,6 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           style="@style/TH.Subhead"
-          android:textColor="@color/black"
           android:layout_gravity="center_vertical"
           tools:text="US$ 85,695"
           />
@@ -180,7 +172,6 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           style="@style/TH.Subhead"
-          android:textColor="@color/black"
           android:layout_gravity="center_vertical"
           tools:text="US$ 25,695"
           />

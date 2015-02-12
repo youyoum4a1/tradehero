@@ -1,77 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="authentication_link_text">#324f85</color>
-  <color name="authentication_forgot_password_link">#9F9F9F</color>
-  <color name="authentication_button_dark">#9e9e9e</color>
-  <color name="authentication_button_light">#808080</color>
-  <color name="timeline_item">#000000</color>
-  <color name="timeline_item_link">@color/tradehero_blue</color>
-  <color name="trending_grid_item_stock_name">#384152</color>
-  <color name="leaderboard_ranking_position">#4d6d9d</color>
-  <color name="timeline_list_item_background">@color/white</color>
-  <color name="timeline_background_color">#E3E8EE</color>
-  <color name="timeline_action_button_text_color">#80929292</color>
-  <color name="timeline_action_button_text_color_shadow">#000000</color>
-  <color name="timeline_action_button_text_color_pressed">@color/tradehero_blue</color>
-  <color name="notification_background_color">#181818</color>
-  <color name="dashboard_background_color">#E3E8EE</color>
-  <color name="profile_view_gradient_top">@color/transparent</color>
-  <color name="authentication_edit_text_bg">#D0ffffff</color>
-  <color name="profile_view_gradient_bottom">#bbffffff</color>
-  <color name="invite_friend_header_background_color">@color/invite_friend_background_color</color>
-  <color name="invite_friend_background_color">#e3e4e6</color>
-  <color name="refer_friend_item_background">@color/white</color>
-  <color name="invite_friend_announcement_header">#dbd9da</color>
-  <color name="transparent">@android:color/transparent</color>
-  <color name="divider_gray">#80aaaaaa</color>
-  <color name="orange">@android:color/holo_orange_light</color>
-  <!--<color name="splash_background_solid">#4699c4</color>-->
-  <color name="splash_background_solid">@color/tradehero_blue_pressed</color>
-  <color name="follow_button_background">@color/tradehero_blue</color>
-  <color name="follow_button_background_pressed">@color/tradehero_blue_pressed</color>
-  <color name="follow_button_background_pressed_not_active">#ffc3f1fb</color>
-  <color name="connect_accounts">#1376FB</color>
+  <!--Text Colors-->
+  <color name="text_primary">#ff1f1f1f</color>
+  <color name="text_secondary">#ff888888</color>
+  <color name="text_primary_inverse">#fff4f4f4</color>
+  <color name="text_secondary_inverse">#ffdbdbdb</color>
+  <color name="text_primary_accented">@color/tradehero_blue</color>
+  <color name="text_secondary_accented">#ff499bfb</color>
 
+  <!--Tradehero Colors-->
   <color name="tradehero_blue">#1376FB</color>
   <color name="tradehero_blue_pressed">#58b0dd</color>
   <color name="tradehero_blue_focused">#8cdddd</color>
+  <color name="tradehero_dark_blue">#03237D</color>
 
-  <color name="actionbar_menu_text_color">@android:color/darker_gray</color>
-  <color name="leaderboard_user_item_text_color">#4C566B</color>
-  <color name="invite_friend_button_color">@color/tradehero_blue</color>
-  <drawable name="share_item_pressed_bg_grey">#ddd</drawable>
+  <color name="tradehero_tab_bg_color">@color/tradehero_dark_blue</color>
+  <color name="tradehero_tab_indicator_color">@color/text_primary_inverse</color>
+  <color name="tradehero_bottom_tab_bg_color">#3E454C</color>
+  <color name="tradehero_divider_grey">@color/light_grey</color>
+  <color name="tradehero_dashboard_bg_color">@color/white</color>
+  <color name="tradehero_grid_border_color">@color/darker_grey</color>
 
-  <color name="follow_button_green">@color/light_green_selector</color>
-  <color name="follow_button_green_pressed">@color/light_green_selector_pressed</color>
-  <color name="follow_button_green_overlay">@color/light_green_selector_overlay</color>
+  <color name="number_green">#1A930A</color>
+  <color name="number_red">#D42621</color>
+  <color name="number_up">@color/number_green</color>
+  <color name="number_down">@color/number_red</color>
 
-  <color name="notification_text_color">@color/white</color>
-
-  <color name="message_button_blue">#6e96fa</color>
-  <color name="message_button_blue_pressed">#ffa6befa</color>
-  <color name="message_button_blue_overlay">#0d6cfb</color>
-
-  <color name="light_green_selector">#a0dc50</color>
-  <color name="light_green_selector_pressed">#ffc7ff8b</color>
-  <color name="light_green_selector_overlay">#54A700</color>
-
-  <color name="broadcast_message_item_bg">#dfefff</color>
-  <color name="private_message_item_bg">@color/white</color>
-  <color name="light_green1">#30D720</color>
-  <color name="light_green">#6ED200</color>
-  <color name="dark_green">#54A700</color>
-  <color name="dark_dark_yellow">#FAB000</color>
+  <!--Basic Colors-->
+  <color name="transparent">@android:color/transparent</color>
+  <color name="red">@android:color/holo_red_dark</color>
+  <color name="dark_red">#ff770000</color>
+  <color name="black">@android:color/black</color>
+  <color name="white">@android:color/white</color>
+  <color name="darker_grey">@android:color/darker_gray</color>
+  <color name="light_grey">#D0D0D0</color>
+  <color name="light_grey_transparent">#68d0d0d0</color>
+  <color name="pale_yellow">#F0E68C</color>
   <color name="light_yellow">#FFD000</color>
-  <color name="pale_yellow">#fff39c</color>
-  <color name="discussion_action_buttons_border_top_color">#fafafa</color>
 
-  <color name="grid_item_bg_border">#88000000</color>
+  <color name="orange">@android:color/holo_orange_light</color>
 
-  <color name="loading_progress_background">#ea2c2c2c</color>
+  <!--Buttons-->
+  <color name="light_green_normal">#a0dc50</color>
+  <color name="light_green_pressed">#ffc7ff8b</color>
+  <color name="light_green_focused">#54A700</color>
 
-  <color name="leaderboard_current_user_rank_header_background">#ffbecfe8</color>
+  <color name="dark_blue_normal">@color/tradehero_dark_blue</color>
+  <color name="dark_blue_pressed">#ff052040</color>
+  <color name="dark_blue_focused">#ff0765e7</color>
 
-  <string-array name="rangeColors2" translatable="false">
+  <color name="facebook_blue_normal">#385185</color>
+  <color name="facebook_blue_pressed">#ff1d1d41</color>
+  <color name="facebook_blue_focused">#ff508dd8</color>
+
+  <color name="linked_in_blue_normal">#007BB6</color>
+  <color name="linked_in_blue_pressed">#ff005583</color>
+  <color name="linked_in_blue_focused">#ff00a2e0</color>
+
+  <color name="twitter_blue_normal">#32A7E0</color>
+  <color name="twitter_blue_pressed">#ff286892</color>
+  <color name="twitter_blue_focused">#ff31d1ff</color>
+
+  <color name="qq_normal">@color/white</color>
+  <color name="qq_pressed">@color/darker_grey</color>
+  <color name="qq_focused">@color/pale_yellow</color>
+
+  <color name="weibo_normal">@color/white</color>
+  <color name="weibo_pressed">@color/darker_grey</color>
+  <color name="weibo_focused">@color/pale_yellow</color>
+
+
+  <string-array name="gauge_color_range" translatable="false">
     <item>#FF0C2B</item>
     <item>#FF1D0C</item>
 
@@ -89,7 +88,4 @@
     <item>#16FF11</item>
   </string-array>
 
-  <color name="dark_blue_normal">#06439A</color>
-  <color name="dark_blue_pressed">#ff052040</color>
-  <color name="dark_blue_focused">#ff0765e7</color>
 </resources>

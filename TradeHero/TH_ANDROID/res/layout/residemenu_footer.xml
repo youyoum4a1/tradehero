@@ -12,9 +12,9 @@
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textColor="@color/white"
       android:text="@string/residemenu_footer_title"
       android:alpha="0.4"
+      style="@style/TH.Caption.Inverse"
       android:textSize="@dimen/text_xxsmall"
       android:layout_marginLeft="@dimen/margin_xsmall"
       android:layout_marginStart="@dimen/margin_xsmall"

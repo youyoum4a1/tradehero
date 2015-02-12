@@ -12,7 +12,7 @@
       android:id="@+id/social_friend_headline"
       android:layout_width="fill_parent"
       android:layout_height="24dp"
-      android:background="@color/gray_1"
+      android:background="@color/light_grey"
       android:gravity="center_vertical"
       android:paddingLeft="10dp"
       tools:text="head line"

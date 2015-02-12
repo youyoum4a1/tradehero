@@ -111,7 +111,6 @@
           android:layout_height="wrap_content"
           android:lines="1"
           tools:text="8.80"
-          android:textColor="@color/text_gray_normal"
           style="@style/TH.Body"/>
 
     </LinearLayout>
@@ -134,7 +133,6 @@
         android:gravity="right"
         android:lines="1"
         tools:text="Equity"
-        android:textColor="@color/sec_type"
         style="@style/TH.Body"/>
 
   </LinearLayout>

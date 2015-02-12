@@ -12,7 +12,7 @@
       style="@style/TH.SocialAuthenticationButton"
       android:drawableLeft="@drawable/icn_tw_white"
       android:drawableStart="@drawable/icn_tw_white"
-      android:background="@drawable/btn_background_social_twitter"
+      android:background="@drawable/twitter_selector"
       android:text="@string/twitter_login_in"
       app:type="twitter"
       />

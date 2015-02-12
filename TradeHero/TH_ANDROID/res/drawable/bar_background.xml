@@ -3,11 +3,6 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
   <item>
-    <color android:color="@color/tradehero_blue"/>
+    <color android:color="@color/tradehero_dark_blue"/>
   </item>
-  <item android:bottom="2dp">
-    <color android:color="@color/white"/>
-  </item>
-
-
 </layer-list>

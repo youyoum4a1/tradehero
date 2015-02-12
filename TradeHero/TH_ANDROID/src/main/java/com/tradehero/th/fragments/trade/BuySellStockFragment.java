@@ -101,7 +101,7 @@ public class BuySellStockFragment extends BuySellFragment
         mBottomViewPager.setAdapter(bottomViewPagerAdapter);
 
         mSlidingTabLayout.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
-        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
+        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         mSlidingTabLayout.setViewPager(mBottomViewPager);
 
         fetchAlertCompactList();

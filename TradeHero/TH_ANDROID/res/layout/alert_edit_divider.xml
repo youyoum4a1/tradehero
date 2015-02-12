@@ -10,7 +10,7 @@
       android:layout_height="1dp"
       android:paddingTop="@dimen/margin_small"
       android:paddingBottom="@dimen/margin_small"
-      android:background="@color/divider_gray"
+      android:background="@color/tradehero_divider_grey"
       />
 
 </merge>

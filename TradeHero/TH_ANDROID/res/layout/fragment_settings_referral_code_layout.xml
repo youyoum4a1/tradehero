@@ -30,7 +30,7 @@
           android:layout_margin="@dimen/margin_small"
           android:gravity="center_horizontal"
           style="@style/TH.Headline.Accented"
-          android:textColorHighlight="@color/light_grey_transparent"
+          android:textColorHighlight="?android:textColorHighlight"
           android:textStyle="bold"
           android:textIsSelectable="true"
           tools:text="006U6P"

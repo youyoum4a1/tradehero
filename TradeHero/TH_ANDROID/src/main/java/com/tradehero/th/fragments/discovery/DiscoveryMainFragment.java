@@ -63,7 +63,7 @@ public class DiscoveryMainFragment extends DashboardFragment
         }
 
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
-        pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
+        pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
 
         displayNewIcon();

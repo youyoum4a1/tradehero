@@ -18,7 +18,6 @@
       android:layout_centerHorizontal="true"
       android:ellipsize="end"
       android:lines="1"
-      android:textColor="@color/trending_grid_item_stock_name"
       tools:text="Ascendas REOT MB"
       android:textStyle="bold"
       android:visibility="gone"

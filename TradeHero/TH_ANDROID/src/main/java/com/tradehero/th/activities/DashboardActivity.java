@@ -614,11 +614,12 @@ public class DashboardActivity extends BaseActivity
                 networkIndicator.setVisible(true);
             }
         }
-        if (getActionBar() != null)
-        {
-            Resources r = getResources();
-            getActionBar().setBackgroundDrawable(r.getDrawable((connected ? R.drawable.ab_background : R.drawable.ab_background_state_disabled)));
-        }
+        //TODO
+        //if (getActionBar() != null)
+        //{
+        //    Resources r = getResources();
+        //    getActionBar().setBackgroundDrawable(r.getDrawable((connected ? R.drawable.bar_background : R.drawable.ab_background_state_disabled)));
+        //}
     }
 
     @Override public void onLowMemory()

@@ -31,7 +31,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/leaderboard_connect_accounts"
-      android:textColor="@color/connect_accounts"
       android:background="@drawable/basic_transparent_selector"
       style="@style/TH.Button.Accented"
       />

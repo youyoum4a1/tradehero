@@ -26,7 +26,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/TH.Subhead"
-        android:textColor="@color/sec_type"
         tools:text="Target price US$ 19.50"
         android:id="@+id/alert_edit_target_price_change"
         android:layout_alignParentTop="true"/>
@@ -34,11 +33,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_body"
+        style="@style/TH.Body"
         android:text="@string/stock_alert_target_price_help_text"
         android:id="@+id/alert_edit_target_price_help_text"
         android:layout_below="@id/alert_edit_target_price_change"
-        android:textColor="@color/text_gray_normal"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:paddingTop="10dp"

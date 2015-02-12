@@ -52,7 +52,6 @@
           android:maxLength="6"
           android:padding="@dimen/discussion_action_buttons_drawable_padding"
           android:inputType="text|textCapCharacters"
-          android:background="@drawable/textbox_light_background"
           />
 
       <ImageView

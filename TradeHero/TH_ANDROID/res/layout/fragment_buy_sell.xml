@@ -63,7 +63,6 @@
         android:layout_alignParentTop="true"
         android:scaleType="centerCrop"
         android:alpha="0.2"
-        tools:background="@color/gray_normal"
         android:layout_alignBottom="@+id/buy_sell_action_buttons_bottom_margin"/>
 
     <ImageView
@@ -107,7 +106,6 @@
         android:layout_toRightOf="@id/stock_logo"
         android:layout_toEndOf="@id/stock_logo"
         android:text="@string/buy_sell_loading_ask_price"
-        android:textColor="@color/font_roi"
         />
 
     <TextView
@@ -120,7 +118,6 @@
         android:layout_below="@id/buy_price"
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_marginStart="@dimen/margin_small"
-        android:textColor="@color/red"
         android:text="@string/buy_sell_loading_bid_price"
         />
 

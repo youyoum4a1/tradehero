@@ -21,7 +21,6 @@
       android:ellipsize="marquee"
       android:marqueeRepeatLimit="marquee_forever"
       android:lines="1"
-      android:textColor="@color/trending_grid_item_stock_name"
       style="@style/TH.Subhead"
       android:singleLine="true"
       tools:text="Company Name"
@@ -48,7 +47,6 @@
       android:ellipsize="end"
       android:lines="1"
       style="@style/TH.Body"
-      android:textColor="@color/trending_grid_item_stock_name"
       tools:text="GOOG"/>
 
   <LinearLayout

@@ -93,7 +93,7 @@
         android:layout_marginTop="10dip"
         android:layout_toRightOf="@id/discussion_user_picture"
         tools:text="Tho Nguyen has become the best trader of the world!"
-        android:textColorLink="@color/timeline_item_link"
+        android:textColorLink="@color/tradehero_blue"
         style="@style/TH.Body"
         />
 
@@ -104,7 +104,7 @@
       android:layout_height="wrap_content"
       android:layout_marginLeft="@dimen/timeline_side_spacing"
       android:layout_marginRight="@dimen/timeline_side_spacing"
-      android:background="@drawable/discussion_action_buttons_background"
+      android:background="@color/white"
       >
 
     <include layout="@layout/discussion_translate_notice"/>

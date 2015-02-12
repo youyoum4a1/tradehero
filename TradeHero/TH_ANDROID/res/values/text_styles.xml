@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <color name="text_primary">#ff1f1f1f</color>
-  <color name="text_secondary">#ff888888</color>
-  <color name="text_primary_inverse">#fff4f4f4</color>
-  <color name="text_secondary_inverse">#ffdbdbdb</color>
-  <color name="text_primary_accented">@color/tradehero_blue</color>
-  <color name="text_secondary_accented">#ff499bfb</color>
-
-
   <style name="TH.TextPrimary" parent="TH">
     <!--<item name="android:textColor">@color/text_primary</item>-->
     <item name="android:textColor">?android:textColorPrimary</item>
@@ -165,7 +157,7 @@
 
   <style name="TH.InfoKey" parent="TH.Body">
     <item name="android:padding">2dp</item>
-    <item name="android:textColor">@color/info_key</item>
+    <item name="android:textColor">?android:attr/textColorSecondary</item>
   </style>
 
   <style name="TH.InfoValue" parent="TH.Body">
@@ -237,7 +229,6 @@
 
   <style name="TH.DiscussionTextBox" parent="TH.Body">
     <item name="android:gravity">left|center_vertical</item>
-    <item name="android:background">@drawable/textbox_light_background</item>
     <item name="android:padding">@dimen/discussion_action_buttons_drawable_padding</item>
     <item name="android:inputType">text|textMultiLine|textImeMultiLine|textCapSentences|textAutoCorrect|textAutoComplete</item>
   </style>

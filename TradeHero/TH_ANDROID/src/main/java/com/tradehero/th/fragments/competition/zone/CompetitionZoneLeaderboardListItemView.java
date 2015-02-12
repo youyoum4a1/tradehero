@@ -16,8 +16,8 @@ import com.tradehero.th.models.number.THSignedPercentage;
 
 public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListItemView
 {
-    public static final int COLOR_ACTIVE = R.color.black;
-    public static final int COLOR_INACTIVE = R.color.text_gray_normal;
+    public static final int COLOR_ACTIVE = R.color.text_primary;
+    public static final int COLOR_INACTIVE = R.color.text_secondary;
 
     @InjectView(R.id.competition_roi) protected TextView roiView;
 

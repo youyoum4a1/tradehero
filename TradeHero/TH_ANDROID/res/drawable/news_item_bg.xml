@@ -7,9 +7,9 @@
 
       <stroke
           android:width="0.5dp"
-          android:color="@color/trending_gray_border"/>
+          android:color="@color/darker_grey"/>
 
-      <solid android:color="@color/trending_grid_item_bg"/>
+      <solid android:color="@color/light_grey"/>
 
     </shape>
 
