@@ -10,19 +10,15 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -30,18 +26,12 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.alert.AlertCreateFragment;
-import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.security.StockInfoFragment;
-import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.text.DecimalFormat;
 import javax.inject.Inject;
@@ -241,15 +231,20 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
                 gainLossLabel.setTextColor(Color.WHITE);
                 if (pl > 0)
                 {
-                    gainLossLabel.setBackgroundColor(getResources().getColor(R.color.number_up));
+                    gainLossLabel.setBackgroundResource(R.drawable.round_label_up);
+                    gainIndicator.setVisibility(View.VISIBLE);
+                    gainIndicator.setImageResource(R.drawable.indicator_green);
                 }
                 else if (pl < 0)
                 {
-                    gainLossLabel.setBackgroundColor(getResources().getColor(R.color.number_down));
+                    gainLossLabel.setBackgroundResource(R.drawable.round_label_down);
+                    gainIndicator.setVisibility(View.VISIBLE);
+                    gainIndicator.setImageResource(R.drawable.indicator_red);
                 }
                 else
                 {
                     gainLossLabel.setBackgroundColor(getResources().getColor(R.color.text_gray_normal));
+                    gainIndicator.setVisibility(View.INVISIBLE);
                 }
             }
             else
