@@ -150,8 +150,9 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        ActionBar actionBar = getActivity().getActionBar();
-        actionBar.setTitle(getString(R.string.settings));
+        //TODO
+        //ActionBar actionBar = getActivity().getActionBar();
+        //actionBar.setTitle(getString(R.string.settings));
     }
     //</editor-fold>
 
@@ -165,7 +166,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         if (unreadSettingPreferenceHolder.hasUnread())
         {
-            ListView listView = (ListView) getView().findViewById(android.R.id.list);
+            ListView listView = getListView();
             ListAdapter adapter = listView.getAdapter();
             SettingViewHolder unreadHolder = allSettingViewHolders.getFirstUnread();
             if (unreadHolder != null)

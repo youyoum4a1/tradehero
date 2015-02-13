@@ -71,7 +71,7 @@
         android:text="@string/settings_alipay_update"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/margin_small"
-        android:background="@drawable/authentication_button"
+        android:background="@drawable/basic_white_selector"
         style="@style/TH.Button.Inverse"
         android:layout_height="wrap_content"
         />

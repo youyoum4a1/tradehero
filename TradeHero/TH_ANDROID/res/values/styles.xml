@@ -239,9 +239,7 @@
 
   <style name="TH.Authentication.EditText"
       parent="@android:style/Widget.EditText">
-    <item name="android:ems">10</item>
     <item name="android:drawablePadding">2dp</item>
-    <item name="android:textColor">@color/black</item>
     <item name="android:padding">2dp</item>
     <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
   </style>
@@ -627,7 +625,7 @@
     <item name="android:paddingTop">@dimen/margin_xsmall</item>
     <item name="android:paddingBottom">@dimen/margin_xsmall</item>
     <item name="android:layout_gravity">bottom|center</item>
-    <item name="android:background">@drawable/authentication_button</item>
+    <item name="android:background">@drawable/basic_blue_selector</item>
   </style>
 
   <style name="TH.OnBoardDialog" parent="TH.Dialog">
