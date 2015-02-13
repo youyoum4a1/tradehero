@@ -16,7 +16,7 @@ import javax.inject.Inject;
 
 public class VersionUtils
 {
-    @NonNull private final CurrentUserId currentUserId;
+    @Inject public static CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     @Inject public VersionUtils(@NonNull CurrentUserId currentUserId)
@@ -25,12 +25,12 @@ public class VersionUtils
     }
     //</editor-fold>
 
-    @NonNull public Intent getSupportEmailIntent(@NonNull Context context)
+    @NonNull public static Intent getSupportEmailIntent(@NonNull Context context)
     {
         return getSupportEmailIntent(context, false);
     }
 
-    @NonNull public Intent getSupportEmailIntent(@NonNull Context context, boolean longInfo)
+    @NonNull public static Intent getSupportEmailIntent(@NonNull Context context, boolean longInfo)
     {
         return getSupportEmailIntent(getSupportEmailTraceParameters(context, longInfo));
     }
@@ -48,7 +48,7 @@ public class VersionUtils
         return intent;
     }
 
-    @NonNull public List<String> getSupportEmailTraceParameters(@NonNull Context context, boolean longInfo)
+    @NonNull public static List<String> getSupportEmailTraceParameters(@NonNull Context context, boolean longInfo)
     {
         List<String> parameters = new ArrayList<>();
         parameters.add("TradeHero: " + getAppVersion(context));

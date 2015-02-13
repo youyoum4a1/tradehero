@@ -40,13 +40,6 @@
         android:enabled="false"
         />
 
-    <CheckBoxPreference
-        android:key="@string/key_settings_sharing_qq"
-        android:title="@string/settings_sharing_qq"
-        android:icon="@drawable/settings_qq_normal"
-        android:enabled="false"
-        />
-
   </PreferenceCategory>
 
   <PreferenceCategory
