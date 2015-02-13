@@ -50,6 +50,7 @@ public class DashboardTabHost extends TabHost implements DashboardNavigator.Dash
     private void addNewTab(RootFragmentType tabType)
     {
         THTabView indicator = THTabView.inflateWith(getTabWidget());
+        indicator.setBackgroundResource(R.drawable.tradehero_bottom_tab_indicator);
         indicator.setIcon(tabType.drawableResId);
         addTab(makeTabSpec(tabType)
                 .setIndicator(indicator));
