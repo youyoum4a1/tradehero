@@ -95,6 +95,14 @@ abstract public class DashboardFragment extends Fragment
         this.onStopSubscriptions = new SubscriptionList();
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+        if (onStopSubscriptions == null) {
+            onStopSubscriptions = new SubscriptionList();
+        }
+    }
+
     @Override public void onStop()
     {
         this.onStopSubscriptions.unsubscribe();

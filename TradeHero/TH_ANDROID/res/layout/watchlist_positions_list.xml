@@ -18,7 +18,6 @@
         android:id="@+id/watchlist_swipe_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/watch_list_header_height"
         android:paddingBottom="@dimen/dashboard_tabhost_height"
         android:clipToPadding="false"
         swipe:swipeFrontView="@id/front"
@@ -26,7 +25,7 @@
         swipe:swipeCloseAllItemsWhenMoveList="true"
         swipe:swipeMode="left"
         swipe:swipeDrawableChecked="@drawable/ic_info"
-        swipe:swipeOffsetLeft="250dp"
+        swipe:swipeOffsetLeft="80dp"
         swipe:swipeDrawableUnchecked="@drawable/ic_info"
         android:listSelector="#00000000"
         android:fadingEdge="none"
@@ -34,12 +33,6 @@
         />
 
   </android.support.v4.widget.SwipeRefreshLayout>
-
-  <include
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/watch_list_header_height"
-      layout="@layout/watchlist_position_header_view"
-      />
 
   <TextView
       android:id="@+id/watchlist_position_list_empty_view"
