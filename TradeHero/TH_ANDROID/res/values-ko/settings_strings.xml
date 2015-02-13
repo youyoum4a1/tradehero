@@ -10,6 +10,7 @@
 
   <string name="setting_general">일반</string>
   <string name="settings_primary_send_love">LOVE 보내기!</string>
+  <string name="settings_primary_view_intro">View Intro</string>
   <string name="settings_primary_send_feedback">피드백 보내기</string>
   <string name="settings_primary_faq">FAQ</string>
 

@@ -613,6 +613,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         {
             handleTopBannerClick();
         }
+        else if(key.equals(getString(R.string.key_settings_primary_view_intro)))
+        {
+            handleViewIntro();
+        }
         else if(key.equals(getString(R.string.key_settings_primary_send_love)))
         {
             handleSendLoveClick();
@@ -679,6 +683,12 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             handleAboutClick();
         }
 
+    }
+
+    public void handleViewIntro()
+    {
+        //todo replace with navigatro to viewIntro
+        Timber.d("handleViewIntro");
     }
 
     public void handleTopBannerClick()
