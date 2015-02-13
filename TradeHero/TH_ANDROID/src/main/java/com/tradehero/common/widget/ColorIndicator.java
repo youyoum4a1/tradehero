@@ -31,7 +31,7 @@ public class ColorIndicator extends RelativeLayout
     {
         if (percentage == null || percentage == 0.0)
         {
-            setBackgroundColor(getResources().getColor(R.color.light_grey));
+            setBackgroundColor(getResources().getColor(R.color.grey));
         }
         else
         {

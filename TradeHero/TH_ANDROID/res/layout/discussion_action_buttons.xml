@@ -7,7 +7,7 @@
       android:id="@+id/discussion_action_buttons"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/white"
+      android:background="@color/lighter_grey"
       >
 
     <include layout="@layout/vote_pair" />

@@ -15,6 +15,7 @@
       android:layout_height="match_parent"
       android:descendantFocusability="blocksDescendants"
       style="@style/TH.ListItem"
+      android:background="@drawable/card_item_top_bg"
       >
 
     <ImageView

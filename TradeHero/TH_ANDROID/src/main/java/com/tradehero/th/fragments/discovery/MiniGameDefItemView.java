@@ -47,7 +47,7 @@ public class MiniGameDefItemView extends ScaleImageView
         picasso.load(miniGameDefDTO.image)
                 .fit()
                 .centerInside()
-                .placeholder(R.color.light_grey)
+                .placeholder(R.color.grey)
                 .into(this);
     }
 }

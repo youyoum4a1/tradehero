@@ -17,8 +17,8 @@
   <color name="tradehero_tab_bg_color">@color/tradehero_dark_blue</color>
   <color name="tradehero_tab_indicator_color">@color/text_primary_inverse</color>
   <color name="tradehero_bottom_tab_bg_color">#3E454C</color>
-  <color name="tradehero_divider_grey">@color/light_grey</color>
-  <color name="tradehero_dashboard_bg_color">@color/white</color>
+  <color name="tradehero_divider_grey">@color/grey</color>
+  <color name="tradehero_dashboard_bg_color">#E2E8EE</color>
   <color name="tradehero_grid_border_color">@color/darker_grey</color>
 
   <color name="number_green">#1A930A</color>
@@ -33,8 +33,9 @@
   <color name="black">@android:color/black</color>
   <color name="white">@android:color/white</color>
   <color name="darker_grey">@android:color/darker_gray</color>
-  <color name="light_grey">#D0D0D0</color>
-  <color name="light_grey_transparent">#68d0d0d0</color>
+  <color name="grey">#D0D0D0</color>
+  <color name="grey_transparent">#68d0d0d0</color>
+  <color name="lighter_grey">#F2F2F2</color>
   <color name="pale_yellow">#F0E68C</color>
   <color name="light_yellow">#FFD000</color>
 

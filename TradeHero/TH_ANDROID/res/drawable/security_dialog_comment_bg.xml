@@ -10,7 +10,7 @@
       />
 
   <solid
-      android:color="@color/light_grey"
+      android:color="@color/grey"
       />
 
 </shape>
