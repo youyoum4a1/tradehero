@@ -4,7 +4,6 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.translation.TranslationResult;
-import org.simpleframework.xml.Text;
 
 public class BingTranslationResult extends TranslationResult
 {
@@ -14,8 +13,21 @@ public class BingTranslationResult extends TranslationResult
     private String fromLanguageCode;
     private String languageCode;
 
-    @Text()
     private String content;
+
+    @SuppressWarnings("UnusedDeclaration") BingTranslationResult()
+    {
+    }
+
+    public BingTranslationResult(
+            String fromLanguageCode,
+            String languageCode,
+            String content)
+    {
+        this.fromLanguageCode = fromLanguageCode;
+        this.languageCode = languageCode;
+        this.content = content;
+    }
 
     public String getFromLanguageCode()
     {

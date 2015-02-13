@@ -10,13 +10,13 @@ import com.facebook.Session;
 import com.facebook.SessionDefaultAudience;
 import com.facebook.TokenCachingStrategy;
 import com.facebook.android.Facebook;
+import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.social.facebook.FacebookRequestOperator;
 import com.tradehero.common.social.facebook.SubscriberCallback;
-import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.network.service.SocialLinker;
+import com.tradehero.th.network.share.SocialConstants;
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,8 +29,8 @@ import javax.inject.Singleton;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.internal.Assertions;
 import rx.android.AndroidSubscriptions;
+import rx.android.internal.Assertions;
 import rx.functions.Action0;
 import timber.log.Timber;
 
@@ -55,7 +55,6 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
             @NonNull SocialLinker socialLinker,
             Context context,
             @NonNull TokenCachingStrategy tokenCachingStrategy,
-            @FacebookAppId String applicationId,
             @FacebookPermissions List<String> permissions)
     {
         super(socialLinker);
@@ -66,7 +65,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
         this.activityCode = 32665;
         this.permissions = permissions;
 
-        this.applicationId = applicationId;
+        this.applicationId = SocialConstants.FACEBOOK_APP_ID;
 
         if (applicationId != null)
         {

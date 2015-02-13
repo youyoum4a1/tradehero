@@ -145,7 +145,6 @@
 -dontwarn org.hamcrest.**
 -dontwarn com.baidu.**
 -dontwarn com.bea.**
--dontwarn org.simpleframework.xml.**
 -dontwarn rx.internal.**
 
 -dontwarn com.urbanairship.richpush.RichPushMessageJavaScript
