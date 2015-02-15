@@ -31,7 +31,6 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
@@ -50,7 +49,6 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Inject WatchlistPositionCache watchlistPositionCache;
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject PortfolioCache portfolioCache;
-    @Inject PortfolioHeaderFactory headerFactory;
     @Inject CurrentUserId currentUserId;
 
     private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionFetchListener;
@@ -309,14 +307,6 @@ public class WatchlistPositionFragment extends DashboardFragment
     private WatchlistAdapter createWatchlistAdapter()
     {
         return new WatchlistAdapter(getActivity(), R.layout.watchlist_item_view);
-    }
-
-    private void displayProgress(boolean show)
-    {
-        if (progressBar != null)
-        {
-            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
     }
 
     protected SwipeListViewListener createSwipeListViewListener()

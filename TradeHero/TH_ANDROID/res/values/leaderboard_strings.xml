@@ -41,11 +41,6 @@
   <string name="leaderboard_not_ranked">Not ranked</string>
   <string name="leaderboard_show_friends_only">Show friends only</string>
   <string name="leaderboard_show_friends_of_friends">Show friends of friends</string>
-  <string name="leaderboard_keep_friends_close">Keep your friends close …</string>
-  <string name="leaderboard_friend_empty_text_invite_friends">… and your Heroes closer! Success is all the sweeter when your friends are around to
-    share. Connect your LinkedIn and Facebook accounts to see how you stack up amongst your friends.
-  </string>
-  <string name="leaderboard_connect_accounts">Connect Accounts…</string>
   <string name="leaderboard_follow">@string/follow</string>
 
 

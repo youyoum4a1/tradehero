@@ -49,11 +49,6 @@ import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.home.HomeWebView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView;
 import com.tradehero.th.fragments.news.*;
-import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
-import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
-import com.tradehero.th.fragments.portfolio.PortfolioListItemView;
-import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
-import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
@@ -169,7 +164,6 @@ import java.util.Locale;
                         AbstractTransactionDialogFragment.class,
                         BuyDialogFragment.class,
                         SellDialogFragment.class,
-                        SimpleOwnPortfolioListItemAdapter.class,
                         MarkdownTextView.class,
 
                         NewsHeadlineFragment.class,
@@ -177,15 +171,11 @@ import java.util.Locale;
                         StockInfoValueFragment.class,
                         WarrantInfoValueFragment.class,
                         StockInfoFragment.class,
-                        PortfolioListFragment.class,
-                        PortfolioListItemView.class,
-                        PortfolioListItemAdapter.class,
                         DisplayablePortfolioFetchAssistant.class,
 
                         PositionListFragment.class,
                         LeaderboardPositionListFragment.class,
                         CompetitionLeaderboardPositionListFragment.class,
-                        OtherUserPortfolioHeaderView.class,
 
                         PositionPartialTopView.class,
                         PositionPartialBottomClosedView.class,

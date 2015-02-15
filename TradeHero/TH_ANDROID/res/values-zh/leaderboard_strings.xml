@@ -40,9 +40,6 @@
   <string name="leaderboard_not_ranked">未排名</string>
   <string name="leaderboard_show_friends_only">只显示朋友</string>
   <string name="leaderboard_show_friends_of_friends">查看朋友的朋友</string>
-  <string name="leaderboard_keep_friends_close">与朋友保持联系</string>
-  <string name="leaderboard_friend_empty_text_invite_friends">… 与英雄更加紧密！好成绩，要和好朋友一起分享。连接微博、看看你在朋友中排第几</string>
-  <string name="leaderboard_connect_accounts">连接账号…</string>
   <string name="leaderboard_follow">@string/follow</string>
   <string name="leaderboard_community_followers">粉丝</string>
   <string name="leaderboard_community_heros">英雄</string>

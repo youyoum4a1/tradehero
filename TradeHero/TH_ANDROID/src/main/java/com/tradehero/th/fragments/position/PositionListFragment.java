@@ -29,9 +29,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
-import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
-import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
@@ -57,9 +54,7 @@ import java.util.Map;
 @Routable("user/:userId/portfolio/:portfolioId")
 public class PositionListFragment
         extends BasePurchaseManagerFragment
-        implements PortfolioHeaderView.OnFollowRequestedListener,
-        PortfolioHeaderView.OnTimelineRequestedListener,
-        WithTutorial
+        implements  WithTutorial
 {
     private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = PositionListFragment.class.getName() + ".showPositionDtoKey";
     private static final String BUNDLE_KEY_SHOWN_USER_ID_BUNDLE = PositionListFragment.class.getName() + ".userBaseKey";
@@ -69,7 +64,6 @@ public class PositionListFragment
     @Inject GetPositionsDTOKeyFactory getPositionsDTOKeyFactory;
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
     @Inject Lazy<GetPositionsCache> getPositionsCache;
-    @Inject Lazy<PortfolioHeaderFactory> headerFactory;
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject PortfolioCache portfolioCache;
@@ -84,7 +78,6 @@ public class PositionListFragment
     @InjectRoute UserBaseKey injectedUserBaseKey;
     @InjectRoute PortfolioId injectedPortfolioId;
 
-    private PortfolioHeaderView portfolioHeaderView;
     protected GetPositionsDTOKey getPositionsDTOKey;
     protected GetPositionsDTO getPositionsDTO;
     protected UserBaseKey shownUser;
@@ -171,23 +164,6 @@ public class PositionListFragment
 
     @Override protected void initViews(@Nullable View view)
     {
-        if (view != null)
-        {
-            if (positionItemAdapter == null)
-            {
-                createPositionItemAdapter();
-            }
-
-            positionsListView.setAdapter(positionItemAdapter);
-
-            initPullToRefreshListView(view);
-
-            // portfolio header
-            headerStub = (ViewStub) view.findViewById(R.id.position_list_header_stub);
-            int headerLayoutId = headerFactory.get().layoutIdFor(getPositionsDTOKey);
-            headerStub.setLayoutResource(headerLayoutId);
-            portfolioHeaderView = (PortfolioHeaderView) headerStub.inflate();
-        }
         showLoadingView(true);
     }
 
@@ -221,10 +197,6 @@ public class PositionListFragment
         {
             errorView.setVisibility(View.GONE);
         }
-        if (portfolioHeaderView != null && portfolioHeaderView instanceof View)
-        {
-            ((View) portfolioHeaderView).setVisibility(shown ? View.GONE : View.VISIBLE);
-        }
     }
 
     protected void showErrorView()
@@ -240,10 +212,6 @@ public class PositionListFragment
         if (errorView != null)
         {
             errorView.setVisibility(View.VISIBLE);
-        }
-        if (portfolioHeaderView != null && portfolioHeaderView instanceof View)
-        {
-            ((View) portfolioHeaderView).setVisibility(View.GONE);
         }
         if (pullToRefreshListView != null)
         {
@@ -341,20 +309,10 @@ public class PositionListFragment
         super.onResume();
 
         linkWith(getPositionsDTOKey, true);
-        if (portfolioHeaderView != null)
-        {
-            portfolioHeaderView.setFollowRequestedListener(this);
-            portfolioHeaderView.setTimelineRequestedListener(this);
-        }
     }
 
     @Override public void onPause()
     {
-        if (portfolioHeaderView != null)
-        {
-            portfolioHeaderView.setFollowRequestedListener(null);
-            portfolioHeaderView.setTimelineRequestedListener(null);
-        }
 
         if (positionsListView != null)
         {
@@ -474,10 +432,6 @@ public class PositionListFragment
                     portfolioCache.register((OwnedPortfolioId) getPositionsDTOKey, portfolioFetchListener);
                     portfolioCache.get((OwnedPortfolioId) getPositionsDTOKey);
                 }
-                else
-                {
-                    linkWith(cached);
-                }
             }
             // We do not need to fetch for other players
         }
@@ -549,15 +503,6 @@ public class PositionListFragment
 
     private void displayHeaderView()
     {
-        if (portfolioHeaderView != null && userProfileDTO != null)
-        {
-            Timber.d("displayHeaderView %s", portfolioHeaderView.getClass().getSimpleName());
-            portfolioHeaderView.linkWith(userProfileDTO);
-        }
-        if (getPositionsDTOKey instanceof OwnedPortfolioId)
-        {
-            portfolioHeaderView.linkWith(portfolioCache.get((OwnedPortfolioId) getPositionsDTOKey));
-        }
     }
 
     public void displayActionBarTitle()
@@ -573,169 +518,108 @@ public class PositionListFragment
             setActionBarTitle(R.string.position_list_action_bar_header_unknown);
         }
     }
-
-    //<editor-fold desc="PortfolioHeaderView.OnFollowRequestedListener">
-    @Override public void onFollowRequested(final UserBaseKey userBaseKey)
-    {
-        premiumFollowUser(userBaseKey);
-        //popFollowUser(userBaseKey);
-    }
-
-    @Override public void onUserFollowed(UserBaseKey userBaseKey)
-    {
-        //
-        pullToRefreshListView.setRefreshing();
-        refreshSimplePage();
-    }
-
     //</editor-fold>
 
-    protected void popFollowUser(final UserBaseKey userBaseKey)
-    {
-        //TODO need to improve
-        if (portfolioHeaderView instanceof OtherUserPortfolioHeaderView)
+    protected void popFollowUser(final UserBaseKey userBaseKey) {}
+
+        @NotNull protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheListener ()
         {
-            ((OtherUserPortfolioHeaderView) portfolioHeaderView).showFollowDialog();
-        }
-        //else do nothing
-    }
-
-    //<editor-fold desc="PortfolioHeaderView.OnTimelineRequestedListener">
-    @Override public void onTimelineRequested(UserBaseKey userBaseKey)
-    {
-        Bundle args = new Bundle();
-        thRouter.save(args, userBaseKey);
-    }
-    //</editor-fold>
-
-    @NotNull protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheListener()
-    {
-        return new GetPositionsListener();
-    }
-
-    protected class GetPositionsListener
-            implements DTOCacheNew.HurriedListener<GetPositionsDTOKey, GetPositionsDTO>
-    {
-        @Override public void onPreCachedDTOReceived(
-                @NotNull GetPositionsDTOKey key,
-                @NotNull GetPositionsDTO value)
-        {
-            linkWith(value, true);
-            showResultIfNecessary();
+            return null;
         }
 
-        @Override public void onDTOReceived(
-                @NotNull GetPositionsDTOKey key,
-                @NotNull GetPositionsDTO value)
-        {
-            linkWith(value, true);
-            showResultIfNecessary();
-        }
+        protected class GetPositionsListener
+                implements DTOCacheNew.HurriedListener<GetPositionsDTOKey, GetPositionsDTO> {
+            @Override
+            public void onPreCachedDTOReceived(
+                    @NotNull GetPositionsDTOKey key,
+                    @NotNull GetPositionsDTO value) {
+                linkWith(value, true);
+                showResultIfNecessary();
+            }
 
-        @Override public void onErrorThrown(
-                @NotNull GetPositionsDTOKey key,
-                @NotNull Throwable error)
-        {
-            //displayProgress(false);
-            THToast.show(getString(R.string.error_fetch_position_list_info));
-            showErrorView();
-            Timber.d(error, "Error fetching the positionList info %s", key);
-        }
-    }
+            @Override
+            public void onDTOReceived(
+                    @NotNull GetPositionsDTOKey key,
+                    @NotNull GetPositionsDTO value) {
+                linkWith(value, true);
+                showResultIfNecessary();
+            }
 
-    @NotNull protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsRefreshCacheListener()
-    {
-        return new RefreshPositionsListener();
-    }
-
-    protected class RefreshPositionsListener extends GetPositionsListener
-    {
-        @Override public void onPreCachedDTOReceived(
-                @NotNull GetPositionsDTOKey key,
-                @NotNull GetPositionsDTO value)
-        {
-            // Do nothing
-        }
-
-        @Override public void onErrorThrown(
-                @NotNull GetPositionsDTOKey key,
-                @NotNull Throwable error)
-        {
-            //super.onErrorThrown(key, error);
-            boolean loaded = checkLoadingSuccess();
-            if (!loaded)
-            {
+            @Override
+            public void onErrorThrown(
+                    @NotNull GetPositionsDTOKey key,
+                    @NotNull Throwable error) {
+                //displayProgress(false);
+                THToast.show(getString(R.string.error_fetch_position_list_info));
                 showErrorView();
+                Timber.d(error, "Error fetching the positionList info %s", key);
             }
         }
-    }
 
-    @Override public int getTutorialLayout()
-    {
+        @NotNull protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsRefreshCacheListener
+        ()
+        {
+            return null;
+        }
+
+
+    public int getTutorialLayout() {
         return R.layout.tutorial_position_list;
     }
 
-    @NotNull protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createProfileCacheListener()
-    {
+    @NotNull
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createProfileCacheListener() {
         return new AbstractPositionListProfileCacheListener();
     }
 
     protected class AbstractPositionListPremiumUserFollowedListener
-            implements PremiumFollowUserAssistant.OnUserFollowedListener
-    {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
-        {
+            implements PremiumFollowUserAssistant.OnUserFollowedListener {
+        @Override
+        public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO) {
             displayHeaderView();
             fetchSimplePage(true);
             //analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.PositionList));
         }
 
-        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
-        {
+        @Override
+        public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error) {
             // do nothing for now
         }
     }
 
-    protected class AbstractPositionListProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
-    {
-        @Override public void onDTOReceived(
+    protected class AbstractPositionListProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> {
+        @Override
+        public void onDTOReceived(
                 @NotNull UserBaseKey key,
-                @NotNull UserProfileDTO value)
-        {
+                @NotNull UserProfileDTO value) {
             linkWith(value, true);
             showResultIfNecessary();
         }
 
-        @Override public void onErrorThrown(
+        @Override
+        public void onErrorThrown(
                 @NotNull UserBaseKey key,
-                @NotNull Throwable error)
-        {
+                @NotNull Throwable error) {
             THToast.show(R.string.error_fetch_user_profile);
             //TODO not just toast
             showErrorView();
         }
     }
 
-    protected DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioCacheListener()
-    {
+    protected DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioCacheListener() {
         return new PortfolioCacheListener();
     }
 
-    protected class PortfolioCacheListener implements DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO>
-    {
-        @Override public void onDTOReceived(@NotNull OwnedPortfolioId key, @NotNull PortfolioDTO value)
-        {
-            linkWith(value);
+    protected class PortfolioCacheListener implements DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> {
+        @Override
+        public void onDTOReceived(@NotNull OwnedPortfolioId key, @NotNull PortfolioDTO value) {
+
         }
 
-        @Override public void onErrorThrown(@NotNull OwnedPortfolioId key, @NotNull Throwable error)
-        {
+        @Override
+        public void onErrorThrown(@NotNull OwnedPortfolioId key, @NotNull Throwable error) {
             THToast.show(R.string.error_fetch_portfolio_info);
         }
     }
 
-    protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
-    {
-        portfolioHeaderView.linkWith(portfolioCompactDTO);
-    }
 }

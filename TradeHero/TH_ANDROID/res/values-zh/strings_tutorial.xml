@@ -5,16 +5,11 @@
   <string name="tutorial_timeline_content">
     <![CDATA[查找排行榜上的牛人,按总损益排名，或按特定的“英雄指数”排名。你也可以按交易所、行业、月收益、季度收益、总收益进行筛选。\n\n竞技好友排行榜，与微博好友较劲。]]></string>
   <string name="tutorial_timeline_header">欢迎来到全民股神!</string>
-  <string name="tutorial_portfolio_list_header">投资组合</string>
 
   <!--Store screen-->
   <string name="tutorial_store_screen_content">你可以在这里购买虚拟股金、关注点数、股市预警、数据重置，也可以在此管理订单
   </string>
   <string name="tutorial_store_screen_header">商店</string>
-
-  <!--Portfolio list-->
-  <string name="tutorial_portfolio_list_content">你最近浏览过的用户名单，查看他们的持仓
-  </string>
 
   <!--Leaderboard-->
   <string name="tutorial_leaderboard_content">
