@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.social.hero;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,9 +18,6 @@ import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -125,10 +121,6 @@ public class HeroListItemView extends RelativeLayout
     {
         if (heroDTO != null)
         {
-            Bundle bundle = new Bundle();
-            DashboardNavigator navigator = ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-            thRouter.save(bundle, new UserBaseKey(heroDTO.id));
-            navigator.pushFragment(PushableTimelineFragment.class, bundle);
         }
     }
 

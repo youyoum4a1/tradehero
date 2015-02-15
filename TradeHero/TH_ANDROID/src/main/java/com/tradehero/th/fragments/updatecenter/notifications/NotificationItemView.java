@@ -19,13 +19,12 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
-import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
+
+import javax.inject.Inject;
 
 public class NotificationItemView
         extends LinearLayout
@@ -88,14 +87,6 @@ public class NotificationItemView
         {
             UserBaseKey referencedUser = new UserBaseKey(notificationDTO.referencedUserId);
             thRouter.save(bundle, referencedUser);
-            if (currentUserId.toUserBaseKey().equals(referencedUser))
-            {
-                getNavigator().pushFragment(MeTimelineFragment.class, bundle);
-            }
-            else
-            {
-                getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
-            }
         }
     }
 

@@ -13,16 +13,15 @@ import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.BaseSearchFragment;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trending.PeopleItemViewAdapter;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class PeopleSearchFragment extends BaseSearchFragment<
         UserListType,
@@ -98,14 +97,6 @@ public class PeopleSearchFragment extends BaseSearchFragment<
     {
         Bundle args = new Bundle();
         thRouter.save(args, userSearchResultDTO.getUserBaseKey());
-        if (currentUserId.toUserBaseKey().equals(userSearchResultDTO.getUserBaseKey()))
-        {
-            getDashboardNavigator().pushFragment(MeTimelineFragment.class, args);
-        }
-        else
-        {
-            getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
-        }
     }
 
     private DTOCacheNew.Listener<UserListType, UserSearchResultDTOList> createUserBaseKeyListCacheListener()

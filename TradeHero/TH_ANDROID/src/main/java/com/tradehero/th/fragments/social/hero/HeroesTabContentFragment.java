@@ -20,7 +20,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
@@ -324,9 +323,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     private void pushTimelineFragment(UserBaseKey userBaseKey)
     {
-        Bundle args = new Bundle();
-        thRouter.save(args, userBaseKey);
-        getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
     }
 
     private void handleGoMostSkilled()

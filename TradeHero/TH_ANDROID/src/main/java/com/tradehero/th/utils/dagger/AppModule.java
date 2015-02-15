@@ -74,7 +74,9 @@ import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentLinkedIn;
 import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentWeibo;
 import com.tradehero.th.fragments.social.hero.*;
 import com.tradehero.th.fragments.social.message.*;
-import com.tradehero.th.fragments.timeline.*;
+import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
+import com.tradehero.th.fragments.timeline.UserProfileCompactViewHolder;
+import com.tradehero.th.fragments.timeline.UserProfileDetailViewHolder;
 import com.tradehero.th.fragments.trade.*;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
@@ -169,9 +171,6 @@ import java.util.Locale;
                         AbstractTransactionDialogFragment.class,
                         BuyDialogFragment.class,
                         SellDialogFragment.class,
-                        TimelineFragment.class,
-                        MeTimelineFragment.class,
-                        PushableTimelineFragment.class,
                         SimpleOwnPortfolioListItemAdapter.class,
                         MarkdownTextView.class,
 
@@ -220,7 +219,6 @@ import java.util.Locale;
 
                         CacheHelper.class,
 
-                        TimelineFragment.class,
                         TimelineItemViewLinear.class,
                         UserProfileCompactViewHolder.class,
                         UserProfileDetailViewHolder.class,

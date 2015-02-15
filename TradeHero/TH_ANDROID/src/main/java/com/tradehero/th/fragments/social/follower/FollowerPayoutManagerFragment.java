@@ -14,16 +14,15 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.social.UserFollowerCache;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 
 public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 {
@@ -247,9 +246,6 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
             {
                 if (userFollowerDTO != null)
                 {
-                    Bundle bundle = new Bundle();
-                    thRouter.save(bundle, new UserBaseKey(userFollowerDTO.id));
-                    getDashboardNavigator().pushFragment(PushableTimelineFragment.class, bundle);
                 }
             }
         };

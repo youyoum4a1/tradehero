@@ -16,7 +16,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
@@ -36,8 +35,6 @@ import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -608,16 +605,6 @@ public class PositionListFragment
     {
         Bundle args = new Bundle();
         thRouter.save(args, userBaseKey);
-        if (currentUserId.toUserBaseKey().equals(userBaseKey))
-        {
-            ((DashboardActivity) getActivity())
-                    .getDashboardNavigator().pushFragment(MeTimelineFragment.class, args);
-        }
-        else
-        {
-            ((DashboardActivity) getActivity())
-                    .getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
-        }
     }
     //</editor-fold>
 

@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,18 +15,15 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
+
+import javax.inject.Inject;
 
 public class FollowerListItemView extends RelativeLayout
         implements DTOView<UserFollowerDTO>, View.OnClickListener
@@ -113,16 +109,8 @@ public class FollowerListItemView extends RelativeLayout
 
     private void pushTimelineFragment()
     {
-        Bundle bundle = new Bundle();
-        DashboardNavigator navigator = ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-        thRouter.save(bundle, new UserBaseKey(userFollowerDTO.id));
-        navigator.pushFragment(PushableTimelineFragment.class, bundle);
     }
 
-    public UserFollowerDTO getUserFollowerDTO()
-    {
-        return userFollowerDTO;
-    }
 
     public void display(UserFollowerDTO followerDTO)
     {

@@ -17,8 +17,6 @@ import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
@@ -73,8 +71,6 @@ public class Application extends PApplication
         pushNotificationManager.initialise();
 
         thRouter.registerRoutes(
-                PushableTimelineFragment.class,
-                MeTimelineFragment.class,
                 NotificationsCenterFragment.class,
                 MessagesCenterFragment.class,
                 UpdateCenterFragment.class,

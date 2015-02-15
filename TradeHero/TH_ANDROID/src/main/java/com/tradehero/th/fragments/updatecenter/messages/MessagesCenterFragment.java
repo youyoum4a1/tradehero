@@ -1,10 +1,6 @@
 package com.tradehero.th.fragments.updatecenter.messages;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -34,8 +30,6 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
 import com.tradehero.th.models.push.PushConstants;
@@ -49,14 +43,15 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.List;
 
 @Routable("messages")
 public class MessagesCenterFragment extends DashboardFragment
@@ -309,14 +304,6 @@ public class MessagesCenterFragment extends DashboardFragment
             thRouter.save(bundle, targetUserKey);
             Timber.d("messageHeaderDTO recipientUserId:%s,senderUserId:%s,currentUserId%s", messageHeaderDTO.recipientUserId,
                     messageHeaderDTO.senderUserId, currentUserId.get());
-            if (currentUserId.toUserBaseKey().equals(targetUserKey))
-            {
-                navigator.pushFragment(MeTimelineFragment.class, bundle);
-            }
-            else
-            {
-                navigator.pushFragment(PushableTimelineFragment.class, bundle);
-            }
         }
     }
 

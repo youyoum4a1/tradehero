@@ -132,9 +132,6 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
             {
                 if (currentUserId.get() != user.id)
                 {
-                    Bundle bundle = new Bundle();
-                    TimelineFragment.putUserBaseKey(bundle, new UserBaseKey(user.id));
-                    getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
                 }
             }
         }

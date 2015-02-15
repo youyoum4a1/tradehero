@@ -7,13 +7,13 @@ import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOWithinUserComparator;
-import com.tradehero.th.fragments.timeline.MainTimelineAdapter;
 import com.tradehero.th.utils.DaggerUtils;
+import timber.log.Timber;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import timber.log.Timber;
 
 public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfolioDTO, PortfolioListItemView>
 {
@@ -73,7 +73,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
 
     @Override public int getItemViewType(int position)
     {
-        return MainTimelineAdapter.PORTFOLIO_ITEM_TYPE;
+        return 1;
     }
 
     @Override public long getItemId(int position)
@@ -100,7 +100,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
             int itemType = getItemViewType(position);
             switch (itemType)
             {
-                case MainTimelineAdapter.PORTFOLIO_ITEM_TYPE:
+                case 1:
                     view = inflater.inflate(layoutResourceId, parent, false);
                     if (item instanceof DisplayablePortfolioDTO)
                     {

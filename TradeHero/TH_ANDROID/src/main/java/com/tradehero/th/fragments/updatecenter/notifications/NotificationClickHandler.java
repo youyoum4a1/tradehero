@@ -20,12 +20,11 @@ import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
-import javax.inject.Inject;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class NotificationClickHandler
 {
@@ -222,14 +221,6 @@ public class NotificationClickHandler
             Bundle bundle = new Bundle();
             UserBaseKey referencedUser = new UserBaseKey(notificationDTO.referencedUserId);
             thRouter.save(bundle, referencedUser);
-            if (currentUserId.toUserBaseKey().equals(referencedUser))
-            {
-                navigator.pushFragment(MeTimelineFragment.class, bundle);
-            }
-            else
-            {
-                navigator.pushFragment(PushableTimelineFragment.class, bundle);
-            }
         }
     }
 

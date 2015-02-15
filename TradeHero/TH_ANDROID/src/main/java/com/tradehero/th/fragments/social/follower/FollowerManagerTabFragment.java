@@ -19,18 +19,16 @@ import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.route.THRouter;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
         implements PullToRefreshBase.OnRefreshListener2<ListView>
@@ -302,11 +300,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     private void pushTimelineFragment(int followerId)
     {
-        DashboardNavigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
-
-        Bundle bundle = new Bundle();
-        thRouter.save(bundle, new UserBaseKey(followerId));
-        navigator.pushFragment(PushableTimelineFragment.class, bundle);
     }
 
     private void pushPayoutFragment(UserFollowerDTO followerDTO)

@@ -36,8 +36,6 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
@@ -52,12 +50,12 @@ import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
-import java.text.SimpleDateFormat;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.text.SimpleDateFormat;
 
 public class LeaderboardMarkUserItemView extends RelativeLayout
         implements DTOView<LeaderboardUserDTO>,
@@ -615,20 +613,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         Bundle bundle = new Bundle();
         UserBaseKey userToSee = new UserBaseKey(userId);
         thRouter.save(bundle, userToSee);
-        if (currentUserId.toUserBaseKey().equals(userToSee))
-        {
-            getNavigator().pushFragment(MeTimelineFragment.class, bundle);
-        }
-        else
-        {
-            getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
-        }
     }
 
-    protected void handleSuccess(UserProfileDTO userProfileDTO, Response response)
-    {
-        linkWith(userProfileDTO, true);
-    }
 
     protected void notifyFollowRequested(@NotNull UserBaseDTO userBaseDTO)
     {

@@ -25,10 +25,6 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -37,9 +33,10 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class PortfolioListItemView extends RelativeLayout
         implements DTOView<DisplayablePortfolioDTO>
@@ -141,18 +138,8 @@ public class PortfolioListItemView extends RelativeLayout
         if (displayablePortfolioDTO != null && displayablePortfolioDTO.userBaseDTO != null)
         {
             Bundle bundle = new Bundle();
-            DashboardNavigator navigator =
-                    ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
             UserBaseKey userToSee = new UserBaseKey(displayablePortfolioDTO.userBaseDTO.id);
             thRouter.save(bundle, userToSee);
-            if (currentUserId.toUserBaseKey().equals(userToSee))
-            {
-                navigator.pushFragment(MeTimelineFragment.class, bundle);
-            }
-            else
-            {
-                navigator.pushFragment(PushableTimelineFragment.class, bundle);
-            }
         }
     }
 
@@ -166,10 +153,6 @@ public class PortfolioListItemView extends RelativeLayout
         userWatchlistPositionCache.unregister(userWatchlistListener);
     }
 
-    public DisplayablePortfolioDTO getDisplayablePortfolioDTO()
-    {
-        return displayablePortfolioDTO;
-    }
 
     public void display(DisplayablePortfolioDTO displayablePortfolioDTO)
     {

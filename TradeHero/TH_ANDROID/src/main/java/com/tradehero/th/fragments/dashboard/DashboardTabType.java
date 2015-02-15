@@ -8,7 +8,6 @@ import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.utils.Constants;
@@ -18,9 +17,6 @@ import java.util.List;
 
 public enum DashboardTabType
 {
-    TIMELINE(R.layout.home_selector,
-            R.string.dashboard_timeline, R.string.dashboard_timeline_key,
-            R.color.transparent, MeTimelineFragment.class),
     HOME(R.layout.tab_indicator_holo,
             R.string.dashboard_home, R.string.dashboard_home_key,
             R.drawable.launcher, HomeFragment.class),
