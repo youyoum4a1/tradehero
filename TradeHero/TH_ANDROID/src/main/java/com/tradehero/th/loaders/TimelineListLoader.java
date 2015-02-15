@@ -7,10 +7,11 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
 import com.tradehero.th.utils.DaggerUtils;
+import timber.log.Timber;
+
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
-import javax.inject.Inject;
-import timber.log.Timber;
 
 public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
 {
@@ -58,27 +59,6 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
         }
     }
 
-    @Override protected void onLoadNext(TimelineItemDTOKey firstVisible)
-    {
-
-        upperItemId = null;
-        //TODO it's just a temp fix
-        if (firstVisible != null)
-        {
-            lowerItemId = firstVisible.id;
-        }
-        forceLoad();
-    }
-
-    @Override protected void onLoadPrevious(TimelineItemDTOKey startItem)
-    {
-        resetQuery();
-        if (startItem != null)
-        {
-            upperItemId = startItem.id;
-        }
-        forceLoad();
-    }
 
     @Override protected void onReset()
     {

@@ -13,7 +13,6 @@ import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.settings.SettingsAlipayFragment;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
-import com.tradehero.th.fragments.timeline.UserProfileResideMenuItem;
 import com.tradehero.th.fragments.trending.ExtraTileAdapter;
 import com.tradehero.th.fragments.trending.ProviderTileView;
 import com.tradehero.th.persistence.ListCacheMaxSize;
@@ -35,7 +34,6 @@ import javax.inject.Singleton;
                 ExtraTileAdapter.class,
                 ProviderTileView.class,
 
-                UserProfileResideMenuItem.class,
                 TimelineDiscussionFragment.class,
                 NewsDiscussionFragment.class,
 

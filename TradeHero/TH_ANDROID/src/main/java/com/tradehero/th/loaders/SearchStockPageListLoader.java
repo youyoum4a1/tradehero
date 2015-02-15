@@ -4,10 +4,11 @@ import android.content.Context;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.network.service.SecurityService;
+import retrofit.RetrofitError;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
-import retrofit.RetrofitError;
 
 public class SearchStockPageListLoader extends PaginationListLoader<ListedSecurityCompact>
 {
@@ -23,19 +24,6 @@ public class SearchStockPageListLoader extends PaginationListLoader<ListedSecuri
     {
         super(context);
     }
-
-    @Override protected void onLoadPrevious(ListedSecurityCompact startItem)
-    {
-        page = getPageOfItem(startItem) - 1;
-        forceLoad();
-    }
-
-    @Override protected void onLoadNext(ListedSecurityCompact lastItem)
-    {
-        page = getPageOfItem(lastItem) + 1;
-        forceLoad();
-    }
-
     /**
      *
      * @param item
