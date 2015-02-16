@@ -12,9 +12,9 @@ import android.view.View;
  *
  *                                                       |--------------------|
  *                                                       |                    v
- * An Android family tree looks like: Application -> Activity -> Fragment -> |View     |
- *                                                                           |Adapter  |
- *                                                                           |Loader   | ...
+ * An Android family tree looks like: Application --> Activity --> Fragment --> |View     |
+ *                                                                              |Adapter  |
+ *                                                                              |Loader   | ...
  *
  * so that children are the subjects for their parents to inject.
  */
