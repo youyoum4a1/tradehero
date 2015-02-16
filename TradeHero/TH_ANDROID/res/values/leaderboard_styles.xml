@@ -20,7 +20,7 @@
   </style>
 
   <style name="Leaderboard_ActionButton" parent="Leaderboard_ActionWidget">
-    <item name="android:background">@drawable/basic_white_selector</item>
+    <item name="android:background">@drawable/basic_transparent_selector</item>
     <item name="android:textColor">?android:textColorPrimary</item>
   </style>
 
