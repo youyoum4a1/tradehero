@@ -1,7 +1,6 @@
 package com.tradehero.th.api.portfolio;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class PortfolioIdList extends ArrayList<PortfolioId>
 {
@@ -16,9 +15,5 @@ public class PortfolioIdList extends ArrayList<PortfolioId>
         super();
     }
 
-    public PortfolioIdList(Collection<? extends PortfolioId> c)
-    {
-        super(c);
-    }
     //</editor-fold>
 }

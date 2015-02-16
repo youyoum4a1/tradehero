@@ -10,25 +10,12 @@ public class PerPagedOwnedPortfolioId extends PagedOwnedPortfolioId
 
     @Nullable public final Integer perPage;
 
-    //<editor-fold desc="Constructors">
-    public PerPagedOwnedPortfolioId(int userId, int portfolioId, @Nullable Integer page, @Nullable Integer perPage)
-    {
-        super(userId, portfolioId, page);
-        this.perPage = perPage;
-    }
-
     public PerPagedOwnedPortfolioId(Bundle args)
     {
         super(args);
         this.perPage = args.containsKey(BUNDLE_KEY_PER_PAGE) ? args.getInt(BUNDLE_KEY_PER_PAGE) : null;
     }
     //</editor-fold>
-
-    public static boolean isPerPagedOwnedPortfolioId(@NotNull Bundle args)
-    {
-        return isPagedOwnedPortfolioId(args)
-                && args.containsKey(BUNDLE_KEY_PER_PAGE);
-    }
 
     @Override public int hashCode()
     {
