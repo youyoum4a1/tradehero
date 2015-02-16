@@ -11,7 +11,10 @@ import com.tradehero.th.rx.ToastAction;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class ProviderFxListFragment extends ProviderSecurityListRxFragment
 {
@@ -35,10 +38,22 @@ public class ProviderFxListFragment extends ProviderSecurityListRxFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXSecuritiesAllPriceRx()
-                        .repeatWhen(observable -> observable.delay(TrendingFXFragment.MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS)))
+                        .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
+                        {
+                            @Override public Observable<?> call(Observable<? extends Void> observable)
+                            {
+                                return observable.delay(TrendingFXFragment.MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS);
+                            }
+                        }))
                 .subscribe(
-                        this::handlePricesReceived,
-                        new ToastAction<>(getString(R.string.error_fetch_fx_list_price))));
+                        new Action1<List<QuoteDTO>>()
+                        {
+                            @Override public void call(List<QuoteDTO> quoteDTOs)
+                            {
+                                ProviderFxListFragment.this.handlePricesReceived(quoteDTOs);
+                            }
+                        },
+                        new ToastAction<Throwable>(getString(R.string.error_fetch_fx_list_price))));
     }
 
     private void handlePricesReceived(@NonNull List<QuoteDTO> list)

@@ -5,18 +5,20 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.common.utils.THToast;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
+import com.tradehero.th.network.share.dto.SocialDialogResult;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.internal.util.SubscriptionList;
@@ -96,7 +98,13 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
         if (userAction instanceof DiscussionActionButtonsView.MoreUserAction)
         {
             return socialShareHelper.show(abstractDiscussionCompactDTO, false)
-                    .flatMap(result -> Observable.empty());
+                    .flatMap(new Func1<SocialDialogResult, Observable<? extends DiscussionActionButtonsView.UserAction>>()
+                    {
+                        @Override public Observable<? extends DiscussionActionButtonsView.UserAction> call(SocialDialogResult result)
+                        {
+                            return Observable.empty();
+                        }
+                    });
         }
         return Observable.just(userAction);
     }
@@ -130,11 +138,17 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
     public void refresh()
     {
         subscriptions.add(discussionCache.get((DiscussionKey) discussionKey)
-                .map(pair -> pair.second)
+                .map(new PairGetSecond<DiscussionKey, AbstractDiscussionCompactDTO>())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        this::linkWith,
-                        e -> THToast.show(new THException(e))
+                        new Action1<AbstractDiscussionCompactDTO>()
+                        {
+                            @Override public void call(AbstractDiscussionCompactDTO discussionCompactDTO)
+                            {
+                                AbstractDiscussionCompactItemViewLinear.this.linkWith(discussionCompactDTO);
+                            }
+                        },
+                        new ToastOnErrorAction()
                 ));
     }
 

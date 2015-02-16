@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -33,6 +32,8 @@ import java.util.Map;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 @Routable({
@@ -169,10 +170,22 @@ public class GameWebViewFragment extends BaseWebViewFragment
         miniGameDefSubscription = AppObservable.bindFragment(
                 this,
                 miniGameDefCache.get(miniGameDefKey))
-                .map(new PairGetSecond<>())
+                .map(new PairGetSecond<MiniGameDefKey, MiniGameDefDTO>())
                 .subscribe(
-                        this::linkWith,
-                        this::handleFailedDef);
+                        new Action1<MiniGameDefDTO>()
+                        {
+                            @Override public void call(MiniGameDefDTO gameDefDTO)
+                            {
+                                GameWebViewFragment.this.linkWith(gameDefDTO);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable error)
+                            {
+                                GameWebViewFragment.this.handleFailedDef(error);
+                            }
+                        });
     }
 
     protected void linkWith(@NonNull MiniGameDefDTO miniGameDefDTO)
@@ -223,9 +236,27 @@ public class GameWebViewFragment extends BaseWebViewFragment
                         this,
                         gamesServiceWrapper.recordScore(new MiniGameDefKey(gameId), new GameScore(score, level)))
                         .subscribe(
-                                this::showScore,
-                                this::showFailedReportScore,
-                                this::clearScore);
+                                new Action1<MiniGameScoreResponseDTO>()
+                                {
+                                    @Override public void call(MiniGameScoreResponseDTO scoreResponseDTO)
+                                    {
+                                        GameWebViewFragment.this.showScore(scoreResponseDTO);
+                                    }
+                                },
+                                new Action1<Throwable>()
+                                {
+                                    @Override public void call(Throwable error)
+                                    {
+                                        GameWebViewFragment.this.showFailedReportScore(error);
+                                    }
+                                },
+                                new Action0()
+                                {
+                                    @Override public void call()
+                                    {
+                                        GameWebViewFragment.this.clearScore();
+                                    }
+                                });
             }
         }
     }
@@ -236,8 +267,20 @@ public class GameWebViewFragment extends BaseWebViewFragment
         MiniGameScoreDialogFragment dialog = MiniGameScoreDialogFragment.newInstance();
         unsubscribe(scoreWindowSubscription);
         scoreWindowSubscription = dialog.getButtonClickedObservable().subscribe(
-                this::handleScoreWindowClicked,
-                this::handleScoreWindowError);
+                new Action1<Integer>()
+                {
+                    @Override public void call(Integer buttonId)
+                    {
+                        GameWebViewFragment.this.handleScoreWindowClicked(buttonId);
+                    }
+                },
+                new Action1<Throwable>()
+                {
+                    @Override public void call(Throwable error)
+                    {
+                        GameWebViewFragment.this.handleScoreWindowError(error);
+                    }
+                });
         dialog.display(scoreResponse);
         dialog.show(getActivity().getFragmentManager(), MiniGameScoreDialogFragment.class.getName());
     }

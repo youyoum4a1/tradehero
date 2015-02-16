@@ -14,11 +14,12 @@ import com.tradehero.th.api.achievement.QuestBonusDTOList;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.persistence.achievement.QuestBonusListCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.widget.QuestIndicatorGroupView;
 import java.util.List;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
-import rx.functions.Actions;
+import rx.functions.Action1;
 
 public class QuestDialogFragment extends AbstractAchievementDialogFragment
 {
@@ -54,8 +55,14 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
                 this,
                 questBonusListCache.getOne(questBonusListId))
                 .subscribe(
-                        this::onReceivedQuestBonusList,
-                        Actions.empty()));
+                        new Action1<Pair<QuestBonusListId, QuestBonusDTOList>>()
+                        {
+                            @Override public void call(Pair<QuestBonusListId, QuestBonusDTOList> pair)
+                            {
+                                QuestDialogFragment.this.onReceivedQuestBonusList(pair);
+                            }
+                        },
+                        new EmptyAction1<Throwable>()));
     }
 
     @Override protected void handleBadgeSuccess()

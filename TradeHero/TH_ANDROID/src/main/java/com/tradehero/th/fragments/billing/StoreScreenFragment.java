@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.tradehero.common.billing.purchase.PurchaseResult;
+import com.tradehero.common.billing.tester.BillingTestResult;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -22,11 +24,14 @@ import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemDTOList;
 import com.tradehero.th.fragments.billing.store.StoreItemFactory;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
@@ -36,12 +41,15 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Actions;
 import timber.log.Timber;
 
@@ -106,12 +114,16 @@ public class StoreScreenFragment extends DashboardFragment
                 StoreItemFactory.createAll(systemStatusCache, StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS)
                         .take(1))
                 .subscribe(
-                        storeItemDTOs -> {
-                            storeItemAdapter.clear();
-                            storeItemAdapter.addAll(storeItemDTOs);
-                            storeItemAdapter.notifyDataSetChanged();
+                        new Action1<StoreItemDTOList>()
+                        {
+                            @Override public void call(StoreItemDTOList storeItemDTOs)
+                            {
+                                storeItemAdapter.clear();
+                                storeItemAdapter.addAll(storeItemDTOs);
+                                storeItemAdapter.notifyDataSetChanged();
+                            }
                         },
-                        e -> THToast.show(new THException(e))));
+                        new ToastOnErrorAction()));
 
         cancelOthersAndShowBillingAvailable();
     }
@@ -138,11 +150,16 @@ public class StoreScreenFragment extends DashboardFragment
     protected void fetchUserProfile()
     {
         onStopSubscriptions.add(AppObservable.bindFragment(this, userProfileCacheRx.get(currentUserId.toUserBaseKey()))
-                .subscribe(userProfileDTO-> {
-                    purchaseApplicableOwnedPortfolioId =
-                            new OwnedPortfolioId(userProfileDTO.second.portfolio.id, currentUserId.get());
-                    launchRoutedAction();
-                }));
+                .subscribe(new Action1<Pair<UserBaseKey, UserProfileDTO>>()
+                {
+                    @Override public void call(Pair<UserBaseKey, UserProfileDTO> userProfileDTO)
+                    {
+                        purchaseApplicableOwnedPortfolioId =
+                                new OwnedPortfolioId(userProfileDTO.second.portfolio.id, currentUserId.get());
+                        StoreScreenFragment.this.launchRoutedAction();
+                    }
+                },
+                new EmptyAction1<Throwable>()));
     }
 
     public void cancelOthersAndShowBillingAvailable()
@@ -156,10 +173,16 @@ public class StoreScreenFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.testAndClear())
-                .finallyDo(() -> alreadyNotifiedNeedCreateAccount = true)
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        alreadyNotifiedNeedCreateAccount = true;
+                    }
+                })
                 .subscribe(
-                        Actions.empty(),
-                        Actions.empty()));
+                        new EmptyAction1<BillingTestResult>(),
+                        new EmptyAction1<Throwable>()));
     }
 
     protected void launchRoutedAction()
@@ -200,8 +223,20 @@ public class StoreScreenFragment extends DashboardFragment
                     this,
                     userInteractorRx.purchaseAndClear(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain))
                     .subscribe(
-                            obj -> this.handlePurchaseFinished((PurchaseResult) obj),
-                            e -> this.handlePurchaseFailed((Throwable) e));
+                            new Action1<PurchaseResult>()
+                            {
+                                @Override public void call(PurchaseResult purchaseResult)
+                                {
+                                    StoreScreenFragment.this.handlePurchaseFinished(purchaseResult);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable e)
+                                {
+                                    StoreScreenFragment.this.handlePurchaseFailed(e);
+                                }
+                            });
         }
         else if (clickedItem instanceof StoreItemHasFurtherDTO)
         {

@@ -21,12 +21,13 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.network.share.dto.SocialDialogResult;
 import com.tradehero.th.network.share.dto.TranslateResult;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.ReplaceWith;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.internal.util.SubscriptionList;
 import rx.subjects.BehaviorSubject;
@@ -129,14 +130,14 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
                 && discussionDTO != null)
         {
             return socialShareHelper.show(discussionDTO, true)
-                    .flatMap(new Func1<SocialDialogResult, Observable<DiscussionActionButtonsView.UserAction>>()
+                    .flatMap(new Func1<SocialDialogResult, Observable<SocialDialogResult>>()
                     {
-                        @Override public Observable<DiscussionActionButtonsView.UserAction> call(SocialDialogResult result)
+                        @Override public Observable<SocialDialogResult> call(SocialDialogResult result)
                         {
-                            return handleSocialResult(result)
-                                    .map(obj -> userAction);
+                            return handleSocialResult(result);
                         }
-                    });
+                    })
+                    .map(new ReplaceWith<>(userAction));
         }
         return Observable.just(userAction);
     }
@@ -157,7 +158,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         //Do nothing
     }
 
-    public void linkWith(DiscussionDTOType discussionDTO)
+    public void linkWith(final DiscussionDTOType discussionDTO)
     {
         this.discussionDTO = discussionDTO;
         this.translatedDiscussionDTO = null;
@@ -171,42 +172,29 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         display();
 
         subscriptions.add(socialShareHelper.isAutoTranslate()
-                .filter(new Func1<Boolean, Boolean>()
-                {
-                    @Override public Boolean call(Boolean autoTranslate)
-                    {
-                        return autoTranslate;
-                    }
-                })
                 .flatMap(new Func1<Boolean, Observable<? extends Boolean>>()
                 {
                     @Override public Observable<? extends Boolean> call(Boolean autoTranslate)
                     {
-                        return socialShareHelper.canTranslate(discussionDTO);
-                    }
-                })
-                .filter(new Func1<Boolean, Boolean>()
-                {
-                    @Override public Boolean call(Boolean canTranslate)
-                    {
-                        return canTranslate;
+                        if (autoTranslate)
+                        {
+                            return socialShareHelper.canTranslate(discussionDTO);
+                        }
+                        return Observable.empty();
                     }
                 })
                 .subscribe(
                         new Action1<Boolean>()
                         {
-                            @Override public void call(Boolean aBoolean)
+                            @Override public void call(Boolean canTranslate)
                             {
-                                handleTranslationRequested();
+                                if (canTranslate)
+                                {
+                                    handleTranslationRequested();
+                                }
                             }
                         },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable throwable)
-                            {
-
-                            }
-                        }));
+                        new EmptyAction1<Throwable>()));
     }
 
     protected void handleTranslationRequested()
@@ -218,8 +206,14 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
             subscriptions.add(socialShareHelper.translate(discussionDTO)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            this::handleSocialResult,
-                            Actions.empty()
+                            new Action1<SocialDialogResult>()
+                            {
+                                @Override public void call(SocialDialogResult dialogResult)
+                                {
+                                    AbstractDiscussionCompactItemViewHolder.this.handleSocialResult(dialogResult);
+                                }
+                            },
+                            new EmptyAction1<Throwable>()
                     ));
         }
         userActionBehavior.onNext(new TranslateUserAction());

@@ -14,6 +14,7 @@ import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.games.MiniGameDefDTO;
+import com.tradehero.th.api.games.MiniGameDefDTOList;
 import com.tradehero.th.api.games.MiniGameDefListKey;
 import com.tradehero.th.api.games.ViralMiniGameDefKey;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -29,6 +30,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -90,15 +92,27 @@ public class DiscoveryGameFragment extends DashboardFragment
     {
         ButterKnife.inject(this, view);
 
-        DiscoveryGameAdapter adapter = new DiscoveryGameAdapter(getActivity(), R.layout.discovery_game_item_view);
+        final DiscoveryGameAdapter adapter = new DiscoveryGameAdapter(getActivity(), R.layout.discovery_game_item_view);
         stickyListHeadersListView.setAdapter(adapter);
         stickyListHeadersListView.setEmptyView(emptyView);
 
         subscriptions = new CompositeSubscription();
         PublishSubject<List<MiniGameDefDTO>> miniGamesSubject = PublishSubject.create();
         subscriptions.add(miniGamesSubject.subscribe(
-                adapter::setItems,
-                e -> Timber.e(e, "Gotcha")));
+                new Action1<List<MiniGameDefDTO>>()
+                {
+                    @Override public void call(List<MiniGameDefDTO> miniGameDefDTOs)
+                    {
+                        adapter.setItems(miniGameDefDTOs);
+                    }
+                },
+                new Action1<Throwable>()
+                {
+                    @Override public void call(Throwable e)
+                    {
+                        Timber.e(e, "Gotcha");
+                    }
+                }));
         subscriptions.add(miniGamesSubject.subscribe(new UpdateUIObserver()));
 
         subscriptions.add(
@@ -106,9 +120,9 @@ public class DiscoveryGameFragment extends DashboardFragment
                         MINIGAMES_LIST_LOADER_ID,
                         AppObservable.bindFragment(
                                 this,
-                                miniGameDefListCache.get(new MiniGameDefListKey()).map(new PairGetSecond<>())))
+                                miniGameDefListCache.get(new MiniGameDefListKey()).map(new PairGetSecond<MiniGameDefListKey, MiniGameDefDTOList>())))
                         .doOnError(new ToastOnErrorAction())
-                        .onErrorResumeNext(Observable.empty())
+                        .onErrorResumeNext(Observable.<MiniGameDefDTOList>empty())
                         .subscribe(miniGamesSubject));
     }
 

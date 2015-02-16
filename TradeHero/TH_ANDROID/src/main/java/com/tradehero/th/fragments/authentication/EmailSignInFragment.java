@@ -16,6 +16,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
+import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
@@ -24,8 +25,11 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.tradehero.th.rx.view.DismissDialogAction0;
+import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DeviceUtil;
@@ -39,14 +43,17 @@ import com.tradehero.th.widget.ValidatedPasswordText;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import rx.Notification;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
+import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
-import rx.functions.Actions;
+import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -155,17 +162,39 @@ public class EmailSignInFragment extends Fragment
         validationSubscription = Observable.combineLatest(
                 WidgetObservable.text(email),
                 WidgetObservable.text(password),
-                (email1, password1) -> {
-                    email.forceValidate();
-                    password.forceValidate();
-                    return Pair.create(email.isValid(), password.isValid());
+                new Func2<OnTextChangeEvent, OnTextChangeEvent, Pair<Boolean, Boolean>>()
+                {
+                    @Override public Pair<Boolean, Boolean> call(OnTextChangeEvent email1, OnTextChangeEvent password1)
+                    {
+                        email.forceValidate();
+                        password.forceValidate();
+                        return Pair.create(email.isValid(), password.isValid());
+                    }
                 })
                 .subscribe(
-                        args -> loginButton.setEnabled(args.first && args.second),
-                        e -> Timber.e(e, "Error in validation"));
+                        new Action1<Pair<Boolean, Boolean>>()
+                        {
+                            @Override public void call(Pair<Boolean, Boolean> args)
+                            {
+                                loginButton.setEnabled(args.first && args.second);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable e)
+                            {
+                                Timber.e(e, "Error in validation");
+                            }
+                        });
 
         signInObservable = ViewObservable.clicks(loginButton, false)
-                .flatMap(this::handleClick)
+                .flatMap(new Func1<OnClickEvent, Observable<? extends Pair<AuthData, UserProfileDTO>>>()
+                {
+                    @Override public Observable<? extends Pair<AuthData, UserProfileDTO>> call(OnClickEvent event)
+                    {
+                        return EmailSignInFragment.this.handleClick(event);
+                    }
+                })
                 .retry();
     }
 
@@ -181,21 +210,40 @@ public class EmailSignInFragment extends Fragment
 
     @NonNull protected Observable<Pair<AuthData, UserProfileDTO>> signInProper(LoginSignUpFormDTO loginSignUpFormDTO)
     {
-        ProgressDialog progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
-            getString(R.string.authentication_connecting_tradehero_only), true);
+        final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
+                getString(R.string.authentication_connecting_tradehero_only), true);
         AuthData authData = loginSignUpFormDTO.authData;
         Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
                 authData.getTHToken(), loginSignUpFormDTO)
-                .map(userLoginDTO -> userLoginDTO.profileDTO);
+                .map(new Func1<UserLoginDTO, UserProfileDTO>()
+                {
+                    @Override public UserProfileDTO call(UserLoginDTO userLoginDTO)
+                    {
+                        return userLoginDTO.profileDTO;
+                    }
+                });
 
-        return Observable.zip(Observable.just(authData), userLoginDTOObservable, Pair::create)
+        return Observable.zip(Observable.just(authData), userLoginDTOObservable,
+                new Func2<AuthData, UserProfileDTO, Pair<AuthData, UserProfileDTO>>()
+                {
+                    @Override public Pair<AuthData, UserProfileDTO> call(AuthData t1, UserProfileDTO t2)
+                    {
+                        return Pair.create(t1, t2);
+                    }
+                })
                 .subscribeOn(Schedulers.io())
-                .doOnNext(pair -> thAppsFlyer.sendTrackingWithEvent(AppsFlyerConstants.REGISTRATION_EMAIL))
+                .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
+                {
+                    @Override public void call(Pair<AuthData, UserProfileDTO> pair)
+                    {
+                        thAppsFlyer.sendTrackingWithEvent(AppsFlyerConstants.REGISTRATION_EMAIL);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(authDataActionProvider.get())
                 .doOnNext(new OpenDashboardAction(getActivity()))
                 .doOnError(new ToastOnErrorAction())
-                .doOnUnsubscribe(progressDialog::dismiss);
+                .doOnUnsubscribe(new DismissDialogAction0(progressDialog));
     }
 
     @Override public void onResume()
@@ -204,8 +252,8 @@ public class EmailSignInFragment extends Fragment
         if (signInSubscription == null || signInSubscription.isUnsubscribed())
         {
             signInSubscription = signInObservable.subscribe(
-                    Actions.empty(),
-                    Actions.empty());
+                    new EmptyAction1<Pair<AuthData, UserProfileDTO>>(),
+                    new EmptyAction1<Throwable>());
         }
     }
 
@@ -243,7 +291,7 @@ public class EmailSignInFragment extends Fragment
         ForgotPasswordFormDTO forgotPasswordFormDTO = new ForgotPasswordFormDTO();
         forgotPasswordFormDTO.userEmail = email;
 
-        ProgressDialog mProgressDialog = ProgressDialog.show(
+        final ProgressDialog mProgressDialog = ProgressDialog.show(
                 getActivity(),
                 getString(R.string.alert_dialog_please_wait),
                 getString(R.string.authentication_connecting_tradehero_only),
@@ -252,9 +300,15 @@ public class EmailSignInFragment extends Fragment
         unsubscribeForgotPassword();
         forgotPasswordSubscription = userServiceWrapper.forgotPasswordRx(forgotPasswordFormDTO)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnEach(notification -> mProgressDialog.dismiss())
+                .doOnEach(new DismissDialogAction1<Notification<? super ForgotPasswordDTO>>(mProgressDialog))
                 .subscribe(
-                        this::onReceivedForgotPassword,
+                        new Action1<ForgotPasswordDTO>()
+                        {
+                            @Override public void call(ForgotPasswordDTO forgotPasswordDTO)
+                            {
+                                EmailSignInFragment.this.onReceivedForgotPassword(forgotPasswordDTO);
+                            }
+                        },
                         new ToastOnErrorAction());
     }
 

@@ -12,6 +12,7 @@ import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.widget.TextHolder;
+import java.util.Comparator;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, AlertItemView>
@@ -30,35 +31,39 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, Ale
             @LayoutRes int alertResId)
     {
         super(context,
-                (lhs, rhs) -> {
-                    if (lhs == rhs)
+                new Comparator<AlertCompactDTO>()
+                {
+                    @Override public int compare(AlertCompactDTO lhs, AlertCompactDTO rhs)
                     {
-                        return 0;
-                    }
+                        if (lhs == rhs)
+                        {
+                            return 0;
+                        }
 
-                    if (lhs.active && !rhs.active)
-                    {
-                        return -1;
-                    }
-                    if (!lhs.active && rhs.active)
-                    {
+                        if (lhs.active && !rhs.active)
+                        {
+                            return -1;
+                        }
+                        if (!lhs.active && rhs.active)
+                        {
+                            return 1;
+                        }
+
+                        if (lhs.security == rhs.security)
+                        {
+                            return 0;
+                        }
+                        if (lhs.security != null && rhs.security != null)
+                        {
+                            return lhs.security.symbol.compareTo(rhs.security.symbol);
+                        }
+
+                        if (lhs.security == null)
+                        {
+                            return -1;
+                        }
                         return 1;
                     }
-
-                    if (lhs.security == rhs.security)
-                    {
-                        return 0;
-                    }
-                    if (lhs.security != null && rhs.security != null)
-                    {
-                        return lhs.security.symbol.compareTo(rhs.security.symbol);
-                    }
-
-                    if (lhs.security == null)
-                    {
-                        return -1;
-                    }
-                    return 1;
                 });
         this.currentUserId = currentUserId;
         this.alertResId = alertResId;

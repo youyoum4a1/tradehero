@@ -35,11 +35,13 @@ import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DateUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
@@ -87,7 +89,13 @@ public class AlertViewFragment extends DashboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        alertToggleCheckedChangeListener = (buttonView, isChecked) -> handleAlertToggleChanged(isChecked);
+        alertToggleCheckedChangeListener = new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                AlertViewFragment.this.handleAlertToggleChanged(isChecked);
+            }
+        };
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -163,7 +171,7 @@ public class AlertViewFragment extends DashboardFragment
         this.alertId = alertId;
         if (alertId != null)
         {
-            ProgressDialog progressDialog = ProgressDialog.show(
+            final ProgressDialog progressDialog = ProgressDialog.show(
                     getActivity(),
                     getString(R.string.loading_loading),
                     getString(R.string.alert_dialog_please_wait),
@@ -172,13 +180,23 @@ public class AlertViewFragment extends DashboardFragment
             unsubscribe(alertCacheSubscription);
             alertCacheSubscription = AppObservable.bindFragment(this,
                     alertCache.get().get(alertId))
-                    .map(new PairGetSecond<>())
-                    .finallyDo(progressDialog::dismiss)
+                    .map(new PairGetSecond<AlertId, AlertDTO>())
+                    .finallyDo(new DismissDialogAction0(progressDialog))
                     .subscribe(
-                            this::linkWith,
-                            e -> {
-                                THToast.show(R.string.error_fetch_alert);
-                                Timber.e(e, "Failed fetching alert");
+                            new Action1<AlertDTO>()
+                            {
+                                @Override public void call(AlertDTO alertDTO1)
+                                {
+                                    linkWith(alertDTO1);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable e)
+                                {
+                                    THToast.show(R.string.error_fetch_alert);
+                                    Timber.e(e, "Failed fetching alert");
+                                }
                             });
         }
     }
@@ -209,16 +227,20 @@ public class AlertViewFragment extends DashboardFragment
     {
         alertToggle.setChecked(alertDTO.active);
         alertToggle.setOnCheckedChangeListener(alertToggleCheckedChangeListener);
-        alertToggle.setOnClickListener(v -> {
-            UserProfileDTO userProfileDTO = userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
-
-            if (alertToggle.isChecked()
-                    && userProfileDTO != null
-                    && userProfileDTO.alertCount >= userProfileDTO.getUserAlertPlansAlertCount())
+        alertToggle.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View v)
             {
-                // TODO
-                //userInteractor.conditionalPopBuyStockAlerts();
-                alertToggle.setChecked(false);
+                UserProfileDTO userProfileDTO = userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
+
+                if (alertToggle.isChecked()
+                        && userProfileDTO != null
+                        && userProfileDTO.alertCount >= userProfileDTO.getUserAlertPlansAlertCount())
+                {
+                    // TODO
+                    //userInteractor.conditionalPopBuyStockAlerts();
+                    alertToggle.setChecked(false);
+                }
             }
         });
     }
@@ -315,7 +337,7 @@ public class AlertViewFragment extends DashboardFragment
 
     private void handleAlertToggleChanged(boolean alertActive)
     {
-        ProgressDialog progressDialog = ProgressDialog.show(
+        final ProgressDialog progressDialog = ProgressDialog.show(
                 getActivity(),
                 getString(R.string.loading_loading),
                 getString(R.string.alert_dialog_please_wait),
@@ -334,9 +356,15 @@ public class AlertViewFragment extends DashboardFragment
             updateAlertSubscription = AppObservable.bindFragment(
                     this,
                     alertServiceWrapper.get().updateAlertRx(alertId, alertFormDTO))
-                    .finallyDo(progressDialog::dismiss)
+                    .finallyDo(new DismissDialogAction0(progressDialog))
                     .subscribe(
-                            this::handleAlertUpdated,
+                            new Action1<AlertCompactDTO>()
+                            {
+                                @Override public void call(AlertCompactDTO alert)
+                                {
+                                    AlertViewFragment.this.handleAlertUpdated(alert);
+                                }
+                            },
                             new ToastOnErrorAction());
         }
     }

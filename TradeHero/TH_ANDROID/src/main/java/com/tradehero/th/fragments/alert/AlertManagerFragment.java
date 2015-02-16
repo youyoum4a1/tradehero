@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.alert;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,25 +18,25 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClickSticky;
 import com.tradehero.common.billing.BillingConstants;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.SecurityAlertKnowledge;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class AlertManagerFragment extends DashboardFragment
@@ -82,7 +83,13 @@ public class AlertManagerFragment extends DashboardFragment
         displayAlertCount();
         displayAlertCountIcon();
 
-        footerView.setOnClickListener(this::handleManageSubscriptionClicked);
+        footerView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                AlertManagerFragment.this.handleManageSubscriptionClicked(v);
+            }
+        });
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -136,8 +143,14 @@ public class AlertManagerFragment extends DashboardFragment
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .subscribe(
-                        pair -> linkWith(pair.second),
-                        error -> THToast.show(new THException(error))
+                        new Action1<Pair<UserBaseKey, UserProfileDTO>>()
+                        {
+                            @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
+                            {
+                                linkWith(pair.second);
+                            }
+                        },
+                        new ToastOnErrorAction()
                 ));
     }
 
@@ -154,8 +167,14 @@ public class AlertManagerFragment extends DashboardFragment
                 this,
                 alertCompactListCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(
-                        pair -> linkWith(pair.second),
-                        error -> THToast.show(new THException(error))
+                        new Action1<Pair<UserBaseKey, AlertCompactDTOList>>()
+                        {
+                            @Override public void call(Pair<UserBaseKey, AlertCompactDTOList> pair)
+                            {
+                                linkWith(pair.second);
+                            }
+                        },
+                        new ToastOnErrorAction()
                 ));
     }
 
@@ -173,11 +192,15 @@ public class AlertManagerFragment extends DashboardFragment
         //noinspection unchecked
         onStopSubscriptions.add(userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)
                 .subscribe(
-                        result -> {
-                            displayAlertCount();
-                            displayAlertCountIcon();
+                        new Action1()
+                        {
+                            @Override public void call(Object result)
+                            {
+                                AlertManagerFragment.this.displayAlertCount();
+                                AlertManagerFragment.this.displayAlertCountIcon();
+                            }
                         },
-                        error -> THToast.show(new THException((Throwable) error))
+                        new ToastOnErrorAction()
                 ));
     }
 

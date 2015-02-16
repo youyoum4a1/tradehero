@@ -36,16 +36,19 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
+import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
-import rx.functions.Actions;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class DiscussionEditPostFragment extends DashboardFragment
@@ -198,7 +201,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
             discussionPostActionButtonsView.populate(discussionFormDTO);
             discussionPostActionButtonsView.onPostDiscussion();
 
-            ProgressDialog progressDialog = ProgressDialog.show(
+            final ProgressDialog progressDialog = ProgressDialog.show(
                     getActivity(),
                     getString(R.string.alert_dialog_please_wait),
                     getString(R.string.processing),
@@ -207,9 +210,15 @@ public class DiscussionEditPostFragment extends DashboardFragment
             discussionEditSubscription = AppObservable.bindFragment(
                     this,
                     discussionServiceWrapper.createDiscussionRx(discussionFormDTO))
-                    .finallyDo(progressDialog::dismiss)
+                    .finallyDo(new DismissDialogAction0(progressDialog))
                     .subscribe(
-                            this::onDiscussionReceived,
+                            new Action1<DiscussionDTO>()
+                            {
+                                @Override public void call(DiscussionDTO discussion)
+                                {
+                                    DiscussionEditPostFragment.this.onDiscussionReceived(discussion);
+                                }
+                            },
                             new ToastOnErrorAction());
         }
     }
@@ -221,7 +230,9 @@ public class DiscussionEditPostFragment extends DashboardFragment
         if (discussionPostActionButtonsView.isShareEnabled(SocialNetworkEnum.WECHAT))
         {
             socialSharerLazy.get().share(WeChatDTOFactory.createFrom(discussionDTO))
-                    .subscribe(Actions.empty(), Actions.empty()); // Proper callback?
+                    .subscribe(
+                            new EmptyAction1<SocialShareResult>(),
+                            new EmptyAction1<Throwable>()); // Proper callback?
         }
 
         DeviceUtil.dismissKeyboard(getActivity());

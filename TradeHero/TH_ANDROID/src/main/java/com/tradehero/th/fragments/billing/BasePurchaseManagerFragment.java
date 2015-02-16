@@ -10,11 +10,13 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
@@ -51,7 +53,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
         currentUserPortfolioCompactListObservable = portfolioCompactListCache.get(currentUserId.toUserBaseKey())
-                        .map(new PairGetSecond<>())
+                        .map(new PairGetSecond<UserBaseKey, PortfolioCompactDTOList>())
                         .publish()
                         .refCount()
                         .cache(1);
@@ -88,10 +90,20 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 this,
                 currentUserPortfolioCompactListObservable)
                 .subscribe(
-                        this::handleReceivedPortfolioCompactList,
-                        e -> {
-                            Timber.e(e, "Failed fetching portfolios list");
-                            THToast.show(R.string.error_fetch_portfolio_list_info);
+                        new Action1<PortfolioCompactDTOList>()
+                        {
+                            @Override public void call(PortfolioCompactDTOList list)
+                            {
+                                BasePurchaseManagerFragment.this.handleReceivedPortfolioCompactList(list);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable e)
+                            {
+                                Timber.e(e, "Failed fetching portfolios list");
+                                THToast.show(R.string.error_fetch_portfolio_list_info);
+                            }
                         }));
     }
 
