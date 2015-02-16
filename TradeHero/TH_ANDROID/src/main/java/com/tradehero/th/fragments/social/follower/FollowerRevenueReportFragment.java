@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 public class FollowerRevenueReportFragment extends DashboardFragment
 {
@@ -58,7 +59,13 @@ public class FollowerRevenueReportFragment extends DashboardFragment
             ButterKnife.inject(this, view);
             followerManagerViewContainer.onCreateView(view);
             followerManagerViewContainer.display();
-            headerView.post(this::adjustListPadding);
+            headerView.post(new Runnable()
+            {
+                @Override public void run()
+                {
+                    FollowerRevenueReportFragment.this.adjustListPadding();
+                }
+            });
         }
     }
 
@@ -76,7 +83,13 @@ public class FollowerRevenueReportFragment extends DashboardFragment
         AppObservable.bindFragment(
                 this,
                 followerManagerViewContainer.getClickedUserFollower())
-                .subscribe(this::onListItemClick, new ToastOnErrorAction());
+                .subscribe(new Action1<UserFollowerDTO>()
+                {
+                    @Override public void call(UserFollowerDTO userFollowerDTO)
+                    {
+                        FollowerRevenueReportFragment.this.onListItemClick(userFollowerDTO);
+                    }
+                }, new ToastOnErrorAction());
     }
 
     @Override public void onDestroyView()

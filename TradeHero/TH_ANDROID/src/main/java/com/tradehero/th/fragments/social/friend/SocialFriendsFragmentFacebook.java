@@ -3,17 +3,22 @@ package com.tradehero.th.fragments.social.friend;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import com.facebook.HttpMethod;
+import com.facebook.Response;
+import com.facebook.Session;
 import com.tradehero.common.social.facebook.FacebookConstants;
 import com.tradehero.common.social.facebook.FacebookRequestOperator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.social.facebook.UserFriendsFacebookUtil;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Func1;
 import rx.functions.Func2;
 
 public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
@@ -65,16 +70,27 @@ public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
 
     @NonNull protected Observable<UserFriendsDTOList> getFetchFacebookInvitableObservable()
     {
-
         return facebookSocialFriendHandlerProvider.get().createProfileSessionObservable()
                 .take(1)
-                .flatMap(pair -> Observable.create(
-                        FacebookRequestOperator
-                                .builder(pair.second, FacebookConstants.API_INVITABLE_FRIENDS)
-                                .setParameters(getFriendsFields())
-                                .setHttpMethod(HttpMethod.GET)
-                                .build()))
-                .map(UserFriendsFacebookUtil::convert);
+                .flatMap(new Func1<Pair<UserProfileDTO, Session>, Observable<? extends Response>>()
+                {
+                    @Override public Observable<? extends Response> call(Pair<UserProfileDTO, Session> pair)
+                    {
+                        return Observable.create(
+                                FacebookRequestOperator
+                                        .builder(pair.second, FacebookConstants.API_INVITABLE_FRIENDS)
+                                        .setParameters(SocialFriendsFragmentFacebook.this.getFriendsFields())
+                                        .setHttpMethod(HttpMethod.GET)
+                                        .build());
+                    }
+                })
+                .map(new Func1<Response, UserFriendsDTOList>()
+                {
+                    @Override public UserFriendsDTOList call(Response response)
+                    {
+                        return UserFriendsFacebookUtil.convert(response);
+                    }
+                });
     }
 
     @NonNull protected Bundle getFriendsFields()

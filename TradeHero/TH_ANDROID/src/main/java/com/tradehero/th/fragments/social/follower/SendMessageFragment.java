@@ -29,6 +29,7 @@ import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTOFactory;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -36,6 +37,8 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -44,6 +47,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class SendMessageFragment extends DashboardFragment
@@ -134,10 +138,22 @@ public class SendMessageFragment extends DashboardFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                userProfileCache.get(currentUserId.toUserBaseKey()).map(new PairGetSecond<>()))
+                userProfileCache.get(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
                 .subscribe(
-                        this::linkWith,
-                        this::handleFetchUserProfileFailed));
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO profile)
+                            {
+                                linkWith(profile);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable error)
+                            {
+                                SendMessageFragment.this.handleFetchUserProfileFailed(error);
+                            }
+                        }));
     }
 
     protected void linkWith(@NonNull UserProfileDTO currentUserProfileDTO)
@@ -172,14 +188,18 @@ public class SendMessageFragment extends DashboardFragment
     @OnClick(R.id.message_type)
     protected void showHeroTypeDialog(View view)
     {
-        Pair<Dialog, Observable<MessageType>> dialogPair = FollowerTypeDialogFactory.showHeroTypeDialog(getActivity());
+        final Pair<Dialog, Observable<MessageType>> dialogPair = FollowerTypeDialogFactory.showHeroTypeDialog(getActivity());
         dialogPair.second
                 .subscribe(
-                        messageType -> {
-                            linkWith(messageType);
-                            dismissDialog(dialogPair.first);
+                        new Action1<MessageType>()
+                        {
+                            @Override public void call(MessageType messageType)
+                            {
+                                SendMessageFragment.this.linkWith(messageType);
+                                SendMessageFragment.this.dismissDialog(dialogPair.first);
+                            }
                         },
-                        e -> Timber.e(e, "Failed with dialog"));
+                        new TimberOnErrorAction("Failed with dialog"));
     }
 
     private void linkWith(@NonNull MessageType messageType)
@@ -224,7 +244,7 @@ public class SendMessageFragment extends DashboardFragment
     private void sendMessage()
     {
         String text = inputText.getText().toString();
-        ProgressDialog progressDialog = ProgressDialog.show(
+        final ProgressDialog progressDialog = ProgressDialog.show(
                         getActivity(),
                         getActivity().getString(R.string.broadcast_message_waiting),
                         getActivity().getString(R.string.broadcast_message_sending_hint),
@@ -235,10 +255,22 @@ public class SendMessageFragment extends DashboardFragment
                         this,
                         messageServiceWrapper.get().createMessageRx(
                                 createMessageForm(text)))
-                        .finallyDo(progressDialog::dismiss)
+                        .finallyDo(new DismissDialogAction0(progressDialog))
                         .subscribe(
-                                this::handleDiscussionPosted,
-                                this::handleDiscussionPostFailed));
+                                new Action1<DiscussionDTO>()
+                                {
+                                    @Override public void call(DiscussionDTO discussion)
+                                    {
+                                        SendMessageFragment.this.handleDiscussionPosted(discussion);
+                                    }
+                                },
+                                new Action1<Throwable>()
+                                {
+                                    @Override public void call(Throwable error)
+                                    {
+                                        SendMessageFragment.this.handleDiscussionPostFailed(error);
+                                    }
+                                }));
     }
 
     private MessageCreateFormDTO createMessageForm(@NonNull String messageText)

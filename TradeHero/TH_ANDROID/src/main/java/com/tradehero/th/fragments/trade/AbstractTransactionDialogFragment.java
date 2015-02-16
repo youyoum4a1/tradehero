@@ -5,7 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.ActionMode;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +21,8 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.android.internal.util.Predicate;
+import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -35,6 +39,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -52,6 +57,8 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.position.PositionCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.StringUtils;
@@ -60,10 +67,13 @@ import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import rx.functions.Actions;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 abstract public class AbstractTransactionDialogFragment extends BaseShareableDialogFragment
@@ -198,15 +208,25 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         mQuantityEditText.setText(String.valueOf(mTransactionQuantity));
         mQuantityEditText.addTextChangedListener(getQuantityTextChangeListener());
         mQuantityEditText.setCustomSelectionActionModeCallback(createActionModeCallBackForQuantityEditText());
-        mQuantityEditText.setOnEditorActionListener((textView, i, keyEvent) -> false);
+        mQuantityEditText.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
+            @Override public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent)
+            {
+                return false;
+            }
+        });
 
         mCashShareLeftLabelTextView.setText(getCashLeftLabelResId());
 
         mSeekBar.setOnSeekBarChangeListener(createSeekBarListener());
 
-        mBtnAddCash.setOnClickListener(ignored -> {
-            DeviceUtil.dismissKeyboard(mCommentsEditText);
-            handleBtnAddCashPressed();
+        mBtnAddCash.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View ignored)
+            {
+                DeviceUtil.dismissKeyboard(mCommentsEditText);
+                AbstractTransactionDialogFragment.this.handleBtnAddCashPressed();
+            }
         });
 
         displayAddCashButton();
@@ -273,9 +293,14 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 this,
                 securityCompactCache.get(getSecurityId()))
                 .take(1)
-                .subscribe(pair -> this.linkWith(pair.second),
-                        error -> {
-                        }));
+                .subscribe(new Action1<Pair<SecurityId, SecurityCompactDTO>>()
+                           {
+                               @Override public void call(Pair<SecurityId, SecurityCompactDTO> pair)
+                               {
+                                   AbstractTransactionDialogFragment.this.linkWith(pair.second);
+                               }
+                           },
+                        new EmptyAction1<Throwable>()));
     }
 
     protected void linkWith(SecurityCompactDTO securityCompactDTO)
@@ -289,11 +314,16 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 portfolioCompactCache.get(getPortfolioId())
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<PortfolioId, PortfolioCompactDTO>()))
                 .subscribe(
-                        this::linkWith,
-                        error -> {
-                        }));
+                        new Action1<PortfolioCompactDTO>()
+                        {
+                            @Override public void call(PortfolioCompactDTO compact)
+                            {
+                                linkWith(compact);
+                            }
+                        },
+                        new EmptyAction1<Throwable>()));
     }
 
     protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
@@ -308,9 +338,21 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 quoteServiceWrapper.getQuoteRx(securityId)
-                        .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS)))
+                        .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
+                        {
+                            @Override public Observable<?> call(Observable<? extends Void> observable)
+                            {
+                                return observable.delay(5000, TimeUnit.MILLISECONDS);
+                            }
+                        }))
                 .subscribe(
-                        this::linkWith,
+                        new Action1<QuoteDTO>()
+                        {
+                            @Override public void call(QuoteDTO quote)
+                            {
+                                linkWith(quote);
+                            }
+                        },
                         new ToastOnErrorAction()));
     }
 
@@ -330,9 +372,15 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 this,
                 positionCompactListCache.get()
                         .get(this.securityId)
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<SecurityId, PositionDTOCompactList>()))
                 .subscribe(
-                        this::linkWith,
+                        new Action1<PositionDTOCompactList>()
+                        {
+                            @Override public void call(PositionDTOCompactList list)
+                            {
+                                linkWith(list);
+                            }
+                        },
                         new ToastOnErrorAction()));
     }
 
@@ -350,19 +398,35 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 portfolioCompactListCache.get(currentUserId.toUserBaseKey())
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<UserBaseKey, PortfolioCompactDTOList>()))
                 .subscribe(
-                        this::linkWith,
-                        error -> {
-                            Timber.e(error, "Failed fetching the list of porfolios");
-                            THToast.show(R.string.error_fetch_portfolio_list_info);
+                        new Action1<PortfolioCompactDTOList>()
+                        {
+                            @Override public void call(PortfolioCompactDTOList list)
+                            {
+                                linkWith(list);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable error)
+                            {
+                                Timber.e(error, "Failed fetching the list of porfolios");
+                                THToast.show(R.string.error_fetch_portfolio_list_info);
+                            }
                         }));
     }
 
     protected void linkWith(PortfolioCompactDTOList value)
     {
         this.portfolioCompactDTOs = value;
-        portfolioCompactDTO = value.findFirstWhere(portfolioCompactDTO1 -> portfolioCompactDTO1.getPortfolioId().equals(getPortfolioId()));
+        portfolioCompactDTO = value.findFirstWhere(new Predicate<PortfolioCompactDTO>()
+        {
+            @Override public boolean apply(PortfolioCompactDTO portfolioCompactDTO1)
+            {
+                return portfolioCompactDTO1.getPortfolioId().equals(AbstractTransactionDialogFragment.this.getPortfolioId());
+            }
+        });
         updateTransactionDialog();
         displayAddCashButton();
         displayCashShareLabel();
@@ -372,7 +436,13 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         if (positionDTOCompactList != null && portfolioCompactDTO != null)
         {
-            this.positionDTOCompact = positionDTOCompactList.findFirstWhere(position -> position.portfolioId == portfolioCompactDTO.id);
+            this.positionDTOCompact = positionDTOCompactList.findFirstWhere(new Predicate<PositionDTOCompact>()
+            {
+                @Override public boolean apply(PositionDTOCompact position)
+                {
+                    return position.portfolioId == portfolioCompactDTO.id;
+                }
+            });
         }
     }
     //</editor-fold>
@@ -646,9 +716,13 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 this,
                 userInteractor.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
                 .subscribe(
-                        result -> {
-                            userProfileCache.get(currentUserId.toUserBaseKey());
-                            portfolioCompactListCache.get(currentUserId.toUserBaseKey());
+                        new Action1<PurchaseResult>()
+                        {
+                            @Override public void call(PurchaseResult result)
+                            {
+                                userProfileCache.get(currentUserId.toUserBaseKey());
+                                portfolioCompactListCache.get(currentUserId.toUserBaseKey());
+                            }
                         },
                         Actions.empty()
                 ));
@@ -844,7 +918,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
             @Override public void onDestroyActionMode(ActionMode actionMode)
             {
-
             }
         };
     }
@@ -857,12 +930,10 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             {
                 @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
                 {
-
                 }
 
                 @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
                 {
-
                 }
 
                 @Override public void afterTextChanged(Editable editable)
@@ -920,12 +991,10 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
             @Override public void onStartTrackingTouch(SeekBar seekBar)
             {
-
             }
 
             @Override public void onStopTrackingTouch(SeekBar seekBar)
             {
-
             }
         };
     }
@@ -945,8 +1014,14 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         {
             onStopSubscriptions.add(mQuickPriceButtonSet.getPriceSelectedObservable()
                     .subscribe(
-                            this::handleQuickPriceSelected,
-                            error -> Timber.e(error, "")));
+                            new Action1<Double>()
+                            {
+                                @Override public void call(Double price)
+                                {
+                                    AbstractTransactionDialogFragment.this.handleQuickPriceSelected(price);
+                                }
+                            },
+                            new TimberOnErrorAction("")));
         }
     }
 

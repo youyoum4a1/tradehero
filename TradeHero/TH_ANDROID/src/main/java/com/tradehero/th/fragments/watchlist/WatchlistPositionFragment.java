@@ -20,8 +20,6 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
-import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.fortysevendeg.swipelistview.SwipeListViewListener;
@@ -34,6 +32,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -47,6 +46,7 @@ import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 
 public class WatchlistPositionFragment extends DashboardFragment
 {
@@ -102,12 +102,24 @@ public class WatchlistPositionFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
-        watchlistPositionListView.post(this::setWatchlistOffset);
+        watchlistPositionListView.post(new Runnable()
+        {
+            @Override public void run()
+            {
+                WatchlistPositionFragment.this.setWatchlistOffset();
+            }
+        });
         watchlistPositionListView.setEmptyView(view.findViewById(R.id.watchlist_position_list_empty_view));
         watchlistPositionListView.setOnScrollListener(createListViewScrollListener());
         watchlistPositionListView.setAdapter(watchListAdapter);
         watchlistPositionListView.setSwipeListViewListener(createSwipeListViewListener());
-        watchListRefreshableContainer.setOnRefreshListener(this::refreshValues);
+        watchListRefreshableContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
+            @Override public void onRefresh()
+            {
+                WatchlistPositionFragment.this.refreshValues();
+            }
+        });
     }
 
     //<editor-fold desc="ActionBar Menu Actions">
@@ -312,10 +324,22 @@ public class WatchlistPositionFragment extends DashboardFragment
             portfolioCacheSubscription = AppObservable.bindFragment(
                     this,
                     portfolioCache.get(shownPortfolioId)
-                            .map(new PairGetSecond<>()))
+                            .map(new PairGetSecond<OwnedPortfolioId, PortfolioDTO>()))
                     .subscribe(
-                            this::onPortfolioReceived,
-                            this::onPortfolioError);
+                            new Action1<PortfolioDTO>()
+                            {
+                                @Override public void call(PortfolioDTO portfolioDTO)
+                                {
+                                    WatchlistPositionFragment.this.onPortfolioReceived(portfolioDTO);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable error)
+                                {
+                                    WatchlistPositionFragment.this.onPortfolioError(error);
+                                }
+                            });
         }
     }
 
@@ -339,14 +363,24 @@ public class WatchlistPositionFragment extends DashboardFragment
             userWatchlistPositionFetchSubscription = AppObservable.bindFragment(
                     this,
                     userWatchlistPositionCache.get(currentUserId.toUserBaseKey())
-                            .map(new PairGetSecond<>()))
+                            .map(new PairGetSecond<UserBaseKey, WatchlistPositionDTOList>()))
                     .subscribe(
-                            this::displayWatchlist,
-                            e -> {
-                                watchListRefreshableContainer.setRefreshing(false);
-                                if (watchListAdapter == null || watchListAdapter.getCount() <= 0)
+                            new Action1<WatchlistPositionDTOList>()
+                            {
+                                @Override public void call(WatchlistPositionDTOList list)
                                 {
-                                    THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
+                                    WatchlistPositionFragment.this.displayWatchlist(list);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable e)
+                                {
+                                    watchListRefreshableContainer.setRefreshing(false);
+                                    if (watchListAdapter == null || watchListAdapter.getCount() <= 0)
+                                    {
+                                        THToast.show(WatchlistPositionFragment.this.getString(R.string.error_fetch_portfolio_watchlist));
+                                    }
                                 }
                             });
         }

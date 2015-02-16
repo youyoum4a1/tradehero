@@ -42,14 +42,16 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.security.SecurityActionDialogFactory;
 import com.tradehero.th.fragments.security.SecurityActionListLinear;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.position.PositionCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -59,6 +61,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
@@ -219,8 +222,14 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                     this,
                     alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
                     .subscribe(
-                            this::onAlertMapReceived,
-                            error -> Timber.e(error, ""));
+                            new Action1<Map<SecurityId, AlertId>>()
+                            {
+                                @Override public void call(Map<SecurityId, AlertId> map)
+                                {
+                                    TradeListFragment.this.onAlertMapReceived(map);
+                                }
+                            },
+                            new TimberOnErrorAction(""));
         }
     }
 
@@ -235,10 +244,16 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (positionSubscription == null)
         {
             positionSubscription = AppObservable.bindFragment(this, positionCache.get(positionDTOKey))
-                    .map(new PairGetSecond<>())
+                    .map(new PairGetSecond<PositionDTOKey, PositionDTO>())
                     .subscribe(
-                            this::linkWith,
-                            new ToastAction<>(getString(R.string.error_fetch_position_list_info)));
+                            new Action1<PositionDTO>()
+                            {
+                                @Override public void call(PositionDTO position)
+                                {
+                                    linkWith(position);
+                                }
+                            },
+                            new ToastAction<Throwable>(getString(R.string.error_fetch_position_list_info)));
         }
     }
 
@@ -256,12 +271,22 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (positionDTO != null && tradesSubscription == null)
         {
             tradesSubscription = AppObservable.bindFragment(this, tradeListCache.get(positionDTO.getOwnedPositionId()))
-                    .map(new PairGetSecond<>())
+                    .map(new PairGetSecond<OwnedPositionId, TradeDTOList>())
                     .subscribe(
-                            this::linkWith,
-                            error -> {
-                                THToast.show(R.string.error_fetch_trade_list_info);
-                                Timber.e("Error fetching the list of trades", error);
+                            new Action1<TradeDTOList>()
+                            {
+                                @Override public void call(TradeDTOList tradeList)
+                                {
+                                    linkWith(tradeList);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable error)
+                                {
+                                    THToast.show(R.string.error_fetch_trade_list_info);
+                                    Timber.e("Error fetching the list of trades", error);
+                                }
                             });
         }
     }
@@ -297,11 +322,16 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                 securityIdSubscription = AppObservable.bindFragment(
                         this,
                         securityIdCache.get(new SecurityIntegerId(positionDTO.securityId)))
-                        .map(new PairGetSecond<>())
+                        .map(new PairGetSecond<SecurityIntegerId, SecurityId>())
                         .subscribe(
-                                this::linkWith,
-                                error -> {
-                                });
+                                new Action1<SecurityId>()
+                                {
+                                    @Override public void call(SecurityId securityId)
+                                    {
+                                        linkWith(securityId);
+                                    }
+                                },
+                                new EmptyAction1<Throwable>());
             }
         }
     }
@@ -317,10 +347,16 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (securityId != null && securityCompactSubscription == null)
         {
             securityCompactSubscription = AppObservable.bindFragment(this, securityCompactCache.get(securityId))
-                    .map(new PairGetSecond<>())
+                    .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
                     .subscribe(
-                            this::linkWith,
-                            error -> THToast.show(new THException(error)));
+                            new Action1<SecurityCompactDTO>()
+                            {
+                                @Override public void call(SecurityCompactDTO compactDTO)
+                                {
+                                    linkWith(compactDTO);
+                                }
+                            },
+                            new ToastOnErrorAction());
         }
     }
 
@@ -385,8 +421,14 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             securityActionDialog = pair.first;
             actionDialogSubscription = pair.second.getMenuActionObservable()
                     .subscribe(
-                            this::handleMenuAction,
-                            error -> Timber.e(error, ""));
+                            new Action1<SecurityActionListLinear.MenuAction>()
+                            {
+                                @Override public void call(SecurityActionListLinear.MenuAction menuAction)
+                                {
+                                    TradeListFragment.this.handleMenuAction(menuAction);
+                                }
+                            },
+                            new TimberOnErrorAction(""));
         }
     }
 

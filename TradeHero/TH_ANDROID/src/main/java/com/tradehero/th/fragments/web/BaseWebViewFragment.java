@@ -101,7 +101,13 @@ public class BaseWebViewFragment extends DashboardFragment
         webChromeClient = new THWebChromeClient(this);
         webView.setWebChromeClient(webChromeClient);
 
-        this.thIntentPassedListener = this::notifyParentIntentPassed;
+        this.thIntentPassedListener = new THIntentPassedListener()
+        {
+            @Override public void onIntentPassed(THIntent thIntent)
+            {
+                BaseWebViewFragment.this.notifyParentIntentPassed(thIntent);
+            }
+        };
 
         this.thWebViewClient = new THWebViewClient(getActivity());
         thWebViewClient.setThIntentPassedListener(this.thIntentPassedListener);

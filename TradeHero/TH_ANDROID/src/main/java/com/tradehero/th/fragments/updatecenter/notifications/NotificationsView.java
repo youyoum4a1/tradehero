@@ -32,11 +32,13 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.NotificationServiceWrapper;
 import com.tradehero.th.persistence.notification.NotificationListCacheRx;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.EndlessScrollingHelper;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.internal.util.SubscriptionList;
 
 public class NotificationsView extends BetterViewAnimator
@@ -123,7 +125,13 @@ public class NotificationsView extends BetterViewAnimator
         {
             readAllLayout.setTranslationY(dashboardTabHost.get().getTranslationY());
         }
-        dashboardTabHost.get().setOnTranslate((x, y) -> readAllLayout.setTranslationY(y));
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                readAllLayout.setTranslationY(y);
+            }
+        });
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -170,8 +178,21 @@ public class NotificationsView extends BetterViewAnimator
                     .observeOn(AndroidSchedulers.mainThread())
                     .take(1)
                     .subscribe(
-                            this::onNotificationsFetched,
-                            this::onNotificationsFetchError));
+                            new Action1<Pair<NotificationListKey, PaginatedNotificationDTO>>()
+                            {
+                                @Override public void call(
+                                        Pair<NotificationListKey, PaginatedNotificationDTO> pair)
+                                {
+                                    NotificationsView.this.onNotificationsFetched(pair);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable error)
+                                {
+                                    NotificationsView.this.onNotificationsFetchError(error);
+                                }
+                            }));
         }
     }
 
@@ -185,8 +206,21 @@ public class NotificationsView extends BetterViewAnimator
                 .observeOn(AndroidSchedulers.mainThread())
                 .take(1)
                 .subscribe(
-                        this::onNotificationsFetched,
-                        this::onNotificationsFetchError));
+                        new Action1<Pair<NotificationListKey, PaginatedNotificationDTO>>()
+                        {
+                            @Override public void call(
+                                    Pair<NotificationListKey, PaginatedNotificationDTO> pair)
+                            {
+                                NotificationsView.this.onNotificationsFetched(pair);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable error)
+                            {
+                                NotificationsView.this.onNotificationsFetchError(error);
+                            }
+                        }));
         requestUpdateTabCounter();
     }
 
@@ -254,8 +288,14 @@ public class NotificationsView extends BetterViewAnimator
                         new NotificationKey(pushId))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                this::onNotificationMarkedAsRead,
-                                e -> THToast.show(new THException(e))));
+                                new Action1<BaseResponseDTO>()
+                                {
+                                    @Override public void call(BaseResponseDTO response)
+                                    {
+                                        NotificationsView.this.onNotificationMarkedAsRead(response);
+                                    }
+                                },
+                                new ToastOnErrorAction()));
     }
 
     protected void onNotificationMarkedAsRead(BaseResponseDTO baseResponseDTO)
@@ -274,8 +314,14 @@ public class NotificationsView extends BetterViewAnimator
                         currentUserId.toUserBaseKey())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                args -> updateAllAsRead(),
-                                e -> THToast.show(new THException(e))
+                                new Action1<BaseResponseDTO>()
+                                {
+                                    @Override public void call(BaseResponseDTO response)
+                                    {
+                                        NotificationsView.this.updateAllAsRead();
+                                    }
+                                },
+                                new ToastOnErrorAction()
                         ));
 
         //Mark this locally as read, makes the user feels it's marked instantly for better experience

@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.android.internal.util.Predicate;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
@@ -28,6 +29,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.portfolio.key.PortfolioCompactListKey;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -47,11 +49,15 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.network.share.SocialSharer;
+import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioIdListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.StringUtils;
@@ -63,8 +69,7 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Actions;
-import timber.log.Timber;
+import rx.functions.Func3;
 
 abstract public class BuySellFragment extends AbstractBuySellFragment
         implements WithTutorial
@@ -173,7 +178,13 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             abstractTransactionDialogFragment.getDialog().show();
         }
 
-        dashboardTabHost.get().setOnTranslate((x, y) -> mBuySellBtnContainer.setTranslationY(y));
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                mBuySellBtnContainer.setTranslationY(y);
+            }
+        });
     }
 
     @Override public void onPause()
@@ -316,7 +327,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         if (purchaseApplicablePortfolioId != null)
         {
             portfolioObservable = portfolioCache.get(purchaseApplicablePortfolioId)
-                    .map(new PairGetSecond<>())
+                    .map(new PairGetSecond<OwnedPortfolioId, PortfolioDTO>())
                     .publish()
                     .refCount();
             fetchPortfolio();
@@ -345,7 +356,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                                    linkWith(portfolioDTO);
                                }
                            },
-                        Actions.empty());
+                        new EmptyAction1<Throwable>());
     }
 
     @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
@@ -418,14 +429,26 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             portfolioChangedSubscription = Observable.combineLatest(
                     Observable.just(purchaseApplicablePortfolioId),
                     currentUserPortfolioCompactListObservable,
-                    ownedPortfolioIdListCache.get(securityId).map(pair -> pair.second),
-                    PortfolioChangedHelper::new)
-                    .map(PortfolioChangedHelper::isPortfolioChanged)
+                    ownedPortfolioIdListCache.get(securityId).map(new PairGetSecond<PortfolioCompactListKey, OwnedPortfolioIdList>()),
+                    new Func3<OwnedPortfolioId, PortfolioCompactDTOList, OwnedPortfolioIdList, Boolean>()
+                    {
+                        @Override public Boolean call(OwnedPortfolioId t1, PortfolioCompactDTOList t2,
+                                OwnedPortfolioIdList t3)
+                        {
+                            return new PortfolioChangedHelper(t1, t2, t3).isPortfolioChanged();
+                        }
+                    })
                     .take(1)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            this::conditionalDisplayPortfolioChanged,
-                            e -> Timber.e(e, "Failed to check for portfolio changed")
+                            new Action1<Boolean>()
+                            {
+                                @Override public void call(Boolean isChanged)
+                                {
+                                    conditionalDisplayPortfolioChanged(isChanged);
+                                }
+                            },
+                            new TimberOnErrorAction("Failed to check for portfolio changed")
                     );
         }
     }
@@ -439,7 +462,9 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                     .setMessage(R.string.buy_sell_portfolio_changed_message)
                     .setPositiveButton(R.string.ok)
                     .build()
-                    .subscribe(Actions.empty(), Actions.empty()));
+                    .subscribe(
+                            new EmptyAction1<OnDialogClickEvent>(),
+                            new EmptyAction1<Throwable>()));
         }
     }
 
@@ -514,7 +539,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                                    linkWithApplicable(args, true);
                                }
                            },
-                        Actions.empty());
+                        new EmptyAction1<Throwable>());
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -577,7 +602,9 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                         .setMessage(R.string.buy_sell_no_portfolio_message)
                         .setPositiveButton(R.string.buy_sell_no_portfolio_cancel)
                         .build()
-                        .subscribe(Actions.empty(), Actions.empty()));
+                        .subscribe(
+                                new EmptyAction1<OnDialogClickEvent>(),
+                                new EmptyAction1<Throwable>()));
             }
         }
         else
@@ -587,7 +614,9 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                     .setMessage(R.string.buy_sell_no_quote_message)
                     .setPositiveButton(R.string.buy_sell_no_quote_cancel)
                     .build()
-                    .subscribe(Actions.empty(), Actions.empty()));
+                    .subscribe(
+                            new EmptyAction1<OnDialogClickEvent>(),
+                            new EmptyAction1<Throwable>()));
         }
     }
 
@@ -632,7 +661,9 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                         R.string.buy_sell_share_count) + " @" + quoteDTO.bid;
             }
             socialSharerLazy.get().share(weChatDTO)
-                    .subscribe(Actions.empty(), Actions.empty()); // TODO proper callback?
+                    .subscribe(
+                            new EmptyAction1<SocialShareResult>(),
+                            new EmptyAction1<Throwable>()); // TODO proper callback?
         }
     }
 
@@ -706,28 +737,38 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         linkWith(portfolioCompactDTOs);
     }
 
-    protected void fetchSecurityApplicableOwnedPortfolioIds(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
+    protected void fetchSecurityApplicableOwnedPortfolioIds(@NonNull final PortfolioCompactDTOList portfolioCompactDTOs)
     {
         unsubscribe(securityApplicableOwnedPortfolioIdListSubscription);
         securityApplicableOwnedPortfolioIdListSubscription = AppObservable.bindFragment(
                 this,
                 ownedPortfolioIdListCache.get(securityId)
-                        .map(pair -> pair.second))
-                .subscribe(ids -> {
-                            applicableOwnedPortfolioIds = ids;
-                            PortfolioCompactDTO candidate;
-                            for (OwnedPortfolioId id : ids)
-                            {
-                                candidate = portfolioCompactDTOs.findFirstWhere(compact -> compact.id == id.portfolioId);
-                                if (candidate != null)
-                                {
-                                    mSelectedPortfolioContainer.addMenuOwnedPortfolioId(
-                                            new MenuOwnedPortfolioId(id.getUserBaseKey(), candidate));
-                                }
-                            }
-                            displayBuySellContainer();
-                        },
-                        e -> Timber.e(e, "Failed to get the applicable portfolio ids"));
+                        .map(new PairGetSecond<PortfolioCompactListKey, OwnedPortfolioIdList>()))
+                .subscribe(new Action1<OwnedPortfolioIdList>()
+                           {
+                               @Override public void call(OwnedPortfolioIdList ids)
+                               {
+                                   applicableOwnedPortfolioIds = ids;
+                                   PortfolioCompactDTO candidate;
+                                   for (final OwnedPortfolioId id : ids)
+                                   {
+                                       candidate = portfolioCompactDTOs.findFirstWhere(new Predicate<PortfolioCompactDTO>()
+                                       {
+                                           @Override public boolean apply(PortfolioCompactDTO compact)
+                                           {
+                                               return compact.id == id.portfolioId;
+                                           }
+                                       });
+                                       if (candidate != null)
+                                       {
+                                           mSelectedPortfolioContainer.addMenuOwnedPortfolioId(
+                                                   new MenuOwnedPortfolioId(id.getUserBaseKey(), candidate));
+                                       }
+                                   }
+                                   BuySellFragment.this.displayBuySellContainer();
+                               }
+                           },
+                        new TimberOnErrorAction("Failed to get the applicable portfolio ids"));
     }
 
     protected abstract void linkWith(@NonNull PortfolioCompactDTOList portfolioCompactDTOs);

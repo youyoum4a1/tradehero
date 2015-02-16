@@ -36,6 +36,7 @@ import dagger.Lazy;
 import java.text.DecimalFormat;
 import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -333,8 +334,20 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
                     watchlistPositionDTO.getPositionCompactId())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            this::onWatchlistDeleteReceived,
-                            this::onWatchlistDeleteError));
+                            new Action1<WatchlistPositionDTO>()
+                            {
+                                @Override public void call(WatchlistPositionDTO watchlistPositionDTO1)
+                                {
+                                    WatchlistItemView.this.onWatchlistDeleteReceived(watchlistPositionDTO1);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable error)
+                                {
+                                    WatchlistItemView.this.onWatchlistDeleteError(error);
+                                }
+                            }));
         }
     }
 

@@ -37,9 +37,11 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
+import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
 import dagger.Lazy;
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +53,6 @@ import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Actions;
 import timber.log.Timber;
 
 @Routable("refer-friends")
@@ -224,7 +225,7 @@ public class FriendsInvitationFragment extends DashboardFragment
                                     pushSocialInvitationFragment(item.socialNetwork);
                                 }
                             },
-                            Actions.empty()));
+                            new EmptyAction1<Throwable>()));
         }
     }
 
@@ -238,7 +239,9 @@ public class FriendsInvitationFragment extends DashboardFragment
             weChatDTO.type = WeChatMessageType.Invite;
             weChatDTO.title = getString(WeChatMessageType.Invite.getTitleResId(), userProfileDTO.referralCode);
             socialSharerLazy.get().share(weChatDTO)
-                    .subscribe(Actions.empty(), Actions.empty()); // TODO proper callback?
+                    .subscribe(
+                            new EmptyAction1<SocialShareResult>(),
+                            new EmptyAction1<Throwable>()); // TODO proper callback?
         }
     }
 
@@ -458,7 +461,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
     }
 
-    private void scheduleSearch(String query)
+    private void scheduleSearch(final String query)
     {
         View view = getView();
         if (view != null)

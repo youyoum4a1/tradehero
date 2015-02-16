@@ -9,6 +9,7 @@ import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import javax.inject.Inject;
 import rx.Subscription;
@@ -91,7 +92,7 @@ public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragme
 
     @Override protected Subscription getTransactionSubscription(TransactionFormDTO transactionFormDTO)
     {
-        ProgressDialog progressDialog = ProgressDialog.show(
+        final ProgressDialog progressDialog = ProgressDialog.show(
                 getActivity(),
                 getActivity().getString(R.string.processing),
                 getActivity().getString(R.string.alert_dialog_please_wait),
@@ -100,7 +101,7 @@ public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragme
         return AppObservable.bindFragment(
                 this,
                 securityServiceWrapper.doTransactionRx(securityId, transactionFormDTO, IS_BUY))
-                .finallyDo(progressDialog::dismiss)
+                .finallyDo(new DismissDialogAction0(progressDialog))
                 .subscribe(new BuySellObserver(IS_BUY));
     }
 

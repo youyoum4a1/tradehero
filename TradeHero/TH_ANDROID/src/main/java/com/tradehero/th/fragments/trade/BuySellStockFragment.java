@@ -432,7 +432,13 @@ public class BuySellStockFragment extends BuySellFragment
         View rootView = getView();
         if (rootView != null)
         {
-            rootView.postDelayed(this::loadStockBgLogo, MS_DELAY_FOR_BG_IMAGE);
+            rootView.postDelayed(new Runnable()
+            {
+                @Override public void run()
+                {
+                    BuySellStockFragment.this.loadStockBgLogo();
+                }
+            }, MS_DELAY_FOR_BG_IMAGE);
         }
     }
 

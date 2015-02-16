@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
@@ -24,13 +25,12 @@ import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
@@ -38,13 +38,17 @@ import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 abstract public class HeroesTabContentFragment extends DashboardFragment
@@ -114,7 +118,13 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
         {
             this.heroListView.setAdapter(this.heroListAdapter);
             this.heroListView.setOnItemClickListener(
-                    this::handleHeroClicked
+                    new AdapterView.OnItemClickListener()
+                    {
+                        @Override public void onItemClick(AdapterView<?> parent, View view1, int position, long id)
+                        {
+                            HeroesTabContentFragment.this.handleHeroClicked(parent, view1, position, id);
+                        }
+                    }
             );
         }
         setListShown(false);
@@ -123,7 +133,13 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
 
     protected HeroListItemView.OnHeroStatusButtonClickedListener createHeroStatusButtonClickedListener()
     {
-        return (heroListItemView, heroDTO) -> handleHeroStatusButtonClicked(heroDTO);
+        return new HeroListItemView.OnHeroStatusButtonClickedListener()
+        {
+            @Override public void onHeroStatusButtonClicked(HeroListItemView heroListItemView, HeroDTO heroDTO)
+            {
+                HeroesTabContentFragment.this.handleHeroStatusButtonClicked(heroDTO);
+            }
+        };
     }
 
     private void setListShown(boolean shown)
@@ -239,24 +255,43 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
             onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
                     HeroAlertDialogRxUtil.popAlertFollowHero(getActivity()))
-                    .filter(OnDialogClickEvent::isPositive)
-                    .flatMap(pair -> userInteractorRx.purchaseAndPremiumFollowAndClear(clickedHeroDTO.getBaseKey()))
+                    .flatMap(new Func1<OnDialogClickEvent, Observable<PurchaseResult>>()
+                    {
+                        @Override public Observable<PurchaseResult> call(OnDialogClickEvent event)
+                        {
+                            if (event.isPositive())
+                            {
+                                //noinspection unchecked
+                                return userInteractorRx.purchaseAndPremiumFollowAndClear(clickedHeroDTO.getBaseKey());
+                            }
+                            return Observable.empty();
+                        }
+                    })
                     .subscribe(
-                            result -> {
-                                Timber.d("onUserFollowSuccess");
-                                THToast.show(getString(R.string.manage_heroes_unfollow_success));
-                                fetchHeroes();
-                            },
-                            error -> {
-                                //TODO offical accounts, do not unfollow
-                                if (clickedHeroDTO.isOfficialAccount())
+                            new Action1<PurchaseResult>()
+                            {
+                                @Override public void call(PurchaseResult result)
                                 {
-                                    THToast.show(getString(R.string.manage_heroes_unfollow_official_accounts_failed));
+                                    Timber.d("onUserFollowSuccess");
+                                    THToast.show(HeroesTabContentFragment.this.getString(R.string.manage_heroes_unfollow_success));
+                                    HeroesTabContentFragment.this.fetchHeroes();
                                 }
-                                else
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable error)
                                 {
-                                    Timber.e((Throwable) error, "onUserFollowFailed error");
-                                    THToast.show(getString(R.string.manage_heroes_unfollow_failed));
+                                    //TODO offical accounts, do not unfollow
+                                    if (clickedHeroDTO.isOfficialAccount())
+                                    {
+                                        THToast.show(
+                                                HeroesTabContentFragment.this.getString(R.string.manage_heroes_unfollow_official_accounts_failed));
+                                    }
+                                    else
+                                    {
+                                        Timber.e(error, "onUserFollowFailed error");
+                                        THToast.show(HeroesTabContentFragment.this.getString(R.string.manage_heroes_unfollow_failed));
+                                    }
                                 }
                             }
                     ));
@@ -264,13 +299,19 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
         else
         {
             onStopSubscriptions.add(HeroAlertDialogRxUtil.popAlertUnFollowHero(getActivity())
-                    .filter(OnDialogClickEvent::isPositive)
                     .subscribe(
-                            pair -> {
-                                THToast.show(getString(R.string.manage_heroes_unfollow_progress_message));
-                                unfollow(clickedHeroDTO.getBaseKey());
+                            new Action1<OnDialogClickEvent>()
+                            {
+                                @Override public void call(OnDialogClickEvent event)
+                                {
+                                    if (event.isPositive())
+                                    {
+                                        THToast.show(HeroesTabContentFragment.this.getString(R.string.manage_heroes_unfollow_progress_message));
+                                        HeroesTabContentFragment.this.unfollow(clickedHeroDTO.getBaseKey());
+                                    }
+                                }
                             },
-                            error -> THToast.show(new THException(error))
+                            new ToastOnErrorAction()
                     ));
         }
     }
@@ -283,8 +324,14 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
                         new SimpleFollowUserAssistant(getActivity(), userBaseKey)
                                 .launchUnFollowRx())
                         .subscribe(
-                                profile -> fetchHeroes(),
-                                error -> THToast.show(new THException(error))));
+                                new Action1<UserProfileDTO>()
+                                {
+                                    @Override public void call(UserProfileDTO profile)
+                                    {
+                                        HeroesTabContentFragment.this.fetchHeroes();
+                                    }
+                                },
+                                new ToastOnErrorAction()));
     }
 
     private void pushTimelineFragment(UserBaseKey userBaseKey)
