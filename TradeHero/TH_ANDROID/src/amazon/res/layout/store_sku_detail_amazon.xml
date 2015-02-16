@@ -76,7 +76,7 @@
       android:layout_toRightOf="@id/ic_deliverable"
       android:layout_below="@id/price_and_text"
       android:textSize="12sp"
-      android:textColor="@color/gray_3"
+      android:textColor="@color/lighter_grey"
       android:visibility="gone"
       tools:text="unlimited concurrent active"
     />
