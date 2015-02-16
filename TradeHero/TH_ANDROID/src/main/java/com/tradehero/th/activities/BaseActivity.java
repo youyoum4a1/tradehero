@@ -16,6 +16,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.inject.Injector;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
@@ -27,7 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 import rx.functions.Action1;
-import rx.functions.Actions;
 import timber.log.Timber;
 
 public class BaseActivity extends FragmentActivity
@@ -143,7 +143,7 @@ public class BaseActivity extends FragmentActivity
                                 }
                             }
                         },
-                        Actions.empty());
+                        new EmptyAction1<Throwable>());
     }
 
     protected class SocialTokenListener extends BroadcastReceiver

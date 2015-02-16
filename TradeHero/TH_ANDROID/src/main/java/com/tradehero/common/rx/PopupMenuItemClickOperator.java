@@ -18,7 +18,7 @@ public class PopupMenuItemClickOperator implements Observable.OnSubscribe<MenuIt
         this.eventHandled = eventHandled;
     }
 
-    @Override public void call(Subscriber<? super MenuItem> subscriber)
+    @Override public void call(final Subscriber<? super MenuItem> subscriber)
     {
         Assertions.assertUiThread();
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()

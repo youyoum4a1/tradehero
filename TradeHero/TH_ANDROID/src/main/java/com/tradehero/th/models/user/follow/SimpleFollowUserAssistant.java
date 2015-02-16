@@ -12,6 +12,7 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 
 public class SimpleFollowUserAssistant
 {
@@ -37,7 +38,13 @@ public class SimpleFollowUserAssistant
         showProgress(R.string.manage_heroes_unfollow_progress_message);
         return userServiceWrapper.unfollowRx(heroId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(AlertDialogUtil::dismissProgressDialog);
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        AlertDialogUtil.dismissProgressDialog();
+                    }
+                });
     }
 
     @NonNull public Observable<UserProfileDTO> launchFreeFollowRx()
@@ -45,7 +52,13 @@ public class SimpleFollowUserAssistant
         showProgress(R.string.following_this_hero);
         return userServiceWrapper.freeFollowRx(heroId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(AlertDialogUtil::dismissProgressDialog);
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        AlertDialogUtil.dismissProgressDialog();
+                    }
+                });
     }
 
     @NonNull protected Observable<UserProfileDTO> launchPremiumFollowRx()
@@ -53,7 +66,13 @@ public class SimpleFollowUserAssistant
         showProgress(R.string.following_this_hero);
         return userServiceWrapper.followRx(heroId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(AlertDialogUtil::dismissProgressDialog);
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        AlertDialogUtil.dismissProgressDialog();
+                    }
+                });
     }
 
     protected void showProgress(@StringRes int contentResId)

@@ -3,8 +3,9 @@ package com.tradehero.th.models.user.follow;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import com.tradehero.common.billing.purchase.PurchaseResult;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -39,19 +40,28 @@ public class FollowUserAssistant extends SimpleFollowUserAssistant
     {
         return userProfileCache.get(currentUserId.toUserBaseKey())
                 .take(1)
-                .flatMap(pair -> {
-                    if (pair.second.ccBalance > 0)
+                .flatMap(new Func1<Pair<UserBaseKey, UserProfileDTO>, Observable<? extends UserProfileDTO>>()
+                {
+                    @Override public Observable<? extends UserProfileDTO> call(Pair<UserBaseKey, UserProfileDTO> pair)
                     {
-                        return super.launchPremiumFollowRx();
-                    }
-                    else
-                    {
-                        //noinspection unchecked
-                        return billingInteractorRx.purchaseAndPremiumFollowAndClear(heroId)
-                                .flatMap((Func1<PurchaseResult, Observable<UserProfileDTO>>)
-                                        result -> userProfileCache.get(currentUserId.toUserBaseKey())
-                                                .take(1)
-                                                .map(pair2 -> pair2.second));
+                        if (pair.second.ccBalance > 0)
+                        {
+                            return FollowUserAssistant.super.launchPremiumFollowRx();
+                        }
+                        else
+                        {
+                            //noinspection unchecked
+                            return billingInteractorRx.purchaseAndPremiumFollowAndClear(heroId)
+                                    .flatMap(new Func1<PurchaseResult, Observable<UserProfileDTO>>()
+                                    {
+                                        @Override public Observable<UserProfileDTO> call(PurchaseResult result)
+                                        {
+                                            return userProfileCache.get(currentUserId.toUserBaseKey())
+                                                    .take(1)
+                                                    .map(new PairGetSecond<UserBaseKey, UserProfileDTO>());
+                                        }
+                                    });
+                        }
                     }
                 });
     }

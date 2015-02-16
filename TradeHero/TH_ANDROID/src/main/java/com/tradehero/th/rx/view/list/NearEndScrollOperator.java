@@ -9,11 +9,11 @@ import rx.functions.Func0;
 final class NearEndScrollOperator<T> implements AbsListView.OnScrollListener
 {
     private final Subscriber<? super T> subscriber;
-    private final Func0<T> itemCreator;
+    private final Func0<? extends T> itemCreator;
     private boolean scrollStateChanged;
     private int mTotalHeadersAndFooters = -1;
 
-    public NearEndScrollOperator(Subscriber<? super T> subscriber, Func0<T> itemCreator)
+    public NearEndScrollOperator(Subscriber<? super T> subscriber, Func0<? extends T> itemCreator)
     {
         this.subscriber = subscriber;
         this.itemCreator = itemCreator;

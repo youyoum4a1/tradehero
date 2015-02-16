@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import com.tradehero.th.api.DTOView;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class PagedDTOAdapterImpl<DTOType> extends ArrayAdapter<DTOType>
     //<editor-fold desc="Constructors">
     public PagedDTOAdapterImpl(@NonNull Context context, @LayoutRes int resource)
     {
-        super(context, resource, new ArrayList<>());
+        super(context, resource, new ArrayList<DTOType>());
         this.pagedObjects = new HashMap<>();
         this.layoutResourceId = resource;
         this.inflater = LayoutInflater.from(context);
@@ -126,7 +127,13 @@ public class PagedDTOAdapterImpl<DTOType> extends ArrayAdapter<DTOType>
     {
         // Get the pages ordered
         //noinspection Convert2Diamond
-        Set<Integer> pages = new TreeSet<Integer>((lhs, rhs) -> lhs.compareTo(rhs));
+        Set<Integer> pages = new TreeSet<Integer>(new Comparator<Integer>()
+        {
+            @Override public int compare(Integer lhs, Integer rhs)
+            {
+                return lhs.compareTo(rhs);
+            }
+        });
         pages.addAll(pagedObjects.keySet());
         List<Integer> contiguousPages = new LinkedList<>();
         Integer currentPage = null;

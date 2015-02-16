@@ -861,7 +861,7 @@ public class GaugeView extends View {
     private void drawNeedle(final Canvas canvas) {
         if (mNeedleInitialized) {
             final float angle = getAngleForValue(mCurrentValue);
-            // Logger.log.info(String.format("value=%f -> angle=%f", mCurrentValue, angle));
+            // Logger.log.info(String.format("value=%f --> angle=%f", mCurrentValue, angle));
 
             canvas.save(Canvas.MATRIX_SAVE_FLAG);
             canvas.rotate(angle, PIVOT_X, PIVOT_Y);

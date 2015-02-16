@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogRxUtil;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -15,6 +15,7 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.functions.Func1;
 
 public class ChoiceFollowUserAssistantWithDialog
 {
@@ -45,22 +46,38 @@ public class ChoiceFollowUserAssistantWithDialog
         return AppObservable.bindActivity(
                 activity,
                 userProfileCache.get(currentUserId.toUserBaseKey()).take(1))
-                .map(new PairGetSecond<>())
-                .flatMap(currentUserProfile -> HeroAlertDialogRxUtil.showFollowDialog(
-                        activity,
-                        heroBaseInfo,
-                        currentUserProfile.getFollowType(heroBaseInfo)))
-                .flatMap(request -> {
-                    Observable<UserProfileDTO> observable;
-                    if (request.isPremium)
+                .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
+                .flatMap(new Func1<UserProfileDTO, Observable<? extends FollowRequest>>()
+                {
+                    @Override public Observable<? extends FollowRequest> call(UserProfileDTO currentUserProfile)
                     {
-                        observable = followUserAssistant.launchPremiumFollowRx();
+                        return HeroAlertDialogRxUtil.showFollowDialog(
+                                activity,
+                                heroBaseInfo,
+                                currentUserProfile.getFollowType(heroBaseInfo));
                     }
-                    else
+                })
+                .flatMap(new Func1<FollowRequest, Observable<? extends Pair<FollowRequest, UserProfileDTO>>>()
+                {
+                    @Override public Observable<? extends Pair<FollowRequest, UserProfileDTO>> call(final FollowRequest request)
                     {
-                        observable = followUserAssistant.launchFreeFollowRx();
+                        Observable<UserProfileDTO> observable;
+                        if (request.isPremium)
+                        {
+                            observable = followUserAssistant.launchPremiumFollowRx();
+                        }
+                        else
+                        {
+                            observable = followUserAssistant.launchFreeFollowRx();
+                        }
+                        return observable.map(new Func1<UserProfileDTO, Pair<FollowRequest, UserProfileDTO>>()
+                        {
+                            @Override public Pair<FollowRequest, UserProfileDTO> call(UserProfileDTO profile)
+                            {
+                                return Pair.create(request, profile);
+                            }
+                        });
                     }
-                    return observable.map(profile -> Pair.create(request, profile));
                 });
     }
 }

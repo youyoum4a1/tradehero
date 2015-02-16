@@ -2,14 +2,12 @@ package com.tradehero.common.utils;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 import com.tradehero.th.R;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.misc.exception.THException;
-import rx.functions.Action1;
 import timber.log.Timber;
 
 public class THToast
@@ -94,21 +92,5 @@ public class THToast
     public static void post(View view, final THException ex)
     {
         post(view, ex.getMessage());
-    }
-
-    public static class ToastAndLog implements Action1<Throwable>
-    {
-        @NonNull private final String message;
-
-        public ToastAndLog(@NonNull String message)
-        {
-            this.message = message;
-        }
-
-        @Override public void call(Throwable throwable)
-        {
-            Timber.e(throwable, message);
-            THToast.show(new THException(throwable));
-        }
     }
 }

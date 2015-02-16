@@ -120,12 +120,12 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         });
     }
 
-    @NonNull public Observable<Boolean> canTranslate(@NonNull AbstractDiscussionCompactDTO discussionToTranslate)
+    @NonNull public Observable<Boolean> canTranslate(@NonNull final AbstractDiscussionCompactDTO discussionToTranslate)
     {
         return translationTokenCache.getOne(new TranslationTokenKey())
                 .flatMap(new Func1<Pair<TranslationTokenKey, TranslationToken>, Observable<Boolean>>()
                 {
-                    @Override public Observable<Boolean> call(Pair<TranslationTokenKey, TranslationToken> pair)
+                    @Override public Observable<Boolean> call(final Pair<TranslationTokenKey, TranslationToken> pair)
                     {
                         return getTargetLanguage().map(new Func1<String, Boolean>()
                         {
@@ -141,7 +141,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
                 });
     }
 
-    @NonNull @Override protected Observable<Pair<Dialog, ShareDialogLayout>> createDialog(@NonNull DTO whatToShare)
+    @NonNull @Override protected Observable<Pair<Dialog, ShareDialogLayout>> createDialog(@NonNull final DTO whatToShare)
     {
         return Observable.just(whatToShare)
                 .flatMap(new Func1<DTO, Observable<? extends Boolean>>()
@@ -162,7 +162,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
                         if (can && !shareOnly)
                         {
                             Pair<Dialog, NewsDialogLayout> pair = NewsDialogFactory.createNewsDialogRx(activityHolder.get());
-                            return Observable.just(Pair.create(pair.first, pair.second));
+                            return Observable.just(Pair.create(pair.first, (ShareDialogLayout) pair.second));
                         }
                         return SocialShareTranslationHelper.super.createDialog(whatToShare);
                     }
@@ -181,9 +181,9 @@ public class SocialShareTranslationHelper extends SocialShareHelper
     }
 
     @NonNull public Observable<? extends SocialDialogResult> translate(
-            @NonNull AbstractDiscussionCompactDTO toTranslate)
+            @NonNull final AbstractDiscussionCompactDTO toTranslate)
     {
-        AbstractDiscussionCompactDTO translated = AbstractDiscussionCompactDTOFactory.clone(toTranslate);
+        final AbstractDiscussionCompactDTO translated = AbstractDiscussionCompactDTOFactory.clone(toTranslate);
         if (toTranslate.langCode != null)
         {
             return getTargetLanguage()

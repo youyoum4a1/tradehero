@@ -2,6 +2,7 @@ package com.tradehero.common.social.facebook;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import com.facebook.FacebookException;
 import com.facebook.widget.WebDialog;
 import rx.Observable;
 import rx.Subscriber;
@@ -17,18 +18,22 @@ public class FacebookWebDialogOperator implements Observable.OnSubscribe<Bundle>
     }
     //</editor-fold>
 
-    @Override public void call(Subscriber<? super Bundle> subscriber)
+    @Override public void call(final Subscriber<? super Bundle> subscriber)
     {
         dialogBuilder.setOnCompleteListener(
-                (values, error) -> {
-                    if (error != null)
+                new WebDialog.OnCompleteListener()
+                {
+                    @Override public void onComplete(Bundle values, FacebookException error)
                     {
-                        subscriber.onError(error);
-                    }
-                    else
-                    {
-                        subscriber.onNext(values);
-                        subscriber.onCompleted();
+                        if (error != null)
+                        {
+                            subscriber.onError(error);
+                        }
+                        else
+                        {
+                            subscriber.onNext(values);
+                            subscriber.onCompleted();
+                        }
                     }
                 })
                 .build()
