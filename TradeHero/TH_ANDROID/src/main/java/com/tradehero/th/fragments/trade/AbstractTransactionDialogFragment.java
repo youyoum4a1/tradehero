@@ -59,6 +59,7 @@ import com.tradehero.th.persistence.position.PositionCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.StringUtils;
@@ -407,14 +408,9 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                                 linkWith(list);
                             }
                         },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable error)
-                            {
-                                Timber.e(error, "Failed fetching the list of porfolios");
-                                THToast.show(R.string.error_fetch_portfolio_list_info);
-                            }
-                        }));
+                        new ToastAndLogOnErrorAction(
+                                getString(R.string.error_fetch_portfolio_list_info),
+                                "Failed fetching the list of porfolios")));
     }
 
     protected void linkWith(PortfolioCompactDTOList value)

@@ -31,6 +31,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
@@ -47,7 +48,6 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
 import static com.tradehero.th.utils.Constants.TIMELINE_ITEM_PER_PAGE;
@@ -195,13 +195,7 @@ public class DiscoveryDiscussionFragment extends Fragment
                         discoveryDiscussionAdapter.setItems(list);
                     }
                 },
-                new Action1<Throwable>()
-                {
-                    @Override public void call(Throwable e)
-                    {
-                        Timber.e(e, "Gotcha");
-                    }
-                }));
+                new TimberOnErrorAction("Gotcha")));
         timelineSubscriptions.add(timelineSubject.subscribe(new UpdateRangeObserver()));
 
         Observable<RangeDTO> timelineRefreshRangeObservable = createPaginationObservable();

@@ -83,13 +83,15 @@ public class FollowerRevenueReportFragment extends DashboardFragment
         AppObservable.bindFragment(
                 this,
                 followerManagerViewContainer.getClickedUserFollower())
-                .subscribe(new Action1<UserFollowerDTO>()
-                {
-                    @Override public void call(UserFollowerDTO userFollowerDTO)
-                    {
-                        FollowerRevenueReportFragment.this.onListItemClick(userFollowerDTO);
-                    }
-                }, new ToastOnErrorAction());
+                .subscribe(
+                        new Action1<UserFollowerDTO>()
+                        {
+                            @Override public void call(UserFollowerDTO userFollowerDTO)
+                            {
+                                FollowerRevenueReportFragment.this.onListItemClick(userFollowerDTO);
+                            }
+                        },
+                        new ToastOnErrorAction());
     }
 
     @Override public void onDestroyView()

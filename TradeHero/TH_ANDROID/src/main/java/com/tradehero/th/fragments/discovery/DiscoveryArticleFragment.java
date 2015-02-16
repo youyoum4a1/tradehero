@@ -27,6 +27,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.ArticleServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
@@ -43,7 +44,6 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
 
@@ -125,13 +125,7 @@ public class DiscoveryArticleFragment extends Fragment
                         mArticleAdapter.setItems(articleInfoDTOs);
                     }
                 },
-                new Action1<Throwable>()
-                {
-                    @Override public void call(Throwable e)
-                    {
-                        Timber.e(e, "Gotcha");
-                    }
-                }));
+                new TimberOnErrorAction("Gotcha")));
         subscriptions.add(articlesSubject.subscribe(new UpdateUIObserver()));
 
         activateArticleItemListView();

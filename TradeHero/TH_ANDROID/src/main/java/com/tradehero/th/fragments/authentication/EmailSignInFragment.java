@@ -26,6 +26,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction0;
@@ -55,7 +56,6 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 public class EmailSignInFragment extends Fragment
 {
@@ -179,13 +179,7 @@ public class EmailSignInFragment extends Fragment
                                 loginButton.setEnabled(args.first && args.second);
                             }
                         },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable e)
-                            {
-                                Timber.e(e, "Error in validation");
-                            }
-                        });
+                        new TimberOnErrorAction("Error in validation"));
 
         signInObservable = ViewObservable.clicks(loginButton, false)
                 .flatMap(new Func1<OnClickEvent, Observable<? extends Pair<AuthData, UserProfileDTO>>>()

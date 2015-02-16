@@ -128,7 +128,6 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -414,19 +413,19 @@ public class DashboardActivity extends BaseActivity
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<AbstractAchievementDialogFragment>()
+                        new Observer<AbstractAchievementDialogFragment>()
                         {
-                            @Override public void call(AbstractAchievementDialogFragment fragment)
+                            @Override public void onNext(AbstractAchievementDialogFragment fragment)
                             {
                                 fragment.show(DashboardActivity.this.getFragmentManager(), AbstractAchievementDialogFragment.TAG);
                             }
-                        },
-                        new EmptyAction1<Throwable>(),
-                        new Action0()
-                        {
-                            @Override public void call()
+                            @Override public void onCompleted()
                             {
                                 broadcastUtilsLazy.get().nextPlease();
+                            }
+
+                            @Override public void onError(Throwable e)
+                            {
                             }
                         }
                 ));
@@ -444,19 +443,20 @@ public class DashboardActivity extends BaseActivity
                     }
                 })
                 .subscribe(
-                        new Action1<UserXPAchievementDTO>()
+                        new Observer<UserXPAchievementDTO>()
                         {
-                            @Override public void call(UserXPAchievementDTO achievementDTO)
+                            @Override public void onNext(UserXPAchievementDTO achievementDTO)
                             {
                                 xpToast.showWhenReady(achievementDTO);
                             }
-                        },
-                        new EmptyAction1<Throwable>(),
-                        new Action0()
-                        {
-                            @Override public void call()
+
+                            @Override public void onCompleted()
                             {
                                 broadcastUtilsLazy.get().nextPlease();
+                            }
+
+                            @Override public void onError(Throwable e)
+                            {
                             }
                         }));
 
@@ -500,9 +500,9 @@ public class DashboardActivity extends BaseActivity
                         })
                         .subscribeOn(Schedulers.io()))
                         .subscribe(
-                                new Action1<ProviderDTO>()
+                                new Observer<ProviderDTO>()
                                 {
-                                    @Override public void call(ProviderDTO providerDTO)
+                                    @Override public void onNext(ProviderDTO providerDTO)
                                     {
                                         if (!enrollmentScreenIsOpened)
                                         {
@@ -511,19 +511,15 @@ public class DashboardActivity extends BaseActivity
                                             navigator.pushFragment(CompetitionWebViewFragment.class, providerDTO.getProviderId().getArgs());
                                         }
                                     }
-                                },
-                                new Action1<Throwable>()
-                                {
-                                    @Override public void call(Throwable throwable)
+
+                                    @Override public void onCompleted()
                                     {
-                                        THToast.show(R.string.error_fetch_provider_competition_list);
                                         broadcastUtilsLazy.get().nextPlease();
                                     }
-                                },
-                                new Action0()
-                                {
-                                    @Override public void call()
+
+                                    @Override public void onError(Throwable e)
                                     {
+                                        THToast.show(R.string.error_fetch_provider_competition_list);
                                         broadcastUtilsLazy.get().nextPlease();
                                     }
                                 })

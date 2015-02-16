@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.android.internal.util.Predicate;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
@@ -31,6 +30,7 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -40,7 +40,6 @@ import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import timber.log.Timber;
 
 public class AbstractBuySellFragment extends BasePurchaseManagerFragment
 {
@@ -208,13 +207,14 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(this, securityCompactCache
                 .get(this.securityId))
-                .subscribe(new Action1<Pair<SecurityId, SecurityCompactDTO>>()
-                           {
-                               @Override public void call(Pair<SecurityId, SecurityCompactDTO> pair)
-                               {
-                                   linkWith(pair.second, true);
-                               }
-                           },
+                .subscribe(
+                        new Action1<Pair<SecurityId, SecurityCompactDTO>>()
+                        {
+                            @Override public void call(Pair<SecurityId, SecurityCompactDTO> pair)
+                            {
+                                linkWith(pair.second, true);
+                            }
+                        },
                         new EmptyAction1<Throwable>()));
     }
 
@@ -244,14 +244,9 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
                                 linkWith(pair.second);
                             }
                         },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable e)
-                            {
-                                THToast.show("Failed to fetch positions for this security");
-                                Timber.e(e, "Failed to fetch positions for this security");
-                            }
-                        }));
+                        new ToastAndLogOnErrorAction(
+                                getString(R.string.error_fetch_position_list_info),
+                                "Failed to fetch positions for this security")));
     }
 
     public void linkWith(final PositionDTOCompactList positionDTOCompacts)

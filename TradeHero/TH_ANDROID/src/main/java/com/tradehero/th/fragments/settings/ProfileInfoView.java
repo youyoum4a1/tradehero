@@ -299,7 +299,7 @@ public class ProfileInfoView extends LinearLayout
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 getContext(),
                 R.layout.image_picker_item,
-                new String[]{
+                new String[] {
                         getContext().getString(R.string.user_profile_choose_image_from_camera),
                         getContext().getString(R.string.user_profile_choose_image_from_library)
                 });
@@ -309,22 +309,24 @@ public class ProfileInfoView extends LinearLayout
                 .setSingleChoiceItems(adapter, -1)
                 .setCanceledOnTouchOutside(true)
                 .build()
-                .subscribe(new Action1<OnDialogClickEvent>()
-                {
-                    @Override public void call(OnDialogClickEvent event)
-                    {
-                        event.dialog.dismiss();
-                        switch (event.which)
+                .subscribe(
+                        new Action1<OnDialogClickEvent>()
                         {
-                            case 0:
-                                onImageFromCameraRequested();
-                                break;
-                            case 1:
-                                onImageFromLibraryRequested();
-                                break;
-                        }
-                    }
-                }, new EmptyAction1<Throwable>()));
+                            @Override public void call(OnDialogClickEvent event)
+                            {
+                                event.dialog.dismiss();
+                                switch (event.which)
+                                {
+                                    case 0:
+                                        onImageFromCameraRequested();
+                                        break;
+                                    case 1:
+                                        onImageFromLibraryRequested();
+                                        break;
+                                }
+                            }
+                        },
+                        new EmptyAction1<Throwable>()));
     }
 
     private void onImageFromCameraRequested()

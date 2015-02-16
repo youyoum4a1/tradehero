@@ -17,7 +17,6 @@ import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -57,6 +56,7 @@ import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeMarketPreference;
 import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
 import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -236,14 +236,9 @@ public class TrendingStockFragment extends TrendingBaseFragment
                                 linkWith(list);
                             }
                         },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable e)
-                            {
-                                THToast.show(TrendingStockFragment.this.getString(R.string.error_fetch_exchange_list_info));
-                                Timber.e("Error fetching the list of exchanges", e);
-                            }
-                        }));
+                        new ToastAndLogOnErrorAction(
+                                getString(R.string.error_fetch_exchange_list_info),
+                                "Error fetching the list of exchanges")));
     }
 
     private void linkWith(@NonNull ExchangeCompactDTOList exchangeDTOs)

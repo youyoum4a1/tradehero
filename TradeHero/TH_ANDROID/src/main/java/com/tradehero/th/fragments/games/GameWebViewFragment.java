@@ -30,9 +30,9 @@ import com.tradehero.th.utils.route.THRouter;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -236,25 +236,21 @@ public class GameWebViewFragment extends BaseWebViewFragment
                         this,
                         gamesServiceWrapper.recordScore(new MiniGameDefKey(gameId), new GameScore(score, level)))
                         .subscribe(
-                                new Action1<MiniGameScoreResponseDTO>()
+                                new Observer<MiniGameScoreResponseDTO>()
                                 {
-                                    @Override public void call(MiniGameScoreResponseDTO scoreResponseDTO)
+                                    @Override public void onNext(MiniGameScoreResponseDTO scoreResponseDTO)
                                     {
                                         GameWebViewFragment.this.showScore(scoreResponseDTO);
                                     }
-                                },
-                                new Action1<Throwable>()
-                                {
-                                    @Override public void call(Throwable error)
-                                    {
-                                        GameWebViewFragment.this.showFailedReportScore(error);
-                                    }
-                                },
-                                new Action0()
-                                {
-                                    @Override public void call()
+
+                                    @Override public void onCompleted()
                                     {
                                         GameWebViewFragment.this.clearScore();
+                                    }
+
+                                    @Override public void onError(Throwable e)
+                                    {
+                                        GameWebViewFragment.this.showFailedReportScore(e);
                                     }
                                 });
             }

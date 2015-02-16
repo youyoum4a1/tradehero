@@ -38,6 +38,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
@@ -57,7 +58,6 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 import static butterknife.ButterKnife.findById;
 import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
@@ -205,13 +205,7 @@ public class NewsHeadlineFragment extends Fragment
                         mNewsAdapter.setItems(newsItemCompactDTOs);
                     }
                 },
-                new Action1<Throwable>()
-                {
-                    @Override public void call(Throwable e)
-                    {
-                        Timber.e(e, "Gotcha");
-                    }
-                }));
+                new TimberOnErrorAction("Gotcha")));
         subscriptions.add(newsSubject.subscribe(new UpdateUIObserver()));
 
         activateNewsItemListView();

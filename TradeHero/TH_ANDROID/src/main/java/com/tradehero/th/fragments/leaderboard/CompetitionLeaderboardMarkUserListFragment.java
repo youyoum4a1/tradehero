@@ -9,7 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -28,6 +27,7 @@ import com.tradehero.th.persistence.competition.CompetitionCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCacheRx;
 import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
@@ -239,14 +239,9 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
                                    linkWith(competition);
                                }
                            },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable e)
-                            {
-                                THToast.show(R.string.error_fetch_provider_competition);
-                                Timber.e(e, "Error fetching competition info");
-                            }
-                        }));
+                        new ToastAndLogOnErrorAction(
+                                getString(R.string.error_fetch_provider_competition),
+                                "Error fetching competition info")));
     }
 
     protected void linkWith(@NonNull CompetitionDTO competitionDTO)

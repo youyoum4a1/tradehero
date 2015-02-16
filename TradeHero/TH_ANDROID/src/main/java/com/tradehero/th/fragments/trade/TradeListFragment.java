@@ -15,7 +15,6 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -51,6 +50,7 @@ import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -62,7 +62,6 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
-import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
 public class TradeListFragment extends BasePurchaseManagerFragment
@@ -280,14 +279,9 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                                     linkWith(tradeList);
                                 }
                             },
-                            new Action1<Throwable>()
-                            {
-                                @Override public void call(Throwable error)
-                                {
-                                    THToast.show(R.string.error_fetch_trade_list_info);
-                                    Timber.e("Error fetching the list of trades", error);
-                                }
-                            });
+                            new ToastAndLogOnErrorAction(
+                                    getString(R.string.error_fetch_trade_list_info),
+                                    "Error fetching the list of trades"));
         }
     }
 

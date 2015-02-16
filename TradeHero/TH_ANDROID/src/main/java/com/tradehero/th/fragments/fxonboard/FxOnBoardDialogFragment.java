@@ -29,6 +29,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.VideoServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,6 @@ import rx.android.app.AppObservable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
-import timber.log.Timber;
 
 public class FxOnBoardDialogFragment extends BaseDialogFragment
 {
@@ -133,13 +133,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
                                 }
                             }
                         },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable throwable)
-                            {
-                                Timber.e(throwable, "Unable to handle Forex onboard views");
-                            }
-                        }));
+                        new TimberOnErrorAction("Unable to handle Forex onboard views")));
         onStopSubscriptions.add(AppObservable.bindFragment(this, videoServiceWrapper.getFXVideosRx())
                 .subscribe(new Subscriber<List<VideoDTO>>()
                 {

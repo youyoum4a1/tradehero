@@ -295,13 +295,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
                                     translateNoticeWrapper.setVisibility(canTranslate ? View.VISIBLE : View.GONE);
                                 }
                             },
-                            new Action1<Throwable>()
-                            {
-                                @Override public void call(Throwable throwable)
-                                {
-                                    // Nothing to do
-                                }
-                            }));
+                            new EmptyAction1<Throwable>()));
         }
         if (translateNotice != null)
         {

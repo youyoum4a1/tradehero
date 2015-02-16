@@ -24,6 +24,7 @@ import com.tradehero.th.fragments.games.ViralGamePopupDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.games.MiniGameDefListCache;
 import com.tradehero.th.rx.RxLoaderManager;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
@@ -34,7 +35,6 @@ import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
-import timber.log.Timber;
 
 public class DiscoveryGameFragment extends DashboardFragment
 {
@@ -106,13 +106,7 @@ public class DiscoveryGameFragment extends DashboardFragment
                         adapter.setItems(miniGameDefDTOs);
                     }
                 },
-                new Action1<Throwable>()
-                {
-                    @Override public void call(Throwable e)
-                    {
-                        Timber.e(e, "Gotcha");
-                    }
-                }));
+                new TimberOnErrorAction("Gotcha")));
         subscriptions.add(miniGamesSubject.subscribe(new UpdateUIObserver()));
 
         subscriptions.add(

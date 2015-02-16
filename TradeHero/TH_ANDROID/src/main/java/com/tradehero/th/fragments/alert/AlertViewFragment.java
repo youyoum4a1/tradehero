@@ -19,7 +19,6 @@ import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
@@ -34,6 +33,7 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DateUtils;
@@ -43,7 +43,6 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
-import timber.log.Timber;
 
 public class AlertViewFragment extends DashboardFragment
 {
@@ -190,14 +189,9 @@ public class AlertViewFragment extends DashboardFragment
                                     linkWith(alertDTO1);
                                 }
                             },
-                            new Action1<Throwable>()
-                            {
-                                @Override public void call(Throwable e)
-                                {
-                                    THToast.show(R.string.error_fetch_alert);
-                                    Timber.e(e, "Failed fetching alert");
-                                }
-                            });
+                            new ToastAndLogOnErrorAction(
+                                    getString(R.string.error_fetch_alert),
+                                    "Failed fetching alert"));
         }
     }
 
