@@ -206,7 +206,7 @@ public class AchievementProgressIndicator extends LinearLayout
             indicatorImageView.setImageResource(R.drawable.ic_achievement_star_off);
             show();
             unBoldText();
-            colorText(indicatorTextView.getContext().getResources().getColor(R.color.text_gray_normal));
+            colorText(indicatorTextView.getContext().getResources().getColor(R.color.text_secondary));
         }
 
         private void show()

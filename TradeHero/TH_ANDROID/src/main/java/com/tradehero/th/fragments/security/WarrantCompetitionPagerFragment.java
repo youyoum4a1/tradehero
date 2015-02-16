@@ -53,7 +53,7 @@ public class WarrantCompetitionPagerFragment extends DashboardFragment
         ButterKnife.inject(this, view);
 
         pager.setAdapter(new WarrantPagerAdapter(getChildFragmentManager()));
-        slidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
+        slidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         slidingTabLayout.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
         slidingTabLayout.setViewPager(pager);
     }

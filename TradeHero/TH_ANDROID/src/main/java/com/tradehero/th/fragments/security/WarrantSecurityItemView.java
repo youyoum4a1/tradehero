@@ -75,7 +75,7 @@ public class WarrantSecurityItemView extends SecurityItemView
             {
                 exchangeSymbol.setText(R.string.na);
             }
-            exchangeSymbol.setTextColor(getResources().getColor(R.color.exchange_symbol));
+            exchangeSymbol.setTextColor(getResources().getColor(R.color.text_primary));
         }
     }
 

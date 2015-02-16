@@ -80,7 +80,7 @@ public class TransformationModule
         transformation.add(new GrayscaleTransformation(picasso));
         transformation.add(new StackBlurTransformation(10));
         transformation.add(new GradientTransformation(
-                context.getResources().getColor(R.color.profile_view_gradient_top),
+                context.getResources().getColor(R.color.white),
                 context.getResources().getColor(R.color.black)));
         return transformation;
     }

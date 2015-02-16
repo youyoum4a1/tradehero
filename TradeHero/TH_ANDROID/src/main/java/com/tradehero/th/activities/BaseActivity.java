@@ -9,8 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBarActivity;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
@@ -30,7 +30,7 @@ import javax.inject.Inject;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-public class BaseActivity extends FragmentActivity
+public class BaseActivity extends ActionBarActivity
         implements OnAccountsUpdateListener, Injector
 {
     private AccountManager accountManager;

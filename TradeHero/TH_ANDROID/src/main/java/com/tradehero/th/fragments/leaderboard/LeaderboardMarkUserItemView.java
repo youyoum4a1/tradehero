@@ -253,12 +253,12 @@ public class LeaderboardMarkUserItemView
         if (currentUserId.get() == userBaseDTO.id)
         {
             lbmuPosition.setTextColor(
-                    getContext().getResources().getColor(R.color.button_green));
+                    getContext().getResources().getColor(R.color.light_green_normal));
         }
         else
         {
             lbmuPosition.setTextColor(
-                    getContext().getResources().getColor(R.color.leaderboard_ranking_position));
+                    getContext().getResources().getColor(R.color.text_primary));
         }
     }
 

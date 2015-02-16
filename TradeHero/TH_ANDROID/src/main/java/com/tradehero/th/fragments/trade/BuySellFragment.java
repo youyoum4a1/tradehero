@@ -146,7 +146,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        inflater.inflate(R.menu.buy_sell_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

@@ -434,11 +434,11 @@ public class PositionPartialTopView extends LinearLayout
 
                 if (securityCompactDTO.marketOpen == null || securityCompactDTO.marketOpen)
                 {
-                    stockLastPrice.setTextColor(getResources().getColor(R.color.exchange_symbol));
+                    stockLastPrice.setTextColor(getResources().getColor(R.color.text_primary));
                 }
                 else
                 {
-                    stockLastPrice.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                    stockLastPrice.setTextColor(getResources().getColor(R.color.text_secondary));
                 }
             }
         }

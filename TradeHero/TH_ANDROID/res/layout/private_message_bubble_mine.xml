@@ -21,7 +21,7 @@
         android:layout_centerHorizontal="true"
         tools:text="moments ago"
         android:textSize="@dimen/text_caption"
-        android:textColor="@color/gray_1"
+        style="@style/TH.Caption.Inverse"
         />
 
     <LinearLayout
@@ -38,7 +38,7 @@
           android:id="@+id/discussion_content"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColor="@color/white"
+          style="@style/TH.Body1.Inverse"
           android:autoLink="web"
           android:textIsSelectable="true"
           tools:text="Hey. Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey"/>
@@ -60,7 +60,7 @@
           android:id="@+id/discussion_stub_content"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColor="@color/white"
+          style="@style/TH.Body1.Inverse"
           android:textIsSelectable="true"
           tools:text="Hey. Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey"/>
 

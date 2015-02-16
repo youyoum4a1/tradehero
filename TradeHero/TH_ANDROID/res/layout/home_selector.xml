@@ -41,7 +41,6 @@
           android:layout_height="wrap_content"
           android:layout_toRightOf="@id/user_profile_avatar"
           android:paddingLeft="@dimen/margin_xsmall"
-          android:textColor="@color/white"
           android:ellipsize="end"
           tools:text="Tho Nguyen Truong"
           />

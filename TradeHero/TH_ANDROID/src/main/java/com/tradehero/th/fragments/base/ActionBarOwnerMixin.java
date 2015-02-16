@@ -1,11 +1,12 @@
 package com.tradehero.th.fragments.base;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import com.tradehero.th.R;
@@ -49,7 +50,7 @@ public class ActionBarOwnerMixin
     private ActionBarOwnerMixin(Fragment fragment)
     {
         this.fragment = fragment;
-        this.actionBar = fragment.getActivity().getActionBar();
+        this.actionBar = ((ActionBarActivity)fragment.getActivity()).getSupportActionBar();
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -67,21 +68,18 @@ public class ActionBarOwnerMixin
 
         if(actionBar != null)
         {
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
+                    | ActionBar.DISPLAY_SHOW_TITLE
+                    | ActionBar.DISPLAY_SHOW_HOME);
             if (shouldShowHomeAsUp())
             {
-                actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
-                        | ActionBar.DISPLAY_SHOW_TITLE
-                        | ActionBar.DISPLAY_SHOW_HOME);
+                actionBar.setHomeAsUpIndicator(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
             }
             else
             {
-                actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
-                        | ActionBar.DISPLAY_SHOW_HOME
-                        | ActionBar.DISPLAY_USE_LOGO);
-                actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
+                actionBar.setHomeAsUpIndicator(R.drawable.ic_action_content_content_copy_white);
             }
-            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            actionBar.setHomeButtonEnabled(true);
         }
     }
 

@@ -52,13 +52,12 @@
           android:maxLength="6"
           android:padding="@dimen/discussion_action_buttons_drawable_padding"
           android:inputType="text|textCapCharacters"
-          android:background="@drawable/textbox_light_background"
           />
 
       <ImageView
           android:layout_width="match_parent"
           android:layout_height="1dp"
-          android:background="@color/light_grey"
+          android:background="@color/grey"
           />
 
       <LinearLayout
@@ -66,7 +65,7 @@
           android:layout_height="wrap_content"
           android:minHeight="@dimen/clickable_element_min_dimen"
           android:orientation="horizontal"
-          android:background="@color/light_grey"
+          android:background="@color/grey"
           >
 
         <Button
@@ -108,7 +107,7 @@
       <View
           android:layout_width="match_parent"
           android:layout_height="1dp"
-          android:background="@color/light_grey"
+          android:background="@color/grey"
           />
 
       <Button
@@ -139,7 +138,7 @@
       <View
           android:layout_width="match_parent"
           android:layout_height="1dp"
-          android:background="@color/light_grey"
+          android:background="@color/grey"
           />
 
       <Button

@@ -84,7 +84,7 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
     private void off()
     {
         logo.setImageResource(R.drawable.ic_achievement_star_off);
-        updateTextColor(getResources().getColor(R.color.text_gray_normal));
+        updateTextColor(getResources().getColor(R.color.text_secondary));
         defaultStyle();
     }
 

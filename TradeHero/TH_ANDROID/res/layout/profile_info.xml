@@ -32,7 +32,6 @@
         app:validatePattern="@string/regex_email_validator"
         app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
         app:delayValidationByMilliSec="500"
-        android:background="@drawable/authentication_edit_text"
         >
       <requestFocus/>
     </com.tradehero.th.widget.ServerValidatedEmailText>
@@ -54,7 +53,6 @@
 
         app:minTextLength="6"
         app:delayValidationByMilliSec="1000"
-        android:background="@drawable/authentication_edit_text"
         />
 
     <com.tradehero.th.widget.MatchingPasswordText
@@ -74,7 +72,6 @@
 
         app:matchWith="@id/authentication_sign_up_password"
         app:delayValidationByMilliSec="1000"
-        android:background="@drawable/authentication_edit_text"
         />
 
     <FrameLayout
@@ -99,7 +96,6 @@
           app:minTextLength="1"
           app:delayValidationByMilliSec="500"
           app:progressIndicator="@+id/authentication_sign_up_username_validator"
-          android:background="@drawable/authentication_edit_text"
           >
       </com.tradehero.th.widget.ServerValidatedUsernameText>
 
@@ -121,8 +117,7 @@
         android:layout_marginTop="@dimen/margin_small"
         android:hint="@string/user_profile_referral_code"
         android:inputType="text"
-        style="@style/TH.Authentication.EditText"
-        android:background="@drawable/authentication_edit_text"/>
+        style="@style/TH.Authentication.EditText"/>
 
     <RelativeLayout
         android:id="@+id/layout_optional"
@@ -156,8 +151,7 @@
             android:hint="@string/user_profile_first_name"
             android:inputType="text"
 
-            style="@style/TH.Authentication.EditText"
-            android:background="@drawable/authentication_edit_text"/>
+            style="@style/TH.Authentication.EditText"/>
 
         <EditText
             android:id="@+id/et_lastname"
@@ -166,8 +160,7 @@
             android:layout_marginTop="@dimen/margin_small"
             android:hint="@string/user_profile_last_name"
             android:inputType="text"
-            style="@style/TH.Authentication.EditText"
-            android:background="@drawable/authentication_edit_text"/>
+            style="@style/TH.Authentication.EditText"/>
 
       </LinearLayout>
 

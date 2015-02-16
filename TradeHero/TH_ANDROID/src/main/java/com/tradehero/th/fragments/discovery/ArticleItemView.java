@@ -59,7 +59,7 @@ public class ArticleItemView extends LinearLayout
     {
         picasso.load(articleInfoDTO.image)
                 // TODO better placeholder images showing that image is still being loaded
-                .placeholder(R.drawable.news_item_bg)
+                .placeholder(R.drawable.card_item_top_bg)
                 .into(imageView);
     }
 
