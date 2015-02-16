@@ -60,7 +60,7 @@ import rx.Observable;
                 ownedPositionId.userId,
                 ownedPositionId.portfolioId,
                 ownedPositionId.positionId)
-                .map(new BaseDTOListProcessor<>(
+                .map(new BaseDTOListProcessor<TradeDTO, TradeDTOList>(
                         new DTOProcessorTradeReceived(ownedPositionId)));
     }
     //</editor-fold>

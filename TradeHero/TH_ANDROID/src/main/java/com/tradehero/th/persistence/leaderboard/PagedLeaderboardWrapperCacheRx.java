@@ -4,9 +4,11 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
+import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.functions.Func1;
 
 public class PagedLeaderboardWrapperCacheRx implements DTOCacheRx<PagedLeaderboardKey, LeaderboardDTO>
 {
@@ -20,10 +22,16 @@ public class PagedLeaderboardWrapperCacheRx implements DTOCacheRx<PagedLeaderboa
     }
     //</editor-fold>
 
-    @Override @NonNull public Observable<Pair<PagedLeaderboardKey, LeaderboardDTO>> get(@NonNull PagedLeaderboardKey key)
+    @Override @NonNull public Observable<Pair<PagedLeaderboardKey, LeaderboardDTO>> get(@NonNull final PagedLeaderboardKey key)
     {
         return leaderboardCache.get(key)
-                .map(pair -> Pair.create(key, pair.second));
+                .map(new Func1<Pair<LeaderboardKey, LeaderboardDTO>, Pair<PagedLeaderboardKey, LeaderboardDTO>>()
+                {
+                    @Override public Pair<PagedLeaderboardKey, LeaderboardDTO> call(Pair<LeaderboardKey, LeaderboardDTO> pair)
+                    {
+                        return Pair.create(key, pair.second);
+                    }
+                });
     }
 
     @Override public void onNext(PagedLeaderboardKey key, LeaderboardDTO value)

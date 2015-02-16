@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -43,7 +44,7 @@ import rx.Observable;
             @Nullable Boolean includeWatchList)
     {
         return portfolioServiceRx.getPortfolios(userBaseKey.key, includeWatchList)
-                .map(new BaseDTOListProcessor<>(
+                .map(new BaseDTOListProcessor<PortfolioCompactDTO, PortfolioCompactDTOList>(
                         new DTOProcessorPortfolioReceived<>(userBaseKey)));
     }
     //</editor-fold>
@@ -55,7 +56,7 @@ import rx.Observable;
         return this.portfolioServiceRx.getPortfolio(
                         ownedPortfolioId.userId,
                         ownedPortfolioId.portfolioId)
-                .map(new DTOProcessorPortfolioReceived<>(ownedPortfolioId.getUserBaseKey()));
+                .map(new DTOProcessorPortfolioReceived<PortfolioDTO>(ownedPortfolioId.getUserBaseKey()));
     }
     //</editor-fold>
 

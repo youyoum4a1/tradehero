@@ -98,7 +98,9 @@ public class MessageServiceWrapper
                     messageListKey.perPage);
         }
         return returned
-                .map(new DTOProcessorReadablePaginatedMessageReceived<>(
+                .map(new DTOProcessorReadablePaginatedMessageReceived<
+                        MessageHeaderDTO,
+                        ReadablePaginatedMessageHeaderDTO>(
                         userProfileCache.get(),
                         currentUserId.toUserBaseKey()));
     }

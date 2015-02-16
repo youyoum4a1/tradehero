@@ -22,7 +22,7 @@ import rx.functions.Func1;
     }
     //</editor-fold>
 
-    @NonNull public Observable<BingTranslationResult> translateRx(@NonNull BingTranslationToken token, String from, String to, String text)
+    @NonNull public Observable<BingTranslationResult> translateRx(@NonNull BingTranslationToken token, final String from, final String to, String text)
     {
         return translationServiceBingRx.requestForTranslation(
                 token.getPrefixedAccessToken(),

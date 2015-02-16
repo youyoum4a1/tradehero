@@ -35,7 +35,7 @@ public class SecurityMultiFetchAssistant
     @NonNull public Observable<Map<SecurityIntegerId, SecurityCompactDTO>> get(
             @NonNull List<SecurityIntegerId> keysToFetch)
     {
-        Map<SecurityIntegerId, SecurityCompactDTO> returned = new HashMap<>();
+        final Map<SecurityIntegerId, SecurityCompactDTO> returned = new HashMap<>();
         SecurityIntegerIdList remainingKeys = new SecurityIntegerIdList(keysToFetch, null);
         SecurityId found;
         SecurityCompactDTO cached;
