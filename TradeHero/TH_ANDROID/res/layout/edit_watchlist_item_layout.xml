@@ -45,9 +45,9 @@
 
   </RelativeLayout>
 
-  <View android:layout_height="2dp"
+  <View android:layout_height="1dp"
       android:layout_width="match_parent"
-      android:background="@color/text_gray_normal"
+      android:background="@color/tradehero_divider_grey"
       />
 
   <LinearLayout
@@ -118,7 +118,7 @@
         android:padding="5dp"
         android:gravity="center"
         android:text="@string/watchlist_button_delete"
-        android:background="@drawable/authentication_sign_in_button"
+        android:background="@drawable/basic_white_selector"
         android:minWidth="100dp"
         />
 
@@ -130,7 +130,7 @@
         android:gravity="center"
         android:layout_marginLeft="10dp"
         android:text="@string/watchlist_button_done"
-        android:background="@drawable/authentication_sign_in_button"
+        android:background="@drawable/basic_white_selector"
         android:minWidth="100dp"
         />
 

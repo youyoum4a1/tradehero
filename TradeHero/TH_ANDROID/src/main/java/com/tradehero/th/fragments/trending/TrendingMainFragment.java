@@ -99,7 +99,7 @@ public class TrendingMainFragment extends DashboardFragment
         }
 
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
-        pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
+        pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
 
         tabViewPager.setCurrentItem(lastType, true);

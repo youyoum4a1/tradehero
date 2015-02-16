@@ -9,7 +9,6 @@
       android:layout_height="wrap_content"
       android:orientation="horizontal"
       android:baselineAligned="false"
-      android:background="@drawable/user_profile_gradient_bottom_bg"
       >
 
     <LinearLayout

@@ -173,33 +173,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         HierarchyInjector.inject(this);
 
-//        this.allSettingViewHolders = new SettingViewHolderList();
-//        allSettingViewHolders.add(topBannerSettingViewHolder);
-//        // Sharing
-//        allSettingViewHolders.add(socialConnectSettingViewHolderContainer);
-//        // General
-//        allSettingViewHolders.add(sendLoveViewHolder);
-//        allSettingViewHolders.add(sendFeedbackViewHolder);
-//        allSettingViewHolders.add(faqViewHolder);
-//        // Account
-//        allSettingViewHolders.add(profilePreferenceViewHolder);
-//        allSettingViewHolders.add(locationCountrySettingsViewHolder);
-//        allSettingViewHolders.add(payPalSettingViewHolder);
-//        allSettingViewHolders.add(alipaySettingViewHolder);
-//        allSettingViewHolders.add(transactionHistoryViewHolder);
-//        allSettingViewHolders.add(restorePurchaseSettingViewHolder);
-//        allSettingViewHolders.add(referralCodeSettingViewHolder);
-//        allSettingViewHolders.add(signOutSettingViewHolder);
-//        // Translations
-//        allSettingViewHolders.add(userTranslationSettingsViewHolder);
-//        // Notification
-//        allSettingViewHolders.add(emailNotificationSettingViewHolder);
-//        allSettingViewHolders.add(pushNotificationSettingViewHolder);
-//        // Misc
-//        allSettingViewHolders.add(resetHelpScreensViewHolder);
-//        allSettingViewHolders.add(clearCacheViewHolder);
-//        allSettingViewHolders.add(aboutPrefViewHolder);
-//        this.socialNetworkToConnectTo = getSocialNetworkToConnect(getArguments());
          initView();
     }
 
@@ -234,8 +207,9 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        ActionBar actionBar = getActivity().getActionBar();
-        actionBar.setTitle(getString(R.string.settings));
+        //TODO
+        //ActionBar actionBar = getActivity().getActionBar();
+        //actionBar.setTitle(getString(R.string.settings));
     }
     //</editor-fold>
 

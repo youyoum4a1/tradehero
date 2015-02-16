@@ -243,7 +243,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
                 }
                 else
                 {
-                    gainLossLabel.setBackgroundColor(getResources().getColor(R.color.text_gray_normal));
+                    gainLossLabel.setTextColor(getResources().getColor(R.color.text_primary));
                     gainIndicator.setVisibility(View.INVISIBLE);
                 }
             }

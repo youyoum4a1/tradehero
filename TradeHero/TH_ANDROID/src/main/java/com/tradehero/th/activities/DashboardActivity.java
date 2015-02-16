@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -170,6 +171,7 @@ public class DashboardActivity extends BaseActivity
     private boolean enrollmentScreenIsOpened = false;
 
     @InjectView(R.id.xp_toast_box) XpToast xpToast;
+    @InjectView(R.id.my_toolbar) Toolbar toolbar;
 
     private Subscription notificationFetchSubscription;
 
@@ -204,6 +206,10 @@ public class DashboardActivity extends BaseActivity
         suggestUpgradeIfNecessary();
         showStartDialogsPlease();
 
+        ButterKnife.inject(this);
+
+        setSupportActionBar(toolbar);
+
         tabHostHeight = (int) getResources().getDimension(R.dimen.dashboard_tabhost_height);
         setupNavigator();
         setupDashboardTabHost();
@@ -224,8 +230,6 @@ public class DashboardActivity extends BaseActivity
         initBroadcastReceivers();
 
         localBroadcastManager.registerReceiver(onlineStateReceiver, new IntentFilter(OnlineStateReceiver.ONLINE_STATE_CHANGED));
-
-        ButterKnife.inject(this);
     }
 
     private void setupNavigator()
@@ -243,10 +247,9 @@ public class DashboardActivity extends BaseActivity
             {
                 RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
                 navigator.goToTab(selectedFragmentType);
-            }
-            catch (java.lang.IllegalStateException e)
+            } catch (java.lang.IllegalStateException e)
             {
-                Timber.d("setOnTabChangedListener goToTab "+e.toString());
+                Timber.d("setOnTabChangedListener goToTab " + e.toString());
             }
         });
         navigator.addDashboardFragmentWatcher(analyticsReporter.get());
@@ -611,11 +614,12 @@ public class DashboardActivity extends BaseActivity
                 networkIndicator.setVisible(true);
             }
         }
-        if (getActionBar() != null)
-        {
-            Resources r = getResources();
-            getActionBar().setBackgroundDrawable(r.getDrawable((connected ? R.drawable.ab_background : R.drawable.ab_background_state_disabled)));
-        }
+        //TODO
+        //if (getActionBar() != null)
+        //{
+        //    Resources r = getResources();
+        //    getActionBar().setBackgroundDrawable(r.getDrawable((connected ? R.drawable.bar_background : R.drawable.ab_background_state_disabled)));
+        //}
     }
 
     @Override public void onLowMemory()

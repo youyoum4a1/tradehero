@@ -175,13 +175,13 @@ public class SocialFriendUserView extends SocialFriendItemView
         if (socialFriendListItemUserDTO.userFriendsDTO.isTradeHeroUser())
         {
             actionBtn.setText(R.string.follow);
-            actionBtn.setBackgroundResource(R.drawable.leaderboard_user_item_follow_action_button);
+            actionBtn.setBackgroundResource(R.drawable.basic_green_selector);
             actionBtn.setEnabled(true);
         }
         else
         {
             actionBtn.setText(R.string.invite);
-            actionBtn.setBackgroundResource(R.drawable.yellow_rounded_button_selector);
+            actionBtn.setBackgroundResource(R.drawable.basic_yellow_selector);
             actionBtn.setEnabled(!socialFriendListItemUserDTO.userFriendsDTO.alreadyInvited);
             setWeiboCheckBox();
         }

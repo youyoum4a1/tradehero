@@ -193,7 +193,7 @@ public class SecurityItemView extends RelativeLayout
             {
                 exchangeSymbol.setText(R.string.na);
             }
-            exchangeSymbol.setTextColor(getResources().getColor(R.color.exchange_symbol));
+            exchangeSymbol.setTextColor(getResources().getColor(R.color.text_primary));
         }
     }
 
@@ -211,7 +211,7 @@ public class SecurityItemView extends RelativeLayout
                 if (securityCompactDTO.marketOpen != null)
                 {
                     date.setTextColor(getResources().getColor(
-                            securityCompactDTO.marketOpen ? R.color.black : R.color.text_gray_normal));
+                            securityCompactDTO.marketOpen ? R.color.text_primary : R.color.text_secondary));
                 }
             }
             else
@@ -230,8 +230,8 @@ public class SecurityItemView extends RelativeLayout
             {
                 THSignedMoney.builder(securityCompactDTO.lastPrice)
                         .signTypeArrow()
-                        .withValueColor(R.color.exchange_symbol)
-                        .withCurrencyColor(R.color.exchange_symbol)
+                        .withValueColor(R.color.text_primary)
+                        .withCurrencyColor(R.color.text_primary)
                         .withSignValue(securityCompactDTO.pc50DMA)
                         .currency(securityCompactDTO.currencyDisplay)
                         .withDefaultColor()

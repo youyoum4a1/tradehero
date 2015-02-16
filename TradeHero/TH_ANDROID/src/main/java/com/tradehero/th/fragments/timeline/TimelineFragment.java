@@ -166,7 +166,7 @@ public class TimelineFragment extends DashboardFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.timeline_screen, container, false);
+        View view = inflater.inflate(R.layout.fragment_timeline, container, false);
         userProfileView = (UserProfileView) inflater.inflate(R.layout.user_profile_view, null);
         loadingView = new ProgressBar(getActivity());
         return view;

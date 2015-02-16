@@ -35,8 +35,6 @@
       android:lines="1"
       android:marqueeRepeatLimit="marquee_forever"
       android:singleLine="true"
-      android:textColor="@color/trending_grid_item_stock_name"
-      android:textStyle="normal"
       tools:text="Company Name"
       />
 

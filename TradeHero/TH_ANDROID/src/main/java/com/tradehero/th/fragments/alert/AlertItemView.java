@@ -136,7 +136,7 @@ public class AlertItemView extends RelativeLayout
         else
         {
             alertStatus.setText(R.string.stock_alert_inactive);
-            alertStatus.setTextColor(getResources().getColor(R.color.text_gray_normal));
+            alertStatus.setTextColor(getResources().getColor(R.color.text_secondary));
         }
     }
 

@@ -12,7 +12,7 @@
       style="@style/TH.SocialAuthenticationButton"
       android:drawableLeft="@drawable/icn_wb_white"
       android:drawableStart="@drawable/icn_wb_white"
-      android:background="@drawable/btn_background_social_weibo"
+      android:background="@drawable/basic_white_selector"
       android:text="@string/weibo_login_in"
       app:type="weibo"
       />

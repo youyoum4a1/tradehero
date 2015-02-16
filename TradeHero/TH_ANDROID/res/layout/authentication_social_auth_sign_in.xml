@@ -12,7 +12,7 @@
   <com.tradehero.common.widget.AuthenticationButton
       android:id="@+id/authentication_email_sign_in_link"
       style="@style/TH.SocialAuthenticationButton"
-      android:background="@drawable/btn_background_social_email"
+      android:background="@drawable/basic_white_selector"
       android:text="@string/email_login_in"
       android:textColor="@color/black"
       android:shadowColor="@color/white"
@@ -26,7 +26,7 @@
       style="@style/TH.SocialAuthenticationButton"
       android:drawableLeft="@drawable/icn_invite_email"
       android:drawableStart="@drawable/icn_invite_email"
-      android:background="@drawable/btn_background_social_email"
+      android:background="@drawable/basic_green_selector"
       android:text="@string/email_register"
       android:textColor="@color/black"
       android:shadowColor="@color/white"
