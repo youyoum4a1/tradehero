@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
   <item
       android:id="@+id/buy_sell_menu_market_status"
       android:title="@string/security_market_status"
-      android:showAsAction="ifRoom"
+      app:showAsAction="ifRoom"
       android:icon="@drawable/buyscreen_stock_inactive"
       />
 </menu>
