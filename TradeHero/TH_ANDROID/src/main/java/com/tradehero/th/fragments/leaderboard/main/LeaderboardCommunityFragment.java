@@ -14,7 +14,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClickSticky;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -40,6 +39,7 @@ import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.leaderboard.LeaderboardDefDTOKnowledge;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
+import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
@@ -48,6 +48,8 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
@@ -195,18 +197,30 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
         Observable<LeaderboardDefDTOList> leaderboardDefObservable =
                 leaderboardDefListCache.get().get(new LeaderboardDefListKey(1))
-                        .map(new PairGetSecond<>())
-                        .map(leaderboardDefDTOs -> communityPageDTOFactory.collectFromCaches(null)) // TODO remove communityPageDTOFactory
+                        .map(new PairGetSecond<LeaderboardDefListKey, LeaderboardDefDTOList>())
+                        .map(new Func1<LeaderboardDefDTOList, LeaderboardDefDTOList>()
+                        {
+                            @Override public LeaderboardDefDTOList call(LeaderboardDefDTOList leaderboardDefDTOs)
+                            {
+                                return communityPageDTOFactory.collectFromCaches(null);
+                            }
+                        }) // TODO remove communityPageDTOFactory
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread());
 
         leaderboardDefListFetchSubscription = AppObservable.bindFragment(
                 this,
                 leaderboardDefObservable)
-                .doOnNext((i) -> communityScreen.setDisplayedChildByLayoutId(R.id.leaderboard_community_list))
                 .subscribe(
-                        leaderboardDefListAdapter::setItems,
-                        (e) -> THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key)));
+                        new Action1<LeaderboardDefDTOList>()
+                        {
+                            @Override public void call(LeaderboardDefDTOList leaderboardDefDTOs)
+                            {
+                                communityScreen.setDisplayedChildByLayoutId(R.id.leaderboard_community_list);
+                                leaderboardDefListAdapter.setItems(leaderboardDefDTOs);
+                            }
+                        },
+                        new ToastAction<Throwable>(getString(R.string.error_fetch_leaderboard_def_list_key)));
     }
 
     @Override public int getTutorialLayout()

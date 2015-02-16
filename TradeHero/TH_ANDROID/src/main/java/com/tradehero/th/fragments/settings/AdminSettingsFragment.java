@@ -8,6 +8,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +21,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.fragments.ForKChartFragment;
 import com.tradehero.th.fragments.ForTypographyFragment;
@@ -29,11 +32,11 @@ import com.tradehero.th.fragments.competition.CompetitionPreseasonDialogFragment
 import com.tradehero.th.fragments.level.ForXpTestingFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import javax.inject.Inject;
@@ -89,11 +92,15 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(
-                        pair -> {
-                            Preference pref = findPreference(KEY_USER_INFO);
-                            pref.setSummary(getString(R.string.admin_setting_user_info, pair.second.displayName, pair.first.key));
+                        new Action1<Pair<UserBaseKey, UserProfileDTO>>()
+                        {
+                            @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
+                            {
+                                Preference pref = AdminSettingsFragment.this.findPreference(KEY_USER_INFO);
+                                pref.setSummary(getString(R.string.admin_setting_user_info, pair.second.displayName, pair.first.key));
+                            }
                         },
-                        e -> THToast.show(new THException(e))));
+                        new ToastOnErrorAction()));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -111,7 +118,13 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         ListPreference serverEndpointListPreference = (ListPreference) findPreference(KEY_SERVER_ENDPOINT);
         if (serverEndpointPreference != null)
         {
-            serverEndpointListPreference.setOnPreferenceChangeListener((preference, newValue) -> onServerEndpointChanged((String) newValue));
+            serverEndpointListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    return AdminSettingsFragment.this.onServerEndpointChanged((String) newValue);
+                }
+            });
 
             if (serverEndpointPreference != null)
             {
@@ -129,70 +142,112 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         }
 
         Preference sendFakePush = findPreference(KEY_SEND_FAKE_PUSH);
-        sendFakePush.setOnPreferenceClickListener(preference -> askForNotificationId());
+        sendFakePush.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                return AdminSettingsFragment.this.askForNotificationId();
+            }
+        });
 
         Preference showReviewDialog = findPreference("show_review_dialog");
-        showReviewDialog.setOnPreferenceClickListener(preference -> {
-            FragmentActivity activity = (FragmentActivity) currentActivity.get();
-            AskForReviewDialogFragment.showReviewDialog(activity.getFragmentManager());
-            return true;
+        showReviewDialog.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                FragmentActivity activity = (FragmentActivity) currentActivity.get();
+                AskForReviewDialogFragment.showReviewDialog(activity.getFragmentManager());
+                return true;
+            }
         });
 
         Preference showInviteDialog = findPreference("show_invite_dialog");
-        showInviteDialog.setOnPreferenceClickListener(preference -> {
-            FragmentActivity activity = (FragmentActivity) currentActivity.get();
-            AskForInviteDialogFragment.showInviteDialog(activity.getFragmentManager());
-            return true;
+        showInviteDialog.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                FragmentActivity activity = (FragmentActivity) currentActivity.get();
+                AskForInviteDialogFragment.showInviteDialog(activity.getFragmentManager());
+                return true;
+            }
         });
 
         Preference showOnBoardDialog = findPreference("show_onBoard_dialog");
-        showOnBoardDialog.setOnPreferenceClickListener(preference -> {
-            // FragmentActivity activityversion.properties = (FragmentActivity) currentActivityHolder.getCurrentActivity();
-            OnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
-            return true;
+        showOnBoardDialog.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                // FragmentActivity activityversion.properties = (FragmentActivity) currentActivityHolder.getCurrentActivity();
+                OnBoardDialogFragment.showOnBoardDialog(AdminSettingsFragment.this.getActivity().getFragmentManager());
+                return true;
+            }
         });
 
         Preference showTestDaily = findPreference(KEY_DAILY_TEST_SCREEN);
         showTestDaily.setEnabled(questListTestingFragmentClassProvider.get() != null);
-        showTestDaily.setOnPreferenceClickListener(preference -> {
-            navigator.get().pushFragment(questListTestingFragmentClassProvider.get());
-            return true;
+        showTestDaily.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                navigator.get().pushFragment(questListTestingFragmentClassProvider.get());
+                return true;
+            }
         });
 
         Preference showTestAchievement = findPreference(KEY_ACHIEVEMENT_TEST_SCREEN);
         showTestAchievement.setEnabled(achievementListTestingFragmentClassProvider.get() != null);
-        showTestAchievement.setOnPreferenceClickListener(preference -> {
-            navigator.get().pushFragment(achievementListTestingFragmentClassProvider.get());
-            return true;
+        showTestAchievement.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                navigator.get().pushFragment(achievementListTestingFragmentClassProvider.get());
+                return true;
+            }
         });
 
         Preference showXPTest = findPreference(KEY_XP_TEST_SCREEN);
         showXPTest.setEnabled(xpTestingFragmentClassProvider.get() != null);
-        showXPTest.setOnPreferenceClickListener(preference -> {
-            navigator.get().pushFragment(xpTestingFragmentClassProvider.get());
-            return true;
+        showXPTest.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                navigator.get().pushFragment(xpTestingFragmentClassProvider.get());
+                return true;
+            }
         });
 
         Preference showTypography = findPreference(KEY_TYPOGRAPHY_SCREEN);
         showTypography.setEnabled(typographyFragmentClassProvider.get() != null);
-        showTypography.setOnPreferenceClickListener(preference -> {
-            navigator.get().pushFragment(typographyFragmentClassProvider.get());
-            return true;
+        showTypography.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                navigator.get().pushFragment(typographyFragmentClassProvider.get());
+                return true;
+            }
         });
 
         Preference showPreseason = findPreference(KEY_PRESEASON);
-        showPreseason.setOnPreferenceClickListener(preference -> {
+        showPreseason.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
 
-            CompetitionPreseasonDialogFragment dialog = CompetitionPreseasonDialogFragment.newInstance(new ProviderId(24));
-            dialog.show(getActivity().getFragmentManager(), CompetitionPreseasonDialogFragment.TAG);
-            return true;
+                CompetitionPreseasonDialogFragment dialog = CompetitionPreseasonDialogFragment.newInstance(new ProviderId(24));
+                dialog.show(AdminSettingsFragment.this.getActivity().getFragmentManager(), CompetitionPreseasonDialogFragment.TAG);
+                return true;
+            }
         });
 
         Preference showKChart = findPreference(KEY_KCHART);
         showKChart.setEnabled(kChartFragmentClassProvider.get() != null);
-        showKChart.setOnPreferenceClickListener(preference -> {
-            navigator.get().pushFragment(kChartFragmentClassProvider.get());
-            return true;
+        showKChart.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                navigator.get().pushFragment(kChartFragmentClassProvider.get());
+                return true;
+            }
         });
     }
 

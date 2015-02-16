@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
@@ -16,7 +17,10 @@ import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.education.VideoDTO;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.education.VideoAdapter;
@@ -24,6 +28,7 @@ import com.tradehero.th.fragments.education.VideoDTOUtil;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.VideoServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +36,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.app.AppObservable;
-import rx.functions.Actions;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
@@ -74,47 +80,66 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
         videoAdapter = new VideoAdapter(getActivity(), null, R.layout.video_view);
         videosGrid.setAdapter(videoAdapter);
 
-        videosGrid.setOnItemClickListener((parent, view1, position, id) -> {
-            VideoDTO videoDTO = videoAdapter.getItem(position);
-            VideoDTOUtil.openVideoDTO(getActivity(), navigator.get(), videoDTO);
+        videosGrid.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> parent, View view1, int position, long id)
+            {
+                VideoDTO videoDTO = videoAdapter.getItem(position);
+                VideoDTOUtil.openVideoDTO(FxOnBoardDialogFragment.this.getActivity(), navigator.get(), videoDTO);
+            }
         });
     }
 
     @Override public void onStart()
     {
         super.onStart();
-        onStopSubscriptions.add(Observable.just(viewAnimator)
-                .flatMapIterable(animator -> {
-                    List<FxOnBoardView<Boolean>> onBoardViews = new ArrayList<>();
-                    for (int i = 0; i < animator.getChildCount(); ++i)
+
+        List<FxOnBoardView<Boolean>> onBoardViews = new ArrayList<>();
+        for (int i = 0; i < viewAnimator.getChildCount(); ++i)
+        {
+            View child = viewAnimator.getChildAt(i);
+            if (child instanceof FxOnBoardView)
+            {
+                @SuppressWarnings("unchecked")
+                FxOnBoardView<Boolean> fxOnBoardView = (FxOnBoardView<Boolean>) child;
+                onBoardViews.add(fxOnBoardView);
+            }
+        }
+
+        onStopSubscriptions.add(Observable.from(onBoardViews)
+                .flatMap(new Func1<FxOnBoardView<Boolean>, Observable<? extends Boolean>>()
+                {
+                    @Override public Observable<? extends Boolean> call(FxOnBoardView<Boolean> view)
                     {
-                        View child = animator.getChildAt(i);
-                        if (child instanceof FxOnBoardView)
-                        {
-                            @SuppressWarnings("unchecked")
-                            FxOnBoardView<Boolean> fxOnBoardView = (FxOnBoardView<Boolean>) child;
-                            onBoardViews.add(fxOnBoardView);
-                        }
+                        return view.result();
                     }
-                    return onBoardViews;
                 })
-                .flatMap(FxOnBoardView::result)
                 .subscribe(
-                        shouldShowNext -> {
-                            if (shouldShowNext)
+                        new Action1<Boolean>()
+                        {
+                            @Override public void call(Boolean shouldShowNext)
                             {
-                                if (viewAnimator.getDisplayedChild() == 1)
+                                if (shouldShowNext)
                                 {
-                                    checkFXPortfolio();
+                                    if (viewAnimator.getDisplayedChild() == 1)
+                                    {
+                                        FxOnBoardDialogFragment.this.checkFXPortfolio();
+                                    }
+                                    viewAnimator.showNext();
                                 }
-                                viewAnimator.showNext();
-                            }
-                            else
-                            {
-                                onCloseClicked();
+                                else
+                                {
+                                    FxOnBoardDialogFragment.this.onCloseClicked();
+                                }
                             }
                         },
-                        throwable -> Timber.e(throwable, "Unable to handle Forex onboard views")));
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable throwable)
+                            {
+                                Timber.e(throwable, "Unable to handle Forex onboard views");
+                            }
+                        }));
         onStopSubscriptions.add(AppObservable.bindFragment(this, videoServiceWrapper.getFXVideosRx())
                 .subscribe(new Subscriber<List<VideoDTO>>()
                 {
@@ -164,15 +189,19 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
                 .subscribe(
-                        profile -> {
-                            if (profile.fxPortfolio == null)
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO profile)
                             {
-                                createFXPortfolio();
+                                if (profile.fxPortfolio == null)
+                                {
+                                    FxOnBoardDialogFragment.this.createFXPortfolio();
+                                }
                             }
                         },
-                        Actions.empty()));
+                        new EmptyAction1<Throwable>()));
     }
 
     private void createFXPortfolio()
@@ -181,10 +210,14 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
                 this,
                 userServiceWrapper.get().createFXPortfolioRx(currentUserId.toUserBaseKey()))
                 .subscribe(
-                        portfolio -> {
-                            userProfileCache.get().get(currentUserId.toUserBaseKey());
+                        new Action1<PortfolioDTO>()
+                        {
+                            @Override public void call(PortfolioDTO portfolio)
+                            {
+                                userProfileCache.get().get(currentUserId.toUserBaseKey());
+                            }
                         },
-                        Actions.empty()));
+                        new EmptyAction1<Throwable>()));
     }
 
     @OnClick(R.id.close)

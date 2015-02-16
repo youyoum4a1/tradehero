@@ -3,9 +3,11 @@ package com.tradehero.th.fragments.leaderboard;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.common.persistence.DTOCacheRx;
+import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsKey;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCacheRx;
 import rx.Observable;
+import rx.functions.Func1;
 
 class ProcessableLeaderboardFriendsCache implements DTOCacheRx<LeaderboardFriendsKey, ProcessableLeaderboardFriendsDTO>
 {
@@ -25,9 +27,16 @@ class ProcessableLeaderboardFriendsCache implements DTOCacheRx<LeaderboardFriend
     @NonNull @Override public Observable<Pair<LeaderboardFriendsKey, ProcessableLeaderboardFriendsDTO>> get(@NonNull LeaderboardFriendsKey key)
     {
         return leaderboardFriendsCache.get(key)
-                .map(pair -> Pair.create(
-                        pair.first,
-                        new ProcessableLeaderboardFriendsDTO(factory, pair.second)));
+                .map(new Func1<Pair<LeaderboardFriendsKey, LeaderboardFriendsDTO>, Pair<LeaderboardFriendsKey, ProcessableLeaderboardFriendsDTO>>()
+                {
+                    @Override public Pair<LeaderboardFriendsKey, ProcessableLeaderboardFriendsDTO> call(
+                            Pair<LeaderboardFriendsKey, LeaderboardFriendsDTO> pair)
+                    {
+                        return Pair.create(
+                                pair.first,
+                                new ProcessableLeaderboardFriendsDTO(factory, pair.second));
+                    }
+                });
     }
 
     @Override public void onNext(LeaderboardFriendsKey key, ProcessableLeaderboardFriendsDTO value)

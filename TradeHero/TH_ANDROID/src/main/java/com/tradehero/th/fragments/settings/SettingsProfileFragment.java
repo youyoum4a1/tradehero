@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,16 +19,20 @@ import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.fragments.authentication.AuthDataAccountAction;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.MakePairFunc2;
 import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
@@ -36,7 +41,8 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
 import rx.android.app.AppObservable;
-import rx.functions.Actions;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class SettingsProfileFragment extends DashboardFragment implements ValidationListener
 {
@@ -97,8 +103,14 @@ public class SettingsProfileFragment extends DashboardFragment implements Valida
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .subscribe(
-                        pair -> profileView.populate(pair.second),
-                        e -> THToast.show(new THException(e))));
+                        new Action1<Pair<UserBaseKey, UserProfileDTO>>()
+                        {
+                            @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
+                            {
+                                profileView.populate(pair.second);
+                            }
+                        },
+                        new ToastOnErrorAction()));
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -117,7 +129,7 @@ public class SettingsProfileFragment extends DashboardFragment implements Valida
         }
         else
         {
-            ProgressDialog progressDialog = ProgressDialog.show(
+            final ProgressDialog progressDialog = ProgressDialog.show(
                     getActivity(),
                     getString(R.string.alert_dialog_please_wait),
                     getString(R.string.authentication_connecting_tradehero_only),
@@ -127,23 +139,33 @@ public class SettingsProfileFragment extends DashboardFragment implements Valida
             onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
                     profileView.obtainUserFormDTO()
-                            .flatMap(userFormDTO -> {
-                                final AuthData authData = new AuthData(userFormDTO.email, userFormDTO.password);
-                                Observable<UserProfileDTO> userProfileDTOObservable = userServiceWrapper.get().updateProfileRx(currentUserId
-                                        .toUserBaseKey(), userFormDTO);
-                                return Observable.zip(
-                                        Observable.just(authData),
-                                        userProfileDTOObservable,
-                                        new MakePairFunc2<>());
+                            .flatMap(new Func1<UserFormDTO, Observable<? extends Pair<AuthData, UserProfileDTO>>>()
+                            {
+                                @Override public Observable<? extends Pair<AuthData, UserProfileDTO>> call(UserFormDTO userFormDTO)
+                                {
+                                    final AuthData authData = new AuthData(userFormDTO.email, userFormDTO.password);
+                                    Observable<UserProfileDTO> userProfileDTOObservable = userServiceWrapper.get().updateProfileRx(currentUserId
+                                            .toUserBaseKey(), userFormDTO);
+                                    return Observable.zip(
+                                            Observable.just(authData),
+                                            userProfileDTOObservable,
+                                            new MakePairFunc2<AuthData, UserProfileDTO>());
+                                }
                             }))
-                    .doOnNext(pair -> {
-                        THToast.show(R.string.settings_update_profile_successful);
-                        authDataActionProvider.get().call(pair);
-                        navigator.get().popFragment();
+                    .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
+                    {
+                        @Override public void call(Pair<AuthData, UserProfileDTO> pair)
+                        {
+                            THToast.show(R.string.settings_update_profile_successful);
+                            authDataActionProvider.get().call(pair);
+                            navigator.get().popFragment();
+                        }
                     })
-                    .doOnError(new ToastAction<>(getString(R.string.error_update_your_user_profile)))
-                    .finallyDo(progressDialog::dismiss)
-                    .subscribe(Actions.empty(), Actions.empty()));
+                    .doOnError(new ToastAction<Throwable>(getString(R.string.error_update_your_user_profile)))
+                    .finallyDo(new DismissDialogAction0(progressDialog))
+                    .subscribe(
+                            new EmptyAction1<Pair<AuthData, UserProfileDTO>>(),
+                            new EmptyAction1<Throwable>()));
         }
     }
 

@@ -37,6 +37,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.Arrays;
@@ -47,6 +48,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 @Routable({
@@ -203,15 +205,21 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
             inviteFriendForm.add(userFriendsDTO);
-            ProgressDialog progressDialog = getProgressDialog();
+            final ProgressDialog progressDialog = getProgressDialog();
             unsubscribe(inviteSubscription);
             inviteSubscription = AppObservable.bindFragment(
                     this,
                     userServiceWrapperLazy.get()
                             .inviteFriendsRx(currentUserId.toUserBaseKey(), inviteFriendForm))
-                    .finallyDo(progressDialog::dismiss)
+                    .finallyDo(new DismissDialogAction0(progressDialog))
                     .subscribe(
-                            this::onFriendInvited,
+                            new Action1<BaseResponseDTO>()
+                            {
+                                @Override public void call(BaseResponseDTO response)
+                                {
+                                    HomeFragment.this.onFriendInvited(response);
+                                }
+                            },
                             new ToastOnErrorAction());
         }
         else if (userFriendsDTO instanceof UserFriendsFacebookDTO)
@@ -258,15 +266,21 @@ public final class HomeFragment extends BaseWebViewFragment
     {
         InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
         inviteFriendForm.add(userDto);
-        ProgressDialog progressDialog = getProgressDialog();
+        final ProgressDialog progressDialog = getProgressDialog();
         unsubscribe(inviteSubscription);
         inviteSubscription = AppObservable.bindFragment(
                 this,
                 userServiceWrapperLazy.get()
                         .inviteFriendsRx(currentUserId.toUserBaseKey(), inviteFriendForm))
-                .finallyDo(progressDialog::dismiss)
+                .finallyDo(new DismissDialogAction0(progressDialog))
                 .subscribe(
-                        this::onFriendInvited,
+                        new Action1<BaseResponseDTO>()
+                        {
+                            @Override public void call(BaseResponseDTO responseDTO)
+                            {
+                                HomeFragment.this.onFriendInvited(responseDTO);
+                            }
+                        },
                         new ToastOnErrorAction());
     }
 

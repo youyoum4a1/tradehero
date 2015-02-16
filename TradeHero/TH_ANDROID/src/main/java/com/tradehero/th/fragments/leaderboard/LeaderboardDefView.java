@@ -96,11 +96,11 @@ public class LeaderboardDefView extends RelativeLayout
         {
             fetchUserRankingSubscription = leaderboardCache.get(new UserOnLeaderboardKey(dto.id, currentUserId.get()))
                     .doOnError(toastOnError)
-                    .map(i -> i.second.users.get(0))
+                    .map(i --> i.second.users.get(0))
                     .first()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::showUserBestROI, throwable -> {
+                    .subscribe(this: :showUserBestROI, throwable --> {
                         // Do nothing
                     });
         }

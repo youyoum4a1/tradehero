@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,6 +63,7 @@ import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
@@ -77,7 +79,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.functions.Func1;
 import timber.log.Timber;
@@ -186,7 +188,13 @@ public class PositionListFragment
         ButterKnife.inject(this, view);
 
         positionListView.setAdapter(positionItemAdapter);
-        swipeToRefreshLayout.setOnRefreshListener(this::refreshSimplePage);
+        swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
+            @Override public void onRefresh()
+            {
+                PositionListFragment.this.refreshSimplePage();
+            }
+        });
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -202,11 +210,15 @@ public class PositionListFragment
             onStopSubscriptions.add(showFollowDialog(userProfileDTO)
                     .subscribe(
                             Actions.empty(), // TODO ?
-                            e -> {
-                                AlertDialogRxUtil.popErrorMessage(
-                                        getActivity(),
-                                        e);
-                                // TODO
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable e)
+                                {
+                                    AlertDialogRxUtil.popErrorMessage(
+                                            PositionListFragment.this.getActivity(),
+                                            e);
+                                    // TODO
+                                }
                             }
                     ));
         }
@@ -327,14 +339,24 @@ public class PositionListFragment
         if (portfolioHeaderView != null)
         {
             onStopSubscriptions.add(portfolioHeaderView.getUserActionObservable()
-                    .flatMap(this::handleHeaderUserAction)
+                    .flatMap(new Func1<PortfolioHeaderView.UserAction, Observable<? extends UserProfileDTO>>()
+                    {
+                        @Override public Observable<? extends UserProfileDTO> call(PortfolioHeaderView.UserAction userAction)
+                        {
+                            return PositionListFragment.this.handleHeaderUserAction(userAction);
+                        }
+                    })
                     .subscribe(
                             Actions.empty(), // TODO ?
-                            e -> {
-                                AlertDialogRxUtil.popErrorMessage(
-                                        getActivity(),
-                                        e);
-                                // TODO
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable e)
+                                {
+                                    AlertDialogRxUtil.popErrorMessage(
+                                            PositionListFragment.this.getActivity(),
+                                            e);
+                                    // TODO
+                                }
                             }
                     ));
         }
@@ -369,17 +391,28 @@ public class PositionListFragment
                 getActivity(),
                 toBeFollowed,
                 UserProfileDTOUtil.IS_NOT_FOLLOWER)
-                .flatMap(request -> {
-                    Observable<UserProfileDTO> fromServer;
-                    if (request.isPremium)
+                .flatMap(new Func1<FollowRequest, Observable<? extends UserProfileDTO>>()
+                {
+                    @Override public Observable<? extends UserProfileDTO> call(final FollowRequest request)
                     {
-                        fromServer = premiumFollow(request.heroId);
+                        Observable<UserProfileDTO> fromServer;
+                        if (request.isPremium)
+                        {
+                            fromServer = PositionListFragment.this.premiumFollow(request.heroId);
+                        }
+                        else
+                        {
+                            fromServer = PositionListFragment.this.freeFollow(request.heroId);
+                        }
+                        return fromServer
+                                .doOnNext(new Action1<UserProfileDTO>()
+                                {
+                                    @Override public void call(UserProfileDTO userProfileDTO)
+                                    {
+                                        PositionListFragment.this.handleSuccessfulFollow(request);
+                                    }
+                                });
                     }
-                    else
-                    {
-                        fromServer = freeFollow(request.heroId);
-                    }
-                    return fromServer.doOnNext(profile -> handleSuccessfulFollow(request));
                 });
     }
 
@@ -398,16 +431,10 @@ public class PositionListFragment
 
     @NonNull protected Observable<UserProfileDTO> freeFollow(@NonNull UserBaseKey heroId)
     {
-        ProgressDialog progress = ProgressDialogUtil.create(getActivity(), R.string.following_this_hero);
+        final ProgressDialog progress = ProgressDialogUtil.create(getActivity(), R.string.following_this_hero);
         return userServiceWrapperLazy.get().freeFollowRx(heroId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new Action0()
-                {
-                    @Override public void call()
-                    {
-                        progress.dismiss();
-                    }
-                });
+                .finallyDo(new DismissDialogAction0(progress));
     }
 
     protected void handleSuccessfulFollow(@NonNull FollowRequest request)
@@ -427,8 +454,14 @@ public class PositionListFragment
                 this,
                 userProfileCache.get(shownUser))
                 .subscribe(
-                        pair -> linkWith(pair.second),
-                        new ToastAction<>(getString(R.string.error_fetch_user_profile))));
+                        new Action1<Pair<UserBaseKey, UserProfileDTO>>()
+                        {
+                            @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
+                            {
+                                linkWith(pair.second);
+                            }
+                        },
+                        new ToastAction<Throwable>(getString(R.string.error_fetch_user_profile))));
     }
 
     public void linkWith(UserProfileDTO userProfileDTO)
@@ -446,8 +479,14 @@ public class PositionListFragment
                     this,
                     portfolioCache.get(((OwnedPortfolioId) getPositionsDTOKey)))
                     .subscribe(
-                            pair -> linkWith(pair.second),
-                            new ToastAction<>(getString(R.string.error_fetch_portfolio_info))
+                            new Action1<Pair<OwnedPortfolioId, PortfolioDTO>>()
+                            {
+                                @Override public void call(Pair<OwnedPortfolioId, PortfolioDTO> pair)
+                                {
+                                    linkWith(pair.second);
+                                }
+                            },
+                            new ToastAction<Throwable>(getString(R.string.error_fetch_portfolio_info))
                     ));
         }
         // We do not care for now about those that are loaded with LeaderboardMarkUserId
@@ -494,7 +533,7 @@ public class PositionListFragment
             // portfolio header
             int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);
             headerStub.setLayoutResource(headerLayoutId);
-            View inflatedHeader = headerStub.inflate();
+            final View inflatedHeader = headerStub.inflate();
             portfolioHeaderView = (PortfolioHeaderView) inflatedHeader;
             linkPortfolioHeader();
 
@@ -534,8 +573,20 @@ public class PositionListFragment
                     this,
                     getPositionsCache.get(getPositionsDTOKey))
                     .subscribe(
-                            pair -> this.linkWith(pair.second),
-                            this::handleGetPositionsError));
+                            new Action1<Pair<GetPositionsDTOKey, GetPositionsDTO>>()
+                            {
+                                @Override public void call(Pair<GetPositionsDTOKey, GetPositionsDTO> pair)
+                                {
+                                    PositionListFragment.this.linkWith(pair.second);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable error)
+                                {
+                                    PositionListFragment.this.handleGetPositionsError(error);
+                                }
+                            }));
         }
     }
 

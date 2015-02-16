@@ -37,6 +37,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -47,6 +48,7 @@ import javax.inject.Provider;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class LeaderboardFriendsItemView extends RelativeLayout
@@ -133,7 +135,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     {
         if (networkLabel != null)
         {
-            boolean isSocial = true;
             networkLabel.setBackgroundResource(userFriendsDTO.getNetworkLabelImage());
             networkLabel.setVisibility(VISIBLE);
         }
@@ -253,14 +254,20 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             }
             InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
             inviteFriendForm.add(userFriendsDTO);
-            ProgressDialog progressDialog = getProgressDialog();
+            final ProgressDialog progressDialog = getProgressDialog();
             detachInviteSubscription();
             inviteSubscription = userServiceWrapperLazy.get()
                     .inviteFriendsRx(currentUserId.toUserBaseKey(), inviteFriendForm)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .finallyDo(progressDialog::dismiss)
+                    .finallyDo(new DismissDialogAction0(progressDialog))
                     .subscribe(
-                            this::onInvitationDone,
+                            new Action1<BaseResponseDTO>()
+                            {
+                                @Override public void call(BaseResponseDTO response)
+                                {
+                                    LeaderboardFriendsItemView.this.onInvitationDone(response);
+                                }
+                            },
                             new ToastOnErrorAction());
         }
         else if (userFriendsDTO instanceof UserFriendsFacebookDTO)

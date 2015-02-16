@@ -16,7 +16,6 @@ import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.preference.PreferenceFragment;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,6 +41,7 @@ import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
@@ -65,8 +65,12 @@ import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.tradehero.th.rx.view.DismissDialogAction0;
+import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.SocialAlertDialogRxUtil;
@@ -87,7 +91,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.functions.Actions;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -135,29 +139,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Nullable protected CheckBoxPreference pushNotificationSound;
     @Nullable protected CheckBoxPreference pushNotificationVibrate;
 
-//    @Inject protected UnreadSettingPreferenceHolder unreadSettingPreferenceHolder;
-//    @Inject protected SocialConnectSettingViewHolderContainer socialConnectSettingViewHolderContainer;
-//    @Inject protected TopBannerSettingViewHolder topBannerSettingViewHolder;
-//    @Inject protected SendLoveViewHolder sendLoveViewHolder;
-//    @Inject protected SendFeedbackViewHolder sendFeedbackViewHolder;
-//    @Inject protected FaqViewHolder faqViewHolder;
-//    @Inject protected ProfilePreferenceViewHolder profilePreferenceViewHolder;
-//    @Inject protected LocationCountrySettingsViewHolder locationCountrySettingsViewHolder;
-//    @Inject protected PayPalSettingViewHolder payPalSettingViewHolder;
-//    @Inject protected AlipaySettingViewHolder alipaySettingViewHolder;
-//    @Inject protected TransactionHistoryViewHolder transactionHistoryViewHolder;
-//    @Inject protected RestorePurchaseSettingViewHolder restorePurchaseSettingViewHolder;
-//    @Inject protected ReferralCodeSettingViewHolder referralCodeSettingViewHolder;
-//    @Inject protected SignOutSettingViewHolder signOutSettingViewHolder;
-//    @Inject protected UserTranslationSettingsViewHolder userTranslationSettingsViewHolder;
-//    @Inject protected EmailNotificationSettingViewHolder emailNotificationSettingViewHolder;
-//    @Inject protected PushNotificationSettingViewHolder pushNotificationSettingViewHolder;
-//    @Inject protected ResetHelpScreensViewHolder resetHelpScreensViewHolder;
-//    @Inject protected ClearCacheViewHolder clearCacheViewHolder;
-//    @Inject protected AboutPrefViewHolder aboutPrefViewHolder;
-//    @NonNull private SettingViewHolderList allSettingViewHolders;
-
-    private SocialNetworkEnum socialNetworkToConnectTo;
     private ProgressDialog progressDialog;
     private SocialNetworkEnum socialNetworkEnum;
     private CheckBoxPreference checkBoxPreference;
@@ -173,34 +154,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         HierarchyInjector.inject(this);
 
-//        this.allSettingViewHolders = new SettingViewHolderList();
-//        allSettingViewHolders.add(topBannerSettingViewHolder);
-//        // Sharing
-//        allSettingViewHolders.add(socialConnectSettingViewHolderContainer);
-//        // General
-//        allSettingViewHolders.add(sendLoveViewHolder);
-//        allSettingViewHolders.add(sendFeedbackViewHolder);
-//        allSettingViewHolders.add(faqViewHolder);
-//        // Account
-//        allSettingViewHolders.add(profilePreferenceViewHolder);
-//        allSettingViewHolders.add(locationCountrySettingsViewHolder);
-//        allSettingViewHolders.add(payPalSettingViewHolder);
-//        allSettingViewHolders.add(alipaySettingViewHolder);
-//        allSettingViewHolders.add(transactionHistoryViewHolder);
-//        allSettingViewHolders.add(restorePurchaseSettingViewHolder);
-//        allSettingViewHolders.add(referralCodeSettingViewHolder);
-//        allSettingViewHolders.add(signOutSettingViewHolder);
-//        // Translations
-//        allSettingViewHolders.add(userTranslationSettingsViewHolder);
-//        // Notification
-//        allSettingViewHolders.add(emailNotificationSettingViewHolder);
-//        allSettingViewHolders.add(pushNotificationSettingViewHolder);
-//        // Misc
-//        allSettingViewHolders.add(resetHelpScreensViewHolder);
-//        allSettingViewHolders.add(clearCacheViewHolder);
-//        allSettingViewHolders.add(aboutPrefViewHolder);
-//        this.socialNetworkToConnectTo = getSocialNetworkToConnect(getArguments());
-         initView();
+        initView();
     }
 
     @Override public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup,
@@ -409,8 +363,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                     });
         }
 
-
-
         pushNotificationSound = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_notifications_push_alert_sound));
         if (pushNotificationSound != null)
@@ -454,10 +406,22 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             onStopSubscriptions.add(userServiceWrapper.updateProfilePropertyEmailNotificationsRx(
                     currentUserId.toUserBaseKey(), enable)
                     .observeOn(AndroidSchedulers.mainThread())
-//                    .finallyDo(progressDialog::dismiss)
+//                    .finallyDo(progressDialog: :dismiss)
                     .subscribe(
-                            this::onProfileUpdated,
-                            this::onProfileUpdateFailed));
+                            new Action1<UserProfileDTO>()
+                            {
+                                @Override public void call(UserProfileDTO profile)
+                                {
+                                    SettingsFragment.this.onProfileUpdated(profile);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable error)
+                                {
+                                    SettingsFragment.this.onProfileUpdateFailed(error);
+                                }
+                            }));
 
         return false;
     }
@@ -472,10 +436,22 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             onStopSubscriptions.add(userServiceWrapper.updateProfilePropertyPushNotificationsRx(
                     currentUserId.toUserBaseKey(), enable)
                     .observeOn(AndroidSchedulers.mainThread())
-//                    .finallyDo(progressDialog::dismiss)
+//                    .finallyDo(progressDialog: :dismiss)
                     .subscribe(
-                            this::onProfileUpdated,
-                            this::onProfileUpdateFailed));
+                            new Action1<UserProfileDTO>()
+                            {
+                                @Override public void call(UserProfileDTO profile)
+                                {
+                                    SettingsFragment.this.onProfileUpdated(profile);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable error)
+                                {
+                                    SettingsFragment.this.onProfileUpdateFailed(error);
+                                }
+                            }));
 
         return false;
     }
@@ -606,7 +582,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 
-
     public void clickedPreference(String key)
     {
         if(key.equals(getString(R.string.key_preference_top_banner)))
@@ -682,7 +657,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         {
             handleAboutClick();
         }
-
     }
 
     public void handleViewIntro()
@@ -789,7 +763,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                                     }
                                 }
                             },
-                            Actions.empty());
+                            new EmptyAction1<Throwable>());
         }
     }
 
@@ -863,16 +837,17 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 Schedulers.computation())
                 .call(1)
                 .flatMap(new MinimumApparentDelayer<>(1, APPARENT_DURATION))
-                .doOnNext(ignored -> showCacheCleared(finalProgressDialog))
+                .doOnNext(new Action1<Integer>()
+                {
+                    @Override public void call(Integer ignored)
+                    {
+                        SettingsFragment.this.showCacheCleared(finalProgressDialog);
+                    }
+                })
                 .delay(APPARENT_DURATION.first, APPARENT_DURATION.second, AndroidSchedulers.mainThread())
                 .subscribe(
-                        ignored -> {
-                            if (finalProgressDialog != null)
-                            {
-                                finalProgressDialog.dismiss();
-                            }
-                        },
-                        e -> Timber.e(e, "Failed to clear cache"));
+                        new DismissDialogAction1<Integer>(finalProgressDialog),
+                        new TimberOnErrorAction("Failed to clear cache"));
     }
 
     public void handleAboutClick()
@@ -900,19 +875,22 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         final ProgressDialog finalProgressDialog = progressDialog;
         onStopSubscriptions.add(sessionServiceWrapper.logoutRx()
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new Action0()
-                {
-                    @Override public void call()
-                    {
-                        if (finalProgressDialog != null)
-                        {
-                            finalProgressDialog.dismiss();
-                        }
-                    }
-                })
+                .finallyDo(new DismissDialogAction0(finalProgressDialog))
                 .subscribe(
-                        profile -> onSignedOut(profile, finalProgressDialog),
-                        e -> onSignOutError(e, finalProgressDialog)));
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO profile)
+                            {
+                                SettingsFragment.this.onSignedOut(profile, finalProgressDialog);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable e)
+                            {
+                                SettingsFragment.this.onSignOutError(e, finalProgressDialog);
+                            }
+                        }));
     }
 
     protected void onSignedOut(@SuppressWarnings("UnusedParameters") UserProfileDTO userProfileDTO, @Nullable ProgressDialog progressDialog)
@@ -940,7 +918,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
     }
 
-    protected void onSignOutError(Throwable e, @Nullable ProgressDialog progressDialog)
+    protected void onSignOutError(Throwable e, @Nullable final ProgressDialog progressDialog)
     {
         Timber.e(e, "Failed to sign out");
         if (progressDialog != null)
@@ -949,8 +927,16 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             progressDialog.setMessage("");
             Observable.just(0)
                     .delay(3000, TimeUnit.MILLISECONDS)
-                    .doOnCompleted(progressDialog::dismiss)
-                    .subscribe(Actions.empty(), Actions.empty());
+                    .doOnCompleted(new Action0()
+                    {
+                        @Override public void call()
+                        {
+                            progressDialog.dismiss();
+                        }
+                    })
+                    .subscribe(
+                            new EmptyAction1<Integer>(),
+                            new EmptyAction1<Throwable>());
         }
         else
         {
@@ -1127,7 +1113,13 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             else if (isMainLogin(socialNetworkEnum))
             {
                 sequence = SocialAlertDialogRxUtil.popErrorUnlinkDefaultAccount(activityContext)
-                        .flatMap(pair -> Observable.empty());
+                        .flatMap(new Func1<OnDialogClickEvent, Observable<? extends UserProfileDTO>>()
+                        {
+                            @Override public Observable<? extends UserProfileDTO> call(OnDialogClickEvent pair)
+                            {
+                                return Observable.empty();
+                            }
+                        });
             }
             else
             {
@@ -1137,8 +1129,20 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             final Activity finalActivityContext = activityContext;
             sequenceSubscription = sequence.observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            this::updateSocialConnectStatus,
-                            e -> onChangeStatusError(finalActivityContext, e));
+                            new Action1<UserProfileDTO>()
+                            {
+                                @Override public void call(UserProfileDTO profileDTO)
+                                {
+                                    SettingsFragment.this.updateSocialConnectStatus(profileDTO);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable e)
+                                {
+                                    SettingsFragment.this.onChangeStatusError(finalActivityContext, e);
+                                }
+                            });
         }
         return false;
     }
@@ -1148,18 +1152,27 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         return socialShareHelper.handleNeedToLink(socialNetworkEnum);
     }
 
-    @NonNull protected Observable<UserProfileDTO> confirmUnLinkRx(SocialNetworkEnum socialNetworkEnum ,@NonNull Context activityContext)
+    @NonNull protected Observable<UserProfileDTO> confirmUnLinkRx(final SocialNetworkEnum socialNetworkEnum ,@NonNull final Context activityContext)
     {
         return SocialAlertDialogRxUtil.popConfirmUnlinkAccount(
                 activityContext,
                 socialNetworkEnum)
-                .filter(OnDialogClickEvent::isPositive)
-                .flatMap(pair -> effectUnlinkRx(socialNetworkEnum ,activityContext));
+                .flatMap(new Func1<OnDialogClickEvent, Observable<? extends UserProfileDTO>>()
+                {
+                    @Override public Observable<? extends UserProfileDTO> call(OnDialogClickEvent pair)
+                    {
+                        if (pair.isPositive())
+                        {
+                            return SettingsFragment.this.effectUnlinkRx(socialNetworkEnum, activityContext);
+                        }
+                        return Observable.empty();
+                    }
+                });
     }
 
     @NonNull protected Observable<UserProfileDTO> effectUnlinkRx(SocialNetworkEnum socialNetworkEnum ,@NonNull Context activityContext)
     {
-        progressDialog = ProgressDialog.show(
+        final ProgressDialog progressDialog = ProgressDialog.show(
                 activityContext,
                 activityContext.getString(socialNetworkEnum.nameResId),
                 activityContext.getString(R.string.authentication_connecting_tradehero_only),
@@ -1170,7 +1183,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         return socialServiceWrapper.disconnectRx(
                 currentUserId.toUserBaseKey(),
                 new SocialNetworkFormDTO(socialNetworkEnum))
-                .finallyDo(progressDialog::dismiss);
+                .finallyDo(new DismissDialogAction0(progressDialog));
     }
 
     protected void updateSocialConnectStatus(@NonNull UserProfileDTO userProfileDTO)
@@ -1179,13 +1192,14 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         updateStatus(userProfileDTO);
     }
 
-
     protected void onChangeStatusError(@NonNull Context activityContext, @NonNull Throwable e)
     {
         if (!(e instanceof CancellationException))
         {
             SocialAlertDialogRxUtil.popErrorSocialAuth(activityContext, e)
-                    .subscribe(Actions.empty(), Actions.empty());
+                    .subscribe(
+                            new EmptyAction1<OnDialogClickEvent>(),
+                            new EmptyAction1<Throwable>());
         }
     }
 
@@ -1193,10 +1207,16 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         unsubscribe(userProfileCacheSubscription);
         userProfileCacheSubscription = userProfileCache.get(currentUserId.toUserBaseKey())
-                .map(new PairGetSecond<>())
+                .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        this::updateStatus,
-                        new ToastAction<>(getString(R.string.error_fetch_your_user_profile)));
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO profile)
+                            {
+                                SettingsFragment.this.updateStatus(profile);
+                            }
+                        },
+                        new ToastAction<Throwable>(getString(R.string.error_fetch_your_user_profile)));
     }
 }
