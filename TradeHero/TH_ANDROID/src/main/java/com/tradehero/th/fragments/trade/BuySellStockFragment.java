@@ -105,13 +105,13 @@ public class BuySellStockFragment extends BuySellFragment
         mSlidingTabLayout.setViewPager(mBottomViewPager);
 
         fetchAlertCompactList();
-        fetchWatchlist();
     }
 
     @Override public void onStart()
     {
         super.onStart();
         analytics.fireEvent(new ChartTimeEvent(securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
+        fetchWatchlist();
     }
 
     @Override public void onDestroyView()
