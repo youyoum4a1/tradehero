@@ -4,9 +4,11 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.BaseIABServiceCaller;
 import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
+import com.tradehero.common.billing.googleplay.IABServiceResult;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.tester.BillingTestResult;
 import rx.Observable;
+import rx.functions.Func1;
 
 public class BaseIABBillingAvailableTesterRx
         extends BaseIABServiceCaller
@@ -28,6 +30,12 @@ public class BaseIABBillingAvailableTesterRx
     @NonNull @Override public Observable<BillingTestResult> get()
     {
         return getBillingServiceResult()
-                .map(result -> new BillingTestResult(getRequestCode()));
+                .map(new Func1<IABServiceResult, BillingTestResult>()
+                {
+                    @Override public BillingTestResult call(IABServiceResult result)
+                    {
+                        return new BillingTestResult(BaseIABBillingAvailableTesterRx.this.getRequestCode());
+                    }
+                });
     }
 }

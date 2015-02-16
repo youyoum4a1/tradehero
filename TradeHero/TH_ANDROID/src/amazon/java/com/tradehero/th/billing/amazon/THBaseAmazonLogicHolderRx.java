@@ -24,9 +24,11 @@ import com.tradehero.th.billing.report.PurchaseReportResult;
 import com.tradehero.th.persistence.billing.AmazonSKUListCacheRx;
 import com.tradehero.th.persistence.billing.THAmazonProductDetailCacheRx;
 import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
+import com.tradehero.th.rx.ReplaceWith;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.functions.Func1;
 
 public class THBaseAmazonLogicHolderRx
     extends THBaseBillingLogicHolderRx<
@@ -112,12 +114,20 @@ public class THBaseAmazonLogicHolderRx
             AmazonSKU,
             THAmazonOrderId,
             THAmazonPurchase>> report(
-            int requestCode,
+            final int requestCode,
             @NonNull THAmazonPurchase purchase, @NonNull THAmazonProductDetail productDetail)
     {
         return super.report(requestCode, purchase, productDetail)
-                .flatMap(result -> consume(requestCode, result.reportedPurchase)
-                        .map(consumeResult -> result));
+                .flatMap(
+                        new Func1<PurchaseReportResult<AmazonSKU, THAmazonOrderId, THAmazonPurchase>, Observable<? extends PurchaseReportResult<AmazonSKU, THAmazonOrderId, THAmazonPurchase>>>()
+                        {
+                            @Override public Observable<? extends PurchaseReportResult<AmazonSKU, THAmazonOrderId, THAmazonPurchase>> call(
+                                    PurchaseReportResult<AmazonSKU, THAmazonOrderId, THAmazonPurchase> result)
+                            {
+                                return THBaseAmazonLogicHolderRx.this.consume(requestCode, result.reportedPurchase)
+                                        .map(new ReplaceWith<>(result));
+                            }
+                        });
     }
 
     @NonNull @Override public Observable<PurchaseConsumedResult<

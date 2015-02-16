@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Product Identifier Fetcher and Inventory Fetcher are essentially making the same calls.
@@ -55,8 +56,21 @@ abstract public class BaseSamsungInventoryFetcherRx<
     {
         return new SamsungItemListOperatorZip(context, mode, getItemListQueryGroups())
                 .getItems()
-                .flatMap(this::createDetail)
-                .map(detail -> new ProductInventoryResult<>(getRequestCode(), detail.getProductIdentifier(), detail));
+                .flatMap(new Func1<Pair<ItemListQueryGroup, List<ItemVo>>, Observable<? extends SamsungProductDetailType>>()
+                {
+                    @Override public Observable<? extends SamsungProductDetailType> call(Pair<ItemListQueryGroup, List<ItemVo>> pair)
+                    {
+                        return BaseSamsungInventoryFetcherRx.this.createDetail(pair);
+                    }
+                })
+                .map(new Func1<SamsungProductDetailType, ProductInventoryResult<SamsungSKUType, SamsungProductDetailType>>()
+                {
+                    @Override public ProductInventoryResult<SamsungSKUType, SamsungProductDetailType> call(SamsungProductDetailType detail)
+                    {
+                        return new ProductInventoryResult<>(BaseSamsungInventoryFetcherRx.this.getRequestCode(), detail.getProductIdentifier(),
+                                detail);
+                    }
+                });
     }
 
     @NonNull protected List<ItemListQueryGroup> getItemListQueryGroups()
@@ -71,12 +85,18 @@ abstract public class BaseSamsungInventoryFetcherRx<
 
     @NonNull abstract protected ItemListQueryGroup createItemListQueryGroup(@NonNull SamsungSKUType sku);
 
-    @NonNull protected Observable<SamsungProductDetailType> createDetail(@NonNull Pair<ItemListQueryGroup, List<ItemVo>> pair)
+    @NonNull protected Observable<SamsungProductDetailType> createDetail(@NonNull final Pair<ItemListQueryGroup, List<ItemVo>> pair)
     {
         return Observable.from(pair.second)
-                .map(itemVo -> createSamsungProductDetail(
-                        new SamsungItemGroup(pair.first.groupId),
-                        itemVo));
+                .map(new Func1<ItemVo, SamsungProductDetailType>()
+                {
+                    @Override public SamsungProductDetailType call(ItemVo itemVo)
+                    {
+                        return BaseSamsungInventoryFetcherRx.this.createSamsungProductDetail(
+                                new SamsungItemGroup(pair.first.groupId),
+                                itemVo);
+                    }
+                });
     }
 
     @NonNull abstract protected SamsungProductDetailType createSamsungProductDetail(

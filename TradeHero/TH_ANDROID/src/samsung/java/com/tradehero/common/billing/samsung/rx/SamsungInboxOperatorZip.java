@@ -6,6 +6,8 @@ import android.util.Pair;
 import com.sec.android.iap.lib.vo.InboxVo;
 import java.util.List;
 import rx.Observable;
+import rx.functions.Func1;
+import rx.functions.Func2;
 
 public class SamsungInboxOperatorZip
 {
@@ -31,9 +33,21 @@ public class SamsungInboxOperatorZip
         // Ideally, the next operator should be called only when the previous has completed
         return Observable.zip(
                 Observable.from(queryGroups),
-                Observable.from(queryGroups).map(queryGroup ->
-                        Observable.create(
-                                new SamsungInboxOperator(context, mode, queryGroup))),
-                Pair::new);
+                Observable.from(queryGroups).map(new Func1<InboxListQueryGroup, Observable<InboxVo>>()
+                {
+                    @Override public Observable<InboxVo> call(InboxListQueryGroup queryGroup)
+                    {
+                        return Observable.create(
+                                new SamsungInboxOperator(context, mode, queryGroup));
+                    }
+                }),
+                new Func2<InboxListQueryGroup, Observable<InboxVo>, Pair<InboxListQueryGroup, Observable<InboxVo>>>()
+                {
+                    @Override public Pair<InboxListQueryGroup, Observable<InboxVo>> call(InboxListQueryGroup t1,
+                            Observable<InboxVo> t2)
+                    {
+                        return new Pair<InboxListQueryGroup, Observable<InboxVo>>(t1, t2);
+                    }
+                });
     }
 }

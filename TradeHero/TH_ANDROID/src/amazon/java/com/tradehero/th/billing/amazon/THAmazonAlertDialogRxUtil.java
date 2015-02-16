@@ -25,6 +25,8 @@ import com.tradehero.th.utils.VersionUtils;
 import java.util.HashMap;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.functions.Action0;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
@@ -104,7 +106,13 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         return popInventoryFailed(activityContext)
                 .flatMap(new AlertDialogButtonHandler(
                         DialogInterface.BUTTON_POSITIVE,
-                        () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
+                        new Action0()
+                        {
+                            @Override public void call()
+                            {
+                                THAmazonAlertDialogRxUtil.this.sendSupportEmailBillingGenericError(activityContext, throwable);
+                            }
+                        }));
     }
 
     @Override @NonNull public Observable<OnDialogClickEvent> popInventoryFailed(
@@ -126,7 +134,13 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         return popInventoryNotSupported(activityContext)
                 .flatMap(new AlertDialogButtonHandler(
                         DialogInterface.BUTTON_POSITIVE,
-                        () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
+                        new Action0()
+                        {
+                            @Override public void call()
+                            {
+                                THAmazonAlertDialogRxUtil.this.sendSupportEmailBillingGenericError(activityContext, throwable);
+                            }
+                        }));
     }
 
     @Override @NonNull public Observable<OnDialogClickEvent> popInventoryNotSupported(
@@ -150,7 +164,13 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         return popPurchaseFailed(activityContext)
                 .flatMap(new AlertDialogButtonHandler(
                         DialogInterface.BUTTON_POSITIVE,
-                        () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
+                        new Action0()
+                        {
+                            @Override public void call()
+                            {
+                                THAmazonAlertDialogRxUtil.this.sendSupportEmailBillingGenericError(activityContext, throwable);
+                            }
+                        }));
     }
 
     @NonNull public Observable<OnDialogClickEvent> popPurchaseFailed(
@@ -172,7 +192,13 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         return popPurchaseUnsupported(activityContext)
                 .flatMap(new AlertDialogButtonHandler(
                         DialogInterface.BUTTON_POSITIVE,
-                        () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
+                        new Action0()
+                        {
+                            @Override public void call()
+                            {
+                                THAmazonAlertDialogRxUtil.this.sendSupportEmailBillingGenericError(activityContext, throwable);
+                            }
+                        }));
     }
 
     @Override @NonNull public Observable<OnDialogClickEvent> popPurchaseUnsupported(
@@ -193,9 +219,15 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
             @NonNull final Context activityContext)
     {
         return popSandboxMode(activityContext)
-                .flatMap(pair -> handlePopSandboxMode(
-                        activityContext,
-                        pair));
+                .flatMap(new Func1<OnDialogClickEvent, Observable<? extends OnDialogClickEvent>>()
+                {
+                    @Override public Observable<? extends OnDialogClickEvent> call(OnDialogClickEvent pair)
+                    {
+                        return THAmazonAlertDialogRxUtil.this.handlePopSandboxMode(
+                                activityContext,
+                                pair);
+                    }
+                });
     }
 
     @Override @NonNull public Observable<OnDialogClickEvent> popSandboxMode(

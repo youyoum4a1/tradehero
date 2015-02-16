@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONException;
 import rx.Observable;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 abstract public class BaseIABInventoryFetcherRx<
@@ -56,29 +57,35 @@ abstract public class BaseIABInventoryFetcherRx<
 
     @NonNull @Override public Observable<ProductInventoryResult<IABSKUType, IABProductDetailsType>> get()
     {
-        return getBillingServiceResult().flatMap(result -> {
-            try
-            {
-                List<ProductInventoryResult<IABSKUType, IABProductDetailsType>> list = fetchOne(result, IABSKUListKey.getInApp());
-                if (result.subscriptionSupported)
+        return getBillingServiceResult().flatMap(
+                new Func1<IABServiceResult, Observable<? extends ProductInventoryResult<IABSKUType, IABProductDetailsType>>>()
                 {
-                    list.addAll(fetchOne(result, IABSKUListKey.getSubs()));
-                }
-                return Observable.from(list);
-            } catch (RemoteException e)
-            {
-                Timber.e("Remote Exception while fetching inventory.", e);
-                return Observable.error(new IABRemoteException("RemoteException while fetching IAB", e));
-            } catch (JSONException e)
-            {
-                Timber.e("Error parsing json.", e);
-                return Observable.error(new IABBadResponseException("Unable to parse JSON", e));
-            } catch (IABException e)
-            {
-                Timber.e("IAB error.", e);
-                return Observable.error(e);
-            }
-        });
+                    @Override public Observable<? extends ProductInventoryResult<IABSKUType, IABProductDetailsType>> call(IABServiceResult result)
+                    {
+                        try
+                        {
+                            List<ProductInventoryResult<IABSKUType, IABProductDetailsType>> list =
+                                    BaseIABInventoryFetcherRx.this.fetchOne(result, IABSKUListKey.getInApp());
+                            if (result.subscriptionSupported)
+                            {
+                                list.addAll(BaseIABInventoryFetcherRx.this.fetchOne(result, IABSKUListKey.getSubs()));
+                            }
+                            return Observable.from(list);
+                        } catch (RemoteException e)
+                        {
+                            Timber.e("Remote Exception while fetching inventory.", e);
+                            return Observable.error(new IABRemoteException("RemoteException while fetching IAB", e));
+                        } catch (JSONException e)
+                        {
+                            Timber.e("Error parsing json.", e);
+                            return Observable.error(new IABBadResponseException("Unable to parse JSON", e));
+                        } catch (IABException e)
+                        {
+                            Timber.e("IAB error.", e);
+                            return Observable.error(e);
+                        }
+                    }
+                });
     }
 
     @NonNull private List<ProductInventoryResult<IABSKUType, IABProductDetailsType>>

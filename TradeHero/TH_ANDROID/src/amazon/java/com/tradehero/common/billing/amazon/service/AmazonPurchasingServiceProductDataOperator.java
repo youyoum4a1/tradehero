@@ -26,7 +26,7 @@ public class AmazonPurchasingServiceProductDataOperator implements Observable.On
     }
     //</editor-fold>
 
-    @Override public void call(Subscriber<? super ProductDataResponse > subscriber)
+    @Override public void call(final Subscriber<? super ProductDataResponse > subscriber)
     {
         amazonPurchasingService.getProductData(
                 skus,

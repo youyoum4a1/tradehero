@@ -11,6 +11,7 @@ import com.tradehero.common.billing.samsung.SamsungPurchaseOrder;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.rx.SamsungPaymentOperator;
 import rx.Observable;
+import rx.functions.Func1;
 
 abstract public class BaseSamsungPurchaserRx<
         SamsungSKUType extends SamsungSKU,
@@ -64,8 +65,15 @@ abstract public class BaseSamsungPurchaserRx<
                         sku.groupId,
                         sku.itemId,
                         showSucessDialog))
-                .map(this::createSamsungPurchase)
-                .map(purchase -> new PurchaseResult<>(getRequestCode(), purchaseOrder, purchase));
+                .map(new Func1<PurchaseVo, PurchaseResult<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType>>()
+                {
+                    @Override public PurchaseResult<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType> call(
+                            PurchaseVo purchaseVo)
+                    {
+                        SamsungPurchaseType purchase = BaseSamsungPurchaserRx.this.createSamsungPurchase(purchaseVo);
+                        return new PurchaseResult<>(BaseSamsungPurchaserRx.this.getRequestCode(), purchaseOrder, purchase);
+                    }
+                });
     }
 
     @NonNull abstract protected SamsungPurchaseType createSamsungPurchase(@NonNull PurchaseVo purchaseVo);

@@ -3,6 +3,8 @@ package com.tradehero.common.billing.samsung.rx;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
+import com.sec.android.iap.lib.listener.OnPaymentListener;
+import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.samsung.BaseSamsungOperator;
 import com.tradehero.common.billing.samsung.exception.SamsungPurchaseException;
@@ -31,25 +33,29 @@ public class SamsungPaymentOperator extends BaseSamsungOperator
     }
     //</editor-fold>
 
-    @Override public void call(Subscriber<? super PurchaseVo> subscriber)
+    @Override public void call(final Subscriber<? super PurchaseVo> subscriber)
     {
         getSamsungIapHelper().startPayment(
                 groupId,
                 itemId,
                 showSuccessDialog,
-                (errorVo, purchaseVo) -> {
-                    if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)
+                new OnPaymentListener()
+                {
+                    @Override public void onPayment(ErrorVo errorVo, PurchaseVo purchaseVo)
                     {
-                        subscriber.onNext(purchaseVo);
-                        subscriber.onCompleted();
-                    }
-                    else
-                    {
-                        subscriber.onError(new SamsungPurchaseException(
-                                errorVo,
-                                groupId,
-                                itemId,
-                                showSuccessDialog));
+                        if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)
+                        {
+                            subscriber.onNext(purchaseVo);
+                            subscriber.onCompleted();
+                        }
+                        else
+                        {
+                            subscriber.onError(new SamsungPurchaseException(
+                                    errorVo,
+                                    groupId,
+                                    itemId,
+                                    showSuccessDialog));
+                        }
                     }
                 });
     }

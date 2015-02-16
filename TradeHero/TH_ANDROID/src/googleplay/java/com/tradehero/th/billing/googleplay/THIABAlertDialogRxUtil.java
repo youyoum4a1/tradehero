@@ -19,12 +19,14 @@ import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
 import com.tradehero.th.fragments.billing.THIABSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THIABStoreProductDetailView;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
+import com.tradehero.th.rx.ReplaceWith;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.VersionUtils;
 import java.util.HashMap;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 public class THIABAlertDialogRxUtil
@@ -89,7 +91,7 @@ public class THIABAlertDialogRxUtil
             @NonNull final Context activityContext)
     {
         return popVerificationFailed(activityContext)
-                .flatMap(pair -> Observable.empty());
+                .flatMap(new ReplaceWith<OnDialogClickEvent, Observable<OnDialogClickEvent>>(Observable.<OnDialogClickEvent>empty()));
     }
 
     @NonNull public static Observable<OnDialogClickEvent> popVerificationFailed(
@@ -109,7 +111,7 @@ public class THIABAlertDialogRxUtil
             @NonNull final Context activityContext)
     {
         return popBadResponse(activityContext)
-                .flatMap(pair -> Observable.empty());
+                .flatMap(new ReplaceWith<OnDialogClickEvent, Observable<OnDialogClickEvent>>(Observable.<OnDialogClickEvent>empty()));
     }
 
     @NonNull public static Observable<OnDialogClickEvent> popBadResponse(
@@ -129,7 +131,7 @@ public class THIABAlertDialogRxUtil
             @NonNull final Context activityContext)
     {
         return popResultError(activityContext)
-                .flatMap(pair -> Observable.empty());
+                .flatMap(new ReplaceWith<OnDialogClickEvent, Observable<OnDialogClickEvent>>(Observable.<OnDialogClickEvent>empty()));
     }
 
     @NonNull public static Observable<OnDialogClickEvent> popResultError(
@@ -149,7 +151,7 @@ public class THIABAlertDialogRxUtil
             @NonNull final Context activityContext)
     {
         return popRemoteError(activityContext)
-                .flatMap(pair -> Observable.empty());
+                .flatMap(new ReplaceWith<OnDialogClickEvent, Observable<OnDialogClickEvent>>(Observable.<OnDialogClickEvent>empty()));
     }
 
     @NonNull public static Observable<OnDialogClickEvent> popRemoteError(
@@ -169,7 +171,7 @@ public class THIABAlertDialogRxUtil
             @NonNull final Context activityContext)
     {
         return popSendIntent(activityContext)
-                .flatMap(pair -> Observable.empty());
+                .flatMap(new ReplaceWith<OnDialogClickEvent, Observable<OnDialogClickEvent>>(Observable.<OnDialogClickEvent>empty()));
     }
 
     @NonNull public static Observable<OnDialogClickEvent> popSendIntent(
@@ -190,7 +192,13 @@ public class THIABAlertDialogRxUtil
             @NonNull final Throwable throwable)
     {
         return popSendEmailSupportConsumeFailed(activityContext)
-                .flatMap(pair -> handleSendEmailSupportConsumeFailed(activityContext, pair, throwable));
+                .flatMap(new Func1<OnDialogClickEvent, Observable<? extends OnDialogClickEvent>>()
+                {
+                    @Override public Observable<? extends OnDialogClickEvent> call(OnDialogClickEvent pair)
+                    {
+                        return THIABAlertDialogRxUtil.this.handleSendEmailSupportConsumeFailed(activityContext, pair, throwable);
+                    }
+                });
     }
 
     @NonNull public static Observable<OnDialogClickEvent> popSendEmailSupportConsumeFailed(
@@ -230,7 +238,13 @@ public class THIABAlertDialogRxUtil
             @NonNull final Throwable throwable)
     {
         return popAlreadyOwned(activityContext)
-                .flatMap(pair -> handleSendEmailAlreadyOwned(activityContext, pair, throwable));
+                .flatMap(new Func1<OnDialogClickEvent, Observable<? extends OnDialogClickEvent>>()
+                {
+                    @Override public Observable<? extends OnDialogClickEvent> call(OnDialogClickEvent pair)
+                    {
+                        return THIABAlertDialogRxUtil.this.handleSendEmailAlreadyOwned(activityContext, pair, throwable);
+                    }
+                });
     }
 
     @NonNull public static Observable<OnDialogClickEvent> popAlreadyOwned(
@@ -270,7 +284,13 @@ public class THIABAlertDialogRxUtil
             @NonNull final Throwable throwable)
     {
         return popDeveloperError(activityContext)
-                .flatMap(pair -> handleSendEmailDeveloperError(activityContext, pair, throwable));
+                .flatMap(new Func1<OnDialogClickEvent, Observable<? extends OnDialogClickEvent>>()
+                {
+                    @Override public Observable<? extends OnDialogClickEvent> call(OnDialogClickEvent pair)
+                    {
+                        return THIABAlertDialogRxUtil.this.handleSendEmailDeveloperError(activityContext, pair, throwable);
+                    }
+                });
     }
 
     @NonNull public static Observable<OnDialogClickEvent> popDeveloperError(

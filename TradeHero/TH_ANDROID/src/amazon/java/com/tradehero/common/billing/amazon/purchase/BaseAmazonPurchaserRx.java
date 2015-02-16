@@ -13,6 +13,7 @@ import com.tradehero.common.billing.amazon.service.AmazonPurchasingServicePurcha
 import com.tradehero.common.billing.purchase.BaseBillingPurchaserRx;
 import com.tradehero.common.billing.purchase.PurchaseResult;
 import rx.Observable;
+import rx.functions.Func1;
 
 abstract public class BaseAmazonPurchaserRx<
         AmazonSKUType extends AmazonSKU,
@@ -53,7 +54,16 @@ abstract public class BaseAmazonPurchaserRx<
                 new AmazonPurchasingServicePurchaseOperator(
                         purchasingService,
                         getPurchaseOrder().getProductIdentifier().skuId))
-                .flatMap(this::createResultObservable);
+                .flatMap(
+                        new Func1<PurchaseResponse, Observable<? extends PurchaseResult<AmazonSKUType, AmazonPurchaseOrderType, AmazonOrderIdType, AmazonPurchaseType>>>()
+                        {
+                            @Override
+                            public Observable<? extends PurchaseResult<AmazonSKUType, AmazonPurchaseOrderType, AmazonOrderIdType, AmazonPurchaseType>> call(
+                                    PurchaseResponse response)
+                            {
+                                return BaseAmazonPurchaserRx.this.createResultObservable(response);
+                            }
+                        });
     }
 
     @NonNull protected Observable<PurchaseResult<
