@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.AbsListView;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.special.residemenu.ResideMenu;
@@ -89,10 +88,18 @@ abstract public class DashboardFragment extends Fragment
         setHasOptionsMenu(hasOptionMenu);
     }
 
-    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    @Override public void onStart()
     {
-        super.onViewCreated(view, savedInstanceState);
+        super.onStart();
         this.onStopSubscriptions = new SubscriptionList();
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        if (onStopSubscriptions == null) {
+            onStopSubscriptions = new SubscriptionList();
+        }
     }
 
     @Override public void onStop()

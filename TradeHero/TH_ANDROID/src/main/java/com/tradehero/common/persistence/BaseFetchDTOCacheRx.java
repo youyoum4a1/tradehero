@@ -34,7 +34,8 @@ abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType ext
                     .doOnUnsubscribe(() -> removeFetcher(key))
                     .subscribe(
                             value -> BaseFetchDTOCacheRx.this.onNext(key, value),
-                            error -> BaseFetchDTOCacheRx.this.onError(key, error)
+                            error -> BaseFetchDTOCacheRx.this.onError(key, error),
+                            () -> BaseFetchDTOCacheRx.this.onCompleted(key)
                     ));
         }
         return cachedObservable;
@@ -51,6 +52,14 @@ abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType ext
         if (cachedSubject != null)
         {
             cachedSubject.onError(error);
+        }
+    }
+
+    public void onCompleted(@NonNull DTOKeyType key) {
+        BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = getBehavior(key);
+        if (cachedSubject != null)
+        {
+            cachedSubject.onCompleted();
         }
     }
 

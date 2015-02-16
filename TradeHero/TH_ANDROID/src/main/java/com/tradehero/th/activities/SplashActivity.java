@@ -9,8 +9,8 @@ import com.tapstream.sdk.Event;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
-import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.models.time.AppTiming;
+import com.tradehero.th.network.share.SocialConstants;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.prefs.FirstLaunch;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
@@ -26,7 +26,6 @@ import javax.inject.Inject;
 
 public class SplashActivity extends BaseActivity
 {
-    @Inject @FacebookAppId String facebookAppId;
     @Inject @FirstLaunch BooleanPreference firstLaunchPreference;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreens;
 
@@ -56,7 +55,7 @@ public class SplashActivity extends BaseActivity
         analytics.openSession();
         analytics.tagScreen(AnalyticsConstants.Loading);
 
-        AppEventsLogger.activateApp(this, facebookAppId);
+        AppEventsLogger.activateApp(this, SocialConstants.FACEBOOK_APP_ID);
 
         tapStream.get().fireEvent(new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
 

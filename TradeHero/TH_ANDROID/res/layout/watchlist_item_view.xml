@@ -26,17 +26,6 @@
         android:text="@string/watchlist_delete"
         />
 
-    <Button
-        android:id="@+id/position_watchlist_more"
-        android:layout_width="@dimen/watchlist_item_button_width"
-        android:layout_height="match_parent"
-        android:background="@drawable/basic_white_selector"
-        style="@style/TH.Button"
-        android:layout_toLeftOf="@id/position_watchlist_delete"
-        android:layout_toStartOf="@id/position_watchlist_delete"
-        android:text="@string/watchlist_more"
-        />
-
   </RelativeLayout>
 
   <LinearLayout
@@ -49,10 +38,15 @@
       style="@style/TH.ListItem.Clickable"
       >
 
+    <ImageView android:id="@+id/gain_indicator"
+        android:layout_width="@dimen/size_1"
+        android:layout_height="@dimen/size_1"
+        android:src="@drawable/indicator_green"/>
     <ImageView
         android:id="@+id/stock_logo"
-        android:layout_width="@dimen/big_image_w_h"
-        android:layout_height="@dimen/big_image_w_h"
+        android:layout_width="@dimen/medium_image_w_h"
+        android:layout_height="@dimen/medium_image_w_h"
+        android:layout_marginLeft="@dimen/margin_small"
         android:scaleType="fitCenter"
         android:contentDescription="@null"
         tools:src="@drawable/google_play_store"
@@ -76,7 +70,6 @@
           android:layout_alignParentTop="true"
           android:layout_alignParentEnd="true"
           android:layout_alignParentRight="true"
-          android:minWidth="80dp"
           style="@style/TH.Body"
           tools:text="CNY 2.41"
           />
@@ -101,34 +94,22 @@
           android:layout_height="wrap_content"
           android:maxLines="1"
           android:layout_below="@id/stock_symbol"
-          android:layout_marginTop="@dimen/margin_xsmall"
-          style="@style/TH.Body"
+          android:layout_marginTop="0dp"
+          style="@style/TH.Caption"
           tools:text="Zijin Mining Group Co., Ltd"
           />
-
-      <TextView
-          android:id="@+id/number_of_shares"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/margin_xsmall"
-          android:maxLines="1"
-          style="@style/TH.Body"
-          android:layout_below="@id/company_name"
-          tools:text="12"
-          />
-
-
 
       <TextView
           android:id="@+id/position_percentage"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:maxLines="1"
-          android:layout_alignBaseline="@id/number_of_shares"
-          android:layout_alignLeft="@id/position_last_amount"
-          android:layout_alignParentEnd="true"
-          android:layout_alignParentRight="true"
+          android:layout_alignBaseline="@id/company_name"
+          android:layout_alignRight="@id/position_last_amount"
+          android:layout_alignParentEnd="false"
+          android:layout_alignParentRight="false"
           android:layout_below="@id/position_last_amount"
+          android:background="@drawable/round_label_up"
           style="@style/TH.UserROI"
           tools:text="+4.149%"
           />

@@ -59,7 +59,6 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Inject Analytics analytics;
 
     @InjectView(android.R.id.empty) @Optional protected ProgressBar progressBar;
-    @InjectView(R.id.watchlist_position_list_header) WatchlistPortfolioHeaderView watchlistPortfolioHeaderView;
     @InjectView(R.id.watchlist_swipe_listview) SwipeListView watchlistPositionListView;
     @InjectView(R.id.swipe_container) SwipeRefreshLayout watchListRefreshableContainer;
 
@@ -171,8 +170,6 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        watchlistPortfolioHeaderView.setOnStateChangeListener(null);
-
         watchlistPositionListView.removeCallbacks(null);
         watchlistPositionListView.setSwipeListViewListener(null);
         watchlistPositionListView.removeCallbacks(null);
@@ -239,12 +236,7 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     @NonNull protected AbsListView.OnScrollListener createListViewScrollListener()
     {
-        int trendingFilterHeight = (int) getResources().getDimension(R.dimen.watch_list_header_height);
-        QuickReturnListViewOnScrollListener portfolioHeaderQuickReturnListener =
-                new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER, watchlistPortfolioHeaderView,
-                        -trendingFilterHeight, null, 0);
-
-        return new MultiScrollListener(portfolioHeaderQuickReturnListener, dashboardBottomTabsListViewScrollListener.get(),
+        return new MultiScrollListener(dashboardBottomTabsListViewScrollListener.get(),
                 new AbsListView.OnScrollListener()
                 {
                     int maxOffsetY = 0;
@@ -330,7 +322,6 @@ public class WatchlistPositionFragment extends DashboardFragment
     protected void onPortfolioReceived(PortfolioDTO portfolio)
     {
         shownPortfolioDTO = portfolio;
-        displayHeader();
     }
 
     public void onPortfolioError(Throwable e)
@@ -369,13 +360,6 @@ public class WatchlistPositionFragment extends DashboardFragment
         userWatchlistPositionCache.get(currentUserId.toUserBaseKey());
     }
 
-    private void displayHeader()
-    {
-        watchlistPortfolioHeaderView.linkWith(shownPortfolioDTO, true);
-        watchlistPortfolioHeaderView.linkWith(watchlistPositionDTOs, true);
-        watchlistPortfolioHeaderView.setOnStateChangeListener(gainLossModeListener);
-    }
-
     private void displayWatchlist(WatchlistPositionDTOList watchlistPositionDTOs)
     {
         this.watchlistPositionDTOs = watchlistPositionDTOs;
@@ -383,7 +367,7 @@ public class WatchlistPositionFragment extends DashboardFragment
         watchListAdapter.addAll(watchlistPositionDTOs);
         watchListAdapter.notifyDataSetChanged();
         watchListRefreshableContainer.setRefreshing(false);
-        displayHeader();
+
     }
 
     private void openWatchlistItemEditor(int position)
