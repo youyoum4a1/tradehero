@@ -8,6 +8,7 @@
       android:id="@+id/user_profile_detail_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:background="?attr/colorPrimary"
       android:orientation="vertical">
 
     <LinearLayout
@@ -52,11 +53,11 @@
 
         <TextView
             android:id="@+id/user_profile_display_name"
-            style="@style/TH.Title"
+            style="@style/TH.Title.Inverse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="left|center_vertical"
-            android:shadowColor="@color/white"
+            android:shadowColor="?android:attr/textColorPrimary"
             android:shadowDy="1"
             android:shadowDx="1"
             android:shadowRadius="1"

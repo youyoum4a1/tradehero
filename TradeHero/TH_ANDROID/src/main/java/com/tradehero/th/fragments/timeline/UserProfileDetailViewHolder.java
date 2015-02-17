@@ -35,7 +35,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @InjectView(R.id.user_profile_achievement_count) @Optional protected TextView achievementCount;
     @InjectView(R.id.user_level_progress_bar) @Optional protected UserLevelProgressBar userLevelProgressBar;
 
-    @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
     @Inject LevelDefListCacheRx levelDefListCache;
 
     private Target topBackgroundTarget;
@@ -83,50 +82,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         displayCashOnHand();
         displayAchievementCount();
         displayLevelProgress();
-        loadBgPicture();
-    }
-
-    protected void loadBgPicture()
-    {
-        displayTopViewBackgroundRunnable = new Runnable()
-        {
-            @Override public void run()
-            {
-                if (userProfileDTO != null &&
-                        profileTop != null &&
-                        profileTop.getWidth() > 0 &&
-                        profileTop.getHeight() > 0 &&
-                        topBackgroundTarget != null)
-                {
-                    UserProfileDetailViewHolder.this.loadDefaultBG();
-                    if (userProfileDTO.picture != null)
-                    {
-                        picasso.load(userProfileDTO.picture)
-                                .transform(peopleBackgroundTransformation)
-                                .resize(profileTop.getWidth(), profileTop.getHeight())
-                                .centerCrop()
-                                .into(topBackgroundTarget);
-                    }
-                }
-            }
-        };
-        if (profileTop != null)
-        {
-            profileTop.post(displayTopViewBackgroundRunnable);
-        }
-    }
-
-    public void loadDefaultBG()
-    {
-        if (profileTop != null && topDefaultBackgroundTarget != null
-                && profileTop.getWidth() > 0 && profileTop.getHeight() > 0)
-        {
-            picasso.load(R.drawable.superman_facebook)
-                    .transform(peopleBackgroundTransformation)
-                    .resize(profileTop.getWidth(), profileTop.getHeight())
-                    .centerCrop()
-                    .into(topDefaultBackgroundTarget);
-        }
     }
 
     protected void displayTotalWealth()
