@@ -36,9 +36,11 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
+import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.utils.DateUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import rx.Notification;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
@@ -180,7 +182,7 @@ public class AlertViewFragment extends DashboardFragment
             alertCacheSubscription = AppObservable.bindFragment(this,
                     alertCache.get().get(alertId))
                     .map(new PairGetSecond<AlertId, AlertDTO>())
-                    .finallyDo(new DismissDialogAction0(progressDialog))
+                    .doOnEach(new DismissDialogAction1<Notification<? super AlertDTO>>(progressDialog))
                     .subscribe(
                             new Action1<AlertDTO>()
                             {

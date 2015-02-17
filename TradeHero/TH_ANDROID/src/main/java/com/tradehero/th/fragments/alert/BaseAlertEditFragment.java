@@ -44,7 +44,6 @@ import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.rx.ReplaceWith;
 import com.tradehero.th.rx.ToastOnErrorAction;
-import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.rx.view.DismissDialogAction1;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
@@ -271,7 +270,7 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
                                     return BaseAlertEditFragment.this.saveAlertRx(alertFormDTO);
                                 }
                             }))
-                    .finallyDo(new DismissDialogAction0(progressDialog))
+                    .doOnEach(new DismissDialogAction1<Notification<? super AlertCompactDTO>>(progressDialog))
                     .subscribe(
                             new Action1<AlertCompactDTO>()
                             {
