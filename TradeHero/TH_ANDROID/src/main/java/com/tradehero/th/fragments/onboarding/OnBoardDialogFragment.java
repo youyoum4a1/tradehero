@@ -20,10 +20,12 @@ import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityIntegerIdListForm;
 import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
+import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.social.BatchFollowFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.SuggestHeroesListType;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
@@ -32,7 +34,6 @@ import com.tradehero.th.fragments.onboarding.hero.OnBoardPickHeroViewHolder;
 import com.tradehero.th.fragments.onboarding.pref.OnBoardPickExchangeSectorViewHolder;
 import com.tradehero.th.fragments.onboarding.pref.OnBoardPrefDTO;
 import com.tradehero.th.fragments.onboarding.stock.OnBoardPickStockViewHolder;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.market.ExchangeSectorCompactKey;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
@@ -44,13 +45,15 @@ import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
+import rx.functions.Action1;
+import rx.functions.Actions;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 import static rx.android.app.AppObservable.bindFragment;
 
@@ -124,14 +127,26 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         super.onStart();
         subscriptions = new CompositeSubscription();
 
-        subscriptions.add(bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()).map(new PairGetSecond<>()))
-                .subscribe(this::linkWith,
-                        new ToastAction<>(getString(R.string.error_fetch_your_user_profile))));
+        subscriptions.add(bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
+                .subscribe(new Action1<UserProfileDTO>()
+                           {
+                               @Override public void call(UserProfileDTO profile)
+                               {
+                                   linkWith(profile);
+                               }
+                           },
+                        new ToastAction<Throwable>(getString(R.string.error_fetch_your_user_profile))));
 
         subscriptions.add(bindFragment(
-                this, exchangeSectorCompactListCache.get(new ExchangeSectorCompactKey()).map(new PairGetSecond<>()))
-                .subscribe(this::linkWith,
-                        new ToastAction<>(getString(R.string.market_on_board_error_fetch_exchange_sector))));
+                this, exchangeSectorCompactListCache.get(new ExchangeSectorCompactKey()).map(new PairGetSecond<ExchangeSectorCompactKey, ExchangeSectorCompactListDTO>()))
+                .subscribe(new Action1<ExchangeSectorCompactListDTO>()
+                           {
+                               @Override public void call(ExchangeSectorCompactListDTO list)
+                               {
+                                   linkWith(list);
+                               }
+                           },
+                        new ToastAction<Throwable>(getString(R.string.market_on_board_error_fetch_exchange_sector))));
     }
 
     @Override public void onStop()
@@ -236,9 +251,15 @@ public class OnBoardDialogFragment extends BaseDialogFragment
             leaderboardUserListCacheSubscription = bindFragment(
                     this,
                     leaderboardUserListCache.get(key)
-                            .map(new PairGetSecond<>()))
-                    .subscribe(this::linkWith,
-                            new ToastAction<>(getString(R.string.error_fetch_leaderboard_info)));
+                            .map(new PairGetSecond<SuggestHeroesListType, LeaderboardUserDTOList>()))
+                    .subscribe(new Action1<LeaderboardUserDTOList>()
+                               {
+                                   @Override public void call(LeaderboardUserDTOList list)
+                                   {
+                                       linkWith(list);
+                                   }
+                               },
+                            new ToastAction<Throwable>(getString(R.string.error_fetch_leaderboard_info)));
         }
     }
 
@@ -254,10 +275,16 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         {
             securitiesSubscription = bindFragment(this,
                     securityCompactListCache.get(exchangeSectorSecurityListType)
-                            .map(new PairGetSecond<>()))
+                            .map(new PairGetSecond<SecurityListType, SecurityCompactDTOList>()))
                     .subscribe(
-                            this::linkWith,
-                            new ToastAction<>(getString(R.string.error_fetch_security_list_info)));
+                            new Action1<SecurityCompactDTOList>()
+                            {
+                                @Override public void call(SecurityCompactDTOList list)
+                                {
+                                    linkWith(list);
+                                }
+                            },
+                            new ToastAction<Throwable>(getString(R.string.error_fetch_security_list_info)));
         }
     }
 
@@ -276,11 +303,8 @@ public class OnBoardDialogFragment extends BaseDialogFragment
             final BatchFollowFormDTO form = new BatchFollowFormDTO(heroesList, new UserBaseDTO());
             userServiceWrapper.followBatchFreeRx(form)
                     .subscribe(
-                            profile -> {
-                            },
-                            e -> {
-                                Timber.e(new THException(e), "Failed to add heroes %s", form);
-                            });
+                            Actions.empty(),
+                            new TimberOnErrorAction("Failed to add heroes " + form));
         }
     }
 
@@ -303,12 +327,8 @@ public class OnBoardDialogFragment extends BaseDialogFragment
             watchlistServiceWrapper.batchCreateRx(
                     new SecurityIntegerIdListForm(stocksList, null))
                     .subscribe(
-                            list -> {
-                            },
-                            e ->
-                            {
-                                Timber.e(new THException(e), "Failed to add watchlist");
-                            });
+                            Actions.empty(),
+                            new TimberOnErrorAction("Failed to add watchlist"));
         }
     }
 }

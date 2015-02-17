@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityId;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,7 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemCompactDTO, New
     public NewsHeadlineAdapter(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
-        setItems(new ArrayList<>());
+        setItems(new ArrayList<NewsItemCompactDTO>());
         loadBackground();
     }
     //</editor-fold>

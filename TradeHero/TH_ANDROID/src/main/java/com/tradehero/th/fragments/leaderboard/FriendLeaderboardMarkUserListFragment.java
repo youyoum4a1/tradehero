@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.leaderboard;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,8 +12,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
+import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.DTOCacheRx;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedDTOAdapter;
@@ -22,9 +23,11 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCacheRx;
+import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
@@ -35,7 +38,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.android.app.AppObservable;
-import timber.log.Timber;
+import rx.functions.Action1;
 
 public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxFragment<
         LeaderboardFriendsKey,
@@ -101,8 +104,14 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
         super.onStart();
         onStopSubscriptions.add(((LeaderboardFriendsSetAdapter) itemViewAdapter).getFollowRequestObservable()
                 .subscribe(
-                        this::handleFollowRequested,
-                        e -> Timber.e(e, "Error on follow requested")));
+                        new Action1<UserBaseDTO>()
+                        {
+                            @Override public void call(UserBaseDTO userBaseDTO)
+                            {
+                                FriendLeaderboardMarkUserListFragment.this.handleFollowRequested(userBaseDTO);
+                            }
+                        },
+                        new TimberOnErrorAction("Error on follow requested")));
         requestDtos();
     }
 
@@ -213,20 +222,24 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
 //                        getApplicablePortfolioId()
                 ).launchChoiceRx())
                 .subscribe(
-                        pair -> {
-                            setCurrentUserProfileDTO(pair.second);
-                            int followType = pair.second.getFollowType(userBaseDTO);
-                            if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
+                        new Action1<Pair<FollowRequest, UserProfileDTO>>()
+                        {
+                            @Override public void call(Pair<FollowRequest, UserProfileDTO> pair)
                             {
-                                analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
+                                FriendLeaderboardMarkUserListFragment.this.setCurrentUserProfileDTO(pair.second);
+                                int followType = pair.second.getFollowType(userBaseDTO);
+                                if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
+                                {
+                                    analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
+                                }
+                                else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
+                                {
+                                    analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
+                                }
+                                FriendLeaderboardMarkUserListFragment.this.updateListViewRow(userBaseDTO.getBaseKey());
                             }
-                            else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
-                            {
-                                analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
-                            }
-                            updateListViewRow(userBaseDTO.getBaseKey());
                         },
-                        error -> THToast.show(new THException(error))
+                        new ToastOnErrorAction()
                 ));
     }
 
@@ -235,7 +248,13 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
         AdapterViewUtils.updateSingleRowWhere(
                 listView,
                 FriendLeaderboardMarkedUserDTO.class,
-                friendLeaderboardMarkedUserDTO -> friendLeaderboardMarkedUserDTO.leaderboardUserDTO.getBaseKey().equals(heroId));
+                new Predicate<FriendLeaderboardMarkedUserDTO>()
+                {
+                    @Override public boolean apply(FriendLeaderboardMarkedUserDTO friendLeaderboardMarkedUserDTO)
+                    {
+                        return friendLeaderboardMarkedUserDTO.leaderboardUserDTO.getBaseKey().equals(heroId);
+                    }
+                });
     }
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)

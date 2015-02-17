@@ -33,7 +33,7 @@ public class DisplayablePortfolioUtil
         int colorRes;
         if (displayablePortfolioDTO instanceof DummyFxDisplayablePortfolioDTO)
         {
-            colorRes = R.color.gray_1;
+            colorRes = R.color.grey;
         }
         else
         {

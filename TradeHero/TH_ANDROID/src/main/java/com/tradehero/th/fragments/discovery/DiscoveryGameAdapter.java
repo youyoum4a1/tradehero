@@ -11,6 +11,7 @@ import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.games.MiniGameDefDTO;
 import com.tradehero.th.widget.TextHolder;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
@@ -26,13 +27,17 @@ public class DiscoveryGameAdapter extends ArrayDTOAdapter<MiniGameDefDTO, MiniGa
 
     @Override public void setItems(@NonNull List<MiniGameDefDTO> miniGameDefDTOs)
     {
-        Collections.sort(miniGameDefDTOs, (lhs, rhs) -> {
-            if (rhs == lhs) return 0;
-            if (lhs == null) return -1;
-            if (rhs == null) return 1;
-            if (lhs.comingSoon && rhs.comingSoon) return 0;
-            if (lhs.comingSoon) return 1;
-            else return -1;
+        Collections.sort(miniGameDefDTOs, new Comparator<MiniGameDefDTO>()
+        {
+            @Override public int compare(MiniGameDefDTO lhs, MiniGameDefDTO rhs)
+            {
+                if (rhs == lhs) return 0;
+                if (lhs == null) return -1;
+                if (rhs == null) return 1;
+                if (lhs.comingSoon && rhs.comingSoon) return 0;
+                if (lhs.comingSoon) return 1;
+                else return -1;
+            }
         });
         super.setItems(miniGameDefDTOs);
     }

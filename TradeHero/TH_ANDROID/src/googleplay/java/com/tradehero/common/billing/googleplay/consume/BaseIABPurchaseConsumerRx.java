@@ -15,6 +15,7 @@ import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABMissingTokenException;
 import com.tradehero.th.BuildConfig;
 import rx.Observable;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 abstract public class BaseIABPurchaseConsumerRx<
@@ -45,8 +46,20 @@ abstract public class BaseIABPurchaseConsumerRx<
     @NonNull @Override public Observable<PurchaseConsumeResult<IABSKUType, IABOrderIdType, IABPurchaseType>> get()
     {
         return getBillingServiceResult()
-                .flatMap(this::consume)
-                .map(purchase -> new PurchaseConsumeResult<>(getRequestCode(), purchase));
+                .flatMap(new Func1<IABServiceResult, Observable<? extends IABPurchaseType>>()
+                {
+                    @Override public Observable<? extends IABPurchaseType> call(IABServiceResult result)
+                    {
+                        return BaseIABPurchaseConsumerRx.this.consume(result);
+                    }
+                })
+                .map(new Func1<IABPurchaseType, PurchaseConsumeResult<IABSKUType, IABOrderIdType, IABPurchaseType>>()
+                {
+                    @Override public PurchaseConsumeResult<IABSKUType, IABOrderIdType, IABPurchaseType> call(IABPurchaseType purchase)
+                    {
+                        return new PurchaseConsumeResult<>(BaseIABPurchaseConsumerRx.this.getRequestCode(), purchase);
+                    }
+                });
     }
 
     protected Observable<IABPurchaseType> consume(@NonNull IABServiceResult serviceResult)

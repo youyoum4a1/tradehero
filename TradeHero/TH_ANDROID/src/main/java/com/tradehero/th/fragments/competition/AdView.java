@@ -12,7 +12,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.analytics.AnalyticsEventForm;
@@ -25,14 +24,13 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.DateUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.inject.Inject;
-import rx.Observable;
 import rx.functions.Actions;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class AdView extends RelativeLayout
@@ -140,12 +138,10 @@ public class AdView extends RelativeLayout
 
     private void sendAnalytics(@NonNull final AdDTO adDTO, @Nullable final String event)
     {
-        Observable.just(Pair.create(adDTO, event))
-                .subscribeOn(Schedulers.computation())
-                .map(this::createBatchForm)
-                .flatMap(userServiceWrapper::sendAnalyticsRx)
-                .doOnError(e -> THToast.show(e.getMessage()))
-                .subscribe(Actions.empty(), Actions.empty());
+        userServiceWrapper.sendAnalyticsRx(createBatchForm(Pair.create(adDTO, event)))
+                .subscribe(
+                        Actions.empty(),
+                        new ToastOnErrorAction());
     }
 
     @NonNull private BatchAnalyticsEventForm createBatchForm(@NonNull Pair<AdDTO, String> pair)

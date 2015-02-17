@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import rx.Observable;
+import rx.functions.Func1;
 
 abstract public class BaseSamsungProductIdentifierFetcherRx<
         SamsungSKUListKeyType extends SamsungSKUListKey,
@@ -47,7 +48,16 @@ abstract public class BaseSamsungProductIdentifierFetcherRx<
     {
         return new SamsungItemListOperatorZip(context, mode, getItemListQueryGroups())
                 .getItems()
-                .flatMap(this::createResult);
+                .flatMap(
+                        new Func1<Pair<ItemListQueryGroup, List<ItemVo>>, Observable<? extends ProductIdentifierListResult<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType>>>()
+                        {
+                            @Override
+                            public Observable<? extends ProductIdentifierListResult<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType>> call(
+                                    Pair<ItemListQueryGroup, List<ItemVo>> pair)
+                            {
+                                return BaseSamsungProductIdentifierFetcherRx.this.createResult(pair);
+                            }
+                        });
     }
 
     @NonNull protected Observable<ProductIdentifierListResult<
@@ -66,10 +76,17 @@ abstract public class BaseSamsungProductIdentifierFetcherRx<
             samsungSKUs.get(key).add(createSamsungSku(pair.first.groupId, itemVo.getItemId()));
         }
         return Observable.from(samsungSKUs.entrySet())
-                .map(entry -> new ProductIdentifierListResult<>(
-                        getRequestCode(),
-                        entry.getKey(),
-                        entry.getValue()));
+                .map(new Func1<Map.Entry<SamsungSKUListKeyType, SamsungSKUListType>, ProductIdentifierListResult<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType>>()
+                {
+                    @Override public ProductIdentifierListResult<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType> call(
+                            Map.Entry<SamsungSKUListKeyType, SamsungSKUListType> entry)
+                    {
+                        return new ProductIdentifierListResult<>(
+                                BaseSamsungProductIdentifierFetcherRx.this.getRequestCode(),
+                                entry.getKey(),
+                                entry.getValue());
+                    }
+                });
     }
 
     @NonNull abstract protected List<ItemListQueryGroup> getItemListQueryGroups();

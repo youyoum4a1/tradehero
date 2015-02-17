@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.android.internal.util.Predicate;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -24,18 +25,20 @@ import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.AlertDialogUtil;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
-import rx.functions.Actions;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class AllRelationsFragment extends DashboardFragment
@@ -86,8 +89,14 @@ public class AllRelationsFragment extends DashboardFragment
         downloadRelations();
         onStopSubscriptions.add(mRelationsListItemAdapter.getFollowRequestObservable()
                 .subscribe(
-                        request -> handlePremiumFollowRequested(request.heroId),
-                        Actions.empty()
+                        new Action1<FollowRequest>()
+                        {
+                            @Override public void call(FollowRequest request)
+                            {
+                                AllRelationsFragment.this.handlePremiumFollowRequested(request.heroId);
+                            }
+                        },
+                        new EmptyAction1<Throwable>()
                 ));
     }
 
@@ -128,8 +137,21 @@ public class AllRelationsFragment extends DashboardFragment
                 this,
                 allowableRecipientPaginatedCache.get(new SearchAllowableRecipientListType(null, null, null)))
                 .subscribe(
-                        this::onNextRecipients,
-                        this::onErrorRecipients));
+                        new Action1<Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO>>()
+                        {
+                            @Override public void call(
+                                    Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO> pair)
+                            {
+                                AllRelationsFragment.this.onNextRecipients(pair);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable error)
+                            {
+                                AllRelationsFragment.this.onErrorRecipients(error);
+                            }
+                        }));
     }
 
     protected void onNextRecipients(Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO> pair)
@@ -165,15 +187,21 @@ public class AllRelationsFragment extends DashboardFragment
         navigator.get().pushFragment(NewPrivateMessageFragment.class, args);
     }
 
-    protected void handlePremiumFollowRequested(UserBaseKey userBaseKey)
+    protected void handlePremiumFollowRequested(final UserBaseKey userBaseKey)
     {
         //noinspection unchecked,RedundantCast
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.purchaseAndPremiumFollowAndClear(userBaseKey))
                 .subscribe(
-                        result -> forceUpdateLook(userBaseKey),
-                        error -> THToast.show(new THException((Throwable) error))
+                        new Action1()
+                        {
+                            @Override public void call(Object result)
+                            {
+                                AllRelationsFragment.this.forceUpdateLook(userBaseKey);
+                            }
+                        },
+                        new ToastOnErrorAction()
                 ));
     }
 
@@ -206,8 +234,14 @@ public class AllRelationsFragment extends DashboardFragment
                         mRelationsListItemAdapter.updateItem(userFollowed, pair.second);
                         AdapterViewUtils
                                 .updateSingleRowWhere(mRelationsListView, AllowableRecipientDTO.class,
-                                        allowableRecipientDTO -> allowableRecipientDTO != null
-                                                && allowableRecipientDTO.user.getBaseKey().equals(userFollowed));
+                                        new Predicate<AllowableRecipientDTO>()
+                                        {
+                                            @Override public boolean apply(AllowableRecipientDTO allowableRecipientDTO)
+                                            {
+                                                return allowableRecipientDTO != null
+                                                        && allowableRecipientDTO.user.getBaseKey().equals(userFollowed);
+                                            }
+                                        });
                     }
                 }));
     }

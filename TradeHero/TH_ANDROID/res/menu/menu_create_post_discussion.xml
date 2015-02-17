@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
   <item
       android:id="@+id/discussion_edit_post"
       android:icon="@drawable/ic_action_content_edit"
       android:title="@string/post"
       android:enabled="true"
-      android:showAsAction="ifRoom"
+      app:showAsAction="ifRoom"
       android:visible="false"
       />
 

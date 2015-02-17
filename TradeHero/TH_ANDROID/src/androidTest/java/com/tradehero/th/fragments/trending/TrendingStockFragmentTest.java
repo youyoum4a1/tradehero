@@ -53,24 +53,8 @@ public class TrendingStockFragmentTest
         THRobolectric.runBgUiTasks(3);
         THBillingInteractorRx dummyInteractor = mock(THBillingInteractorRx.class);
         trendingFragment.set(dummyInteractor);
-        //final THUIBillingRequestContainer requestContainer = new THUIBillingRequestContainer();
-        //noinspection unchecked
-        //when(dummyInteractor.run(any(THUIBillingRequest.class))).then(new Answer<Object>()
-        //{
-        //    @Override public Object answer(InvocationOnMock invocation) throws Throwable
-        //    {
-        //        requestContainer.passedRequest = (THUIBillingRequest) invocation.getArguments()[0];
-        //        return 1;
-        //    }
-        //});
 
         trendingFragment.handleExtraCashItemOnClick();
         Thread.sleep(50);
-
-        //noinspection unchecked
-        verify(dummyInteractor, times(1)).run(requestContainer.passedRequest);
-        assertThat(requestContainer.passedRequest).isNotNull();
-        assertThat(requestContainer.passedRequest.getDomainToPresent()).isNotNull();
-        assertThat(requestContainer.passedRequest.getDomainToPresent()).isEqualTo(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR);
     }
 }

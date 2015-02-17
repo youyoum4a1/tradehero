@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -27,6 +28,8 @@ import java.util.Map;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 abstract public class BasePagedListRxFragment<
@@ -205,32 +208,53 @@ abstract public class BasePagedListRxFragment<
         updateVisibilities();
     }
 
-    protected void requestPage(int pageToLoad)
+    protected void requestPage(final int pageToLoad)
     {
         final PagedDTOKeyType pagedKey = makePagedDtoKey(pageToLoad);
         if (!isRequesting(pageToLoad))
         {
             final boolean[] alreadyGotNext = new boolean[] {false};
-            Subscription subscription = AppObservable.bindFragment(
+            Subscription subscription;
+            subscription = AppObservable.bindFragment(
                     this,
                     getCache().get(pagedKey)
-                    .doOnNext(pair -> {
-                        Subscription removed = pagedSubscriptions.remove(pageToLoad);
-                        if (removed != null)
-                        {
-                            pagedPastSubscriptions.put(
-                                    pageToLoad,
-                                    removed);
-                        }
-                        alreadyGotNext[0] = true;
-                    })
-                    .finallyDo(() -> {
-                        pagedSubscriptions.remove(pageToLoad);
-                        pagedPastSubscriptions.remove(pageToLoad);
-                    }))
+                            .doOnNext(new Action1<Pair<PagedDTOKeyType, ContainerDTOType>>()
+                            {
+                                @Override public void call(Pair<PagedDTOKeyType, ContainerDTOType> pair)
+                                {
+                                    Subscription removed = pagedSubscriptions.remove(pageToLoad);
+                                    if (removed != null)
+                                    {
+                                        pagedPastSubscriptions.put(
+                                                pageToLoad,
+                                                removed);
+                                    }
+                                    alreadyGotNext[0] = true;
+                                }
+                            })
+                            .finallyDo(new Action0()
+                            {
+                                @Override public void call()
+                                {
+                                    pagedSubscriptions.remove(pageToLoad);
+                                    pagedPastSubscriptions.remove(pageToLoad);
+                                }
+                            }))
                     .subscribe(
-                            pair -> onNext(pair.first, pair.second),
-                            error -> onError(pagedKey, error));
+                            new Action1<Pair<PagedDTOKeyType, ContainerDTOType>>()
+                            {
+                                @Override public void call(Pair<PagedDTOKeyType, ContainerDTOType> pair)
+                                {
+                                    BasePagedListRxFragment.this.onNext(pair.first, pair.second);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable error)
+                                {
+                                    BasePagedListRxFragment.this.onError(pagedKey, error);
+                                }
+                            });
             if (alreadyGotNext[0])
             {
                 pagedPastSubscriptions.put(

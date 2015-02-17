@@ -27,10 +27,10 @@ import rx.functions.Func1;
     }
     //</editor-fold>
 
-    @NonNull public Observable<TranslationResult> translateRx(String from, String to, String text)
+    @NonNull public Observable<TranslationResult> translateRx(final String from, final String to, final String text)
     {
         return translationTokenCache.get(new TranslationTokenKey())
-                .map(new PairGetSecond<>())
+                .map(new PairGetSecond<TranslationTokenKey, TranslationToken>())
                 .flatMap(new Func1<TranslationToken, Observable<? extends TranslationResult>>()
                 {
                     @Override public Observable<? extends TranslationResult> call(TranslationToken token)

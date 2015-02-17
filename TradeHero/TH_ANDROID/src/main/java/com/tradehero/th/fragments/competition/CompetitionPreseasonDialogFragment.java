@@ -29,8 +29,11 @@ import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.network.service.ProviderServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
+import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.persistence.competition.CompetitionPreseasonCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.SocialAlertDialogRxUtil;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
@@ -40,7 +43,6 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.app.AppObservable;
-import rx.functions.Actions;
 import timber.log.Timber;
 
 public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragment
@@ -101,7 +103,9 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
         if (shareList.isEmpty())
         {
             onStopSubscriptions.add(SocialAlertDialogRxUtil.popSelectOneSocialNetwork(getActivity())
-                    .subscribe(Actions.empty(), Actions.empty()));
+                    .subscribe(
+                            new EmptyAction1<OnDialogClickEvent>(),
+                            new EmptyAction1<Throwable>()));
         }
         else if (providerDTO != null)
         {
@@ -151,7 +155,9 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     {
         WeChatDTO weChatDTO = WeChatDTOFactory.createFrom(getActivity(), competitionPreSeasonDTO, providerDTO);
         onStopSubscriptions.add(socialSharerLazy.get().share(weChatDTO)
-                .subscribe(Actions.empty(), Actions.empty()));
+                .subscribe(
+                        new EmptyAction1<SocialShareResult>(),
+                        new EmptyAction1<Throwable>()));
     }
 
     @SuppressWarnings("UnusedDeclaration")

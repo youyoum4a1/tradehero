@@ -31,6 +31,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
@@ -38,12 +39,15 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
 import static com.tradehero.th.utils.Constants.TIMELINE_ITEM_PER_PAGE;
@@ -118,16 +122,48 @@ public class DiscoveryDiscussionFragment extends Fragment
 
     private Observable<RangeDTO> createPaginationObservable()
     {
-        Observable<RangeDTO> pullFromStartObservable = Observable.create(subscriber ->
-                swipeRefreshLayout.setOnRefreshListener(() ->
-                                subscriber.onNext(RangeDTO.create(currentRangeDTO.maxCount, null, currentRangeDTO.maxId))
-                ));
-        Observable<RangeDTO> pullFromBottomObservable = Observable.create((Observable.OnSubscribe<RangeDTO>) subscriber ->
-                mTimelineListView.setOnScrollListener(
-                        new MultiScrollListener(dashboardBottomTabsScrollListener,
-                                createNearEndScrollOperator(
-                                        subscriber, () -> RangeDTO.create(currentRangeDTO.maxCount, currentRangeDTO.minId, null)))))
-                    .doOnNext(o -> mBottomLoadingView.setVisibility(View.VISIBLE));
+        Observable<RangeDTO> pullFromStartObservable = Observable.create(new Observable.OnSubscribe<RangeDTO>()
+        {
+            @Override public void call(final Subscriber<? super RangeDTO> subscriber)
+            {
+                swipeRefreshLayout.setOnRefreshListener(
+                        new SwipeRefreshLayout.OnRefreshListener()
+                        {
+                            @Override public void onRefresh()
+                            {
+                                subscriber.onNext(
+                                        RangeDTO.create(currentRangeDTO.maxCount, null, currentRangeDTO.maxId));
+                            }
+                        }
+                );
+            }
+        });
+        Observable<RangeDTO> pullFromBottomObservable = Observable.create(
+                new Observable.OnSubscribe<RangeDTO>()
+                {
+                    @Override public void call(Subscriber<? super RangeDTO> subscriber)
+                    {
+                        mTimelineListView.setOnScrollListener(
+                                new MultiScrollListener(
+                                        dashboardBottomTabsScrollListener,
+                                        createNearEndScrollOperator(
+                                                subscriber,
+                                                new Func0<RangeDTO>()
+                                                {
+                                                    @Override public RangeDTO call()
+                                                    {
+                                                        return RangeDTO.create(currentRangeDTO.maxCount, currentRangeDTO.minId, null);
+                                                    }
+                                                })));
+                    }
+                })
+                .doOnNext(new Action1<RangeDTO>()
+                {
+                    @Override public void call(RangeDTO o)
+                    {
+                        mBottomLoadingView.setVisibility(View.VISIBLE);
+                    }
+                });
         return Observable.merge(pullFromBottomObservable, pullFromStartObservable)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .startWith(RangeDTO.create(TIMELINE_ITEM_PER_PAGE, null, null));
@@ -152,26 +188,48 @@ public class DiscoveryDiscussionFragment extends Fragment
         PublishSubject<List<TimelineItemDTO>> timelineSubject = PublishSubject.create();
         timelineSubscriptions.add(timelineSubject.subscribe(new RefreshCompleteObserver()));
         timelineSubscriptions.add(timelineSubject.subscribe(
-                discoveryDiscussionAdapter::setItems,
-                e -> Timber.e(e, "Gotcha")));
+                new Action1<List<TimelineItemDTO>>()
+                {
+                    @Override public void call(List<TimelineItemDTO> list)
+                    {
+                        discoveryDiscussionAdapter.setItems(list);
+                    }
+                },
+                new TimberOnErrorAction("Gotcha")));
         timelineSubscriptions.add(timelineSubject.subscribe(new UpdateRangeObserver()));
 
         Observable<RangeDTO> timelineRefreshRangeObservable = createPaginationObservable();
         progressBar.setVisibility(View.VISIBLE);
         timelineSubscriptions.add(rxLoaderManager.create(
                 DISCOVERY_LIST_LOADER_ID,
-                PaginationObservable.createFromRange(timelineRefreshRangeObservable, (Func1<RangeDTO, Observable<List<TimelineItemDTO>>>)
-                        rangeDTO -> userTimelineServiceWrapper.getTimelineBySectionRx(TimelineSection.Hot, currentUserId.toUserBaseKey(), rangeDTO)
-                                .flatMapIterable(TimelineDTO::getEnhancedItems)
-                                .cast(TimelineItemDTO.class)
-                                .toList()))
+                PaginationObservable.createFromRange(
+                        timelineRefreshRangeObservable,
+                        new Func1<RangeDTO, Observable<List<TimelineItemDTO>>>()
+                        {
+                            @Override public Observable<List<TimelineItemDTO>> call(RangeDTO rangeDTO)
+                            {
+                                return userTimelineServiceWrapper.getTimelineBySectionRx(TimelineSection.Hot, currentUserId.toUserBaseKey(), rangeDTO)
+                                        .flatMapIterable(new Func1<TimelineDTO, Iterable<? extends TimelineItemDTO>>()
+                                        {
+                                            @Override public Iterable<? extends TimelineItemDTO> call(TimelineDTO timeline)
+                                            {
+                                                return timeline.getEnhancedItems();
+                                            }
+                                        })
+                                        .cast(TimelineItemDTO.class)
+                                        .toList();
+                            }
+                        }))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(new ToastOnErrorAction())
-                .onErrorResumeNext(Observable.empty())
-                .doOnUnsubscribe(() ->
+                .onErrorResumeNext(Observable.<List<TimelineItemDTO>>empty())
+                .doOnUnsubscribe(new Action0()
                 {
-                    if (progressBar != null) progressBar.setVisibility(View.INVISIBLE);
+                    @Override public void call()
+                    {
+                        if (progressBar != null) progressBar.setVisibility(View.INVISIBLE);
+                    }
                 })
                 .subscribe(timelineSubject));
     }

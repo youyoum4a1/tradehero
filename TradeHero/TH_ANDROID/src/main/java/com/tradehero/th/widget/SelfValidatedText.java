@@ -70,7 +70,13 @@ public class SelfValidatedText extends ValidatedText
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        validateRunnable = this::conditionalValidation;
+        validateRunnable = new Runnable()
+        {
+            @Override public void run()
+            {
+                SelfValidatedText.this.conditionalValidation();
+            }
+        };
         launchDelayedValidation();
     }
 

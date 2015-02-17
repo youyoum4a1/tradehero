@@ -11,10 +11,11 @@ import android.view.MenuItem;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
-import rx.functions.Actions;
 import timber.log.Timber;
 
 @Routable("web/url/:requiredUrlEncoded")
@@ -84,7 +85,9 @@ public class WebViewFragment extends BaseWebViewFragment
                                 .setMessage(R.string.webview_error_no_browser_for_intent_description)
                                 .setPositiveButton(R.string.cancel)
                                 .build()
-                                .subscribe(Actions.empty(), Actions.empty()));
+                                .subscribe(
+                                        new EmptyAction1<OnDialogClickEvent>(),
+                                        new EmptyAction1<Throwable>()));
                     }
                 }
             }

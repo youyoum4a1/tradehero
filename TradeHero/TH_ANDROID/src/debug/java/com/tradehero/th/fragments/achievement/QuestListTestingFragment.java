@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
 import com.tradehero.th.api.achievement.key.MockQuestBonusId;
@@ -26,12 +27,13 @@ import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.AchievementMockServiceWrapper;
 import com.tradehero.th.persistence.achievement.QuestBonusListCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
-import rx.functions.Actions;
 import timber.log.Timber;
 
 public class QuestListTestingFragment extends DashboardFragment
@@ -61,7 +63,13 @@ public class QuestListTestingFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         swipeRefreshLayout.setEnabled(false);
         initAdapter();
-        listView.setOnItemClickListener(this::onItemClick);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> parent, View view1, int position, long id)
+            {
+                QuestListTestingFragment.this.onItemClick(parent, view1, position, id);
+            }
+        });
         listView.addHeaderView(createHeaderView());
     }
 
@@ -70,13 +78,15 @@ public class QuestListTestingFragment extends DashboardFragment
     {
         QuestBonusDTO questBonusDTO = list.get(i - listView.getHeaderViewsCount());
 
-        ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "Fetching Mock Quest", "Loading...", true);
+        final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "Fetching Mock Quest", "Loading...", true);
 
         MockQuestBonusId mockQuestBonusId = new MockQuestBonusId(questBonusDTO.level, Integer.parseInt(mXPEarned.getText().toString()),
                 (Integer.parseInt(mXPEarned.getText().toString()) + Integer.parseInt(mXPFrom.getText().toString())));
         achievementMockServiceWrapper.getMockBonusDTORx(mockQuestBonusId)
-                .finallyDo(progressDialog::dismiss)
-                .subscribe(Actions.empty(), Actions.empty());
+                .finallyDo(new DismissDialogAction0(progressDialog))
+                .subscribe(
+                        new EmptyAction1<BaseResponseDTO>(),
+                        new EmptyAction1<Throwable>());
     }
 
     private View createHeaderView()

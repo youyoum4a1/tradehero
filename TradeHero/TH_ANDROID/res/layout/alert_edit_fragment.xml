@@ -24,7 +24,7 @@
         android:padding="5dp"
         style="@style/TH.Subhead"
         android:tag="sticky"
-        android:background="@color/divider_gray"
+        android:background="@color/tradehero_divider_grey"
         />
 
     <include layout="@layout/price_changer_target"/>

@@ -18,6 +18,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
@@ -25,11 +26,13 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class SettingsPayPalFragment extends DashboardFragment
@@ -86,10 +89,22 @@ public class SettingsPayPalFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
                 .subscribe(
-                        this::onUserProfileReceived,
-                        this::onUserProfileError));
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO profile)
+                            {
+                                SettingsPayPalFragment.this.onUserProfileReceived(profile);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable error)
+                            {
+                                SettingsPayPalFragment.this.onUserProfileError(error);
+                            }
+                        }));
     }
 
     protected void onUserProfileReceived(@NonNull UserProfileDTO profile)
@@ -110,7 +125,7 @@ public class SettingsPayPalFragment extends DashboardFragment
     @OnClick(R.id.settings_paypal_update_button)
     public void onSubmitClicked(@SuppressWarnings("UnusedParameters") View view)
     {
-        ProgressDialog progressDialog = ProgressDialog.show(
+        final ProgressDialog progressDialog = ProgressDialog.show(
                 getActivity(),
                 getString(R.string.alert_dialog_please_wait),
                 getString(R.string.authentication_connecting_tradehero_only),
@@ -120,9 +135,15 @@ public class SettingsPayPalFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userServiceWrapper.updatePayPalEmailRx(currentUserId.toUserBaseKey(), emailDTO))
-                .finallyDo(progressDialog::dismiss)
+                .finallyDo(new DismissDialogAction0(progressDialog))
                 .subscribe(
-                        this::onPayPalUpdated,
+                        new Action1<UpdatePayPalEmailDTO>()
+                        {
+                            @Override public void call(UpdatePayPalEmailDTO emailDto)
+                            {
+                                SettingsPayPalFragment.this.onPayPalUpdated(emailDto);
+                            }
+                        },
                         new ToastOnErrorAction()));
     }
 

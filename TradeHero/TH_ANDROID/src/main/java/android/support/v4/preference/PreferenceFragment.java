@@ -339,7 +339,6 @@ public abstract class PreferenceFragment extends Fragment implements
     {
         return new OnKeyListener()
         {
-
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event)
             {

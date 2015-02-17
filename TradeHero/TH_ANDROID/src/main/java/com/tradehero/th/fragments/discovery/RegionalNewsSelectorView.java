@@ -16,6 +16,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -25,6 +27,9 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.functions.Func2;
 
 public class RegionalNewsSelectorView extends LinearLayout
 {
@@ -32,8 +37,8 @@ public class RegionalNewsSelectorView extends LinearLayout
     private Subscription countryLanguagePairsSubscription;
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnItemSelected(R.id.discovery_news_carousel_spinner_wrapper)
-    void handleItemSelected(AdapterView<?> adapterView, View view, int position, long id)
+    @OnItemSelected(R.id.discovery_news_carousel_spinner_wrapper) void handleItemSelected(AdapterView<?> adapterView, View view, int position,
+            long id)
     {
         sendRegionalNewsChangedEvent((CountryLanguagePairDTO) adapterView.getItemAtPosition(position));
     }
@@ -77,31 +82,48 @@ public class RegionalNewsSelectorView extends LinearLayout
 
         // observable of whenever userProfileDTO is available
         Observable<String> countryCodeObservable = userProfileCacheRx.get(currentUserId.toUserBaseKey())
-                .map(userProfileDTOPair -> userProfileDTOPair.second.countryCode);
+                .map(new Func1<Pair<UserBaseKey, UserProfileDTO>, String>()
+                {
+                    @Override public String call(Pair<UserBaseKey, UserProfileDTO> userProfileDTOPair)
+                    {
+                        return userProfileDTOPair.second.countryCode;
+                    }
+                });
         countryLanguagePairsSubscription = mNewsServiceWrapper.getCountryLanguagePairsRx()
-                .map(PaginatedDTO::getData)
-                .zipWith(countryCodeObservable, Pair::create)
+                .zipWith(
+                        countryCodeObservable,
+                        new Func2<PaginatedDTO<CountryLanguagePairDTO>, String, Pair<List<CountryLanguagePairDTO>, String>>()
+                        {
+                            @Override public Pair<List<CountryLanguagePairDTO>, String> call(PaginatedDTO<CountryLanguagePairDTO> paginatedDTO, String countryCode)
+                            {
+                                return Pair.create(paginatedDTO.getData(), countryCode);
+                            }
+                        })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(countryLanguageListPair -> {
-                            List<CountryLanguagePairDTO> countryLanguagePairDTOs = countryLanguageListPair.first;
-                            String userCountryCode = countryLanguageListPair.second;
-                            CountryLanguagePairDTO savedCountryLanguagePair = countryLanguagePreference.get();
-                            if (savedCountryLanguagePair.countryCode == null)
-                            {
-                                savedCountryLanguagePair.countryCode = userCountryCode;
-                                countryLanguagePreference.set(savedCountryLanguagePair);
-                            }
-                            for (int i = 0; i < countryLanguagePairDTOs.size(); ++i)
-                            {
-                                if (savedCountryLanguagePair.languageCode.equals(countryLanguagePairDTOs.get(i).languageCode) &&
-                                        savedCountryLanguagePair.countryCode.equals(countryLanguagePairDTOs.get(i).countryCode))
-                                {
-                                    mCountryDropdown.setSelection(i);
-                                    break;
-                                }
-                            }
-                            mCountryAdapter.setItems(countryLanguageListPair.first);
-                        },
+                .subscribe(new Action1<Pair<List<CountryLanguagePairDTO>, String>>()
+                           {
+                               @Override public void call(Pair<List<CountryLanguagePairDTO>, String> countryLanguageListPair)
+                               {
+                                   List<CountryLanguagePairDTO> countryLanguagePairDTOs = countryLanguageListPair.first;
+                                   String userCountryCode = countryLanguageListPair.second;
+                                   CountryLanguagePairDTO savedCountryLanguagePair = countryLanguagePreference.get();
+                                   if (savedCountryLanguagePair.countryCode == null)
+                                   {
+                                       savedCountryLanguagePair.countryCode = userCountryCode;
+                                       countryLanguagePreference.set(savedCountryLanguagePair);
+                                   }
+                                   for (int i = 0; i < countryLanguagePairDTOs.size(); ++i)
+                                   {
+                                       if (savedCountryLanguagePair.languageCode.equals(countryLanguagePairDTOs.get(i).languageCode) &&
+                                               savedCountryLanguagePair.countryCode.equals(countryLanguagePairDTOs.get(i).countryCode))
+                                       {
+                                           mCountryDropdown.setSelection(i);
+                                           break;
+                                       }
+                                   }
+                                   mCountryAdapter.setItems(countryLanguageListPair.first);
+                               }
+                           },
                         new ToastOnErrorAction());
     }
 

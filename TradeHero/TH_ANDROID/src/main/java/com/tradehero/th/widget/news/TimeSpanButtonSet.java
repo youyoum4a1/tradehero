@@ -135,12 +135,12 @@ public class TimeSpanButtonSet extends LinearLayout
         {
             if (button == this.currentSelected && button.isEnabled())
             {
-                button.setTextColor(getResources().getColor(R.color.black));
+                button.setTextColor(getResources().getColor(R.color.text_primary));
                 button.setSelected(true);
             }
             else
             {
-                button.setTextColor(getResources().getColor(R.color.price_bar_text_default));
+                button.setTextColor(getResources().getColor(R.color.text_secondary));
                 button.setSelected(false);
             }
         }

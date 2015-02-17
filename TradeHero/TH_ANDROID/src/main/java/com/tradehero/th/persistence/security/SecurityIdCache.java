@@ -48,6 +48,6 @@ public class SecurityIdCache extends BaseFetchDTOCacheRx<SecurityIntegerId, Secu
                     }
                 })
                 .doOnNext(new ActionOnNextCache<>(securityCompactCache.get()))
-                .map(new PairGetFirst<>());
+                .map(new PairGetFirst<SecurityId, SecurityCompactDTO>());
     }
 }

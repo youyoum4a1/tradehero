@@ -35,7 +35,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.AlertSlotDTO;
 import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
@@ -43,7 +42,9 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.rx.ReplaceWith;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.view.DismissDialogAction1;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
@@ -51,6 +52,7 @@ import rx.Notification;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 abstract public class BaseAlertEditFragment extends DashboardFragment
@@ -191,22 +193,22 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
 
     protected void fetchSecurityCompact()
     {
-        ProgressDialog progressDialog = ProgressDialog.show(
+        final ProgressDialog progressDialog = ProgressDialog.show(
                 getActivity(),
                 getString(R.string.loading_loading),
                 getString(R.string.alert_dialog_please_wait),
                 true);
         onStopSubscriptions.add(AppObservable.bindFragment(this, securityCompactCache.get(securityId))
-                .map(new PairGetSecond<>())
-                .doOnEach(new Action1<Notification<? super SecurityCompactDTO>>()
-                {
-                    @Override public void call(Notification<? super SecurityCompactDTO> notif)
-                    {
-                        progressDialog.dismiss();
-                    }
-                })
+                .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
+                .doOnEach(new DismissDialogAction1<Notification<? super SecurityCompactDTO>>(progressDialog))
                 .subscribe(
-                        this::linkWith,
+                        new Action1<SecurityCompactDTO>()
+                        {
+                            @Override public void call(SecurityCompactDTO compactDTO)
+                            {
+                                linkWith(compactDTO);
+                            }
+                        },
                         new ToastOnErrorAction()));
     }
 
@@ -236,14 +238,14 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
 
     protected void conditionalSaveAlert()
     {
-        AlertFormDTO alertFormDTO = getFormDTO();
+        final AlertFormDTO alertFormDTO = getFormDTO();
         if (alertFormDTO == null)
         {
             THToast.show(R.string.error_alert_insufficient_info);
         }
         else
         {
-            ProgressDialog progressDialog = ProgressDialog.show(
+            final ProgressDialog progressDialog = ProgressDialog.show(
                     getActivity(),
                     getString(R.string.loading_loading),
                     getString(R.string.alert_dialog_please_wait),
@@ -254,12 +256,36 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
                     this,
                     securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey())
                             .take(1)
-                            .flatMap(this::conditionalPopPurchaseRx)
-                            .flatMap(alertSlot -> this.saveAlertRx(alertFormDTO)))
-                    .finallyDo(progressDialog::dismiss)
+                            .flatMap(new Func1<AlertSlotDTO, Observable<? extends AlertSlotDTO>>()
+                            {
+                                @Override public Observable<? extends AlertSlotDTO> call(AlertSlotDTO alertSlotDTO)
+                                {
+                                    return BaseAlertEditFragment.this.conditionalPopPurchaseRx(alertSlotDTO);
+                                }
+                            })
+                            .flatMap(new Func1<AlertSlotDTO, Observable<? extends AlertCompactDTO>>()
+                            {
+                                @Override public Observable<? extends AlertCompactDTO> call(AlertSlotDTO alertSlot)
+                                {
+                                    return BaseAlertEditFragment.this.saveAlertRx(alertFormDTO);
+                                }
+                            }))
+                    .doOnEach(new DismissDialogAction1<Notification<? super AlertCompactDTO>>(progressDialog))
                     .subscribe(
-                            this::handleAlertUpdated,
-                            this::handleAlertUpdateFailed));
+                            new Action1<AlertCompactDTO>()
+                            {
+                                @Override public void call(AlertCompactDTO t1)
+                                {
+                                    BaseAlertEditFragment.this.handleAlertUpdated(t1);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable t1)
+                                {
+                                    BaseAlertEditFragment.this.handleAlertUpdateFailed(t1);
+                                }
+                            }));
         }
     }
 
@@ -269,7 +295,7 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
         {
             //noinspection unchecked
             return userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)
-                    .map(result -> alertSlot);
+                    .map(new ReplaceWith<>(alertSlot));
         }
         return Observable.just(alertSlot);
     }

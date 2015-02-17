@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,11 +18,11 @@ import butterknife.ButterKnife;
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.special.residemenu.ResideMenu;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.route.Routable;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DirtyNewFirstMessageHeaderDTOComparator;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTOList;
@@ -39,7 +40,6 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
@@ -53,6 +53,7 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 @Routable("messages")
@@ -122,10 +123,14 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             messagesView.readAllLayout.setTranslationY(dashboardTabHost.get().getTranslationY());
         }
-        dashboardTabHost.get().setOnTranslate((x, y) -> {
-            if (messagesView != null && messagesView.readAllLayout != null)
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
             {
-                messagesView.readAllLayout.setTranslationY(y);
+                if (messagesView != null && messagesView.readAllLayout != null)
+                {
+                    messagesView.readAllLayout.setTranslationY(y);
+                }
             }
         });
     }
@@ -285,7 +290,13 @@ public class MessagesCenterFragment extends DashboardFragment
         this.swipeListener = new SwipeListener();
         listView.setSwipeListViewListener(swipeListener);
 
-        messagesView.swipeRefreshLayout.setOnRefreshListener(this::doRefreshContent);
+        messagesView.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
+            @Override public void onRefresh()
+            {
+                MessagesCenterFragment.this.doRefreshContent();
+            }
+        });
 
         if (nextMoreRecentMessageListKey == null)
         {
@@ -382,7 +393,13 @@ public class MessagesCenterFragment extends DashboardFragment
                         new DirtyNewFirstMessageHeaderDTOComparator());
         onStopSubscriptions.add(messageListAdapter.getUserActionObservable()
                 .subscribe(
-                        this::handleUserAction,
+                        new Action1<MessageItemView.UserAction>()
+                        {
+                            @Override public void call(MessageItemView.UserAction userAction)
+                            {
+                                MessagesCenterFragment.this.handleUserAction(userAction);
+                            }
+                        },
                         new ToastOnErrorAction()));
 
         messagesView.getListView().setAdapter(messageListAdapter);
@@ -447,7 +464,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    private void removeMessageOnServer(@NonNull MessageHeaderDTO messageHeaderDTO)
+    private void removeMessageOnServer(@NonNull final MessageHeaderDTO messageHeaderDTO)
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
@@ -457,7 +474,13 @@ public class MessagesCenterFragment extends DashboardFragment
                         messageHeaderDTO.getRecipientId(),
                         currentUserId.toUserBaseKey()))
                 .subscribe(
-                        response -> onMessageDeleted(messageHeaderDTO),
+                        new Action1<BaseResponseDTO>()
+                        {
+                            @Override public void call(BaseResponseDTO response)
+                            {
+                                MessagesCenterFragment.this.onMessageDeleted(messageHeaderDTO);
+                            }
+                        },
                         new ToastOnErrorAction()));
     }
 
@@ -630,8 +653,14 @@ public class MessagesCenterFragment extends DashboardFragment
                         messageServiceWrapper.get().readAllMessageRx(
                                 currentUserId.toUserBaseKey()))
                         .subscribe(
-                                args -> this.updateAllAsRead(),
-                                e -> THToast.show(new THException(e))
+                                new Action1<BaseResponseDTO>()
+                                {
+                                    @Override public void call(BaseResponseDTO args)
+                                    {
+                                        MessagesCenterFragment.this.updateAllAsRead();
+                                    }
+                                },
+                                new ToastOnErrorAction()
                         ));
 
         //Mark this locally as read, makes the user feels it's marked instantly for better experience
@@ -656,7 +685,13 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         if (messagesView != null && messagesView.readAllLayout != null)
         {
-            messagesView.readAllLayout.setOnClickListener(view -> reportMessageAllRead());
+            messagesView.readAllLayout.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    MessagesCenterFragment.this.reportMessageAllRead();
+                }
+            });
         }
     }
 

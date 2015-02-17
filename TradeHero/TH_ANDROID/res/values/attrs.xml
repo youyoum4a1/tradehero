@@ -63,7 +63,7 @@
     <attr name="showNeedle" format="boolean"/>
     <attr name="showScale" format="boolean"/>
     <attr name="showRanges" format="boolean"/>
-    <attr name="showText" format="boolean"/>
+    <attr name="gShowText" format="boolean"/>
 
     <attr name="outerShadowWidth" format="float"/>
     <attr name="outerBorderWidth" format="float"/>

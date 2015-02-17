@@ -232,7 +232,7 @@ public class UpdateCenterFragment extends DashboardFragment
         if (tabWidget != null)
         // It otherwise fails in Robolectric because it does not have R.id.tabs in the TabHost
         {
-            GraphicUtil.setBackground(tabWidget, getResources().getDrawable(R.drawable.ab_background));
+            GraphicUtil.setBackground(tabWidget, getResources().getDrawable(R.drawable.bar_background));
         }
         Bundle args = getArguments();
         if (args == null)

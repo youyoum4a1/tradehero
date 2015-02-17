@@ -6,6 +6,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.android.internal.util.Predicate;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.rx.PairGetSecond;
@@ -39,12 +41,14 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
-import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
 import com.tradehero.th.persistence.leaderboard.PagedLeaderboardWrapperCacheRx;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
+import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
@@ -57,6 +61,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxFragment<
@@ -191,7 +196,13 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        swipeContainer.setOnRefreshListener(() -> leaderboardCache.get(new PagedLeaderboardKey(leaderboardDefKey.key, 1)));
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
+            @Override public void onRefresh()
+            {
+                leaderboardCache.get(new PagedLeaderboardKey(leaderboardDefKey.key, 1));
+            }
+        });
     }
 
     @Override public void onStart()
@@ -199,8 +210,14 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         super.onStart();
         onStopSubscriptions.add(((LeaderboardMarkUserListAdapter) itemViewAdapter).getFollowRequestedObservable()
                 .subscribe(
-                        this::handleFollowRequested,
-                        e -> Timber.e(e, "Error when receiving user follow requested")));
+                        new Action1<UserBaseDTO>()
+                        {
+                            @Override public void call(UserBaseDTO userBaseDTO)
+                            {
+                                LeaderboardMarkUserListFragment.this.handleFollowRequested(userBaseDTO);
+                            }
+                        },
+                        new TimberOnErrorAction("Error when receiving user follow requested")));
         requestDtos();
         fetchUserOnLeaderboard();
     }
@@ -374,21 +391,28 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 leaderboardCache.get(userOnLeaderboardKey)
-                        .map(new PairGetSecond<>())
-                        .map(leaderboard -> {
-                            LeaderboardUserDTO received = null;
-                            if (leaderboard.users != null && leaderboard.users.size() == 1)
-                            {
-                                received = leaderboard.users.get(0);
-                            }
-                            return received;
-                        }))
+                        .map(new PairGetSecond<LeaderboardKey, LeaderboardDTO>()))
                 .subscribe(
-                        this::linkWith,
-                        e -> {
-                            Timber.e("Failed to download current User position on leaderboard", e);
-                            THToast.show(R.string.error_fetch_user_on_leaderboard);
-                            linkWith((LeaderboardUserDTO) null);
+                        new Action1<LeaderboardDTO>()
+                        {
+                            @Override public void call(LeaderboardDTO leaderboard)
+                            {
+                                LeaderboardUserDTO received = null;
+                                if (leaderboard.users != null && leaderboard.users.size() == 1)
+                                {
+                                    received = leaderboard.users.get(0);
+                                }
+                                linkWith(received);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable e)
+                            {
+                                Timber.e("Failed to download current User position on leaderboard", e);
+                                THToast.show(R.string.error_fetch_user_on_leaderboard);
+                                LeaderboardMarkUserListFragment.this.linkWith((LeaderboardUserDTO) null);
+                            }
                         }));
         //Show loading
         updateLoadingCurrentRankHeaderView();
@@ -464,7 +488,13 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         AdapterViewUtils.updateSingleRowWhere(
                 listView,
                 UserBaseDTO.class,
-                userBaseDTO -> userBaseDTO.getBaseKey().equals(heroId));
+                new Predicate<UserBaseDTO>()
+                {
+                    @Override public boolean apply(UserBaseDTO userBaseDTO)
+                    {
+                        return userBaseDTO.getBaseKey().equals(heroId);
+                    }
+                });
     }
 
     protected void pushFilterFragmentIn()
@@ -516,20 +546,24 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
 //                        ,getApplicablePortfolioId()
                 ).launchChoiceRx())
                 .subscribe(
-                        pair -> {
-                            setCurrentUserProfileDTO(pair.second);
-                            int followType = pair.second.getFollowType(userBaseDTO);
-                            if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
+                        new Action1<Pair<FollowRequest, UserProfileDTO>>()
+                        {
+                            @Override public void call(Pair<FollowRequest, UserProfileDTO> pair)
                             {
-                                analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
+                                LeaderboardMarkUserListFragment.this.setCurrentUserProfileDTO(pair.second);
+                                int followType = pair.second.getFollowType(userBaseDTO);
+                                if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
+                                {
+                                    analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
+                                }
+                                else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
+                                {
+                                    analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
+                                }
+                                LeaderboardMarkUserListFragment.this.updateListViewRow(userBaseDTO.getBaseKey());
                             }
-                            else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
-                            {
-                                analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
-                            }
-                            updateListViewRow(userBaseDTO.getBaseKey());
                         },
-                        error -> THToast.show(new THException(error))
+                        new ToastOnErrorAction()
                 ));
     }
 

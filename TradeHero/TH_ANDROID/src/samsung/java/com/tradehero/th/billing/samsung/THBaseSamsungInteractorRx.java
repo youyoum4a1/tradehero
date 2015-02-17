@@ -2,6 +2,7 @@ package com.tradehero.th.billing.samsung;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.common.billing.samsung.SamsungConstants;
 import com.tradehero.common.billing.samsung.SamsungSKU;
@@ -9,6 +10,7 @@ import com.tradehero.common.billing.samsung.SamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungSKUListKey;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THBaseBillingInteractorRx;
@@ -18,6 +20,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
+import rx.functions.Func1;
 
 public class THBaseSamsungInteractorRx
         extends
@@ -65,36 +68,52 @@ public class THBaseSamsungInteractorRx
     {
         return portfolioCompactListCache.get(currentUserId.toUserBaseKey())
                 .take(1)
-                .map(pair -> pair.second.getDefaultPortfolio())
-                .flatMap(dto -> {
-                    if (dto == null)
+                .flatMap(new Func1<Pair<UserBaseKey, PortfolioCompactDTOList>, Observable<? extends PortfolioCompactDTO>>()
+                {
+                    @Override public Observable<? extends PortfolioCompactDTO> call(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
                     {
-                        return Observable.error(new IllegalArgumentException("Default portfolio cannot be null"));
+                        PortfolioCompactDTO dto = pair.second.getDefaultPortfolio();
+                        if (dto == null)
+                        {
+                            return Observable.error(new IllegalArgumentException("Default portfolio cannot be null"));
+                        }
+                        return Observable.just(dto);
                     }
-                    return Observable.just(dto);
                 });
     }
 
     @NonNull @Override public Observable<THSamsungPurchaseOrder> createPurchaseOrder(
-            @NonNull ProductInventoryResult<SamsungSKU, THSamsungProductDetail> inventoryResult)
+            @NonNull final ProductInventoryResult<SamsungSKU, THSamsungProductDetail> inventoryResult)
     {
         return getDefaultPortfolio()
-                .map(dto -> new THSamsungPurchaseOrder(
-                        inventoryResult.id.groupId,
-                        inventoryResult.id.itemId,
-                        dto.getOwnedPortfolioId()));
+                .map(new Func1<PortfolioCompactDTO, THSamsungPurchaseOrder>()
+                {
+                    @Override public THSamsungPurchaseOrder call(PortfolioCompactDTO dto)
+                    {
+                        return new THSamsungPurchaseOrder(
+                                inventoryResult.id.groupId,
+                                inventoryResult.id.itemId,
+                                dto.getOwnedPortfolioId());
+                    }
+                });
     }
 
     @NonNull @Override public Observable<THSamsungPurchaseOrder> createPurchaseOrder(
-            @NonNull ProductInventoryResult<SamsungSKU, THSamsungProductDetail> inventoryResult,
-            @NonNull UserBaseKey heroId)
+            @NonNull final ProductInventoryResult<SamsungSKU, THSamsungProductDetail> inventoryResult,
+            @NonNull final UserBaseKey heroId)
     {
         return getDefaultPortfolio()
-                .map(dto -> new THSamsungPurchaseOrder(
-                        inventoryResult.id.groupId,
-                        inventoryResult.id.itemId,
-                        dto.getOwnedPortfolioId(),
-                        heroId));
+                .map(new Func1<PortfolioCompactDTO, THSamsungPurchaseOrder>()
+                {
+                    @Override public THSamsungPurchaseOrder call(PortfolioCompactDTO dto)
+                    {
+                        return new THSamsungPurchaseOrder(
+                                inventoryResult.id.groupId,
+                                inventoryResult.id.itemId,
+                                dto.getOwnedPortfolioId(),
+                                heroId);
+                    }
+                });
     }
 
     @Override public void manageSubscriptions()

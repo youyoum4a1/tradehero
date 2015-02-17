@@ -12,7 +12,7 @@
   <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/news_item_bg">
+      android:background="@drawable/card_item_top_bg">
 
     <ImageView
         android:id="@+id/news_item_placeholder"

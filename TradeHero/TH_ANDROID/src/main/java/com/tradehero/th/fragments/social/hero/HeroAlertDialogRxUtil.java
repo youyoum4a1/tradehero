@@ -11,6 +11,7 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import rx.Observable;
 
@@ -79,6 +80,6 @@ public class HeroAlertDialogRxUtil extends AlertDialogRxUtil
         mFollowDialog.show();
 
         return followDialogView.getRequestObservable()
-                .finallyDo(mFollowDialog::dismiss);
+                .finallyDo(new DismissDialogAction0(mFollowDialog));
     }
 }

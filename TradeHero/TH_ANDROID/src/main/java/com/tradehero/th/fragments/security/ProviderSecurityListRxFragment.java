@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
@@ -27,9 +26,11 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
+import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 
 public class ProviderSecurityListRxFragment
         extends SecurityListRxFragment
@@ -153,10 +154,16 @@ public class ProviderSecurityListRxFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 providerCache.get(this.providerId)
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<ProviderId, ProviderDTO>()))
                 .subscribe(
-                        this::linkWith,
-                        e -> THToast.show(getString(R.string.error_fetch_provider_info))));
+                        new Action1<ProviderDTO>()
+                        {
+                            @Override public void call(ProviderDTO provider)
+                            {
+                                ProviderSecurityListRxFragment.this.linkWith(provider);
+                            }
+                        },
+                        new ToastAction<Throwable>(getString(R.string.error_fetch_provider_info))));
     }
 
     protected void linkWith(@NonNull ProviderDTO providerDTO)

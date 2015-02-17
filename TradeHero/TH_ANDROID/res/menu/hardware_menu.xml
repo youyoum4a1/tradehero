@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
   <item
       android:id="@+id/hardware_menu_about"
       android:title="@string/action_menu_about"
-      android:showAsAction="never"/>
+      app:showAsAction="never"/>
 
   <item
       android:id="@+id/hardware_menu_settings"
       android:title="@string/dashboard_menu_settings"
-      android:showAsAction="never"/>
+      app:showAsAction="never"/>
 
 </menu>

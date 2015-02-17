@@ -12,11 +12,11 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import butterknife.InjectView;
+import com.android.internal.util.Predicate;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -33,6 +33,7 @@ import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.key.SecurityListType;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractorRx;
@@ -48,7 +49,6 @@ import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
@@ -56,12 +56,16 @@ import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeMarketPreference;
 import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
 import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 @Routable("trending-securities")
@@ -176,8 +180,20 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 this,
                 this.filterSelectorView.getObservableFilter())
                 .subscribe(
-                        this::onNext,
-                        this::onErrorFilter));
+                        new Action1<TrendingFilterTypeDTO>()
+                        {
+                            @Override public void call(TrendingFilterTypeDTO trendingFilterTypeDTO1)
+                            {
+                                TrendingStockFragment.this.onNext(trendingFilterTypeDTO1);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable error)
+                            {
+                                TrendingStockFragment.this.onErrorFilter(error);
+                            }
+                        }));
     }
 
     protected void onNext(@NonNull TrendingFilterTypeDTO trendingFilterTypeDTO)
@@ -211,13 +227,18 @@ public class TrendingStockFragment extends TrendingBaseFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 exchangeCompactListCache.get(key)
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<ExchangeListType, ExchangeCompactDTOList>()))
                 .subscribe(
-                        this::linkWith,
-                        e -> {
-                            THToast.show(getString(R.string.error_fetch_exchange_list_info));
-                            Timber.e("Error fetching the list of exchanges", e);
-                        }));
+                        new Action1<ExchangeCompactDTOList>()
+                        {
+                            @Override public void call(ExchangeCompactDTOList list)
+                            {
+                                linkWith(list);
+                            }
+                        },
+                        new ToastAndLogOnErrorAction(
+                                getString(R.string.error_fetch_exchange_list_info),
+                                "Error fetching the list of exchanges")));
     }
 
     private void linkWith(@NonNull ExchangeCompactDTOList exchangeDTOs)
@@ -243,10 +264,16 @@ public class TrendingStockFragment extends TrendingBaseFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
                 .subscribe(
-                        this::linkWith,
-                        new ToastAction<>(getString(R.string.error_fetch_user_profile))));
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO profileDTO)
+                            {
+                                linkWith(profileDTO);
+                            }
+                        },
+                        new ToastAction<Throwable>(getString(R.string.error_fetch_user_profile))));
     }
 
     private void linkWith(UserProfileDTO userProfileDTO)
@@ -261,10 +288,16 @@ public class TrendingStockFragment extends TrendingBaseFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 providerListCache.get(new ProviderListKey())
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<ProviderListKey, ProviderDTOList>()))
                 .subscribe(
-                        this::linkWith,
-                        new ToastAction<>(getString(R.string.error_fetch_provider_competition_list))));
+                        new Action1<ProviderDTOList>()
+                        {
+                            @Override public void call(ProviderDTOList list)
+                            {
+                                linkWith(list);
+                            }
+                        },
+                        new ToastAction<Throwable>(getString(R.string.error_fetch_provider_competition_list))));
     }
 
     protected void linkWith(@NonNull ProviderDTOList providers)
@@ -314,9 +347,15 @@ public class TrendingStockFragment extends TrendingBaseFragment
             {
                 preferredExchangeMarket.setDefaultIfUnset(exchangeCompactSpinnerDTOs, userProfileDTO);
             }
-            ExchangeIntegerId preferredExchangeId = preferredExchangeMarket.getExchangeIntegerId();
+            final ExchangeIntegerId preferredExchangeId = preferredExchangeMarket.getExchangeIntegerId();
             ExchangeCompactSpinnerDTO initial = exchangeCompactSpinnerDTOs.findFirstWhere(
-                    exchange -> exchange.getExchangeIntegerId().equals(preferredExchangeId));
+                    new Predicate<ExchangeCompactSpinnerDTO>()
+                    {
+                        @Override public boolean apply(ExchangeCompactSpinnerDTO exchange)
+                        {
+                            return exchange.getExchangeIntegerId().equals(preferredExchangeId);
+                        }
+                    });
             if (initial != null)
             {
                 onNext(trendingFilterTypeDTO.getByExchange(initial));
@@ -370,8 +409,14 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void handleProviderTileOnClick(ProviderTileView view)
     {
-        int providerId = view.getProviderId();
-        ProviderDTO providerDTO = CollectionUtils.first(providerDTOs, candidate -> candidate.id == providerId);
+        final int providerId = view.getProviderId();
+        ProviderDTO providerDTO = CollectionUtils.first(providerDTOs, new Predicate<ProviderDTO>()
+        {
+            @Override public boolean apply(ProviderDTO candidate)
+            {
+                return candidate.id == providerId;
+            }
+        });
         handleCompetitionItemClicked(providerDTO);
     }
 
@@ -395,19 +440,22 @@ public class TrendingStockFragment extends TrendingBaseFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
-                        .map(new PairGetSecond<>())
+                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
                         .first())
                 .subscribe(
-                        profile -> {
-                            if (profile.activeSurveyURL != null)
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO profile)
                             {
-                                Bundle bundle = new Bundle();
-                                WebViewFragment.putUrl(bundle, profile.activeSurveyURL);
-                                navigator.get().pushFragment(WebViewFragment.class, bundle, null);
+                                if (profile.activeSurveyURL != null)
+                                {
+                                    Bundle bundle = new Bundle();
+                                    WebViewFragment.putUrl(bundle, profile.activeSurveyURL);
+                                    navigator.get().pushFragment(WebViewFragment.class, bundle, null);
+                                }
                             }
                         },
-                        error -> THToast.show(new THException((Throwable) error))
-                ));
+                        new ToastOnErrorAction()));
     }
 
     private void handleResetPortfolioItemOnClick()
@@ -417,10 +465,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 this,
                 userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO))
                 .subscribe(
-                        result -> {
-                        },
-                        error -> THToast.show(new THException((Throwable) error))
-                ));
+                        Actions.empty(),
+                        new ToastOnErrorAction()));
     }
 
     protected void handleExtraCashItemOnClick()
@@ -430,10 +476,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 this,
                 userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
                 .subscribe(
-                        result -> {
-                        },
-                        error -> THToast.show(new THException((Throwable) error))
-                ));
+                        Actions.empty(),
+                        new ToastOnErrorAction()));
     }
 
     private void handleEarnCreditItemOnClick()

@@ -15,7 +15,6 @@ import dagger.Module;
         injects = {
                 TestTHApp.class,
                 NotificationOpenedHandlerTest.class,
-                SampleTest.class,
         },
         complete = false,
         library = true,

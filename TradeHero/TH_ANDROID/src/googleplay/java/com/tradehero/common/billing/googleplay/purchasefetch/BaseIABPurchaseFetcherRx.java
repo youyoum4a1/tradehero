@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONException;
 import rx.Observable;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 abstract public class BaseIABPurchaseFetcherRx<
@@ -55,8 +56,20 @@ abstract public class BaseIABPurchaseFetcherRx<
     @NonNull @Override public Observable<PurchaseFetchResult<IABSKUType, IABOrderIdType, IABPurchaseType>> get()
     {
         return getBillingServiceResult()
-                .flatMap(this::fetchPurchases)
-                .map(this::createPurchaseResult);
+                .flatMap(new Func1<IABServiceResult, Observable<? extends IABPurchaseType>>()
+                {
+                    @Override public Observable<? extends IABPurchaseType> call(IABServiceResult result)
+                    {
+                        return BaseIABPurchaseFetcherRx.this.fetchPurchases(result);
+                    }
+                })
+                .map(new Func1<IABPurchaseType, PurchaseFetchResult<IABSKUType, IABOrderIdType, IABPurchaseType>>()
+                {
+                    @Override public PurchaseFetchResult<IABSKUType, IABOrderIdType, IABPurchaseType> call(IABPurchaseType purchase)
+                    {
+                        return BaseIABPurchaseFetcherRx.this.createPurchaseResult(purchase);
+                    }
+                });
     }
 
     protected Observable<IABPurchaseType> fetchPurchases(@NonNull IABServiceResult serviceResult)

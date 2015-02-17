@@ -18,6 +18,7 @@ import com.tradehero.th.rx.ToastAction;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 
 public class StockInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
@@ -82,10 +83,16 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             securityCompactCacheSubscription = AppObservable.bindFragment(
                     this,
                     securityCompactCache.get(securityId))
-                    .map(new PairGetSecond<>())
+                    .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
                     .subscribe(
-                            this::linkWith,
-                            new ToastAction<>(getString(R.string.error_fetch_security_info)));
+                            new Action1<SecurityCompactDTO>()
+                            {
+                                @Override public void call(SecurityCompactDTO securityCompactDTO)
+                                {
+                                    linkWith(securityCompactDTO);
+                                }
+                            },
+                            new ToastAction<Throwable>(getString(R.string.error_fetch_security_info)));
         }
     }
 

@@ -46,7 +46,7 @@
       android:id="@+id/review_dialog_horizontal_divider_top"
       android:layout_width="match_parent"
       android:layout_height="1dp"
-      android:background="@color/light_grey"
+      android:background="@color/grey"
       android:layout_below="@id/review_dialog_summary"
       />
 
@@ -88,7 +88,7 @@
       android:id="@+id/review_dialog_horizontal_divider_bot"
       android:layout_width="match_parent"
       android:layout_height="1dp"
-      android:background="@color/light_grey"
+      android:background="@color/grey"
       android:layout_below="@id/btn_rate"
       />
 

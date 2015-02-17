@@ -2,6 +2,7 @@ package com.tradehero.th.api.translation;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import com.tradehero.th.api.translation.bing.BingLanguageDTOFactory;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
@@ -10,6 +11,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 public class TranslatableLanguageDTOFactoryFactory
@@ -30,7 +32,13 @@ public class TranslatableLanguageDTOFactoryFactory
     @NonNull public Observable<TranslatableLanguageDTOFactory> create()
     {
         return translationTokenCacheLazy.get().get(new TranslationTokenKey())
-                .map(pair -> create(pair.second));
+                .map(new Func1<Pair<TranslationTokenKey, TranslationToken>, TranslatableLanguageDTOFactory>()
+                {
+                    @Override public TranslatableLanguageDTOFactory call(Pair<TranslationTokenKey, TranslationToken> pair)
+                    {
+                        return TranslatableLanguageDTOFactoryFactory.this.create(pair.second);
+                    }
+                });
     }
 
     @Nullable public TranslatableLanguageDTOFactory create(@NonNull TranslationToken type)

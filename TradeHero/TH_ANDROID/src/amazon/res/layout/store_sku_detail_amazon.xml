@@ -75,8 +75,7 @@
       android:layout_alignParentRight="true"
       android:layout_toRightOf="@id/ic_deliverable"
       android:layout_below="@id/price_and_text"
-      android:textSize="12sp"
-      android:textColor="@color/gray_3"
+      style="@style/TH.Caption"
       android:visibility="gone"
       tools:text="unlimited concurrent active"
     />

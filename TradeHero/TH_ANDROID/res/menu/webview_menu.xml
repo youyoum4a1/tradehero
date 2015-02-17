@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
   <item
       android:id="@+id/webview_back"
       android:title="@string/webview_back"
-      android:showAsAction="always"
+      app:showAsAction="always"
       />
   <item
       android:id="@+id/webview_forward"
       android:title="@string/webview_forward"
-      android:showAsAction="always"
+      app:showAsAction="always"
       />
   <item
       android:id="@+id/webview_view_in_browser"
       android:title="@string/webview_open_browser"
-      android:showAsAction="ifRoom"
+      app:showAsAction="ifRoom"
       android:icon="@drawable/ic_action_location_web_site"
       />
 </menu>

@@ -24,6 +24,7 @@ import com.tradehero.th.persistence.achievement.AchievementCategoryListCacheRx;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 @Routable("achievements")
@@ -84,9 +85,13 @@ public class AchievementListFragment extends DashboardFragment
         achievementListAdapter = new DTOAdapterNew<>(getActivity(), R.layout.achievement_cell_view);
         listView.setAdapter(achievementListAdapter);
 
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            swipeRefreshLayout.setRefreshing(true);
-            AchievementListFragment.this.attachAndFetchAchievementCategoryListener();
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
+            @Override public void onRefresh()
+            {
+                swipeRefreshLayout.setRefreshing(true);
+                AchievementListFragment.this.attachAndFetchAchievementCategoryListener();
+            }
         });
     }
 
@@ -103,8 +108,20 @@ public class AchievementListFragment extends DashboardFragment
         achievementListSubscription = AppObservable.bindFragment(this,
                 achievementCategoryListCache.get(shownUserId))
                 .subscribe(
-                        this::onReceivedAchievementList,
-                        this::onReceivedAchievementFailed);
+                        new Action1<Pair<UserBaseKey, AchievementCategoryDTOList>>()
+                        {
+                            @Override public void call(Pair<UserBaseKey, AchievementCategoryDTOList> pair)
+                            {
+                                AchievementListFragment.this.onReceivedAchievementList(pair);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable error)
+                            {
+                                AchievementListFragment.this.onReceivedAchievementFailed(error);
+                            }
+                        });
     }
 
     private void displayProgress()

@@ -4,8 +4,10 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
@@ -30,6 +32,7 @@ public class UserProfileCompactCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, 
     @Override @NonNull protected Observable<UserProfileCompactDTO> fetch(@NonNull UserBaseKey key)
     {
         return userProfileCache.get(key)
-                .map(value -> value.second);
+                .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
+                .cast(UserProfileCompactDTO.class);
     }
 }

@@ -24,12 +24,15 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
+import com.tradehero.th.rx.view.DismissDialogAction0;
+import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
+import rx.Notification;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
@@ -119,7 +122,7 @@ public class WatchlistEditFragment extends DashboardFragment
 
     private void handleWatchButtonClicked()
     {
-        ProgressDialog progressDialog = showProgressBarOld();
+        final ProgressDialog progressDialog = showProgressBarOld();
         try
         {
             double price = Double.parseDouble(watchPrice.getText().toString());
@@ -144,7 +147,7 @@ public class WatchlistEditFragment extends DashboardFragment
                 updateObservable = watchlistServiceWrapper.createWatchlistEntryRx(watchPositionItemForm);
             }
             onStopSubscriptions.add(AppObservable.bindFragment(this, updateObservable)
-                    .finallyDo(progressDialog::dismiss)
+                    .finallyDo(new DismissDialogAction0(progressDialog))
                     .subscribe(createWatchlistUpdateObserver()));
         } catch (NumberFormatException ex)
         {
@@ -185,11 +188,11 @@ public class WatchlistEditFragment extends DashboardFragment
         WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().getCachedValue(securityKeyId);
         if (watchlistPositionDTO != null)
         {
-            ProgressDialog progressDialog = showProgressBarOld();
+            final ProgressDialog progressDialog = showProgressBarOld();
             onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
                     watchlistServiceWrapper.deleteWatchlistRx(watchlistPositionDTO.getPositionCompactId()))
-                    .finallyDo(progressDialog::dismiss)
+                    .finallyDo(new DismissDialogAction0(progressDialog))
                     .subscribe(createWatchlistDeleteObserver()));
         }
         else
@@ -219,7 +222,7 @@ public class WatchlistEditFragment extends DashboardFragment
             setActionBarTitle(getString(R.string.watchlist_add_title));
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_Add));
         }
-        querySecurity(securityId, andDisplay);
+        querySecurity(securityId);
 
         if (andDisplay)
         {
@@ -236,9 +239,9 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    private void querySecurity(@NonNull SecurityId securityId, final boolean andDisplay)
+    private void querySecurity(@NonNull SecurityId securityId)
     {
-        ProgressDialog progressDialog = ProgressDialog.show(
+        final ProgressDialog progressDialog = ProgressDialog.show(
                 getActivity(),
                 getString(R.string.alert_dialog_please_wait),
                 getString(R.string.loading_loading),
@@ -247,7 +250,7 @@ public class WatchlistEditFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 securityCompactCache.get(securityId))
-                .finallyDo(progressDialog::dismiss)
+                .doOnEach(new DismissDialogAction1<Notification<? super Pair<SecurityId, SecurityCompactDTO>>>(progressDialog))
                 .subscribe(createSecurityCompactCacheObserver()));
     }
 

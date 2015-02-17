@@ -25,21 +25,25 @@ public class UiLifecycleOperator implements Observable.OnSubscribe<Pair<Session,
     }
     //</editor-fold>
 
-    @Override public void call(Subscriber<? super Pair<Session, SessionState>> subscriber)
+    @Override public void call(final Subscriber<? super Pair<Session, SessionState>> subscriber)
     {
         lifecycleHelper = new UiLifecycleHelper(
                 activity,
-                (session, state, exception) -> {
-                    if (exception != null)
+                new Session.StatusCallback()
+                {
+                    @Override public void call(Session session, SessionState state, Exception exception)
                     {
-                        subscriber.onError(exception);
-                    }
-                    else
-                    {
-                        subscriber.onNext(Pair.create(session, state));
-                        if (state.isClosed())
+                        if (exception != null)
                         {
-                            subscriber.onCompleted();
+                            subscriber.onError(exception);
+                        }
+                        else
+                        {
+                            subscriber.onNext(Pair.create(session, state));
+                            if (state.isClosed())
+                            {
+                                subscriber.onCompleted();
+                            }
                         }
                     }
                 });

@@ -1,8 +1,10 @@
 package com.tradehero.th.fragments.trending;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,7 +15,6 @@ import android.widget.AdapterView;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -23,21 +24,26 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingFxSecurityListType;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
-import timber.log.Timber;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 //@Routable("trending-securities")
 public class TrendingFXFragment extends TrendingBaseFragment
@@ -116,19 +122,25 @@ public class TrendingFXFragment extends TrendingBaseFragment
         waitForEnrolledSubscription = AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                .doOnNext(pair -> mProgress.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
-                .doOnNext(pair -> btnEnroll.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
-                .filter(pair -> pair.second.fxPortfolio != null)
                 .subscribe(
-                        pair -> {
-                            // In effect, we are waiting for the enrolled profile
-                            unsubscribe(waitForEnrolledSubscription);
-                            mProgress.setVisibility(View.GONE);
-                            btnEnroll.setVisibility(View.GONE);
-                            scheduleRequestData();
-                            fetchFXPrice();
+                        new Action1<Pair<UserBaseKey, UserProfileDTO>>()
+                        {
+                            @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
+                            {
+                                mProgress.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE);
+                                btnEnroll.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE);
+                                if (pair.second.fxPortfolio != null)
+                                {
+                                    // In effect, we are waiting for the enrolled profile
+                                    TrendingFXFragment.this.unsubscribe(waitForEnrolledSubscription);
+                                    mProgress.setVisibility(View.GONE);
+                                    btnEnroll.setVisibility(View.GONE);
+                                    TrendingFXFragment.this.scheduleRequestData();
+                                    TrendingFXFragment.this.fetchFXPrice();
+                                }
+                            }
                         },
-                        e -> {});
+                        new EmptyAction1<Throwable>());
     }
 
     private void checkFXPortfolio()
@@ -138,10 +150,16 @@ public class TrendingFXFragment extends TrendingBaseFragment
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .take(1)
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
                 .subscribe(
-                        this::handleUserProfileForOnBoardReceived,
-                        error -> Timber.e(error, ""));
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO profileDTO)
+                            {
+                                TrendingFXFragment.this.handleUserProfileForOnBoardReceived(profileDTO);
+                            }
+                        },
+                        new TimberOnErrorAction(""));
     }
 
     protected void handleUserProfileForOnBoardReceived(@NonNull UserProfileDTO userProfileDTO)
@@ -151,18 +169,27 @@ public class TrendingFXFragment extends TrendingBaseFragment
             onBoardDialogFragment = FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
             onBoardDialogFragment.getDismissedObservable()
                     .subscribe(
-                            dialog -> onBoardDialogFragment = null,
-                            error -> THToast.show(new THException(error))
-                    );
-            onBoardDialogFragment.getUserActionTypeObservable()
-                    .subscribe(
-                            action -> {
-                                if (action.equals(FxOnBoardDialogFragment.UserActionType.CANCELLED))
+                            new Action1<DialogInterface>()
+                            {
+                                @Override public void call(DialogInterface dialog)
                                 {
-                                    trendingTabTypeBehaviorSubject.onNext(TrendingTabType.STOCK);
+                                    onBoardDialogFragment = null;
                                 }
                             },
-                            error -> Timber.e(error, "")
+                            new ToastOnErrorAction());
+            onBoardDialogFragment.getUserActionTypeObservable()
+                    .subscribe(
+                            new Action1<FxOnBoardDialogFragment.UserActionType>()
+                            {
+                                @Override public void call(FxOnBoardDialogFragment.UserActionType action)
+                                {
+                                    if (action.equals(FxOnBoardDialogFragment.UserActionType.CANCELLED))
+                                    {
+                                        trendingTabTypeBehaviorSubject.onNext(TrendingTabType.STOCK);
+                                    }
+                                }
+                            },
+                            new TimberOnErrorAction("")
                     );
         }
     }
@@ -173,10 +200,22 @@ public class TrendingFXFragment extends TrendingBaseFragment
         fetchFxPriceSubscription = AppObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXSecuritiesAllPriceRx()
-                        .repeatWhen(observable -> observable.delay(MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS)))
+                        .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
+                        {
+                            @Override public Observable<?> call(Observable<? extends Void> observable)
+                            {
+                                return observable.delay(MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS);
+                            }
+                        }))
                 .subscribe(
-                        this::handlePricesReceived,
-                        new ToastAction<>(getString(R.string.error_fetch_fx_list_price)));
+                        new Action1<List<QuoteDTO>>()
+                        {
+                            @Override public void call(List<QuoteDTO> quoteDTOs)
+                            {
+                                TrendingFXFragment.this.handlePricesReceived(quoteDTOs);
+                            }
+                        },
+                        new ToastAction<Throwable>(getString(R.string.error_fetch_fx_list_price)));
     }
 
     private void handlePricesReceived(List<QuoteDTO> list)

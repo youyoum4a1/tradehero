@@ -31,7 +31,7 @@ public class DurationMeasurer<T> implements Func1<T, Observable<Pair<Long, TimeU
 
     @Override public Observable<Pair<Long, TimeUnit>> call(T t)
     {
-        long nanoStartTime = System.nanoTime();
+        final long nanoStartTime = System.nanoTime();
         if (scheduler == null)
         {
             action.call(t);
@@ -40,7 +40,13 @@ public class DurationMeasurer<T> implements Func1<T, Observable<Pair<Long, TimeU
         return Observable.just(t)
                 .subscribeOn(scheduler)
                 .doOnNext(action)
-                .map(ignored -> getFrom(nanoStartTime));
+                .map(new Func1<T, Pair<Long, TimeUnit>>()
+                {
+                    @Override public Pair<Long, TimeUnit> call(T ignored)
+                    {
+                        return DurationMeasurer.this.getFrom(nanoStartTime);
+                    }
+                });
     }
 
     @NonNull protected Pair<Long, TimeUnit> getFrom(long nanoStartTime)

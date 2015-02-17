@@ -13,13 +13,14 @@ import com.amazon.device.iap.model.PurchaseUpdatesResponse;
 import com.amazon.device.iap.model.RequestId;
 import com.amazon.device.iap.model.UserDataResponse;
 import com.tradehero.th.billing.amazon.AmazonAlertDialogRxUtil;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import rx.functions.Actions;
 import timber.log.Timber;
 
 @Singleton public class AmazonPurchasingService
@@ -44,7 +45,9 @@ import timber.log.Timber;
         if (PurchasingService.IS_SANDBOX_MODE)
         {
             dialogUtil.popSandboxModeAndHandle(activityProvider.get())
-                    .subscribe(Actions.empty(), Actions.empty());
+                    .subscribe(
+                            new EmptyAction1<OnDialogClickEvent>(),
+                            new EmptyAction1<Throwable>());
         }
     }
     //</editor-fold>

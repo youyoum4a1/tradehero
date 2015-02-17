@@ -1,10 +1,12 @@
 package com.tradehero.th.persistence.alert;
 
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.utils.CollectionUtils;
+import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.security.SecurityId;
@@ -15,6 +17,8 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 @Singleton @UserCache
@@ -51,19 +55,27 @@ public class AlertCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, Al
     public Observable<Map<SecurityId, AlertId>> getSecurityMappedAlerts(@NonNull UserBaseKey userBaseKey)
     {
         return get(userBaseKey)
-                .map(pair -> {
-                    final Map<SecurityId, AlertId> securitiesWithAlerts = new HashMap<>();
-                    CollectionUtils.apply(pair.second, alertCompactDTO -> {
-                        if (alertCompactDTO.security != null)
+                .map(new Func1<Pair<UserBaseKey, AlertCompactDTOList>, Map<SecurityId, AlertId>>()
+                {
+                    @Override public Map<SecurityId, AlertId> call(final Pair<UserBaseKey, AlertCompactDTOList> pair)
+                    {
+                        final Map<SecurityId, AlertId> securitiesWithAlerts = new HashMap<>();
+                        CollectionUtils.apply(pair.second, new Action1<AlertCompactDTO>()
                         {
-                            securitiesWithAlerts.put(alertCompactDTO.security.getSecurityId(), alertCompactDTO.getAlertId(pair.first));
-                        }
-                        else
-                        {
-                            Timber.d("populate: AlertId %s had a null alertCompact of securityCompact", alertCompactDTO);
-                        }
-                    });
-                    return securitiesWithAlerts;
+                            @Override public void call(AlertCompactDTO alertCompactDTO)
+                            {
+                                if (alertCompactDTO.security != null)
+                                {
+                                    securitiesWithAlerts.put(alertCompactDTO.security.getSecurityId(), alertCompactDTO.getAlertId(pair.first));
+                                }
+                                else
+                                {
+                                    Timber.d("populate: AlertId %s had a null alertCompact of securityCompact", alertCompactDTO);
+                                }
+                            }
+                        });
+                        return securitiesWithAlerts;
+                    }
                 });
     }
 

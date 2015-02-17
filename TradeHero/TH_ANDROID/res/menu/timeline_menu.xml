@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
   <item
       android:id="@+id/action_bar_update_center_icon"
-      android:showAsAction="always"
+      app:showAsAction="always"
       android:title="@string/message_center_title"
-      android:actionLayout="@layout/action_bar_update_center_icon"/>
+      app:actionLayout="@layout/action_bar_update_center_icon"
+      />
 
   <item
       android:id="@+id/action_bar_home_icon"
       android:icon="@drawable/icn_menu_home_blue"
-      android:showAsAction="always"
-      android:title="@string/dashboard_home"/>
+      app:showAsAction="always"
+      android:title="@string/dashboard_home"
+      />
 
 </menu>

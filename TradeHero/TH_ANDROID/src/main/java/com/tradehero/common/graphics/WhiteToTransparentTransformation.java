@@ -95,7 +95,7 @@ public class WhiteToTransparentTransformation implements Transformation
         }
         catch (/*FileNotFoundException | IOException |*/ Exception e)
         {
-            Timber.d("White to transparent problem: %d", e.getMessage());
+            Timber.d("White to transparent problem: %s", e.getMessage());
         }
         
         if (bitmapIn != bitmapOut && bitmapOut != null)

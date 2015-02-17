@@ -8,7 +8,6 @@ buildscript {
     classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
     classpath 'org.robolectric:robolectric-gradle-plugin:0.14.+'
     //classpath 'com.amazon.device.tools.build:gradle:0.13.+' // When building for Amazon
-    classpath 'me.tatarka:gradle-retrolambda:2.4.1'
   }
 }
 
@@ -25,7 +24,6 @@ project.ext.versionBuild = Integer.parseInt((String) versionProps['VERSION_BUILD
 apply plugin: 'com.android.application'
 apply plugin: 'crashlytics'
 apply plugin: 'robolectric'
-apply plugin: 'retrolambda'
 
 repositories {
   maven { url "http://dl.bintray.com/populov/maven" }
@@ -55,19 +53,13 @@ if (project.ext.javahome == null) {
   project.ext.javahome = '/usr/libexec/java_home -v 1.7'.execute([], project.rootDir).text.trim()
 }
 
-retrolambda {
-  jdk project.ext.java8home
-  oldJdk project.ext.javahome
-  javaVersion JavaVersion.VERSION_1_7
-}
-
 android {
   compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
   }
 
-  compileSdkVersion 20
+  compileSdkVersion 21
 
   buildToolsVersion "21.1.1"
   //useOldManifestMerger=true
@@ -84,7 +76,7 @@ android {
 
   defaultConfig {
     minSdkVersion 14
-    targetSdkVersion 20
+    targetSdkVersion 21
 
     versionCode project.ext.versionBuild
     versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
@@ -309,6 +301,7 @@ dependencies {
   compile 'com.parse.bolts:bolts-android:1.1.4' // For Facebook
 
   compile('com.android.support:support-v13:21.0.3')
+  compile "com.android.support:appcompat-v7:21.0.3"
   //provided 'proguard:annotations:4.6'
   compile('se.emilsjolander:stickylistheaders:2.5.2@aar') {
     exclude group: 'com.google.android', module: 'support-v4'
@@ -355,7 +348,6 @@ dependencies {
   compile 'com.tradehero.route:route:0.2-SNAPSHOT'
   compile 'com.android.support:support-annotations:20.0.0'
   compile 'com.crashlytics.android:crashlytics:1.+'
-  compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
   compile('oauth.signpost:signpost-core:1.2.1.2') {
     exclude group: 'commons-codec', module: 'commons-codec'
   }

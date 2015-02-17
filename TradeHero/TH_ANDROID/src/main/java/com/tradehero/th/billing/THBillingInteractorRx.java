@@ -7,6 +7,7 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.common.billing.purchase.PurchaseResult;
+import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
 import com.tradehero.th.api.users.UserBaseKey;
 import rx.Observable;
 
@@ -67,4 +68,9 @@ public interface THBillingInteractorRx<
         THPurchaseOrderType,
         THOrderIdType,
         THProductPurchaseType>> purchaseAndPremiumFollow(@NonNull UserBaseKey heroId);
+
+    @NonNull Observable<PurchaseRestoreTotalResult<
+            ProductIdentifierType,
+            THOrderIdType,
+            THProductPurchaseType>> restorePurchasesAndClear(final boolean fullReport);
 }

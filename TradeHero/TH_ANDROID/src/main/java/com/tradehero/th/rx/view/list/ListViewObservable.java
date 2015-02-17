@@ -5,7 +5,7 @@ import rx.functions.Func0;
 
 public class ListViewObservable
 {
-    public static <T> NearEndScrollOperator<T> createNearEndScrollOperator(Subscriber<T> subscriber, Func0<T> func)
+    public static <T> NearEndScrollOperator<T> createNearEndScrollOperator(Subscriber<? super T> subscriber, Func0<? extends T> func)
     {
         return new NearEndScrollOperator<>(subscriber, func);
     }

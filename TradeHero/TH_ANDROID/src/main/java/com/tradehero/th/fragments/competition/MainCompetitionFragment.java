@@ -38,9 +38,12 @@ import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTOUtil;
@@ -77,6 +80,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 @Routable({
@@ -169,7 +173,13 @@ public class MainCompetitionFragment extends CompetitionFragment
         this.progressBar.setVisibility(View.VISIBLE);
         this.listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         this.listView.setAdapter(this.competitionZoneListItemAdapter);
-        competitionZoneListItemAdapter.setParentOnLegalElementClicked(this::handleItemClicked);
+        competitionZoneListItemAdapter.setParentOnLegalElementClicked(new CompetitionZoneLegalMentionsView.OnElementClickedListener()
+        {
+            @Override public void onElementClicked(CompetitionZoneDTO competitionZoneDTO)
+            {
+                MainCompetitionFragment.this.handleItemClicked(competitionZoneDTO);
+            }
+        });
         competitionZoneDTOUtil.randomiseAd();
     }
 
@@ -199,7 +209,13 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             this.webViewFragment.setThIntentPassedListener(null);
         }
-        dashboardTabHost.get().setOnTranslate((x, y) -> btnTradeNow.setTranslationY(y));
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                btnTradeNow.setTranslationY(y);
+            }
+        });
         this.webViewFragment = null;
     }
 
@@ -260,10 +276,22 @@ public class MainCompetitionFragment extends CompetitionFragment
         userProfileCacheSubscription = AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
                 .subscribe(
-                        this::linkWith,
-                        this::handleFetchCurrentUserProfileFailed);
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO t1)
+                            {
+                                linkWith(t1);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable t1)
+                            {
+                                MainCompetitionFragment.this.handleFetchCurrentUserProfileFailed(t1);
+                            }
+                        });
     }
 
     protected void linkWith(@NonNull UserProfileCompactDTO userProfileCompactDTO)
@@ -288,10 +316,22 @@ public class MainCompetitionFragment extends CompetitionFragment
         competitionListCacheSubscription = AppObservable.bindFragment(
                 this,
                 competitionListCache.get(providerId)
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<ProviderId, CompetitionDTOList>()))
                 .subscribe(
-                        this::linkWith,
-                        this::handleFetchCompetitionListFailed);
+                        new Action1<CompetitionDTOList>()
+                        {
+                            @Override public void call(CompetitionDTOList competitionDTOList)
+                            {
+                                linkWith(competitionDTOList);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable t1)
+                            {
+                                MainCompetitionFragment.this.handleFetchCompetitionListFailed(t1);
+                            }
+                        });
     }
 
     protected void linkWith(@NonNull CompetitionDTOList competitionDTOs1)
@@ -316,10 +356,22 @@ public class MainCompetitionFragment extends CompetitionFragment
         displayCellListCacheFetchSubscription = AppObservable.bindFragment(
                 this,
                 providerDisplayListCellCache.get(new ProviderDisplayCellListKey(providerId))
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<ProviderDisplayCellListKey, ProviderDisplayCellDTOList>()))
                 .subscribe(
-                        this::linkWith,
-                        this::handleFetchDisplayCellListFailed);
+                        new Action1<ProviderDisplayCellDTOList>()
+                        {
+                            @Override public void call(ProviderDisplayCellDTOList cellDTOList)
+                            {
+                                linkWith(cellDTOList);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable error)
+                            {
+                                MainCompetitionFragment.this.handleFetchDisplayCellListFailed(error);
+                            }
+                        });
     }
 
     protected void linkWith(@NonNull ProviderDisplayCellDTOList providerDisplayCellDTOList)
@@ -344,10 +396,22 @@ public class MainCompetitionFragment extends CompetitionFragment
         competitionPreSeasonSubscription = AppObservable.bindFragment(
                 this,
                 competitionPreSeasonCacheRx.get(providerId)
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<ProviderId, CompetitionPreSeasonDTO>()))
                 .subscribe(
-                        this::linkWith,
-                        this::handleFetchPreSeasonFailed);
+                        new Action1<CompetitionPreSeasonDTO>()
+                        {
+                            @Override public void call(CompetitionPreSeasonDTO preSeasonDTO)
+                            {
+                                linkWith(preSeasonDTO);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable error)
+                            {
+                                MainCompetitionFragment.this.handleFetchPreSeasonFailed(error);
+                            }
+                        });
     }
 
     protected void linkWith(@NonNull CompetitionPreSeasonDTO preSeasonDTO)
@@ -374,8 +438,20 @@ public class MainCompetitionFragment extends CompetitionFragment
         displayPrizePoolSubscription = AppObservable.bindFragment(
                 this, providerServiceWrapper.getProviderPrizePoolRx(providerId))
                 .subscribe(
-                        this::linkWith,
-                        this::handleFetchPrizePoolFailed);
+                        new Action1<ProviderPrizePoolDTO>()
+                        {
+                            @Override public void call(ProviderPrizePoolDTO prizePoolDTO)
+                            {
+                                linkWith(prizePoolDTO);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable error)
+                            {
+                                MainCompetitionFragment.this.handleFetchPrizePoolFailed(error);
+                            }
+                        });
     }
 
     protected void linkWith(@NonNull ProviderPrizePoolDTO prizePoolDTO)
@@ -400,7 +476,7 @@ public class MainCompetitionFragment extends CompetitionFragment
             {
                 THToast.show(getString(R.string.error_fetch_provider_prize_pool_info));
             }
-            competitionZoneListItemAdapter.setPrizePoolDTO(new ArrayList<>());
+            competitionZoneListItemAdapter.setPrizePoolDTO(new ArrayList<ProviderPrizePoolDTO>());
         }
         Timber.e(e, "Error fetching the provider info");
     }

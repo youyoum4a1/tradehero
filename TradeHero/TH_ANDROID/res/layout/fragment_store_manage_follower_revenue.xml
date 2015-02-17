@@ -12,7 +12,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
       android:padding="3dp"
-      android:background="@color/gray_3"
+      android:background="@color/grey"
       tools:background="#f00"
       >
 

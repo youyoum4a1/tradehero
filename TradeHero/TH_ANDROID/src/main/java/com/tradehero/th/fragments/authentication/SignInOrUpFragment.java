@@ -28,7 +28,9 @@ import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.SessionServiceWrapper;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.appsflyer.AppsFlyerConstants;
@@ -42,7 +44,10 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.internal.Assertions;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -122,7 +127,13 @@ public class SignInOrUpFragment extends Fragment
         ButterKnife.inject(this, view);
 
         authenticationObservable = getClickedSocialNetwork()
-                .flatMap(this::handleConnectionRequest);
+                .flatMap(new Func1<SocialNetworkEnum, Observable<? extends Pair<AuthData, UserProfileDTO>>>()
+                {
+                    @Override public Observable<? extends Pair<AuthData, UserProfileDTO>> call(SocialNetworkEnum socialNetworkEnum)
+                    {
+                        return SignInOrUpFragment.this.handleConnectionRequest(socialNetworkEnum);
+                    }
+                });
     }
 
     @Override public void onResume()
@@ -150,30 +161,56 @@ public class SignInOrUpFragment extends Fragment
     @NonNull protected Observable<SocialNetworkEnum> getClickedSocialNetwork()
     {
         return Observable.from(observableViews)
-                .filter(authenticationButton -> authenticationButton != null)
-                .flatMap(authenticationButton -> ViewObservable.clicks(authenticationButton, false))
-                .map(event -> ((AuthenticationButton) event.view()).getType());
+                .flatMap(new Func1<AuthenticationButton, Observable<? extends OnClickEvent>>()
+                {
+                    @Override public Observable<? extends OnClickEvent> call(AuthenticationButton authenticationButton)
+                    {
+                        if (authenticationButton != null)
+                        {
+                            return ViewObservable.clicks(authenticationButton, false);
+                        }
+                        return Observable.empty();
+                    }
+                })
+                .map(new Func1<OnClickEvent, SocialNetworkEnum>()
+                {
+                    @Override public SocialNetworkEnum call(OnClickEvent event)
+                    {
+                        return ((AuthenticationButton) event.view()).getType();
+                    }
+                });
     }
 
-    @NonNull protected Observable<Pair<AuthData, UserProfileDTO>> handleConnectionRequest(SocialNetworkEnum socialNetworkEnum)
+    @NonNull protected Observable<Pair<AuthData, UserProfileDTO>> handleConnectionRequest(final SocialNetworkEnum socialNetworkEnum)
     {
-        ProgressDialog progressDialog = ProgressDialog.show(
+        final ProgressDialog progressDialog = ProgressDialog.show(
                 getActivity(),
                 getString(R.string.alert_dialog_please_wait),
                 getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()),
                 true);
-        return Observable.just(socialNetworkEnum)
-                .map(enumToAuthProviderMap::get)
-                .flatMap(authenticationProvider -> authenticationProvider.logIn(getActivity()))
+        return enumToAuthProviderMap.get(socialNetworkEnum)
+                .logIn(SignInOrUpFragment.this.getActivity())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(authData -> progressDialog.setMessage(
-                        getString(R.string.authentication_connecting_tradehero, authData.socialNetworkEnum.getName())))
-                .map(this::createLoginFormFromAuthData)
-                .flatMap(loginForm -> safeSignUpAndLogin(loginForm, progressDialog))
-                .doOnError(new THToast.ToastAndLog("Error on logging in"))
-                .doOnNext(pair -> trackSocialRegistration(socialNetworkEnum))
+                .flatMap(new Func1<AuthData, Observable<? extends Pair<AuthData, UserProfileDTO>>>()
+                {
+                    @Override public Observable<? extends Pair<AuthData, UserProfileDTO>> call(AuthData authData)
+                    {
+                        progressDialog.setMessage(
+                                getString(R.string.authentication_connecting_tradehero, authData.socialNetworkEnum.getName()));
+                        LoginSignUpFormDTO loginForm = SignInOrUpFragment.this.createLoginFormFromAuthData(authData);
+                        return SignInOrUpFragment.this.safeSignUpAndLogin(loginForm, progressDialog);
+                    }
+                })
+                .doOnError(new ToastAndLogOnErrorAction("Error on logging in"))
+                .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
+                {
+                    @Override public void call(Pair<AuthData, UserProfileDTO> pair)
+                    {
+                        SignInOrUpFragment.this.trackSocialRegistration(socialNetworkEnum);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnUnsubscribe(progressDialog::dismiss)
+                .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
                 .doOnNext(authDataAccountSaveActionProvider.get())
                 .doOnNext(new OpenDashboardAction(getActivity()))
                 ;
@@ -187,13 +224,19 @@ public class SignInOrUpFragment extends Fragment
     }
 
     @NonNull protected Observable<Pair<AuthData, UserProfileDTO>> safeSignUpAndLogin(
-            @NonNull LoginSignUpFormDTO loginSignUpFormDTO,
+            @NonNull final LoginSignUpFormDTO loginSignUpFormDTO,
             @NonNull ProgressDialog progressDialog)
     {
         return sessionServiceWrapper.signUpAndLoginOrUpdateTokensRx(loginSignUpFormDTO.authData.getTHToken(), loginSignUpFormDTO)
                 .observeOn(AndroidSchedulers.mainThread())
                 .onErrorResumeNext(new SocialNetworkSpecificExtensions(loginSignUpFormDTO.authData, progressDialog))
-                .map(userLoginDTO -> Pair.create(loginSignUpFormDTO.authData, userLoginDTO.profileDTO));
+                .map(new Func1<UserLoginDTO, Pair<AuthData, UserProfileDTO>>()
+                {
+                    @Override public Pair<AuthData, UserProfileDTO> call(UserLoginDTO userLoginDTO)
+                    {
+                        return Pair.create(loginSignUpFormDTO.authData, userLoginDTO.profileDTO);
+                    }
+                });
     }
 
     protected void trackSocialRegistration(@NonNull SocialNetworkEnum socialNetworkEnum)
@@ -207,12 +250,16 @@ public class SignInOrUpFragment extends Fragment
     {
         socialButtonsSubscription = authenticationObservable.subscribe(
                 Actions.empty(),
-                e -> {
-                    // CancellationException
-                    // Resubscribe on any type of exception for now
-                    if (e instanceof Exception)
+                new Action1<Throwable>()
+                {
+                    @Override public void call(Throwable e)
                     {
-                        resubscribe();
+                        // CancellationException
+                        // Resubscribe on any type of exception for now
+                        if (e instanceof Exception)
+                        {
+                            SignInOrUpFragment.this.resubscribe();
+                        }
                     }
                 });
     }
@@ -262,22 +309,40 @@ public class SignInOrUpFragment extends Fragment
 
     @NonNull protected Observable<UserLoginDTO> signUpAndLoginWithTwitterEmail(
             @NonNull TwitterEmailFragment twitterEmailFragment,
-            @NonNull AuthData authData,
-            @NonNull ProgressDialog progressDialog)
+            @NonNull final AuthData authData,
+            @NonNull final ProgressDialog progressDialog)
     {
         return twitterEmailFragment.obtainEmail()
-                .map(email -> authenticationFormBuilderProvider.get()
-                        .authData(authData)
-                        .email(email)
-                        .build())
-                .doOnNext(loginSignUpFormDTO -> progressDialog.show())
-                .flatMap(loginSignUpFormDTO -> sessionServiceWrapper.signupAndLoginRx(
-                        loginSignUpFormDTO.authData.getTHToken(), loginSignUpFormDTO))
+                .flatMap(new Func1<String, Observable<? extends UserLoginDTO>>()
+                {
+                    @Override public Observable<? extends UserLoginDTO> call(String email)
+                    {
+                        LoginSignUpFormDTO loginSignUpFormDTO = authenticationFormBuilderProvider.get()
+                                .authData(authData)
+                                .email(email)
+                                .build();
+                        progressDialog.show();
+                        return sessionServiceWrapper.signupAndLoginRx(
+                                loginSignUpFormDTO.authData.getTHToken(), loginSignUpFormDTO);
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(new ToastOnErrorAction())
                 .retry()
-                .doOnNext(userLoginDTO -> progressDialog.show())
-                .doOnCompleted(this::resubscribe);
+                .doOnNext(new Action1<UserLoginDTO>()
+                {
+                    @Override public void call(UserLoginDTO userLoginDTO)
+                    {
+                        progressDialog.show();
+                    }
+                })
+                .doOnCompleted(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        SignInOrUpFragment.this.resubscribe();
+                    }
+                });
     }
 }

@@ -38,6 +38,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
@@ -46,15 +47,17 @@ import java.util.Locale;
 import java.util.Random;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.content.ContentObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 import static butterknife.ButterKnife.findById;
 import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
@@ -168,7 +171,7 @@ public class NewsHeadlineFragment extends Fragment
         scrollListener = new QuickReturnListViewOnScrollListener(
                 QuickReturnType.HEADER, findById(getActivity(), R.id.news_carousel_wrapper), -headerHeight, null, 0);
 
-        ArrayDTOAdapter<NewsItemCompactDTO, NewsHeadlineViewLinear> mNewsAdapter =
+        final ArrayDTOAdapter<NewsItemCompactDTO, NewsHeadlineViewLinear> mNewsAdapter =
                 new ArrayDTOAdapter<>(getActivity(), R.layout.news_headline_item_view);
 
         mBottomLoadingView = new ProgressBar(getActivity());
@@ -184,13 +187,25 @@ public class NewsHeadlineFragment extends Fragment
                 // convert to hot observable coz replaceNewsItemListView can be call more than once
                 .share()
                         // pulling down from top always refresh the list
-                .distinctUntilChanged(key -> key.hashCode() + (key.page != 1 ? 0 : random.nextInt()));
+                .distinctUntilChanged(new Func1<PaginationDTO, Integer>()
+                {
+                    @Override public Integer call(PaginationDTO key)
+                    {
+                        return key.hashCode() + (key.page != 1 ? 0 : random.nextInt());
+                    }
+                });
 
         newsSubject = PublishSubject.create();
         subscriptions = new CompositeSubscription();
         subscriptions.add(newsSubject.subscribe(
-                mNewsAdapter::setItems,
-                e -> Timber.e(e, "Gotcha")));
+                new Action1<List<NewsItemCompactDTO>>()
+                {
+                    @Override public void call(List<NewsItemCompactDTO> newsItemCompactDTOs)
+                    {
+                        mNewsAdapter.setItems(newsItemCompactDTOs);
+                    }
+                },
+                new TimberOnErrorAction("Gotcha")));
         subscriptions.add(newsSubject.subscribe(new UpdateUIObserver()));
 
         activateNewsItemListView();
@@ -201,30 +216,74 @@ public class NewsHeadlineFragment extends Fragment
                     AppObservable.bindFragment(
                             this,
                             ContentObservable.fromLocalBroadcast(getActivity(), new IntentFilter(REGION_CHANGED))
-                                    .map((Func1<Intent, NewsItemListKey>) intent -> newsItemListKeyFromPref())
+                                    .map(new Func1<Intent, NewsItemListKey>()
+                                    {
+                                        @Override public NewsItemListKey call(Intent intent)
+                                        {
+                                            return NewsHeadlineFragment.this.newsItemListKeyFromPref();
+                                        }
+                                    })
                                     .subscribeOn(Schedulers.io()))
-                            .onErrorResumeNext(Observable.empty())
-                            .subscribe(this::replaceNewsItemListView, new ToastOnErrorAction()));
+                            .onErrorResumeNext(Observable.<NewsItemListKey>empty())
+                            .subscribe(new Action1<NewsItemListKey>()
+                            {
+                                @Override public void call(NewsItemListKey itemListKey)
+                                {
+                                    NewsHeadlineFragment.this.replaceNewsItemListView(itemListKey);
+                                }
+                            }, new ToastOnErrorAction()));
         }
     }
 
     private Observable<PaginationDTO> createPaginationObservable()
     {
-        Observable<PaginationDTO> pullFromStartObservable = Observable.create(subscriber ->
-                swipeRefreshLayout.setOnRefreshListener(() ->
-                                subscriber.onNext(new PaginationDTO(1, newsItemListKey.perPage))
-                ));
+        Observable<PaginationDTO> pullFromStartObservable = Observable.create(
+                new Observable.OnSubscribe<PaginationDTO>()
+                {
+                    @Override public void call(final Subscriber<? super PaginationDTO> subscriber)
+                    {
+                        swipeRefreshLayout.setOnRefreshListener(
+                                new SwipeRefreshLayout.OnRefreshListener()
+                                {
+                                    @Override public void onRefresh()
+                                    {
+                                        subscriber.onNext(new PaginationDTO(1, newsItemListKey.perPage));
+                                    }
+                                }
+                        );
+                    }
+                });
 
-        Observable<PaginationDTO> pullFromBottomObservable = Observable.create((Observable.OnSubscribe<PaginationDTO>) subscriber ->
-                mNewsListView.setOnScrollListener(new MultiScrollListener(scrollListener, dashboardBottomTabsScrollListener,
-                        createNearEndScrollOperator(subscriber, () -> {
-                            if (newsItemListKey != null && lastPaginationInfoDTO != null)
-                            {
-                                return lastPaginationInfoDTO.next;
-                            }
-                            return null;
-                        }))))
-                .doOnNext(o -> mBottomLoadingView.setVisibility(View.VISIBLE));
+        Observable<PaginationDTO> pullFromBottomObservable = Observable.create(
+                new Observable.OnSubscribe<PaginationDTO>()
+                {
+                    @Override public void call(Subscriber<? super PaginationDTO> subscriber)
+                    {
+                        mNewsListView.setOnScrollListener(new MultiScrollListener(
+                                scrollListener,
+                                dashboardBottomTabsScrollListener,
+                                createNearEndScrollOperator(
+                                        subscriber,
+                                        new Func0<PaginationDTO>()
+                                        {
+                                            @Override public PaginationDTO call()
+                                            {
+                                                if (newsItemListKey != null && lastPaginationInfoDTO != null)
+                                                {
+                                                    return lastPaginationInfoDTO.next;
+                                                }
+                                                return null;
+                                            }
+                                        })));
+                    }
+                })
+                .doOnNext(new Action1<PaginationDTO>()
+                {
+                    @Override public void call(PaginationDTO paginationDTO)
+                    {
+                        mBottomLoadingView.setVisibility(View.VISIBLE);
+                    }
+                });
         return Observable.merge(pullFromBottomObservable, pullFromStartObservable)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .startWith(new PaginationDTO(1, newsItemListKey.perPage));
@@ -233,12 +292,26 @@ public class NewsHeadlineFragment extends Fragment
     private Observable<List<NewsItemCompactDTO>> createNewsListKeyPaginationObservable()
     {
         return PaginationObservable.createFromRange(paginationObservable, (Func1<PaginationDTO, Observable<List<NewsItemCompactDTO>>>)
-                        key -> newsServiceWrapper.getNewsRx(NewsItemListKeyHelper.copy(newsItemListKey, key))
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .doOnNext(newsItemCompactDTOPaginatedDTO -> lastPaginationInfoDTO = newsItemCompactDTOPaginatedDTO.getPagination())
-                                .flatMapIterable(PaginatedDTO::getData)
-                                .toList()
+                        new Func1<PaginationDTO, Observable<List<NewsItemCompactDTO>>>()
+                        {
+                            @Override public Observable<List<NewsItemCompactDTO>> call(PaginationDTO key)
+                            {
+                                return newsServiceWrapper.getNewsRx(NewsItemListKeyHelper.copy(newsItemListKey, key))
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .flatMapIterable(new Func1<PaginatedDTO<NewsItemCompactDTO>, Iterable<? extends NewsItemCompactDTO>>()
+                                        {
+                                            @Override public Iterable<? extends NewsItemCompactDTO> call(
+                                                    PaginatedDTO<NewsItemCompactDTO> paginatedDTO)
+                                            {
+                                                lastPaginationInfoDTO =
+                                                        paginatedDTO.getPagination();
+                                                return paginatedDTO.getData();
+                                            }
+                                        })
+                                        .toList();
+                            }
+                        }
         );
     }
 
@@ -248,7 +321,7 @@ public class NewsHeadlineFragment extends Fragment
         newsSubscription = rxLoaderManager.create(newsItemListKey, createNewsListKeyPaginationObservable())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .onErrorResumeNext(Observable.empty())
+                .onErrorResumeNext(Observable.<List<NewsItemCompactDTO>>empty())
                 .subscribe(newsSubject);
     }
 

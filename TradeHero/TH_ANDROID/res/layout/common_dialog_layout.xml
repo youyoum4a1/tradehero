@@ -13,7 +13,7 @@
       android:id="@+id/content_list"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
-      android:listSelector="@drawable/common_dialog_item_bg"
+      android:listSelector="@drawable/basic_white_selector"
       android:cacheColorHint="@color/transparent"/>
 
 </LinearLayout>

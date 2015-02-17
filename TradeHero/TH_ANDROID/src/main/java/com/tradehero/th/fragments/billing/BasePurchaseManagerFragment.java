@@ -4,17 +4,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
@@ -51,7 +53,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
         currentUserPortfolioCompactListObservable = portfolioCompactListCache.get(currentUserId.toUserBaseKey())
-                        .map(new PairGetSecond<>())
+                        .map(new PairGetSecond<UserBaseKey, PortfolioCompactDTOList>())
                         .publish()
                         .refCount()
                         .cache(1);
@@ -88,11 +90,16 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 this,
                 currentUserPortfolioCompactListObservable)
                 .subscribe(
-                        this::handleReceivedPortfolioCompactList,
-                        e -> {
-                            Timber.e(e, "Failed fetching portfolios list");
-                            THToast.show(R.string.error_fetch_portfolio_list_info);
-                        }));
+                        new Action1<PortfolioCompactDTOList>()
+                        {
+                            @Override public void call(PortfolioCompactDTOList list)
+                            {
+                                BasePurchaseManagerFragment.this.handleReceivedPortfolioCompactList(list);
+                            }
+                        },
+                        new ToastAndLogOnErrorAction(
+                                getString(R.string.error_fetch_portfolio_list_info),
+                                "Failed fetching portfolios list")));
     }
 
     protected void handleReceivedPortfolioCompactList(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)

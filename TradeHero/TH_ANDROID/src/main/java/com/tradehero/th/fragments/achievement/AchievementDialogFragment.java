@@ -18,6 +18,7 @@ import com.tradehero.th.api.achievement.key.AchievementCategoryId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.achievement.AchievementCategoryCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.AttributesEvent;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
-import rx.functions.Actions;
+import rx.functions.Action1;
 
 public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 {
@@ -104,8 +105,15 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
                     this,
                     achievementCategoryCache.get(achievementCategoryId))
                     .subscribe(
-                            this::onReceivedAchievementCategory,
-                            Actions.empty());
+                            new Action1<Pair<AchievementCategoryId, AchievementCategoryDTO>>()
+                            {
+                                @Override public void call(
+                                        Pair<AchievementCategoryId, AchievementCategoryDTO> pair)
+                                {
+                                    AchievementDialogFragment.this.onReceivedAchievementCategory(pair);
+                                }
+                            },
+                            new EmptyAction1<Throwable>());
         }
     }
 

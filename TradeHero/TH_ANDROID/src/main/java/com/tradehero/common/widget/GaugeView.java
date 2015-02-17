@@ -223,7 +223,7 @@ public class GaugeView extends View {
         mShowNeedle = a.getBoolean(R.styleable.GaugeView_showNeedle, SHOW_NEEDLE);
         mShowScale = a.getBoolean(R.styleable.GaugeView_showScale, SHOW_SCALE);
         mShowRanges = a.getBoolean(R.styleable.GaugeView_showRanges, SHOW_RANGES);
-        mShowText = a.getBoolean(R.styleable.GaugeView_showText, SHOW_TEXT);
+        mShowText = a.getBoolean(R.styleable.GaugeView_gShowText, SHOW_TEXT);
 
         mOuterShadowWidth = mShowOuterShadow ? a.getFloat(R.styleable.GaugeView_outerShadowWidth, OUTER_SHADOW_WIDTH) : 0.0f;
         mOuterBorderWidth = mShowOuterBorder ? a.getFloat(R.styleable.GaugeView_outerBorderWidth, OUTER_BORDER_WIDTH) : 0.0f;
@@ -861,7 +861,7 @@ public class GaugeView extends View {
     private void drawNeedle(final Canvas canvas) {
         if (mNeedleInitialized) {
             final float angle = getAngleForValue(mCurrentValue);
-            // Logger.log.info(String.format("value=%f -> angle=%f", mCurrentValue, angle));
+            // Logger.log.info(String.format("value=%f --> angle=%f", mCurrentValue, angle));
 
             canvas.save(Canvas.MATRIX_SAVE_FLAG);
             canvas.rotate(angle, PIVOT_X, PIVOT_Y);

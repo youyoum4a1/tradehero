@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import timber.log.Timber;
 
 @Singleton public class SessionServiceWrapper
@@ -112,24 +113,28 @@ import timber.log.Timber;
 
     @NonNull public Observable<UserLoginDTO> signUpAndLoginOrUpdateTokensRx(
             @NonNull String authorizationHeader,
-            @NonNull LoginSignUpFormDTO loginSignUpFormDTO)
+            @NonNull final LoginSignUpFormDTO loginSignUpFormDTO)
     {
         return signupAndLoginRx(
                 authorizationHeader, loginSignUpFormDTO)
-                .retry((integer, throwable) -> {
-                    THException thException = new THException(throwable);
-                    if (thException.getCode() == THException.ExceptionCode.RenewSocialToken)
+                .retry(new Func2<Integer, Throwable, Boolean>()
+                {
+                    @Override public Boolean call(Integer integer, Throwable throwable)
                     {
-                        try
+                        THException thException = new THException(throwable);
+                        if (thException.getCode() == THException.ExceptionCode.RenewSocialToken)
                         {
-                            updateAuthorizationTokensRx(loginSignUpFormDTO).subscribe();
-                            return true;
-                        } catch (Exception ignored)
-                        {
-                            return false;
+                            try
+                            {
+                                SessionServiceWrapper.this.updateAuthorizationTokensRx(loginSignUpFormDTO).subscribe();
+                                return true;
+                            } catch (Exception ignored)
+                            {
+                                return false;
+                            }
                         }
+                        return false;
                     }
-                    return false;
                 });
     }
     //</editor-fold>

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 public class PaginationObservable
 {
@@ -17,24 +18,34 @@ public class PaginationObservable
     @NonNull public static <T extends Comparable<T>> Observable<List<T>> create(@NonNull Observable<List<T>> listObservable)
     {
         return listObservable
-                .scan(new LinkedList<T>(), (collector, newList) -> {
-                    int newListSize = newList.size();
-                    if (newListSize > 0)
+                .scan(new LinkedList<T>(), new Func2<LinkedList<T>, List<T>, LinkedList<T>>()
+                {
+                    @Override public LinkedList<T> call(LinkedList<T> collector, List<T> newList)
                     {
-                        if (collector.size() == 0)
+                        int newListSize = newList.size();
+                        if (newListSize > 0)
                         {
-                            collector.addAll(newList);
+                            if (collector.size() == 0)
+                            {
+                                collector.addAll(newList);
+                            }
+                            else
+                            {
+                                // merge two sorted list the hard way, complex but supposed to be fast
+                                return quickMerge(collector, newList);
+                            }
                         }
-                        else
-                        {
-                            // merge two sorted list the hard way, complex but supposed to be fast
-                            return quickMerge(collector, newList);
-                        }
-                    }
 
-                    return collector;
+                        return collector;
+                    }
                 })
-                .map(ts -> ts);
+                .map(new Func1<LinkedList<T>, List<T>>()
+                {
+                    @Override public List<T> call(LinkedList<T> ts)
+                    {
+                        return ts;
+                    }
+                });
     }
 
     @NonNull private static <T extends Comparable<T>> LinkedList<T> quickMerge(@NonNull LinkedList<T> collector, @NonNull List<T> newList)

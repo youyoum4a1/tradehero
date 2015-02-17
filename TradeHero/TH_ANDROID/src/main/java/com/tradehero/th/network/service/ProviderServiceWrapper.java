@@ -48,7 +48,7 @@ import rx.Observable;
     @NonNull public Observable<ProviderDTOList> getProvidersRx()
     {
         return this.providerServiceRx.getProviders()
-                .map(new BaseDTOListProcessor<>(
+                .map(new BaseDTOListProcessor<ProviderDTO, ProviderDTOList>(
                         new DTOProcessorProviderReceived(currentUserId)));
     }
     //</editor-fold>
@@ -70,7 +70,7 @@ import rx.Observable;
     @NonNull public Observable<PortfolioDTO> getPortfolio(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getPortfolio(providerId.key)
-                .map(new DTOProcessorPortfolioReceived<>(currentUserId.toUserBaseKey()));
+                .map(new DTOProcessorPortfolioReceived<PortfolioDTO>(currentUserId.toUserBaseKey()));
     }
     //</editor-fold>
 

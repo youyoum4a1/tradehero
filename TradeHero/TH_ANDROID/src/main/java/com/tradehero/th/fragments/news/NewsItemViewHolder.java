@@ -24,12 +24,14 @@ import com.tradehero.th.api.security.SecurityIntegerIdList;
 import com.tradehero.th.fragments.discussion.DiscussionActionButtonsView;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.persistence.security.SecurityMultiFetchAssistant;
+import com.tradehero.th.rx.EmptyAction1;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 public class NewsItemViewHolder<DiscussionType extends NewsItemCompactDTO> extends
         NewsItemCompactViewHolder<DiscussionType>
@@ -97,8 +99,14 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemCompactDTO> exten
                 multiFetchSubscription = multiFetchAssistant.get(new SecurityIntegerIdList(securityIds, 0))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                this::onReceivedSecurities,
-                                e -> {});
+                                new Action1<Map<SecurityIntegerId, SecurityCompactDTO>>()
+                                {
+                                    @Override public void call(Map<SecurityIntegerId, SecurityCompactDTO> map)
+                                    {
+                                        NewsItemViewHolder.this.onReceivedSecurities(map);
+                                    }
+                                },
+                                new EmptyAction1<Throwable>());
             }
         }
     }

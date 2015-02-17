@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
@@ -84,9 +85,13 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
         swipeRefreshLayout.setOnRefreshListener(this);
         followerList.setAdapter(followerListAdapter);
         followerList.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-        followerList.setOnItemClickListener((parent, view1, position, id) -> {
-            ListView listView = (ListView) parent;
-            handleFollowerItemClicked(view1, position - listView.getHeaderViewsCount(), id);
+        followerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> parent, View view1, int position, long id)
+            {
+                ListView listView = (ListView) parent;
+                FollowerManagerTabFragment.this.handleFollowerItemClicked(view1, position - listView.getHeaderViewsCount(), id);
+            }
         });
         displayProgress(true);
     }

@@ -6,6 +6,7 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.OAuthDialog;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import java.util.concurrent.CancellationException;
 import oauth.signpost.OAuth;
 import rx.Observable;
@@ -60,7 +61,7 @@ public class OperatorOAuthDialog implements Observable.OnSubscribe<String>
         });
         dialog.show();
 
-        Subscription subscription = AndroidSubscriptions.unsubscribeInUiThread(dialog::dismiss);
+        Subscription subscription = AndroidSubscriptions.unsubscribeInUiThread(new DismissDialogAction0(dialog));
 
         subscriber.add(subscription);
     }

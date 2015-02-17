@@ -40,8 +40,10 @@ import com.tradehero.th.widget.KChartsView;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.functions.Func1;
 
 @Routable("securityFx/:securityRawInfo")
 public class BuySellFXFragment extends BuySellFragment
@@ -144,7 +146,13 @@ public class BuySellFXFragment extends BuySellFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXHistory(securityId, granularity)
-                        .repeatWhen(observable -> observable.delay(MILLISECOND_FX_CANDLE_CHART_REFRESH, TimeUnit.MILLISECONDS)))
+                        .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
+                        {
+                            @Override public Observable<?> call(Observable<? extends Void> observable)
+                            {
+                                return observable.delay(MILLISECOND_FX_CANDLE_CHART_REFRESH, TimeUnit.MILLISECONDS);
+                            }
+                        }))
                 .subscribe(createFXHistoryFetchObserver()));
     }
 

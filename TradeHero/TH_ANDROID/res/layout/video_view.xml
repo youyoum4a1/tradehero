@@ -28,7 +28,7 @@
       android:layout_width="@dimen/video_thumbnail_width"
       android:layout_height="@dimen/video_thumbnail_height"
       android:scaleType="centerInside"
-      android:background="@color/light_grey_transparent"
+      android:background="@color/grey_transparent"
       android:layout_above="@id/video_title"
       android:src="@drawable/icn_padlock"
       android:layout_centerInParent="true"

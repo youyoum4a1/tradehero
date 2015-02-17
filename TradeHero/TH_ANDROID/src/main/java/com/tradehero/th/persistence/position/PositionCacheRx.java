@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.position;
 
 import android.support.annotation.NonNull;
 import android.util.Pair;
+import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
@@ -21,6 +22,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Func1;
 
 @Singleton @UserCache
 public class PositionCacheRx extends BaseFetchDTOCacheRx<PositionDTOKey, PositionDTO>
@@ -63,11 +65,28 @@ public class PositionCacheRx extends BaseFetchDTOCacheRx<PositionDTOKey, Positio
         {
             throw new IllegalArgumentException("Unhandled PositionDTOKey " + key);
         }
-        Observable<Pair<GetPositionsDTOKey, GetPositionsDTO>> getPositionsDTO = getPositionsCache.get().get(getPositionsDTOKey);
-        return getPositionsDTO
-                .map(pair -> pair.second.positions)
-                .flatMap(Observable::from)
-                .first(position -> position.getPositionDTOKey().equals(key));
+        return getPositionsCache.get().get(getPositionsDTOKey)
+                .flatMap(new Func1<Pair<GetPositionsDTOKey, GetPositionsDTO>, Observable<PositionDTO>>()
+                {
+                    @Override public Observable<PositionDTO> call(Pair<GetPositionsDTOKey, GetPositionsDTO> pair)
+                    {
+                        if (pair.second.positions != null)
+                        {
+                            PositionDTO position = pair.second.positions.findFirstWhere(new Predicate<PositionDTO>()
+                            {
+                                @Override public boolean apply(PositionDTO position)
+                                {
+                                    return position.getPositionDTOKey().equals(key);
+                                }
+                            });
+                            if (position != null)
+                            {
+                                return Observable.just(position);
+                            }
+                        }
+                        return Observable.error(new IllegalArgumentException("Not found"));
+                    }
+                });
     }
 
     @Override public void onNext(@NonNull PositionDTOKey key, @NonNull PositionDTO value)

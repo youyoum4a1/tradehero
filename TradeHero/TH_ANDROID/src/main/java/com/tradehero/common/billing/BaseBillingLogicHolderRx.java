@@ -16,8 +16,12 @@ import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
 import com.tradehero.common.billing.tester.BillingAvailableTesterHolderRx;
 import com.tradehero.common.billing.tester.BillingTestResult;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.rx.ReplaceWith;
 import java.util.List;
 import rx.Observable;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 abstract public class BaseBillingLogicHolderRx<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -126,10 +130,16 @@ abstract public class BaseBillingLogicHolderRx<
     //</editor-fold>
 
     //<editor-fold desc="Test Billing">
-    @NonNull @Override public Observable<BillingTestResult> testAndClear(int requestCode)
+    @NonNull @Override public Observable<BillingTestResult> testAndClear(final int requestCode)
     {
         return test(requestCode)
-                .finallyDo(() -> forgetRequestCode(requestCode));
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        BaseBillingLogicHolderRx.this.forgetRequestCode(requestCode);
+                    }
+                });
     }
 
     @NonNull @Override public Observable<BillingTestResult> test(int requestCode)
@@ -143,31 +153,59 @@ abstract public class BaseBillingLogicHolderRx<
             ProductIdentifierListKeyType,
             ProductIdentifierType,
             ProductIdentifierListType>> getIdsAndClear(
-            int requestCode)
+            final int requestCode)
     {
         return getIds(requestCode)
-                .finallyDo(() -> forgetRequestCode(requestCode));
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        BaseBillingLogicHolderRx.this.forgetRequestCode(requestCode);
+                    }
+                });
     }
 
     @NonNull @Override public Observable<ProductIdentifierListResult<
             ProductIdentifierListKeyType,
             ProductIdentifierType,
             ProductIdentifierListType>> getIds(
-            int requestCode)
+            final int requestCode)
     {
         return test(requestCode)
-                .flatMap(result -> productIdentifierFetcherHolder.get(requestCode))
-                .doOnNext(result -> productIdentifierCache.onNext(result.type, result.productIdentifiers));
+                .flatMap(
+                        new Func1<BillingTestResult, Observable<? extends ProductIdentifierListResult<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType>>>()
+                        {
+                            @Override
+                            public Observable<? extends ProductIdentifierListResult<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType>> call(
+                                    BillingTestResult result)
+                            {
+                                return productIdentifierFetcherHolder.get(requestCode);
+                            }
+                        })
+                .doOnNext(new Action1<ProductIdentifierListResult<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType>>()
+                {
+                    @Override public void call(
+                            ProductIdentifierListResult<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType> result)
+                    {
+                        productIdentifierCache.onNext(result.type, result.productIdentifiers);
+                    }
+                });
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Inventory">
     @NonNull @Override public Observable<ProductInventoryResult<
             ProductIdentifierType,
-            ProductDetailType>> getInventoryAndClear(int requestCode)
+            ProductDetailType>> getInventoryAndClear(final int requestCode)
     {
         return getInventory(requestCode)
-                .finallyDo(() -> forgetRequestCode(requestCode));
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        BaseBillingLogicHolderRx.this.forgetRequestCode(requestCode);
+                    }
+                });
     }
 
     @NonNull @Override public Observable<ProductInventoryResult<
@@ -175,24 +213,52 @@ abstract public class BaseBillingLogicHolderRx<
             ProductDetailType>> getInventory(int requestCode)
     {
         return getIds(requestCode)
-                .flatMap(result -> getInventory(result.requestCode, result.productIdentifiers));
+                .flatMap(
+                        new Func1<ProductIdentifierListResult<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType>, Observable<? extends ProductInventoryResult<ProductIdentifierType, ProductDetailType>>>()
+                        {
+                            @Override public Observable<? extends ProductInventoryResult<ProductIdentifierType, ProductDetailType>> call(
+                                    ProductIdentifierListResult<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType> result)
+                            {
+                                return BaseBillingLogicHolderRx.this.getInventory(result.requestCode, result.productIdentifiers);
+                            }
+                        });
     }
 
     @NonNull @Override public Observable<ProductInventoryResult<
             ProductIdentifierType,
-            ProductDetailType>> getInventoryAndClear(int requestCode, @NonNull List<ProductIdentifierType> productIdentifiers)
+            ProductDetailType>> getInventoryAndClear(final int requestCode, @NonNull List<ProductIdentifierType> productIdentifiers)
     {
         return getInventory(requestCode, productIdentifiers)
-                .finallyDo(() -> forgetRequestCode(requestCode));
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        BaseBillingLogicHolderRx.this.forgetRequestCode(requestCode);
+                    }
+                });
     }
 
     @NonNull @Override public Observable<ProductInventoryResult<
             ProductIdentifierType,
-            ProductDetailType>> getInventory(int requestCode, @NonNull List<ProductIdentifierType> productIdentifiers)
+            ProductDetailType>> getInventory(final int requestCode, @NonNull final List<ProductIdentifierType> productIdentifiers)
     {
         return test(requestCode)
-                .flatMap(result -> inventoryFetcherHolder.get(requestCode, productIdentifiers))
-                .doOnNext(result -> productDetailCache.onNext(result.id, result.detail));
+                .flatMap(new Func1<BillingTestResult, Observable<? extends ProductInventoryResult<ProductIdentifierType, ProductDetailType>>>()
+                {
+                    @Override public Observable<? extends ProductInventoryResult<ProductIdentifierType, ProductDetailType>> call(
+                            BillingTestResult result)
+                    {
+                        return inventoryFetcherHolder.get(requestCode, productIdentifiers);
+                    }
+                })
+                .doOnNext(new Action1<ProductInventoryResult<ProductIdentifierType, ProductDetailType>>()
+                {
+                    @Override public void call(
+                            ProductInventoryResult<ProductIdentifierType, ProductDetailType> result)
+                    {
+                        productDetailCache.onNext(result.id, result.detail);
+                    }
+                });
     }
     //</editor-fold>
 
@@ -201,21 +267,43 @@ abstract public class BaseBillingLogicHolderRx<
             ProductIdentifierType,
             PurchaseOrderType,
             OrderIdType,
-            ProductPurchaseType>> purchaseAndClear(int requestCode, @NonNull PurchaseOrderType purchaseOrder)
+            ProductPurchaseType>> purchaseAndClear(final int requestCode, @NonNull PurchaseOrderType purchaseOrder)
     {
         return purchase(requestCode, purchaseOrder)
-                .finallyDo(() -> forgetRequestCode(requestCode));
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        BaseBillingLogicHolderRx.this.forgetRequestCode(requestCode);
+                    }
+                });
     }
 
     @NonNull @Override public Observable<PurchaseResult<
             ProductIdentifierType,
             PurchaseOrderType,
             OrderIdType,
-            ProductPurchaseType>> purchase(int requestCode, @NonNull PurchaseOrderType purchaseOrder)
+            ProductPurchaseType>> purchase(final int requestCode, @NonNull final PurchaseOrderType purchaseOrder)
     {
         return test(requestCode)
-                .flatMap(result -> purchaserHolder.get(requestCode, purchaseOrder))
-                .doOnNext(result -> purchaseCache.onNext(result.purchase.getOrderId(), result.purchase));
+                .flatMap(
+                        new Func1<BillingTestResult, Observable<? extends PurchaseResult<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType>>>()
+                        {
+                            @Override
+                            public Observable<? extends PurchaseResult<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType>> call(
+                                    BillingTestResult result)
+                            {
+                                return purchaserHolder.get(requestCode, purchaseOrder);
+                            }
+                        })
+                .doOnNext(new Action1<PurchaseResult<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType>>()
+                {
+                    @Override public void call(
+                            PurchaseResult<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType> result)
+                    {
+                        purchaseCache.onNext(result.purchase.getOrderId(), result.purchase);
+                    }
+                });
     }
     //</editor-fold>
 
@@ -223,20 +311,41 @@ abstract public class BaseBillingLogicHolderRx<
     @NonNull @Override public Observable<PurchaseFetchResult<
             ProductIdentifierType,
             OrderIdType,
-            ProductPurchaseType>> getPurchasesAndClear(int requestCode)
+            ProductPurchaseType>> getPurchasesAndClear(final int requestCode)
     {
         return getPurchases(requestCode)
-                .finallyDo(() -> forgetRequestCode(requestCode));
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        BaseBillingLogicHolderRx.this.forgetRequestCode(requestCode);
+                    }
+                });
     }
 
     @NonNull @Override public Observable<PurchaseFetchResult<
             ProductIdentifierType,
             OrderIdType,
-            ProductPurchaseType>> getPurchases(int requestCode)
+            ProductPurchaseType>> getPurchases(final int requestCode)
     {
         return test(requestCode)
-                .flatMap(result -> purchaseFetcherHolder.get(requestCode))
-                .doOnNext(result -> purchaseCache.onNext(result.purchase.getOrderId(), result.purchase));
+                .flatMap(
+                        new Func1<BillingTestResult, Observable<? extends PurchaseFetchResult<ProductIdentifierType, OrderIdType, ProductPurchaseType>>>()
+                        {
+                            @Override public Observable<? extends PurchaseFetchResult<ProductIdentifierType, OrderIdType, ProductPurchaseType>> call(
+                                    BillingTestResult result)
+                            {
+                                return purchaseFetcherHolder.get(requestCode);
+                            }
+                        })
+                .doOnNext(new Action1<PurchaseFetchResult<ProductIdentifierType, OrderIdType, ProductPurchaseType>>()
+                {
+                    @Override public void call(
+                            PurchaseFetchResult<ProductIdentifierType, OrderIdType, ProductPurchaseType> result)
+                    {
+                        purchaseCache.onNext(result.purchase.getOrderId(), result.purchase);
+                    }
+                });
     }
     //</editor-fold>
 
@@ -245,11 +354,17 @@ abstract public class BaseBillingLogicHolderRx<
             ProductIdentifierType,
             OrderIdType,
             ProductPurchaseType>> restorePurchaseAndClear(
-            int requestCode,
+            final int requestCode,
             @NonNull ProductPurchaseType purchase)
     {
         return restorePurchase(requestCode, purchase)
-                .finallyDo(() -> forgetRequestCode(requestCode));
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        BaseBillingLogicHolderRx.this.forgetRequestCode(requestCode);
+                    }
+                });
     }
 
     @NonNull @Override public Observable<PurchaseRestoreResult<
@@ -267,39 +382,78 @@ abstract public class BaseBillingLogicHolderRx<
             ProductIdentifierType,
             OrderIdType,
             ProductPurchaseType>> restorePurchasesAndClear(
-            int requestCode)
+            final int requestCode)
     {
         return restorePurchases(requestCode)
-                .finallyDo(() -> forgetRequestCode(requestCode));
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        BaseBillingLogicHolderRx.this.forgetRequestCode(requestCode);
+                    }
+                });
     }
 
     @NonNull @Override public Observable<PurchaseRestoreTotalResult<
             ProductIdentifierType,
             OrderIdType,
             ProductPurchaseType>> restorePurchases(
-            int requestCode)
+            final int requestCode)
     {
-        PurchaseRestoreTotalResult<
+        final PurchaseRestoreTotalResult<
                 ProductIdentifierType,
                 OrderIdType,
                 ProductPurchaseType> result = new PurchaseRestoreTotalResult<>(requestCode);
         //noinspection Convert2Diamond
         return getPurchases(requestCode)
-                .flatMap(fetchResult -> restorePurchase(requestCode, fetchResult.purchase)
-                                .map(restoreResult -> new PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>(
-                                        restoreResult.requestCode,
-                                        restoreResult.purchase,
-                                        null))
-                                .onErrorResumeNext(error -> Observable.just(
-                                        new PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>(
-                                                requestCode,
-                                                fetchResult.purchase,
-                                                error)))
+                .flatMap(
+                        new Func1<PurchaseFetchResult<ProductIdentifierType, OrderIdType, ProductPurchaseType>, Observable<? extends PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>>>()
+                        {
+                            @Override
+                            public Observable<? extends PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>> call(
+                                    final PurchaseFetchResult<ProductIdentifierType, OrderIdType, ProductPurchaseType> fetchResult)
+                            {
+                                return BaseBillingLogicHolderRx.this.restorePurchase(requestCode, fetchResult.purchase)
+                                        .map(new Func1<PurchaseRestoreResult<ProductIdentifierType, OrderIdType, ProductPurchaseType>, PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>>()
+                                        {
+                                            @Override
+                                            public PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType> call(
+                                                    PurchaseRestoreResult<ProductIdentifierType, OrderIdType, ProductPurchaseType> restoreResult)
+                                            {
+                                                return new PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>(
+                                                        restoreResult.requestCode,
+                                                        restoreResult.purchase,
+                                                        null);
+                                            }
+                                        })
+                                        .onErrorResumeNext(
+                                                new Func1<Throwable, Observable<? extends PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>>>()
+                                                {
+                                                    @Override
+                                                    public Observable<? extends PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>> call(
+                                                            Throwable error)
+                                                    {
+                                                        return Observable.just(
+                                                                new PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>(
+                                                                        requestCode,
+                                                                        fetchResult.purchase,
+                                                                        error));
+                                                    }
+                                                });
+                            }
+                        }
                 )
-                .doOnNext(result::add)
-                .doOnNext(restored -> THToast.show("Restored purchase " + restored.purchase.getProductIdentifier()))
+                .doOnNext(new Action1<PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>>()
+                {
+                    @Override public void call(
+                            PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType> restored)
+                    {
+                        result.add(restored);
+                        THToast.show("Restored purchase " + restored.purchase.getProductIdentifier());
+                    }
+                })
                 .toList()
-                .map(list -> result);
+                .map(new ReplaceWith<List<PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>>, PurchaseRestoreTotalResult<ProductIdentifierType, OrderIdType, ProductPurchaseType>>(result));
     }
     //</editor-fold>
 

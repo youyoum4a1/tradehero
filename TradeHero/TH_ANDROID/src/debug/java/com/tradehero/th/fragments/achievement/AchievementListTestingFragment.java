@@ -55,7 +55,13 @@ public class AchievementListTestingFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         swipeRefreshLayout.setEnabled(false);
         initAdapter();
-        listView.setOnItemClickListener(this::onListViewItemClicked);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> parent, View view1, int position, long id)
+            {
+                AchievementListTestingFragment.this.onListViewItemClicked(parent, view1, position, id);
+            }
+        });
     }
 
     protected void onListViewItemClicked(AdapterView<?> adapterView, View view, int i, long l)

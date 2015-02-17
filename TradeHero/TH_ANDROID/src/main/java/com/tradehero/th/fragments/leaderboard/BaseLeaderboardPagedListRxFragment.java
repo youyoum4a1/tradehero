@@ -9,11 +9,11 @@ import com.tradehero.common.api.PagedDTOKey;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.BasePagedListRxFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
@@ -22,9 +22,12 @@ import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 abstract public class BaseLeaderboardPagedListRxFragment<
@@ -86,10 +89,16 @@ abstract public class BaseLeaderboardPagedListRxFragment<
             onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
                     leaderboardDefCache.get(leaderboardDefKey)
-                            .map(new PairGetSecond<>()))
+                            .map(new PairGetSecond<LeaderboardDefKey, LeaderboardDefDTO>()))
                     .subscribe(
-                            this::linkWith,
-                            e -> THToast.show(R.string.error_fetch_leaderboard_def)));
+                            new Action1<LeaderboardDefDTO>()
+                            {
+                                @Override public void call(LeaderboardDefDTO defDTO)
+                                {
+                                    BaseLeaderboardPagedListRxFragment.this.linkWith(defDTO);
+                                }
+                            },
+                            new ToastOnErrorAction(getString(R.string.error_fetch_leaderboard_def))));
         }
         else
         {
@@ -113,13 +122,18 @@ abstract public class BaseLeaderboardPagedListRxFragment<
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
                 .subscribe(
-                        this::setCurrentUserProfileDTO,
-                        e -> {
-                            Timber.e(e, "Failed to download current UserProfile");
-                            THToast.show(R.string.error_fetch_your_user_profile);
-                        }));
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO userProfileDTO)
+                            {
+                                BaseLeaderboardPagedListRxFragment.this.setCurrentUserProfileDTO(userProfileDTO);
+                            }
+                        },
+                        new ToastAndLogOnErrorAction(
+                                getString(R.string.error_fetch_your_user_profile),
+                                "Failed to download current UserProfile")));
     }
 
     protected void setCurrentUserProfileDTO(@NonNull UserProfileDTO currentUserProfileDTO)

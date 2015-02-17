@@ -7,7 +7,6 @@ import dagger.Module;
         },
         injects = {
                 THColorUtilsTest.class,
-                NumberDisplayUtilsTest.class,
         },
         complete = false,
         library = true

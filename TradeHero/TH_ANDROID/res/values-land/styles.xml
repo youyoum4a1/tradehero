@@ -12,7 +12,7 @@
   <style name="TH.Btn_Price_Bar_Separator">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">1dp</item>
-    <item name="android:background">@color/dark_gray</item>
+    <item name="android:background">@color/tradehero_divider_grey</item>
   </style>
 
 </resources>

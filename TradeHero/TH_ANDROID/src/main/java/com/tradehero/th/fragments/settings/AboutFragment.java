@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
@@ -57,7 +58,13 @@ public class AboutFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        scrollView.setOnTouchListener((v, event) -> true);
+        scrollView.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override public boolean onTouch(View v, MotionEvent event)
+            {
+                return true;
+            }
+        });
 
         PropertyValuesHolder pvRtX = PropertyValuesHolder.ofFloat(View.ROTATION_X, 0f, 30f);
         rotateAnimator = ObjectAnimator.ofPropertyValuesHolder(scrollView, pvRtX);

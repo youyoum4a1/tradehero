@@ -3,9 +3,12 @@ package com.tradehero.common.billing.samsung.rx;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
+import com.sec.android.iap.lib.listener.OnGetInboxListener;
+import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.InboxVo;
 import com.tradehero.common.billing.samsung.BaseSamsungOperator;
 import com.tradehero.common.billing.samsung.exception.SamsungPurchaseFetchException;
+import java.util.ArrayList;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -51,7 +54,7 @@ public class SamsungInboxOperator extends BaseSamsungOperator
     }
     //</editor-fold>
 
-    @Override public void call(Subscriber<? super InboxVo> subscriber)
+    @Override public void call(final Subscriber<? super InboxVo> subscriber)
     {
         getSamsungIapHelper().getItemInboxList(
                 groupId,
@@ -60,18 +63,22 @@ public class SamsungInboxOperator extends BaseSamsungOperator
                 startDate,
                 //THSamsungConstants.getTodayStringForInbox(),
                 endDate,
-                (errorVo, inboxList) -> {
-                    if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)
+                new OnGetInboxListener()
+                {
+                    @Override public void onGetItemInbox(ErrorVo errorVo, ArrayList<InboxVo> inboxList)
                     {
-                        for (InboxVo inboxVo : inboxList)
+                        if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)
                         {
-                            subscriber.onNext(inboxVo);
+                            for (InboxVo inboxVo : inboxList)
+                            {
+                                subscriber.onNext(inboxVo);
+                            }
+                            subscriber.onCompleted();
                         }
-                        subscriber.onCompleted();
-                    }
-                    else
-                    {
-                        subscriber.onError(new SamsungPurchaseFetchException(errorVo, groupId));
+                        else
+                        {
+                            subscriber.onError(new SamsungPurchaseFetchException(errorVo, groupId));
+                        }
                     }
                 });
     }

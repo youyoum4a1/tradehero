@@ -4,6 +4,7 @@ import android.view.View;
 import rx.Observable;
 import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
+import rx.functions.Func1;
 
 public class ViewArrayObservable
 {
@@ -16,7 +17,16 @@ public class ViewArrayObservable
     public static Observable<OnClickEvent> clicks(final View[] views, final boolean emitInitialValue)
     {
         return Observable.from(views)
-                .filter(t -> t != null)
-                .flatMap(view -> ViewObservable.clicks(view, emitInitialValue));
+                .flatMap(new Func1<View, Observable<? extends OnClickEvent>>()
+                {
+                    @Override public Observable<? extends OnClickEvent> call(View view)
+                    {
+                        if (view != null)
+                        {
+                            return ViewObservable.clicks(view, emitInitialValue);
+                        }
+                        return Observable.empty();
+                    }
+                });
     }
 }

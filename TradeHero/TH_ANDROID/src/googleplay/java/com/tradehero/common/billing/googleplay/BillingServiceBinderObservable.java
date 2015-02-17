@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 
@@ -49,19 +50,18 @@ public class BillingServiceBinderObservable
                 0,
                 Context.BIND_AUTO_CREATE);
         subjectSubscription = Observable.create(serviceConnectionOperator)
-                .finallyDo(() -> {
-                    subjectSubscription = null;
-                    serviceSubject = BehaviorSubject.create();
-                    serviceConnectionOperator = null;
-                    THToast.show("Billing Service binder disconnected");
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        subjectSubscription = null;
+                        serviceSubject = BehaviorSubject.create();
+                        serviceConnectionOperator = null;
+                        THToast.show("Billing Service binder disconnected");
+                    }
                 })
                 .subscribeOn(Schedulers.computation())
                 .subscribe(serviceSubject);
-    }
-
-    public void onDestroy()
-    {
-        serviceConnectionOperator.onDestroy();
     }
 
     @NonNull public static Intent getBillingBindIntent()

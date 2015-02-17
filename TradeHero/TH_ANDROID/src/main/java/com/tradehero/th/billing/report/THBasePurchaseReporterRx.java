@@ -15,6 +15,7 @@ import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import dagger.Lazy;
 import rx.Observable;
+import rx.functions.Func1;
 
 public class THBasePurchaseReporterRx<
         ProductIdentifierType extends ProductIdentifier,
@@ -75,7 +76,13 @@ public class THBasePurchaseReporterRx<
                 result = alertPlanServiceWrapper.get().subscribeToAlertPlanRx(
                         purchase.getApplicableOwnedPortfolioId().getUserBaseKey(),
                         purchase.getPurchaseReportDTO())
-                        .onErrorResumeNext(this::seeIfPlanIsYours);
+                        .onErrorResumeNext(new Func1<Throwable, Observable<? extends UserProfileDTO>>()
+                        {
+                            @Override public Observable<? extends UserProfileDTO> call(Throwable error)
+                            {
+                                return THBasePurchaseReporterRx.this.seeIfPlanIsYours(error);
+                            }
+                        });
                 break;
 
             case DOMAIN_FOLLOW_CREDITS:
@@ -85,13 +92,19 @@ public class THBasePurchaseReporterRx<
                     result = userServiceWrapper.get().addCreditRx(
                             purchase.getApplicableOwnedPortfolioId().getUserBaseKey(),
                             purchase.getPurchaseReportDTO())
-                            .flatMap(userProfileDTO -> userServiceWrapper.get().followRx(purchase.getUserToFollow()));
+                            .flatMap(new Func1<UserProfileDTO, Observable<? extends UserProfileDTO>>()
+                            {
+                                @Override public Observable<? extends UserProfileDTO> call(UserProfileDTO userProfileDTO)
+                                {
+                                    return userServiceWrapper.get().followRx(purchase.getUserToFollow());
+                                }
+                            });
 
                     // TODO put back when ok https://www.pivotaltracker.com/story/show/77362688
                     //return userServiceWrapper.get().followRx(
                     //        purchase.getUserToFollow(),
                     //        purchase.getPurchaseReportDTO())
-                    //        .map(this::createResult);
+                    //        .map(this: :createResult);
                 }
                 else
                 {
@@ -105,7 +118,13 @@ public class THBasePurchaseReporterRx<
                 result = Observable.error(new IllegalStateException("Unhandled ProductIdentifierDomain." + productDetail.getDomain()));
                 break;
         }
-        return result.map(this::createResult);
+        return result.map(new Func1<UserProfileDTO, PurchaseReportResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>>()
+        {
+            @Override public PurchaseReportResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType> call(UserProfileDTO profile)
+            {
+                return THBasePurchaseReporterRx.this.createResult(profile);
+            }
+        });
     }
 
     @NonNull protected PurchaseReportResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType> createResult(
@@ -114,12 +133,18 @@ public class THBasePurchaseReporterRx<
         return new PurchaseReportResult<>(getRequestCode(), purchase, userProfileDTO);
     }
 
-    @NonNull protected Observable<UserProfileDTO> seeIfPlanIsYours(@NonNull Throwable errorFromReport)
+    @NonNull protected Observable<UserProfileDTO> seeIfPlanIsYours(@NonNull final Throwable errorFromReport)
     {
         return alertPlanCheckServiceWrapper.get().checkAlertPlanAttributionRx(
                 purchase.getApplicableOwnedPortfolioId().getUserBaseKey(),
                 purchase.getPurchaseReportDTO())
-                .flatMap(alert -> seeIfPlanIsYours(alert, errorFromReport));
+                .flatMap(new Func1<AlertPlanStatusDTO, Observable<? extends UserProfileDTO>>()
+                {
+                    @Override public Observable<? extends UserProfileDTO> call(AlertPlanStatusDTO alert)
+                    {
+                        return THBasePurchaseReporterRx.this.seeIfPlanIsYours(alert, errorFromReport);
+                    }
+                });
     }
 
     @NonNull protected Observable<UserProfileDTO> seeIfPlanIsYours(

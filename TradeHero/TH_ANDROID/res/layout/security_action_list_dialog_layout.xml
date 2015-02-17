@@ -25,7 +25,6 @@
         android:text="@android:string/cancel"
         android:layout_marginRight="5dp"
         style="@style/TH.Button.Small"
-        android:textColor="@color/gray_normal"
         android:background="@drawable/basic_transparent_selector"
         />
 
@@ -52,7 +51,7 @@
       android:id="@+id/security_action_list_sharing_items"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:listSelector="@drawable/common_dialog_item_bg"
+      android:listSelector="@drawable/basic_white_selector"
       android:cacheColorHint="@color/transparent"
       />
 

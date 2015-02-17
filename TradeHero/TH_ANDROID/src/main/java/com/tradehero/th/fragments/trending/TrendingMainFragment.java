@@ -28,12 +28,14 @@ import com.tradehero.th.fragments.games.ViralGamePopupDialogFragment;
 import com.tradehero.th.persistence.games.ViralMiniGameDefListCache;
 import com.tradehero.th.persistence.prefs.ShowViralGameDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.utils.Constants;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class TrendingMainFragment extends DashboardFragment
@@ -99,7 +101,7 @@ public class TrendingMainFragment extends DashboardFragment
         }
 
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
-        pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
+        pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
 
         tabViewPager.setCurrentItem(lastType, true);
@@ -181,8 +183,14 @@ public class TrendingMainFragment extends DashboardFragment
             subFragment
                     .getRequestedTrendingTabTypeObservable()
                     .subscribe(
-                            TrendingMainFragment.this::handleRequestedTabType,
-                            error -> Timber.e(error, "")
+                            new Action1<TrendingTabType>()
+                            {
+                                @Override public void call(TrendingTabType trendingTabType)
+                                {
+                                    TrendingMainFragment.this.handleRequestedTabType(trendingTabType);
+                                }
+                            },
+                            new TimberOnErrorAction("")
                     );
             return subFragment;
         }

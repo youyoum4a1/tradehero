@@ -9,7 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -28,8 +27,10 @@ import com.tradehero.th.persistence.competition.CompetitionCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCacheRx;
 import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
@@ -196,10 +197,16 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 providerCache.get(providerId)
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<ProviderId, ProviderDTO>()))
                 .subscribe(
-                        this::linkWith,
-                        new ToastAction<>(getString(R.string.error_fetch_provider_info))));
+                        new Action1<ProviderDTO>()
+                        {
+                            @Override public void call(ProviderDTO providerDTO)
+                            {
+                                linkWith(providerDTO);
+                            }
+                        },
+                        new ToastAction<Throwable>(getString(R.string.error_fetch_provider_info))));
     }
 
     protected void linkWith(ProviderDTO providerDTO)
@@ -223,12 +230,18 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 competitionCache.get(competitionId)
-                        .map(new PairGetSecond<>()))
-                .subscribe(this::linkWith,
-                        e -> {
-                            THToast.show(R.string.error_fetch_provider_competition);
-                            Timber.e(e, "Error fetching competition info");
-                        }));
+                        .map(new PairGetSecond<CompetitionId, CompetitionDTO>()))
+                .subscribe(
+                        new Action1<CompetitionDTO>()
+                           {
+                               @Override public void call(CompetitionDTO competition)
+                               {
+                                   linkWith(competition);
+                               }
+                           },
+                        new ToastAndLogOnErrorAction(
+                                getString(R.string.error_fetch_provider_competition),
+                                "Error fetching competition info")));
     }
 
     protected void linkWith(@NonNull CompetitionDTO competitionDTO)
@@ -239,10 +252,22 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 competitionLeaderboardCache.get(key)
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<CompetitionLeaderboardId, CompetitionLeaderboardDTO>()))
                 .subscribe(
-                        this::linkWith,
-                        this::handleFetchCompetitionLeaderboardFailed));
+                        new Action1<CompetitionLeaderboardDTO>()
+                        {
+                            @Override public void call(CompetitionLeaderboardDTO leaderboardDTO)
+                            {
+                                linkWith(leaderboardDTO);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable error)
+                            {
+                                CompetitionLeaderboardMarkUserListFragment.this.handleFetchCompetitionLeaderboardFailed(error);
+                            }
+                        }));
     }
 
     protected void linkWith(@NonNull CompetitionLeaderboardDTO competitionLeaderboardDTO)

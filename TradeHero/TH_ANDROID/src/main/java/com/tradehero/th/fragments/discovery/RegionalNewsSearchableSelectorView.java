@@ -18,19 +18,21 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
+import com.android.internal.util.Predicate;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.InstantAutoCompleteTextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.DeviceUtil;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,6 +40,7 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 /**
  * Note that this is the first version of RegionalNewsSelectorView, with the inline searching feature on the dropdown view
@@ -124,7 +127,13 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
                 }
             }
         });
-        mCountryFilter.setOnItemClickListener(this::onCountryFilterItemClick);
+        mCountryFilter.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                RegionalNewsSearchableSelectorView.this.onCountryFilterItemClick(parent, view, position, id);
+            }
+        });
     }
 
     public void onCountryFilterItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -172,11 +181,17 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
     {
         detachUserProfileSubscription();
         userProfileSubscription = userProfileCache.get(currentUserId.toUserBaseKey())
-                .map(new PairGetSecond<>())
+                .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        this::linkWith,
-                        e -> THToast.show(new THException(e)));
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO profileDTO)
+                            {
+                                linkWith(profileDTO);
+                            }
+                        },
+                        new ToastOnErrorAction());
     }
 
     private void detachUserProfileSubscription()
@@ -275,8 +290,14 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
         mCountryLanguageFetchSubscription = mNewsServiceWrapper.getCountryLanguagePairsRx()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        paginated -> linkWith(paginated.getData()),
-                        e -> THToast.show(new THException(e)));
+                        new Action1<PaginatedDTO<CountryLanguagePairDTO>>()
+                        {
+                            @Override public void call(PaginatedDTO<CountryLanguagePairDTO> paginated)
+                            {
+                                linkWith(paginated.getData());
+                            }
+                        },
+                        new ToastOnErrorAction());
     }
 
     private void linkWith(List<CountryLanguagePairDTO> data)
@@ -284,7 +305,13 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
         mCountryAdapter.setItems(data);
         Collection<CountryLanguagePairDTO> userCountryLanguagePairs =
                 CollectionUtils.filter(new ArrayList<>(data),
-                        countryLanguagePairDTO -> countryLanguagePairDTO.countryCode.equalsIgnoreCase(userProfileDTO.countryCode));
+                        new Predicate<CountryLanguagePairDTO>()
+                        {
+                            @Override public boolean apply(CountryLanguagePairDTO countryLanguagePairDTO)
+                            {
+                                return countryLanguagePairDTO.countryCode.equalsIgnoreCase(userProfileDTO.countryCode);
+                            }
+                        });
         if (!userCountryLanguagePairs.isEmpty())
         {
             CountryLanguagePairDTO singleCountryLanguagePair = userCountryLanguagePairs.iterator().next();

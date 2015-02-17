@@ -11,6 +11,7 @@ import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.social.InviteDTO;
 import com.tradehero.th.api.social.InviteFacebookDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.InviteFormUserDTO;
@@ -27,6 +28,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
+import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 public class SocialFriendHandlerFacebook extends SocialFriendHandler
@@ -68,28 +71,50 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
         return createShareRequestObservable(
                 CollectionUtils.map(
                         ((InviteFormUserDTO) inviteFormDTO).users,
-                        invite -> ((InviteFacebookDTO) invite).fbId),
+                        new Func1<InviteDTO, String>()
+                        {
+                            @Override public String call(InviteDTO invite)
+                            {
+                                return ((InviteFacebookDTO) invite).fbId;
+                            }
+                        }),
                 null)
-                .flatMap(bundle -> {
-                    final String requestId = bundle.getString("request");
-                    if (requestId != null)
+                .flatMap(new Func1<Bundle, Observable<? extends String>>()
+                {
+                    @Override public Observable<? extends String> call(Bundle bundle)
                     {
-                        return Observable.just(requestId);
-                    }
-                    else
-                    {
-                        return Observable.error(new NullPointerException("RequestId was null in Facebook bundle"));
+                        final String requestId = bundle.getString("request");
+                        if (requestId != null)
+                        {
+                            return Observable.just(requestId);
+                        }
+                        else
+                        {
+                            return Observable.error(new NullPointerException("RequestId was null in Facebook bundle"));
+                        }
                     }
                 })
                         // TODO This one should do something useful like trackshare
-                .map(requestId -> new BaseResponseDTO());
+                .map(new Func1<String, BaseResponseDTO>()
+                {
+                    @Override public BaseResponseDTO call(String requestId)
+                    {
+                        return new BaseResponseDTO();
+                    }
+                });
     }
 
     @NonNull public Observable<Bundle> createShareRequestObservable(
             @NonNull final List<UserFriendsFacebookDTO> friendsDTOs,
             @SuppressWarnings("UnusedParameters") @Nullable UserFriendsFacebookDTO typeQualifier)
     {
-        return createShareRequestObservable(CollectionUtils.map(friendsDTOs, friend -> friend.fbId), null);
+        return createShareRequestObservable(CollectionUtils.map(friendsDTOs, new Func1<UserFriendsFacebookDTO, String>()
+        {
+            @Override public String call(UserFriendsFacebookDTO friend)
+            {
+                return friend.fbId;
+            }
+        }), null);
     }
 
     @NonNull public Observable<Bundle> createShareRequestObservable(
@@ -98,7 +123,13 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     {
         return createProfileSessionObservable()
                 .take(1)
-                .flatMap(pair -> createShareRequestObservable(pair.first, pair.second, fbIds));
+                .flatMap(new Func1<Pair<UserProfileDTO, Session>, Observable<? extends Bundle>>()
+                {
+                    @Override public Observable<? extends Bundle> call(Pair<UserProfileDTO, Session> pair)
+                    {
+                        return SocialFriendHandlerFacebook.this.createShareRequestObservable(pair.first, pair.second, fbIds);
+                    }
+                });
     }
 
     @NonNull public Observable<Bundle> createShareRequestObservable(
@@ -146,19 +177,35 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
         return Observable.combineLatest(
                 userProfileCache.get(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
                 facebookAuthenticationProvider.createSessionObservable(activityProvider.get()),
-                Pair::create)
-                .flatMap(pair -> {
-                    if (pair.first.fbLinked)
+                new Func2<UserProfileDTO, Session, Pair<UserProfileDTO, Session>>()
+                {
+                    @Override public Pair<UserProfileDTO, Session> call(UserProfileDTO t1, Session t2)
                     {
-                        return Observable.just(pair);
+                        return Pair.create(t1, t2);
                     }
-                    // Need to link then return
-                    return Observable.combineLatest(
-                            facebookAuthenticationProvider.createAuthDataObservable(activityProvider.get())
-                                    .observeOn(Schedulers.io())
-                                    .flatMap(socialServiceWrapper.connectFunc1(pair.first.getBaseKey())),
-                            Observable.just(Session.getActiveSession()),
-                            Pair::create);
+                })
+                .flatMap(new Func1<Pair<UserProfileDTO, Session>, Observable<? extends Pair<UserProfileDTO, Session>>>()
+                {
+                    @Override public Observable<? extends Pair<UserProfileDTO, Session>> call(Pair<UserProfileDTO, Session> pair)
+                    {
+                        if (pair.first.fbLinked)
+                        {
+                            return Observable.just(pair);
+                        }
+                        // Need to link then return
+                        return Observable.combineLatest(
+                                facebookAuthenticationProvider.createAuthDataObservable(activityProvider.get())
+                                        .observeOn(Schedulers.io())
+                                        .flatMap(socialServiceWrapper.connectFunc1(pair.first.getBaseKey())),
+                                Observable.just(Session.getActiveSession()),
+                                new Func2<UserProfileDTO, Session, Pair<UserProfileDTO, Session>>()
+                                {
+                                    @Override public Pair<UserProfileDTO, Session> call(UserProfileDTO profile, Session session)
+                                    {
+                                        return Pair.create(profile, session);
+                                    }
+                                });
+                    }
                 });
     }
 }

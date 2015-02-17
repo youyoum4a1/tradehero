@@ -20,8 +20,11 @@ import com.tradehero.th.billing.report.PurchaseReportResult;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCacheRx;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCacheRx;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
+import com.tradehero.th.rx.ReplaceWith;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.functions.Action0;
+import rx.functions.Func1;
 
 public class THBaseIABLogicHolderRx
         extends THBaseBillingLogicHolderRx<
@@ -92,12 +95,20 @@ public class THBaseIABLogicHolderRx
     //</editor-fold>
 
     //<editor-fold desc="Report Purchase">
-    @NonNull @Override public Observable<PurchaseReportResult<IABSKU, THIABOrderId, THIABPurchase>> report(int requestCode,
+    @NonNull @Override public Observable<PurchaseReportResult<IABSKU, THIABOrderId, THIABPurchase>> report(final int requestCode,
             @NonNull THIABPurchase purchase, @NonNull THIABProductDetail productDetail)
     {
         return super.report(requestCode, purchase, productDetail)
-                .flatMap(reportResult -> consume(requestCode, reportResult.reportedPurchase)
-                    .map(consumeResult -> reportResult));
+                .flatMap(
+                        new Func1<PurchaseReportResult<IABSKU, THIABOrderId, THIABPurchase>, Observable<? extends PurchaseReportResult<IABSKU, THIABOrderId, THIABPurchase>>>()
+                        {
+                            @Override public Observable<? extends PurchaseReportResult<IABSKU, THIABOrderId, THIABPurchase>> call(
+                                    PurchaseReportResult<IABSKU, THIABOrderId, THIABPurchase> reportResult)
+                            {
+                                return THBaseIABLogicHolderRx.this.consume(requestCode, reportResult.reportedPurchase)
+                                        .map(new ReplaceWith<>(reportResult));
+                            }
+                        });
     }
     //</editor-fold>
 
@@ -106,11 +117,17 @@ public class THBaseIABLogicHolderRx
             IABSKU,
             THIABOrderId,
             THIABPurchase>> consumeAndClear(
-            int requestCode,
+            final int requestCode,
             @NonNull THIABPurchase purchase)
     {
         return consume(requestCode, purchase)
-                .finallyDo(() -> forgetRequestCode(requestCode));
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        THBaseIABLogicHolderRx.this.forgetRequestCode(requestCode);
+                    }
+                });
     }
 
     @NonNull @Override public Observable<PurchaseConsumeResult<

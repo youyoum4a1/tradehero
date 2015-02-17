@@ -39,35 +39,39 @@ public class ExpandingListView extends ListView
 
     private void init()
     {
-        super.setOnItemClickListener((parent, view, position, id) -> {
-            if (expandingListItemListener != null)
+        super.setOnItemClickListener(new OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                expandingListItemListener.onItemClick(parent, view, position, id);
-            }
-
-            Object o = getItemAtPosition(getPositionForView(view));
-            if (o == null || !(o instanceof ExpandableItem))
-            {
-                return;
-            }
-
-            ExpandableItem viewObject = (ExpandableItem) o;
-            if (!viewObject.isExpanded())
-            {
-                expandView(view);
-                viewObject.setExpanded(true);
                 if (expandingListItemListener != null)
                 {
-                    expandingListItemListener.onItemExpanded(parent, view, position, id);
+                    expandingListItemListener.onItemClick(parent, view, position, id);
                 }
-            }
-            else
-            {
-                collapseView(view);
-                viewObject.setExpanded(false);
-                if (expandingListItemListener != null)
+
+                Object o = ExpandingListView.this.getItemAtPosition(getPositionForView(view));
+                if (o == null || !(o instanceof ExpandableItem))
                 {
-                    expandingListItemListener.onItemCollapsed(parent, view, position, id);
+                    return;
+                }
+
+                ExpandableItem viewObject = (ExpandableItem) o;
+                if (!viewObject.isExpanded())
+                {
+                    ExpandingListView.this.expandView(view);
+                    viewObject.setExpanded(true);
+                    if (expandingListItemListener != null)
+                    {
+                        expandingListItemListener.onItemExpanded(parent, view, position, id);
+                    }
+                }
+                else
+                {
+                    ExpandingListView.this.collapseView(view);
+                    viewObject.setExpanded(false);
+                    if (expandingListItemListener != null)
+                    {
+                        expandingListItemListener.onItemCollapsed(parent, view, position, id);
+                    }
                 }
             }
         });

@@ -21,6 +21,8 @@ import com.tradehero.th.billing.report.PurchaseReportResult;
 import com.tradehero.th.billing.report.THPurchaseReporterHolderRx;
 import java.util.Collections;
 import rx.Observable;
+import rx.functions.Action0;
+import rx.functions.Func1;
 
 abstract public class THBaseBillingLogicHolderRx<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -120,10 +122,27 @@ abstract public class THBaseBillingLogicHolderRx<
             @NonNull THPurchaseOrderType purchaseOrder)
     {
         return super.purchase(requestCode, purchaseOrder)
-                .flatMap(purchaseResult -> report(
-                        purchaseResult.requestCode,
-                        purchaseResult.purchase)
-                        .map(reportResult -> purchaseResult));
+                .flatMap(
+                        new Func1<PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
+                        {
+                            @Override
+                            public Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>> call(
+                                    final PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType> purchaseResult)
+                            {
+                                return THBaseBillingLogicHolderRx.this.report(
+                                        purchaseResult.requestCode,
+                                        purchaseResult.purchase)
+                                        .map(new Func1<PurchaseReportResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>, PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>()
+                                        {
+                                            @Override
+                                            public PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType> call(
+                                                    PurchaseReportResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType> reportResult)
+                                            {
+                                                return purchaseResult;
+                                            }
+                                        });
+                            }
+                        });
     }
     //</editor-fold>
 
@@ -131,32 +150,56 @@ abstract public class THBaseBillingLogicHolderRx<
     @NonNull @Override public Observable<PurchaseReportResult<
             ProductIdentifierType,
             THOrderIdType,
-            THProductPurchaseType>> reportAndClear(int requestCode,
+            THProductPurchaseType>> reportAndClear(final int requestCode,
             @NonNull THProductPurchaseType purchase)
     {
         return report(requestCode, purchase)
-                .finallyDo(() -> forgetRequestCode(requestCode));
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        THBaseBillingLogicHolderRx.this.forgetRequestCode(requestCode);
+                    }
+                });
     }
 
     @NonNull @Override public Observable<PurchaseReportResult<
             ProductIdentifierType,
             THOrderIdType,
-            THProductPurchaseType>> report(int requestCode,
-            @NonNull THProductPurchaseType purchase)
+            THProductPurchaseType>> report(final int requestCode,
+            @NonNull final THProductPurchaseType purchase)
     {
         return getInventory(requestCode, Collections.singletonList(purchase.getProductIdentifier()))
-                .filter(result -> result.id.equals(purchase.getProductIdentifier()))
-                .flatMap(result -> report(requestCode, purchase, result.detail));
+                .flatMap(
+                        new Func1<ProductInventoryResult<ProductIdentifierType, THProductDetailType>, Observable<? extends PurchaseReportResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>>>()
+                        {
+                            @Override
+                            public Observable<? extends PurchaseReportResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>> call(
+                                    ProductInventoryResult<ProductIdentifierType, THProductDetailType> result)
+                            {
+                                if (result.id.equals(purchase.getProductIdentifier()))
+                                {
+                                    return THBaseBillingLogicHolderRx.this.report(requestCode, purchase, result.detail);
+                                }
+                                return Observable.empty();
+                            }
+                        });
     }
 
     @NonNull @Override public Observable<PurchaseReportResult<
             ProductIdentifierType,
             THOrderIdType,
-            THProductPurchaseType>> reportAndClear(int requestCode,
+            THProductPurchaseType>> reportAndClear(final int requestCode,
             @NonNull THProductPurchaseType purchase, @NonNull THProductDetailType productDetail)
     {
         return report(requestCode, purchase, productDetail)
-                .finallyDo(() -> forgetRequestCode(requestCode));
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        THBaseBillingLogicHolderRx.this.forgetRequestCode(requestCode);
+                    }
+                });
     }
 
     @NonNull @Override public Observable<PurchaseReportResult<
@@ -174,12 +217,28 @@ abstract public class THBaseBillingLogicHolderRx<
             ProductIdentifierType,
             THOrderIdType,
             THProductPurchaseType>> restorePurchase(
-            int requestCode,
+            final int requestCode,
             @NonNull THProductPurchaseType purchase)
     {
         return super.restorePurchase(requestCode, purchase)
-                .flatMap(restored -> report(requestCode, restored.purchase)
-                        .map(reported -> restored));
+                .flatMap(
+                        new Func1<PurchaseRestoreResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>, Observable<? extends PurchaseRestoreResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>>>()
+                        {
+                            @Override
+                            public Observable<? extends PurchaseRestoreResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>> call(
+                                    final PurchaseRestoreResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType> restored)
+                            {
+                                return THBaseBillingLogicHolderRx.this.report(requestCode, restored.purchase)
+                                        .map(new Func1<PurchaseReportResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>, PurchaseRestoreResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>>()
+                                        {
+                                            @Override public PurchaseRestoreResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType> call(
+                                                    PurchaseReportResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType> reported)
+                                            {
+                                                return restored;
+                                            }
+                                        });
+                            }
+                        });
     }
     //</editor-fold>
 
@@ -187,10 +246,17 @@ abstract public class THBaseBillingLogicHolderRx<
             ProductIdentifierType,
             THProductDetailType>> getDetailsOfDomain(
             int requestCode,
-            @NonNull ProductIdentifierDomain domain)
+            @NonNull final ProductIdentifierDomain domain)
     {
         return getInventory(requestCode)
-                .filter(result -> result.detail.getDomain().equals(domain));
+                .filter(new Func1<ProductInventoryResult<ProductIdentifierType, THProductDetailType>, Boolean>()
+                {
+                    @Override public Boolean call(
+                            ProductInventoryResult<ProductIdentifierType, THProductDetailType> result)
+                    {
+                        return result.detail.getDomain().equals(domain);
+                    }
+                });
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)

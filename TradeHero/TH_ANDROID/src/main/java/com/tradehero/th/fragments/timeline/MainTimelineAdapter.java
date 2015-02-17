@@ -106,11 +106,17 @@ public class MainTimelineAdapter extends ArrayAdapter
     {
         if (convertView == null)
         {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.user_profile_detail_bottom_buttons_2_0, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.user_profile_detail_bottom_buttons, parent, false);
         }
         TimelineHeaderButtonView castedView = (TimelineHeaderButtonView) convertView;
         castedView.changeButtonLook(currentTabType);
-        castedView.setTimelineProfileClickListener(this::notifyProfileClickListener);
+        castedView.setTimelineProfileClickListener(new TimelineProfileClickListener()
+        {
+            @Override public void onBtnClicked(@NonNull TimelineFragment.TabType tabType)
+            {
+                MainTimelineAdapter.this.notifyProfileClickListener(tabType);
+            }
+        });
 
         return convertView;
     }

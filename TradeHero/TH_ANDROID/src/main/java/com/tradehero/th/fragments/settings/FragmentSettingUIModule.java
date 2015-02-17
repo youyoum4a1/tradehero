@@ -30,38 +30,4 @@ import java.util.Set;
 )
 public class FragmentSettingUIModule
 {
-    @Provides(type = Provides.Type.SET_VALUES)
-    Set<SocialConnectSettingViewHolder> provideSocialConnectSettingViewHolderSet(
-            SocialConnectFacebookSettingViewHolder socialConnectFacebookSettingViewHolder,
-            SocialConnectLinkedInSettingViewHolder socialConnectLinkedInSettingViewHolder,
-            SocialConnectQQSettingViewHolder socialConnectQQSettingViewHolder,
-            SocialConnectTwitterSettingViewHolder socialConnectTwitterSettingViewHolder,
-            SocialConnectWeiboSettingViewHolder socialConnectWeiboSettingViewHolder,
-            @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap
-    )
-    {
-        Set<SocialNetworkEnum> applicableSocialNetwork = authenticationProviderMap.keySet();
-        Set<SocialConnectSettingViewHolder> allSocialConnectSettingViewHolders = new HashSet<>();
-        if (applicableSocialNetwork.contains(SocialNetworkEnum.FB))
-        {
-            allSocialConnectSettingViewHolders.add(socialConnectFacebookSettingViewHolder);
-        }
-        if (applicableSocialNetwork.contains(SocialNetworkEnum.LN))
-        {
-            allSocialConnectSettingViewHolders.add(socialConnectLinkedInSettingViewHolder);
-        }
-        if (applicableSocialNetwork.contains(SocialNetworkEnum.QQ))
-        {
-            allSocialConnectSettingViewHolders.add(socialConnectQQSettingViewHolder);
-        }
-        if (applicableSocialNetwork.contains(SocialNetworkEnum.TW))
-        {
-            allSocialConnectSettingViewHolders.add(socialConnectTwitterSettingViewHolder);
-        }
-        if (applicableSocialNetwork.contains(SocialNetworkEnum.WB))
-        {
-            allSocialConnectSettingViewHolders.add(socialConnectWeiboSettingViewHolder);
-        }
-        return allSocialConnectSettingViewHolders;
-    }
 }

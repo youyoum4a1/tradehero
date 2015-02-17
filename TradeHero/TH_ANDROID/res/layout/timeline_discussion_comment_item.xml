@@ -15,7 +15,7 @@
       android:layout_height="match_parent"
       android:descendantFocusability="blocksDescendants"
       style="@style/TH.ListItem"
-      android:background="@drawable/discussion_status_background"
+      android:background="@drawable/card_item_top_bg"
       >
 
     <ImageView
@@ -70,7 +70,7 @@
         android:layout_marginTop="10dip"
         android:layout_toRightOf="@id/discussion_user_picture"
         tools:text="Tho Nguyen is the world best trader!"
-        android:textColorLink="@color/timeline_item_link"
+        android:textColorLink="@color/tradehero_blue"
         style="@style/TH.Body"
         />
 

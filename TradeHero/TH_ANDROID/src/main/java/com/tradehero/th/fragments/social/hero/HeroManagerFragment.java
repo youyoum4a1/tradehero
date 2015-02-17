@@ -16,7 +16,6 @@ import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.models.social.follower.AllHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
@@ -74,7 +73,7 @@ public class HeroManagerFragment extends DashboardFragment
         {
             addTab(resourceDTO);
         }
-        GraphicUtil.setBackground(mTabHost.getTabWidget(), getResources().getDrawable(R.drawable.ab_background));
+        GraphicUtil.setBackground(mTabHost.getTabWidget(), getResources().getDrawable(R.drawable.bar_background));
         return mTabHost;
     }
 

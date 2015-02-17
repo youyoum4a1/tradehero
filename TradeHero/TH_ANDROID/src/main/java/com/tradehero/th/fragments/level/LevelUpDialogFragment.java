@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -78,17 +80,21 @@ public class LevelUpDialogFragment extends BaseDialogFragment
         d.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         d.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         d.getWindow().setDimAmount(DIM_AMOUNT);
-        d.setOnKeyListener((dialog, keyCode, event) -> {
-            //Handle backPressed an end the animation if it's running.
-            if (keyCode == KeyEvent.KEYCODE_BACK)
+        d.setOnKeyListener(new DialogInterface.OnKeyListener()
+        {
+            @Override public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event)
             {
-                boolean handled = handleDismissingDialog();
-                if (handled)
+                //Handle backPressed an end the animation if it's running.
+                if (keyCode == KeyEvent.KEYCODE_BACK)
                 {
-                    return true;
+                    boolean handled = LevelUpDialogFragment.this.handleDismissingDialog();
+                    if (handled)
+                    {
+                        return true;
+                    }
                 }
+                return false;
             }
-            return false;
         });
         return d;
     }
@@ -133,18 +139,28 @@ public class LevelUpDialogFragment extends BaseDialogFragment
             {
                 super.onAnimationEnd(animation);
                 //Dismiss the dialog after some delay.
-                mHandler.postDelayed(() -> {
-                    Dialog dialog = getDialog();
-                    if (dialog != null)
+                mHandler.postDelayed(new Runnable()
+                {
+                    @Override public void run()
                     {
-                        dialog.dismiss();
+                        Dialog dialog = getDialog();
+                        if (dialog != null)
+                        {
+                            dialog.dismiss();
+                        }
                     }
                 }, getResources().getInteger(R.integer.user_level_level_up_end_delay));
             }
         });
         animatorSet.start();
 
-        container.setOnTouchListener((view1, motionEvent) -> handleDismissingDialog());
+        container.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override public boolean onTouch(View view1, MotionEvent motionEvent)
+            {
+                return LevelUpDialogFragment.this.handleDismissingDialog();
+            }
+        });
     }
 
     private boolean handleDismissingDialog()

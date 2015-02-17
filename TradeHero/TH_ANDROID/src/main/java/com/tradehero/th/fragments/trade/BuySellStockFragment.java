@@ -101,17 +101,17 @@ public class BuySellStockFragment extends BuySellFragment
         mBottomViewPager.setAdapter(bottomViewPagerAdapter);
 
         mSlidingTabLayout.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
-        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
+        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         mSlidingTabLayout.setViewPager(mBottomViewPager);
 
         fetchAlertCompactList();
-        fetchWatchlist();
     }
 
     @Override public void onStart()
     {
         super.onStart();
         analytics.fireEvent(new ChartTimeEvent(securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
+        fetchWatchlist();
     }
 
     @Override public void onDestroyView()
@@ -432,7 +432,13 @@ public class BuySellStockFragment extends BuySellFragment
         View rootView = getView();
         if (rootView != null)
         {
-            rootView.postDelayed(this::loadStockBgLogo, MS_DELAY_FOR_BG_IMAGE);
+            rootView.postDelayed(new Runnable()
+            {
+                @Override public void run()
+                {
+                    BuySellStockFragment.this.loadStockBgLogo();
+                }
+            }, MS_DELAY_FOR_BG_IMAGE);
         }
     }
 

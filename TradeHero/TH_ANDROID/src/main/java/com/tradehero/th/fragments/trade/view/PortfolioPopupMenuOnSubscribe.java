@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.trade.view;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
@@ -40,14 +41,22 @@ class PortfolioPopupMenuOnSubscribe implements Observable.OnSubscribe<MenuOwnedP
                     menuOwnedPortfolioId);
         }
         popupMenu.setOnMenuItemClickListener(
-                menuItem -> {
-                    subscriber.onNext((MenuOwnedPortfolioId) menuItem.getTitle());
-                    return true;
+                new PopupMenu.OnMenuItemClickListener()
+                {
+                    @Override public boolean onMenuItemClick(MenuItem menuItem)
+                    {
+                        subscriber.onNext((MenuOwnedPortfolioId) menuItem.getTitle());
+                        return true;
+                    }
                 });
-        popupMenu.setOnDismissListener(popupMenu1 -> {
-            subscriber.onCompleted();
-            popupMenu1.setOnDismissListener(null);
-            popupMenu1.setOnMenuItemClickListener(null);
+        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener()
+        {
+            @Override public void onDismiss(PopupMenu popupMenu1)
+            {
+                subscriber.onCompleted();
+                popupMenu1.setOnDismissListener(null);
+                popupMenu1.setOnMenuItemClickListener(null);
+            }
         });
         popupMenu.show();
     }
