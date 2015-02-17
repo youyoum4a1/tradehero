@@ -23,11 +23,11 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 @Routable(
-        "providers-enroll/:providerId"
+        "providers-enroll/:enrollProviderId"
 )
 public class CompetitionWebViewFragment extends BaseWebViewFragment
 {
-    @InjectRoute protected ProviderId providerId;
+    @InjectRoute protected ProviderId enrollProviderId;
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
     @Inject ProviderUtil providerUtil;
@@ -44,9 +44,12 @@ public class CompetitionWebViewFragment extends BaseWebViewFragment
     {
         super.onAttach(activity);
 
-        ProviderId providerId = new ProviderId(getArguments());
-        CompetitionWebViewFragment.putUrl(getArguments(), providerUtil.getLandingPage(
-                providerId, currentUserId.toUserBaseKey()));
+        //noinspection ConstantConditions
+        if (enrollProviderId != null && enrollProviderId.key != null)
+        {
+            CompetitionWebViewFragment.putUrl(getArguments(), providerUtil.getLandingPage(
+                    enrollProviderId, currentUserId.toUserBaseKey()));
+        }
         CompetitionWebViewFragment.putIsOptionMenuVisible(getArguments(), true);
 
         thIntentPassedListener = createCompetitionTHIntentPassedListener();
@@ -77,7 +80,7 @@ public class CompetitionWebViewFragment extends BaseWebViewFragment
         String loadingUrl = super.getLoadingUrl();
         if (loadingUrl == null)
         {
-            return providerUtil.getLandingPage(providerId, currentUserId.toUserBaseKey());
+            return providerUtil.getLandingPage(enrollProviderId, currentUserId.toUserBaseKey());
         }
         return loadingUrl;
     }

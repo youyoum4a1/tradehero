@@ -44,6 +44,7 @@ import com.tradehero.th.UIModule;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
+import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.level.UserXPAchievementDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
@@ -175,6 +176,7 @@ public class DashboardActivity extends BaseActivity
     @Inject Set<ActivityResultRequester> activityResultRequesters;
     @Inject @ForAnalytics Lazy<DashboardNavigator.DashboardFragmentWatcher> analyticsReporter;
     @Inject THAppsFlyer thAppsFlyer;
+    @Inject ProviderUtil providerUtil;
 
     @Inject Lazy<ProviderListCacheRx> providerListCache;
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
@@ -498,7 +500,11 @@ public class DashboardActivity extends BaseActivity
                                         {
                                             enrollmentScreenIsOpened = true;
                                             enrollmentScreenOpened.add(providerDTO.id);
-                                            navigator.pushFragment(CompetitionWebViewFragment.class, providerDTO.getProviderId().getArgs());
+                                            Bundle args = new Bundle();
+                                            CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
+                                                    providerDTO.getProviderId(),
+                                                    currentUserId.toUserBaseKey()));
+                                            navigator.pushFragment(CompetitionWebViewFragment.class, args);
                                         }
                                     }
 

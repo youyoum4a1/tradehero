@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.social.hero;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,9 +33,9 @@ import javax.inject.Inject;
 public class HeroListItemView extends RelativeLayout
         implements DTOView<HeroDTO>
 {
-    public static final int RES_ID_ACTIVE = R.drawable.image_icon_validation_valid;
-    public static final int RES_ID_INACTIVE = R.drawable.buyscreen_info;
-    public static final int RES_ID_CROSS_RED = R.drawable.cross_red;
+    @DrawableRes public static final int RES_ID_ACTIVE = R.drawable.image_icon_validation_valid;
+    @DrawableRes public static final int RES_ID_INACTIVE = R.drawable.buyscreen_info;
+    @DrawableRes public static final int RES_ID_CROSS_RED = android.R.drawable.ic_delete;
 
     @InjectView(R.id.follower_profile_picture) ImageView userIcon;
     @InjectView(R.id.hero_title) TextView title;
@@ -77,6 +78,7 @@ public class HeroListItemView extends RelativeLayout
         HierarchyInjector.inject(this);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.ic_status) void onStatusIconClicked()
     {
         //OnHeroStatusButtonClickedListener heroStatusButtonClickedListener = HeroListItemView.this.heroStatusButtonClickedListener.get();
@@ -115,6 +117,7 @@ public class HeroListItemView extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.follower_profile_picture) void onFollowerProfilePictureClicked(View v)
     {
         if (heroDTO != null)

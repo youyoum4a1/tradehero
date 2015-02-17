@@ -257,7 +257,6 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
             CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
-            CompetitionWebViewFragment.putIsOptionMenuVisible(args, true);
             webFragment = navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }

@@ -23,6 +23,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
+import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
@@ -76,6 +77,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     @Inject ProviderListCacheRx providerListCache;
     @Inject Analytics analytics;
     @Inject @PreferredExchangeMarket ExchangeMarketPreference preferredExchangeMarket;
+    @Inject ProviderUtil providerUtil;
 
     @InjectView(R.id.trending_filter_selector_view) protected TrendingFilterSelectorView filterSelectorView;
     private DTOAdapterNew<ExchangeCompactSpinnerDTO> exchangeAdapter;
@@ -431,7 +433,11 @@ public class TrendingStockFragment extends TrendingBaseFragment
         }
         else if (providerDTO != null)
         {
-            navigator.get().pushFragment(CompetitionWebViewFragment.class, providerDTO.getProviderId().getArgs());
+            Bundle args = new Bundle();
+            CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
+                    providerDTO.getProviderId(),
+                    currentUserId.toUserBaseKey()));
+            navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
         }
     }
 
