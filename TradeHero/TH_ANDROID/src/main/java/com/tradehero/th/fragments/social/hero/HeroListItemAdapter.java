@@ -12,6 +12,8 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import java.util.ArrayList;
 import java.util.List;
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
 // TODO refactor with DTOAdapterNew and getItemTypeCount
@@ -32,8 +34,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
     protected UserBaseKey followerId;
     protected List<HeroDTO> activeHeroes;
     protected List<HeroDTO> inactiveHeroes;
-    private HeroListItemView.OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
-    private View.OnClickListener mostSkilledClicked;
+    @NonNull private BehaviorSubject<HeroListItemView.UserAction> userActionSubject;
 
     //<editor-fold desc="Constructors">
     public HeroListItemAdapter(
@@ -47,22 +48,18 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
         this.heroEmptyPlaceholderResId = heroEmptyPlaceholderResId;
         this.headerActiveResId = headerActiveResId;
         this.headerInactiveResId = headerInactiveResId;
+        this.userActionSubject = BehaviorSubject.create();
     }
     //</editor-fold>
+
+    @NonNull public Observable<HeroListItemView.UserAction> getUserActionObservable()
+    {
+        return userActionSubject.asObservable();
+    }
 
     public void setFollowerId(UserBaseKey followerId)
     {
         this.followerId = followerId;
-    }
-
-    public void setHeroStatusButtonClickedListener(HeroListItemView.OnHeroStatusButtonClickedListener heroStatusButtonClickedListener)
-    {
-        this.heroStatusButtonClickedListener = heroStatusButtonClickedListener;
-    }
-
-    public void setMostSkilledClicked(View.OnClickListener mostSkilledClicked)
-    {
-        this.mostSkilledClicked = mostSkilledClicked;
     }
 
     @Override public boolean hasStableIds()
@@ -202,11 +199,20 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
         switch (getItemViewType(position))
         {
             case VIEW_TYPE_EMPTY_PLACEHOLDER:
-                convertView = getInflater().inflate(heroEmptyPlaceholderResId, parent, false);
-                View mostSkilledButton = convertView.findViewById(R.id.btn_leaderboard_most_skilled);
-                if (mostSkilledButton != null)
+                if (convertView == null)
                 {
-                    mostSkilledButton.setOnClickListener(mostSkilledClicked);
+                    convertView = getInflater().inflate(heroEmptyPlaceholderResId, parent, false);
+                    View mostSkilledButton = convertView.findViewById(R.id.btn_leaderboard_most_skilled);
+                    if (mostSkilledButton != null)
+                    {
+                        mostSkilledButton.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override public void onClick(View v)
+                            {
+                                userActionSubject.onNext(new UserActionMostSkilled());
+                            }
+                        });
+                    }
                 }
                 break;
 
@@ -231,10 +237,10 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
                 if (!(convertView instanceof HeroListItemView))
                 {
                     convertView = conditionalInflate(position, convertView, parent);
+                    ((HeroListItemView) convertView).getUserActionObservable().subscribe(userActionSubject);
                 }
                 ((HeroListItemView) convertView).setFollowerId(followerId);
                 ((HeroListItemView) convertView).display((HeroDTO) getItem(position));
-                ((HeroListItemView) convertView).setHeroStatusButtonClickedListener(heroStatusButtonClickedListener);
                 break;
 
             default:
@@ -267,5 +273,9 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
     @Override protected void fineTune(int position, HeroDTO dto, HeroListItemView dtoView)
     {
         throw new UnsupportedOperationException("Not implemented");
+    }
+
+    public static class UserActionMostSkilled implements HeroListItemView.UserAction
+    {
     }
 }
