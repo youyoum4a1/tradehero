@@ -36,7 +36,7 @@ public class ActionRunnerOperator implements Observable.OnSubscribe<ActionResult
     }
     //</editor-fold>
 
-    @Override public void call(Subscriber<? super ActionResult> subscriber)
+    @Override public void call(final Subscriber<? super ActionResult> subscriber)
     {
         ActionCompletionCallback callback = new ActionCompletionCallback()
         {

@@ -23,10 +23,10 @@ import timber.log.Timber;
 
 public class FakePushNotificationUtil
 {
-    public static void showDialogAndSend(@NonNull Context activityContext)
+    public static void showDialogAndSend(@NonNull final Context activityContext)
     {
         LayoutInflater inflater = LayoutInflater.from(activityContext);
-        ManualPushActionView innerView = (ManualPushActionView) inflater.inflate(R.layout.debug_ask_for_notification_action, null);
+        final ManualPushActionView innerView = (ManualPushActionView) inflater.inflate(R.layout.debug_ask_for_notification_action, null);
         createManualActionDialog(activityContext, innerView)
                 .flatMap(new Func1<OnDialogClickEvent, Observable<Pair<String, ActionArguments>>>()
                 {
