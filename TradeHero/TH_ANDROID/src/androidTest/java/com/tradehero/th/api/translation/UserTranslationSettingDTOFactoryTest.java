@@ -85,7 +85,7 @@ public class UserTranslationSettingDTOFactoryTest
     {
         assumeTrue(TestConstants.IS_INTELLIJ);
         //noinspection ConstantConditions
-        userTranslationSettingDTOFactory.createDefaultPerType(null);
+        userTranslationSettingDTOFactory.createDefaultPerType(TestTHApp.context().getResources(), null);
     }
 
     @Test(expected = NullPointerException.class)
@@ -93,18 +93,18 @@ public class UserTranslationSettingDTOFactoryTest
     {
         assumeTrue(!TestConstants.IS_INTELLIJ);
         //noinspection ConstantConditions
-        userTranslationSettingDTOFactory.createDefaultPerType(null);
+        userTranslationSettingDTOFactory.createDefaultPerType(TestTHApp.context().getResources(), null);
     }
 
     @Test public void createDefaultPerTypeUnknownReturnsNull()
     {
-        assertThat(userTranslationSettingDTOFactory.createDefaultPerType(new TranslationToken()))
+        assertThat(userTranslationSettingDTOFactory.createDefaultPerType(TestTHApp.context().getResources(), new TranslationToken()))
                 .isNull();
     }
 
     @Test public void createDefaultPerTypeBing()
     {
-        assertThat(userTranslationSettingDTOFactory.createDefaultPerType(new BingTranslationToken()))
+        assertThat(userTranslationSettingDTOFactory.createDefaultPerType(TestTHApp.context().getResources(), new BingTranslationToken()))
                 .isExactlyInstanceOf(BingUserTranslationSettingDTO.class);
     }
     //</editor-fold>

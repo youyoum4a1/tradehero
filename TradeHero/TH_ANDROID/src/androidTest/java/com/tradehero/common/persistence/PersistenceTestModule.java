@@ -7,7 +7,6 @@ import dagger.Module;
         },
         injects = {
                 DTOCacheGetOrFetchTaskTest.class,
-                DTOCacheRxGetOrFetchTaskTest.class,
         },
         complete = false,
         library = true
