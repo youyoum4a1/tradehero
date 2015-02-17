@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,7 +27,6 @@ import com.etiennelawlor.quickreturn.library.listeners.QuickReturnScrollViewOnSc
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.activities.ActivityResultRequester;
-import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
@@ -57,6 +55,7 @@ import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
@@ -101,6 +100,7 @@ import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction1;
@@ -154,6 +154,7 @@ public class DashboardActivity extends BaseActivity
     // It is important to have Lazy here because we set the current Activity after the injection
     // and the LogicHolder creator needs the current Activity...
     @Inject Lazy<THBillingInteractorRx> billingInteractorRx;
+    @Inject Lazy<THBillingAlertDialogRxUtil> billingAlertDialogRxUtil;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
@@ -298,25 +299,10 @@ public class DashboardActivity extends BaseActivity
         //noinspection unchecked
         bindActivity(
                 this,
-                billingInteractorRx.get().restorePurchasesAndClear())
-                .subscribe(new Observer<PurchaseRestoreTotalResult>()
-                {
-                    @Override public void onNext(PurchaseRestoreTotalResult args)
-                    {
-                        //TODO
-                    }
-
-                    @Override public void onCompleted()
-                    {
-                        THToast.show("Restore completed");
-                    }
-
-                    @Override public void onError(Throwable e)
-                    {
-                        THToast.show("Restore failed");
-                        Timber.e(e, "Restore failed");
-                    }
-                });
+                billingInteractorRx.get().restorePurchasesAndClear(false))
+                .subscribe(
+                        new EmptyAction1<OnDialogClickEvent>(),
+                        new TimberOnErrorAction("Failed to restore"));
     }
 
     @Override public void onBackPressed()

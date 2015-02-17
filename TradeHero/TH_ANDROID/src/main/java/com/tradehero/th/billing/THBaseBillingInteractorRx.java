@@ -409,6 +409,14 @@ abstract public class THBaseBillingInteractorRx<
             THOrderIdType,
             THProductPurchaseType>> restorePurchasesAndClear()
     {
+        return restorePurchasesAndClear(true);
+    }
+
+    @NonNull public Observable<PurchaseRestoreTotalResult<
+            ProductIdentifierType,
+            THOrderIdType,
+            THProductPurchaseType>> restorePurchasesAndClear(final boolean fullReport)
+    {
         return popErrorAndHandle(super.restorePurchasesAndClear()
                 .flatMap(
                         new Func1<PurchaseRestoreTotalResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>, Observable<? extends PurchaseRestoreTotalResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>>>()
@@ -417,11 +425,15 @@ abstract public class THBaseBillingInteractorRx<
                             public Observable<? extends PurchaseRestoreTotalResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>> call(
                                     PurchaseRestoreTotalResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType> result)
                             {
-                                return billingAlertDialogUtil.popRestoreResultAndHandle(
-                                        activityProvider.get(),
-                                        result)
-                                        .materialize()
-                                        .dematerialize();
+                                if (result.getCount() > 0 || fullReport)
+                                {
+                                    return billingAlertDialogUtil.popRestoreResultAndHandle(
+                                            activityProvider.get(),
+                                            result)
+                                            .materialize()
+                                            .dematerialize();
+                                }
+                                return Observable.empty();
                             }
                         }));
     }
