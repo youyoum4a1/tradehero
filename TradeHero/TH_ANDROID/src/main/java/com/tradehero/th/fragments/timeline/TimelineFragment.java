@@ -642,7 +642,6 @@ public class TimelineFragment extends DashboardFragment
         {
             //noinspection unchecked
             return userInteractorRx.purchaseAndPremiumFollowAndClear(request.heroId)
-                    .materialize().dematerialize()
                     .map(new ReplaceWith<>(new UserProfileDTO()));
         }
         else

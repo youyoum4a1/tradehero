@@ -16,6 +16,8 @@ import com.tradehero.common.billing.tester.BillingTestResult;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
+import com.tradehero.th.rx.ReplaceWith;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Provider;
@@ -99,7 +101,7 @@ abstract public class THBaseBillingInteractorRx<
     }
     //</editor-fold>
 
-    @NonNull protected <T> Observable<T> popErrorAndHandle(@NonNull Observable<T> observable)
+    @NonNull protected <T> Observable<T> popErrorAndHandle(@NonNull final Observable<T> observable)
     {
         return observable.onErrorResumeNext(new Func1<Throwable, Observable<? extends T>>()
         {
@@ -108,8 +110,7 @@ abstract public class THBaseBillingInteractorRx<
                 return billingAlertDialogUtil.popErrorAndHandle(
                         activityProvider.get(),
                         error)
-                        .materialize()
-                        .dematerialize();
+                        .flatMap(new ReplaceWith<OnDialogClickEvent, Observable<? extends T>>(Observable.<T>empty()));
             }
         });
     }
@@ -430,8 +431,8 @@ abstract public class THBaseBillingInteractorRx<
                                     return billingAlertDialogUtil.popRestoreResultAndHandle(
                                             activityProvider.get(),
                                             result)
-                                            .materialize()
-                                            .dematerialize();
+                                            .map(new ReplaceWith<OnDialogClickEvent, PurchaseRestoreTotalResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>>(
+                                                    result));
                                 }
                                 return Observable.empty();
                             }
@@ -449,13 +450,12 @@ abstract public class THBaseBillingInteractorRx<
                         {
                             @Override
                             public Observable<? extends PurchaseRestoreTotalResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>> call(
-                                    PurchaseRestoreTotalResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType> result)
+                                    final PurchaseRestoreTotalResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType> result)
                             {
                                 return billingAlertDialogUtil.popRestoreResultAndHandle(
                                         activityProvider.get(),
                                         result)
-                                        .materialize()
-                                        .dematerialize();
+                                        .map(new ReplaceWith<OnDialogClickEvent, PurchaseRestoreTotalResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>>(result));
                             }
                         }));
     }
