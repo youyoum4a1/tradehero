@@ -93,7 +93,7 @@
       </RelativeLayout>
 
       <include
-          layout="@layout/user_profile_detail_bottom_2_1"
+          layout="@layout/user_profile_detail_bottom"
           />
 
     </LinearLayout>
