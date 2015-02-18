@@ -18,8 +18,10 @@ public class ExchangeCompactDTO implements DTO
     public int id;
     @NonNull public String name;
     @NonNull public String countryCode;
+    @Nullable public String logoUrl;
     public double sumMarketCap;
     @Nullable public String desc;
+    @NonNull public MarketRegion region;
     public boolean isInternal;
     public boolean isIncludedInTrending;
     public boolean chartDataSource;

@@ -1,10 +1,13 @@
 package com.tradehero.th.persistence.market;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
+import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
+import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.network.service.MarketServiceWrapper;
 import dagger.Lazy;
@@ -35,6 +38,15 @@ public class ExchangeCompactListCacheRx extends BaseFetchDTOCacheRx<ExchangeList
     @Override @NonNull protected Observable<ExchangeCompactDTOList> fetch(@NonNull ExchangeListType key)
     {
         return marketServiceWrapper.get().getExchangesRx();
+    }
+
+    @Nullable @Override protected ExchangeCompactDTOList putValue(@NonNull ExchangeListType key, @NonNull ExchangeCompactDTOList value)
+    {
+        for(ExchangeCompactDTO exchange : value)
+        {
+            ExchangeCompactDTOUtil.tempPopulate(exchange);
+        }
+        return super.putValue(key, value);
     }
 
     @Override public void onNext(@NonNull ExchangeListType key, @NonNull ExchangeCompactDTOList value)

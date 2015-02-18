@@ -28,6 +28,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Exchange">
+    @Deprecated // If never used
     @NonNull public Observable<ExchangeDTO> getExchangeRx(@NonNull ExchangeIntegerId exchangeId)
     {
         return marketServiceRx.getExchange(exchangeId.key);

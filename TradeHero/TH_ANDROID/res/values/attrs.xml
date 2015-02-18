@@ -151,4 +151,16 @@
         format="dimension" />
   </declare-styleable>
 
+  <declare-styleable name="MarketRegionView">
+    <attr name="region" format="string" />
+  </declare-styleable>
+
+  <declare-styleable name="OnBoardExchangeItemView">
+    <attr name="alphaUnSelected" format="float"/>
+  </declare-styleable>
+
+  <declare-styleable name="TopStockListView">
+    <attr name="topStock" format="reference" />
+  </declare-styleable>
+
 </resources>

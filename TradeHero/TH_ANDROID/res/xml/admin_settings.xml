@@ -39,6 +39,10 @@
       android:title="Show OnBoard Dialog"/>
 
   <Preference
+      android:key="show_onBoard_dialog_3_1"
+      android:title="Show OnBoard Dialog 3.1"/>
+
+  <Preference
       android:key="show_daily_quest_test_screen"
       android:title="Show Daily Quest Test Screen"
       android:icon="@drawable/ic_achievement_star_on"

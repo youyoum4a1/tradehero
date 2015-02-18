@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tradehero.th.fragments.onboarding.exchange.OnBoardExchangeItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/size_1"
+    android:background="@color/white"
+    app:alphaUnSelected="0.9"
+    >
+
+  <LinearLayout
+      android:layout_width="@dimen/size_4"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:layout_gravity="center_vertical"
+      android:layout_marginRight="@dimen/size_1"
+      android:layout_marginEnd="@dimen/size_1"
+      >
+
+    <com.squareup.widgets.AspectRatioImageView
+        android:id="@android:id/icon1"
+        android:layout_width="@dimen/size_4"
+        android:layout_height="@dimen/size_4"
+        android:maxHeight="@dimen/size_6"
+        app:dominantMeasurement="width"
+        app:aspectRatioEnabled="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/size_1"
+        tools:src="@drawable/accounts_glyph_name_default"
+        />
+
+    <ImageView
+        android:id="@android:id/icon"
+        android:layout_width="@dimen/size_3"
+        android:layout_height="@dimen/size_3"
+        android:layout_gravity="center_horizontal"
+        tools:src="@drawable/square_ua"
+        />
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:layout_gravity="center_vertical"
+      >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+      <TextView
+          android:id="@android:id/text1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentStart="true"
+          style="@style/TH.Subhead"
+          tools:text="NYSE"
+          />
+
+      <ImageView
+          android:id="@android:id/icon2"
+          android:layout_width="@dimen/size_3"
+          android:layout_height="@dimen/size_3"
+          android:src="@drawable/tick_green"
+          android:layout_alignParentRight="true"
+          android:layout_alignParentEnd="true"
+          />
+
+      <TextView
+          android:id="@android:id/text2"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_toRightOf="@android:id/text1"
+          android:layout_toEndOf="@android:id/text1"
+          android:layout_toLeftOf="@android:id/icon2"
+          android:layout_toStartOf="@android:id/icon2"
+          android:ellipsize="end"
+          android:gravity="end"
+          android:lines="1"
+          style="@style/TH.Caption"
+          tools:text="New York Stock Exchange"
+          />
+
+      <TextView
+          android:id="@+id/market_cap"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@android:id/text1"
+          style="@style/TH.Caption"
+          tools:text="Mkt Cap: $25 trillion"
+          />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TH.Caption"
+        android:text="@string/exchange_top_stocks_header"
+        />
+
+    <com.tradehero.th.fragments.onboarding.exchange.TopStockListView
+        android:id="@android:id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:topStock="@layout/on_board_top_stock_logo"
+        />
+
+  </LinearLayout>
+
+</com.tradehero.th.fragments.onboarding.exchange.OnBoardExchangeItemView>
