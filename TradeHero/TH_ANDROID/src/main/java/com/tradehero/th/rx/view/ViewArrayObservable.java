@@ -29,4 +29,20 @@ public class ViewArrayObservable
                     }
                 });
     }
+
+    public static Observable<OnClickEvent> clicks(final Iterable<View> views, final boolean emitInitialValue)
+    {
+        return Observable.from(views)
+                .flatMap(new Func1<View, Observable<? extends OnClickEvent>>()
+                {
+                    @Override public Observable<? extends OnClickEvent> call(View view)
+                    {
+                        if (view != null)
+                        {
+                            return ViewObservable.clicks(view, emitInitialValue);
+                        }
+                        return Observable.empty();
+                    }
+                });
+    }
 }
