@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -23,6 +24,7 @@ import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
 import com.tradehero.th.api.market.MarketRegion;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
 import com.tradehero.th.models.market.ExchangeSectorCompactKey;
 import com.tradehero.th.persistence.market.ExchangeSectorCompactListCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
@@ -52,7 +54,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
     MarketRegionMapView mapHeaderView;
     @InjectView(android.R.id.list) ListView exchangeList;
     @InjectView(android.R.id.button1) View nextButton;
-    @NonNull OnBoardExchangeAdapter exchangeAdapter;
+    @NonNull ArrayAdapter<OnBoardExchangeDTO> exchangeAdapter;
     @NonNull Map<MarketRegion, List<ExchangeIntegerId>> filedExchangeIds;
     @NonNull Map<ExchangeIntegerId, ExchangeDTO> knownExchanges;
     @NonNull Set<ExchangeIntegerId> selectedExchanges;
@@ -69,7 +71,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        exchangeAdapter = new OnBoardExchangeAdapter(
+        exchangeAdapter = new OnBoardEmptyOrItemAdapter<>(
                 getActivity(),
                 R.layout.on_board_exchange_item_view,
                 R.layout.on_board_empty_exchange);

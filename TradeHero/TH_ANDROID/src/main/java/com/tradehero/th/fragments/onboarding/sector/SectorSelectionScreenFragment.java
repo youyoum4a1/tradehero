@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -21,6 +22,7 @@ import com.tradehero.th.api.market.SectorDTO;
 import com.tradehero.th.api.market.SectorDTOList;
 import com.tradehero.th.api.market.SectorId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
 import com.tradehero.th.models.market.ExchangeSectorCompactKey;
 import com.tradehero.th.persistence.market.ExchangeSectorCompactListCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
@@ -45,7 +47,7 @@ public class SectorSelectionScreenFragment extends DashboardFragment
 
     @InjectView(android.R.id.list) ListView sectorList;
     @InjectView(android.R.id.button1) View nextButton;
-    @NonNull OnBoardSectorAdapter sectorAdapter;
+    @NonNull ArrayAdapter<OnBoardSectorDTO> sectorAdapter;
     @NonNull Map<SectorId, SectorDTO> knownSectors;
     @NonNull Set<SectorId> selectedSectors;
     @NonNull BehaviorSubject<SectorDTOList> selectedSectorsSubject;
@@ -60,7 +62,7 @@ public class SectorSelectionScreenFragment extends DashboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        sectorAdapter = new OnBoardSectorAdapter(
+        sectorAdapter = new OnBoardEmptyOrItemAdapter<>(
                 getActivity(),
                 R.layout.on_board_sector_item_view,
                 R.layout.on_board_empty_sector);

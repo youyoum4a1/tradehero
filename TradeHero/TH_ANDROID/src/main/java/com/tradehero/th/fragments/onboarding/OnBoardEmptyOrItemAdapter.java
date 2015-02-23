@@ -1,18 +1,18 @@
-package com.tradehero.th.fragments.onboarding.sector;
+package com.tradehero.th.fragments.onboarding;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import com.tradehero.th.adapters.DTOAdapterNew;
 
-public class OnBoardSectorAdapter extends DTOAdapterNew<OnBoardSectorDTO>
+public class OnBoardEmptyOrItemAdapter<T> extends DTOAdapterNew<T>
 {
     private static final int VIEW_TYPE_EMPTY = DEFAULT_VIEW_TYPE + 1;
 
     @LayoutRes private final int emptyRes;
 
     //<editor-fold desc="Constructors">
-    public OnBoardSectorAdapter(@NonNull Context context,
+    public OnBoardEmptyOrItemAdapter(@NonNull Context context,
             @LayoutRes int exchangeResId,
             @LayoutRes int emptyRes)
     {
@@ -49,7 +49,7 @@ public class OnBoardSectorAdapter extends DTOAdapterNew<OnBoardSectorDTO>
         return Math.max(1, super.getCount());
     }
 
-    @Override public OnBoardSectorDTO getItem(int position)
+    @Override public T getItem(int position)
     {
         if (super.getCount() == 0)
         {
