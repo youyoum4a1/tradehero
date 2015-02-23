@@ -2,10 +2,10 @@ package com.tradehero.th.models.market;
 
 import com.tradehero.common.persistence.DTOKey;
 
-public class ExchangeSectorCompactKey implements DTOKey
+public class ExchangeSectorKey implements DTOKey
 {
     //<editor-fold desc="Constructors">
-    public ExchangeSectorCompactKey()
+    public ExchangeSectorKey()
     {
         super();
     }
@@ -18,6 +18,6 @@ public class ExchangeSectorCompactKey implements DTOKey
 
     @Override public boolean equals(Object other)
     {
-        return other instanceof ExchangeSectorCompactKey;
+        return other instanceof ExchangeSectorKey;
     }
 }

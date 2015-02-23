@@ -4,22 +4,22 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
-import com.tradehero.th.models.market.ExchangeSectorCompactKey;
+import com.tradehero.th.api.market.ExchangeSectorListDTO;
+import com.tradehero.th.models.market.ExchangeSectorKey;
 import com.tradehero.th.network.service.MarketServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
 
 @Singleton @UserCache
-public class ExchangeSectorCompactListCacheRx extends BaseFetchDTOCacheRx<ExchangeSectorCompactKey, ExchangeSectorCompactListDTO>
+public class ExchangeSectorListCacheRx extends BaseFetchDTOCacheRx<ExchangeSectorKey, ExchangeSectorListDTO>
 {
     private static final int MAX_SIZE = 1;
 
     @NonNull private final MarketServiceWrapper marketServiceWrapper;
 
     //<editor-fold desc="Constructors">
-    @Inject public ExchangeSectorCompactListCacheRx(
+    @Inject public ExchangeSectorListCacheRx(
             @NonNull MarketServiceWrapper marketServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
@@ -28,7 +28,7 @@ public class ExchangeSectorCompactListCacheRx extends BaseFetchDTOCacheRx<Exchan
     }
     //</editor-fold>
 
-    @NonNull @Override protected Observable<ExchangeSectorCompactListDTO> fetch(@NonNull ExchangeSectorCompactKey key)
+    @NonNull @Override protected Observable<ExchangeSectorListDTO> fetch(@NonNull ExchangeSectorKey key)
     {
         return marketServiceWrapper.getAllExchangeSectorCompactRx();
     }

@@ -16,7 +16,7 @@ import butterknife.OnClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
-import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
+import com.tradehero.th.api.market.ExchangeSectorListDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityIntegerIdListForm;
 import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
@@ -34,12 +34,12 @@ import com.tradehero.th.fragments.onboarding.hero.OnBoardPickHeroViewHolder;
 import com.tradehero.th.fragments.onboarding.pref.OnBoardPickExchangeSectorViewHolder;
 import com.tradehero.th.fragments.onboarding.pref.OnBoardPrefDTO;
 import com.tradehero.th.fragments.onboarding.stock.OnBoardPickStockViewHolder;
-import com.tradehero.th.models.market.ExchangeSectorCompactKey;
+import com.tradehero.th.models.market.ExchangeSectorKey;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardUserListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeMarketPreference;
-import com.tradehero.th.persistence.market.ExchangeSectorCompactListCacheRx;
+import com.tradehero.th.persistence.market.ExchangeSectorListCacheRx;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
 import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
@@ -76,7 +76,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @Inject UserProfileCacheRx userProfileCache;
 
     //exchange
-    @Inject ExchangeSectorCompactListCacheRx exchangeSectorCompactListCache;
+    @Inject ExchangeSectorListCacheRx exchangeSectorCompactListCache;
     @NonNull OnBoardPickExchangeSectorViewHolder exchangeSectorViewHolder;
 
     //hero
@@ -138,10 +138,10 @@ public class OnBoardDialogFragment extends BaseDialogFragment
                         new ToastAction<Throwable>(getString(R.string.error_fetch_your_user_profile))));
 
         subscriptions.add(bindFragment(
-                this, exchangeSectorCompactListCache.get(new ExchangeSectorCompactKey()).map(new PairGetSecond<ExchangeSectorCompactKey, ExchangeSectorCompactListDTO>()))
-                .subscribe(new Action1<ExchangeSectorCompactListDTO>()
+                this, exchangeSectorCompactListCache.get(new ExchangeSectorKey()).map(new PairGetSecond<ExchangeSectorKey, ExchangeSectorListDTO>()))
+                .subscribe(new Action1<ExchangeSectorListDTO>()
                            {
-                               @Override public void call(ExchangeSectorCompactListDTO list)
+                               @Override public void call(ExchangeSectorListDTO list)
                                {
                                    linkWith(list);
                                }
@@ -192,7 +192,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         exchangeSectorViewHolder.setUserProfile(userProfileDTO);
     }
 
-    protected void linkWith(@NonNull ExchangeSectorCompactListDTO exchangeSectorCompacts)
+    protected void linkWith(@NonNull ExchangeSectorListDTO exchangeSectorCompacts)
     {
         exchangeSectorViewHolder.setExchangeSector(exchangeSectorCompacts);
         mExchangeSwitcher.setDisplayedChild(1);

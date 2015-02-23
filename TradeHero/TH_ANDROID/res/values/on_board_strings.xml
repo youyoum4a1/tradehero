@@ -3,12 +3,13 @@
 
   <string name="on_board_welcome_title">Welcome to TradeHero!</string>
   <string name="on_board_welcome_title_2">Let\'s get started…</string>
-
-  <string name="exchange_tap_map_select_exchanges">Tap on the map to select stock exchanges</string>
-  <string name="exchange_selected_max">You cannot select more than %d markets\nUnselect some to select other</string>
+  <string name="on_board_exchange_tap_map_select_exchanges">Tap on the map to select stock exchanges</string>
+  <string name="on_board_exchange_selected_max">You cannot select more than %d markets\nUnselect some to select others</string>
 
   <string name="on_board_sector_title">What are your favorite sectors?</string>
+  <string name="on_board_sector_selected_max">You cannot select more than %d sectors\nUnselect some to select others</string>
 
-  <string name="sector_selected_max">You cannot select more than %d sectors\nUnselect some to select other</string>
+  <string name="on_board_user_title">Top Trade Heroes. Follow them!</string>
+  <string name="on_board_user_selected_max">You cannot select more than %d heroes\nUnselect some to select others</string>
 
 </resources>

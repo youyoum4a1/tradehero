@@ -11,7 +11,7 @@ import com.android.internal.util.Predicate;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
-import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
+import com.tradehero.th.api.market.ExchangeSectorListDTO;
 import com.tradehero.th.api.market.KnownSectors;
 import com.tradehero.th.api.market.SectorDTO;
 import com.tradehero.th.api.market.SectorDTOList;
@@ -34,7 +34,7 @@ public class OnBoardPickExchangeSectorViewHolder
     @NonNull TrendingFilterSpinnerIconAdapterNew exchangeAdapter;
     @NonNull SectorSpinnerAdapterNew sectorAdapter;
 
-    @Nullable ExchangeSectorCompactListDTO exchangeSectorCompacts;
+    @Nullable ExchangeSectorListDTO exchangeSectorCompacts;
     @Nullable ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs;
     @Nullable UserProfileDTO userProfile;
 
@@ -73,18 +73,18 @@ public class OnBoardPickExchangeSectorViewHolder
         setExchangeSpinnerToUserCountry();
     }
 
-    public void setExchangeSector(@NonNull ExchangeSectorCompactListDTO exchangeSectorCompactListDTO)
+    public void setExchangeSector(@NonNull ExchangeSectorListDTO exchangeSectorListDTO)
     {
-        this.exchangeSectorCompacts = exchangeSectorCompactListDTO;
+        this.exchangeSectorCompacts = exchangeSectorListDTO;
         exchangeAdapter.clear();
         exchangeCompactSpinnerDTOs = new ExchangeCompactSpinnerDTOList(
                 context.getResources(),
-                exchangeSectorCompactListDTO.exchanges);
+                exchangeSectorListDTO.exchanges);
         exchangeAdapter.addAll(exchangeCompactSpinnerDTOs);
         exchangeAdapter.notifyDataSetChanged();
 
         sectorAdapter.clear();
-        sectorAdapter.addAll(exchangeSectorCompactListDTO.sectors);
+        sectorAdapter.addAll(exchangeSectorListDTO.sectors);
         sectorAdapter.notifyDataSetChanged();
 
         setExchangeSpinnerToUserCountry();
@@ -118,7 +118,7 @@ public class OnBoardPickExchangeSectorViewHolder
     protected void setSectorSpinnerToDefault()
     {
         Spinner sectorSpinnerCopy = sectorSpinner;
-        ExchangeSectorCompactListDTO exchangeSectorCompactsCopy = exchangeSectorCompacts;
+        ExchangeSectorListDTO exchangeSectorCompactsCopy = exchangeSectorCompacts;
         if (exchangeSectorCompactsCopy != null && sectorSpinnerCopy != null)
         {
             SectorDTOList sectors = exchangeSectorCompactsCopy.sectors;

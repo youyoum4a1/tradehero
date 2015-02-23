@@ -227,6 +227,13 @@
     <item name="showAnimation">true</item>
   </style>
 
+  <style name="TH.NumericalAnimatedTextViewSmall" parent="TH.Caption">
+    <item name="android:gravity">center</item>
+    <item name="animatedDuration">2500</item>
+    <item name="animatedInterval">50</item>
+    <item name="showAnimation">true</item>
+  </style>
+
   <style name="TH.DiscussionTextBox" parent="TH.Body">
     <item name="android:gravity">left|center_vertical</item>
     <item name="android:padding">@dimen/discussion_action_buttons_drawable_padding</item>

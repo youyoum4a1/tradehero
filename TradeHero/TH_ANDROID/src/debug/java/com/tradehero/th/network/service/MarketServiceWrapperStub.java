@@ -7,7 +7,7 @@ import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeCompactDTOUtilDebug;
 import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeIntegerId;
-import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
+import com.tradehero.th.api.market.ExchangeSectorListDTO;
 import com.tradehero.th.api.market.SectorDTO;
 import com.tradehero.th.api.market.SecuritySuperCompactDTOList;
 import com.tradehero.th.api.market.SecuritySuperCompactFactory;
@@ -68,27 +68,27 @@ import rx.functions.Func1;
                 });
     }
 
-    @NonNull @Override public Observable<ExchangeSectorCompactListDTO> getAllExchangeSectorCompactRx()
+    @NonNull @Override public Observable<ExchangeSectorListDTO> getAllExchangeSectorCompactRx()
     {
         return super.getAllExchangeSectorCompactRx()
-                .map(new Func1<ExchangeSectorCompactListDTO, ExchangeSectorCompactListDTO>()
+                .map(new Func1<ExchangeSectorListDTO, ExchangeSectorListDTO>()
                 {
-                    @Override public ExchangeSectorCompactListDTO call(ExchangeSectorCompactListDTO exchangeSectorCompactListDTO)
+                    @Override public ExchangeSectorListDTO call(ExchangeSectorListDTO exchangeSectorListDTO)
                     {
-                        for (ExchangeCompactDTO compact : exchangeSectorCompactListDTO.exchanges)
+                        for (ExchangeCompactDTO compact : exchangeSectorListDTO.exchanges)
                         {
                             ExchangeCompactDTOUtilDebug.tempPopulate(compact);
                         }
 
-                        return exchangeSectorCompactListDTO;
+                        return exchangeSectorListDTO;
                     }
                 })
                         // Put top stocks in exchanges. Eventually to be done on server
-                .flatMap(new Func1<ExchangeSectorCompactListDTO, Observable<ExchangeSectorCompactListDTO>>()
+                .flatMap(new Func1<ExchangeSectorListDTO, Observable<ExchangeSectorListDTO>>()
                 {
-                    @Override public Observable<ExchangeSectorCompactListDTO> call(final ExchangeSectorCompactListDTO exchangeSectorCompactListDTO)
+                    @Override public Observable<ExchangeSectorListDTO> call(final ExchangeSectorListDTO exchangeSectorListDTO)
                     {
-                        return Observable.from(exchangeSectorCompactListDTO.exchanges)
+                        return Observable.from(exchangeSectorListDTO.exchanges)
                                 .flatMap(new Func1<ExchangeDTO, Observable<ExchangeDTO>>()
                                 {
                                     @Override public Observable<ExchangeDTO> call(final ExchangeDTO exchange)
@@ -106,9 +106,9 @@ import rx.functions.Func1;
                                     }
                                 })
                                 .toList()
-                                .map(new Func1<List<ExchangeDTO>, ExchangeSectorCompactListDTO>()
+                                .map(new Func1<List<ExchangeDTO>, ExchangeSectorListDTO>()
                                 {
-                                    @Override public ExchangeSectorCompactListDTO call(List<ExchangeDTO> exchangeDTOs)
+                                    @Override public ExchangeSectorListDTO call(List<ExchangeDTO> exchangeDTOs)
                                     {
                                         SecuritySuperCompactDTOList list = new SecuritySuperCompactDTOList();
                                         int count = MAX_TOP_STOCKS;
@@ -120,11 +120,11 @@ import rx.functions.Func1;
                                                 break;
                                             }
                                         }
-                                        for (SectorDTO sector : exchangeSectorCompactListDTO.sectors)
+                                        for (SectorDTO sector : exchangeSectorListDTO.sectors)
                                         {
                                             sector.topSecurities = list;
                                         }
-                                        return exchangeSectorCompactListDTO;
+                                        return exchangeSectorListDTO;
                                     }
                                 });
                     }

@@ -4,7 +4,9 @@ import dagger.Module;
 
 @Module(
         injects = {
-                SelectableUserViewRelative.class
+                SelectableUserViewRelative.class,
+                OnBoardUserItemView.class,
+                UserSelectionScreenFragment.class,
         },
         library = true,
         complete = false
