@@ -54,7 +54,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
     MarketRegionMapView mapHeaderView;
     @InjectView(android.R.id.list) ListView exchangeList;
     @InjectView(android.R.id.button1) View nextButton;
-    @NonNull ArrayAdapter<OnBoardExchangeDTO> exchangeAdapter;
+    @NonNull ArrayAdapter<SelectableExchangeDTO> exchangeAdapter;
     @NonNull Map<MarketRegion, List<ExchangeIntegerId>> filedExchangeIds;
     @NonNull Map<ExchangeIntegerId, ExchangeDTO> knownExchanges;
     @NonNull Set<ExchangeIntegerId> selectedExchanges;
@@ -158,7 +158,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
                                 @Override public ExchangeIntegerId call(final ExchangeIntegerId integerId)
                                 {
                                     final ExchangeDTO exchange = knownExchanges.get(integerId);
-                                    final OnBoardExchangeDTO dto = new OnBoardExchangeDTO(selectedExchanges.contains(integerId), exchange);
+                                    final SelectableExchangeDTO dto = new SelectableExchangeDTO(exchange, selectedExchanges.contains(integerId));
                                     exchangeAdapter.add(dto);
                                     return integerId;
                                 }
@@ -183,7 +183,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
     @OnItemClick(android.R.id.list)
     protected void onExchangeClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        OnBoardExchangeDTO dto = (OnBoardExchangeDTO) parent.getItemAtPosition(position);
+        SelectableExchangeDTO dto = (SelectableExchangeDTO) parent.getItemAtPosition(position);
         if (!dto.selected && selectedExchanges.size() >= MAX_SELECTABLE_EXCHANGES)
         {
             THToast.show(getString(R.string.exchange_selected_max, MAX_SELECTABLE_EXCHANGES));
@@ -193,11 +193,11 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
             dto.selected = !dto.selected;
             if (dto.selected)
             {
-                selectedExchanges.add(dto.exchange.getExchangeIntegerId());
+                selectedExchanges.add(dto.value.getExchangeIntegerId());
             }
             else
             {
-                selectedExchanges.remove(dto.exchange.getExchangeIntegerId());
+                selectedExchanges.remove(dto.value.getExchangeIntegerId());
             }
             exchangeAdapter.notifyDataSetChanged();
         }

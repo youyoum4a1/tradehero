@@ -41,13 +41,12 @@ import rx.subjects.BehaviorSubject;
 public class SectorSelectionScreenFragment extends DashboardFragment
 {
     private static final int MAX_SELECTABLE_SECTORS = 3;
-    private static final int MAX_TOP_STOCKS = 6;
 
     @Inject ExchangeSectorCompactListCacheRx exchangeSectorCompactListCache;
 
     @InjectView(android.R.id.list) ListView sectorList;
     @InjectView(android.R.id.button1) View nextButton;
-    @NonNull ArrayAdapter<OnBoardSectorDTO> sectorAdapter;
+    @NonNull ArrayAdapter<SelectableSectorDTO> sectorAdapter;
     @NonNull Map<SectorId, SectorDTO> knownSectors;
     @NonNull Set<SectorId> selectedSectors;
     @NonNull BehaviorSubject<SectorDTOList> selectedSectorsSubject;
@@ -110,10 +109,10 @@ public class SectorSelectionScreenFragment extends DashboardFragment
                                 {
                                     knownSectors.put(sectorDTO.getSectorId(), sectorDTO);
                                 }
-                                List<OnBoardSectorDTO> onBoardSectors = new ArrayList<>();
+                                List<SelectableSectorDTO> onBoardSectors = new ArrayList<>();
                                 for (SectorDTO sector : pair.second.sectors)
                                 {
-                                    onBoardSectors.add(new OnBoardSectorDTO(false, sector));
+                                    onBoardSectors.add(new SelectableSectorDTO(sector, false));
                                 }
                                 sectorAdapter.clear();
                                 sectorAdapter.addAll(onBoardSectors);
@@ -126,7 +125,7 @@ public class SectorSelectionScreenFragment extends DashboardFragment
     @OnItemClick(android.R.id.list)
     protected void onSectorClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        OnBoardSectorDTO dto = (OnBoardSectorDTO) parent.getItemAtPosition(position);
+        SelectableSectorDTO dto = (SelectableSectorDTO) parent.getItemAtPosition(position);
         if (!dto.selected && selectedSectors.size() >= MAX_SELECTABLE_SECTORS)
         {
             THToast.show(getString(R.string.sector_selected_max, MAX_SELECTABLE_SECTORS));
@@ -136,11 +135,11 @@ public class SectorSelectionScreenFragment extends DashboardFragment
             dto.selected = !dto.selected;
             if (dto.selected)
             {
-                selectedSectors.add(dto.sector.getSectorId());
+                selectedSectors.add(dto.value.getSectorId());
             }
             else
             {
-                selectedSectors.remove(dto.sector.getSectorId());
+                selectedSectors.remove(dto.value.getSectorId());
             }
             sectorAdapter.notifyDataSetChanged();
         }

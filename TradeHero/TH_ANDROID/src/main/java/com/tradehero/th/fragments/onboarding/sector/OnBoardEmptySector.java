@@ -6,7 +6,7 @@ import android.widget.TextView;
 import com.tradehero.th.api.DTOView;
 
 public class OnBoardEmptySector extends TextView
-    implements DTOView<OnBoardSectorDTO>
+    implements DTOView<SelectableSectorDTO>
 {
     //<editor-fold desc="Constructors">
     public OnBoardEmptySector(Context context)
@@ -25,7 +25,7 @@ public class OnBoardEmptySector extends TextView
     }
     //</editor-fold>
 
-    @Override public void display(OnBoardSectorDTO dto)
+    @Override public void display(SelectableSectorDTO dto)
     {
         // Do nothing
     }

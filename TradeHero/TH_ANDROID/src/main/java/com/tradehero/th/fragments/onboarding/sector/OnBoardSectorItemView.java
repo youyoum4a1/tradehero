@@ -23,7 +23,7 @@ import com.tradehero.th.models.number.THSignedMoney;
 import javax.inject.Inject;
 
 public class OnBoardSectorItemView extends LinearLayout
-        implements DTOView<OnBoardSectorDTO>
+        implements DTOView<SelectableSectorDTO>
 {
     @DrawableRes private static final int DEFAULT_EXCHANGE_LOGO = R.drawable.accounts_glyph_name_default;
 
@@ -94,10 +94,10 @@ public class OnBoardSectorItemView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(@NonNull OnBoardSectorDTO dto)
+    @Override public void display(@NonNull SelectableSectorDTO dto)
     {
-        display(dto.sector);
-        display(dto.sector.topSecurities);
+        display(dto.value);
+        display(dto.value.topSecurities);
 
         if (selectedView != null)
         {
