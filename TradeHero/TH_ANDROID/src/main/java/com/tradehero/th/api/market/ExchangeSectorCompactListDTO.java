@@ -4,6 +4,6 @@ import com.tradehero.common.persistence.DTO;
 
 public class ExchangeSectorCompactListDTO implements DTO
 {
-    public ExchangeCompactDTOList exchanges;
-    public SectorCompactDTOList sectors;
+    public ExchangeDTOList exchanges;
+    public SectorDTOList sectors;
 }

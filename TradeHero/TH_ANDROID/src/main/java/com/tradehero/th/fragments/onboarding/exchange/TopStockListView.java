@@ -11,14 +11,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.api.market.SecuritySuperCompactDTO;
+import com.tradehero.th.api.market.SecuritySuperCompactDTOList;
 import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 
 public class TopStockListView extends LinearLayout
-    implements DTOView<SecurityCompactDTOList>
 {
     @LayoutRes private static final int DEFAULT_RES_TOP_STOCK_LOGO = R.layout.on_board_top_stock_logo;
 
@@ -59,17 +57,17 @@ public class TopStockListView extends LinearLayout
         HierarchyInjector.inject(this);
     }
 
-    @Override public void display(@Nullable SecurityCompactDTOList dto)
+    public void display(@Nullable SecuritySuperCompactDTOList dto)
     {
         removeAllViews();
         if (dto != null && dto.size() > 0)
         {
-            for (final SecurityCompactDTO compactDTO : dto)
+            for (final SecuritySuperCompactDTO compactDTO : dto)
             {
-                if (compactDTO.imageBlobUrl != null)
+                if (compactDTO.blobRef != null)
                 {
                     ImageView imageView = (ImageView) LayoutInflater.from(getContext()).inflate(topStockRes, null);
-                    picasso.load(compactDTO.imageBlobUrl)
+                    picasso.load(compactDTO.blobRef)
                             .resizeDimen(R.dimen.size_10, R.dimen.size_3)
                             .centerInside()
                             .into(imageView);

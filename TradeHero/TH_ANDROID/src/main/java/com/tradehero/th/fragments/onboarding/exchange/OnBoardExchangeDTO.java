@@ -1,24 +1,19 @@
 package com.tradehero.th.fragments.onboarding.exchange;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import com.tradehero.th.api.market.ExchangeCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.api.market.ExchangeDTO;
 
 class OnBoardExchangeDTO
 {
     boolean selected;
-    @NonNull final ExchangeCompactDTO exchange;
-    @Nullable SecurityCompactDTOList topStocks;
+    @NonNull final ExchangeDTO exchange;
 
     OnBoardExchangeDTO(
             boolean selected,
-            @NonNull ExchangeCompactDTO exchange,
-            @Nullable SecurityCompactDTOList topStocks)
+            @NonNull ExchangeDTO exchange)
     {
         this.selected = selected;
         this.exchange = exchange;
-        this.topStocks = topStocks;
     }
     //</editor-fold>
 }

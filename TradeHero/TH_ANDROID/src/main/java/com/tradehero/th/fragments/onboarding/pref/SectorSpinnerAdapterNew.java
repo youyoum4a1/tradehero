@@ -6,10 +6,10 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
-import com.tradehero.th.api.market.SectorCompactDTO;
+import com.tradehero.th.api.market.SectorDTO;
 
 public class SectorSpinnerAdapterNew
-        extends ArrayDTOAdapterNew<SectorCompactDTO, SectorSpinnerItemView>
+        extends ArrayDTOAdapterNew<SectorDTO, SectorSpinnerItemView>
 {
     @LayoutRes private int dropDownResId;
 

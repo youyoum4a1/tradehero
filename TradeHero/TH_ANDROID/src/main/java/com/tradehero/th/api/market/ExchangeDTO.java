@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 public class ExchangeDTO extends ExchangeCompactDTO
 {
     @Nullable public SectorDTOList sectors;
+    @Nullable public SecuritySuperCompactDTOList topSecurities;
 
     //<editor-fold desc="Constructors">
     protected ExchangeDTO()

@@ -16,19 +16,17 @@ import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
+import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeIntegerId;
-import com.tradehero.th.api.market.ExchangeListType;
+import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
 import com.tradehero.th.api.market.MarketRegion;
-import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.security.key.SecurityListType;
-import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
-import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
+import com.tradehero.th.models.market.ExchangeSectorCompactKey;
+import com.tradehero.th.persistence.market.ExchangeSectorCompactListCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,15 +47,14 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
     private static final int MAX_SELECTABLE_EXCHANGES = 3;
     private static final int MAX_TOP_STOCKS = 6;
 
-    @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
-    @Inject SecurityCompactListCacheRx securityCompactListCache;
+    @Inject ExchangeSectorCompactListCacheRx exchangeSectorCompactListCache;
 
     MarketRegionMapView mapHeaderView;
     @InjectView(android.R.id.list) ListView exchangeList;
     @InjectView(android.R.id.button1) View nextButton;
     @NonNull OnBoardExchangeAdapter exchangeAdapter;
     @NonNull Map<MarketRegion, List<ExchangeIntegerId>> filedExchangeIds;
-    @NonNull Map<ExchangeIntegerId, ExchangeCompactDTO> knownExchanges;
+    @NonNull Map<ExchangeIntegerId, ExchangeDTO> knownExchanges;
     @NonNull Set<ExchangeIntegerId> selectedExchanges;
     @NonNull BehaviorSubject<ExchangeCompactDTOList> selectedExchangesSubject;
 
@@ -112,20 +109,20 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                exchangeCompactListCache.getOne(new ExchangeListType()))
+                exchangeSectorCompactListCache.getOne(new ExchangeSectorCompactKey()))
                 .subscribe(
-                        new Action1<Pair<ExchangeListType, ExchangeCompactDTOList>>()
+                        new Action1<Pair<ExchangeSectorCompactKey, ExchangeSectorCompactListDTO>>()
                         {
-                            @Override public void call(Pair<ExchangeListType, ExchangeCompactDTOList> pair)
+                            @Override public void call(Pair<ExchangeSectorCompactKey, ExchangeSectorCompactListDTO> pair)
                             {
-                                filedExchangeIds = ExchangeCompactDTOUtil.filePerRegion(pair.second);
-                                for (ExchangeCompactDTO exchange : pair.second)
+                                filedExchangeIds = ExchangeCompactDTOUtil.filePerRegion(pair.second.exchanges);
+                                for (ExchangeDTO exchange : pair.second.exchanges)
                                 {
                                     knownExchanges.put(exchange.getExchangeIntegerId(), exchange);
                                 }
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastAndLogOnErrorAction("Failed to load exchanges")));
     }
 
     protected void registerMapClicks()
@@ -154,24 +151,14 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
             toShow.addAll(exchanges);
             onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
-                    Observable.from(toShow).flatMap(
-                            new Func1<ExchangeIntegerId, Observable<ExchangeIntegerId>>()
+                    Observable.from(toShow).map(new Func1<ExchangeIntegerId, ExchangeIntegerId>()
                             {
-                                @Override public Observable<ExchangeIntegerId> call(final ExchangeIntegerId integerId)
+                                @Override public ExchangeIntegerId call(final ExchangeIntegerId integerId)
                                 {
-                                    final ExchangeCompactDTO exchange = knownExchanges.get(integerId);
-                                    final OnBoardExchangeDTO dto = new OnBoardExchangeDTO(selectedExchanges.contains(integerId), exchange, null);
+                                    final ExchangeDTO exchange = knownExchanges.get(integerId);
+                                    final OnBoardExchangeDTO dto = new OnBoardExchangeDTO(selectedExchanges.contains(integerId), exchange);
                                     exchangeAdapter.add(dto);
-                                    return securityCompactListCache.getOne(new TrendingBasicSecurityListType(exchange.name, 1, MAX_TOP_STOCKS))
-                                            .map(new Func1<Pair<SecurityListType, SecurityCompactDTOList>, ExchangeIntegerId>()
-                                            {
-                                                @Override public ExchangeIntegerId call(
-                                                        Pair<SecurityListType, SecurityCompactDTOList> pair)
-                                                {
-                                                    dto.topStocks = pair.second;
-                                                    return integerId;
-                                                }
-                                            });
+                                    return integerId;
                                 }
                             }))
                     .subscribe(

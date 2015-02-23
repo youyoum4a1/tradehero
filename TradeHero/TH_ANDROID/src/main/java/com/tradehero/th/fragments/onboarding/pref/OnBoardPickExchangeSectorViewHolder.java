@@ -13,8 +13,8 @@ import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
 import com.tradehero.th.api.market.KnownSectors;
-import com.tradehero.th.api.market.SectorCompactDTO;
-import com.tradehero.th.api.market.SectorCompactDTOList;
+import com.tradehero.th.api.market.SectorDTO;
+import com.tradehero.th.api.market.SectorDTOList;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerIconAdapterNew;
@@ -121,19 +121,19 @@ public class OnBoardPickExchangeSectorViewHolder
         ExchangeSectorCompactListDTO exchangeSectorCompactsCopy = exchangeSectorCompacts;
         if (exchangeSectorCompactsCopy != null && sectorSpinnerCopy != null)
         {
-            SectorCompactDTOList sectors = exchangeSectorCompactsCopy.sectors;
+            SectorDTOList sectors = exchangeSectorCompactsCopy.sectors;
             if (sectors != null)
             {
-                SectorCompactDTO sectorCompactDTO = sectors.findFirstWhere(new Predicate<SectorCompactDTO>()
+                SectorDTO sectorDTO = sectors.findFirstWhere(new Predicate<SectorDTO>()
                 {
-                    @Override public boolean apply(SectorCompactDTO sectorCompactDTO1)
+                    @Override public boolean apply(SectorDTO sectorCompactDTO1)
                     {
                         return sectorCompactDTO1.id == DEFAULT_SECTOR_ID;
                     }
                 });
-                if (sectorCompactDTO != null)
+                if (sectorDTO != null)
                 {
-                    sectorSpinnerCopy.setSelection(sectors.indexOf(sectorCompactDTO));
+                    sectorSpinnerCopy.setSelection(sectors.indexOf(sectorDTO));
                 }
             }
         }
@@ -146,6 +146,6 @@ public class OnBoardPickExchangeSectorViewHolder
                 .getExchangeIntegerId());
         return new OnBoardPrefDTO(
                 (ExchangeCompactDTO) exchangeSpinner.getSelectedItem(),
-                (SectorCompactDTO) sectorSpinner.getSelectedItem());
+                (SectorDTO) sectorSpinner.getSelectedItem());
     }
 }

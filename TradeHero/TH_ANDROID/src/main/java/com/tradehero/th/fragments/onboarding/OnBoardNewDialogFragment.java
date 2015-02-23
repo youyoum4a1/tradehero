@@ -16,6 +16,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.fragments.base.BaseDialogSupportFragment;
 import com.tradehero.th.fragments.onboarding.exchange.ExchangeSelectionScreenFragment;
+import com.tradehero.th.fragments.onboarding.sector.SectorSelectionScreenFragment;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import rx.functions.Action1;
 
@@ -94,7 +95,7 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
                     return fragment;
 
                 case 1:
-                    return new ExchangeSelectionScreenFragment(); // TODO replace with sectors
+                    return new SectorSelectionScreenFragment(); // TODO listen to clicks
             }
             throw new IllegalArgumentException("Unknown position " + position);
         }

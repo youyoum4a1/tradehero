@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeIntegerId;
-import com.tradehero.th.api.market.SectorCompactDTO;
+import com.tradehero.th.api.market.SectorDTO;
 import com.tradehero.th.api.market.SectorId;
 
 public class ExchangeSectorSecurityListType extends SecurityListType
@@ -26,7 +26,7 @@ public class ExchangeSectorSecurityListType extends SecurityListType
 
     public ExchangeSectorSecurityListType(
             @Nullable ExchangeCompactDTO exchange,
-            @Nullable SectorCompactDTO sector,
+            @Nullable SectorDTO sector,
             @Nullable Integer page,
             @Nullable Integer perPage)
     {

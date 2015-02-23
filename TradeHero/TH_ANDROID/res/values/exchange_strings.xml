@@ -14,7 +14,4 @@
   <string name="market_region_east_asia">East Asia</string>
   <string name="market_region_australia">Australia</string>
 
-  <string name="exchange_tap_map_select_exchanges">Tap on the map to select stock exchanges</string>
-  <string name="exchange_selected_max">You cannot select more than %d markets\nUnselect some to select other</string>
-
 </resources>

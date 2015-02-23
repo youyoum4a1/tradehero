@@ -9,14 +9,14 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.market.SectorCompactDTO;
+import com.tradehero.th.api.market.SectorDTO;
 
 public class SectorSpinnerItemView extends RelativeLayout
-    implements DTOView<SectorCompactDTO>
+    implements DTOView<SectorDTO>
 {
     @InjectView(R.id.spinner_item_label) TextView label;
 
-    @Nullable private SectorCompactDTO sectorCompactDTO;
+    @Nullable private SectorDTO sectorDTO;
 
     //<editor-fold desc="Constructors">
     public SectorSpinnerItemView(Context context)
@@ -41,14 +41,14 @@ public class SectorSpinnerItemView extends RelativeLayout
         ButterKnife.inject(this);
     }
 
-    @Override public void display(SectorCompactDTO dto)
+    @Override public void display(SectorDTO dto)
     {
         linkWith(dto, true);
     }
 
-    public void linkWith(@Nullable SectorCompactDTO dto, boolean andDisplay)
+    public void linkWith(@Nullable SectorDTO dto, boolean andDisplay)
     {
-        this.sectorCompactDTO = dto;
+        this.sectorDTO = dto;
         if (andDisplay)
         {
             displayText();
@@ -59,9 +59,9 @@ public class SectorSpinnerItemView extends RelativeLayout
     {
         if (label != null)
         {
-            if (sectorCompactDTO != null)
+            if (sectorDTO != null)
             {
-                label.setText(sectorCompactDTO.name);
+                label.setText(sectorDTO.name);
             }
             else
             {

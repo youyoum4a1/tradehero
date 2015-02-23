@@ -2,7 +2,6 @@ package com.tradehero.th.api.market;
 
 import android.support.annotation.NonNull;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -39,18 +38,5 @@ public class ExchangeCompactDTOUtil
             filed.get(item.region).add(item.getExchangeIntegerId());
         }
         return filed;
-    }
-
-    @Deprecated // Server should do it
-    public static void tempPopulate(@NonNull ExchangeCompactDTO exchange)
-    {
-        for (MarketRegion region : MarketRegion.values())
-        {
-            if (Arrays.asList(region.exchanges).contains(exchange.name))
-            {
-                exchange.region = region;
-                return;
-            }
-        }
     }
 }

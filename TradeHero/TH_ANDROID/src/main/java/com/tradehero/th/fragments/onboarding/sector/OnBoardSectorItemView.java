@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.onboarding.exchange;
+package com.tradehero.th.fragments.onboarding.sector;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -15,44 +15,42 @@ import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.market.Country;
-import com.tradehero.th.api.market.ExchangeCompactDTO;
+import com.tradehero.th.api.market.SectorDTO;
 import com.tradehero.th.api.market.SecuritySuperCompactDTOList;
+import com.tradehero.th.fragments.onboarding.exchange.TopStockListView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import javax.inject.Inject;
 
-public class OnBoardExchangeItemView extends LinearLayout
-        implements DTOView<OnBoardExchangeDTO>
+public class OnBoardSectorItemView extends LinearLayout
+        implements DTOView<OnBoardSectorDTO>
 {
     @DrawableRes private static final int DEFAULT_EXCHANGE_LOGO = R.drawable.accounts_glyph_name_default;
 
     @Inject Picasso picasso;
 
     private final float alphaUnSelected;
-    @InjectView(android.R.id.icon) ImageView flagImage;
     @InjectView(android.R.id.icon1) ImageView logoImage;
     @InjectView(android.R.id.icon2) View selectedView;
     @InjectView(android.R.id.text1) TextView shortNameView;
-    @InjectView(android.R.id.text2) TextView nameView;
     @InjectView(R.id.market_cap) TextView marketCapView;
     View marketCapSliderView;
     @InjectView(android.R.id.content) TopStockListView topStockListView;
 
     //<editor-fold desc="Constructors">
-    public OnBoardExchangeItemView(Context context)
+    public OnBoardSectorItemView(Context context)
     {
         super(context);
         alphaUnSelected = 1f;
     }
 
-    public OnBoardExchangeItemView(Context context, AttributeSet attrs)
+    public OnBoardSectorItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         alphaUnSelected = getAlpha(context, attrs);
     }
 
-    public OnBoardExchangeItemView(Context context, AttributeSet attrs, int defStyleAttr)
+    public OnBoardSectorItemView(Context context, AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
         alphaUnSelected = getAlpha(context, attrs);
@@ -96,10 +94,10 @@ public class OnBoardExchangeItemView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(@NonNull OnBoardExchangeDTO dto)
+    @Override public void display(@NonNull OnBoardSectorDTO dto)
     {
-        display(dto.exchange);
-        display(dto.exchange.topSecurities);
+        display(dto.sector);
+        display(dto.sector.topSecurities);
 
         if (selectedView != null)
         {
@@ -108,29 +106,8 @@ public class OnBoardExchangeItemView extends LinearLayout
         setAlpha(dto.selected ? 1f : alphaUnSelected);
     }
 
-    void display(@Nullable ExchangeCompactDTO dto)
+    void display(@Nullable SectorDTO dto)
     {
-        if (flagImage != null)
-        {
-            if (dto == null)
-            {
-                flagImage.setVisibility(INVISIBLE);
-            }
-            else
-            {
-                Country country = dto.getCountry();
-                if (country != null)
-                {
-                    flagImage.setVisibility(VISIBLE);
-                    flagImage.setImageResource(country.logoId);
-                }
-                else
-                {
-                    flagImage.setVisibility(INVISIBLE);
-                }
-            }
-        }
-
         if (logoImage != null)
         {
             picasso.cancelRequest(logoImage);
@@ -154,18 +131,6 @@ public class OnBoardExchangeItemView extends LinearLayout
             else
             {
                 shortNameView.setText(dto.name);
-            }
-        }
-
-        if (nameView != null)
-        {
-            if (dto == null)
-            {
-                nameView.setText("");
-            }
-            else
-            {
-                nameView.setText(dto.desc);
             }
         }
 

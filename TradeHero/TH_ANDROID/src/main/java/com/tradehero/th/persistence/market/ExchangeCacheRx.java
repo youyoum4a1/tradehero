@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.SystemCache;
-import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.network.service.MarketServiceWrapper;
@@ -41,7 +40,6 @@ public class ExchangeCacheRx extends BaseFetchDTOCacheRx<ExchangeIntegerId, Exch
 
     @Nullable @Override protected ExchangeDTO putValue(@NonNull ExchangeIntegerId key, @NonNull ExchangeDTO value)
     {
-        ExchangeCompactDTOUtil.tempPopulate(value);
         return super.putValue(key, value);
     }
 
