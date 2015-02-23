@@ -155,7 +155,7 @@
     <attr name="region" format="string" />
   </declare-styleable>
 
-  <declare-styleable name="OnBoardExchangeItemView">
+  <declare-styleable name="OnBoardSelectableViewLinear">
     <attr name="alphaUnSelected" format="float"/>
   </declare-styleable>
 

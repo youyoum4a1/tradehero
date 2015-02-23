@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.api.SelectableDTO;
 import com.tradehero.th.api.market.SectorDTO;
 
-class SelectableSectorDTO extends SelectableDTO<SectorDTO>
+public class SelectableSectorDTO extends SelectableDTO<SectorDTO>
 {
     //<editor-fold desc="Constructors">
     SelectableSectorDTO(@NonNull SectorDTO sectorDTO, boolean selected)

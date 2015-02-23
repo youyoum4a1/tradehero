@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import timber.log.Timber;
 
-public class ExchangeCompactDTO implements DTO
+public class ExchangeCompactDTO implements DTO, WithMarketCap
 {
     private static final String BUNDLE_KEY_ID = ExchangeDTO.class.getName() + ".id";
     public static final String BUNDLE_KEY_NAME = ExchangeDTO.class.getName() + ".name";
@@ -170,5 +170,10 @@ public class ExchangeCompactDTO implements DTO
     {
         assert false: "hashCode not designed";
         return 42;
+    }
+
+    @Override public double getSumMarketCap()
+    {
+        return sumMarketCap;
     }
 }

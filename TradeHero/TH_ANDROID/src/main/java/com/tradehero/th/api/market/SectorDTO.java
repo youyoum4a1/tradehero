@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 
-public class SectorDTO implements DTO
+public class SectorDTO implements DTO, WithTopSecurities, WithMarketCap
 {
     public int id;
     public String name;
@@ -16,5 +16,15 @@ public class SectorDTO implements DTO
     @JsonIgnore @NonNull public SectorId getSectorId()
     {
         return new SectorId(id);
+    }
+
+    @Nullable @Override public SecuritySuperCompactDTOList getTopSecurities()
+    {
+        return topSecurities;
+    }
+
+    @Override public double getSumMarketCap()
+    {
+        return sumMarketCap;
     }
 }
