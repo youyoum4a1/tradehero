@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:background="@color/black">
+        tools:background="@color/tradehero_blue">
 
       <RelativeLayout
           android:layout_width="match_parent"
@@ -70,14 +70,15 @@
 
         <TextView
             android:id="@+id/user_profile_roi"
-            style="@style/TH.Subhead"
+            style="@style/TH.Subhead.Inverse"
             android:layout_toRightOf="@+id/user_profile_avatar"
             android:layout_toEndOf="@+id/user_profile_avatar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/user_profile_display_name"
             android:textStyle="bold"
-            tools:text="+408%"/>
+            tools:text="+408%"
+            tools:background="@color/number_up"/>
 
 
         <include

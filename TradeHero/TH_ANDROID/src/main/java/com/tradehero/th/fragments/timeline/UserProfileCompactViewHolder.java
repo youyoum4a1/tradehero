@@ -122,6 +122,7 @@ public class UserProfileCompactViewHolder
                         .builder(roi * 100)
                         .withSign()
                         .withDefaultColor()
+                        .defaultColorForBackground()
                         .signTypeArrow()
                         .build()
                         .into(roiSinceInception);
