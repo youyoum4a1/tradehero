@@ -12,12 +12,14 @@
     <com.tradehero.th.fragments.onboarding.exchange.MarketRegionView
         android:orientation="vertical"
         android:layout_height="wrap_content"
+        android:enabled="false"
         style="@style/TH.OnBoard.MarketRegion"
         app:region="NORTH_AMERICA"/>
 
     <com.tradehero.th.fragments.onboarding.exchange.MarketRegionView
         android:orientation="vertical"
         android:layout_height="wrap_content"
+        android:enabled="false"
         style="@style/TH.OnBoard.MarketRegion"
         app:region="EAST_ASIA"/>
 
@@ -28,6 +30,7 @@
     <com.tradehero.th.fragments.onboarding.exchange.MarketRegionView
         android:orientation="vertical"
         android:layout_height="wrap_content"
+        android:enabled="false"
         style="@style/TH.OnBoard.MarketRegion"
         android:textColor="@color/black"
         app:region="EUROPE"/>
@@ -35,6 +38,7 @@
     <com.tradehero.th.fragments.onboarding.exchange.MarketRegionView
         android:orientation="vertical"
         android:layout_height="wrap_content"
+        android:enabled="false"
         style="@style/TH.OnBoard.MarketRegion"
         app:region="SOUTH_EAST_ASIA"/>
 
@@ -45,6 +49,7 @@
     <com.tradehero.th.fragments.onboarding.exchange.MarketRegionView
         android:orientation="vertical"
         android:layout_height="wrap_content"
+        android:enabled="false"
         style="@style/TH.OnBoard.MarketRegion"
         android:textColor="@color/black"
         app:region="AUSTRALIA"/>
@@ -52,7 +57,9 @@
     <com.tradehero.th.fragments.onboarding.exchange.MarketRegionView
         android:orientation="vertical"
         android:layout_height="wrap_content"
+        android:enabled="false"
         style="@style/TH.OnBoard.MarketRegion"
+        android:textColor="@color/black"
         app:region="INDIA"/>
 
   </TableRow>

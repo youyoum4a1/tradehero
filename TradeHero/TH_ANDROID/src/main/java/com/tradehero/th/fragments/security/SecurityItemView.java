@@ -32,7 +32,7 @@ public class SecurityItemView extends RelativeLayout
     @Inject protected Picasso mPicasso;
 
     @InjectView(R.id.stock_logo) ImageView stockLogo;
-    @InjectView(R.id.ic_market_close) ImageView marketCloseIcon;
+    @InjectView(R.id.ic_market_close) @Optional ImageView marketCloseIcon;
     @InjectView(R.id.stock_name) TextView stockName;
     @InjectView(R.id.exchange_symbol) TextView exchangeSymbol;
     @InjectView(R.id.last_price) TextView lastPrice;

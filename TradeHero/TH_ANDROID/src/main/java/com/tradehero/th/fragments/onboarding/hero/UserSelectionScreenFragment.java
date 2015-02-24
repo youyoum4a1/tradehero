@@ -140,6 +140,7 @@ public class UserSelectionScreenFragment extends DashboardFragment
     @OnItemClick(android.R.id.list)
     protected void onUserClicked(AdapterView<?> parent, View view, int position, long id)
     {
+        nextButton.setVisibility(View.VISIBLE);
         SelectableUserDTO dto = (SelectableUserDTO) parent.getItemAtPosition(position);
         if (!dto.selected && selectedUsers.size() >= MAX_SELECTABLE_USERS)
         {

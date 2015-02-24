@@ -39,6 +39,7 @@ public class MarketRegionView extends TextView
     {
         super.onFinishInflate();
         setText(MarketRegionDisplayUtil.getLabelRes(region));
-        setBackgroundColor(getContext().getResources().getColor(MarketRegionDisplayUtil.getColorRes(region)));
+        //setBackgroundColor(getResources().getColor(MarketRegionDisplayUtil.getColorRes(region)));
+        setBackgroundResource(MarketRegionDisplayUtil.getBgDrawableRes(region));
     }
 }

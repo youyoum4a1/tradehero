@@ -43,8 +43,8 @@
 
   <!--Buttons-->
   <color name="light_green_normal">#a0dc50</color>
-  <color name="light_green_pressed">#ffc7ff8b</color>
-  <color name="light_green_focused">#54A700</color>
+  <color name="light_green_pressed">#54A700</color>
+  <color name="light_green_focused">#ffc7ff8b</color>
 
   <color name="dark_blue_normal">@color/tradehero_dark_blue</color>
   <color name="dark_blue_pressed">#ff052040</color>
@@ -62,6 +62,10 @@
   <color name="twitter_blue_pressed">#ff286892</color>
   <color name="twitter_blue_focused">#ff31d1ff</color>
 
+  <color name="light_blue_normal">#74D3FC</color>
+  <color name="light_blue_pressed">#44A3CC</color>
+  <color name="light_blue_focused">#94F3FF</color>
+
   <color name="qq_normal">@color/white</color>
   <color name="qq_pressed">@color/darker_grey</color>
   <color name="qq_focused">@color/pale_yellow</color>
@@ -70,6 +74,25 @@
   <color name="weibo_pressed">@color/darker_grey</color>
   <color name="weibo_focused">@color/pale_yellow</color>
 
+  <color name="dark_blue">#133979</color>
+  <color name="dark_blue_light">#4369A9</color>
+  <color name="dark_blue_dark">#031959</color>
+
+  <color name="purple_normal">#A10DE0</color>
+  <color name="purple_light">#D13DFF</color>
+  <color name="purple_dark">#8100C0</color>
+
+  <color name="orange_normal">#FD8631</color>
+  <color name="orange_light">#FFC81A</color>
+  <color name="orange_dark">#EF6C01</color>
+
+  <color name="red_normal">@color/red</color>
+  <color name="red_light">#FF4063</color>
+  <color name="red_dark">@color/dark_red</color>
+
+  <color name="yellow_normal">#FBFC56</color>
+  <color name="yellow_light">@color/pale_yellow</color>
+  <color name="yellow_dark">@color/orange</color>
 
   <string-array name="gauge_color_range" translatable="false">
     <item>#FF0C2B</item>

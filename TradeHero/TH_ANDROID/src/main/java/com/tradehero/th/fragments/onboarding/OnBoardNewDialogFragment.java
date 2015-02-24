@@ -18,11 +18,19 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.market.ExchangeDTOList;
 import com.tradehero.th.api.market.ExchangeSectorListDTO;
 import com.tradehero.th.api.market.SectorDTOList;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogSupportFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.onboarding.exchange.ExchangeSelectionScreenFragment;
 import com.tradehero.th.fragments.onboarding.hero.UserSelectionScreenFragment;
+import com.tradehero.th.fragments.onboarding.last.OnBoardLastFragment;
 import com.tradehero.th.fragments.onboarding.sector.SectorSelectionScreenFragment;
+import com.tradehero.th.fragments.onboarding.stock.StockSelectionScreenFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import javax.inject.Inject;
 import rx.functions.Action1;
 import rx.subjects.BehaviorSubject;
 
@@ -32,13 +40,17 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
     private static final int INDEX_SELECTION_SECTORS = 1;
     private static final int INDEX_SELECTION_HEROES = 2;
     private static final int INDEX_SELECTION_WATCHLIST = 3;
+    private static final int INDEX_SELECTION_LAST = 4;
 
+    @Inject DashboardNavigator navigator;
     @InjectView(android.R.id.content) ViewPager pager;
 
     private ExchangeDTOList selectedExchanges;
     private SectorDTOList selectedSectors;
     private LeaderboardUserDTOList selectedHeroes;
+    private SecurityCompactDTOList selectedStocks;
     @NonNull private BehaviorSubject<ExchangeSectorListDTO> exchangeSectorBehavior;
+    @NonNull private BehaviorSubject<SecurityCompactDTOList> selectedSecuritiesBehavior;
 
     public static OnBoardNewDialogFragment showOnBoardDialog(FragmentManager fragmentManager)
     {
@@ -51,6 +63,8 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
     {
         super.onCreate(savedInstanceState);
         exchangeSectorBehavior = BehaviorSubject.create();
+        selectedSecuritiesBehavior = BehaviorSubject.create();
+        HierarchyInjector.inject(this);
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -69,18 +83,7 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
         super.onStart();
         pager.setAdapter(new PagerAdapter(getChildFragmentManager()));
         pager.canScrollHorizontally(-1);
-        if (selectedHeroes != null)
-        {
-            // TODO set to watchlist
-        }
-        else if (selectedSectors != null)
-        {
-            pager.setCurrentItem(INDEX_SELECTION_HEROES);
-        }
-        else if (selectedExchanges != null)
-        {
-            pager.setCurrentItem(INDEX_SELECTION_SECTORS);
-        }
+        pager.setCurrentItem(getCurrentIndex());
     }
 
     @Override public void onDestroyView()
@@ -95,6 +98,32 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
         super.dismiss();
     }
 
+    private int getCurrentIndex()
+    {
+        int index;
+        if (selectedStocks != null)
+        {
+            index = INDEX_SELECTION_LAST;
+        }
+        else if (selectedHeroes != null)
+        {
+            index = INDEX_SELECTION_WATCHLIST;
+        }
+        else if (selectedSectors != null)
+        {
+            index = INDEX_SELECTION_HEROES;
+        }
+        else if (selectedExchanges != null)
+        {
+            index = INDEX_SELECTION_SECTORS;
+        }
+        else
+        {
+            index = INDEX_SELECTION_EXCHANGES;
+        }
+        return index;
+    }
+
     private class PagerAdapter extends FragmentStatePagerAdapter
     {
         PagerAdapter(FragmentManager fm)
@@ -104,7 +133,7 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
 
         @Override public int getCount()
         {
-            return 3;
+            return INDEX_SELECTION_LAST + 1;
         }
 
         @Override public Fragment getItem(int position)
@@ -152,15 +181,44 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
                                         @Override public void call(LeaderboardUserDTOList leaderboardUserDTOs)
                                         {
                                             selectedHeroes = leaderboardUserDTOs;
-                                            // TODO move to watchlist
+                                            pager.setCurrentItem(INDEX_SELECTION_WATCHLIST, true);
                                         }
                                     },
                                     new TimberOnErrorAction("Failed to collect heroes")));
                     return fragment2;
 
                 case INDEX_SELECTION_WATCHLIST:
-                    // TODO
-                    return null;
+                    StockSelectionScreenFragment fragment3 = new StockSelectionScreenFragment();
+                    fragment3.setSelectedExchangesSectorsObservable(exchangeSectorBehavior.asObservable());
+                    onStopSubscriptions.add(fragment3.getSelectedStocksObservable()
+                            .subscribe(
+                                    new Action1<SecurityCompactDTOList>()
+                                       {
+                                           @Override public void call(SecurityCompactDTOList securityCompactDTOs)
+                                           {
+                                               selectedStocks = securityCompactDTOs;
+                                               pager.setCurrentItem(INDEX_SELECTION_LAST);
+                                               selectedSecuritiesBehavior.onNext(securityCompactDTOs);
+                                           }
+                                       },
+                                    new ToastAndLogOnErrorAction("Failed to get selected stocks")));
+                    return fragment3;
+
+                case INDEX_SELECTION_LAST:
+                    OnBoardLastFragment fragment4 = new OnBoardLastFragment();
+                    fragment4.setSelectedSecuritiessObservable(selectedSecuritiesBehavior.asObservable());
+                    onStopSubscriptions.add(fragment4.getFragmentRequestedObservable()
+                            .subscribe(
+                                    new Action1<Class<? extends DashboardFragment>>()
+                                    {
+                                        @Override public void call(Class<? extends DashboardFragment> aClass)
+                                        {
+                                            navigator.pushFragment(aClass);
+                                            dismiss();
+                                        }
+                                    }
+                            ));
+                    return fragment4;
             }
             throw new IllegalArgumentException("Unknown position " + position);
         }

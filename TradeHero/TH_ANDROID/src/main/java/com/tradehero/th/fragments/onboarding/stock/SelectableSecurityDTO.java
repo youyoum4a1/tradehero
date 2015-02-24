@@ -11,5 +11,10 @@ public class SelectableSecurityDTO extends SelectableDTO<SecurityCompactDTO>
     {
         super(value);
     }
+
+    public SelectableSecurityDTO(@NonNull SecurityCompactDTO value, boolean selected)
+    {
+        super(value, selected);
+    }
     //</editor-fold>
 }

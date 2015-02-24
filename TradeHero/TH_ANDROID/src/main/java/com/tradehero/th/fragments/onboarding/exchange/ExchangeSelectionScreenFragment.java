@@ -118,6 +118,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
                             @Override public void call(Pair<ExchangeSectorKey, ExchangeSectorListDTO> pair)
                             {
                                 filedExchangeIds = ExchangeCompactDTOUtil.filePerRegion(pair.second.exchanges);
+                                mapHeaderView.enable(filedExchangeIds.keySet());
                                 for (ExchangeDTO exchange : pair.second.exchanges)
                                 {
                                     knownExchanges.put(exchange.getExchangeIntegerId(), exchange);
@@ -153,21 +154,21 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
             toShow.addAll(exchanges);
             onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
-                    Observable.from(toShow).map(new Func1<ExchangeIntegerId, ExchangeIntegerId>()
+                    Observable.from(toShow).map(new Func1<ExchangeIntegerId, SelectableExchangeDTO>()
                             {
-                                @Override public ExchangeIntegerId call(final ExchangeIntegerId integerId)
+                                @Override public SelectableExchangeDTO call(final ExchangeIntegerId integerId)
                                 {
-                                    final ExchangeDTO exchange = knownExchanges.get(integerId);
-                                    final SelectableExchangeDTO dto = new SelectableExchangeDTO(exchange, selectedExchanges.contains(integerId));
-                                    exchangeAdapter.add(dto);
-                                    return integerId;
+                                    return new SelectableExchangeDTO(
+                                            knownExchanges.get(integerId),
+                                            selectedExchanges.contains(integerId));
                                 }
                             }))
                     .subscribe(
-                            new Action1<ExchangeIntegerId>()
+                            new Action1<SelectableExchangeDTO>()
                             {
-                                @Override public void call(ExchangeIntegerId ignored)
+                                @Override public void call(SelectableExchangeDTO dto)
                                 {
+                                    exchangeAdapter.add(dto);
                                     exchangeAdapter.notifyDataSetChanged();
                                 }
                             },
@@ -183,6 +184,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
     @OnItemClick(android.R.id.list)
     protected void onExchangeClicked(AdapterView<?> parent, View view, int position, long id)
     {
+        nextButton.setVisibility(View.VISIBLE);
         SelectableExchangeDTO dto = (SelectableExchangeDTO) parent.getItemAtPosition(position);
         if (!dto.selected && selectedExchanges.size() >= MAX_SELECTABLE_EXCHANGES)
         {

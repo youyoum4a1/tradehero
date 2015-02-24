@@ -12,4 +12,14 @@
   <string name="on_board_user_title">Top Trade Heroes. Follow them!</string>
   <string name="on_board_user_selected_max">You cannot select more than %d heroes\nUnselect some to select others</string>
 
+  <string name="on_board_stock_title">Trending Stocks. Favorite them!</string>
+  <string name="on_board_stock_selected_max">You cannot select more than %d stocks\nUnselect some to select others</string>
+
+  <string name="on_board_last_title_1">Ka-ching!</string>
+  <string name="on_board_last_title_2">You now have a budget of</string>
+  <string name="on_board_last_title_3">100,000 virtual dollars</string>
+  <string name="on_board_last_hint">Some of your favorites are trending.\nWould you like to buy shares?</string>
+  <string name="on_board_last_button_buy">Yes, buy shares!</string>
+  <string name="on_board_last_button_later">Later, I will look around first</string>
+
 </resources>

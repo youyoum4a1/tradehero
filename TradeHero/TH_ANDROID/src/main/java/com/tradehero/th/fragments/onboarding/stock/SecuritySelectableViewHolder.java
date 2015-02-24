@@ -11,7 +11,7 @@ import com.tradehero.th.fragments.security.SecurityItemView;
 public class SecuritySelectableViewHolder implements DTOView<SelectableSecurityDTO>
 {
     @InjectView(R.id.security_view) protected SecurityItemView securityView;
-    @InjectView(R.id.tick_selected) protected View tickSelectedView;
+    @InjectView(android.R.id.icon2) protected View tickSelectedView;
 
     @Nullable protected SelectableSecurityDTO selectableDTO;
 

@@ -9,6 +9,7 @@ import android.widget.TableRow;
 import com.tradehero.th.api.market.MarketRegion;
 import com.tradehero.th.rx.view.ViewArrayObservable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import rx.Observable;
 import rx.android.view.OnClickEvent;
@@ -30,16 +31,7 @@ public class MarketRegionMapView extends TableLayout
 
     @NonNull public Observable<MarketRegion> getMarketRegionClickedObservable()
     {
-        List<View> regionViews = new ArrayList<>();
-        for (int rowIndex = 0; rowIndex < getChildCount(); rowIndex++)
-        {
-            TableRow row = (TableRow) getChildAt(rowIndex);
-            for (int regionIndex = 0; regionIndex < row.getChildCount(); regionIndex++)
-            {
-                regionViews.add(row.getChildAt(regionIndex));
-            }
-        }
-        return ViewArrayObservable.clicks(regionViews, false)
+        return ViewArrayObservable.clicks(new ArrayList<View>(getRegionViews()), false)
                 .map(new Func1<OnClickEvent, MarketRegion>()
                 {
                     @Override public MarketRegion call(OnClickEvent onClickEvent)
@@ -47,5 +39,27 @@ public class MarketRegionMapView extends TableLayout
                         return ((MarketRegionView) onClickEvent.view()).region;
                     }
                 });
+    }
+
+    @NonNull protected List<MarketRegionView> getRegionViews()
+    {
+        List<MarketRegionView> regionViews = new ArrayList<>();
+        for (int rowIndex = 0; rowIndex < getChildCount(); rowIndex++)
+        {
+            TableRow row = (TableRow) getChildAt(rowIndex);
+            for (int regionIndex = 0; regionIndex < row.getChildCount(); regionIndex++)
+            {
+                regionViews.add((MarketRegionView) row.getChildAt(regionIndex));
+            }
+        }
+        return regionViews;
+    }
+
+    public void enable(@NonNull Collection<? extends MarketRegion> enabledRegions)
+    {
+        for (MarketRegionView view : getRegionViews())
+        {
+            view.setEnabled(enabledRegions.contains(view.region));
+        }
     }
 }

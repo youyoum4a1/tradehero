@@ -13,4 +13,7 @@
     <item name="android:gravity">center_horizontal</item>
   </style>
 
+  <dimen name="on_board_last_stock_width">@dimen/size_17</dimen>
+  <dimen name="on_board_last_stock_height">@dimen/size_15</dimen>
+
 </resources>

@@ -115,13 +115,14 @@ public class SectorSelectionScreenFragment extends DashboardFragment
                                 sectorAdapter.addAll(onBoardSectors);
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to load exchanges")));
+                        new ToastAndLogOnErrorAction("Failed to load sectors")));
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @OnItemClick(android.R.id.list)
     protected void onSectorClicked(AdapterView<?> parent, View view, int position, long id)
     {
+        nextButton.setVisibility(View.VISIBLE);
         SelectableSectorDTO dto = (SelectableSectorDTO) parent.getItemAtPosition(position);
         if (!dto.selected && selectedSectors.size() >= MAX_SELECTABLE_SECTORS)
         {
