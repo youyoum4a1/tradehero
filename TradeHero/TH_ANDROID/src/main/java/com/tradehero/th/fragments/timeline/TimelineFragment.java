@@ -46,7 +46,6 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogRxUtil;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
@@ -161,7 +160,7 @@ public class TimelineFragment extends DashboardFragment
         }
         mainTimelineAdapter = new MainTimelineAdapter(getActivity(), shownUserBaseKey,
                 R.layout.timeline_item_view,
-                R.layout.portfolio_list_item_2_0,
+                R.layout.portfolio_list_item,
                 R.layout.user_profile_stat_view);
         mainTimelineAdapter.setCurrentTabType(currentTab);
 
@@ -833,11 +832,6 @@ public class TimelineFragment extends DashboardFragment
     @Override public void onAchievementClicked()
     {
         pushAchievementFragment();
-    }
-
-    @Override public void onEditProfileClicked()
-    {
-        navigator.get().pushFragment(SettingsProfileFragment.class);
     }
     //</editor-fold>
 }

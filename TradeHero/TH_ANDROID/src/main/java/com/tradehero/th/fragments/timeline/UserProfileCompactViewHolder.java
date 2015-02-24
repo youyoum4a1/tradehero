@@ -11,7 +11,6 @@ import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
@@ -27,12 +26,10 @@ public class UserProfileCompactViewHolder
     @InjectView(R.id.user_profile_heroes_count_wrapper) @Optional public View heroesCountWrapper;
     @InjectView(R.id.user_profile_heroes_count) @Optional public TextView heroesCount;
     @InjectView(R.id.user_profile_display_name) @Optional public TextView displayName;
-    @InjectView(R.id.user_profile_edit) @Optional public ImageView mEdit;
 
     @Inject protected Context context;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Picasso picasso;
-    @Inject CurrentUserId currentUserId;
     protected UserProfileDTO userProfileDTO;
     private OnProfileClickedListener profileClickedListener;
 
@@ -66,22 +63,6 @@ public class UserProfileCompactViewHolder
         displayFollowersCount();
         displayHeroesCount();
         displayDisplayName();
-        displayEditIcon();
-    }
-
-    private void displayEditIcon()
-    {
-        if (mEdit != null)
-        {
-            if (userProfileDTO != null && userProfileDTO.id == currentUserId.get())
-            {
-                mEdit.setVisibility(View.VISIBLE);
-            }
-            else
-            {
-                mEdit.setVisibility(View.GONE);
-            }
-        }
     }
 
     protected void loadUserPicture()
@@ -123,7 +104,7 @@ public class UserProfileCompactViewHolder
                         .withSign()
                         .withDefaultColor()
                         .defaultColorForBackground()
-                        .signTypeArrow()
+                        .signTypePlusMinusAlways()
                         .build()
                         .into(roiSinceInception);
             }
@@ -180,16 +161,6 @@ public class UserProfileCompactViewHolder
         }
     }
 
-    @OnClick(R.id.user_profile_edit) @Optional
-    protected void notifyEditProfileClicked()
-    {
-        OnProfileClickedListener listener = profileClickedListener;
-        if (listener != null)
-        {
-            listener.onEditProfileClicked();
-        }
-    }
-
     @OnClick({R.id.user_profile_heroes_count, R.id.user_profile_heroes_count_wrapper}) @Optional
     protected void notifyHeroClicked()
     {
@@ -226,7 +197,5 @@ public class UserProfileCompactViewHolder
         void onFollowerClicked();
 
         void onAchievementClicked();
-
-        void onEditProfileClicked();
     }
 }

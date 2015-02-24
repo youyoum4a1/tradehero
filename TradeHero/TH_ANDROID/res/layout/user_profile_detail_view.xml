@@ -61,8 +61,6 @@
             android:shadowDy="1"
             android:shadowDx="1"
             android:shadowRadius="1"
-            android:layout_toLeftOf="@id/user_profile_edit"
-            android:layout_toStartOf="@id/user_profile_edit"
             android:layout_marginTop="@dimen/margin_small"
             tools:text="Lorem ipsum dolor sit amet contentulla"
             android:layout_toRightOf="@+id/user_profile_avatar"
@@ -89,6 +87,16 @@
             android:layout_below="@id/user_profile_roi"
             android:layout_toRightOf="@id/user_profile_avatar"
             android:layout_toEndOf="@id/user_profile_avatar"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TH.Caption.Inverse"
+            android:text="@string/user_profile_roi_in_stocks"
+            android:layout_alignTop="@id/user_profile_roi"
+            android:layout_alignEnd="@id/user_level_progress_bar"
+            android:layout_alignRight="@id/user_level_progress_bar"
             />
 
       </RelativeLayout>
