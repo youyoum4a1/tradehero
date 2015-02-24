@@ -19,6 +19,10 @@ import com.tradehero.th.api.market.ExchangeDTOList;
 import com.tradehero.th.api.market.ExchangeSectorListDTO;
 import com.tradehero.th.api.market.SectorDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.api.security.SecurityIntegerIdListForm;
+import com.tradehero.th.api.social.BatchFollowFormDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogSupportFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -28,6 +32,9 @@ import com.tradehero.th.fragments.onboarding.last.OnBoardLastFragment;
 import com.tradehero.th.fragments.onboarding.sector.SectorSelectionScreenFragment;
 import com.tradehero.th.fragments.onboarding.stock.StockSelectionScreenFragment;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.network.service.WatchlistServiceWrapper;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import javax.inject.Inject;
@@ -43,6 +50,8 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
     private static final int INDEX_SELECTION_LAST = 4;
 
     @Inject DashboardNavigator navigator;
+    @Inject UserServiceWrapper userServiceWrapper;
+    @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @InjectView(android.R.id.content) ViewPager pager;
 
     private ExchangeDTOList selectedExchanges;
@@ -193,14 +202,15 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
                     onStopSubscriptions.add(fragment3.getSelectedStocksObservable()
                             .subscribe(
                                     new Action1<SecurityCompactDTOList>()
-                                       {
-                                           @Override public void call(SecurityCompactDTOList securityCompactDTOs)
-                                           {
-                                               selectedStocks = securityCompactDTOs;
-                                               pager.setCurrentItem(INDEX_SELECTION_LAST);
-                                               selectedSecuritiesBehavior.onNext(securityCompactDTOs);
-                                           }
-                                       },
+                                    {
+                                        @Override public void call(SecurityCompactDTOList securityCompactDTOs)
+                                        {
+                                            selectedStocks = securityCompactDTOs;
+                                            pager.setCurrentItem(INDEX_SELECTION_LAST);
+                                            selectedSecuritiesBehavior.onNext(securityCompactDTOs);
+                                            submitActions();
+                                        }
+                                    },
                                     new ToastAndLogOnErrorAction("Failed to get selected stocks")));
                     return fragment3;
 
@@ -222,5 +232,18 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
             }
             throw new IllegalArgumentException("Unknown position " + position);
         }
+    }
+
+    private void submitActions()
+    {
+        userServiceWrapper.followBatchFreeRx(new BatchFollowFormDTO(selectedHeroes, null))
+                .subscribe(
+                        new EmptyAction1<UserProfileDTO>(),
+                        new ToastAndLogOnErrorAction("Failed to submit selectedHeroes " + selectedHeroes));
+
+        watchlistServiceWrapper.batchCreateRx(new SecurityIntegerIdListForm(selectedStocks, null))
+                .subscribe(
+                        new EmptyAction1<WatchlistPositionDTOList>(),
+                        new ToastAndLogOnErrorAction("Failed to submit selectedStocks" + selectedStocks));
     }
 }
