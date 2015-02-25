@@ -33,16 +33,15 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.QQUtils;
 import com.tradehero.th.utils.WeiboUtils;
 import dagger.Lazy;
+
 import javax.inject.Inject;
 
 public class MySocialFragment extends DashboardFragment implements View.OnClickListener
 {
     @InjectView(R.id.btn_weibo_signin) LinearLayout mWeiboLayout;
     @InjectView(R.id.btn_qq_signin) LinearLayout mQQLayout;
-    @InjectView(R.id.btn_linkedin_signin) LinearLayout mLinkedInLayout;
     @InjectView(R.id.weibo_mark) ImageView mWeiboMark;
     @InjectView(R.id.qq_mark) ImageView mQQMark;
-    @InjectView(R.id.linkedin_mark) ImageView mLinkedinMark;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     @Inject ProgressDialogUtil progressDialogUtil;
@@ -74,7 +73,6 @@ public class MySocialFragment extends DashboardFragment implements View.OnClickL
         ButterKnife.inject(this, view);
         mWeiboLayout.setOnClickListener(this);
         mQQLayout.setOnClickListener(this);
-        mLinkedInLayout.setOnClickListener(this);
         updateView();
         return view;
     }
@@ -87,8 +85,6 @@ public class MySocialFragment extends DashboardFragment implements View.OnClickL
             mWeiboMark.setImageResource(userProfileDTO.wbLinked ? R.drawable.register_duihao
                     : R.drawable.register_duihao_cancel);
             mQQMark.setImageResource(userProfileDTO.qqLinked ? R.drawable.register_duihao
-                    : R.drawable.register_duihao_cancel);
-            mLinkedinMark.setImageResource(userProfileDTO.liLinked ? R.drawable.register_duihao
                     : R.drawable.register_duihao_cancel);
         }
     }
@@ -139,22 +135,6 @@ public class MySocialFragment extends DashboardFragment implements View.OnClickL
                     detachMiddleSocialConnectLogInCallback();
                     middleSocialConnectLogInCallback = createMiddleSocialConnectLogInCallback();
                     QQUtilsLazy.get().logIn(getActivity(), middleSocialConnectLogInCallback);
-                }
-                break;
-            case R.id.btn_linkedin_signin:
-                if (userProfileDTO.liLinked)
-                {
-                    detachMiddleServerDisconnectCallback();
-                    middleCallbackDisconnect = socialServiceWrapper.disconnect(
-                            currentUserId.toUserBaseKey(),
-                            new SocialNetworkFormDTO(SocialNetworkEnum.LN),
-                            new ServerUnlinkingCallback());
-                }
-                else
-                {
-                    detachMiddleSocialConnectLogInCallback();
-                    middleSocialConnectLogInCallback = createMiddleSocialConnectLogInCallback();
-                    linkedInUtils.get().logIn(getActivity(), middleSocialConnectLogInCallback);
                 }
                 break;
         }

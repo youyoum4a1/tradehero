@@ -13,7 +13,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
-import android.widget.EditText;
 import android.widget.TextView;
 import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
@@ -42,13 +41,11 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.wxapi.WXEntryActivity;
 import dagger.Lazy;
-import org.json.JSONException;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
 import javax.inject.Inject;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -193,12 +190,6 @@ public class AuthenticationActivity extends DashboardActivity
             case R.id.btn_login:
                 authenticateWithEmail();
                 break;
-            case R.id.authentication_twitter_email_button:
-                complementEmailForTwitterAuthentication();
-                break;
-            case R.id.btn_linkedin_signin:
-                authenticateWithLinkedIn();
-                break;
             case R.id.btn_weibo_signin:
                 THUser.setAuthenticationMode(AuthenticationMode.SignIn);
                 authenticateWithWeibo();
@@ -328,85 +319,6 @@ public class AuthenticationActivity extends DashboardActivity
         linkedInUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.BUTTON_LOGIN_LINKEDIN));
     }
 
-    //public void authenticateWithFacebook()
-    //{
-    //    analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.BUTTON_LOGIN_FACEBOOK));
-    //    progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_facebook);
-    //    facebookUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.Facebook));
-    //}
-    //
-    //public void authenticateWithTwitter()
-    //{
-    //    analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.BUTTON_LOGIN_TWITTER));
-    //    progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_twitter_connecting);
-    //    twitterUtils.get().logIn(this, createTwitterAuthenticationCallback());
-    //}
-
-    private SocialAuthenticationCallback createTwitterAuthenticationCallback()
-    {
-        return new SocialAuthenticationCallback(AnalyticsConstants.BUTTON_LOGIN_TWITTER)
-        {
-            @Override public boolean isSigningUp()
-            {
-                return !(currentFragment instanceof SignInFragment);
-            }
-
-            @Override public boolean onSocialAuthDone(JSONCredentials json)
-            {
-                if (super.onSocialAuthDone(json))
-                {
-                    return true;
-                }
-                // twitter does not return email for authentication user,
-                // we need to ask user for that
-                try
-                {
-                    setTwitterData((TwitterCredentialsDTO) credentialsDTOFactory.create(json));
-                } catch (JSONException | ParseException e)
-                {
-                    Timber.e(e, "Failed to create twitter credentials with %s", json);
-                }
-                progressDialog.hide();
-                setCurrentFragmentByClass(TwitterEmailFragment.class);
-                return false;
-            }
-        };
-    }
-
-    private void complementEmailForTwitterAuthentication()
-    {
-        EditText txtTwitterEmail = (EditText) currentFragment.getView().findViewById(R.id.authentication_twitter_email_txt);
-        twitterJson.email = txtTwitterEmail.getText().toString();
-        progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), "Twitter"));
-        progressDialog.show();
-        THUser.logInAsyncWithJson(twitterJson, createCallbackForTwitterComplementEmail());
-    }
-
-    private LogInCallback createCallbackForTwitterComplementEmail()
-    {
-        return new LogInCallback()
-        {
-            @Override public void done(UserLoginDTO user, THException ex)
-            {
-                if (user != null)
-                {
-                    //analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Success, AnalyticsConstants.Twitter));
-                    launchDashboard(user);
-                    finish();
-                }
-                else
-                {
-                    THToast.show(ex);
-                }
-                progressDialog.dismiss();
-            }
-
-            @Override public void onStart()
-            {
-                // do nothing for now
-            }
-        };
-    }
 
     private void launchDashboard(UserLoginDTO userLoginDTO)
     {
@@ -430,11 +342,6 @@ public class AuthenticationActivity extends DashboardActivity
         finish();
     }
 
-    private void setTwitterData(TwitterCredentialsDTO json)
-    {
-        twitterJson = json;
-    }
-    //</editor-fold>
 
     private class SocialAuthenticationCallback extends LogInCallback
     {

@@ -90,42 +90,6 @@
           android:layout_weight="1"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:visibility="gone"
-        android:id="@+id/btn_linkedin_signin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_medium"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/btn_background_social_linkedin">
-      <View
-          android:layout_width="0dp"
-          android:layout_height="1dp"
-          android:layout_weight="1"/>
-      <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"/>
-      <TextView
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="3"
-          android:layout_marginLeft="@dimen/margin_small"
-          android:text="@string/linkedin_login_in"
-          android:textColor="@color/white"
-          android:textSize="@dimen/text_large"
-          android:gravity="left|center_vertical"/>
-      <ImageView
-          android:id="@+id/linkedin_mark"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:src="@drawable/register_duihao_cancel"/>
-      <View
-          android:layout_width="0dp"
-          android:layout_height="1dp"
-          android:layout_weight="1"/>
-    </LinearLayout>
-
   </LinearLayout>
 
   <View
