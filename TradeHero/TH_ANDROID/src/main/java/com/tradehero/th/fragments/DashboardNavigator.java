@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.widget.TabHost;
-import com.special.ResideMenu.ResideMenu;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -16,16 +15,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-import javax.inject.Inject;
-
 public class DashboardNavigator extends Navigator
 {
     private static final boolean TAB_SHOULD_ADD_TO_BACKSTACK = false;
     private static final boolean TAB_SHOW_HOME_AS_UP = false;
 
     private TabHost.OnTabChangeListener mOnTabChangedListener;
-
-    @Inject ResideMenu resideMenu;
 
     public DashboardNavigator(Context context, FragmentManager manager, int fragmentContentId)
     {
@@ -102,7 +97,6 @@ public class DashboardNavigator extends Navigator
     @Override public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim,
             @Nullable String backStackName, Boolean shouldAddToBackStack, Boolean showHomeAsUp)
     {
-        resideMenu.closeMenu();
         Fragment currentFragment = getCurrentFragment();
         if (currentFragment instanceof DashboardFragment)
         {

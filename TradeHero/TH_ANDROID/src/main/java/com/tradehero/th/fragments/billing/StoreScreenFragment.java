@@ -12,7 +12,6 @@ import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.route.Routable;
@@ -31,7 +30,6 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
 import timber.log.Timber;
 
 import javax.inject.Inject;
@@ -46,7 +44,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     protected Integer showBillingAvailableRequestCode;
 
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject THRouter thRouter;
     @Inject StoreItemFactory storeItemFactory;
 

@@ -6,14 +6,10 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
-import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
-
-import javax.inject.Inject;
 
 public class DashboardPreferenceFragment extends PreferenceFragment
 {
@@ -21,7 +17,6 @@ public class DashboardPreferenceFragment extends PreferenceFragment
 
     private static final boolean DEFAULT_SHOW_HOME_AS_UP = true;
 
-    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     public static void putKeyShowHomeAsUp(@NotNull Bundle args, @NotNull Boolean showAsUp)
     {
@@ -66,10 +61,6 @@ public class DashboardPreferenceFragment extends PreferenceFragment
                 if (shouldShowHomeAsUp())
                 {
                     getNavigator().popFragment();
-                }
-                else
-                {
-                    resideMenuLazy.get().openMenu();
                 }
                 return true;
         }

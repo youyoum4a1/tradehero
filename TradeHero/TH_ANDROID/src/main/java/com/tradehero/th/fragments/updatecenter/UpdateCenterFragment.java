@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
-import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
@@ -35,7 +34,6 @@ import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.route.PreRoutable;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
@@ -48,15 +46,13 @@ import java.util.List;
 })
 @Routable("updatecenter/:pageIndex")
 public class UpdateCenterFragment extends DashboardFragment
-        implements OnTitleNumberChangeListener,
-        ResideMenu.OnMenuListener
+        implements OnTitleNumberChangeListener
 {
     static final int FRAGMENT_LAYOUT_ID = 10000;
     public static final String REQUEST_UPDATE_UNREAD_COUNTER = ".updateUnreadCounter";
 
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject MessageHeaderListCache messageListCache;
     @Inject MessageHeaderCache messageHeaderCache;
     @Inject THRouter thRouter;
@@ -305,23 +301,5 @@ public class UpdateCenterFragment extends DashboardFragment
                 fetchUserProfile(true);
             }
         };
-    }
-
-    @Override public void openMenu()
-    {
-        Fragment currentFragment = getCurrentFragment();
-        if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
-        {
-            ((ResideMenu.OnMenuListener) currentFragment).openMenu();
-        }
-    }
-
-    @Override public void closeMenu()
-    {
-        Fragment currentFragment = getCurrentFragment();
-        if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
-        {
-            ((ResideMenu.OnMenuListener) currentFragment).closeMenu();
-        }
     }
 }

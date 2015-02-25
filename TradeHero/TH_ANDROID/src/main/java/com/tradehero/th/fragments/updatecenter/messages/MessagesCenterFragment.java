@@ -11,7 +11,6 @@ import butterknife.ButterKnife;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
-import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.common.widget.dialog.THDialog;
@@ -57,8 +56,7 @@ import java.util.List;
 public class MessagesCenterFragment extends DashboardFragment
         implements
         MessageItemViewWrapper.OnElementClickedListener,
-        PullToRefreshBase.OnRefreshListener2<SwipeListView>,
-        ResideMenu.OnMenuListener
+        PullToRefreshBase.OnRefreshListener2<SwipeListView>
 {
     @Inject Lazy<MessageHeaderListCache> messageListCache;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
@@ -435,23 +433,6 @@ public class MessagesCenterFragment extends DashboardFragment
     @Nullable private MessageListAdapter getListAdapter()
     {
         return messageListAdapter;
-    }
-
-    @Override public void openMenu()
-    {
-    }
-
-    @Override public void closeMenu()
-    {
-        if (messagesView != null)
-        {
-            SwipeListView swipeListView = messagesView.getListView();
-            if (swipeListView != null)
-            {
-                swipeListView.closeOpenedItems();
-                swipeListView.resetScrolling();
-            }
-        }
     }
 
     class SwipeListener extends BaseSwipeListViewListener

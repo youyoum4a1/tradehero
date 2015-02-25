@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.special.ResideMenu.ResideMenu;
 import com.tradehero.chinabuild.fragment.LoginSuggestDialogFragment;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.th.R;
@@ -20,7 +19,6 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.utils.AlertDialogUtil;
-import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +32,6 @@ abstract public class DashboardFragment extends BaseFragment
     private static final boolean DEFAULT_SHOW_HOME_AS_UP = true;
 
     @Inject protected AlertDialogUtil alertDialogUtil;
-    @Inject Lazy<ResideMenu> resideMenuLazy;
 
     private RelativeLayout rlCustomHeadView;
     private TextView tvHeadLeft;
