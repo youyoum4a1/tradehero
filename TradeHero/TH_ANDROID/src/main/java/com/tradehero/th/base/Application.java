@@ -9,7 +9,6 @@ import com.tradehero.common.timber.EasyDebugTree;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.filter.FilterModule;
-import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionModule;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
@@ -79,7 +78,6 @@ public class Application extends PApplication
                 SettingsFragment.class,
                 MainCompetitionFragment.class,
                 BuySellFragment.class,
-                StoreScreenFragment.class,
                 CompetitionWebViewFragment.class,
                 PositionListFragment.class,
                 TradeListFragment.class,

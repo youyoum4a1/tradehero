@@ -2,8 +2,6 @@ package com.tradehero.th.fragments.dashboard;
 
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.billing.StoreScreenFragment;
-import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -29,12 +27,6 @@ public enum DashboardTabType
     REFERRAL(R.layout.tab_indicator_holo,
             R.string.dashboard_referral, R.string.dashboard_referral_key,
             R.drawable.launcher, FriendsInvitationFragment.class),
-    CONTEST_CENTER(R.layout.tab_indicator_holo,
-            R.string.dashboard_contest_center, R.string.dashboard_contest_center_key,
-            R.drawable.launcher, ContestCenterFragment.class),
-    STORE(R.layout.tab_indicator_holo,
-            R.string.dashboard_store, R.string.dashboard_store_key,
-            R.drawable.launcher, StoreScreenFragment.class),
     SETTING(R.layout.tab_indicator_holo,
             R.string.dashboard_menu_settings, R.string.dashboard_menu_settings_key,
             R.drawable.launcher, SettingsFragment.class),

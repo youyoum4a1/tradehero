@@ -23,23 +23,6 @@ public class AlphaTransformation implements com.squareup.picasso.Transformation
 
     @Override public Bitmap transform(Bitmap imgIn)
     {
-    	
-//    	int w = imgIn.getWidth();
-//        int h = imgIn.getHeight();
-//        int[] pixels = new int[w * h];
-//        imgIn.getPixels(pixels, 0, w, 0, 0, w, h);
-//        
-//        for (int i = 0; i < pixels.length; i++) {
-//        	int color = pixels[i];
-//        	int alpha = (int) (Color.alpha(color) * 0.1);
-//        	 pixels[i] = Color.argb(alpha, Color.red(color),  Color.green(color),  Color.blue(color));
-//		}
-//        imgIn.setPixels(pixels, 0, w, 0, 0, w, h);
-//        
-//        if(true){
-//        	return imgIn;
-//        }
-        
     	Bitmap result = Bitmap.createBitmap(imgIn.getWidth(), imgIn.getHeight(), imgIn.getConfig());
     	Canvas canvas = new Canvas(result);
     	Paint paint = new Paint();

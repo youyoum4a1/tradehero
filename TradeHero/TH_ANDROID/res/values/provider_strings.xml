@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="error_fetch_provider_info_list">There was an error when fetching the list of competition providers.</string>
   <string name="error_fetch_provider_info">There was an error when fetching the competition provider info.</string>
   <string name="error_fetch_provider_competition_list">There was an error when fetching the list of competitions</string>
   <string name="error_fetch_provider_competition_leaderboard_list">There was an error when fetching the list of competition leaderboards</string>

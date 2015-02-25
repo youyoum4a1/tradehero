@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="error_fetch_provider_info_list">获取比赛提供方发生错误</string>
   <string name="error_fetch_provider_info">获取比赛提供方信息发生错误</string>
   <string name="error_fetch_provider_competition_list">获取比赛列表时发生错误</string>
   <string name="error_fetch_provider_competition_leaderboard_list">获取比赛英雄榜发生错误</string>

@@ -36,13 +36,8 @@ import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.authentication.PasswordResetFragment;
-import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
-import com.tradehero.th.fragments.contestcenter.ContestCenterActiveFragment;
-import com.tradehero.th.fragments.contestcenter.ContestCenterBaseFragment;
-import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
-import com.tradehero.th.fragments.contestcenter.ContestCenterJoinedFragment;
 import com.tradehero.th.fragments.discussion.*;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
@@ -186,7 +181,6 @@ import java.util.Locale;
                         TradeListFragment.class,
                         TradeListItemView.class,
 
-                        StoreScreenFragment.class,
                         HeroManagerFragment.class,
                         HeroListItemView.class,
                         FollowerManagerFragment.class,
@@ -272,10 +266,6 @@ import java.util.Locale;
                         SecurityDiscussionFragment.class,
                         AlertDialogUtil.class,
                         FriendsInvitationFragment.class,
-                        ContestCenterFragment.class,
-                        ContestCenterBaseFragment.class,
-                        ContestCenterActiveFragment.class,
-                        ContestCenterJoinedFragment.class,
                         SocialFriendsFragmentLinkedIn.class,
                         SocialFriendsFragmentWeibo.class,
                         HomeFragment.class,

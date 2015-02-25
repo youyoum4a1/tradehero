@@ -5,7 +5,6 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.fragments.competition.AdView;
 import com.tradehero.th.fragments.discussion.CommentItemViewLinear;
 import com.tradehero.th.fragments.trending.EarnCreditTileView;
 import com.tradehero.th.fragments.trending.ExtraCashTileView;
@@ -29,8 +28,6 @@ import javax.inject.Singleton;
                 ResetPortfolioTileView.class,
                 EarnCreditTileView.class,
                 ExtraCashTileView.class,
-
-                AdView.class,
                 CommentItemViewLinear.class,
         },
         complete = false,
