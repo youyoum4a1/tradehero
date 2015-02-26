@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -70,7 +71,6 @@ public class LeaderboardMarkUserItemView
         extends RelativeLayout
         implements DTOView<LeaderboardMarkUserItemView.DTO>
 {
-    @Inject CurrentUserId currentUserId;
     @Inject Lazy<LeaderboardDefCacheRx> leaderboardDefCache;
     @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
@@ -314,41 +314,55 @@ public class LeaderboardMarkUserItemView
         }
     }
 
-    protected void pushLeaderboardPositionListFragment(GetPositionsDTOKey getPositionsDTOKey, LeaderboardDefDTO leaderboardDefDTO)
+    protected void pushLeaderboardPositionListFragment(@NonNull GetPositionsDTOKey getPositionsDTOKey, @Nullable LeaderboardDefDTO leaderboardDefDTO)
     {
-        // leaderboard mark user id, to get marking user information
-        Bundle bundle = new Bundle();
-        LeaderboardPositionListFragment.putGetPositionsDTOKey(bundle, getPositionsDTOKey);
-        LeaderboardPositionListFragment.putShownUser(bundle, viewDTO.leaderboardUserDTO.getBaseKey());
-        if (leaderboardDefDTO != null)
+        if (viewDTO == null)
         {
-            LeaderboardPositionListFragment.putLeaderboardTimeRestricted(bundle, leaderboardDefDTO.isTimeRestrictedLeaderboard());
+            Timber.e(new Exception(), "Had null View dto when push position");
         }
-        SimpleDateFormat sdf =
-                new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
-        String formattedStartPeriodUtc = sdf.format(viewDTO.leaderboardUserDTO.periodStartUtc);
-        LeaderboardPositionListFragment.putLeaderboardPeriodStartString(bundle, formattedStartPeriodUtc);
-
-        if (applicablePortfolioId != null)
+        else
         {
-            LeaderboardPositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
-        }
+            // leaderboard mark user id, to get marking user information
+            Bundle bundle = new Bundle();
+            LeaderboardPositionListFragment.putGetPositionsDTOKey(bundle, getPositionsDTOKey);
+            LeaderboardPositionListFragment.putShownUser(bundle, viewDTO.leaderboardUserDTO.getBaseKey());
+            if (leaderboardDefDTO != null)
+            {
+                LeaderboardPositionListFragment.putLeaderboardTimeRestricted(bundle, leaderboardDefDTO.isTimeRestrictedLeaderboard());
+            }
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf =
+                    new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
+            String formattedStartPeriodUtc = sdf.format(viewDTO.leaderboardUserDTO.periodStartUtc);
+            LeaderboardPositionListFragment.putLeaderboardPeriodStartString(bundle, formattedStartPeriodUtc);
 
-        navigator.pushFragment(LeaderboardPositionListFragment.class, bundle);
+            if (applicablePortfolioId != null)
+            {
+                LeaderboardPositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
+            }
+
+            navigator.pushFragment(LeaderboardPositionListFragment.class, bundle);
+        }
     }
 
-    protected void pushPositionListFragment(GetPositionsDTOKey getPositionsDTOKey)
+    protected void pushPositionListFragment(@NonNull GetPositionsDTOKey getPositionsDTOKey)
     {
-        Bundle bundle = new Bundle();
-        PositionListFragment.putGetPositionsDTOKey(bundle, getPositionsDTOKey);
-        PositionListFragment.putShownUser(bundle, viewDTO.leaderboardUserDTO.getBaseKey());
-
-        if (applicablePortfolioId != null)
+        if (viewDTO == null)
         {
-            PositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
+            Timber.e(new Exception(), "Had null View dto when push position");
         }
+        else
+        {
+            Bundle bundle = new Bundle();
+            PositionListFragment.putGetPositionsDTOKey(bundle, getPositionsDTOKey);
+            PositionListFragment.putShownUser(bundle, viewDTO.leaderboardUserDTO.getBaseKey());
 
-        navigator.pushFragment(PositionListFragment.class, bundle);
+            if (applicablePortfolioId != null)
+            {
+                PositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
+            }
+
+            navigator.pushFragment(PositionListFragment.class, bundle);
+        }
     }
 
     protected void openTimeline(int userId)
@@ -356,7 +370,11 @@ public class LeaderboardMarkUserItemView
         Bundle bundle = new Bundle();
         UserBaseKey userToSee = new UserBaseKey(userId);
         thRouter.save(bundle, userToSee);
-        if (currentUserId.toUserBaseKey().equals(userToSee))
+        if (viewDTO == null)
+        {
+            Timber.e(new Exception(), "No View DTO when trying to open timeline");
+        }
+        else if (viewDTO.currentUserId.toUserBaseKey().equals(userToSee))
         {
             navigator.pushFragment(MeTimelineFragment.class, bundle);
         }
@@ -397,12 +415,15 @@ public class LeaderboardMarkUserItemView
     {
         if (userStatisticView != null && viewDTO != null && expand)
         {
-            userStatisticView.display(viewDTO.leaderboardUserDTO);
+            userStatisticView.display(viewDTO.userStatisticsDto);
         }
     }
 
     public static class DTO implements com.tradehero.common.persistence.DTO, ExpandableItem
     {
+        @NonNull final CurrentUserId currentUserId;
+        @NonNull final LeaderboardUserDTO leaderboardUserDTO;
+        @NonNull final UserStatisticView.DTO userStatisticsDto;
         final String lbmuDisplayName;
         @NonNull final Spanned lbmuRoi;
         @NonNull final String lbmuPosition;
@@ -413,7 +434,6 @@ public class LeaderboardMarkUserItemView
         @DrawableRes final int countryFlagResId;
         @ViewVisibilityValue final int lbmuFollowUserVisibility;
         @ViewVisibilityValue final int lbmuFollowingUserVisibility;
-        @NonNull final LeaderboardUserDTO leaderboardUserDTO;
         private boolean expanded;
 
         public DTO(@NonNull Resources resources,
@@ -421,7 +441,9 @@ public class LeaderboardMarkUserItemView
                 @NonNull LeaderboardUserDTO leaderboardItem,
                 @NonNull UserProfileDTO currentUserProfileDTO)
         {
+            this.currentUserId = currentUserId;
             this.leaderboardUserDTO = leaderboardItem;
+            this.userStatisticsDto = new UserStatisticView.DTO(resources, leaderboardUserDTO, currentUserProfileDTO);
             this.lbmuDisplayName = leaderboardItem.displayName;
             this.lbmuRoi = THSignedPercentage
                     .builder(leaderboardItem.roiInPeriod * 100)
@@ -437,13 +459,13 @@ public class LeaderboardMarkUserItemView
             }
             else //noinspection PointlessBooleanExpression,ConstantConditions
                 if (MAX_OWN_LEADER_RANKING < 0 || currentRank <= MAX_OWN_LEADER_RANKING)
-            {
-                lbmuPosition = "" + currentRank;
-            }
-            else
-            {
-                lbmuPosition = resources.getString(R.string.leaderboard_max_ranked_position, MAX_OWN_LEADER_RANKING);
-            }
+                {
+                    lbmuPosition = "" + currentRank;
+                }
+                else
+                {
+                    lbmuPosition = resources.getString(R.string.leaderboard_max_ranked_position, MAX_OWN_LEADER_RANKING);
+                }
             this.lbmuPositionColor = currentUserId.get() == leaderboardItem.id ?
                     resources.getColor(R.color.light_green_normal) :
                     resources.getColor(R.color.text_primary);

@@ -27,6 +27,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLeaderboardMarkUserItemView
 {
@@ -121,7 +122,14 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
 
     @Override protected void handleOpenProfileButtonClicked()
     {
-        openTimeline(currentUserId.get());
+        if (viewDTO != null)
+        {
+            openTimeline(viewDTO.currentUserId.get());
+        }
+        else
+        {
+            Timber.e(new Exception(), "No view DTO when opening profile");
+        }
     }
 
     @SuppressWarnings("UnusedDeclaration")

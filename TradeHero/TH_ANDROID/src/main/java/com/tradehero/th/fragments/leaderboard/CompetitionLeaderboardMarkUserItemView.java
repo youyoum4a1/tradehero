@@ -114,7 +114,7 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
         }
     }
 
-    @Override protected void pushLeaderboardPositionListFragment(GetPositionsDTOKey getPositionsDTOKey, LeaderboardDefDTO leaderboardDefDTO)
+    @Override protected void pushLeaderboardPositionListFragment(@NonNull GetPositionsDTOKey getPositionsDTOKey, @Nullable LeaderboardDefDTO leaderboardDefDTO)
     {
         if (viewDTO == null)
         {

@@ -44,13 +44,13 @@ public class LeaderboardDTO extends BaseHasExpiration
     }
 
     @JsonIgnore
-    public Double getAvgVolatility()
+    public double getAvgVolatility()
     {
         return avgStdDevPositionRoiInPeriod;
     }
 
     @JsonIgnore
-    public Double getAvgConsistency()
+    public double getAvgConsistency()
     {
         Double v = getAvgVolatility();
         if (v != null && v != 0)
