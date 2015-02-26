@@ -24,4 +24,10 @@ public class PagedViewDTOAdapterImpl<
         //noinspection unchecked
         return (ViewType) super.getView(position, convertView, viewGroup);
     }
+
+    @NonNull @Override protected ViewType inflate(int position, ViewGroup viewGroup)
+    {
+        //noinspection unchecked
+        return (ViewType) super.inflate(position, viewGroup);
+    }
 }

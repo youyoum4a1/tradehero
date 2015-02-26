@@ -49,7 +49,6 @@ abstract public class BaseLeaderboardPagedListRxFragment<
 
     @NonNull protected LeaderboardDefKey leaderboardDefKey;
     protected LeaderboardDefDTO leaderboardDefDTO;
-    protected UserProfileDTO currentUserProfileDTO;
 
     public static void putLeaderboardDefKey(@NonNull Bundle args, @NonNull LeaderboardDefKey leaderboardDefKey)
     {
@@ -138,7 +137,6 @@ abstract public class BaseLeaderboardPagedListRxFragment<
 
     protected void setCurrentUserProfileDTO(@NonNull UserProfileDTO currentUserProfileDTO)
     {
-        this.currentUserProfileDTO = currentUserProfileDTO;
     }
 
     @MenuRes protected int getMenuResource()

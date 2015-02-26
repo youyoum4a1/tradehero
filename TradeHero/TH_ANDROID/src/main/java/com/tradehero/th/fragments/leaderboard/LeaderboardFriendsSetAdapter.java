@@ -4,13 +4,13 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedDTOAdapterImpl;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.ArrayList;
@@ -31,6 +31,7 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
     @LayoutRes private final int markedLayoutResId;
     @LayoutRes private final int socialLayoutResId;
 
+    @NonNull final CurrentUserId currentUserId;
     protected UserProfileDTO currentUserProfileDTO;
 
     @NonNull private final Map<Object, Boolean> expandedStatuses;
@@ -39,10 +40,12 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
     //<editor-fold desc="Constructors">
     public LeaderboardFriendsSetAdapter(
             @NonNull Context context,
+            @NonNull CurrentUserId currentUserId,
             @LayoutRes int markedLayoutResId,
             @LayoutRes int socialLayoutResId)
     {
         super(context, markedLayoutResId);
+        this.currentUserId = currentUserId;
         this.markedLayoutResId = markedLayoutResId;
         this.socialLayoutResId = socialLayoutResId;
         this.expandedStatuses = new HashMap<>();
@@ -69,7 +72,7 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
         throw new IllegalStateException("Unhandled class type " + item.getClass());
     }
 
-    @LayoutRes public int getItemLayoutResId(int position)
+    @Override @LayoutRes public int getViewResId(int position)
     {
         switch (getItemViewType(position))
         {
@@ -94,7 +97,6 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
         markPositions(set);
         return new ArrayList<>(set);
     }
-
 
     private void markPositions(@NonNull Collection<? extends FriendLeaderboardUserDTO> friendLeaderboardUserDTOs)
     {
@@ -146,7 +148,7 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
     {
         if (convertView == null)
         {
-            convertView = LayoutInflater.from(getContext()).inflate(getItemLayoutResId(position), parent, false);
+            convertView = inflate(position, parent);
         }
 
         FriendLeaderboardUserDTO item = getItem(position);
@@ -156,10 +158,11 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
             LeaderboardUserDTO leaderboardUserDTO =
                     ((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO;
             ((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO.setPosition(position); // HACK FIXME
-            ((LeaderboardMarkUserItemView) convertView).display(leaderboardUserDTO);
-            ((LeaderboardMarkUserItemView) convertView).linkWith(currentUserProfileDTO);
-            ((LeaderboardMarkUserItemView) convertView).getFollowRequestedObservable()
-                    .subscribe(followRequestedBehavior);
+            ((LeaderboardMarkUserItemView) convertView).display(new LeaderboardMarkUserItemView.DTO(
+                    getContext().getResources(),
+                    currentUserId,
+                    leaderboardUserDTO,
+                    currentUserProfileDTO));
         }
         else if (convertView instanceof LeaderboardFriendsItemView)
         {
@@ -177,6 +180,17 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
         }
 
         return convertView;
+    }
+
+    @NonNull @Override protected View inflate(int position, ViewGroup viewGroup)
+    {
+        View view = super.inflate(position, viewGroup);
+        if (view instanceof LeaderboardMarkUserItemView)
+        {
+            ((LeaderboardMarkUserItemView) view).getFollowRequestedObservable()
+                    .subscribe(followRequestedBehavior);
+        }
+        return view;
     }
 
     public void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)

@@ -6,26 +6,22 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedViewDTOAdapterImpl;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 public class LeaderboardMarkUserListAdapter extends PagedViewDTOAdapterImpl<
-        LeaderboardUserDTO,
+        LeaderboardMarkUserItemView.DTO,
         LeaderboardMarkUserItemView>
 {
     @NonNull protected final LeaderboardKey leaderboardKey;
-    protected UserProfileDTO currentUserProfileDTO;
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
 
-    @NonNull protected final BehaviorSubject<UserBaseDTO> followRequestedBehavior;
+    @NonNull protected final PublishSubject<UserBaseDTO> followRequestedPublish;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserListAdapter(
@@ -35,14 +31,9 @@ public class LeaderboardMarkUserListAdapter extends PagedViewDTOAdapterImpl<
     {
         super(context, resource);
         this.leaderboardKey = leaderboardKey;
-        this.followRequestedBehavior = BehaviorSubject.create();
+        this.followRequestedPublish = PublishSubject.create();
     }
     //</editor-fold>
-
-    public void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
-    {
-        this.currentUserProfileDTO = currentUserProfileDTO;
-    }
 
     public void setApplicablePortfolioId(@Nullable OwnedPortfolioId ownedPortfolioId)
     {
@@ -51,36 +42,37 @@ public class LeaderboardMarkUserListAdapter extends PagedViewDTOAdapterImpl<
 
     @NonNull public Observable<UserBaseDTO> getFollowRequestedObservable()
     {
-        return followRequestedBehavior.asObservable();
+        return followRequestedPublish.asObservable();
     }
 
-    @Override public LeaderboardUserDTO getItem(int position)
+    @Override public LeaderboardMarkUserItemView.DTO getItem(int position)
     {
-        LeaderboardUserDTO item = super.getItem(position);
-        item.setPosition(position);
-        item.setLeaderboardId(leaderboardKey.id);
+        LeaderboardMarkUserItemView.DTO item = super.getItem(position);
+        item.leaderboardUserDTO.setPosition(position);
+        item.leaderboardUserDTO.setLeaderboardId(leaderboardKey.id);
         boolean includeFoF = leaderboardKey instanceof FriendsPerPagedLeaderboardKey &&
                 ((FriendsPerPagedLeaderboardKey) leaderboardKey).includeFoF != null &&
                 ((FriendsPerPagedLeaderboardKey) leaderboardKey).includeFoF;
-        item.setIncludeFoF(includeFoF);
+        item.leaderboardUserDTO.setIncludeFoF(includeFoF);
         return item;
     }
 
     @Override public LeaderboardMarkUserItemView getView(int position, View convertView, ViewGroup viewGroup)
     {
         LeaderboardMarkUserItemView dtoView = super.getView(position, convertView, viewGroup);
-
-        dtoView.linkWith(currentUserProfileDTO);
         dtoView.linkWith(applicablePortfolioId);
-        dtoView.getFollowRequestedObservable().subscribe(followRequestedBehavior);
 
-        final ExpandingLayout expandingLayout = (ExpandingLayout) dtoView.findViewById(R.id.expanding_layout);
-        if (expandingLayout != null)
-        {
-            expandingLayout.expandWithNoAnimation(getItem(position).isExpanded());
-            dtoView.onExpand(getItem(position).isExpanded());
-        }
+        boolean expanded = getItem(position).leaderboardUserDTO.isExpanded();
+        dtoView.expandingLayout.expandWithNoAnimation(expanded);
+        dtoView.setExpanded(expanded);
 
         return dtoView;
+    }
+
+    @NonNull @Override protected LeaderboardMarkUserItemView inflate(int position, ViewGroup viewGroup)
+    {
+        LeaderboardMarkUserItemView view = super.inflate(position, viewGroup);
+        view.getFollowRequestedObservable().subscribe(followRequestedPublish);
+        return view;
     }
 }
