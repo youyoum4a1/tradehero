@@ -16,7 +16,7 @@ import com.tradehero.th.api.market.WithTopSecurities;
 import com.tradehero.th.fragments.onboarding.exchange.TopStockListView;
 import com.tradehero.th.models.number.THSignedMoney;
 
-public class OnBoardWithMarketStocksView<T extends DTO & WithTopSecurities & WithMarketCap>
+public class OnBoardWithMarketStocksView<T extends DTO & WithMarketCap>
         extends OnBoardSelectableViewLinear<T>
 {
     @InjectView(R.id.market_cap) TextView marketCapView;
@@ -43,8 +43,15 @@ public class OnBoardWithMarketStocksView<T extends DTO & WithTopSecurities & Wit
     @Override public void display(@NonNull SelectableDTO<T> dto)
     {
         super.display(dto);
-        display((WithMarketCap) dto.value);
-        display(dto.value.getTopSecurities());
+        display(dto.value);
+        if (dto.value instanceof WithTopSecurities)
+        {
+            display(((WithTopSecurities) dto.value).getTopSecurities());
+        }
+        else if (topStockListView != null)
+        {
+            topStockListView.setVisibility(GONE);
+        }
     }
 
     protected void display(@Nullable WithMarketCap dto)
@@ -68,6 +75,7 @@ public class OnBoardWithMarketStocksView<T extends DTO & WithTopSecurities & Wit
     {
         if (topStockListView != null)
         {
+            topStockListView.setVisibility(VISIBLE);
             topStockListView.display(topStocks);
         }
     }

@@ -17,7 +17,7 @@ import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.market.ExchangeSectorListDTO;
+import com.tradehero.th.api.market.ExchangeCompactSectorListDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
@@ -52,7 +52,7 @@ public class StockSelectionScreenFragment extends DashboardFragment
     @NonNull Map<SecurityId, SecurityCompactDTO> knownStocks;
     @NonNull Set<SecurityId> selectedStocks;
     @NonNull BehaviorSubject<SecurityCompactDTOList> selectedStocksSubject;
-    Observable<ExchangeSectorListDTO> selectedExchangesSectorsObservable;
+    Observable<ExchangeCompactSectorListDTO> selectedExchangesSectorsObservable;
 
     public StockSelectionScreenFragment()
     {
@@ -96,7 +96,7 @@ public class StockSelectionScreenFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    public void setSelectedExchangesSectorsObservable(@NonNull Observable<ExchangeSectorListDTO> selectedExchangesSectorsObservable)
+    public void setSelectedExchangesSectorsObservable(@NonNull Observable<ExchangeCompactSectorListDTO> selectedExchangesSectorsObservable)
     {
         this.selectedExchangesSectorsObservable = selectedExchangesSectorsObservable;
     }
@@ -105,9 +105,9 @@ public class StockSelectionScreenFragment extends DashboardFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                selectedExchangesSectorsObservable.flatMap(new Func1<ExchangeSectorListDTO, Observable<SecurityCompactDTOList>>()
+                selectedExchangesSectorsObservable.flatMap(new Func1<ExchangeCompactSectorListDTO, Observable<SecurityCompactDTOList>>()
                 {
-                    @Override public Observable<SecurityCompactDTOList> call(ExchangeSectorListDTO exchangeSectorListDTO)
+                    @Override public Observable<SecurityCompactDTOList> call(ExchangeCompactSectorListDTO exchangeSectorListDTO)
                     {
                         return securityCompactListCache.getOne(new TrendingBasicSecurityListType(
                                 exchangeSectorListDTO.exchanges.get(0).name,

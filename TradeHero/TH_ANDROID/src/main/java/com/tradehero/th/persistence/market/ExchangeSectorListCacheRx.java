@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
 
-@Singleton @UserCache
+@Singleton @UserCache @Deprecated
 public class ExchangeSectorListCacheRx extends BaseFetchDTOCacheRx<ExchangeSectorKey, ExchangeSectorListDTO>
 {
     private static final int MAX_SIZE = 1;

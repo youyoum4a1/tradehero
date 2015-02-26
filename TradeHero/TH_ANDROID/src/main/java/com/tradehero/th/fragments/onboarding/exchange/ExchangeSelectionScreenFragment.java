@@ -17,16 +17,15 @@ import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.market.ExchangeCompactDTO;
+import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
-import com.tradehero.th.api.market.ExchangeDTO;
-import com.tradehero.th.api.market.ExchangeDTOList;
 import com.tradehero.th.api.market.ExchangeIntegerId;
-import com.tradehero.th.api.market.ExchangeSectorListDTO;
+import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.market.MarketRegion;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
-import com.tradehero.th.models.market.ExchangeSectorKey;
-import com.tradehero.th.persistence.market.ExchangeSectorListCacheRx;
+import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
@@ -49,16 +48,16 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
     private static final int MAX_SELECTABLE_EXCHANGES = 3;
     private static final int MAX_TOP_STOCKS = 6;
 
-    @Inject ExchangeSectorListCacheRx exchangeSectorCompactListCache;
+    @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
 
     MarketRegionMapView mapHeaderView;
     @InjectView(android.R.id.list) ListView exchangeList;
     @InjectView(android.R.id.button1) View nextButton;
     @NonNull ArrayAdapter<SelectableExchangeDTO> exchangeAdapter;
     @NonNull Map<MarketRegion, List<ExchangeIntegerId>> filedExchangeIds;
-    @NonNull Map<ExchangeIntegerId, ExchangeDTO> knownExchanges;
+    @NonNull Map<ExchangeIntegerId, ExchangeCompactDTO> knownExchanges;
     @NonNull Set<ExchangeIntegerId> selectedExchanges;
-    @NonNull BehaviorSubject<ExchangeDTOList> selectedExchangesSubject;
+    @NonNull BehaviorSubject<ExchangeCompactDTOList> selectedExchangesSubject;
 
     public ExchangeSelectionScreenFragment()
     {
@@ -111,15 +110,15 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                exchangeSectorCompactListCache.getOne(new ExchangeSectorKey()))
+                exchangeCompactListCache.get(new ExchangeListType(MAX_TOP_STOCKS)))
                 .subscribe(
-                        new Action1<Pair<ExchangeSectorKey, ExchangeSectorListDTO>>()
+                        new Action1<Pair<ExchangeListType, ExchangeCompactDTOList>>()
                         {
-                            @Override public void call(Pair<ExchangeSectorKey, ExchangeSectorListDTO> pair)
+                            @Override public void call(Pair<ExchangeListType, ExchangeCompactDTOList> pair)
                             {
-                                filedExchangeIds = ExchangeCompactDTOUtil.filePerRegion(pair.second.exchanges);
+                                filedExchangeIds = ExchangeCompactDTOUtil.filePerRegion(pair.second);
                                 mapHeaderView.enable(filedExchangeIds.keySet());
-                                for (ExchangeDTO exchange : pair.second.exchanges)
+                                for (ExchangeCompactDTO exchange : pair.second)
                                 {
                                     knownExchanges.put(exchange.getExchangeIntegerId(), exchange);
                                 }
@@ -215,7 +214,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
     @OnClick(android.R.id.button1)
     protected void onNextClicked(@SuppressWarnings("UnusedParameters") View view)
     {
-        ExchangeDTOList selectedDTOs = new ExchangeDTOList();
+        ExchangeCompactDTOList selectedDTOs = new ExchangeCompactDTOList();
         for (ExchangeIntegerId selected : selectedExchanges)
         {
             selectedDTOs.add(knownExchanges.get(selected));
@@ -223,7 +222,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
         selectedExchangesSubject.onNext(selectedDTOs);
     }
 
-    @NonNull public Observable<ExchangeDTOList> getSelectedExchangesObservable()
+    @NonNull public Observable<ExchangeCompactDTOList> getSelectedExchangesObservable()
     {
         return selectedExchangesSubject.asObservable();
     }

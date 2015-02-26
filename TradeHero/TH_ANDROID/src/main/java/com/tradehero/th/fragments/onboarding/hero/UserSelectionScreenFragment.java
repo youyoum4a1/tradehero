@@ -19,7 +19,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
-import com.tradehero.th.api.market.ExchangeSectorListDTO;
+import com.tradehero.th.api.market.ExchangeCompactSectorListDTO;
 import com.tradehero.th.api.users.SuggestHeroesListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -47,7 +47,7 @@ public class UserSelectionScreenFragment extends DashboardFragment
 
     @InjectView(android.R.id.list) ListView userList;
     @InjectView(android.R.id.button1) View nextButton;
-    Observable<ExchangeSectorListDTO> selectedExchangesSectorsObservable;
+    Observable<ExchangeCompactSectorListDTO> selectedExchangesSectorsObservable;
     @NonNull ArrayAdapter<SelectableUserDTO> userAdapter;
     @NonNull Map<UserBaseKey, LeaderboardUserDTO> knownUsers;
     @NonNull Set<UserBaseKey> selectedUsers;
@@ -97,7 +97,7 @@ public class UserSelectionScreenFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    public void setSelectedExchangesSectorsObservable(@NonNull Observable<ExchangeSectorListDTO> selectedExchangesSectorsObservable)
+    public void setSelectedExchangesSectorsObservable(@NonNull Observable<ExchangeCompactSectorListDTO> selectedExchangesSectorsObservable)
     {
         this.selectedExchangesSectorsObservable = selectedExchangesSectorsObservable;
     }
@@ -107,10 +107,10 @@ public class UserSelectionScreenFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 selectedExchangesSectorsObservable.flatMap(
-                        new Func1<ExchangeSectorListDTO, Observable<Pair<SuggestHeroesListType, LeaderboardUserDTOList>>>()
+                        new Func1<ExchangeCompactSectorListDTO, Observable<Pair<SuggestHeroesListType, LeaderboardUserDTOList>>>()
                         {
                             @Override public Observable<Pair<SuggestHeroesListType, LeaderboardUserDTOList>> call(
-                                    ExchangeSectorListDTO selectedExchanges)
+                                    ExchangeCompactSectorListDTO selectedExchanges)
                             {
                                 return leaderboardUserListCache.getOne(new SuggestHeroesListType(
                                         selectedExchanges.exchanges.get(0).getExchangeIntegerId(),

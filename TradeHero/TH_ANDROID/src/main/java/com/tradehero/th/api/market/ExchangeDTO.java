@@ -2,10 +2,9 @@ package com.tradehero.th.api.market;
 
 import android.support.annotation.Nullable;
 
-public class ExchangeDTO extends ExchangeCompactDTO implements WithTopSecurities
+public class ExchangeDTO extends ExchangeCompactDTO
 {
     @Nullable public SectorDTOList sectors;
-    @Nullable public SecuritySuperCompactDTOList topSecurities;
 
     //<editor-fold desc="Constructors">
     protected ExchangeDTO()
@@ -13,9 +12,4 @@ public class ExchangeDTO extends ExchangeCompactDTO implements WithTopSecurities
         super();
     }
     //</editor-fold>
-
-    @Nullable @Override public SecuritySuperCompactDTOList getTopSecurities()
-    {
-        return topSecurities;
-    }
 }

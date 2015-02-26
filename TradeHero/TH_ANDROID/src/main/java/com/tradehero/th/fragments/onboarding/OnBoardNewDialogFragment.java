@@ -15,8 +15,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
-import com.tradehero.th.api.market.ExchangeDTOList;
-import com.tradehero.th.api.market.ExchangeSectorListDTO;
+import com.tradehero.th.api.market.ExchangeCompactDTOList;
+import com.tradehero.th.api.market.ExchangeCompactSectorListDTO;
 import com.tradehero.th.api.market.SectorDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityIntegerIdListForm;
@@ -54,11 +54,11 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @InjectView(android.R.id.content) ViewPager pager;
 
-    private ExchangeDTOList selectedExchanges;
+    private ExchangeCompactDTOList selectedExchanges;
     private SectorDTOList selectedSectors;
     private LeaderboardUserDTOList selectedHeroes;
     private SecurityCompactDTOList selectedStocks;
-    @NonNull private BehaviorSubject<ExchangeSectorListDTO> exchangeSectorBehavior;
+    @NonNull private BehaviorSubject<ExchangeCompactSectorListDTO> exchangeSectorBehavior;
     @NonNull private BehaviorSubject<SecurityCompactDTOList> selectedSecuritiesBehavior;
 
     public static OnBoardNewDialogFragment showOnBoardDialog(FragmentManager fragmentManager)
@@ -153,9 +153,9 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
                     ExchangeSelectionScreenFragment fragment0 = new ExchangeSelectionScreenFragment();
                     onStopSubscriptions.add(fragment0.getSelectedExchangesObservable()
                             .subscribe(
-                                    new Action1<ExchangeDTOList>()
+                                    new Action1<ExchangeCompactDTOList>()
                                     {
-                                        @Override public void call(ExchangeDTOList exchangeDTOs)
+                                        @Override public void call(ExchangeCompactDTOList exchangeDTOs)
                                         {
                                             selectedExchanges = exchangeDTOs;
                                             pager.setCurrentItem(INDEX_SELECTION_SECTORS, true);
@@ -174,7 +174,7 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
                                         {
                                             selectedSectors = sectorDTOs;
                                             pager.setCurrentItem(INDEX_SELECTION_HEROES, true);
-                                            exchangeSectorBehavior.onNext(new ExchangeSectorListDTO(selectedExchanges, sectorDTOs));
+                                            exchangeSectorBehavior.onNext(new ExchangeCompactSectorListDTO(selectedExchanges, sectorDTOs));
                                         }
                                     },
                                     new TimberOnErrorAction("Failed to collect sectors")));

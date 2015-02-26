@@ -14,11 +14,10 @@ import com.tradehero.common.api.SelectableDTO;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
-import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.fragments.onboarding.OnBoardWithMarketStocksView;
 import javax.inject.Inject;
 
-public class OnBoardExchangeItemView extends OnBoardWithMarketStocksView<ExchangeDTO>
+public class OnBoardExchangeItemView extends OnBoardWithMarketStocksView<ExchangeCompactDTO>
 {
     @DrawableRes private static final int DEFAULT_EXCHANGE_LOGO = R.drawable.accounts_glyph_name_default;
 
@@ -56,7 +55,7 @@ public class OnBoardExchangeItemView extends OnBoardWithMarketStocksView<Exchang
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(@NonNull SelectableDTO<ExchangeDTO> dto)
+    @Override public void display(@NonNull SelectableDTO<ExchangeCompactDTO> dto)
     {
         super.display(dto);
         display(dto.value);
@@ -88,13 +87,13 @@ public class OnBoardExchangeItemView extends OnBoardWithMarketStocksView<Exchang
         if (logoImage != null)
         {
             picasso.cancelRequest(logoImage);
-            if (dto == null || dto.logoUrl == null)
+            if (dto == null || dto.imageUrl == null)
             {
                 logoImage.setImageResource(DEFAULT_EXCHANGE_LOGO);
             }
             else
             {
-                picasso.load(dto.logoUrl)
+                picasso.load(dto.imageUrl)
                         .into(logoImage);
             }
         }

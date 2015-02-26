@@ -5,31 +5,31 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum MarketRegion
 {
-    OTHER("unknown", new String[]{}),
-    NORTH_AMERICA("northAm", new String[]{"NYSE", "NASDAQ", "OTCBB", "TSX", "TSXV", "AMEX"}),
-    EUROPE("eur", new String[]{"LSE", "PAR", "MLSE"}),
-    INDIA("ind", new String[]{"NSE", "BSE"}),
-    SOUTH_EAST_ASIA("sea", new String[]{"SGX", "JKT", "SET", "PSE", "MYX"}),
-    EAST_ASIA("eastA", new String[]{"HKEX", "SHA", "SHE", "KDQ", "KRX", "TPE", "TSE"}),
-    AUSTRALIA("austr", new String[]{"ASX", "NZX"}),
+    OTHER(0, new String[]{}),
+    AUSTRALIA(1, new String[]{"ASX", "NZX"}),
+    SOUTH_EAST_ASIA(2, new String[]{"SGX", "JKT", "SET", "PSE", "MYX"}),
+    EAST_ASIA(3, new String[]{"HKEX", "SHA", "SHE", "KDQ", "KRX", "TPE", "TSE"}),
+    EUROPE(4, new String[]{"LSE", "PAR", "MLSE"}),
+    NORTH_AMERICA(5, new String[]{"NYSE", "NASDAQ", "OTCBB", "TSX", "TSXV", "AMEX"}),
+    INDIA(6, new String[]{"NSE", "BSE"}),
     ;
 
-    @NonNull public final String code;
+    public final int code;
     @Deprecated // Server should return this
     @NonNull public final String[] exchanges;
 
-    MarketRegion(@NonNull String code, @NonNull String[] exchanges)
+    MarketRegion(int code, @NonNull String[] exchanges)
     {
         this.code = code;
         this.exchanges = exchanges;
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @NonNull @JsonCreator static MarketRegion create(@NonNull String candidateCode)
+    @NonNull @JsonCreator static MarketRegion create(int candidateCode)
     {
         for (MarketRegion candidate : values())
         {
-            if (candidate.code.equals(candidateCode))
+            if (candidate.code == candidateCode)
             {
                 return candidate;
             }
