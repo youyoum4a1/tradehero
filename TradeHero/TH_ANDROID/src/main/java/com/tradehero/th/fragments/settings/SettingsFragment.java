@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.settings;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -24,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.squareup.okhttp.Cache;
 import com.squareup.picasso.LruCache;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
@@ -109,6 +109,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap;
     @Inject AccountManager accountManager;
     @Inject @ForPicasso LruCache lruCache;
+    @Inject Cache httpCache;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
     @Inject protected PushNotificationManager pushNotificationManager;
     @Inject protected UserServiceWrapper userServiceWrapper;
@@ -948,6 +949,13 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private void flushCache()
     {
         lruCache.clear();
+        try
+        {
+            httpCache.evictAll();
+        } catch (IOException e)
+        {
+            Timber.e(e, "Failed to evict all in httpCache");
+        }
     }
 
     private void showCacheCleared(@Nullable ProgressDialog progressDialog)
