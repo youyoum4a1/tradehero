@@ -25,7 +25,6 @@ import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
@@ -437,27 +436,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     @Override
     public AuthenticationMode getAuthenticationMode() {
         return AuthenticationMode.SignUpWithEmail;
-    }
-
-    protected ProfileInfoView.Listener createProfileViewListener() {
-        return new EmailSignUpProfileViewListener();
-    }
-
-    protected class EmailSignUpProfileViewListener implements ProfileInfoView.Listener {
-        @Override
-        public void onUpdateRequested() {
-
-        }
-
-        @Override
-        public void onImageFromCameraRequested() {
-            askImageFromCamera();
-        }
-
-        @Override
-        public void onImageFromLibraryRequested() {
-            askImageFromLibrary();
-        }
     }
 
     private class SendCodeCallback implements Callback<Response> {

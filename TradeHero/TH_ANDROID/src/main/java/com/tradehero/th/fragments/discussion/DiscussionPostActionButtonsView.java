@@ -18,11 +18,11 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
-import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
+
 import javax.inject.Inject;
 
 public class DiscussionPostActionButtonsView extends LinearLayout
@@ -188,7 +188,6 @@ public class DiscussionPostActionButtonsView extends LinearLayout
 
     private void openSettingScreen()
     {
-        getNavigator().pushFragment(SettingsFragment.class);
     }
 
     private Navigator getNavigator()

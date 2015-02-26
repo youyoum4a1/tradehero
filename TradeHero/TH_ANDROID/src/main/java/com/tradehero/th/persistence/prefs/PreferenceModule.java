@@ -9,7 +9,6 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.activities.SplashActivity;
 import com.tradehero.th.api.translation.UserTranslationSettingDTOFactory;
-import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceDTOFactory;
 import com.tradehero.th.models.share.preference.SocialShareSetPreference;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
@@ -19,14 +18,14 @@ import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import dagger.Module;
 import dagger.Provides;
-import java.util.HashSet;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Singleton;
+import java.util.HashSet;
 
 @Module(
         injects = {
                 SplashActivity.class,
-                AdminSettingsFragment.class,
         },
         complete = false,
         library = true

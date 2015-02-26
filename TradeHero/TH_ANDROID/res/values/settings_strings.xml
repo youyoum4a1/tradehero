@@ -68,26 +68,14 @@
   <string name="settings_about">Any use of trademarks or copyright images is for the fair and reasonable uses of research, study, description and/or
     identification. Such trademarks or images remain the sole property of their respective owners.
   </string>
-  <string name="settings_paypal_header">PayPal</string>
-  <string name="settings_paypal_label">PayPal Account (email address)</string>
-  <string name="settings_paypal_hint">Your PayPal email address</string>
   <string name="settings_paypal_update">Update</string>
-  <string name="settings_paypal_description">We use your PayPal account to distribute your share of the income received from your
-    followers&#8230;</string>
   <string name="settings_paypal_successful_update">PayPal account successfully updated</string>
   <string name="settings_alipay_header">Alipay</string>
-  <string name="settings_alipay_label">Alipay Account</string>
   <string name="settings_alipay_hint">Your Alipay account</string>
   <string name="settings_alipay_id_hint">Your Identifier </string>
   <string name="settings_alipay_realname_hint">Your Real Name</string>
   <string name="settings_alipay_update">Update</string>
-  <string name="settings_alipay_description">We use your Alipay account to distribute your share of the income received from your
-    followers&#8230;</string>
-  <string name="settings_alipay_successful_update">Alipay account successfully updated</string>
   <string name="settings_transaction_header">Transaction History</string>
-  <string name="settings_transaction_date">DATE</string>
-  <string name="settings_transaction_balance">BALANCE</string>
-  <string name="settings_transaction_comment">COMMENT</string>
 
   <string name="settings_about_us_company">上海迈和信息科技有限公司</string>
   <string name="settings_about_us_company2">版权 2012-2014 My Manisku Pte. Ltd.</string>

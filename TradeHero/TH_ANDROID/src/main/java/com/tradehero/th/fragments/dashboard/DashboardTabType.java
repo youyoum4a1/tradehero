@@ -3,15 +3,9 @@ package com.tradehero.th.fragments.dashboard;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.home.HomeFragment;
-import com.tradehero.th.fragments.settings.AdminSettingsFragment;
-import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
-import com.tradehero.th.utils.Constants;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public enum DashboardTabType
 {
@@ -26,13 +20,7 @@ public enum DashboardTabType
             R.color.transparent, UpdateCenterFragment.class),
     REFERRAL(R.layout.tab_indicator_holo,
             R.string.dashboard_referral, R.string.dashboard_referral_key,
-            R.drawable.launcher, FriendsInvitationFragment.class),
-    SETTING(R.layout.tab_indicator_holo,
-            R.string.dashboard_menu_settings, R.string.dashboard_menu_settings_key,
-            R.drawable.launcher, SettingsFragment.class),
-    ADMIN_SETTINGS(R.layout.tab_indicator_holo,
-            R.string.dashboard_admin_settings, R.string.dashboard_admin_settings_key,
-            R.drawable.launcher, AdminSettingsFragment.class);
+            R.drawable.launcher, FriendsInvitationFragment.class);
 
     private static final int DEFAULT_VIEW_LAYOUT_ID = R.layout.tab_indicator_holo;
 
@@ -69,21 +57,4 @@ public enum DashboardTabType
         this.fragmentClass = fragmentClass;
     }
 
-    public boolean hasCustomView()
-    {
-        return viewResId != DEFAULT_VIEW_LAYOUT_ID;
-    }
-
-    public static List<DashboardTabType> usableValues()
-    {
-        List<DashboardTabType> values = new ArrayList<>();
-        for (DashboardTabType value : values())
-        {
-            if (!(value.equals(DashboardTabType.ADMIN_SETTINGS) && Constants.RELEASE))
-            {
-                values.add(value);
-            }
-        }
-        return values;
-    }
 }

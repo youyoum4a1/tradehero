@@ -16,9 +16,6 @@ import com.tradehero.th.api.position.PositionDTOJacksonModule;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTODeserialiser;
 import com.tradehero.th.api.social.UserFriendsDTOJacksonModule;
-import com.tradehero.th.fragments.settings.SettingsAlipayFragment;
-import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
-import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.network.CompetitionUrl;
 import com.tradehero.th.network.FriendlyUrlConnectionClient;
@@ -40,9 +37,6 @@ import javax.inject.Singleton;
                 RetrofitProtectedModule.class,
         },
         injects = {
-                SettingsTransactionHistoryFragment.class,
-                SettingsPayPalFragment.class,
-                SettingsAlipayFragment.class,
                 ProviderPageIntent.class,
 
                 VotePair.class

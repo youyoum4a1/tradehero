@@ -14,7 +14,6 @@ import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
@@ -75,7 +74,6 @@ public class Application extends PApplication
                 UpdateCenterFragment.class,
                 TrendingFragment.class,
                 FriendsInvitationFragment.class,
-                SettingsFragment.class,
                 MainCompetitionFragment.class,
                 BuySellFragment.class,
                 CompetitionWebViewFragment.class,

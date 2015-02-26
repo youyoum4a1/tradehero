@@ -8,8 +8,6 @@ import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
-import com.tradehero.th.fragments.settings.SettingsAlipayFragment;
-import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.trending.ExtraTileAdapter;
 import com.tradehero.th.fragments.trending.ProviderTileView;
 import com.tradehero.th.persistence.ListCacheMaxSize;
@@ -24,8 +22,6 @@ import javax.inject.Singleton;
 @Module(
         injects = {
                 UserProfileFetchAssistant.class,
-                SettingsPayPalFragment.class,
-                SettingsAlipayFragment.class,
 
                 // Extra Tile needs to know about userProfile data for survey tile element
                 ExtraTileAdapter.class,

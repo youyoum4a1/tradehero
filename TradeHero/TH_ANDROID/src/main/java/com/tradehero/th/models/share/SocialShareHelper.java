@@ -4,10 +4,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Bundle;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareFormDTOWithEnum;
@@ -15,13 +13,13 @@ import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.fragments.news.ShareDialogFactory;
 import com.tradehero.th.fragments.news.ShareDialogLayout;
-import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.utils.AlertDialogUtil;
-import javax.inject.Inject;
-import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 public class SocialShareHelper
 {
@@ -272,12 +270,6 @@ public class SocialShareHelper
 
         @Override public void onClick(DialogInterface dialog, int which)
         {
-            // TODO use new SocialLinkHelper
-            detachOfferConnectDialog();
-            Bundle args = new Bundle();
-            SettingsFragment.putSocialNetworkToConnect(args, socialNetwork);
-            ((DashboardActivity) currentActivityHolder.getCurrentActivity()).getDashboardNavigator()
-                    .pushFragment(SettingsFragment.class, args);
         }
     }
 

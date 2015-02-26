@@ -53,7 +53,6 @@ import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.security.*;
-import com.tradehero.th.fragments.settings.*;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
@@ -101,7 +100,6 @@ import com.tradehero.th.ui.UIModule;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.widget.MarkdownTextView;
-import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Module;
 import dagger.Provides;
@@ -128,19 +126,13 @@ import java.util.Locale;
                 {
                         DashboardNavigator.class,
                         com.tradehero.th.base.Application.class,
-                        SettingsProfileFragment.class,
-                        ProfileInfoView.class,
                         TradeHeroProgressBar.class,
                         PullToRefreshExpandableListView.class,
                         SimplePremiumFollowUserAssistant.class,
                         PremiumFollowUserAssistant.class,
-                        SettingsFragment.class,
                         TranslatableLanguageListFragment.class,
-                        SettingsReferralCodeFragment.class,
-                        AboutFragment.class,
                         EmailSignInFragment.class,
                         PasswordResetFragment.class,
-                        ServerValidatedUsernameText.class,
                         TrendingFragment.class,
                         TrendingFilterSelectorView.class,
                         SecurityListPagedLoader.class,
@@ -231,9 +223,6 @@ import java.util.Locale;
 
                         ProviderPageIntent.class,
 
-                        InviteFriendFragment.class,
-
-                        UserFriendDTOView.class,
                         FriendListLoader.class,
 
                         ShareDialogLayout.class,

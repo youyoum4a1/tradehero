@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="validation_please_correct">请修改标示为无效的输入框内容</string>
   <string name="validation_size_too_short">最少需要 %d 字符</string>
   <string name="validation_size_too_long">不能超过 %d 字符</string>
   <string name="validation_size_in_between">必须在 %1$d 和 %2$d 字符之间</string>

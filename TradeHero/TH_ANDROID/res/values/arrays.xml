@@ -59,11 +59,6 @@
     <item>Sathya Prakash|The Imp</item>
   </string-array>
 
-
-  <string-array name="share_to">
-    <item>@string/wechat</item>
-    <item>@string/linkedin</item>
-  </string-array>
   <string-array name="register_choose_image">
     <item>@string/take_photo</item>
     <item>@string/from_gallery</item>
