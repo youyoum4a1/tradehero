@@ -258,14 +258,17 @@ public class THSignedNumber
 
     public void into(@NonNull TextView textView)
     {
-        Spanned result = (Spanned) getCombinedSpan();
+        textView.setText(createSpanned());
+    }
 
+    public Spanned createSpanned()
+    {
+        Spanned result = (Spanned) getCombinedSpan();
         if (format != null)
         {
             result = SpanFormatter.format(format, result);
         }
-
-        textView.setText(result);
+        return result;
     }
 
     protected Spanned getSpannedSign()
