@@ -44,7 +44,6 @@ import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.functions.Func1;
-import rx.internal.util.SubscriptionList;
 
 @Routable("securityFx/:securityRawInfo")
 public class BuySellFXFragment extends BuySellFragment

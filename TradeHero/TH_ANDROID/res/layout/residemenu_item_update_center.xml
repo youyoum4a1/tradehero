@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.settings.SettingsResideMenuItem
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -16,12 +16,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_xsmall"
         style="@style/TH.ResideMenuSmall.Text"
-        android:text="@string/dashboard_menu_settings" />
+        android:text="@string/dashboard_message_center" />
 
-    <View
-        android:id="@+id/unread_icon"
-        android:layout_width="@dimen/dashboard_red_dot_dimen"
-        android:layout_height="@dimen/dashboard_red_dot_dimen"
-        android:layout_marginLeft="@dimen/margin_xsmall"
-        android:background="@drawable/red_circle" />
-</com.tradehero.th.fragments.settings.SettingsResideMenuItem>
+</LinearLayout>

@@ -30,6 +30,7 @@ import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageListKey;
+import com.tradehero.th.api.fx.FXChartGranularity;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardTabHost;
@@ -54,6 +55,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
+import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 @Routable("messages")
@@ -97,21 +99,6 @@ public class MessagesCenterFragment extends DashboardFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-
-        //if size of items already fetched is 0,then force to reload
-        if (alreadyFetched == null || alreadyFetched.size() == 0)
-        {
-            Timber.d("onViewCreated fetch again");
-            displayLoadingView(true);
-            getOrFetchMessages();
-        }
-        else
-        {
-            Timber.d("onViewCreated don't have to fetch again");
-            hideLoadingView();
-            appendMessagesList(alreadyFetched);
-            setReadAllLayoutVisable();
-        }
     }
 
     @Override public void onResume()
@@ -133,6 +120,25 @@ public class MessagesCenterFragment extends DashboardFragment
                 }
             }
         });
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        //if size of items already fetched is 0,then force to reload
+        if (alreadyFetched == null || alreadyFetched.size() == 0)
+        {
+            Timber.d("onViewCreated fetch again");
+            displayLoadingView(true);
+            getOrFetchMessages();
+        }
+        else
+        {
+            Timber.d("onViewCreated don't have to fetch again");
+            hideLoadingView();
+            appendMessagesList(alreadyFetched);
+            setReadAllLayoutVisable();
+        }
     }
 
     @Override public void onPause()
