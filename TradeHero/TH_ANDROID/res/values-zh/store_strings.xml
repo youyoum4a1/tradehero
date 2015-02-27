@@ -5,6 +5,7 @@
   <string name="store_header_in_app_purchases">应用内购</string>
   <string name="store_buy_virtual_dollars">虚拟现金</string>
   <string name="store_buy_follow_credits">关注点数</string>
+  <string name="store_buy_restore_purchases">Restore Purchases</string>
   <string name="store_buy_stock_alerts">股市预警</string>
   <string name="store_buy_reset_portfolio">重置投资组合</string>
   <string name="store_header_manage_purchases">管理订单</string>
