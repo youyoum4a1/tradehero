@@ -16,11 +16,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.preference.PreferenceFragment;
 import android.util.Pair;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.squareup.okhttp.Cache;
@@ -158,10 +156,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         initView();
     }
 
-    @Override public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup,
-            Bundle paramBundle)
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
-        View view = super.onCreateView(paramLayoutInflater, paramViewGroup, paramBundle);
         view.setBackgroundColor(getResources().getColor(R.color.white));
 
         ListView listView = (ListView) view.findViewById(android.R.id.list);
@@ -174,12 +170,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                     (int) getResources().getDimension(R.dimen.setting_padding_bottom));
             listView.setOnScrollListener(dashboardBottomTabsScrollListener.get());
         }
-
-        return view;
-    }
-
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
         fetchUserProfile();
         initPreferenceClickHandlers();
         super.onViewCreated(view, savedInstanceState);

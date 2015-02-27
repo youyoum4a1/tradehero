@@ -81,7 +81,13 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         initPreferenceClickHandlers();
+        view.setBackgroundColor(getResources().getColor(R.color.white));
         ListView listView = (ListView) view.findViewById(android.R.id.list);
+        listView.setPadding(
+                (int) getResources().getDimension(R.dimen.setting_padding_left),
+                (int) getResources().getDimension(R.dimen.setting_padding_top),
+                (int) getResources().getDimension(R.dimen.setting_padding_right),
+                (int) getResources().getDimension(R.dimen.setting_padding_bottom));
         listView.setOnScrollListener(dashboardBottomTabsScrollListener.get());
         super.onViewCreated(view, savedInstanceState);
     }

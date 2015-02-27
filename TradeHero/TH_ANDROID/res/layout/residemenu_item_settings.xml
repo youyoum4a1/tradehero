@@ -24,4 +24,5 @@
         android:layout_height="@dimen/dashboard_red_dot_dimen"
         android:layout_marginLeft="@dimen/margin_xsmall"
         android:background="@drawable/red_circle" />
+
 </com.tradehero.th.fragments.settings.SettingsResideMenuItem>
