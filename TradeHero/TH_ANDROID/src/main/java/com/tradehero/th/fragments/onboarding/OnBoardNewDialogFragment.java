@@ -31,6 +31,7 @@ import com.tradehero.th.fragments.onboarding.hero.UserSelectionScreenFragment;
 import com.tradehero.th.fragments.onboarding.last.OnBoardLastFragment;
 import com.tradehero.th.fragments.onboarding.sector.SectorSelectionScreenFragment;
 import com.tradehero.th.fragments.onboarding.stock.StockSelectionScreenFragment;
+import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
@@ -223,7 +224,7 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
                                     {
                                         @Override public void call(Class<? extends DashboardFragment> aClass)
                                         {
-                                            navigator.pushFragment(aClass);
+                                            moveOnToFragment(aClass);
                                             dismiss();
                                         }
                                     }
@@ -245,5 +246,15 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
                 .subscribe(
                         new EmptyAction1<WatchlistPositionDTOList>(),
                         new ToastAndLogOnErrorAction("Failed to submit selectedStocks" + selectedStocks));
+    }
+
+    private void moveOnToFragment(@NonNull Class<? extends DashboardFragment> aClass)
+    {
+        Bundle args = new Bundle();
+        if (aClass.equals(TrendingMainFragment.class) && selectedExchanges.size() > 0)
+        {
+            TrendingMainFragment.putExchangeId(args, selectedExchanges.get(0).getExchangeIntegerId());
+        }
+        navigator.pushFragment(aClass, args);
     }
 }
