@@ -11,6 +11,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import javax.inject.Inject;
 
+@Deprecated
 public class SelectableUserViewRelative extends RelativeLayout
     implements DTOView<SelectableUserDTO>
 {

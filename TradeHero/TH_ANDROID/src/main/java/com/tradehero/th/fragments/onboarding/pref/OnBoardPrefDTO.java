@@ -6,6 +6,7 @@ import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.SectorDTO;
 import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
 
+@Deprecated
 public class OnBoardPrefDTO implements DTO
 {
     @NonNull public final ExchangeCompactDTO preferredExchange;

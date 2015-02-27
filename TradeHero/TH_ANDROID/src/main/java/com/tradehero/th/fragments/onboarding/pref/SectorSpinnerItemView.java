@@ -11,6 +11,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.SectorDTO;
 
+@Deprecated
 public class SectorSpinnerItemView extends RelativeLayout
     implements DTOView<SectorDTO>
 {

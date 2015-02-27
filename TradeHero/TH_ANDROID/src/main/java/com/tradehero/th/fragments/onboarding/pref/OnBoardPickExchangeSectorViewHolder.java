@@ -22,6 +22,7 @@ import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.persistence.market.ExchangeMarketPreference;
 
+@Deprecated
 public class OnBoardPickExchangeSectorViewHolder
 {
     private static final int DEFAULT_SECTOR_ID = KnownSectors.SECTOR_ID_TECHNOLOGY;

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.market.SectorDTO;
 
+@Deprecated
 public class SectorSpinnerAdapterNew
         extends ArrayDTOAdapterNew<SectorDTO, SectorSpinnerItemView>
 {

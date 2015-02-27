@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import com.tradehero.th.api.DTOView;
 
+@Deprecated
 public class SecuritySelectableViewRelative extends RelativeLayout
     implements DTOView<SelectableSecurityDTO>
 {

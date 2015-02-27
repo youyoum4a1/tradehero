@@ -17,6 +17,7 @@ import com.tradehero.th.api.security.SecurityCompactDTOList;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class OnBoardPickStockViewHolder
 {
     @InjectView(R.id.stocks_list) AbsListView stockListView;

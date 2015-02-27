@@ -8,6 +8,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.fragments.security.SecurityItemView;
 
+@Deprecated
 public class SecuritySelectableViewHolder implements DTOView<SelectableSecurityDTO>
 {
     @InjectView(R.id.security_view) protected SecurityItemView securityView;

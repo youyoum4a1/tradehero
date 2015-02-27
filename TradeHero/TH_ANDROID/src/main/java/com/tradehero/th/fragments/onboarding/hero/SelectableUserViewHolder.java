@@ -16,6 +16,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.models.number.THSignedPercentage;
 
+@Deprecated
 class SelectableUserViewHolder implements DTOView<SelectableUserDTO>
 {
     @NonNull final Context context;

@@ -17,6 +17,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class OnBoardPickHeroViewHolder
 {
     private static final int PROGRESS_VIEW_ID = 0;

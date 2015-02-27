@@ -8,6 +8,7 @@ import dagger.Module;
         library = true,
         complete = false
 )
+@Deprecated
 public class FragmentOnBoardPrefModule
 {
 }

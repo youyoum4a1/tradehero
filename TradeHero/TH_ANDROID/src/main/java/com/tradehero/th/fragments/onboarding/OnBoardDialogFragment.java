@@ -57,6 +57,7 @@ import rx.subscriptions.CompositeSubscription;
 
 import static rx.android.app.AppObservable.bindFragment;
 
+@Deprecated
 public class OnBoardDialogFragment extends BaseDialogFragment
 {
     @Inject CurrentUserId currentUserId;
