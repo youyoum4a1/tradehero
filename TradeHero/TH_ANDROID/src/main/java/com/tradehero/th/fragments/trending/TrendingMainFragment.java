@@ -20,6 +20,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.games.ViralMiniGameDefDTO;
 import com.tradehero.th.api.games.ViralMiniGameDefDTOList;
 import com.tradehero.th.api.games.ViralMiniGameDefListKey;
+import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
@@ -41,6 +42,7 @@ import timber.log.Timber;
 public class TrendingMainFragment extends DashboardFragment
 {
     private static final String KEY_ASSET_CLASS = TrendingMainFragment.class.getName() + ".assetClass";
+    private static final String KEY_EXCHANGE_ID = TrendingMainFragment.class.getName() + ".exchangeId";
 
     @InjectView(R.id.pager) ViewPager tabViewPager;
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
@@ -52,6 +54,7 @@ public class TrendingMainFragment extends DashboardFragment
 
     private TradingPagerAdapter tradingPagerAdapter;
     private Subscription viralSubscription;
+    @Nullable private ExchangeIntegerId exchangeIdFromArguments;
 
     public static void putAssetClass(@NonNull Bundle args, @NonNull AssetClass assetClass)
     {
@@ -67,9 +70,25 @@ public class TrendingMainFragment extends DashboardFragment
         return AssetClass.create(args.getInt(KEY_ASSET_CLASS));
     }
 
+    public static void putExchangeId(@NonNull Bundle args, @NonNull ExchangeIntegerId exchangeId)
+    {
+        args.putBundle(KEY_EXCHANGE_ID, exchangeId.getArgs());
+    }
+
+    @Nullable private static ExchangeIntegerId getExchangeId(@NonNull Bundle args)
+    {
+        if (!args.containsKey(KEY_EXCHANGE_ID))
+        {
+            return null;
+        }
+        return new ExchangeIntegerId(args.getBundle(KEY_EXCHANGE_ID));
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        exchangeIdFromArguments = getExchangeId(getArguments());
+        getArguments().remove(KEY_EXCHANGE_ID);
         tradingPagerAdapter = new TradingPagerAdapter(this.getChildFragmentManager());
         AssetClass askedAssetClass = getAssetClass(getArguments());
         if (askedAssetClass != null)
@@ -179,6 +198,11 @@ public class TrendingMainFragment extends DashboardFragment
             TrendingTabType tabType = TrendingTabType.values()[position];
             Bundle args = new Bundle();
             ActionBarOwnerMixin.putKeyShowHomeAsUp(args, false);
+            if (tabType.fragmentClass.equals(TrendingStockFragment.class) && exchangeIdFromArguments != null)
+            {
+                TrendingStockFragment.putExchangeId(args, exchangeIdFromArguments);
+                exchangeIdFromArguments = null;
+            }
             TrendingBaseFragment subFragment = (TrendingBaseFragment) Fragment.instantiate(getActivity(), tabType.fragmentClass.getName(), args);
             subFragment
                     .getRequestedTrendingTabTypeObservable()
