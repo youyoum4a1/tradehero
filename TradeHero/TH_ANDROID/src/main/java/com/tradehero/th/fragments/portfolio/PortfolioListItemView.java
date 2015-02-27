@@ -18,6 +18,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
 import com.tradehero.th.api.portfolio.DummyFxDisplayablePortfolioDTO;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -43,6 +44,7 @@ public class PortfolioListItemView extends RelativeLayout
     @InjectView(R.id.portfolio_title) protected TextView title;
     @InjectView(R.id.portfolio_description) protected TextView description;
     @InjectView(R.id.roi_value) @Optional protected TextView roiValue;
+    @InjectView(R.id.portfolio_image) @Optional protected ImageView portfolioImage;
 
     private DisplayablePortfolioDTO displayablePortfolioDTO;
     @Nullable private Subscription userWatchlistSubscription;
@@ -114,6 +116,39 @@ public class PortfolioListItemView extends RelativeLayout
         displayTitle();
         displayDescription();
         displayRoiValue();
+        displayImage();
+    }
+
+    private void displayImage()
+    {
+        if(portfolioImage != null)
+        {
+            if(displayablePortfolioDTO != null && displayablePortfolioDTO.portfolioDTO != null)
+            {
+                PortfolioDTO portfolioDTO = displayablePortfolioDTO.portfolioDTO;
+                int imageResId = R.drawable.ic_portfolio_stocks;
+                if(portfolioDTO.providerId != null)
+                {
+                    imageResId = R.drawable.ic_portfolio_competition;
+                }
+                else if(portfolioDTO.isDefault())
+                {
+                    if(portfolioDTO.isFx())
+                    {
+                        imageResId = R.drawable.ic_portfolio_fx;
+                    }
+                    else
+                    {
+                        imageResId = R.drawable.ic_portfolio_stocks;
+                    }
+                }
+                else if(portfolioDTO.isWatchlist)
+                {
+                    imageResId = R.drawable.ic_portfolio_favorites;
+                }
+                picasso.load(imageResId).into(portfolioImage);
+            }
+        }
     }
 
     //<editor-fold desc="Display Methods">
