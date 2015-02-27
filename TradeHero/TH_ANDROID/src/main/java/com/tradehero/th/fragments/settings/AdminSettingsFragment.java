@@ -29,6 +29,7 @@ import com.tradehero.th.fragments.ForTypographyFragment;
 import com.tradehero.th.fragments.achievement.ForAchievementListTestingFragment;
 import com.tradehero.th.fragments.achievement.ForQuestListTestingFragment;
 import com.tradehero.th.fragments.competition.CompetitionPreseasonDialogFragment;
+import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.level.ForXpTestingFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardNewDialogFragment;
@@ -190,6 +191,16 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
             @Override public boolean onPreferenceClick(Preference preference)
             {
                 OnBoardNewDialogFragment.showOnBoardDialog(AdminSettingsFragment.this.getActivity().getSupportFragmentManager());
+                return true;
+            }
+        });
+
+        Preference showFxOnBoardDialog = findPreference("show_fx_onBoard_dialog");
+        showFxOnBoardDialog.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                FxOnBoardDialogFragment.showOnBoardDialog(AdminSettingsFragment.this.getActivity().getFragmentManager());
                 return true;
             }
         });
