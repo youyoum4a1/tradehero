@@ -178,8 +178,12 @@ public class ExchangeCompactDTO implements DTO, WithMarketCap, WithTopSecurities
         return sumMarketCap;
     }
 
-    @Nullable @Override public SecuritySuperCompactDTOList getTopSecurities()
+    @NonNull @Override public SecuritySuperCompactDTOList getTopSecurities()
     {
-        return topSecurities;
+        if (topSecurities != null)
+        {
+            return topSecurities;
+        }
+        return new SecuritySuperCompactDTOList();
     }
 }

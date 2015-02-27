@@ -12,11 +12,10 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.api.SelectableDTO;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.SectorCompactDTO;
-import com.tradehero.th.api.market.SectorDTO;
-import com.tradehero.th.fragments.onboarding.OnBoardWithMarketStocksView;
+import com.tradehero.th.fragments.onboarding.OnBoardSelectableViewLinear;
 import javax.inject.Inject;
 
-public class OnBoardSectorItemView extends OnBoardWithMarketStocksView<SectorCompactDTO>
+public class OnBoardSectorItemView extends OnBoardSelectableViewLinear<SectorCompactDTO>
 {
     @DrawableRes private static final int DEFAULT_SECTOR_LOGO = R.drawable.accounts_glyph_name_default;
 
@@ -57,18 +56,18 @@ public class OnBoardSectorItemView extends OnBoardWithMarketStocksView<SectorCom
         display(dto.value);
     }
 
-    protected void display(@Nullable SectorDTO dto)
+    protected void display(@Nullable SectorCompactDTO dto)
     {
         if (logoImage != null)
         {
             picasso.cancelRequest(logoImage);
-            if (dto == null || dto.logoUrl == null)
+            if (dto == null || dto.imageUrl == null)
             {
                 logoImage.setImageResource(DEFAULT_SECTOR_LOGO);
             }
             else
             {
-                picasso.load(dto.logoUrl)
+                picasso.load(dto.imageUrl)
                         .into(logoImage);
             }
         }

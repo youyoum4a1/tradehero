@@ -1,8 +1,8 @@
 package com.tradehero.th.api.market;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
 public interface WithTopSecurities
 {
-    @Nullable SecuritySuperCompactDTOList getTopSecurities();
+    @NonNull SecuritySuperCompactDTOList getTopSecurities();
 }

@@ -9,7 +9,7 @@ public class SectorCompactDTO implements DTO, WithMarketCap
 {
     public int id;
     public String name;
-    @Nullable public String logoUrl;
+    @Nullable public String imageUrl;
     public double sumMarketCap;
 
     @JsonIgnore @NonNull public SectorId getSectorId()

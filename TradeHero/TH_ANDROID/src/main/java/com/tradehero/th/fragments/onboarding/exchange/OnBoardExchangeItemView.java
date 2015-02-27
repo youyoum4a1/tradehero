@@ -5,6 +5,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -14,10 +15,11 @@ import com.tradehero.common.api.SelectableDTO;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
-import com.tradehero.th.fragments.onboarding.OnBoardWithMarketStocksView;
+import com.tradehero.th.fragments.onboarding.OnBoardSelectableViewLinear;
+import com.tradehero.th.models.number.THSignedMoney;
 import javax.inject.Inject;
 
-public class OnBoardExchangeItemView extends OnBoardWithMarketStocksView<ExchangeCompactDTO>
+public class OnBoardExchangeItemView extends OnBoardSelectableViewLinear<ExchangeCompactDTO>
 {
     @DrawableRes private static final int DEFAULT_EXCHANGE_LOGO = R.drawable.accounts_glyph_name_default;
 
@@ -27,6 +29,9 @@ public class OnBoardExchangeItemView extends OnBoardWithMarketStocksView<Exchang
     @InjectView(android.R.id.icon1) ImageView logoImage;
     @InjectView(android.R.id.text1) TextView shortNameView;
     @InjectView(android.R.id.text2) TextView nameView;
+    @InjectView(R.id.market_cap) TextView marketCapView;
+    View marketCapSliderView;
+    @InjectView(R.id.top_stock_list) TopStockListView topStockListView;
 
     //<editor-fold desc="Constructors">
     public OnBoardExchangeItemView(Context context)
@@ -119,6 +124,33 @@ public class OnBoardExchangeItemView extends OnBoardWithMarketStocksView<Exchang
             else
             {
                 nameView.setText(dto.desc);
+            }
+        }
+
+        if (marketCapView != null)
+        {
+            if (dto == null)
+            {
+                marketCapView.setText("");
+            }
+            else
+            {
+                marketCapView.setText(getResources().getString(
+                        R.string.exchange_market_cap_abbreviated,
+                        THSignedMoney.builder(dto.getSumMarketCap()).build().toString()));
+            }
+        }
+
+        if (topStockListView != null)
+        {
+            if (dto != null)
+            {
+                topStockListView.setVisibility(VISIBLE);
+                topStockListView.display(dto.getTopSecurities());
+            }
+            else
+            {
+                topStockListView.setVisibility(GONE);
             }
         }
     }
