@@ -44,6 +44,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.functions.Func1;
+import rx.internal.util.SubscriptionList;
 
 @Routable("securityFx/:securityRawInfo")
 public class BuySellFXFragment extends BuySellFragment
@@ -143,6 +144,10 @@ public class BuySellFXFragment extends BuySellFragment
 
     private void fetchKChart(@NonNull FXChartGranularity granularity)
     {
+        if (onStopSubscriptions == null)
+        {
+            this.onStopSubscriptions = new SubscriptionList();
+        }
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXHistory(securityId, granularity)

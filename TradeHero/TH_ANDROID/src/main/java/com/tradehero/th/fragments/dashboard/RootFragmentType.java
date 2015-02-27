@@ -102,7 +102,7 @@ public enum RootFragmentType
     @NonNull public static Collection<RootFragmentType> forBottomBar()
     {
         List<RootFragmentType> forBottomBar = Arrays.asList(
-                ME, TRENDING, DISCOVERY, COMMUNITY, CONTEST_CENTER
+                TRENDING, ME, DISCOVERY, COMMUNITY, CONTEST_CENTER
         );
         return Collections.unmodifiableCollection(forBottomBar);
     }
