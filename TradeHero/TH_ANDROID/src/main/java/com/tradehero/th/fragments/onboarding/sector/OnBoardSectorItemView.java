@@ -11,11 +11,12 @@ import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.api.SelectableDTO;
 import com.tradehero.th.R;
+import com.tradehero.th.api.market.SectorCompactDTO;
 import com.tradehero.th.api.market.SectorDTO;
 import com.tradehero.th.fragments.onboarding.OnBoardWithMarketStocksView;
 import javax.inject.Inject;
 
-public class OnBoardSectorItemView extends OnBoardWithMarketStocksView<SectorDTO>
+public class OnBoardSectorItemView extends OnBoardWithMarketStocksView<SectorCompactDTO>
 {
     @DrawableRes private static final int DEFAULT_SECTOR_LOGO = R.drawable.accounts_glyph_name_default;
 
@@ -50,7 +51,7 @@ public class OnBoardSectorItemView extends OnBoardWithMarketStocksView<SectorDTO
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(@NonNull SelectableDTO<SectorDTO> dto)
+    @Override public void display(@NonNull SelectableDTO<SectorCompactDTO> dto)
     {
         super.display(dto);
         display(dto.value);

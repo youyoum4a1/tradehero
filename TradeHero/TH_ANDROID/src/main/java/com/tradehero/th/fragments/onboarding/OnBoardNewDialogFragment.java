@@ -17,7 +17,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeCompactSectorListDTO;
-import com.tradehero.th.api.market.SectorDTOList;
+import com.tradehero.th.api.market.SectorCompactDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityIntegerIdListForm;
 import com.tradehero.th.api.social.BatchFollowFormDTO;
@@ -55,7 +55,7 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
     @InjectView(android.R.id.content) ViewPager pager;
 
     private ExchangeCompactDTOList selectedExchanges;
-    private SectorDTOList selectedSectors;
+    private SectorCompactDTOList selectedSectors;
     private LeaderboardUserDTOList selectedHeroes;
     private SecurityCompactDTOList selectedStocks;
     @NonNull private BehaviorSubject<ExchangeCompactSectorListDTO> exchangeSectorBehavior;
@@ -168,9 +168,9 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
                     SectorSelectionScreenFragment fragment1 = new SectorSelectionScreenFragment();
                     onStopSubscriptions.add(fragment1.getSelectedSectorsObservable()
                             .subscribe(
-                                    new Action1<SectorDTOList>()
+                                    new Action1<SectorCompactDTOList>()
                                     {
-                                        @Override public void call(SectorDTOList sectorDTOs)
+                                        @Override public void call(SectorCompactDTOList sectorDTOs)
                                         {
                                             selectedSectors = sectorDTOs;
                                             pager.setCurrentItem(INDEX_SELECTION_HEROES, true);

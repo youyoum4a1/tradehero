@@ -17,14 +17,13 @@ import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.market.ExchangeSectorListDTO;
-import com.tradehero.th.api.market.SectorDTO;
-import com.tradehero.th.api.market.SectorDTOList;
+import com.tradehero.th.api.market.SectorCompactDTO;
+import com.tradehero.th.api.market.SectorCompactDTOList;
 import com.tradehero.th.api.market.SectorId;
+import com.tradehero.th.api.market.SectorListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
-import com.tradehero.th.models.market.ExchangeSectorKey;
-import com.tradehero.th.persistence.market.ExchangeSectorListCacheRx;
+import com.tradehero.th.persistence.market.SectorCompactListCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,14 +41,14 @@ public class SectorSelectionScreenFragment extends DashboardFragment
 {
     private static final int MAX_SELECTABLE_SECTORS = 3;
 
-    @Inject ExchangeSectorListCacheRx exchangeSectorCompactListCache;
+    @Inject SectorCompactListCacheRx sectorCompactListCache;
 
     @InjectView(android.R.id.list) ListView sectorList;
     @InjectView(android.R.id.button1) View nextButton;
     @NonNull ArrayAdapter<SelectableSectorDTO> sectorAdapter;
-    @NonNull Map<SectorId, SectorDTO> knownSectors;
+    @NonNull Map<SectorId, SectorCompactDTO> knownSectors;
     @NonNull Set<SectorId> selectedSectors;
-    @NonNull BehaviorSubject<SectorDTOList> selectedSectorsSubject;
+    @NonNull BehaviorSubject<SectorCompactDTOList> selectedSectorsSubject;
 
     public SectorSelectionScreenFragment()
     {
@@ -99,14 +98,14 @@ public class SectorSelectionScreenFragment extends DashboardFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                exchangeSectorCompactListCache.getOne(new ExchangeSectorKey()))
+                sectorCompactListCache.getOne(new SectorListType()))
                 .subscribe(
-                        new Action1<Pair<ExchangeSectorKey, ExchangeSectorListDTO>>()
+                        new Action1<Pair<SectorListType, SectorCompactDTOList>>()
                         {
-                            @Override public void call(Pair<ExchangeSectorKey, ExchangeSectorListDTO> pair)
+                            @Override public void call(Pair<SectorListType, SectorCompactDTOList> pair)
                             {
                                 List<SelectableSectorDTO> onBoardSectors = new ArrayList<>();
-                                for (SectorDTO sector : pair.second.sectors)
+                                for (SectorCompactDTO sector : pair.second)
                                 {
                                     knownSectors.put(sector.getSectorId(), sector);
                                     onBoardSectors.add(new SelectableSectorDTO(sector, false));
@@ -153,7 +152,7 @@ public class SectorSelectionScreenFragment extends DashboardFragment
     @OnClick(android.R.id.button1)
     protected void onNextClicked(@SuppressWarnings("UnusedParameters") View view)
     {
-        SectorDTOList selectedDTOs = new SectorDTOList();
+        SectorCompactDTOList selectedDTOs = new SectorCompactDTOList();
         for (SectorId selected : selectedSectors)
         {
             selectedDTOs.add(knownSectors.get(selected));
@@ -161,7 +160,7 @@ public class SectorSelectionScreenFragment extends DashboardFragment
         selectedSectorsSubject.onNext(selectedDTOs);
     }
 
-    @NonNull public Observable<SectorDTOList> getSelectedSectorsObservable()
+    @NonNull public Observable<SectorCompactDTOList> getSelectedSectorsObservable()
     {
         return selectedSectorsSubject.asObservable();
     }

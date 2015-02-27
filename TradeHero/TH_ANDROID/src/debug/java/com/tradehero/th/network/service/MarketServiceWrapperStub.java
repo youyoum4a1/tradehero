@@ -9,6 +9,7 @@ import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.market.ExchangeSectorListDTO;
+import com.tradehero.th.api.market.SectorCompactDTOList;
 import com.tradehero.th.api.market.SectorDTO;
 import com.tradehero.th.api.market.SecuritySuperCompactDTOList;
 import com.tradehero.th.api.market.SecuritySuperCompactFactory;
@@ -65,6 +66,24 @@ import rx.functions.Func1;
                     {
                         ExchangeCompactDTOUtilDebug.tempPopulate(exchangeDTO);
                         return null;
+                    }
+                });
+    }
+
+    @NonNull @Override public Observable<SectorCompactDTOList> getSectors()
+    {
+        return super.getSectors()
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends SectorCompactDTOList>>()
+                {
+                    @Override public Observable<? extends SectorCompactDTOList> call(Throwable throwable)
+                    {
+                        return getAllExchangeSectorCompactRx().map(new Func1<ExchangeSectorListDTO, SectorCompactDTOList>()
+                        {
+                            @Override public SectorCompactDTOList call(ExchangeSectorListDTO exchangeSectorListDTO)
+                            {
+                                return new SectorCompactDTOList(exchangeSectorListDTO.sectors);
+                            }
+                        });
                     }
                 });
     }

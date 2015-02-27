@@ -21,7 +21,8 @@ public class OnBoardWithMarketStocksView<T extends DTO & WithMarketCap>
 {
     @InjectView(R.id.market_cap) TextView marketCapView;
     View marketCapSliderView;
-    @InjectView(android.R.id.content) TopStockListView topStockListView;
+    @InjectView(R.id.top_stock_title) View topStockTitle;
+    @InjectView(R.id.top_stock_list) TopStockListView topStockListView;
 
     //<editor-fold desc="Constructors">
     public OnBoardWithMarketStocksView(Context context)
@@ -48,9 +49,16 @@ public class OnBoardWithMarketStocksView<T extends DTO & WithMarketCap>
         {
             display(((WithTopSecurities) dto.value).getTopSecurities());
         }
-        else if (topStockListView != null)
+        else
         {
-            topStockListView.setVisibility(GONE);
+            if (topStockTitle != null)
+            {
+                topStockTitle.setVisibility(GONE);
+            }
+            if (topStockListView != null)
+            {
+                topStockListView.setVisibility(GONE);
+            }
         }
     }
 
@@ -73,6 +81,10 @@ public class OnBoardWithMarketStocksView<T extends DTO & WithMarketCap>
 
     protected void display(@Nullable SecuritySuperCompactDTOList topStocks)
     {
+        if (topStockTitle != null)
+        {
+            topStockTitle.setVisibility(VISIBLE);
+        }
         if (topStockListView != null)
         {
             topStockListView.setVisibility(VISIBLE);

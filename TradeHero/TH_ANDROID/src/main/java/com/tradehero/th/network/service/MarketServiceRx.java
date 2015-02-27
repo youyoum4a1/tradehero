@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeSectorListDTO;
+import com.tradehero.th.api.market.SectorCompactDTOList;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -16,8 +17,13 @@ public interface MarketServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Get Exchange">
+    @Deprecated // If never used
     @GET("/exchanges/{exchangeId}") Observable<ExchangeDTO> getExchange(
             @Path("exchangeId") int exchangeId);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Sectors">
+    @GET("/sectors") Observable<SectorCompactDTOList> getSectors();
     //</editor-fold>
 
     //<editor-fold desc="Get All Exchange And Sectors Compact">

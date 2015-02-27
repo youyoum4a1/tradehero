@@ -104,6 +104,7 @@
         android:background="@android:color/darker_gray"/>
 
     <TextView
+        android:id="@+id/top_stock_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/TH.Caption"
@@ -111,7 +112,7 @@
         />
 
     <com.tradehero.th.fragments.onboarding.exchange.TopStockListView
-        android:id="@android:id/content"
+        android:id="@+id/top_stock_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:topStock="@layout/on_board_top_stock_logo"
