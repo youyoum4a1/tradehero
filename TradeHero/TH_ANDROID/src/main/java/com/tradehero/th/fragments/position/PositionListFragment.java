@@ -11,16 +11,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
-import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
-import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -41,7 +37,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
@@ -71,7 +66,6 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
-import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
@@ -92,6 +86,8 @@ public class PositionListFragment
     private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = PositionListFragment.class.getName() + ".showPositionDtoKey";
     private static final String BUNDLE_KEY_SHOWN_USER_ID_BUNDLE = PositionListFragment.class.getName() + ".userBaseKey";
     public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = PositionListFragment.class.getName() + ".firstPositionVisible";
+    public static final String BUNDLE_KEY_POSITION_TYPE = PositionListFragment.class.getName() + ".postion.type";
+
     private static final int FLIPPER_INDEX_LOADING = 0;
     private static final int FLIPPER_INDEX_LIST = 1;
     private static final int FLIPPER_INDEX_ERROR = 2;
@@ -107,7 +103,6 @@ public class PositionListFragment
     @Inject BroadcastUtils broadcastUtils;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
 
-    @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
     @InjectView(R.id.position_list) ListView positionListView;
@@ -126,6 +121,8 @@ public class PositionListFragment
 
     private int firstPositionVisible = 0;
     @Inject protected THBillingInteractorRx userInteractorRx;
+
+    private int mPositionType;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
@@ -147,6 +144,17 @@ public class PositionListFragment
     {
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE));
     }
+
+    public static void putPositionType(@NonNull Bundle args, int positionType)
+    {
+        args.putInt(BUNDLE_KEY_POSITION_TYPE, positionType);
+    }
+
+    @Nullable private int getPositionType (@NonNull Bundle args)
+    {
+        return args.getInt(BUNDLE_KEY_POSITION_TYPE, PositionItemAdapter.VIEW_TYPE_OPEN_LONG);
+    }
+
     //</editor-fold>
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -170,6 +178,8 @@ public class PositionListFragment
         {
             getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey.key, injectedPortfolioId.key);
         }
+
+        mPositionType = getPositionType(args);
         this.positionItemAdapter = createPositionItemAdapter();
     }
 
@@ -316,21 +326,19 @@ public class PositionListFragment
         return new PositionItemAdapter(
                 getActivity(),
                 getLayoutResIds(),
-                currentUserId);
+                currentUserId,
+                mPositionType);
     }
 
-    @NonNull protected Map<Integer, Integer> getLayoutResIds()
+    @NonNull private Map<Integer, Integer> getLayoutResIds()
     {
         Map<Integer, Integer> layouts = new HashMap<>();
         layouts.put(PositionItemAdapter.VIEW_TYPE_HEADER, R.layout.position_item_header);
         layouts.put(PositionItemAdapter.VIEW_TYPE_PLACEHOLDER, R.layout.position_quick_nothing);
         layouts.put(PositionItemAdapter.VIEW_TYPE_LOCKED, R.layout.position_locked_item);
         layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_LONG, R.layout.position_top_view);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_LONG_IN_PERIOD, R.layout.position_top_view);
         layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_SHORT, R.layout.position_top_view);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_SHORT_IN_PERIOD, R.layout.position_top_view);
         layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED, R.layout.position_top_view);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED_IN_PERIOD, R.layout.position_top_view);
         return layouts;
     }
 
@@ -497,10 +505,6 @@ public class PositionListFragment
         this.portfolioDTO = portfolioDTO;
         displayActionBarTitle();
         showPrettyReviewAndInvite(portfolioDTO);
-
-        preparePortfolioHeaderView(portfolioDTO);
-        portfolioHeaderView.linkWith(portfolioDTO);
-        positionItemAdapter.linkWith(portfolioDTO);
     }
 
     private void showPrettyReviewAndInvite(@NonNull PortfolioCompactDTO compactDTO)
@@ -523,45 +527,6 @@ public class PositionListFragment
             {
                 AskForInviteDialogFragment.showInviteDialog(getActivity().getFragmentManager());
             }
-        }
-    }
-
-    private void preparePortfolioHeaderView(@NonNull PortfolioCompactDTO portfolioCompactDTO)
-    {
-        if (portfolioHeaderView == null)
-        {
-            // portfolio header
-            int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);
-            headerStub.setLayoutResource(headerLayoutId);
-            final View inflatedHeader = headerStub.inflate();
-            portfolioHeaderView = (PortfolioHeaderView) inflatedHeader;
-            linkPortfolioHeader();
-
-            positionListView.post(new Runnable()
-            {
-                @Override public void run()
-                {
-                    AbsListView listView = positionListView;
-                    if (listView != null)
-                    {
-                        int headerHeight = inflatedHeader.getMeasuredHeight();
-                        listView.setPadding(listView.getPaddingLeft(),
-                                headerHeight,
-                                listView.getPaddingRight(),
-                                listView.getPaddingBottom());
-                        listView.setOnScrollListener(new MultiScrollListener(
-                                dashboardBottomTabsListViewScrollListener.get(),
-                                new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER,
-                                        inflatedHeader,
-                                        -headerHeight,
-                                        null, 0)));
-                    }
-                }
-            });
-        }
-        else
-        {
-            Timber.d("Not inflating portfolioHeaderView because already not null");
         }
     }
 
@@ -621,7 +586,7 @@ public class PositionListFragment
         getPositionsCache.get(getPositionsDTOKey);
     }
 
-    public void display()
+    private void display()
     {
         displayHeaderView();
         displayActionBarTitle();
@@ -636,44 +601,24 @@ public class PositionListFragment
             {
                 portfolioHeaderView.linkWith(userProfileDTO);
             }
-            if (portfolioDTO != null)
-            {
-                portfolioHeaderView.linkWith(portfolioDTO);
-            }
         }
     }
 
-    public void displayActionBarTitle()
+    private void displayActionBarTitle()
     {
         String title = null;
-        String subtitle;
+
         if (portfolioDTO != null)
         {
             title = portfolioDTO.title;
         }
 
-        if (getPositionsDTO != null && getPositionsDTO.positions != null)
-        {
-            subtitle = String.format(getResources().getString(R.string.position_list_action_bar_header),
-                    getPositionsDTO.positions.size());
-        }
-        else
-        {
-            subtitle = null;
-        }
-
-        if (title == null && subtitle != null)
-        {
-            title = subtitle;
-            subtitle = null;
-        }
-        else if (title == null)
+        if (title == null)
         {
             title = getString(R.string.position_list_action_bar_header_unknown);
         }
 
         setActionBarTitle(title);
-        setActionBarSubtitle(subtitle);
     }
 
     @Override public int getTutorialLayout()

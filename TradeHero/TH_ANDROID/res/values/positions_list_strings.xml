@@ -13,7 +13,7 @@
   <string name="position_list_header_open_short">Short Positions (%d)</string>
   <string name="position_list_header_open_short_unsure">Short Positions</string>
   <string name="position_list_header_closed">Closed (%d)</string>
-  <string name="position_list_header_closed_unsure">Closed</string>
+  <string name="position_list_header_closed_unsure">Closed Positions</string>
   <string name="position_list_header_time_base" translatable="false">%1$s - %2$s</string>
   <string name="position_unrealised_loss_header">Will Lose</string>
   <string name="position_unrealised_profit_header">Will Profit</string>

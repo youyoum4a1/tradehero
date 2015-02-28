@@ -148,7 +148,7 @@
   <style name="TradeHero.Dashboard.ActionBar.TabText"
       parent="@android:style/Widget.Holo.Light.ActionBar.TabText">
     <item name="android:textColor">?android:textColorPrimaryInverse</item>
-    <item name="android:textAllCaps">true</item>
+    <item name="android:textAllCaps">false</item>
     <item name="android:textSize">@dimen/text_caption</item>
     <item name="android:textStyle">bold</item>
     <item name="android:gravity">center</item>
