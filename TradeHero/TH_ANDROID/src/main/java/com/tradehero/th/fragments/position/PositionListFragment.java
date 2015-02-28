@@ -11,12 +11,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -37,6 +41,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
@@ -66,6 +71,7 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
@@ -103,6 +109,7 @@ public class PositionListFragment
     @Inject BroadcastUtils broadcastUtils;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
 
+    @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
     @InjectView(R.id.position_list) ListView positionListView;
@@ -505,6 +512,9 @@ public class PositionListFragment
         this.portfolioDTO = portfolioDTO;
         displayActionBarTitle();
         showPrettyReviewAndInvite(portfolioDTO);
+
+        preparePortfolioHeaderView(portfolioDTO);
+        portfolioHeaderView.linkWith(portfolioDTO);
     }
 
     private void showPrettyReviewAndInvite(@NonNull PortfolioCompactDTO compactDTO)
@@ -527,6 +537,45 @@ public class PositionListFragment
             {
                 AskForInviteDialogFragment.showInviteDialog(getActivity().getFragmentManager());
             }
+        }
+    }
+
+    private void preparePortfolioHeaderView(@NonNull PortfolioCompactDTO portfolioCompactDTO)
+    {
+        if (portfolioHeaderView == null)
+        {
+            // portfolio header
+            int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);
+            headerStub.setLayoutResource(headerLayoutId);
+            final View inflatedHeader = headerStub.inflate();
+            portfolioHeaderView = (PortfolioHeaderView) inflatedHeader;
+            linkPortfolioHeader();
+
+            positionListView.post(new Runnable()
+            {
+                @Override public void run()
+                {
+                    AbsListView listView = positionListView;
+                    if (listView != null)
+                    {
+                        int headerHeight = inflatedHeader.getMeasuredHeight();
+                        listView.setPadding(listView.getPaddingLeft(),
+                                headerHeight,
+                                listView.getPaddingRight(),
+                                listView.getPaddingBottom());
+                        listView.setOnScrollListener(new MultiScrollListener(
+                                dashboardBottomTabsListViewScrollListener.get(),
+                                new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER,
+                                        inflatedHeader,
+                                        -headerHeight,
+                                        null, 0)));
+                    }
+                }
+            });
+        }
+        else
+        {
+            Timber.d("Not inflating portfolioHeaderView because already not null");
         }
     }
 
@@ -601,6 +650,12 @@ public class PositionListFragment
             {
                 portfolioHeaderView.linkWith(userProfileDTO);
             }
+
+            if (portfolioDTO != null)
+            {
+                portfolioHeaderView.linkWith(portfolioDTO);
+            }
+
         }
     }
 
