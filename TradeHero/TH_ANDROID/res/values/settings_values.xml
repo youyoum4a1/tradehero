@@ -2,7 +2,6 @@
 <resources>
 
   <color name="settings_about_font_colour">#C8903E</color>
-  <dimen name="settings_about_text_margin">10dp</dimen>
 
   <style name="TradeHero_Settings_About_Text">
     <item name="android:textSize">@dimen/text_xlarge</item>

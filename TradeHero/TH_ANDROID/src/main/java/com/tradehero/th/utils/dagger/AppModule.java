@@ -40,7 +40,6 @@ import com.tradehero.th.fragments.discussion.*;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.home.HomeWebView;
-import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView;
 import com.tradehero.th.fragments.news.*;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
@@ -194,7 +193,6 @@ import java.util.Locale;
                         TimelineItemViewLinear.class,
 
                         PeopleSearchFragment.class,
-                        LeaderboardMarkUserItemView.class,
 
                         WebViewFragment.class,
 

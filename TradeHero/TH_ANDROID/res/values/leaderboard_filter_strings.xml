@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-  <!-- For individual LeaderboardFilterValueSlider -->
-  <string name="leaderboard_filter_comparator_sign_bigger_than">&gt;</string>
-  <string name="leaderboard_filter_comparator_sign_smaller_than">&lt;</string>
-
-</resources>

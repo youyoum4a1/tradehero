@@ -467,6 +467,9 @@ public class PortfolioFragment extends DashboardFragment
 
         public void finished()
         {
+            if(listView == null){
+                return;
+            }
             listView.setMode(PullToRefreshBase.Mode.PULL_FROM_END);
             listView.onRefreshComplete();
             alertDialogUtilLazy.get().dismissProgressDialog();

@@ -18,8 +18,9 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import javax.inject.Inject;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class UserStatisticView extends LinearLayout
     implements DTOView<LeaderboardUserDTO>
@@ -118,7 +119,7 @@ public class UserStatisticView extends LinearLayout
 
         if (performanceGauge != null)
         {
-            performanceGauge.setTopText(getContext().getString(R.string.leaderboard_SP_500));
+            performanceGauge.setTopText("");
             performanceGauge.setSubText(
                     getContext().getString(R.string.leaderboard_performance_title));
             performanceGauge.setAnimiationFlag(true);
@@ -164,7 +165,7 @@ public class UserStatisticView extends LinearLayout
 
         if (performanceGauge != null)
         {
-            performanceGauge.setTopText(getContext().getString(R.string.leaderboard_SP_500));
+            performanceGauge.setTopText("");
             performanceGauge.setSubText(getContext().getString(R.string.leaderboard_performance_title));
             performanceGauge.setAnimiationFlag(false);
             performanceGauge.setDrawStartValue(50f);
