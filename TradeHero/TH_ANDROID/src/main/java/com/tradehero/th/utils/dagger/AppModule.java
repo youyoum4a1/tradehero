@@ -18,9 +18,7 @@ import com.tradehero.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDiscussOrNewsFragment;
 import com.tradehero.chinabuild.fragment.trade.*;
-import com.tradehero.chinabuild.fragment.userCenter.UserAccountPage;
-import com.tradehero.chinabuild.fragment.userCenter.UserFriendsListFragment;
-import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
+import com.tradehero.chinabuild.fragment.userCenter.*;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.billing.googleplay.IABBillingAvailableTester;
@@ -325,6 +323,8 @@ import java.util.Locale;
 
                         PortfolioFragment.class,
                         UserMainPage.class,
+                        MyMainPage.class,
+                        MyMainSubPage.class,
                         SecurityDiscussOrNewsFragment.class,
                         InviteFriendsFragment.class,
                         InputInviteCodeFragment.class,

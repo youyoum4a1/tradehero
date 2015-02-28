@@ -215,26 +215,18 @@ public class UserMainPage extends DashboardFragment
             @Override
             public void OnTimeLineItemClicked(int position)
             {
-                Timber.d("Item position = " + position);
                 enterTimeLineDetail((TimelineItemDTO) adapter.getItem(position));
             }
 
             @Override
-            public void OnTimeLinePraiseClicked(int position)
-            {
-                Timber.d("Praise position = " + position);
-            }
+            public void OnTimeLinePraiseClicked(int position){}
 
             @Override
-            public void OnTimeLinePraiseDownClicked(int position)
-            {
-                Timber.d("Praise position = " + position);
-            }
+            public void OnTimeLinePraiseDownClicked(int position) {}
 
             @Override
             public void OnTimeLineCommentsClicked(int position)
             {
-                Timber.d("Comments position = " + position);
                 TimelineItemDTO dto = (TimelineItemDTO) adapter.getItem(position);
                 comments(dto);
             }
@@ -242,14 +234,10 @@ public class UserMainPage extends DashboardFragment
             @Override
             public void OnTimeLineShareClicked(int position)
             {
-                Timber.d("Share position = " + position);
                 shareToWechatMoment(adapter.getItemString(position));
             }
 
-            @Override public void OnTimeLineBuyClicked(int position)
-            {
-
-            }
+            @Override public void OnTimeLineBuyClicked(int position){}
         });
 
         listTimeLine.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
@@ -257,7 +245,6 @@ public class UserMainPage extends DashboardFragment
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                Timber.d("下拉刷新");
                 fetchTimeLine();
                 fetchUserProfile();
             }
@@ -265,7 +252,6 @@ public class UserMainPage extends DashboardFragment
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                Timber.d("上拉加载更多");
                 fetchTimeLineMore();
             }
         });
@@ -437,12 +423,6 @@ public class UserMainPage extends DashboardFragment
         return isNeedShowPorfolio;
     }
 
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-    }
-
     @Override public void onPause()
     {
         super.onPause();
@@ -471,15 +451,8 @@ public class UserMainPage extends DashboardFragment
         timeLineMiddleCallback = null;
         freeFollowMiddleCallback = null;
         freeUnFollowMiddleCallback = null;
-        timeLineMiddleCallback = null;
 
         super.onDestroy();
-    }
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
     }
 
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()

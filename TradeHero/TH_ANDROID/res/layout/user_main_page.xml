@@ -19,7 +19,7 @@
     <View
         android:background="@color/gray_1"
         android:layout_width="fill_parent"
-        android:layout_height="10dp"/>
+        android:layout_height="2dp"/>
   </LinearLayout>
 
 
@@ -39,7 +39,6 @@
         android:id="@+id/listTimeLine"
         android:scrollingCache="false"
         android:fadingEdge="none"
-        android:dividerHeight="5dp"
         android:divider="@color/transparent"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">

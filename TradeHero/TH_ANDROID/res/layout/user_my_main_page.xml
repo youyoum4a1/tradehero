@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/bg_timeline">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="54dp"
+                  android:background="@color/white"
+                  android:orientation="horizontal">
+        <RelativeLayout
+                android:layout_weight="1"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <View
+                    android:id="@+id/view_discuss_line"
+                    android:layout_alignParentBottom="true"
+                    android:layout_height="3px"
+                    android:layout_width="fill_parent"
+                    android:background="@color/tradehero_blue"/>
+            <TextView
+                    android:id="@+id/textview_discuss_subtitle"
+                    android:layout_height="fill_parent"
+                    android:layout_width="fill_parent"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:textColor="@color/tradehero_blue"
+                    android:text="讨论"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+                android:layout_weight="1"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <View
+                    android:id="@+id/view_tradehistory_line"
+                    android:visibility="gone"
+                    android:layout_alignParentBottom="true"
+                    android:layout_height="3px"
+                    android:layout_width="fill_parent"
+                    android:background="@color/tradehero_blue"/>
+            <TextView
+                    android:id="@+id/textview_tradehistory_subtitle"
+                    android:layout_height="fill_parent"
+                    android:layout_width="fill_parent"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:textColor="@color/black2"
+                    android:text="交易信息"/>
+        </RelativeLayout>
+    </LinearLayout>
+    <View android:layout_width="match_parent" android:layout_height="1px" android:background="@color/gray_normal" />
+    <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager_my_history_page"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            />
+</LinearLayout>

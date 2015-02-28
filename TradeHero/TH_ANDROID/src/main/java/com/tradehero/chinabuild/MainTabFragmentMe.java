@@ -17,6 +17,7 @@ import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.*;
 import com.tradehero.chinabuild.fragment.message.NotificationFragment;
+import com.tradehero.chinabuild.fragment.userCenter.MyMainPage;
 import com.tradehero.chinabuild.fragment.userCenter.UserAccountPage;
 import com.tradehero.chinabuild.fragment.userCenter.UserFriendsListFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
@@ -252,7 +253,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
     {
         Bundle bundle = new Bundle();
         bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, currentUserId.toUserBaseKey().key);
-        gotoDashboard(UserMainPage.class.getName(), bundle);
+        gotoDashboard(MyMainPage.class.getName(), bundle);
     }
 
     @Override public void onResume()
