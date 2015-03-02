@@ -35,6 +35,7 @@ import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import dagger.Lazy;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
@@ -42,6 +43,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionFragment
@@ -84,11 +86,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         correspondentId = collectCorrespondentId(getArguments());
     }
 
-    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
-    {
-        return new AbstractPrivateMessageFragmentUserProfileObserver();
-    }
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
@@ -124,10 +121,15 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         return super.onOptionsItemSelected(item);
     }
 
+    @Override public void onStart()
+    {
+        super.onStart();
+        fetchCorrespondentProfile();
+    }
+
     @Override public void onResume()
     {
         super.onResume();
-        fetchCorrespondentProfile();
         dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
@@ -202,9 +204,17 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     private void fetchCorrespondentProfile()
     {
         Timber.d("fetchCorrespondentProfile");
-        AppObservable.bindFragment(this, userProfileCache.get(correspondentId))
+        onStopSubscriptions.add(AppObservable.bindFragment(this, userProfileCache.get(correspondentId))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createUserProfileCacheObserver());
+                .subscribe(
+                        new Action1<Pair<UserBaseKey, UserProfileDTO>>()
+                        {
+                            @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
+                            {
+                                linkWith(pair.second);
+                            }
+                        },
+                        new TimberOnErrorAction("")));
     }
 
     public void linkWith(UserProfileDTO userProfileDTO)
@@ -220,24 +230,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         // TODO Move into DTOProcessor?
         messageHeaderListCache.invalidateWithRecipient(correspondentId);
-    }
-
-    protected class AbstractPrivateMessageFragmentUserProfileObserver
-            implements Observer<Pair<UserBaseKey, UserProfileDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-        {
-            linkWith(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            Timber.e(e, "");
-        }
     }
 
     private void reportMessageRead(MessageHeaderDTO messageHeaderDTO)
