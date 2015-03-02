@@ -21,7 +21,6 @@ import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
@@ -35,10 +34,9 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import java.util.Collections;
 import java.util.Comparator;
 import javax.inject.Inject;
-import rx.Observer;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public abstract class ContestCenterBaseFragment extends DashboardFragment
@@ -51,13 +49,11 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     @InjectView(R.id.contest_center_content_screen) BetterViewAnimator contest_center_content_screen;
     @InjectView(android.R.id.list) ListView contestListView;
 
-    protected Subscription providerListCacheSubscription;
     public ContestItemAdapter contestListAdapter;
     @IdRes private int currentDisplayedChildLayoutId;
     public ProviderDTOList providerDTOs;
     private BaseWebViewFragment webFragment;
     private THIntentPassedListener thIntentPassedListener;
-    protected UserProfileDTO currentUserProfileDTO;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -74,30 +70,72 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
         return view;
     }
 
-    protected Observer<Pair<ProviderListKey, ProviderDTOList>> createProviderIdListObserver()
+    @Override public void onStart()
     {
-        return new LeaderboardCommunityProviderListObserver();
+        super.onStart();
+        contestListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        if (currentDisplayedChildLayoutId != 0)
+        {
+            setContestCenterScreen(currentDisplayedChildLayoutId);
+        }
+        loadContestData();
     }
 
-    protected class LeaderboardCommunityProviderListObserver implements Observer<Pair<ProviderListKey, ProviderDTOList>>
+    @Override public void onResume()
     {
-        @Override public void onNext(Pair<ProviderListKey, ProviderDTOList> pair)
-        {
-            providerDTOs = pair.second;
-            sortProviderByVip();
-            recreateAdapter();
-        }
+        super.onResume();
+        detachWebFragment();
+    }
 
-        @Override public void onCompleted()
-        {
-        }
+    @Override public void onStop()
+    {
+        currentDisplayedChildLayoutId = contest_center_content_screen.getDisplayedChildLayoutId();
+        contestListView.setOnScrollListener(null);
+        super.onStop();
+    }
 
-        @Override public void onError(Throwable e)
-        {
-            handleFailToReceiveLeaderboardDefKeyList();
-            THToast.show(getString(R.string.error_fetch_provider_info_list));
-            Timber.e("Failed retrieving the list of competition providers", e);
-        }
+    @Override public void onDestroyView()
+    {
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        this.thIntentPassedListener = null;
+        detachWebFragment();
+        super.onDestroy();
+    }
+
+    private void loadContestData()
+    {
+        // get the data
+        fetchProviderIdList();
+    }
+
+    private void fetchProviderIdList()
+    {
+        onStopSubscriptions.add(AppObservable.bindFragment(this, providerListCache.get(new ProviderListKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<Pair<ProviderListKey, ProviderDTOList>>()
+                        {
+                            @Override public void call(Pair<ProviderListKey, ProviderDTOList> pair)
+                            {
+                                providerDTOs = pair.second;
+                                sortProviderByVip();
+                                recreateAdapter();
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable throwable)
+                            {
+                                setContestCenterScreen(R.id.error);
+                                THToast.show(getString(R.string.error_fetch_provider_info_list));
+                                Timber.e("Failed retrieving the list of competition providers", throwable);
+                            }
+                        }));
     }
 
     /** make sure vip provider is in the front of the list */
@@ -136,14 +174,6 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
                 R.layout.contest_content_item_view);
     }
 
-    /**
-     * TODO to show user detail of the error
-     */
-    private void handleFailToReceiveLeaderboardDefKeyList()
-    {
-        setContestCenterScreen(R.id.error);
-    }
-
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.error)
     protected void handleErrorClicked()
@@ -158,59 +188,6 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
         {
             contest_center_content_screen.setDisplayedChildByLayoutId(viewId);
         }
-    }
-
-    private void loadContestData()
-    {
-        // get the data
-        fetchProviderIdList();
-    }
-
-    private void fetchProviderIdList()
-    {
-        unsubscribe(providerListCacheSubscription);
-        providerListCacheSubscription = AppObservable.bindFragment(this, providerListCache.get(new ProviderListKey()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createProviderIdListObserver());
-    }
-
-    @Override public void onStart()
-    {
-        super.onStart();
-        contestListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-        if (currentDisplayedChildLayoutId != 0)
-        {
-            setContestCenterScreen(currentDisplayedChildLayoutId);
-        }
-    }
-
-    @Override public void onStop()
-    {
-        currentDisplayedChildLayoutId = contest_center_content_screen.getDisplayedChildLayoutId();
-        contestListView.setOnScrollListener(null);
-        super.onStop();
-    }
-
-    @Override public void onDestroyView()
-    {
-        unsubscribe(providerListCacheSubscription);
-        providerListCacheSubscription = null;
-        ButterKnife.reset(this);
-        super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        this.thIntentPassedListener = null;
-        detachWebFragment();
-        super.onDestroy();
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        loadContestData();
-        detachWebFragment();
     }
 
     private void detachWebFragment()
