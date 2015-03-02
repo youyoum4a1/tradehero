@@ -22,6 +22,21 @@ interface UserTimelineServiceAsync
             Callback<TimelineDTO> callback);
     //</editor-fold>
 
+    @GET("/users/{userId}/timeline?type=commentOnly")
+    void getTimelines(
+            @Path("userId") int userId,
+            @Query("maxCount") Integer maxCount,
+            @Query("maxId") Integer maxId,
+            @Query("minId") Integer minId,
+            Callback<TimelineDTO> callback);
+
+    @GET("/users/{userId}/timeline?type=tradeOnly")
+    void getTradeHistory(
+            @Path("userId") int userId,
+            @Query("maxCount") Integer maxCount,
+            @Query("maxId") Integer maxId,
+            @Query("minId") Integer minId,
+            Callback<TimelineDTO> callback);
 
     //最新动态
     @GET("/users/{userId}/timeline?type=original")
@@ -32,6 +47,8 @@ interface UserTimelineServiceAsync
             @Query("minId") Integer minId,
             Callback<TimelineDTO> callback);
     //</editor-fold>
+
+
 
     //悬赏帖子
     @GET("/users/{userId}/timeline?type=question")

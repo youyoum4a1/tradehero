@@ -501,6 +501,11 @@
   <string name="timeline_production">公告</string>
   <string name="timeline_favorite">精华</string>
 
+  <string name="competition_detail">比赛详情</string>
+  <string name="competition_discuss">讨论</string>
+  <string name="mine_trade_history">交易信息</string>
+  <string name="mine_discuss">讨论</string>
+
   <!-- Administrator -->
   <string name="administrator_add_favorite">加精</string>
   <string name="administrator_remove_favorite">取消加精</string>

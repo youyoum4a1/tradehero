@@ -352,6 +352,8 @@ import java.util.Locale;
                         TimeLineItemDetailFragment.class,
                         TimeLineDetailDiscussSecItem.class,
                         CompetitionCollegeFragment.class,
+                        CompetitionMainFragment.class,
+                        CompetitionDiscussFragment.class,
                         NewsItemAdapter.class,
 
                         LoginSuggestDialogFragment.class,

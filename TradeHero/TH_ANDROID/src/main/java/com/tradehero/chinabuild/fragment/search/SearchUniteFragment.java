@@ -26,6 +26,7 @@ import com.tradehero.chinabuild.data.CompetitionInterface;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.chinabuild.data.UserCompetitionDTOList;
 import com.tradehero.chinabuild.fragment.competition.CompetitionDetailFragment;
+import com.tradehero.chinabuild.fragment.competition.CompetitionMainFragment;
 import com.tradehero.chinabuild.fragment.competition.CompetitionUtils;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
@@ -838,7 +839,7 @@ public class SearchUniteFragment extends DashboardFragment
     {
         Bundle bundle = new Bundle();
         bundle.putSerializable(CompetitionDetailFragment.BUNDLE_COMPETITION_DTO, userCompetitionDTO);
-        pushFragment(CompetitionDetailFragment.class, bundle);
+        pushFragment(CompetitionMainFragment.class, bundle);
     }
 
     protected void detachSearchCompetition()

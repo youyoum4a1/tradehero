@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 import com.tradehero.chinabuild.fragment.competition.CompetitionDetailFragment;
+import com.tradehero.chinabuild.fragment.competition.CompetitionMainFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.common.text.OnElementClickListener;
@@ -21,8 +22,9 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
-import javax.inject.Inject;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class MarkdownTextView extends TextView implements OnElementClickListener
 {
@@ -152,7 +154,7 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
         {
             Bundle bundle = new Bundle();
             bundle.putInt(CompetitionDetailFragment.BUNDLE_COMPETITION_ID, competitionId);
-            enterFragment(CompetitionDetailFragment.class, bundle);
+            enterFragment(CompetitionMainFragment.class, bundle);
         }
     }
 

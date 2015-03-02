@@ -50,6 +50,22 @@ import java.util.List;
         return middleCallback;
     }
 
+    public @NotNull MiddleCallback<TimelineDTO> getTimelines(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId,
+                                                               @Nullable Callback<TimelineDTO> callback)
+    {
+        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userTimelineServiceAsync.getTimelines(userId.key, maxCount, maxId, minId, middleCallback);
+        return middleCallback;
+    }
+
+    public @NotNull MiddleCallback<TimelineDTO> getTradeHistory(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId,
+                                                               @Nullable Callback<TimelineDTO> callback)
+    {
+        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userTimelineServiceAsync.getTradeHistory(userId.key, maxCount, maxId, minId, middleCallback);
+        return middleCallback;
+    }
+
     //最新动态
     public @NotNull MiddleCallback<TimelineDTO> getTimelineSquare(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId,
             @Nullable Callback<TimelineDTO> callback)

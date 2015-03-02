@@ -76,6 +76,12 @@ public class MyMainPage extends DashboardFragment implements View.OnClickListene
     private void initViewPager() {
         if (myFragmentPagerAdapter == null) {
             fragmentList.clear();
+            Bundle discussBundle = new Bundle();
+            discussBundle.putInt(MyMainSubPage.MY_MAIN_SUB_PAGE_TYPE, MyMainSubPage.TYPE_DISCUSS);
+            discussFragment.setArguments(discussBundle);
+            Bundle tradeHistoryBundle = new Bundle();
+            tradeHistoryBundle.putInt(MyMainSubPage.MY_MAIN_SUB_PAGE_TYPE, MyMainSubPage.TYPE_TRADE_HISTORY);
+            tradeHistoryFragment.setArguments(tradeHistoryBundle);
             fragmentList.add(discussFragment);
             fragmentList.add(tradeHistoryFragment);
             myFragmentPagerAdapter = new MyFragmentPagerAdapter(getFragmentManager(), fragmentList);

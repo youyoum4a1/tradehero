@@ -53,6 +53,12 @@ public class MyMainSubPage extends Fragment {
     private ImageView emptyIV;
     private View view;
 
+    public final static String MY_MAIN_SUB_PAGE_TYPE = "my_main_sub_page_type";
+    public final static int TYPE_TRADE_HISTORY = 1;
+    public final static int TYPE_DISCUSS = 0;
+
+    private int type = 0;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(view != null){
@@ -63,6 +69,9 @@ public class MyMainSubPage extends Fragment {
             }
             return view;
         }
+
+        type = getArguments().getInt(MY_MAIN_SUB_PAGE_TYPE, 0);
+
         view = inflater.inflate(R.layout.user_my_main_subpage, container, false);
         ButterKnife.inject(this, view);
         listTimeLine = (SecurityListView)view.findViewById(R.id.list_my_history);
@@ -94,7 +103,6 @@ public class MyMainSubPage extends Fragment {
     @Override
     public void onDestroy(){
         timeLineMiddleCallback = null;
-
         super.onDestroy();
     }
 
@@ -167,14 +175,24 @@ public class MyMainSubPage extends Fragment {
     private void fetchTimeLine()
     {
         maxID = -1;
-        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineNew(currentUserId.toUserBaseKey(), 10, -1, maxID, new TimeLineCallback());
+        if(type == TYPE_TRADE_HISTORY) {
+            timeLineMiddleCallback = timelineServiceWrapper.get().getTradeHistory(currentUserId.toUserBaseKey(), 10, -1, maxID, new TimeLineCallback());
+        }
+        if(type == TYPE_DISCUSS){
+            timeLineMiddleCallback = timelineServiceWrapper.get().getTimelines(currentUserId.toUserBaseKey(), 10, -1, maxID, new TimeLineCallback());
+        }
     }
 
     private void fetchTimeLineMore()
     {
         detachTimeLineMiddleCallback();
         maxID = adapter.getMaxID();
-        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineNew(currentUserId.toUserBaseKey(), 10, maxID, -1, new TimeLineCallback());
+        if(type == TYPE_TRADE_HISTORY) {
+            timeLineMiddleCallback = timelineServiceWrapper.get().getTradeHistory(currentUserId.toUserBaseKey(), 10, maxID, -1, new TimeLineCallback());
+        }
+        if(type == TYPE_DISCUSS){
+            timeLineMiddleCallback = timelineServiceWrapper.get().getTimelines(currentUserId.toUserBaseKey(), 10, maxID, -1, new TimeLineCallback());
+        }
     }
 
     public class TimeLineCallback implements retrofit.Callback<TimelineDTO>

@@ -18,6 +18,7 @@ import com.tradehero.chinabuild.cache.NoticeNewsCache;
 import com.tradehero.chinabuild.data.AdsDTO;
 import com.tradehero.chinabuild.data.TimeLineTotalInfo;
 import com.tradehero.chinabuild.fragment.competition.CompetitionDetailFragment;
+import com.tradehero.chinabuild.fragment.competition.CompetitionMainFragment;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.th.R;
@@ -369,7 +370,7 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
     private void jumpCompetitionDetailPage(int competitionId){
         Bundle bundle = new Bundle();
         bundle.putInt(CompetitionDetailFragment.BUNDLE_COMPETITION_ID, competitionId);
-        gotoDashboard(CompetitionDetailFragment.class, bundle);
+        gotoDashboard(CompetitionMainFragment.class, bundle);
     }
 
     private void jumpTimeLine(int timeLineItemId){

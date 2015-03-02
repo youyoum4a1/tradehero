@@ -14,6 +14,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.chinabuild.fragment.competition.CompetitionDetailFragment;
+import com.tradehero.chinabuild.fragment.competition.CompetitionMainFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -369,7 +370,7 @@ public class NotificationFragment extends DashboardFragment
     private void jumpCompetitionDetailPage(int competitionId){
         Bundle bundle = new Bundle();
         bundle.putInt(CompetitionDetailFragment.BUNDLE_COMPETITION_ID, competitionId);
-        pushFragment(CompetitionDetailFragment.class, bundle);
+        pushFragment(CompetitionMainFragment.class, bundle);
     }
 
 

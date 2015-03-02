@@ -35,9 +35,10 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.StringUtils;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-9. 搜索比赛页面
@@ -261,7 +262,7 @@ public class CompetitionSearchFragment extends DashboardFragment
     {
         Bundle bundle = new Bundle();
         bundle.putSerializable(CompetitionDetailFragment.BUNDLE_COMPETITION_DTO, userCompetitionDTO);
-        pushFragment(CompetitionDetailFragment.class, bundle);
+        pushFragment(CompetitionMainFragment.class, bundle);
     }
 
     private void initListView()

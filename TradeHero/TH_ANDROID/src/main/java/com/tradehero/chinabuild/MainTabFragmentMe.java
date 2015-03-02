@@ -20,7 +20,6 @@ import com.tradehero.chinabuild.fragment.message.NotificationFragment;
 import com.tradehero.chinabuild.fragment.userCenter.MyMainPage;
 import com.tradehero.chinabuild.fragment.userCenter.UserAccountPage;
 import com.tradehero.chinabuild.fragment.userCenter.UserFriendsListFragment;
-import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -251,9 +250,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
 
     public void enterMyMainPager()
     {
-        Bundle bundle = new Bundle();
-        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, currentUserId.toUserBaseKey().key);
-        gotoDashboard(MyMainPage.class.getName(), bundle);
+        gotoDashboard(MyMainPage.class.getName());
     }
 
     @Override public void onResume()
