@@ -21,8 +21,8 @@ import com.tradehero.th.api.market.ExchangeCompactSectorListDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.key.ExchangeSectorSecurityListTypeNew;
 import com.tradehero.th.api.security.key.SecurityListType;
-import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
@@ -109,8 +109,9 @@ public class StockSelectionScreenFragment extends DashboardFragment
                 {
                     @Override public Observable<SecurityCompactDTOList> call(ExchangeCompactSectorListDTO exchangeSectorListDTO)
                     {
-                        return securityCompactListCache.getOne(new TrendingBasicSecurityListType(
-                                exchangeSectorListDTO.exchanges.get(0).name,
+                        return securityCompactListCache.getOne(new ExchangeSectorSecurityListTypeNew(
+                                exchangeSectorListDTO.exchanges.getExchangeIds(),
+                                exchangeSectorListDTO.sectors.getSectorIds(),
                                 null, null))
                                 .map(new PairGetSecond<SecurityListType, SecurityCompactDTOList>());
                     }

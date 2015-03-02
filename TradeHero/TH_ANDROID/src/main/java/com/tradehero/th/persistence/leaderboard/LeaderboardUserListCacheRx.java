@@ -5,7 +5,7 @@ import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
-import com.tradehero.th.api.users.SuggestHeroesListType;
+import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -14,7 +14,7 @@ import rx.Observable;
 
 @Singleton @UserCache
 public class LeaderboardUserListCacheRx
-        extends BaseFetchDTOCacheRx<SuggestHeroesListType, LeaderboardUserDTOList>
+        extends BaseFetchDTOCacheRx<UserListType, LeaderboardUserDTOList>
 {
     private static final int MAX_SIZE = 10;
 
@@ -33,12 +33,12 @@ public class LeaderboardUserListCacheRx
     }
     //</editor-fold>
 
-    @NonNull @Override protected Observable<LeaderboardUserDTOList> fetch(@NonNull SuggestHeroesListType key)
+    @NonNull @Override protected Observable<LeaderboardUserDTOList> fetch(@NonNull UserListType key)
     {
         return userServiceWrapper.suggestHeroesRx(key);
     }
 
-    @Override public void onNext(@NonNull SuggestHeroesListType key, @NonNull LeaderboardUserDTOList value)
+    @Override public void onNext(@NonNull UserListType key, @NonNull LeaderboardUserDTOList value)
     {
         leaderboardUserCache.get().onNext(value);
         super.onNext(key, value);

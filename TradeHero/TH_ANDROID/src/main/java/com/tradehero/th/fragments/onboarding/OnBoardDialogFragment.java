@@ -26,6 +26,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.SuggestHeroesListType;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
@@ -252,7 +253,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
             leaderboardUserListCacheSubscription = bindFragment(
                     this,
                     leaderboardUserListCache.get(key)
-                            .map(new PairGetSecond<SuggestHeroesListType, LeaderboardUserDTOList>()))
+                            .map(new PairGetSecond<UserListType, LeaderboardUserDTOList>()))
                     .subscribe(new Action1<LeaderboardUserDTOList>()
                                {
                                    @Override public void call(LeaderboardUserDTOList list)

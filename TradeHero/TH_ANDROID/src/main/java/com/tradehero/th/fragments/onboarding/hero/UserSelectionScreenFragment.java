@@ -20,8 +20,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.market.ExchangeCompactSectorListDTO;
-import com.tradehero.th.api.users.SuggestHeroesListType;
+import com.tradehero.th.api.users.SuggestHeroesListTypeNew;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
 import com.tradehero.th.persistence.leaderboard.LeaderboardUserListCacheRx;
@@ -107,21 +108,21 @@ public class UserSelectionScreenFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 selectedExchangesSectorsObservable.flatMap(
-                        new Func1<ExchangeCompactSectorListDTO, Observable<Pair<SuggestHeroesListType, LeaderboardUserDTOList>>>()
+                        new Func1<ExchangeCompactSectorListDTO, Observable<Pair<UserListType, LeaderboardUserDTOList>>>()
                         {
-                            @Override public Observable<Pair<SuggestHeroesListType, LeaderboardUserDTOList>> call(
+                            @Override public Observable<Pair<UserListType, LeaderboardUserDTOList>> call(
                                     ExchangeCompactSectorListDTO selectedExchanges)
                             {
-                                return leaderboardUserListCache.getOne(new SuggestHeroesListType(
-                                        selectedExchanges.exchanges.get(0).getExchangeIntegerId(),
-                                        selectedExchanges.sectors.get(0).getSectorId(),
+                                return leaderboardUserListCache.getOne(new SuggestHeroesListTypeNew(
+                                        selectedExchanges.exchanges.getExchangeIds(),
+                                        selectedExchanges.sectors.getSectorIds(),
                                         null, null));
                             }
                         }))
                 .subscribe(
-                        new Action1<Pair<SuggestHeroesListType, LeaderboardUserDTOList>>()
+                        new Action1<Pair<UserListType, LeaderboardUserDTOList>>()
                         {
-                            @Override public void call(Pair<SuggestHeroesListType, LeaderboardUserDTOList> pair)
+                            @Override public void call(Pair<UserListType, LeaderboardUserDTOList> pair)
                             {
                                 List<SelectableUserDTO> onBoardUsers = new ArrayList<>();
                                 for (LeaderboardUserDTO userDTO : pair.second)

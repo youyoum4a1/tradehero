@@ -1,7 +1,10 @@
 package com.tradehero.th.api.market;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class ExchangeCompactDTOList extends BaseExchangeCompactDTOList<ExchangeCompactDTO> implements DTO
 {
@@ -17,4 +20,14 @@ public class ExchangeCompactDTOList extends BaseExchangeCompactDTOList<ExchangeC
         super(collection);
     }
     //</editor-fold>
+
+    @NonNull public List<ExchangeIntegerId> getExchangeIds()
+    {
+        List<ExchangeIntegerId> list = new ArrayList<>();
+        for (ExchangeCompactDTO compactDTO : this)
+        {
+            list.add(compactDTO.getExchangeIntegerId());
+        }
+        return list;
+    }
 }

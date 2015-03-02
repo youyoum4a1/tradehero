@@ -19,6 +19,7 @@ import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.SuggestHeroesListType;
+import com.tradehero.th.api.users.SuggestHeroesListTypeNew;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UpdateReferralCodeDTO;
@@ -427,13 +428,36 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Suggest Heroes">
-    @NonNull public Observable<LeaderboardUserDTOList> suggestHeroesRx(
+    @NonNull public Observable<LeaderboardUserDTOList> suggestHeroesRx(@NonNull UserListType userListType)
+    {
+        if (userListType instanceof SuggestHeroesListType)
+        {
+            return suggestHeroesRx((SuggestHeroesListType) userListType);
+        }
+        else if (userListType instanceof SuggestHeroesListTypeNew)
+        {
+            return suggestHeroesRx((SuggestHeroesListTypeNew) userListType);
+        }
+        throw new IllegalArgumentException("Unhandled UserListType: " + userListType.getClass().getSimpleName());
+    }
+
+    @NonNull protected Observable<LeaderboardUserDTOList> suggestHeroesRx(
             @NonNull SuggestHeroesListType suggestHeroesListType)
     {
         return userServiceRx.suggestHeroes(
                 suggestHeroesListType.exchangeId == null ? null : suggestHeroesListType.exchangeId.key,
                 suggestHeroesListType.sectorId == null ? null : suggestHeroesListType.sectorId.key,
                 suggestHeroesListType.page,
+                suggestHeroesListType.perPage);
+    }
+
+    @NonNull protected Observable<LeaderboardUserDTOList> suggestHeroesRx(
+            @NonNull SuggestHeroesListTypeNew suggestHeroesListType)
+    {
+        return userServiceRx.suggestHeroes(
+                suggestHeroesListType.getCommaSeparatedExchangeIds(),
+                suggestHeroesListType.getCommaSeparatedSectorIds(),
+                suggestHeroesListType.getPage(),
                 suggestHeroesListType.perPage);
     }
     //</editor-fold>

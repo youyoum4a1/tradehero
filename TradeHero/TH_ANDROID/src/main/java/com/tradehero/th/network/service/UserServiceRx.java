@@ -251,6 +251,13 @@ public interface UserServiceRx
             @Query("sector") Integer sectorId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
+
+    @GET("/users/heroes/bySectorsAndExchanges")
+    Observable<LeaderboardUserDTOList> suggestHeroes(
+            @Query("exchanges") String commaSeparatedExchangeIds,
+            @Query("sectors") String commaSeparatedSectorIds,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
     //</editor-fold>
 
     //<editor-fold desc="Update Country Code">

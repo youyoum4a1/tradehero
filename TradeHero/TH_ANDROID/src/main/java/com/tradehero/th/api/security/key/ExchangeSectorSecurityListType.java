@@ -7,13 +7,14 @@ import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.SectorDTO;
 import com.tradehero.th.api.market.SectorId;
 
+@Deprecated
 public class ExchangeSectorSecurityListType extends SecurityListType
 {
     @Nullable public final ExchangeIntegerId exchangeId;
     @Nullable public final SectorId sectorId;
 
     //<editor-fold desc="Constructors">
-    protected ExchangeSectorSecurityListType(
+    public ExchangeSectorSecurityListType(
             @Nullable ExchangeIntegerId exchangeId,
             @Nullable SectorId sectorId,
             @Nullable Integer page,
