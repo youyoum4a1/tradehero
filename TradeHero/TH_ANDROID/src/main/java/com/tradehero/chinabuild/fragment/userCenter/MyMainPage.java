@@ -2,17 +2,14 @@ package com.tradehero.chinabuild.fragment.userCenter;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.chinabuild.fragment.MyFragmentPagerAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 
@@ -43,7 +40,6 @@ public class MyMainPage extends DashboardFragment implements View.OnClickListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(view != null){
-            ButterKnife.inject(this, view);
             ViewGroup parent = (ViewGroup) view.getParent();
             if (parent != null) {
                 parent.removeView(view);
@@ -133,33 +129,5 @@ public class MyMainPage extends DashboardFragment implements View.OnClickListene
             viewDiscussLine.setVisibility(View.GONE);
             viewTradeHistoryLine.setVisibility(View.VISIBLE);
         }
-    }
-
-
-    public class MyFragmentPagerAdapter extends FragmentStatePagerAdapter {
-        ArrayList<Fragment> list;
-
-        public MyFragmentPagerAdapter(FragmentManager fm, ArrayList<Fragment> list) {
-            super(fm);
-            this.list = list;
-        }
-
-
-        @Override
-        public int getCount() {
-            return list.size();
-        }
-
-        @Override
-        public Fragment getItem(int arg0) {
-            return list.get(arg0);
-        }
-
-        @Override
-        public int getItemPosition(Object object) {
-            return PagerAdapter.POSITION_NONE;
-        }
-
-
     }
 }

@@ -1,11 +1,13 @@
 package com.tradehero.chinabuild.fragment.competition;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +15,11 @@ import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.squareup.picasso.Picasso;
 import com.tradehero.chinabuild.cache.PortfolioCompactNewCache;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
-import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
-import com.tradehero.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
@@ -30,7 +28,6 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
-import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.DashboardActivity;
@@ -49,7 +46,8 @@ import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -58,6 +56,8 @@ import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCache;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -66,6 +66,7 @@ import com.tradehero.th.widget.GuideView;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -76,7 +77,7 @@ import javax.inject.Inject;
 /**
  * Created by huhaiping on 14-9-9. 比赛详情页
  */
-public class CompetitionDetailFragment extends DashboardFragment
+public class CompetitionDetailFragment extends Fragment
 {
     public static final String BUNDLE_COMPETITION_DTO = "bundle_competition_dto";
     public static final String BUNDLE_COMPETITION_ID = "bundle_competition_id";
@@ -100,6 +101,8 @@ public class CompetitionDetailFragment extends DashboardFragment
     public int competitionId;
     private ProgressDialog mTransactionDialog;
     @Inject ProgressDialogUtil progressDialogUtil;
+
+    @Inject protected AlertDialogUtil alertDialogUtil;
 
     private PortfolioCompactDTO portfolioCompactDTO;
 
@@ -157,9 +160,13 @@ public class CompetitionDetailFragment extends DashboardFragment
         adapter = new LeaderboardListAdapter(getActivity());
     }
 
+    @Override public void onAttach(Activity activity){
+        super.onAttach(activity);
+        DaggerUtils.inject(this);
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.competition_detail_layout, container, false);
         ButterKnife.inject(this, view);
 
@@ -234,19 +241,10 @@ public class CompetitionDetailFragment extends DashboardFragment
         }
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain("比赛详情");
-        setInviteFriendView();
-    }
-
     private void noFoundCompetition()
     {
         if (getActivity() != null)
         {
-            THToast.show("没有找到该比赛");
             popCurrentFragment();
         }
     }
@@ -259,16 +257,6 @@ public class CompetitionDetailFragment extends DashboardFragment
         initRankList();
         getMySelfRank();
         tvCompetitionDetailMore.setVisibility(userCompetitionDTO.detailUrl == null ? View.GONE : View.VISIBLE);
-    }
-
-    private void setInviteFriendView()
-    {
-        if (userCompetitionDTO != null && userCompetitionDTO.isEnrolled && userCompetitionDTO.isOngoing)
-        {//比赛我参加了，并且还没结束。
-            setHeadViewRight0("邀请好友");
-            analytics.addEventAuto(
-                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_COMPETITION_DETAIL_INVITE));
-        }
     }
 
     private void initRankList()
@@ -350,7 +338,7 @@ public class CompetitionDetailFragment extends DashboardFragment
             {
                 tvGotoCompetition.setText("已结束");
                 tvGotoCompetition.setEnabled(false);
-                tvGotoCompetition.setTextColor(getResources().getColor(R.color.black));
+                tvGotoCompetition.setTextColor(getActivity().getResources().getColor(R.color.black));
             }
             tvCompetitionCreator.setOnClickListener(new View.OnClickListener()
             {
@@ -365,8 +353,6 @@ public class CompetitionDetailFragment extends DashboardFragment
         {
             fetchCompetitionLeaderboard();
         }
-
-        setInviteFriendView();
         setSchollView();
     }
 
@@ -502,7 +488,6 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     public void toJoinCompetition()
     {
-        Timber.d("参加");
         mTransactionDialog = progressDialogUtil.show(CompetitionDetailFragment.this.getActivity(),
                 R.string.processing, R.string.alert_dialog_please_wait);
         competitionCacheLazy.get().enrollUGCompetition(userCompetitionDTO.id, callbackEnrollUGC);
@@ -871,42 +856,6 @@ public class CompetitionDetailFragment extends DashboardFragment
         }
     }
 
-    public void inviteFriendsToCompetition()
-    {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(DiscoveryDiscussSendFragment.BUNDLE_KEY_COMPETITION, userCompetitionDTO);
-        pushFragment(DiscoveryDiscussSendFragment.class, bundle);
-    }
-
-    @Override public void onClickHeadRight0()
-    {
-        if (userCompetitionDTO == null)
-        {
-            return;
-        }
-        if(getActivity()==null){
-            return;
-        }
-        String endPoint = THSharePreferenceManager.getShareEndPoint(getActivity());
-        mShareSheetTitleCache.set(getString(R.string.share_detial_contest,
-                currentUserId.get().toString(), userCompetitionDTO.id, userCompetitionDTO.name, endPoint));
-        ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
-                .inflate(R.layout.share_sheet_local_dialog_layout, null);
-        contentView.setLocalSocialClickedListener(
-                new ShareSheetDialogLayout.OnLocalSocialClickedListener()
-                {
-                    @Override public void onShareRequestedClicked()
-                    {
-                        inviteFriendsToCompetition();
-                        if (mShareSheetDialog != null)
-                        {
-                            mShareSheetDialog.dismiss();
-                        }
-                    }
-                });
-        mShareSheetDialog = THDialog.showUpDialog(getActivity(), contentView);
-    }
-
     @OnClick(R.id.btnCollegeSelect)
     public void onCollegeSelect()
     {
@@ -966,8 +915,31 @@ public class CompetitionDetailFragment extends DashboardFragment
     {
         if (userCompetitionDTO.isOngoing)
         {
-            Timber.d("进入我的持仓页面");
             enterPortfolio();
+        }
+    }
+
+    private Fragment pushFragment(@NotNull Class fragmentClass, Bundle args)
+    {
+        return getDashboardNavigator().pushFragment(fragmentClass, args);
+    }
+
+    private DashboardNavigator getDashboardNavigator()
+    {
+        @Nullable DashboardNavigatorActivity activity = ((DashboardNavigatorActivity) getActivity());
+        if (activity != null)
+        {
+            return activity.getDashboardNavigator();
+        }
+        return null;
+    }
+
+    private void popCurrentFragment()
+    {
+        DashboardNavigator navigator = getDashboardNavigator();
+        if (navigator != null)
+        {
+            navigator.popFragment();
         }
     }
 }

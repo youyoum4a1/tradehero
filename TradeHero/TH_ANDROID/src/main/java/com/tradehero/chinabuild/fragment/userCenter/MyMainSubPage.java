@@ -51,7 +51,6 @@ public class MyMainSubPage extends Fragment {
     private MiddleCallback<TimelineDTO> timeLineMiddleCallback;
 
     private ImageView emptyIV;
-    private View view;
 
     public final static String MY_MAIN_SUB_PAGE_TYPE = "my_main_sub_page_type";
     public final static int TYPE_TRADE_HISTORY = 1;
@@ -61,18 +60,9 @@ public class MyMainSubPage extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(view != null){
-            ButterKnife.inject(this, view);
-            ViewGroup parent = (ViewGroup) view.getParent();
-            if (parent != null) {
-                parent.removeView(view);
-            }
-            return view;
-        }
-
         type = getArguments().getInt(MY_MAIN_SUB_PAGE_TYPE, 0);
 
-        view = inflater.inflate(R.layout.user_my_main_subpage, container, false);
+        View view = inflater.inflate(R.layout.user_my_main_subpage, container, false);
         ButterKnife.inject(this, view);
         listTimeLine = (SecurityListView)view.findViewById(R.id.list_my_history);
         progressBar = (TradeHeroProgressBar)view.findViewById(R.id.tradeheroprogressbar_my_history);
