@@ -122,9 +122,9 @@ public class PortfolioListItemView extends RelativeLayout
 
     private void displayImage()
     {
-        if(portfolioImage != null)
+        if (portfolioImage != null)
         {
-            if(displayablePortfolioDTO != null && displayablePortfolioDTO.portfolioDTO != null)
+            if (displayablePortfolioDTO != null && displayablePortfolioDTO.portfolioDTO != null)
             {
                 PortfolioDTO portfolioDTO = displayablePortfolioDTO.portfolioDTO;
                 int imageResId = PortfolioCompactDTOUtil.getIconResId(portfolioDTO);
