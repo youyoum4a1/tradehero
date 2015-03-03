@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
-import com.tradehero.th.fragments.trade.BuySellFXFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
+import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import java.text.DecimalFormatSymbols;
 
@@ -64,11 +64,11 @@ public class SecurityCompactDTOUtil
                 securityId.getSecuritySymbol());
     }
 
-    @NonNull public static Class<? extends BuySellFragment> fragmentFor(@Nullable SecurityCompactDTO securityCompactDTO)
+    @NonNull public static Class<? extends DashboardFragment> fragmentFor(@Nullable SecurityCompactDTO securityCompactDTO)
     {
         if (securityCompactDTO instanceof FxSecurityCompactDTO)
         {
-            return BuySellFXFragment.class;
+            return FXMainFragment.class;
         }
         else
         {

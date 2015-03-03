@@ -29,6 +29,7 @@ import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.FxFlagContainer;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;

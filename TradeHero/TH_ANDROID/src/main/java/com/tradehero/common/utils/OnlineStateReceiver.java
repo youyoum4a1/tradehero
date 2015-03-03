@@ -36,13 +36,13 @@ public class OnlineStateReceiver extends BroadcastReceiver
     private static boolean isConnected(@NonNull Context context)
     {
         ConnectivityManager connectivityManager;
-        boolean connected = false;
+        boolean connected = true;
         try
         {
             connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             connected = networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnected();
-        } catch (Exception e)
+        } catch (Throwable e)
         {
             Timber.d(e.getMessage());
         }

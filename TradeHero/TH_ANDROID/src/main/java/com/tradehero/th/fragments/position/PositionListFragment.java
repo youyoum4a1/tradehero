@@ -139,7 +139,12 @@ public class PositionListFragment
 
     @Nullable private static GetPositionsDTOKey getGetPositionsDTOKey(@NonNull Bundle args)
     {
-        return GetPositionsDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE));
+        Bundle bundledKey = args.getBundle(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE);
+        if (bundledKey != null)
+        {
+            return GetPositionsDTOKeyFactory.createFrom(bundledKey);
+        }
+        return null;
     }
 
     public static void putShownUser(@NonNull Bundle args, @NonNull UserBaseKey shownUser)
@@ -177,9 +182,10 @@ public class PositionListFragment
         {
             shownUser = injectedUserBaseKey;
         }
-        if (args.containsKey(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE))
+        GetPositionsDTOKey keyFromArgs = getGetPositionsDTOKey(args);
+        if (keyFromArgs != null)
         {
-            getPositionsDTOKey = getGetPositionsDTOKey(args);
+            getPositionsDTOKey = keyFromArgs;
         }
         else
         {
