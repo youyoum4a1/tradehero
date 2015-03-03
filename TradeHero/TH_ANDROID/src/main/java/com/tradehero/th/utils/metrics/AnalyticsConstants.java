@@ -141,6 +141,7 @@ public class AnalyticsConstants
     public static final String NewsSecurityScreen = "SecurityScreen";
     public static final String NewsRegional = "NewsRegional";
     public static final String NewsGlobal = "NewsGlobal";
+    public static final String NewsSeekingAlpha = "NewsSeekingAlpha";
     public static final String NewsItem_Show = "NewsItem/Show";
     public static final String ProviderId = "ProviderId";
     public static final String Competition_Home = "Competition/Home";

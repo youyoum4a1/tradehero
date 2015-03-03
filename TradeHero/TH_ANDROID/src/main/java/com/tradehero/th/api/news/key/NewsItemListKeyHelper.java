@@ -72,6 +72,11 @@ public class NewsItemListKeyHelper
             return new NewsItemListSocialKey(castedNewsItemListKey.categoryId, paginationDTO.page, paginationDTO.perPage);
         }
 
+        if (newsItemListKey instanceof NewsItemListSeekingAlphaKey) {
+            NewsItemListSeekingAlphaKey key = (NewsItemListSeekingAlphaKey)newsItemListKey;
+            return new NewsItemListSeekingAlphaKey(key.page, key.perPage);
+        }
+
         throw new IllegalStateException("Incorrect type");
     }
 }

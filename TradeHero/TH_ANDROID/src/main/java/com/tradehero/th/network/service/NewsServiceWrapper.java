@@ -12,6 +12,7 @@ import com.tradehero.th.api.news.key.NewsItemListInterestKey;
 import com.tradehero.th.api.news.key.NewsItemListKey;
 import com.tradehero.th.api.news.key.NewsItemListRegionalKey;
 import com.tradehero.th.api.news.key.NewsItemListSecurityKey;
+import com.tradehero.th.api.news.key.NewsItemListSeekingAlphaKey;
 import com.tradehero.th.api.news.key.NewsItemListSocialKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.models.discussion.NewsDTOProcessor;
@@ -72,6 +73,9 @@ import rx.Observable;
         {
             paginatedNewsItemCompactDTO = getFeaturedNewsRx((NewsItemListFeaturedKey) key);
         }
+        else if (key instanceof NewsItemListSeekingAlphaKey) {
+            paginatedNewsItemCompactDTO = getSeekingAlphaRx((NewsItemListSeekingAlphaKey) key);
+        }
         else
         {
             throw new IllegalStateException("Unhandled type " + key.getClass());
@@ -109,6 +113,11 @@ import rx.Observable;
     private Observable<PaginatedDTO<NewsItemCompactDTO>> getGlobalNewsRx(NewsItemListGlobalKey key)
     {
         return newsServiceRx.getGlobal(key.page, key.perPage);
+    }
+
+    private Observable<PaginatedDTO<NewsItemCompactDTO>> getSeekingAlphaRx(NewsItemListSeekingAlphaKey key)
+    {
+        return newsServiceRx.getSeekingAlpha(key.page, key.perPage);
     }
 
     public Observable<NewsItemDTO> getSecurityNewsDetailRx(DiscussionKey discussionKey)

@@ -10,7 +10,8 @@ enum NewsType
 {
     MotleyFool(R.string.motley_fool, R.layout.news_carousel_motleyfool, AnalyticsConstants.NewsMotleyFool),
     Region(R.string.regional_news, R.layout.news_carousel_regional, AnalyticsConstants.NewsRegional),
-    Global(R.string.global_news, R.layout.news_carousel_global, AnalyticsConstants.NewsGlobal);
+    Global(R.string.global_news, R.layout.news_carousel_global, AnalyticsConstants.NewsGlobal),
+    SeekingAlpha(R.string.seeking_alpha, R.layout.news_carousel_seekingalpha, AnalyticsConstants.NewsSeekingAlpha);
 
     @StringRes public final int titleResourceId;
     @LayoutRes public final int titleViewResourceId;

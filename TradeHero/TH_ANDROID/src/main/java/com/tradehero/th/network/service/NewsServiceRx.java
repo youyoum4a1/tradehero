@@ -56,4 +56,8 @@ public interface NewsServiceRx
     @POST("/discussions/news/{headlineItemId}/share") Observable<BaseResponseDTO> shareHeadlineItem(
             @Path("headlineItemId") int headlineItemId,
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO);
+
+    @GET("/news/seekingalpha") Observable<PaginatedDTO<NewsItemCompactDTO>> getSeekingAlpha(
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
 }

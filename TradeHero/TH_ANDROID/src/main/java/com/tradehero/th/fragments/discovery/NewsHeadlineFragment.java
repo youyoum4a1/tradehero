@@ -24,6 +24,7 @@ import com.tradehero.th.api.news.key.NewsItemListFeaturedKey;
 import com.tradehero.th.api.news.key.NewsItemListGlobalKey;
 import com.tradehero.th.api.news.key.NewsItemListKey;
 import com.tradehero.th.api.news.key.NewsItemListKeyHelper;
+import com.tradehero.th.api.news.key.NewsItemListSeekingAlphaKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.PaginationDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
@@ -101,6 +102,8 @@ public class NewsHeadlineFragment extends Fragment
                 return new NewsItemListFeaturedKey(null, null);
             case Global:
                 return new NewsItemListGlobalKey(null, null);
+            case SeekingAlpha:
+                return new NewsItemListSeekingAlphaKey(null, null);
             default:
                 return null;
         }
