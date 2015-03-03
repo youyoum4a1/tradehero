@@ -30,6 +30,7 @@ import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
+import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.rx.EmptyAction1;
@@ -264,7 +265,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
             BuySellFXFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        navigator.get().pushFragment(BuySellFXFragment.class, args);
+        navigator.get().pushFragment(FXMainFragment.class, args);
     }
 
     @Override public void setUserVisibleHint(boolean isVisibleToUser)

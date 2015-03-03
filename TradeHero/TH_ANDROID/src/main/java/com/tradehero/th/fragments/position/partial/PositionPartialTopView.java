@@ -29,6 +29,7 @@ import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.FxFlagContainer;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -223,7 +224,7 @@ public class PositionPartialTopView extends LinearLayout
         Bundle args = new Bundle();
         BuySellFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
         BuySellFragment.putSecurityId(args, securityId);
-        Class<? extends BuySellFragment> fragmentClass = SecurityCompactDTOUtil.fragmentFor(securityCompactDTO);
+        Class<? extends DashboardFragment> fragmentClass = SecurityCompactDTOUtil.fragmentFor(securityCompactDTO);
         if (securityCompactDTO.getClass().equals(FxSecurityCompactDTO.class))
         {
             BuySellFXFragment.putCloseAttribute(args, positionDTO.shares);

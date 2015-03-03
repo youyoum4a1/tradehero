@@ -20,7 +20,7 @@ import javax.inject.Inject;
 
 public class SecurityDiscussionFragment extends DashboardFragment
 {
-    private static final String BUNDLE_KEY_SECURITY_ID = SecurityDiscussionFragment.class.getName() + ".securityId";
+    private static final String BUNDLE_KEY_SECURITY_ID = "securityId";
 
     @Inject DiscussionListCacheRx discussionListCache;
     @InjectView(R.id.stock_discussion_view) SecurityDiscussionView securityDiscussionView;

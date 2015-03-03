@@ -87,13 +87,13 @@ public class BuySellStockFragment extends BuySellFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_buy_sell, container, false);
+        return inflater.inflate(R.layout.fragment_stock_buy_sell, container, false);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-
+        setRetainInstance(true);
         bottomViewPagerAdapter =
                 new BuySellBottomStockPagerAdapter(getActivity(), this.getChildFragmentManager());
         bottomViewPagerAdapter.linkWith(securityId);
