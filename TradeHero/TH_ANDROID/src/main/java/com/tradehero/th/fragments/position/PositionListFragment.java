@@ -559,6 +559,11 @@ public class PositionListFragment
                     if (listView != null)
                     {
                         int headerHeight = inflatedHeader.getMeasuredHeight();
+                        positionListView.setPadding(
+                                positionListView.getPaddingLeft(),
+                                headerHeight,
+                                positionListView.getPaddingRight(),
+                                positionListView.getPaddingBottom());
                         listView.setPadding(listView.getPaddingLeft(),
                                 headerHeight,
                                 listView.getPaddingRight(),

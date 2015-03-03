@@ -110,7 +110,7 @@
           android:layout_alignParentRight="false"
           android:layout_below="@id/position_last_amount"
           android:background="@drawable/round_label_up"
-          style="@style/TH.UserROI"
+          style="@style/TH.COMPANY"
           tools:text="+4.149%"
           />
 

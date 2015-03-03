@@ -531,14 +531,13 @@ public class TimelineFragment extends DashboardFragment
     {
         Bundle args = new Bundle();
 
-        PositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
-        PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
+        TabbedPositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+        TabbedPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+        TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
 
         if (portfolioDTO != null && portfolioDTO.providerId != null && portfolioDTO.providerId > 0)
         {
-            CompetitionLeaderboardPositionListFragment.putProviderId(args, new ProviderId(portfolioDTO.providerId));
-            navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
+            TabbedPositionListFragment.putProviderId(args, new ProviderId(portfolioDTO.providerId));
         }
         else
         {
@@ -546,8 +545,8 @@ public class TimelineFragment extends DashboardFragment
             {
                 TabbedPositionListFragment.putIsFX(args, portfolioDTO.assetClass);
             }
-            navigator.get().pushFragment(TabbedPositionListFragment.class, args);
         }
+        navigator.get().pushFragment(TabbedPositionListFragment.class, args);
     }
 
     /**

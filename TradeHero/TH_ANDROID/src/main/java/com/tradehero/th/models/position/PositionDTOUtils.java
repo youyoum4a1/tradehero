@@ -267,7 +267,7 @@ public class PositionDTOUtils
         else
         {
             THSignedPercentage.builder(roiValue * 100.0)
-                    .signTypeArrow()
+                    .signTypePlusMinusAlways()
                     .withDefaultColor()
                     .relevantDigitCount(3)
                     .build()

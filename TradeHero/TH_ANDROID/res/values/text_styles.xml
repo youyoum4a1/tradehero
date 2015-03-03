@@ -137,6 +137,14 @@
     <item name="android:textColor">?android:textColorHighlight</item>
   </style>
 
+  <style name="TH.COMPANY" parent="TH.Caption">
+    <item name="android:textColor">?android:textColorPrimary</item>
+  </style>
+
+  <style name="TH.Caption.Portfolio" parent="TH.Caption">
+    <item name="android:textAllCaps">true</item>
+  </style>
+
   <style name="TH.Body.Accented" parent="TH.Body">
     <item name="android:textColor">?android:textColorHighlight</item>
   </style>

@@ -1,12 +1,14 @@
 package com.tradehero.th.fragments.position;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -176,6 +178,12 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         {
             ((PositionPartialTopView) convertView).linkWith((PositionDTO) item, false);
             ((PositionPartialTopView) convertView).display();
+        }
+
+        if ((position % 2) == 0) {
+            convertView.setBackgroundColor(Color.WHITE);
+        } else {
+            convertView.setBackgroundResource(R.color.portfolio_header_background_color);
         }
 
         return convertView;
