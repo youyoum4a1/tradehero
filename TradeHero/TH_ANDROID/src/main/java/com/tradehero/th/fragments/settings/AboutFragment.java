@@ -97,20 +97,12 @@ public class AboutFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setActionBarTitle(getResources().getString(R.string.settings_about_title));
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.hide();
-        }
+        hideSupportActionBar();
     }
 
     @Override public void onDestroyOptionsMenu()
     {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.show();
-        }
+        showSupportActionBar();
         super.onDestroyOptionsMenu();
     }
 

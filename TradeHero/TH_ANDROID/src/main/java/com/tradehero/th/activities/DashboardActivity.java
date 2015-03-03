@@ -184,6 +184,7 @@ public class DashboardActivity extends BaseActivity
     private boolean enrollmentScreenIsOpened = false;
 
     @InjectView(R.id.xp_toast_box) XpToast xpToast;
+
     @InjectView(R.id.my_toolbar) Toolbar toolbar;
 
     private Subscription notificationFetchSubscription;
@@ -319,6 +320,11 @@ public class DashboardActivity extends BaseActivity
         {
             showUpgradeDialog();
         }
+    }
+
+    public Toolbar getToolbar()
+    {
+        return toolbar;
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu)

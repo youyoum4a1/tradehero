@@ -107,11 +107,7 @@ public class DiscoveryMainFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        final ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.setTitle(R.string.discovery);
-        }
+        setActionBarTitle(R.string.discovery);
     }
 
     @Override public void onDestroyView()
