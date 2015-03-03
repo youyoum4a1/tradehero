@@ -28,7 +28,7 @@ import java.util.ArrayList;
 /**
  * Created by palmer on 15/3/2.
  */
-public class CompetitionMainFragment extends DashboardFragment {
+public class CompetitionMainFragment extends DashboardFragment implements View.OnClickListener{
 
     private UserCompetitionDTO userCompetitionDTO;
     private int competitionId = 0;
@@ -41,8 +41,10 @@ public class CompetitionMainFragment extends DashboardFragment {
     private View discussLineView;
     private TextView detailTV;
     private TextView discussTV;
-
     private ViewPager viewPager;
+
+    private int blueColor;
+    private int blackColor;
 
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
     private ArrayList<Fragment> fragmentList = new ArrayList();
@@ -73,7 +75,10 @@ public class CompetitionMainFragment extends DashboardFragment {
         detailTV = (TextView)view.findViewById(R.id.textview_competition_detail_subtitle);
         discussTV = (TextView)view.findViewById(R.id.textview_competition_discuss_subtitle);
         viewPager = (ViewPager)view.findViewById(R.id.viewpager_competition_detail_page);
-
+        blueColor = getActivity().getResources().getColor(R.color.tradehero_blue);
+        blackColor = getActivity().getResources().getColor(R.color.black2);
+        detailTV.setOnClickListener(this);
+        discussTV.setOnClickListener(this);
         initViewPager();
         return view;
     }
@@ -87,31 +92,27 @@ public class CompetitionMainFragment extends DashboardFragment {
 
     private void initViewPager(){
         if(myFragmentPagerAdapter == null){
-            myFragmentPagerAdapter = new MyFragmentPagerAdapter(getFragmentManager(), fragmentList);
             fragmentList.clear();
             initCompetitionDetailFragment();
             initCompetitionDiscussFragment();
             fragmentList.add(competitionDetailFragment);
             fragmentList.add(competitionDiscussFragment);
+            myFragmentPagerAdapter = new MyFragmentPagerAdapter(getFragmentManager(), fragmentList);
         }
 
         viewPager.setAdapter(myFragmentPagerAdapter);
         viewPager.setCurrentItem(0);
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int i, float v, int i2) {
-
-            }
+            public void onPageScrolled(int i, float v, int i2) { }
 
             @Override
             public void onPageSelected(int i) {
-
+                refreshTabs(i);
             }
 
             @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
+            public void onPageScrollStateChanged(int i) { }
         });
     }
 
@@ -146,6 +147,21 @@ public class CompetitionMainFragment extends DashboardFragment {
             } else {
                 competitionId = bundle.getInt(CompetitionDetailFragment.BUNDLE_COMPETITION_ID, 0);
             }
+        }
+    }
+
+    private void refreshTabs(int position){
+        if(position == 0){
+            detailTV.setTextColor(blueColor);
+            discussTV.setTextColor(blackColor);
+            detailLineView.setVisibility(View.VISIBLE);
+            discussLineView.setVisibility(View.GONE);
+        }
+        if(position == 1){
+            detailTV.setTextColor(blackColor);
+            discussTV.setTextColor(blueColor);
+            detailLineView.setVisibility(View.GONE);
+            discussLineView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -204,4 +220,16 @@ public class CompetitionMainFragment extends DashboardFragment {
         mShareSheetDialog = THDialog.showUpDialog(getActivity(), contentView);
     }
 
+    @Override
+    public void onClick(View view) {
+        int viewId = view.getId();
+        switch (viewId){
+            case R.id.textview_competition_detail_subtitle:
+                viewPager.setCurrentItem(0);
+                break;
+            case R.id.textview_competition_discuss_subtitle:
+                viewPager.setCurrentItem(1);
+                break;
+        }
+    }
 }

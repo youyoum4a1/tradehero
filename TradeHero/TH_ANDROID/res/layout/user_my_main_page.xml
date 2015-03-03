@@ -6,7 +6,7 @@
               android:layout_height="match_parent"
               android:background="@color/bg_timeline">
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="54dp"
+    <LinearLayout android:layout_width="match_parent" android:layout_height="@dimen/viewpager_tab_height"
                   android:background="@color/white"
                   android:orientation="horizontal">
         <RelativeLayout
@@ -23,7 +23,7 @@
                     android:id="@+id/textview_discuss_subtitle"
                     android:layout_height="fill_parent"
                     android:layout_width="fill_parent"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/viewpager_tab_text_size"
                     android:gravity="center"
                     android:textColor="@color/tradehero_blue"
                     android:text="@string/mine_discuss"/>
@@ -44,7 +44,7 @@
                     android:id="@+id/textview_tradehistory_subtitle"
                     android:layout_height="fill_parent"
                     android:layout_width="fill_parent"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/viewpager_tab_text_size"
                     android:gravity="center"
                     android:textColor="@color/black2"
                     android:text="@string/mine_trade_history"/>

@@ -1,7 +1,6 @@
 package com.tradehero.chinabuild.fragment.competition;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.chinabuild.cache.PortfolioCompactNewCache;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
@@ -23,7 +23,6 @@ import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
-import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
@@ -70,7 +69,6 @@ import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 
@@ -112,11 +110,10 @@ public class CompetitionDetailFragment extends Fragment
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private UserProfileDTO mUserProfileDTO;
 
-    @InjectView(R.id.listRanks) SecurityListView listRanks;//比赛排名
+    @InjectView(R.id.listRanks)PullToRefreshListView listRanks;//比赛排名
     private LeaderboardListAdapter adapter;
     private int currentPage = 1;
     private int PER_PAGE = 20;
-    private Dialog mShareSheetDialog;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
     @InjectView(R.id.tvCompetitionDetailMore) TextView tvCompetitionDetailMore;//比赛详情
@@ -157,7 +154,7 @@ public class CompetitionDetailFragment extends Fragment
         portfolioCompactNewFetchListener = createPortfolioCompactNewFetchListener();
         userProfileCacheListener = createUserProfileFetchListener();
 
-        adapter = new LeaderboardListAdapter(getActivity());
+
     }
 
     @Override public void onAttach(Activity activity){
@@ -169,13 +166,10 @@ public class CompetitionDetailFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.competition_detail_layout, container, false);
         ButterKnife.inject(this, view);
-
         listRanks.setEmptyView(imgEmpty);
-        listRanks.setAdapter(adapter);
-        ListView lv = listRanks.getRefreshableView();
+        adapter = new LeaderboardListAdapter(getActivity());
         mRefreshView = (LinearLayout) inflater.inflate(R.layout.competition_detail_listview_header, null);
-        lv.addHeaderView(mRefreshView);
-        mRefreshView.setOnClickListener(null);
+        initRankList();
         initRoot(mRefreshView);
 
         includeMyPosition.setVisibility(isShowHeadLine ? View.VISIBLE : View.GONE);
@@ -203,8 +197,7 @@ public class CompetitionDetailFragment extends Fragment
         return view;
     }
 
-    public void initRoot(View view)
-    {
+    public void initRoot(View view) {
         includeMyPosition = (RelativeLayout) view.findViewById(R.id.includeMyPosition);//我的比赛数据行
         tvUserRank = (TextView) view.findViewById(R.id.tvUserRank);//我的排名
         tvUserExtraValue = (TextView) view.findViewById(R.id.tvUserExtraValue);//我的收益率
@@ -213,7 +206,6 @@ public class CompetitionDetailFragment extends Fragment
         imgRightArrow = (ImageView) view.findViewById(R.id.imgRightArrow);
         llCompetitionLeaderboardTitle = (LinearLayout) view.findViewById(R.id.llCompetitionLeaderboardTitle);//比赛排名 TITLE
         tvLeaderboardTime = (TextView) view.findViewById(R.id.tvLeaderboardTime);
-
         includeMyPosition.setOnClickListener(new View.OnClickListener()
         {
             @Override public void onClick(View view)
@@ -221,7 +213,6 @@ public class CompetitionDetailFragment extends Fragment
                 onClickMyPosition();
             }
         });
-
     }
 
     public void getBundleCompetition()
@@ -254,47 +245,42 @@ public class CompetitionDetailFragment extends Fragment
         includeMyPosition.setVisibility(userCompetitionDTO.isEnrolled ? View.VISIBLE : View.GONE);
         isShowHeadLine = userCompetitionDTO.isEnrolled;
         initCompetition();
-        initRankList();
+        listRanks.setMode(PullToRefreshBase.Mode.BOTH);
         getMySelfRank();
         tvCompetitionDetailMore.setVisibility(userCompetitionDTO.detailUrl == null ? View.GONE : View.VISIBLE);
     }
 
-    private void initRankList()
-    {
-        listRanks.setMode(PullToRefreshBase.Mode.BOTH);
-        listRanks.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
-        {
-            @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
+    private void initRankList() {
+        ListView lv = listRanks.getRefreshableView();
+
+        lv.addHeaderView(mRefreshView);
+        listRanks.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+            @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 fetchCompetitionLeaderboard();
                 refreshStatus();
             }
 
-            @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
+            @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
                 fetchCompetitionLeaderboardMore();
             }
         });
-        listRanks.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long position)
-            {
-                if (position >= 0)
-                {
+        listRanks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long position) {
+                if (position >= 0) {
                     LeaderboardUserDTO userDTO = (LeaderboardUserDTO) adapter.getItem((int) position);
                     enterPortfolio(userDTO);
-
                     analytics.addEvent(new MethodEvent(AnalyticsConstants.BUTTON_COMPETITION_DETAIL_RANK_POSITION, "" + position));
                 }
             }
         });
+        listRanks.setAdapter(adapter);
     }
 
     /*
     进入持仓页面
      */
-    private void enterPortfolio(LeaderboardUserDTO userDTO)
-    {
+    private void enterPortfolio(LeaderboardUserDTO userDTO) {
         Bundle bundle = new Bundle();
         bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userDTO.id);
         bundle.putLong(PortfolioFragment.BUNDLE_LEADERBOARD_USER_MARK_ID, userDTO.lbmuId);
@@ -368,7 +354,6 @@ public class CompetitionDetailFragment extends Fragment
 
     @Override public void onDestroyView()
     {
-        //ButterKnife.reset(this);
         detachCompetitionLeaderboardCache();
         detachPortfolioCompactNewCache();
         detachUserProfileCache();
@@ -429,17 +414,14 @@ public class CompetitionDetailFragment extends Fragment
 
     public void refreshStatus()
     {
-        if (userCompetitionDTO == null) return;
-
-        //if (!userCompetitionDTO.isOngoing)
-        //{
-            getMySelfRank();
-        //}
+        if (userCompetitionDTO == null){
+            return;
+        }
+        getMySelfRank();
         if (userCompetitionDTO.isEnrolled)//只有参加了才去拿portfolio
         {
             fetchPortfolioCompactNew();
         }
-
         fetchUserProfile();
     }
 
@@ -474,7 +456,6 @@ public class CompetitionDetailFragment extends Fragment
 
     public void toPlayCompetition()
     {
-        Timber.d("去比赛");
         if (userCompetitionDTO == null)
         {
             THToast.show("没有找到比赛");
@@ -525,10 +506,6 @@ public class CompetitionDetailFragment extends Fragment
         @Override public void failure(RetrofitError retrofitError)
         {
             onFinish();
-            if (retrofitError != null)
-            {
-                Timber.e(retrofitError, "Reporting the error to Crashlytics %s", retrofitError.getBody());
-            }
             noFoundCompetition();
         }
 
@@ -555,7 +532,6 @@ public class CompetitionDetailFragment extends Fragment
             if (response.getStatus() == 200)
             {
                 THToast.show("报名成功！");
-                //popCurrentFragment();
                 CompetitionDetailFragment.this.userCompetitionDTO = userCompetitionDTO;
                 initCompetition();
                 fetchPortfolioCompactNew();
@@ -573,10 +549,6 @@ public class CompetitionDetailFragment extends Fragment
         @Override public void failure(RetrofitError retrofitError)
         {
             onFinish();
-            if (retrofitError != null)
-            {
-                Timber.e(retrofitError, "Reporting the error to Crashlytics %s", retrofitError.getBody());
-            }
             THException thException = new THException(retrofitError);
             THToast.show(thException);
         }
@@ -593,7 +565,7 @@ public class CompetitionDetailFragment extends Fragment
             ordinaPosition = leaderboardDTO.users.get(0).ordinalPosition;
         } catch (Exception e)
         {
-
+            e.printStackTrace();
         }
 
 
@@ -620,37 +592,19 @@ public class CompetitionDetailFragment extends Fragment
         }
     }
 
-    protected class MySelfRanCallback implements retrofit.Callback<LeaderboardDTO>
-    {
+    protected class MySelfRanCallback implements retrofit.Callback<LeaderboardDTO> {
         @Override
-        public void success(LeaderboardDTO leaderboardDTO, Response response)
-        {
-            onFinish();
-            if (response.getStatus() == 200)
-            {
-                Timber.d("");
+        public void success(LeaderboardDTO leaderboardDTO, Response response) {
+            if (response.getStatus() == 200) {
                 if (getActivity() == null) return;
                 displayMySelfRank(leaderboardDTO);
             }
         }
 
-        private void onFinish()
-        {
-
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            onFinish();
-            if (retrofitError != null)
-            {
-                Timber.e(retrofitError, "Reporting the error to Crashlytics %s", retrofitError.getBody());
-            }
-        }
+        @Override public void failure(RetrofitError retrofitError) { }
     }
 
-    protected DTOCacheNew.Listener<CompetitionLeaderboardId, CompetitionLeaderboardDTO> createCompetitionLeaderboardListener()
-    {
+    protected DTOCacheNew.Listener<CompetitionLeaderboardId, CompetitionLeaderboardDTO> createCompetitionLeaderboardListener() {
         return new CompetitionLeaderboardCacheListener();
     }
 
@@ -669,7 +623,6 @@ public class CompetitionDetailFragment extends Fragment
 
         @Override public void onErrorThrown(@NotNull CompetitionLeaderboardId key, @NotNull Throwable error)
         {
-            Timber.d("CompetitionLeaderboardCacheListener failure!");
             onFinish();
         }
 
@@ -748,10 +701,6 @@ public class CompetitionDetailFragment extends Fragment
         if (listData.size() > 0)
         {
             currentPage += 1;
-        }
-        else
-        {
-
         }
         adapter.notifyDataSetChanged();
     }
