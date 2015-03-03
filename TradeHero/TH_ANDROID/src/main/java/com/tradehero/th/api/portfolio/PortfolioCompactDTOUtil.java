@@ -207,15 +207,16 @@ public class PortfolioCompactDTOUtil
         return converted;
     }
 
-    public static int getIconResId(@NonNull PortfolioCompactDTO portfolioDTO){
+    public static int getIconResId(@NonNull PortfolioCompactDTO portfolioDTO)
+    {
         int imageResId = R.drawable.ic_portfolio_stocks;
-        if(portfolioDTO.providerId != null)
+        if (portfolioDTO.providerId != null)
         {
             imageResId = R.drawable.ic_portfolio_competition;
         }
-        else if(portfolioDTO.isDefault())
+        else if (portfolioDTO.isDefault())
         {
-            if(portfolioDTO.isFx())
+            if (portfolioDTO.isFx())
             {
                 imageResId = R.drawable.ic_portfolio_fx;
             }
@@ -224,7 +225,7 @@ public class PortfolioCompactDTOUtil
                 imageResId = R.drawable.ic_portfolio_stocks;
             }
         }
-        else if(portfolioDTO.isWatchlist)
+        else if (portfolioDTO.isWatchlist)
         {
             imageResId = R.drawable.ic_portfolio_favorites;
         }
