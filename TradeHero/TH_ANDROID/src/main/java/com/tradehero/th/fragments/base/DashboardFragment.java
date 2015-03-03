@@ -1,12 +1,13 @@
 package com.tradehero.th.fragments.base;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -136,7 +137,7 @@ abstract public class DashboardFragment extends Fragment
     {
         if (getActivity() != null)
         {
-            return getActivity().getActionBar();
+            return ((ActionBarActivity)getActivity()).getSupportActionBar();
         }
         else
         {
