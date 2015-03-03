@@ -1,12 +1,14 @@
 package com.tradehero.th.models.market;
 
+import android.content.res.Resources;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.MarketRegion;
-import timber.log.Timber;
+import com.tradehero.th.utils.ColorUtil;
 
 public class MarketRegionDisplayUtil
 {
@@ -27,7 +29,6 @@ public class MarketRegionDisplayUtil
             case AUSTRALIA:
                 return R.color.market_region_australia;
         }
-        Timber.e(new Exception(""), "Unknown MarketRegion.%s", region);
         return R.color.market_region_unknown;
     }
 
@@ -48,7 +49,6 @@ public class MarketRegionDisplayUtil
             case AUSTRALIA:
                 return R.drawable.basic_yellow_selector;
         }
-        Timber.e(new Exception(""), "Unknown MarketRegion.%s", region);
         return R.drawable.basic_light_blue_selector;
     }
 
@@ -69,7 +69,20 @@ public class MarketRegionDisplayUtil
             case AUSTRALIA:
                 return R.string.market_region_australia;
         }
-        Timber.e(new Exception(""), "Unknown MarketRegion.%s", region);
         return R.string.market_region_unknown;
+    }
+
+    @Nullable public static MarketRegion getBestApproxMarketRegion(@NonNull Resources resources, int sampleColor, int halfSide)
+    {
+        int regionColor;
+        for (MarketRegion region : MarketRegion.values())
+        {
+            regionColor = resources.getColor(getColorRes(region));
+            if (ColorUtil.isWithin(sampleColor, regionColor, halfSide))
+            {
+                return region;
+            }
+        }
+        return null;
     }
 }

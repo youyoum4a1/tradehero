@@ -1,77 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tradehero.th.fragments.onboarding.exchange.MarketRegionMapView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/map_selector"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/market_map_selector"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    >
 
-  <TableRow
-      android:layout_marginBottom="@dimen/size_1"
-      >
+  <ImageView
+      android:id="@+id/back_image"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      tools:src="@drawable/map"
+      />
 
-    <com.tradehero.th.fragments.onboarding.exchange.MarketRegionView
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/size_1"
-        android:layout_marginEnd="@dimen/size_1"
-        android:enabled="false"
-        style="@style/TH.OnBoard.MarketRegion"
-        app:region="NORTH_AMERICA"/>
-
-    <com.tradehero.th.fragments.onboarding.exchange.MarketRegionView
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        style="@style/TH.OnBoard.MarketRegion"
-        app:region="EAST_ASIA"/>
-
-  </TableRow>
-
-  <TableRow
-      android:layout_marginBottom="@dimen/size_1"
-      >
-
-    <com.tradehero.th.fragments.onboarding.exchange.MarketRegionView
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/size_1"
-        android:layout_marginEnd="@dimen/size_1"
-        android:enabled="false"
-        style="@style/TH.OnBoard.MarketRegion"
-        android:textColor="@color/black"
-        app:region="EUROPE"/>
-
-    <com.tradehero.th.fragments.onboarding.exchange.MarketRegionView
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        style="@style/TH.OnBoard.MarketRegion"
-        app:region="SOUTH_EAST_ASIA"/>
-
-  </TableRow>
-
-  <TableRow>
-
-    <com.tradehero.th.fragments.onboarding.exchange.MarketRegionView
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/size_1"
-        android:layout_marginEnd="@dimen/size_1"
-        android:enabled="false"
-        style="@style/TH.OnBoard.MarketRegion"
-        android:textColor="@color/black"
-        app:region="AUSTRALIA"/>
-
-    <com.tradehero.th.fragments.onboarding.exchange.MarketRegionView
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        style="@style/TH.OnBoard.MarketRegion"
-        android:textColor="@color/black"
-        app:region="INDIA"/>
-
-  </TableRow>
+  <ImageView
+      android:id="@+id/front_image"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:alpha="0"
+      tools:src="@drawable/map_hitboxes"
+      tools:alpha="0.3"
+      />
 
 </com.tradehero.th.fragments.onboarding.exchange.MarketRegionMapView>

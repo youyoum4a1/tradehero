@@ -26,9 +26,10 @@ import com.tradehero.th.api.market.MarketRegion;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -40,8 +41,8 @@ import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
-import timber.log.Timber;
 
 public class ExchangeSelectionScreenFragment extends DashboardFragment
 {
@@ -50,7 +51,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
 
     @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
 
-    MarketRegionMapView mapHeaderView;
+    MarketRegionSwitcherView mapHeaderSwitcherView;
     @InjectView(android.R.id.list) ListView exchangeList;
     @InjectView(android.R.id.button1) View nextButton;
     @NonNull ArrayAdapter<SelectableExchangeDTO> exchangeAdapter;
@@ -79,7 +80,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
     @SuppressLint("InflateParams")
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        mapHeaderView = (MarketRegionMapView) inflater.inflate(R.layout.on_board_market_map_view, null);
+        mapHeaderSwitcherView = (MarketRegionSwitcherView) inflater.inflate(R.layout.on_board_market_map_switcher, null);
         return inflater.inflate(R.layout.on_board_map_exchange, container, false);
     }
 
@@ -88,7 +89,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         exchangeList.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.on_board_started_header, null), "title", false);
-        exchangeList.addHeaderView(mapHeaderView, "map", false);
+        exchangeList.addHeaderView(mapHeaderSwitcherView, "map", true);
         exchangeList.setAdapter(exchangeAdapter);
         displayNextButton();
     }
@@ -117,7 +118,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
                             @Override public void call(Pair<ExchangeListType, ExchangeCompactDTOList> pair)
                             {
                                 filedExchangeIds = ExchangeCompactDTOUtil.filePerRegion(pair.second);
-                                mapHeaderView.enable(filedExchangeIds.keySet());
+                                mapHeaderSwitcherView.enable(filedExchangeIds.keySet());
                                 for (ExchangeCompactDTO exchange : pair.second)
                                 {
                                     knownExchanges.put(exchange.getExchangeIntegerId(), exchange);
@@ -131,52 +132,48 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                mapHeaderView.getMarketRegionClickedObservable())
-                .subscribe(
-                        new Action1<MarketRegion>()
+                mapHeaderSwitcherView.getMarketRegionClickedObservable()
+                        .distinctUntilChanged()
+                        .observeOn(Schedulers.computation())
+                        .flatMap(new Func1<MarketRegion, Observable<List<SelectableExchangeDTO>>>()
                         {
-                            @Override public void call(MarketRegion region)
+                            @Override public Observable<List<SelectableExchangeDTO>> call(MarketRegion region)
                             {
-                                showRegion(region);
+                                List<ExchangeIntegerId> exchanges = filedExchangeIds.get(region);
+                                if (exchanges == null)
+                                {
+                                    return Observable.empty();
+                                }
+                                Set<ExchangeIntegerId> toShow = new LinkedHashSet<>(selectedExchanges);
+                                toShow.addAll(exchanges);
+                                return Observable.just(createSelectables(toShow));
+                            }
+                        }))
+                .subscribe(
+                        new Action1<List<SelectableExchangeDTO>>()
+                        {
+                            @Override public void call(List<SelectableExchangeDTO> dtos)
+                            {
+                                exchangeAdapter.setNotifyOnChange(false);
+                                exchangeAdapter.clear();
+                                exchangeAdapter.addAll(dtos);
+                                exchangeAdapter.setNotifyOnChange(true);
+                                exchangeAdapter.notifyDataSetChanged();
                             }
                         },
                         new ToastOnErrorAction()));
     }
 
-    protected void showRegion(@NonNull MarketRegion region)
+    @NonNull List<SelectableExchangeDTO> createSelectables(@NonNull Collection<ExchangeIntegerId> toShow)
     {
-        List<ExchangeIntegerId> exchanges = filedExchangeIds.get(region);
-        if (exchanges != null)
+        List<SelectableExchangeDTO> dtos = new ArrayList<>();
+        for (ExchangeIntegerId exchangeId : toShow)
         {
-            exchangeAdapter.clear();
-            Set<ExchangeIntegerId> toShow = new LinkedHashSet<>(selectedExchanges);
-            toShow.addAll(exchanges);
-            onStopSubscriptions.add(AppObservable.bindFragment(
-                    this,
-                    Observable.from(toShow).map(new Func1<ExchangeIntegerId, SelectableExchangeDTO>()
-                            {
-                                @Override public SelectableExchangeDTO call(final ExchangeIntegerId integerId)
-                                {
-                                    return new SelectableExchangeDTO(
-                                            knownExchanges.get(integerId),
-                                            selectedExchanges.contains(integerId));
-                                }
-                            }))
-                    .subscribe(
-                            new Action1<SelectableExchangeDTO>()
-                            {
-                                @Override public void call(SelectableExchangeDTO dto)
-                                {
-                                    exchangeAdapter.add(dto);
-                                    exchangeAdapter.notifyDataSetChanged();
-                                }
-                            },
-                            new TimberOnErrorAction("Failed to fetch region stocks")));
+            dtos.add(new SelectableExchangeDTO(
+                    knownExchanges.get(exchangeId),
+                    selectedExchanges.contains(exchangeId)));
         }
-        else
-        {
-            Timber.e(new Exception(""), "No exchange found for MarketRegion.%s", region);
-        }
+        return dtos;
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -184,23 +181,31 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
     protected void onExchangeClicked(AdapterView<?> parent, View view, int position, long id)
     {
         nextButton.setVisibility(View.VISIBLE);
-        SelectableExchangeDTO dto = (SelectableExchangeDTO) parent.getItemAtPosition(position);
-        if (!dto.selected && selectedExchanges.size() >= MAX_SELECTABLE_EXCHANGES)
+        Object item = parent.getItemAtPosition(position);
+        if (item.equals("map"))
         {
-            THToast.show(getString(R.string.on_board_exchange_selected_max, MAX_SELECTABLE_EXCHANGES));
+            // Nothing to do, the map was clicked
         }
         else
         {
-            dto.selected = !dto.selected;
-            if (dto.selected)
+            SelectableExchangeDTO dto = (SelectableExchangeDTO) item;
+            if (!dto.selected && selectedExchanges.size() >= MAX_SELECTABLE_EXCHANGES)
             {
-                selectedExchanges.add(dto.value.getExchangeIntegerId());
+                THToast.show(getString(R.string.on_board_exchange_selected_max, MAX_SELECTABLE_EXCHANGES));
             }
             else
             {
-                selectedExchanges.remove(dto.value.getExchangeIntegerId());
+                dto.selected = !dto.selected;
+                if (dto.selected)
+                {
+                    selectedExchanges.add(dto.value.getExchangeIntegerId());
+                }
+                else
+                {
+                    selectedExchanges.remove(dto.value.getExchangeIntegerId());
+                }
+                exchangeAdapter.notifyDataSetChanged();
             }
-            exchangeAdapter.notifyDataSetChanged();
         }
         displayNextButton();
     }
