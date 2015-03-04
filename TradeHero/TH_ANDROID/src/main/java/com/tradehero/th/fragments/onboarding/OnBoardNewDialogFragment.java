@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.onboarding;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,9 +36,12 @@ import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
+import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
+import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import javax.inject.Inject;
 import rx.functions.Action1;
 import rx.subjects.BehaviorSubject;
@@ -53,6 +57,9 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
     @Inject DashboardNavigator navigator;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
+    @Inject @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference;
+    @Inject BroadcastUtils broadcastUtils;
+
     @InjectView(android.R.id.content) ViewPager pager;
 
     private ExchangeCompactDTOList selectedExchanges;
@@ -106,6 +113,13 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
     @Override public void dismiss()
     {
         super.dismiss();
+        firstShowOnBoardDialogPreference.justHandled();
+    }
+
+    @Override public void onDismiss(DialogInterface dialog)
+    {
+        super.onDismiss(dialog);
+        broadcastUtils.nextPlease();
     }
 
     private int getCurrentIndex()
@@ -210,6 +224,7 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
                                             pager.setCurrentItem(INDEX_SELECTION_LAST);
                                             selectedSecuritiesBehavior.onNext(securityCompactDTOs);
                                             submitActions();
+                                            firstShowOnBoardDialogPreference.justHandled();
                                         }
                                     },
                                     new ToastAndLogOnErrorAction("Failed to get selected stocks")));

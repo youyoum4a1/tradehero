@@ -1,6 +1,5 @@
 package com.tradehero.th.widget;
 
-import com.tradehero.th.fragments.onboarding.hero.SelectableUserViewRelative;
 import dagger.Module;
 
 @Module(
@@ -9,7 +8,6 @@ import dagger.Module;
                 MarkdownTextView.class,
                 VotePair.class,
                 XpToast.class,
-                SelectableUserViewRelative.class
         },
         library = true,
         complete = false
