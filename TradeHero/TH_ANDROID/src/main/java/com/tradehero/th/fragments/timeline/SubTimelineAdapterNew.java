@@ -13,21 +13,18 @@ public class SubTimelineAdapterNew extends ViewDTOSetAdapter<TimelineItemDTO, Ti
 {
     @LayoutRes final int layoutResourceId;
 
+    //<editor-fold desc="Constructors">
     public SubTimelineAdapterNew(@NonNull Context context,
             @LayoutRes int layoutResourceId)
     {
         super(context);
         this.layoutResourceId = layoutResourceId;
     }
+    //</editor-fold>
 
     @Override @LayoutRes protected int getViewResId(int position)
     {
         return layoutResourceId;
-    }
-
-    @Override public int getItemViewType(int position)
-    {
-        return MainTimelineAdapter.TIMELINE_ITEM_TYPE;
     }
 
     @NonNull public RangeDTO getLatestRange()

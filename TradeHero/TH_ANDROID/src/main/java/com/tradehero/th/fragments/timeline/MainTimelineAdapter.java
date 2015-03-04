@@ -21,18 +21,21 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 public class MainTimelineAdapter extends ArrayAdapter
     implements StickyListHeadersAdapter
 {
-    public static final int TIMELINE_ITEM_TYPE = 0;
-    public static final int PORTFOLIO_ITEM_TYPE = 1;
-    public static final int STATS_ITEM_TYPE = 2;
-    public static final int EMPTY_ITEM_TYPE = 3;
+    public static final int EMPTY_ITEM_TYPE = 0;
+    public static final int PORTFOLIO_ITEM_TYPE_OFFSET = 1;
 
     @Nullable private TimelineProfileClickListener profileClickListener;
     @NonNull private TimelineFragment.TabType currentTabType = TimelineFragment.TabType.PORTFOLIO_LIST;
 
-    private final SubTimelineAdapterNew subTimelineAdapter;
-
     private final SimpleOwnPortfolioListItemAdapter portfolioListAdapter;
+    private final int portfolioAdapterViewTypeOffset;
+
+    private final SubTimelineAdapterNew subTimelineAdapter;
+    private final int timelineAdapterViewTypeOffset;
+
     @LayoutRes private final int statResId;
+    private final int statViewTypeOffset;
+
     private UserProfileDTO userProfileDTO;
 
     //<editor-fold desc="Constructors">
@@ -42,11 +45,14 @@ public class MainTimelineAdapter extends ArrayAdapter
             @LayoutRes int statResId)
     {
         super(context, 0);
-        subTimelineAdapter = new SubTimelineAdapterNew(context, timelineItemViewResId);
-
         portfolioListAdapter = new SimpleOwnPortfolioListItemAdapter(context, portfolioItemViewResId);
+        portfolioAdapterViewTypeOffset = PORTFOLIO_ITEM_TYPE_OFFSET;
+
+        subTimelineAdapter = new SubTimelineAdapterNew(context, timelineItemViewResId);
+        timelineAdapterViewTypeOffset = portfolioAdapterViewTypeOffset + portfolioListAdapter.getViewTypeCount();
 
         this.statResId = statResId;
+        statViewTypeOffset = timelineAdapterViewTypeOffset + subTimelineAdapter.getViewTypeCount();
     }
     //</editor-fold>
 
@@ -163,7 +169,7 @@ public class MainTimelineAdapter extends ArrayAdapter
     //<editor-fold desc="BaseAdapter">
     @Override public int getViewTypeCount()
     {
-        return 4;
+        return statViewTypeOffset + 1;
     }
 
     @Override public int getItemViewType(int position)
@@ -177,16 +183,16 @@ public class MainTimelineAdapter extends ArrayAdapter
         {
             switch (currentTabType)
             {
-                case TIMELINE:
-                    viewType = subTimelineAdapter.getItemViewType(position);
+                case PORTFOLIO_LIST:
+                    viewType = portfolioAdapterViewTypeOffset + portfolioListAdapter.getItemViewType(position);
                     break;
 
-                case PORTFOLIO_LIST:
-                    viewType = portfolioListAdapter.getItemViewType(position);
+                case TIMELINE:
+                    viewType = timelineAdapterViewTypeOffset + subTimelineAdapter.getItemViewType(position);
                     break;
 
                 case STATS:
-                    viewType = STATS_ITEM_TYPE;
+                    viewType = statViewTypeOffset;
                     break;
 
                 default:
