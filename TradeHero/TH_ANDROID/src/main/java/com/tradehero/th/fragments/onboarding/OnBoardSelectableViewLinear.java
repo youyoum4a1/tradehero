@@ -14,8 +14,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.inject.HierarchyInjector;
 
-public class OnBoardSelectableViewLinear<T extends DTO> extends LinearLayout
-        implements DTOView<SelectableDTO<T>>
+public class OnBoardSelectableViewLinear<
+        ValueDTOType extends DTO,
+        SelectableDTOType extends SelectableDTO<ValueDTOType>> extends LinearLayout
+        implements DTOView<SelectableDTOType>
 {
     @InjectView(android.R.id.icon2) View selectedView;
     private final float alphaUnSelected;
@@ -73,7 +75,7 @@ public class OnBoardSelectableViewLinear<T extends DTO> extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(@NonNull SelectableDTO<T> dto)
+    @Override public void display(@NonNull SelectableDTOType dto)
     {
         if (selectedView != null)
         {

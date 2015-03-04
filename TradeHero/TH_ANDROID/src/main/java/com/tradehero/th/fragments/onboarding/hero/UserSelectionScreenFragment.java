@@ -15,17 +15,22 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.market.ExchangeCompactSectorListDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.SuggestHeroesListTypeNew;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
 import com.tradehero.th.persistence.leaderboard.LeaderboardUserListCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,12 +49,14 @@ public class UserSelectionScreenFragment extends DashboardFragment
 {
     private static final int MAX_SELECTABLE_USERS = 5;
 
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCacheRx userProfileCache;
     @Inject LeaderboardUserListCacheRx leaderboardUserListCache;
 
     @InjectView(android.R.id.list) ListView userList;
     @InjectView(android.R.id.button1) View nextButton;
     Observable<ExchangeCompactSectorListDTO> selectedExchangesSectorsObservable;
-    @NonNull ArrayAdapter<SelectableUserDTO> userAdapter;
+    @NonNull ArrayAdapter<OnBoardUserItemView.DTO> userAdapter;
     @NonNull Map<UserBaseKey, LeaderboardUserDTO> knownUsers;
     @NonNull Set<UserBaseKey> selectedUsers;
     @NonNull BehaviorSubject<LeaderboardUserDTOList> selectedUsersSubject;
@@ -107,28 +114,45 @@ public class UserSelectionScreenFragment extends DashboardFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                selectedExchangesSectorsObservable.flatMap(
-                        new Func1<ExchangeCompactSectorListDTO, Observable<Pair<UserListType, LeaderboardUserDTOList>>>()
+                userProfileCache.getOne(currentUserId.toUserBaseKey())
+                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
+                        .flatMap(new Func1<UserProfileDTO, Observable<RequiredDTO>>()
                         {
-                            @Override public Observable<Pair<UserListType, LeaderboardUserDTOList>> call(
-                                    ExchangeCompactSectorListDTO selectedExchanges)
+                            @Override public Observable<RequiredDTO> call(final UserProfileDTO currentUserProfile)
                             {
-                                return leaderboardUserListCache.getOne(new SuggestHeroesListTypeNew(
-                                        selectedExchanges.exchanges.getExchangeIds(),
-                                        selectedExchanges.sectors.getSectorIds(),
-                                        null, null));
+                                return selectedExchangesSectorsObservable.flatMap(
+                                        new Func1<ExchangeCompactSectorListDTO, Observable<Pair<UserListType, LeaderboardUserDTOList>>>()
+                                        {
+                                            @Override public Observable<Pair<UserListType, LeaderboardUserDTOList>> call(
+                                                    ExchangeCompactSectorListDTO selectedExchanges)
+                                            {
+                                                return leaderboardUserListCache.getOne(new SuggestHeroesListTypeNew(
+                                                        selectedExchanges.exchanges.getExchangeIds(),
+                                                        selectedExchanges.sectors.getSectorIds(),
+                                                        null, null));
+                                            }
+                                        })
+                                        .map(new Func1<Pair<UserListType, LeaderboardUserDTOList>, RequiredDTO>()
+                                        {
+                                            @Override public RequiredDTO call(
+                                                    Pair<UserListType, LeaderboardUserDTOList> leaderboardUserDTOListPair)
+                                            {
+                                                return new RequiredDTO(currentUserProfile.mostSkilledLbmu, leaderboardUserDTOListPair);
+                                            }
+                                        });
                             }
                         }))
                 .subscribe(
-                        new Action1<Pair<UserListType, LeaderboardUserDTOList>>()
+                        new Action1<RequiredDTO>()
                         {
-                            @Override public void call(Pair<UserListType, LeaderboardUserDTOList> pair)
+                            @Override public void call(RequiredDTO requiredDTO)
                             {
-                                List<SelectableUserDTO> onBoardUsers = new ArrayList<>();
-                                for (LeaderboardUserDTO userDTO : pair.second)
+                                List<OnBoardUserItemView.DTO> onBoardUsers = new ArrayList<>();
+                                for (LeaderboardUserDTO userDTO : requiredDTO.leaderboardUserDTOListPair.second)
                                 {
                                     knownUsers.put(userDTO.getBaseKey(), userDTO);
-                                    onBoardUsers.add(new SelectableUserDTO(userDTO, false));
+                                    onBoardUsers.add(
+                                            new OnBoardUserItemView.DTO(getResources(), userDTO, false, requiredDTO.mostSkilledLeaderboardDTO));
                                 }
                                 userAdapter.clear();
                                 userAdapter.addAll(onBoardUsers);
@@ -183,5 +207,19 @@ public class UserSelectionScreenFragment extends DashboardFragment
     @NonNull public Observable<LeaderboardUserDTOList> getSelectedUsersObservable()
     {
         return selectedUsersSubject.asObservable();
+    }
+
+    static class RequiredDTO
+    {
+        @Nullable final LeaderboardDTO mostSkilledLeaderboardDTO;
+        @NonNull final Pair<UserListType, LeaderboardUserDTOList> leaderboardUserDTOListPair;
+
+        RequiredDTO(
+                @Nullable LeaderboardDTO mostSkilledLeaderboardDTO,
+                @NonNull Pair<UserListType, LeaderboardUserDTOList> leaderboardUserDTOListPair)
+        {
+            this.mostSkilledLeaderboardDTO = mostSkilledLeaderboardDTO;
+            this.leaderboardUserDTOListPair = leaderboardUserDTOListPair;
+        }
     }
 }

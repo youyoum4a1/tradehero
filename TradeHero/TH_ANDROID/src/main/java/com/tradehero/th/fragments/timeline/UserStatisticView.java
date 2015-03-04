@@ -13,8 +13,8 @@ import com.tradehero.common.widget.GaugeView;
 import com.tradehero.common.widget.NumericalAnimatedTextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.number.THSignedNumber;
 import timber.log.Timber;
 
@@ -204,7 +204,6 @@ public class UserStatisticView extends LinearLayout
         final String performanceGaugeTopText;
         final String performanceGaugeSubText;
         final float normalisedPerformance;
-        final double avgConsistency;
         final float normalisedConsistency;
         @NonNull final String digitsWinRatio;
         @NonNull String winRateGaugeSubText;
@@ -213,7 +212,7 @@ public class UserStatisticView extends LinearLayout
 
         public DTO(@NonNull Resources resources,
                 @NonNull LeaderboardUserDTO leaderboardUserDTO,
-                @NonNull UserProfileDTO currentUserProfile)
+                @Nullable LeaderboardDTO mostSkilledLeaderboardDTO)
         {
             this.leaderboardUserDTO = leaderboardUserDTO;
             this.daysHoldTvEndValue = leaderboardUserDTO.avgHoldingPeriodMins * 1.0f / (60 * 24);
@@ -245,16 +244,12 @@ public class UserStatisticView extends LinearLayout
             }
             this.normalisedPerformance = (float) r;
 
-            if (currentUserProfile.mostSkilledLbmu != null)
+            double avgConsistency = LeaderboardUserDTO.MIN_CONSISTENCY;
+            if (mostSkilledLeaderboardDTO != null)
             {
-                avgConsistency = currentUserProfile.mostSkilledLbmu.getAvgConsistency();
+                avgConsistency = mostSkilledLeaderboardDTO.getAvgConsistency();
             }
-            else
-            {
-                avgConsistency = LeaderboardUserDTO.MIN_CONSISTENCY;
-            }
-
-            double result = avgConsistency;
+            double result;
             try
             {
                 Double minConsistency = LeaderboardUserDTO.MIN_CONSISTENCY;
@@ -267,6 +262,7 @@ public class UserStatisticView extends LinearLayout
             }
             catch (Exception e)
             {
+                result = avgConsistency;
                 Timber.e("normalizeConsistency", e);
             }
             this.normalisedConsistency = (float) result;

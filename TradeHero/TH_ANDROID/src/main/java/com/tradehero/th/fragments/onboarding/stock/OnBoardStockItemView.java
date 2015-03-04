@@ -10,7 +10,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.onboarding.OnBoardSelectableViewLinear;
 import com.tradehero.th.fragments.security.SecurityItemView;
 
-public class OnBoardStockItemView extends OnBoardSelectableViewLinear<SecurityCompactDTO>
+public class OnBoardStockItemView extends OnBoardSelectableViewLinear<SecurityCompactDTO, SelectableDTO<SecurityCompactDTO>>
 {
     @InjectView(R.id.security_view) SecurityItemView securityItemView;
 

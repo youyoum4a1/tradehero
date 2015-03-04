@@ -15,7 +15,7 @@ import com.tradehero.th.api.market.SectorCompactDTO;
 import com.tradehero.th.fragments.onboarding.OnBoardSelectableViewLinear;
 import javax.inject.Inject;
 
-public class OnBoardSectorItemView extends OnBoardSelectableViewLinear<SectorCompactDTO>
+public class OnBoardSectorItemView extends OnBoardSelectableViewLinear<SectorCompactDTO, SelectableDTO<SectorCompactDTO>>
 {
     @DrawableRes private static final int DEFAULT_SECTOR_LOGO = R.drawable.accounts_glyph_name_default;
 

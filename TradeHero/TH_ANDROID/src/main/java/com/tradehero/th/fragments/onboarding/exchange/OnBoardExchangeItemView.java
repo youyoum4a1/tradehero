@@ -19,7 +19,7 @@ import com.tradehero.th.fragments.onboarding.OnBoardSelectableViewLinear;
 import com.tradehero.th.models.number.THSignedMoney;
 import javax.inject.Inject;
 
-public class OnBoardExchangeItemView extends OnBoardSelectableViewLinear<ExchangeCompactDTO>
+public class OnBoardExchangeItemView extends OnBoardSelectableViewLinear<ExchangeCompactDTO, SelectableDTO<ExchangeCompactDTO>>
 {
     @DrawableRes private static final int DEFAULT_EXCHANGE_LOGO = R.drawable.accounts_glyph_name_default;
 
