@@ -73,8 +73,8 @@ public class NewsItemListKeyHelper
         }
 
         if (newsItemListKey instanceof NewsItemListSeekingAlphaKey) {
-            NewsItemListSeekingAlphaKey key = (NewsItemListSeekingAlphaKey)newsItemListKey;
-            return new NewsItemListSeekingAlphaKey(key.page, key.perPage);
+
+            return new NewsItemListSeekingAlphaKey(paginationDTO.page, paginationDTO.perPage);
         }
 
         throw new IllegalStateException("Incorrect type");

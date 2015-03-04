@@ -5,6 +5,7 @@ import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
@@ -123,6 +124,8 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
             if (descriptionText != null)
             {
                 newsDescription.setText(StringUtils.removeImageSpanObjects(descriptionText));
+            } else {
+                newsDescription.setVisibility(View.GONE);
             }
         }
     }
