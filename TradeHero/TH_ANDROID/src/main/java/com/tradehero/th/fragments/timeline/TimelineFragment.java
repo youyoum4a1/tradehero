@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.timeline;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -34,6 +35,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineSection;
 import com.tradehero.th.api.timeline.key.TimelineKey;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -119,6 +121,7 @@ public class TimelineFragment extends DashboardFragment
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
     @Inject protected THRouter thRouter;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
+    @Inject protected TimelineCacheRx timelineCache;
 
     @InjectView(R.id.timeline_list_view) StickyListHeadersListView timelineListView;
     @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshContainer;
@@ -134,7 +137,6 @@ public class TimelineFragment extends DashboardFragment
     private MainTimelineAdapter mainTimelineAdapter;
     private UserProfileView userProfileView;
     private View loadingView;
-    protected ChoiceFollowUserAssistantWithDialog choiceFollowUserAssistantWithDialog;
     @Nullable FxOnBoardDialogFragment onBoardDialogFragment;
 
     public TabType currentTab = TabType.PORTFOLIO_LIST;
@@ -169,6 +171,7 @@ public class TimelineFragment extends DashboardFragment
         mainTimelineAdapter.setCurrentTabType(currentTab);
     }
 
+    @SuppressLint("InflateParams")
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_timeline, container, false);
@@ -318,9 +321,13 @@ public class TimelineFragment extends DashboardFragment
                                 mainTimelineAdapter.getLatestTimelineRange()))
                         .take(1))
                 .subscribe(
-                        pair -> {
-                            mainTimelineAdapter.appendHeadTimeline(pair.second.getEnhancedItems());
-                            swipeRefreshContainer.setRefreshing(false);
+                        new Action1<Pair<TimelineKey, TimelineDTO>>()
+                        {
+                            @Override public void call(Pair<TimelineKey, TimelineDTO> pair)
+                            {
+                                mainTimelineAdapter.appendHeadTimeline(pair.second.getEnhancedItems());
+                                swipeRefreshContainer.setRefreshing(false);
+                            }
                         },
                         new ToastOnErrorAction()));
     }
@@ -335,9 +342,13 @@ public class TimelineFragment extends DashboardFragment
                                 mainTimelineAdapter.getOlderTimelineRange()))
                         .take(1))
                 .subscribe(
-                        pair -> {
-                            mainTimelineAdapter.appendTailTimeline(pair.second.getEnhancedItems());
-                            loadingView.setVisibility(View.GONE);
+                        new Action1<Pair<TimelineKey, TimelineDTO>>()
+                        {
+                            @Override public void call(Pair<TimelineKey, TimelineDTO> pair)
+                            {
+                                mainTimelineAdapter.appendTailTimeline(pair.second.getEnhancedItems());
+                                loadingView.setVisibility(View.GONE);
+                            }
                         },
                         new ToastOnErrorAction()));
     }
