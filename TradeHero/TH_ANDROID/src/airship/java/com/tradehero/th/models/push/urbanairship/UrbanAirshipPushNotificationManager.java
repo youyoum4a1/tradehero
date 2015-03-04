@@ -45,6 +45,7 @@ import timber.log.Timber;
                     @Override public void onAirshipReady(UAirship uAirship)
                     {
                         UrbanAirshipPushNotificationManager.uAirship = uAirship;
+                        uAirship.getPushManager().setDeviceTagsEnabled(false);
                         THToast.show("My UrbanAirship Application Channel ID: " + uAirship.getPushManager().getChannelId());
                         Timber.i("My UrbanAirship Application Channel ID below");
                         Timber.i("My UrbanAirship Application Channel ID: %s", uAirship.getPushManager().getChannelId());
