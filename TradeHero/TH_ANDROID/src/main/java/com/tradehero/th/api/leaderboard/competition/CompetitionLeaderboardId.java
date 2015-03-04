@@ -2,16 +2,14 @@ package com.tradehero.th.api.leaderboard.competition;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.CompetitionId;
+import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 
-public class CompetitionLeaderboardId implements DTOKey
+public class CompetitionLeaderboardId extends PerPagedLeaderboardKey
 {
     @NonNull public final Integer providerId;
-    @NonNull public final Integer competitionId;
-    @Nullable public final Integer page;
-    @Nullable public final Integer perPage;
 
     //<editor-fold desc="Constructors">
     public CompetitionLeaderboardId(int providerId, int competitionId)
@@ -24,12 +22,15 @@ public class CompetitionLeaderboardId implements DTOKey
         this(providerId, competitionId, page, null);
     }
 
+    public CompetitionLeaderboardId(@NonNull CompetitionLeaderboardId other, @Nullable Integer page)
+    {
+        this(other.providerId, other.id, page, other.perPage);
+    }
+
     public CompetitionLeaderboardId(int providerId, int competitionId, @Nullable Integer page, @Nullable Integer perPage)
     {
+        super(competitionId, page, perPage);
         this.providerId = providerId;
-        this.competitionId = competitionId;
-        this.page = page;
-        this.perPage = perPage;
     }
     //</editor-fold>
 
@@ -40,30 +41,29 @@ public class CompetitionLeaderboardId implements DTOKey
 
     @NonNull public CompetitionId getCompetitionId()
     {
-        return new CompetitionId(this.competitionId);
+        return new CompetitionId(this.id);
     }
 
     @Override public int hashCode()
     {
-         return providerId.hashCode() ^
-                competitionId.hashCode() ^
-                 (page == null ? Integer.valueOf(0) : page).hashCode() ^
-                 (perPage == null ? Integer.valueOf(0) : perPage).hashCode();
+        return super.hashCode() ^ providerId.hashCode();
     }
 
-    @Override public boolean equals(Object other)
+    @Override public boolean equalFields(@NonNull PerPagedLeaderboardKey other)
     {
-        return other != null
-                && other.getClass().equals(getClass())
+        return super.equalFields(other)
+                && other instanceof CompetitionLeaderboardId
                 && equalFields((CompetitionLeaderboardId) other);
     }
 
-    protected boolean equalFields(CompetitionLeaderboardId other)
+    protected boolean equalFields(@NonNull CompetitionLeaderboardId other)
     {
-        return other != null &&
-                this.providerId.equals(other.providerId) &&
-                this.competitionId.equals(other.competitionId) &&
-                (this.page == null ? other.page == null : this.page.equals(other.page)) ^
-                (this.perPage == null ? other.perPage == null : this.perPage.equals(other.perPage));
+        return super.equalFields(other)
+                && this.providerId.equals(other.providerId);
+    }
+
+    @NonNull @Override public PagedLeaderboardKey cloneAtPage(int page)
+    {
+        return new CompetitionLeaderboardId(this, page);
     }
 }

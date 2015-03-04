@@ -29,6 +29,7 @@ import com.tradehero.th.fragments.ForTypographyFragment;
 import com.tradehero.th.fragments.achievement.ForAchievementListTestingFragment;
 import com.tradehero.th.fragments.achievement.ForQuestListTestingFragment;
 import com.tradehero.th.fragments.competition.CompetitionPreseasonDialogFragment;
+import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.level.ForXpTestingFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -80,7 +81,13 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         initPreferenceClickHandlers();
+        view.setBackgroundColor(getResources().getColor(R.color.white));
         ListView listView = (ListView) view.findViewById(android.R.id.list);
+        listView.setPadding(
+                (int) getResources().getDimension(R.dimen.setting_padding_left),
+                (int) getResources().getDimension(R.dimen.setting_padding_top),
+                (int) getResources().getDimension(R.dimen.setting_padding_right),
+                (int) getResources().getDimension(R.dimen.setting_padding_bottom));
         listView.setOnScrollListener(dashboardBottomTabsScrollListener.get());
         super.onViewCreated(view, savedInstanceState);
     }
@@ -179,6 +186,16 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
             {
                 // FragmentActivity activityversion.properties = (FragmentActivity) currentActivityHolder.getCurrentActivity();
                 OnBoardDialogFragment.showOnBoardDialog(AdminSettingsFragment.this.getActivity().getFragmentManager());
+                return true;
+            }
+        });
+
+        Preference showFxOnBoardDialog = findPreference("show_fx_onBoard_dialog");
+        showFxOnBoardDialog.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                FxOnBoardDialogFragment.showOnBoardDialog(AdminSettingsFragment.this.getActivity().getFragmentManager());
                 return true;
             }
         });

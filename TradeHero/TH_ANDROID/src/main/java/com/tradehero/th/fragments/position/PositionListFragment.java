@@ -92,6 +92,8 @@ public class PositionListFragment
     private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = PositionListFragment.class.getName() + ".showPositionDtoKey";
     private static final String BUNDLE_KEY_SHOWN_USER_ID_BUNDLE = PositionListFragment.class.getName() + ".userBaseKey";
     public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = PositionListFragment.class.getName() + ".firstPositionVisible";
+    public static final String BUNDLE_KEY_POSITION_TYPE = PositionListFragment.class.getName() + ".postion.type";
+
     private static final int FLIPPER_INDEX_LOADING = 0;
     private static final int FLIPPER_INDEX_LIST = 1;
     private static final int FLIPPER_INDEX_ERROR = 2;
@@ -127,6 +129,8 @@ public class PositionListFragment
     private int firstPositionVisible = 0;
     @Inject protected THBillingInteractorRx userInteractorRx;
 
+    private int mPositionType;
+
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
     {
@@ -135,7 +139,12 @@ public class PositionListFragment
 
     @Nullable private static GetPositionsDTOKey getGetPositionsDTOKey(@NonNull Bundle args)
     {
-        return GetPositionsDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE));
+        Bundle bundledKey = args.getBundle(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE);
+        if (bundledKey != null)
+        {
+            return GetPositionsDTOKeyFactory.createFrom(bundledKey);
+        }
+        return null;
     }
 
     public static void putShownUser(@NonNull Bundle args, @NonNull UserBaseKey shownUser)
@@ -147,6 +156,17 @@ public class PositionListFragment
     {
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE));
     }
+
+    public static void putPositionType(@NonNull Bundle args, int positionType)
+    {
+        args.putInt(BUNDLE_KEY_POSITION_TYPE, positionType);
+    }
+
+    @Nullable private int getPositionType (@NonNull Bundle args)
+    {
+        return args.getInt(BUNDLE_KEY_POSITION_TYPE, PositionItemAdapter.VIEW_TYPE_OPEN_LONG);
+    }
+
     //</editor-fold>
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -162,14 +182,17 @@ public class PositionListFragment
         {
             shownUser = injectedUserBaseKey;
         }
-        if (args.containsKey(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE))
+        GetPositionsDTOKey keyFromArgs = getGetPositionsDTOKey(args);
+        if (keyFromArgs != null)
         {
-            getPositionsDTOKey = getGetPositionsDTOKey(args);
+            getPositionsDTOKey = keyFromArgs;
         }
         else
         {
             getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey.key, injectedPortfolioId.key);
         }
+
+        mPositionType = getPositionType(args);
         this.positionItemAdapter = createPositionItemAdapter();
     }
 
@@ -316,21 +339,19 @@ public class PositionListFragment
         return new PositionItemAdapter(
                 getActivity(),
                 getLayoutResIds(),
-                currentUserId);
+                currentUserId,
+                mPositionType);
     }
 
-    @NonNull protected Map<Integer, Integer> getLayoutResIds()
+    @NonNull private Map<Integer, Integer> getLayoutResIds()
     {
         Map<Integer, Integer> layouts = new HashMap<>();
         layouts.put(PositionItemAdapter.VIEW_TYPE_HEADER, R.layout.position_item_header);
         layouts.put(PositionItemAdapter.VIEW_TYPE_PLACEHOLDER, R.layout.position_quick_nothing);
         layouts.put(PositionItemAdapter.VIEW_TYPE_LOCKED, R.layout.position_locked_item);
         layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_LONG, R.layout.position_top_view);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_LONG_IN_PERIOD, R.layout.position_top_view);
         layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_SHORT, R.layout.position_top_view);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_SHORT_IN_PERIOD, R.layout.position_top_view);
         layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED, R.layout.position_top_view);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED_IN_PERIOD, R.layout.position_top_view);
         return layouts;
     }
 
@@ -500,7 +521,6 @@ public class PositionListFragment
 
         preparePortfolioHeaderView(portfolioDTO);
         portfolioHeaderView.linkWith(portfolioDTO);
-        positionItemAdapter.linkWith(portfolioDTO);
     }
 
     private void showPrettyReviewAndInvite(@NonNull PortfolioCompactDTO compactDTO)
@@ -545,6 +565,11 @@ public class PositionListFragment
                     if (listView != null)
                     {
                         int headerHeight = inflatedHeader.getMeasuredHeight();
+                        positionListView.setPadding(
+                                positionListView.getPaddingLeft(),
+                                headerHeight,
+                                positionListView.getPaddingRight(),
+                                positionListView.getPaddingBottom());
                         listView.setPadding(listView.getPaddingLeft(),
                                 headerHeight,
                                 listView.getPaddingRight(),
@@ -621,7 +646,7 @@ public class PositionListFragment
         getPositionsCache.get(getPositionsDTOKey);
     }
 
-    public void display()
+    private void display()
     {
         displayHeaderView();
         displayActionBarTitle();
@@ -636,44 +661,30 @@ public class PositionListFragment
             {
                 portfolioHeaderView.linkWith(userProfileDTO);
             }
+
             if (portfolioDTO != null)
             {
                 portfolioHeaderView.linkWith(portfolioDTO);
             }
+
         }
     }
 
-    public void displayActionBarTitle()
+    private void displayActionBarTitle()
     {
         String title = null;
-        String subtitle;
+
         if (portfolioDTO != null)
         {
             title = portfolioDTO.title;
         }
 
-        if (getPositionsDTO != null && getPositionsDTO.positions != null)
-        {
-            subtitle = String.format(getResources().getString(R.string.position_list_action_bar_header),
-                    getPositionsDTO.positions.size());
-        }
-        else
-        {
-            subtitle = null;
-        }
-
-        if (title == null && subtitle != null)
-        {
-            title = subtitle;
-            subtitle = null;
-        }
-        else if (title == null)
+        if (title == null)
         {
             title = getString(R.string.position_list_action_bar_header_unknown);
         }
 
         setActionBarTitle(title);
-        setActionBarSubtitle(subtitle);
     }
 
     @Override public int getTutorialLayout()

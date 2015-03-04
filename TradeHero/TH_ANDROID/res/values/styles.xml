@@ -583,7 +583,7 @@
   </style>
 
   <style name="TH.ResideMenuSmall">
-    <item name="android:alpha">0.5</item>
+    <item name="android:alpha">1</item>
   </style>
 
   <style name="TH.ResideMenuSmall.Text"

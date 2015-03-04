@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.settings;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,13 +16,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.preference.PreferenceFragment;
 import android.util.Pair;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.squareup.okhttp.Cache;
 import com.squareup.picasso.LruCache;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
@@ -109,6 +107,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap;
     @Inject AccountManager accountManager;
     @Inject @ForPicasso LruCache lruCache;
+    @Inject Cache httpCache;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
     @Inject protected PushNotificationManager pushNotificationManager;
     @Inject protected UserServiceWrapper userServiceWrapper;
@@ -157,10 +156,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         initView();
     }
 
-    @Override public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup,
-            Bundle paramBundle)
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
-        View view = super.onCreateView(paramLayoutInflater, paramViewGroup, paramBundle);
         view.setBackgroundColor(getResources().getColor(R.color.white));
 
         ListView listView = (ListView) view.findViewById(android.R.id.list);
@@ -173,12 +170,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                     (int) getResources().getDimension(R.dimen.setting_padding_bottom));
             listView.setOnScrollListener(dashboardBottomTabsScrollListener.get());
         }
-
-        return view;
-    }
-
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
         fetchUserProfile();
         initPreferenceClickHandlers();
         super.onViewCreated(view, savedInstanceState);
@@ -948,6 +939,13 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private void flushCache()
     {
         lruCache.clear();
+        try
+        {
+            httpCache.evictAll();
+        } catch (IOException e)
+        {
+            Timber.e(e, "Failed to evict all in httpCache");
+        }
     }
 
     private void showCacheCleared(@Nullable ProgressDialog progressDialog)

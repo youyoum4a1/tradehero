@@ -23,6 +23,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
+import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
@@ -72,10 +73,13 @@ import timber.log.Timber;
 public class TrendingStockFragment extends TrendingBaseFragment
         implements WithTutorial
 {
+    private static final String KEY_EXCHANGE_ID = TrendingMainFragment.class.getName() + ".exchangeId";
+
     @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
     @Inject ProviderListCacheRx providerListCache;
     @Inject Analytics analytics;
     @Inject @PreferredExchangeMarket ExchangeMarketPreference preferredExchangeMarket;
+    @Inject ProviderUtil providerUtil;
 
     @InjectView(R.id.trending_filter_selector_view) protected TrendingFilterSelectorView filterSelectorView;
     private DTOAdapterNew<ExchangeCompactSpinnerDTO> exchangeAdapter;
@@ -83,14 +87,31 @@ public class TrendingStockFragment extends TrendingBaseFragment
     private UserProfileDTO userProfileDTO;
     private ProviderDTOList providerDTOs;
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs;
+    @Nullable private ExchangeIntegerId exchangeIdFromArguments;
     @NonNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
 
     private ExtraTileAdapterNew wrapperAdapter;
     @Inject protected THBillingInteractorRx userInteractorRx;
 
+    public static void putExchangeId(@NonNull Bundle args, @NonNull ExchangeIntegerId exchangeId)
+    {
+        args.putBundle(KEY_EXCHANGE_ID, exchangeId.getArgs());
+    }
+
+    @Nullable private static ExchangeIntegerId getExchangeId(@NonNull Bundle args)
+    {
+        if (!args.containsKey(KEY_EXCHANGE_ID))
+        {
+            return null;
+        }
+        return new ExchangeIntegerId(args.getBundle(KEY_EXCHANGE_ID));
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        exchangeIdFromArguments = getExchangeId(getArguments());
+        getArguments().remove(KEY_EXCHANGE_ID);
         trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getResources());
         wrapperAdapter = createSecurityItemViewAdapter();
 
@@ -347,7 +368,16 @@ public class TrendingStockFragment extends TrendingBaseFragment
             {
                 preferredExchangeMarket.setDefaultIfUnset(exchangeCompactSpinnerDTOs, userProfileDTO);
             }
-            final ExchangeIntegerId preferredExchangeId = preferredExchangeMarket.getExchangeIntegerId();
+            final ExchangeIntegerId preferredExchangeId;
+            if (exchangeIdFromArguments != null)
+            {
+                preferredExchangeId = exchangeIdFromArguments;
+                exchangeIdFromArguments = null;
+            }
+            else
+            {
+                preferredExchangeId = preferredExchangeMarket.getExchangeIntegerId();
+            }
             ExchangeCompactSpinnerDTO initial = exchangeCompactSpinnerDTOs.findFirstWhere(
                     new Predicate<ExchangeCompactSpinnerDTO>()
                     {
@@ -431,7 +461,11 @@ public class TrendingStockFragment extends TrendingBaseFragment
         }
         else if (providerDTO != null)
         {
-            navigator.get().pushFragment(CompetitionWebViewFragment.class, providerDTO.getProviderId().getArgs());
+            Bundle args = new Bundle();
+            CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
+                    providerDTO.getProviderId(),
+                    currentUserId.toUserBaseKey()));
+            navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
         }
     }
 

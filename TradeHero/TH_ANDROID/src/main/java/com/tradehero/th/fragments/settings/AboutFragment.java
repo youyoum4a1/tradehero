@@ -4,8 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.app.ActionBar;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -97,20 +97,12 @@ public class AboutFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setActionBarTitle(getResources().getString(R.string.settings_about_title));
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.hide();
-        }
+        hideSupportActionBar();
     }
 
     @Override public void onDestroyOptionsMenu()
     {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.show();
-        }
+        showSupportActionBar();
         super.onDestroyOptionsMenu();
     }
 

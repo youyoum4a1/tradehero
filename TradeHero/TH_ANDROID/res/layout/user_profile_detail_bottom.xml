@@ -12,35 +12,6 @@
       >
 
     <LinearLayout
-        android:id="@+id/user_profile_heroes_count_wrapper"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        style="@style/UserProfile.BottomButtonBar"
-        >
-
-      <TextView
-          android:id="@+id/user_profile_heroes_count"
-          style="@style/UserProfile.Contained.Value"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="32"
-          android:gravity="center"
-          />
-
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="Heroes"
-          android:text="@string/user_profile_count_heroes"
-          style="@style/UserProfile.Contained.Header"
-          android:drawableTop="@drawable/ic_profile_heroes"
-          android:layout_marginLeft="@dimen/margin_xsmall"
-          android:gravity="center"
-          />
-
-    </LinearLayout>
-    <LinearLayout
         android:id="@+id/user_profile_followers_count_wrapper"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -64,6 +35,36 @@
           android:layout_width="wrap_content"
           style="@style/UserProfile.Contained.Header"
           android:drawableTop="@drawable/ic_profile_followers"
+          android:layout_marginLeft="@dimen/margin_xsmall"
+          android:gravity="center"
+          />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/user_profile_heroes_count_wrapper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        style="@style/UserProfile.BottomButtonBar"
+        >
+
+      <TextView
+          android:id="@+id/user_profile_heroes_count"
+          style="@style/UserProfile.Contained.Value"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="32"
+          android:gravity="center"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="Heroes"
+          android:text="@string/user_profile_count_heroes"
+          style="@style/UserProfile.Contained.Header"
+          android:drawableTop="@drawable/ic_profile_heroes"
           android:layout_marginLeft="@dimen/margin_xsmall"
           android:gravity="center"
           />

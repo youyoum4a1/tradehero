@@ -5,6 +5,7 @@
   <string name="store_header_in_app_purchases">In-App Purchases</string>
   <string name="store_buy_virtual_dollars">Virtual Dollars</string>
   <string name="store_buy_follow_credits">Follow Credits</string>
+  <string name="store_buy_restore_purchases">Restore Purchases</string>
   <string name="store_buy_stock_alerts">Stock Alerts</string>
   <string name="store_buy_reset_portfolio">Reset Portfolio</string>
   <string name="store_header_manage_purchases">Manage Purchases</string>

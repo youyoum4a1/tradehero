@@ -169,7 +169,7 @@ public class PortfolioCompactDTOUtil
             }
         }
         Timber.e(new IllegalArgumentException(), "Failed to get MarginCloseOutState for %f", marginCloseOut);
-        throw new IllegalArgumentException();
+        return MarginCloseOutState.DANGER;
     }
 
     @Nullable public static QuoteDTO createQuoteInPortfolioRefCcy(@Nullable QuoteDTO quoteDTO, @Nullable PortfolioCompactDTO portfolioCompactDTO)
@@ -205,5 +205,30 @@ public class PortfolioCompactDTOUtil
         converted.currencyISO = portfolioCompactDTO.currencyISO;
         converted.currencyDisplay = portfolioCompactDTO.currencyDisplay;
         return converted;
+    }
+
+    public static int getIconResId(@NonNull PortfolioCompactDTO portfolioDTO)
+    {
+        int imageResId = R.drawable.ic_portfolio_stocks;
+        if (portfolioDTO.providerId != null)
+        {
+            imageResId = R.drawable.ic_portfolio_competition;
+        }
+        else if (portfolioDTO.isDefault())
+        {
+            if (portfolioDTO.isFx())
+            {
+                imageResId = R.drawable.ic_portfolio_fx;
+            }
+            else
+            {
+                imageResId = R.drawable.ic_portfolio_stocks;
+            }
+        }
+        else if (portfolioDTO.isWatchlist)
+        {
+            imageResId = R.drawable.ic_portfolio_favorites;
+        }
+        return imageResId;
     }
 }

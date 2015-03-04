@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import timber.log.Timber;
 
 public class LeaderboardMarkUserOwnRankingView extends LeaderboardMarkUserItemView
 {
@@ -27,6 +28,13 @@ public class LeaderboardMarkUserOwnRankingView extends LeaderboardMarkUserItemVi
 
     @Override protected void handleOpenProfileButtonClicked()
     {
-        openTimeline(currentUserId.get());
+        if (viewDTO == null)
+        {
+            Timber.e(new Exception(), "No View DTO when trying to open profile");
+        }
+        else
+        {
+            openTimeline(viewDTO.currentUserId.get());
+        }
     }
 }

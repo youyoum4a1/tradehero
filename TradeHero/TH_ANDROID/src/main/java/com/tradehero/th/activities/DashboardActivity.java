@@ -44,6 +44,7 @@ import com.tradehero.th.UIModule;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
+import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.level.UserXPAchievementDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
@@ -84,6 +85,7 @@ import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
+import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
@@ -175,6 +177,7 @@ public class DashboardActivity extends BaseActivity
     @Inject Set<ActivityResultRequester> activityResultRequesters;
     @Inject @ForAnalytics Lazy<DashboardNavigator.DashboardFragmentWatcher> analyticsReporter;
     @Inject THAppsFlyer thAppsFlyer;
+    @Inject ProviderUtil providerUtil;
     @Inject MarketUtil marketUtil;
 
     @Inject Lazy<ProviderListCacheRx> providerListCache;
@@ -236,7 +239,6 @@ public class DashboardActivity extends BaseActivity
         }
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
-        pushNotificationManager.get().verify(this);
         pushNotificationManager.get().enablePush();
 
         initBroadcastReceivers();
@@ -320,6 +322,11 @@ public class DashboardActivity extends BaseActivity
         }
     }
 
+    public Toolbar getToolbar()
+    {
+        return toolbar;
+    }
+
     @Override public boolean onCreateOptionsMenu(Menu menu)
     {
         UserProfileDTO currentUserProfile =
@@ -380,7 +387,6 @@ public class DashboardActivity extends BaseActivity
         super.onStart();
         systemStatusCache.get(new SystemStatusKey());
         thAppsFlyer.sendTracking();
-        marketUtil.testMarketValid(this);
     }
 
     @Override protected void onResume()
@@ -501,7 +507,11 @@ public class DashboardActivity extends BaseActivity
                                         {
                                             enrollmentScreenIsOpened = true;
                                             enrollmentScreenOpened.add(providerDTO.id);
-                                            navigator.pushFragment(CompetitionWebViewFragment.class, providerDTO.getProviderId().getArgs());
+                                            Bundle args = new Bundle();
+                                            CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
+                                                    providerDTO.getProviderId(),
+                                                    currentUserId.toUserBaseKey()));
+                                            navigator.pushFragment(CompetitionWebViewFragment.class, args);
                                         }
                                     }
 
@@ -765,6 +775,7 @@ public class DashboardActivity extends BaseActivity
                     SettingsFragment.class,
                     MainCompetitionFragment.class,
                     BuySellStockFragment.class,
+                    FXMainFragment.class,
                     BuySellFXFragment.class,
                     StoreScreenFragment.class,
                     LeaderboardCommunityFragment.class,

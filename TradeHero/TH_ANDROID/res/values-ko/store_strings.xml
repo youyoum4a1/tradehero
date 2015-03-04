@@ -5,6 +5,7 @@
   <string name="store_header_in_app_purchases">앱 구매</string>
   <string name="store_buy_virtual_dollars">게임머니</string>
   <string name="store_buy_follow_credits">팔로우 크레딧</string>
+  <string name="store_buy_restore_purchases">Restore Purchases</string>
   <string name="store_buy_stock_alerts">주식 알림기능</string>
   <string name="store_buy_reset_portfolio">포트폴리오 초기화</string>
   <string name="store_header_manage_purchases">구매목록 관리</string>

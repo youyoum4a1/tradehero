@@ -43,7 +43,7 @@ import rx.functions.Func1;
 
 public class AbstractBuySellFragment extends BasePurchaseManagerFragment
 {
-    private final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".securityId";
+    private final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = "securityId";
     private final static String BUNDLE_KEY_IS_BUY = AbstractBuySellFragment.class.getName() + ".isBuy";
     private final static String BUNDLE_KEY_QUANTITY_BUY = AbstractBuySellFragment.class.getName() + ".quantityBuy";
     private final static String BUNDLE_KEY_QUANTITY_SELL = AbstractBuySellFragment.class.getName() + ".quantitySell";

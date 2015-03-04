@@ -78,7 +78,7 @@ public class ActionBarOwnerMixin
             }
             else
             {
-                actionBar.setHomeAsUpIndicator(R.drawable.ic_action_content_content_copy_white);
+                actionBar.setHomeAsUpIndicator(R.drawable.icn_actionbar_hamburger);
             }
         }
     }

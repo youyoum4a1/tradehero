@@ -38,6 +38,7 @@ import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -107,9 +108,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
                 R.layout.hero_list_item,
                 R.layout.hero_list_header,
                 R.layout.hero_list_header);
-        this.heroListAdapter.setHeroStatusButtonClickedListener(createHeroStatusButtonClickedListener());
         this.heroListAdapter.setFollowerId(followerId);
-        this.heroListAdapter.setMostSkilledClicked(createHeroListMostSkilledClickedListener());
         if (this.swipeRefreshLayout != null)
         {
             this.swipeRefreshLayout.setOnRefreshListener(this);
@@ -131,17 +130,6 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
         this.heroListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
-    protected HeroListItemView.OnHeroStatusButtonClickedListener createHeroStatusButtonClickedListener()
-    {
-        return new HeroListItemView.OnHeroStatusButtonClickedListener()
-        {
-            @Override public void onHeroStatusButtonClicked(HeroListItemView heroListItemView, HeroDTO heroDTO)
-            {
-                HeroesTabContentFragment.this.handleHeroStatusButtonClicked(heroDTO);
-            }
-        };
-    }
-
     private void setListShown(boolean shown)
     {
         if (shown)
@@ -160,6 +148,21 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
     {
         setActionBarTitle(getTitle());
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        onStopSubscriptions.add(heroListAdapter.getUserActionObservable()
+                .subscribe(
+                        new Action1<HeroListItemView.UserAction>()
+                        {
+                            @Override public void call(HeroListItemView.UserAction userAction)
+                            {
+                                handleUserAction(userAction);
+                            }
+                        },
+                        new EmptyAction1<Throwable>()));
     }
 
     @Override public void onResume()
@@ -214,11 +217,6 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        if (this.heroListAdapter != null)
-        {
-            this.heroListAdapter.setHeroStatusButtonClickedListener(null);
-            this.heroListAdapter.setMostSkilledClicked(null);
-        }
         this.heroListAdapter = null;
         if (this.heroListView != null)
         {
@@ -237,14 +235,73 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
                 .subscribe(new HeroManagerHeroListCacheObserver()));
     }
 
-    private void handleHeroStatusButtonClicked(HeroDTO heroDTO)
-    {
-        handleHeroStatusChangeRequired(heroDTO);
-    }
-
     private void handleHeroClicked(AdapterView<?> parent, View view, int position, long id)
     {
         pushTimelineFragment(((HeroDTO) parent.getItemAtPosition(position)).getBaseKey());
+    }
+
+    protected void unfollow(@NonNull UserBaseKey userBaseKey)
+    {
+        onStopSubscriptions.add(
+                AppObservable.bindFragment(
+                        this,
+                        new SimpleFollowUserAssistant(getActivity(), userBaseKey)
+                                .launchUnFollowRx())
+                        .subscribe(
+                                new Action1<UserProfileDTO>()
+                                {
+                                    @Override public void call(UserProfileDTO profile)
+                                    {
+                                        HeroesTabContentFragment.this.fetchHeroes();
+                                    }
+                                },
+                                new ToastOnErrorAction()));
+    }
+
+    private void pushTimelineFragment(UserBaseKey userBaseKey)
+    {
+        Bundle args = new Bundle();
+        thRouter.save(args, userBaseKey);
+        navigator.get().pushFragment(PushableTimelineFragment.class, args);
+    }
+
+    protected void handleUserAction(@NonNull HeroListItemView.UserAction userAction)
+    {
+        if (userAction instanceof HeroListItemAdapter.UserActionMostSkilled)
+        {
+            handleGoMostSkilled();
+        }
+        else if (userAction instanceof HeroListItemView.UserActionDelete)
+        {
+            handleHeroStatusChangeRequired(((HeroListItemView.UserActionDelete) userAction).heroDTO);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled userAction " + userAction);
+        }
+    }
+
+    private void handleGoMostSkilled()
+    {
+        // TODO this feels HACKy
+        //navigator.popFragment();
+
+        // TODO make it go to most skilled
+        //navigator.goToTab(DashboardTabType.COMMUNITY);
+
+        LeaderboardDefKey key =
+                new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID);
+        LeaderboardDefDTO dto = leaderboardDefCache.get().getCachedValue(key);
+        Bundle bundle = new Bundle(getArguments());
+        if (dto != null)
+        {
+            LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
+        }
+        else
+        {
+            LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID));
+        }
+        navigator.get().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
     }
 
     private void handleHeroStatusChangeRequired(@NonNull final HeroDTO clickedHeroDTO)
@@ -316,61 +373,12 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
         }
     }
 
-    protected void unfollow(@NonNull UserBaseKey userBaseKey)
-    {
-        onStopSubscriptions.add(
-                AppObservable.bindFragment(
-                        this,
-                        new SimpleFollowUserAssistant(getActivity(), userBaseKey)
-                                .launchUnFollowRx())
-                        .subscribe(
-                                new Action1<UserProfileDTO>()
-                                {
-                                    @Override public void call(UserProfileDTO profile)
-                                    {
-                                        HeroesTabContentFragment.this.fetchHeroes();
-                                    }
-                                },
-                                new ToastOnErrorAction()));
-    }
-
-    private void pushTimelineFragment(UserBaseKey userBaseKey)
-    {
-        Bundle args = new Bundle();
-        thRouter.save(args, userBaseKey);
-        navigator.get().pushFragment(PushableTimelineFragment.class, args);
-    }
-
-    private void handleGoMostSkilled()
-    {
-        // TODO this feels HACKy
-        //navigator.popFragment();
-
-        // TODO make it go to most skilled
-        //navigator.goToTab(DashboardTabType.COMMUNITY);
-
-        LeaderboardDefKey key =
-                new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID);
-        LeaderboardDefDTO dto = leaderboardDefCache.get().getCachedValue(key);
-        Bundle bundle = new Bundle(getArguments());
-        if (dto != null)
-        {
-            LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
-        }
-        else
-        {
-            LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID));
-        }
-        navigator.get().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
-    }
-
     abstract protected void display(HeroDTOExtWrapper heroDTOExtWrapper);
 
     protected void display(List<HeroDTO> heroDTOs)
     {
         linkWith(heroDTOs);
     }
-
 
     public void linkWith(List<HeroDTO> heroDTOs)
     {
@@ -427,11 +435,6 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
         }
     }
 
-    private HeroListMostSkilledClickedListener createHeroListMostSkilledClickedListener()
-    {
-        return new HeroListMostSkilledClickedListener();
-    }
-
     private class HeroManagerHeroListCacheObserver
             implements Observer<Pair<UserBaseKey, HeroDTOExtWrapper>>
     {
@@ -456,14 +459,6 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
             enableSwipeRefresh(true);
             Timber.e(e, "Could not fetch heroes");
             THToast.show(R.string.error_fetch_hero);
-        }
-    }
-
-    private class HeroListMostSkilledClickedListener implements View.OnClickListener
-    {
-        @Override public void onClick(View view)
-        {
-            handleGoMostSkilled();
         }
     }
 

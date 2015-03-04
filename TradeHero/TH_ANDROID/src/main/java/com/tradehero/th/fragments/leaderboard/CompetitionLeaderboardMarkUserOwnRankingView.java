@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Spannable;
@@ -16,13 +17,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLeaderboardMarkUserItemView
 {
@@ -51,6 +56,23 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
     }
     //</editor-fold>
 
+    @Override public void display(@NonNull LeaderboardMarkUserItemView.DTO parentViewDTO)
+    {
+        super.display(parentViewDTO);
+        if (parentViewDTO instanceof DTO)
+        {
+            DTO viewDTO = (DTO) parentViewDTO;
+            if (infoButtonContainer != null)
+            {
+                infoButtonContainer.setVisibility(viewDTO.infoButtonContainerVisibility);
+            }
+            if (infoText != null)
+            {
+                infoText.setText(viewDTO.infoText);
+            }
+        }
+    }
+
     @Override protected void displayUserIsNotRanked()
     {
         super.displayUserIsNotRanked();
@@ -68,12 +90,6 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         lbmuRoi.setBackgroundResource(R.drawable.basic_transparent_selector);
 
         infoButtonContainer.setVisibility(View.GONE);
-    }
-
-    @Override public void display(LeaderboardUserDTO leaderboardUserDTO)
-    {
-        super.display(leaderboardUserDTO);
-        displayPrize();
     }
 
     private ForegroundColorSpan createTextColorSpan()
@@ -101,14 +117,22 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
 
     public String getRules()
     {
-        return providerUtil.getRulesPage(providerDTO.getProviderId());
+        return providerUtil.getRulesPage(((CompetitionLeaderboardMarkUserItemView.DTO) viewDTO).providerDTO.getProviderId());
     }
 
     @Override protected void handleOpenProfileButtonClicked()
     {
-        openTimeline(currentUserId.get());
+        if (viewDTO != null)
+        {
+            openTimeline(viewDTO.currentUserId.get());
+        }
+        else
+        {
+            Timber.e(new Exception(), "No view DTO when opening profile");
+        }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.competition_own_ranking_info)
     public void onInfoButtonClicked()
     {
@@ -122,26 +146,25 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         }
     }
 
-    @Override protected void displayPrize()
+    public static class DTO extends CompetitionLeaderboardMarkUserItemView.DTO
     {
-        super.displayPrize();
-        updateNeededRanks();
-    }
+        @ViewVisibilityValue final int infoButtonContainerVisibility;
+        @NonNull final Spanned infoText;
 
-    private void updateNeededRanks()
-    {
-        if (prizeDTOSize != 0 && this.getCurrentRank() != null && this.getCurrentRank() > prizeDTOSize)
+        public DTO(@NonNull Resources resources,
+                @NonNull CurrentUserId currentUserId,
+                @NonNull LeaderboardUserDTO leaderboardItem,
+                @NonNull UserProfileDTO currentUserProfile,
+                int prizeDTOSize,
+                @NonNull ProviderDTO providerDTO)
         {
-            int needed = getCurrentRank() - prizeDTOSize;
-            THSignedNumber.builder(needed)
-                    .format(getContext().getString(R.string.leaderboard_ranks_needed))
-                    .build()
-                    .into(infoText);
-            infoButtonContainer.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            infoButtonContainer.setVisibility(View.GONE);
+            super(resources, currentUserId, leaderboardItem, currentUserProfile, prizeDTOSize, providerDTO);
+            int currentRank = leaderboardItem.ordinalPosition + 1;
+            this.infoButtonContainerVisibility = prizeDTOSize != 0 && currentRank > prizeDTOSize ? View.VISIBLE : View.GONE;
+            int needed = currentRank - prizeDTOSize;
+            this.infoText = THSignedNumber.builder(needed)
+                    .format(resources.getString(R.string.leaderboard_ranks_needed))
+                    .build().createSpanned();
         }
     }
 }

@@ -108,7 +108,7 @@ public class GuideActivity extends Activity
 
                 ImageView closeIv = new ImageView(GuideActivity.this);
                 closeIv.setId(CLOSE_IMAGE_ID);
-                closeIv.setImageResource(R.drawable.cross_red);
+                closeIv.setImageResource(android.R.drawable.ic_delete);
                 closeIv.setOnClickListener(GuideActivity.this);
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT | RelativeLayout.ALIGN_PARENT_TOP);

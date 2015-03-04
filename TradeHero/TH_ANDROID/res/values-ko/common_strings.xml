@@ -28,7 +28,7 @@
   <string name="dashboard_trending">주식거래</string>
   <string name="dashboard_community">소셜</string>
   <string name="dashboard_message_center">메세지</string>
-
+  <string name="dashboard_alerts">Alerts</string>
   <string name="dashboard_store">스토어</string>
   <string name="dashboard_menu_settings">설정</string>
 
