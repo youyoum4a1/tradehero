@@ -48,6 +48,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
 {
     private static final int MAX_SELECTABLE_EXCHANGES = 3;
     private static final int MAX_TOP_STOCKS = 6;
+    private static final String MAP_ITEM_DTO = "map";
 
     @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
 
@@ -84,12 +85,13 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
         return inflater.inflate(R.layout.on_board_map_exchange, container, false);
     }
 
+    @SuppressLint("InflateParams")
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         exchangeList.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.on_board_started_header, null), "title", false);
-        exchangeList.addHeaderView(mapHeaderSwitcherView, "map", true);
+        exchangeList.addHeaderView(mapHeaderSwitcherView, MAP_ITEM_DTO, true);
         exchangeList.setAdapter(exchangeAdapter);
         displayNextButton();
     }
@@ -182,7 +184,8 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
     {
         nextButton.setVisibility(View.VISIBLE);
         Object item = parent.getItemAtPosition(position);
-        if (item.equals("map"))
+        //noinspection StatementWithEmptyBody
+        if (item.equals(MAP_ITEM_DTO))
         {
             // Nothing to do, the map was clicked
         }
