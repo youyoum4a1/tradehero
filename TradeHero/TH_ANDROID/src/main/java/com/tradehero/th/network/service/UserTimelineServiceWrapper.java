@@ -8,6 +8,7 @@ import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.timeline.TimelineSection;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
+import com.tradehero.th.api.timeline.key.TimelineKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.timeline.TimelineDTOProcessor;
 import javax.inject.Inject;
@@ -17,18 +18,15 @@ import rx.Observable;
 
 @Singleton public class UserTimelineServiceWrapper
 {
-    @NonNull private final UserTimelineService userTimelineService;
     @NonNull private final UserTimelineServiceRx userTimelineServiceRx;
     @NonNull private final Provider<TimelineDTOProcessor> timelineProcessorProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public UserTimelineServiceWrapper(
-            @NonNull UserTimelineService userTimelineService,
             @NonNull UserTimelineServiceRx userTimelineServiceRx,
             @NonNull Provider<TimelineDTOProcessor> timelineProcessorProvider)
     {
         super();
-        this.userTimelineService = userTimelineService;
         this.userTimelineServiceRx = userTimelineServiceRx;
         this.timelineProcessorProvider = timelineProcessorProvider;
     }
@@ -54,13 +52,6 @@ import rx.Observable;
         return userTimelineServiceRx.getTimeline(TimelineSection.Timeline, userId.key, maxCount, maxId, minId);
     }
 
-    public TimelineDTO getTimelineBySection(TimelineSection section,
-            @NonNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
-    {
-        // Make a key that contains all info.
-        return userTimelineService.getTimeline(section, userId.key, maxCount, maxId, minId);
-    }
-
     @NonNull public Observable<TimelineDTO> getTimelineBySectionRx(TimelineSection section,
             @NonNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
     {
@@ -72,6 +63,11 @@ import rx.Observable;
     @NonNull public Observable<TimelineDTO> getTimelineBySectionRx(TimelineSection section, @NonNull UserBaseKey userBaseKey, RangeDTO rangeDTO)
     {
         return getTimelineBySectionRx(section, userBaseKey, rangeDTO.maxCount, rangeDTO.maxId, rangeDTO.minId);
+    }
+
+    @NonNull public Observable<TimelineDTO> getTimelineBySectionRx(@NonNull TimelineKey timelineKey)
+    {
+        return getTimelineBySectionRx(timelineKey.section, timelineKey.userBaseKey, timelineKey.range);
     }
     //</editor-fold>
 

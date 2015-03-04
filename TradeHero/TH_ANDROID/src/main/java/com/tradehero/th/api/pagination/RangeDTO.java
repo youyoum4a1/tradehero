@@ -1,29 +1,30 @@
 package com.tradehero.th.api.pagination;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 public class RangeDTO implements Comparable<RangeDTO>
 {
-    public final Integer maxCount;
-    public final Integer maxId;
-    public final Integer minId;
+    @Nullable public final Integer maxCount;
+    @Nullable public final Integer maxId;
+    @Nullable public final Integer minId;
 
-    public static RangeDTO create(Integer maxCount, Integer maxId, Integer minId)
+    public static RangeDTO create(
+            @Nullable Integer maxCount,
+            @Nullable Integer maxId,
+            @Nullable Integer minId)
     {
         return new RangeDTO(maxCount, maxId, minId);
     }
 
-    public RangeDTO(Integer maxCount, Integer maxId, Integer minId)
+    public RangeDTO(
+            @Nullable Integer maxCount,
+            @Nullable Integer maxId,
+            @Nullable Integer minId)
     {
         this.maxCount = maxCount;
         this.maxId = maxId;
         this.minId = minId;
-    }
-
-    public RangeDTO copy(RangeDTO newRangeDTO)
-    {
-        return create(maxCount,
-                newRangeDTO.maxId != null ? newRangeDTO.maxId : maxId,
-                newRangeDTO.minId != null ? newRangeDTO.minId : minId
-        );
     }
 
     @Override public int hashCode()
@@ -34,12 +35,24 @@ public class RangeDTO implements Comparable<RangeDTO>
         return result;
     }
 
-    @Override public int compareTo(RangeDTO another)
+    @Override public boolean equals(@Nullable Object other)
     {
-        if (another == null)
+        if (!(other instanceof RangeDTO))
         {
-            return 1;
+            return false;
         }
+        if (other == this)
+        {
+            return true;
+        }
+        RangeDTO otherRange = (RangeDTO) other;
+        return (maxCount == null ? otherRange.maxCount == null : maxCount.equals(otherRange.maxCount))
+                && (maxId == null ? otherRange.maxId == null : maxId.equals(otherRange.maxId))
+                && (minId == null ? otherRange.minId == null : minId.equals(otherRange.minId));
+    }
+
+    @Override public int compareTo(@NonNull RangeDTO another)
+    {
         if (maxId != null && another.maxId != null)
         {
             return maxId - another.maxId;
@@ -49,7 +62,7 @@ public class RangeDTO implements Comparable<RangeDTO>
         {
             return minId - another.minId;
         }
-        
+
         return 0;
     }
 }

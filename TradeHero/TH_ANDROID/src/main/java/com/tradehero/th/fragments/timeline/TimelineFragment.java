@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.timeline;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -34,6 +35,9 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.api.timeline.TimelineSection;
+import com.tradehero.th.api.timeline.key.TimelineKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -60,6 +64,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
+import com.tradehero.th.persistence.timeline.TimelineCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ReplaceWith;
@@ -116,6 +121,7 @@ public class TimelineFragment extends DashboardFragment
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
     @Inject protected THRouter thRouter;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
+    @Inject protected TimelineCacheRx timelineCache;
 
     @InjectView(R.id.timeline_list_view) StickyListHeadersListView timelineListView;
     @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshContainer;
@@ -131,7 +137,6 @@ public class TimelineFragment extends DashboardFragment
     private MainTimelineAdapter mainTimelineAdapter;
     private UserProfileView userProfileView;
     private View loadingView;
-    protected ChoiceFollowUserAssistantWithDialog choiceFollowUserAssistantWithDialog;
     @Nullable FxOnBoardDialogFragment onBoardDialogFragment;
 
     public TabType currentTab = TabType.PORTFOLIO_LIST;
@@ -159,17 +164,14 @@ public class TimelineFragment extends DashboardFragment
         {
             shownUserBaseKey = currentUserId.toUserBaseKey();
         }
-        mainTimelineAdapter = new MainTimelineAdapter(getActivity(), shownUserBaseKey,
+        mainTimelineAdapter = new MainTimelineAdapter(getActivity(),
                 R.layout.timeline_item_view,
                 R.layout.portfolio_list_item,
                 R.layout.user_profile_stat_view);
         mainTimelineAdapter.setCurrentTabType(currentTab);
-
-        getActivity().getSupportLoaderManager().initLoader(
-                mainTimelineAdapter.getTimelineLoaderId(), null,
-                mainTimelineAdapter.getLoaderTimelineCallback());
     }
 
+    @SuppressLint("InflateParams")
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_timeline, container, false);
@@ -259,14 +261,7 @@ public class TimelineFragment extends DashboardFragment
                 TimelineFragment.this.display(tabType);
             }
         });
-        mainTimelineAdapter.setOnLoadFinishedListener(new MainTimelineAdapter.OnLoadFinishedListener()
-        {
-            @Override public void onLoadFinished()
-            {
-                TimelineFragment.this.onLoadFinished();
-            }
-        });
-        mainTimelineAdapter.getTimelineLoader().loadNext();
+        loadLatestTimeline();
 
         FlagNearEdgeScrollListener nearEndScrollListener = createNearEndScrollListener();
         nearEndScrollListener.lowerEndFlag();
@@ -279,7 +274,7 @@ public class TimelineFragment extends DashboardFragment
                 switch (currentTab)
                 {
                     case TIMELINE:
-                        mainTimelineAdapter.getTimelineLoader().loadNext();
+                        loadLatestTimeline();
                         break;
 
                     case STATS:
@@ -316,6 +311,48 @@ public class TimelineFragment extends DashboardFragment
         });
     }
 
+    protected void loadLatestTimeline()
+    {
+        onStopSubscriptions.add(AppObservable.bindFragment(
+                this,
+                timelineCache.get(
+                        new TimelineKey(TimelineSection.Timeline,
+                                shownUserBaseKey,
+                                mainTimelineAdapter.getLatestTimelineRange()))
+                        .take(1))
+                .subscribe(
+                        new Action1<Pair<TimelineKey, TimelineDTO>>()
+                        {
+                            @Override public void call(Pair<TimelineKey, TimelineDTO> pair)
+                            {
+                                mainTimelineAdapter.appendHeadTimeline(pair.second.getEnhancedItems());
+                                swipeRefreshContainer.setRefreshing(false);
+                            }
+                        },
+                        new ToastOnErrorAction()));
+    }
+
+    protected void loadOlderTimeline()
+    {
+        onStopSubscriptions.add(AppObservable.bindFragment(
+                this,
+                timelineCache.get(
+                        new TimelineKey(TimelineSection.Timeline,
+                                shownUserBaseKey,
+                                mainTimelineAdapter.getOlderTimelineRange()))
+                        .take(1))
+                .subscribe(
+                        new Action1<Pair<TimelineKey, TimelineDTO>>()
+                        {
+                            @Override public void call(Pair<TimelineKey, TimelineDTO> pair)
+                            {
+                                mainTimelineAdapter.appendTailTimeline(pair.second.getEnhancedItems());
+                                loadingView.setVisibility(View.GONE);
+                            }
+                        },
+                        new ToastOnErrorAction()));
+    }
+
     private FlagNearEdgeScrollListener createNearEndScrollListener()
     {
         return new FlagNearEdgeScrollListener()
@@ -323,7 +360,7 @@ public class TimelineFragment extends DashboardFragment
             @Override public void raiseEndFlag()
             {
                 super.raiseEndFlag();
-                mainTimelineAdapter.getTimelineLoader().loadPrevious();
+                loadOlderTimeline();
                 loadingView.setVisibility(View.VISIBLE);
             }
         };
@@ -341,7 +378,6 @@ public class TimelineFragment extends DashboardFragment
             tabHost.setOnTranslate(null);
         }
         mainTimelineAdapter.setProfileClickListener(null);
-        mainTimelineAdapter.setOnLoadFinishedListener(null);
         timelineListView.setOnScrollListener(null);
         swipeRefreshContainer.setOnRefreshListener(null);
         super.onPause();
@@ -522,11 +558,6 @@ public class TimelineFragment extends DashboardFragment
         }
     }
 
-    /**
-     *
-     * @param ownedPortfolioId
-     * @param portfolioDTO
-     */
     private void pushPositionListFragment(OwnedPortfolioId ownedPortfolioId, @Nullable PortfolioDTO portfolioDTO)
     {
         Bundle args = new Bundle();
