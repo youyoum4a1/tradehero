@@ -310,6 +310,11 @@ public class CompetitionDetailFragment extends Fragment
     }
 
     private void initCompetitionTitle() {
+        if(creatorIsMe()){
+            ivEditCompetitionIntro.setVisibility(View.VISIBLE);
+        }else{
+            ivEditCompetitionIntro.setVisibility(View.GONE);
+        }
         tvCompetitionIntro.setText(userCompetitionDTO.getHostUserName() + ": " + userCompetitionDTO.description);
         tvCompetitionPeriod.setText(userCompetitionDTO.getDisplayDatePeriod());
         tvCompetitionExchange.setText(userCompetitionDTO.getDisplayExchangeShort());
@@ -798,5 +803,12 @@ public class CompetitionDetailFragment extends Fragment
         if (navigator != null) {
             navigator.popFragment();
         }
+    }
+
+    private boolean creatorIsMe(){
+        if(currentUserId.toUserBaseKey().getUserId() == userCompetitionDTO.hostUserId){
+            return true;
+        }
+        return false;
     }
 }
