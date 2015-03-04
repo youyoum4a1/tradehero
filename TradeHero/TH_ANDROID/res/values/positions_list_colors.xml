@@ -2,6 +2,6 @@
 <resources>
 
   <color name="portfolio_header_text_color">#4E6084</color>
-  <color name="portfolio_header_background_color">#EEBBBBBB</color>
+  <color name="portfolio_header_background_color">#F2F2F2</color>
 
 </resources>

@@ -18,9 +18,9 @@
   <string name="portfolio_item_title_loading">Loading…</string>
   <string name="portfolio_header_total_value">Total Value</string>
   <string name="portfolio_header_value">Value</string>
-  <string name="portfolio_header_cash_value">Cash Value</string>
-  <string name="portfolio_header_total_asset_value">Total Asset Value</string>
-  <string name="portfolio_header_total_profit">Profit/Loss on Open Value</string>
+  <string name="portfolio_header_cash_value">Cash Left</string>
+  <string name="portfolio_header_total_asset_value">Total Value</string>
+  <string name="portfolio_header_total_profit">Profit</string>
   <string name="portfolio_header_margin_title">Margin</string>
   <string name="portfolio_header_margin_available_title">Margin Available</string>
   <string name="portfolio_header_margin_used_title">Margin Used</string>

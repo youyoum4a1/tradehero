@@ -31,7 +31,6 @@ import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.RetrofitProtectedModule;
 import com.tradehero.th.network.service.SocialLinker;
 import com.tradehero.th.network.service.SocialServiceWrapper;
-import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.RetrofitConstants;
 import dagger.Lazy;
@@ -63,13 +62,6 @@ import timber.log.Timber;
 )
 public class RetrofitModule
 {
-    //<editor-fold desc="API Services">
-    @Provides @Singleton UserTimelineService provideUserTimelineService(RestAdapter adapter)
-    {
-        return adapter.create(UserTimelineService.class);
-    }
-    //</editor-fold>
-
     @Provides JsonDeserializer<PositionDTO> providesPositionDTODeserialiser(PositionDTODeserialiser deserialiser)
     {
         return deserialiser;

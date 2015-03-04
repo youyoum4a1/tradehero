@@ -9,7 +9,7 @@ import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-public class CompetitionLeaderboardPositionListFragment extends LeaderboardPositionListFragment
+public class CompetitionLeaderboardPositionListFragment extends PositionListFragment
 {
     @Inject Context doNotRemoveOrItFails;
 
@@ -25,7 +25,11 @@ public class CompetitionLeaderboardPositionListFragment extends LeaderboardPosit
 
     private static ProviderId getProviderId(Bundle args)
     {
-        return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
+        Bundle bundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID);
+        if (bundle == null) {
+            return null;
+        }
+        return new ProviderId(bundle);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)

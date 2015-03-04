@@ -12,7 +12,7 @@ import rx.Subscription;
 abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         extends Fragment
 {
-    private static final String BUNDLE_KEY_SECURITY_ID = AbstractSecurityInfoFragment.class.getName() + ".securityId";
+    private static final String BUNDLE_KEY_SECURITY_ID = "securityId";
 
     protected SecurityId securityId;
     protected InfoType value;

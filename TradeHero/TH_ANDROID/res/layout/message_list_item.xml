@@ -56,7 +56,7 @@
         android:textColorLink="@color/tradehero_blue"
         style="@style/TH.UserNameTitle"
         tools:text="From me!"
-        android:maxLines="2"
+        android:maxLines="1"
         />
 
     <com.tradehero.th.widget.MarkdownTextView
@@ -67,7 +67,7 @@
         style="@style/TH.Caption"
         android:layout_below="@id/message_item_title"
         tools:text="Subtitle"
-        android:maxLines="2"
+        android:maxLines="1"
         />
 
     <com.tradehero.th.widget.MarkdownTextView
@@ -79,7 +79,7 @@
         style="@style/TH.Body"
         android:layout_below="@id/message_item_sub_title"
         tools:text="Hello world!"
-        android:maxLines="2"
+        android:maxLines="1"
         />
 
     <TextView
@@ -90,7 +90,7 @@
         android:layout_alignParentRight="true"
         tools:text="A moment ago"
         android:layout_marginTop="0dip"
-        android:maxLines="2"
+        android:maxLines="1"
         />
 
   </RelativeLayout>

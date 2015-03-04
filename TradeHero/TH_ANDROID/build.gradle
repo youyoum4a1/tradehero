@@ -372,6 +372,7 @@ dependencies {
     androidTestCompile files('build/test-classes')
   }
 
+  // Remove those when building for Amazon
   releaseCompile 'com.google.android.gms:play-services-base:6.5.87' // This one has fewer methods
   //releaseCompile 'com.google.android.gms:play-services:6.1.+'
 }

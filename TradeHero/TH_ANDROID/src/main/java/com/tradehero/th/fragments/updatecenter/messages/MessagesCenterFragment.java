@@ -94,20 +94,19 @@ public class MessagesCenterFragment extends DashboardFragment
         return view;
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    @Override public void onStart()
     {
-        super.onViewCreated(view, savedInstanceState);
-
+        super.onStart();
         //if size of items already fetched is 0,then force to reload
         if (alreadyFetched == null || alreadyFetched.size() == 0)
         {
-            Timber.d("onViewCreated fetch again");
+            Timber.d("onStart fetch again");
             displayLoadingView(true);
             getOrFetchMessages();
         }
         else
         {
-            Timber.d("onViewCreated don't have to fetch again");
+            Timber.d("onStart don't have to fetch again");
             hideLoadingView();
             appendMessagesList(alreadyFetched);
             setReadAllLayoutVisable();

@@ -160,6 +160,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
     {
         return new LeaderboardFriendsSetAdapter(
                 getActivity(),
+                currentUserId,
                 R.layout.lbmu_item_roi_mode,
                 R.layout.leaderboard_friends_social_item_view);
     }

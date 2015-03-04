@@ -4,6 +4,9 @@ public class AnalyticsConstants
 {
     public static final String AppLaunch = "AppLaunch";
     public static final String TabBar_Me = "TabBar/Me";
+    public static final String TabBar_Home = "TabBar/Home";
+    public static final String TabBar_UpdateCenter = "TabBar/UpdateCenter";
+    public static final String TabBar_Alerts = "TabBar/Alerts";
     public static final String TabBar_Trade = "TabBar/Trade";
     public static final String TabBar_Trending = "TabBar/Trending";
     public static final String TabBar_Discovery = "TabBar/Discovery";

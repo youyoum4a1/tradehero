@@ -7,6 +7,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.widget.TextView;
@@ -38,6 +39,7 @@ public class THSignedNumber
     private final Double value;
     private final int relevantDigitCount;
     @ColorRes private final int fallbackColorResId;
+    private final boolean defaultColorForBackground;
     private String formattedNumber;
     @Nullable @ColorRes private Integer colorResId;
 
@@ -65,6 +67,7 @@ public class THSignedNumber
         private boolean boldSign;
         private boolean boldValue;
         @Nullable private String format;
+        private boolean defaultColorForBackground;
 
         //<editor-fold desc="Constructors">
         protected Builder(double value)
@@ -114,6 +117,12 @@ public class THSignedNumber
         public BuilderType withFallbackColor(@ColorRes int fallbackColorResId)
         {
             this.fallbackColorResId = fallbackColorResId;
+            return self().withDefaultColor();
+        }
+
+        public BuilderType defaultColorForBackground()
+        {
+            this.defaultColorForBackground = true;
             return self().withDefaultColor();
         }
 
@@ -202,6 +211,7 @@ public class THSignedNumber
         this.boldSign = builder.boldSign;
         this.boldValue = builder.boldValue;
         this.fallbackColorResId = builder.fallbackColorResId;
+        this.defaultColorForBackground = builder.defaultColorForBackground;
         if (builder.signColorResId != null)
         {
             this.signColorResId = builder.signColorResId;
@@ -248,14 +258,17 @@ public class THSignedNumber
 
     public void into(@NonNull TextView textView)
     {
-        Spanned result = (Spanned) getCombinedSpan();
+        textView.setText(createSpanned());
+    }
 
+    public Spanned createSpanned()
+    {
+        Spanned result = (Spanned) getCombinedSpan();
         if (format != null)
         {
             result = SpanFormatter.format(format, result);
         }
-
-        textView.setText(result);
+        return result;
     }
 
     protected Spanned getSpannedSign()
@@ -293,7 +306,14 @@ public class THSignedNumber
         }
         else if (useDefaultColor)
         {
-            signSpanBuilder.setSpan(new ForegroundColorSpan(getColor()), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (defaultColorForBackground)
+            {
+                signSpanBuilder.setSpan(new BackgroundColorSpan(getColor()), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            else
+            {
+                signSpanBuilder.setSpan(new ForegroundColorSpan(getColor()), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
         }
         return signSpanBuilder;
     }

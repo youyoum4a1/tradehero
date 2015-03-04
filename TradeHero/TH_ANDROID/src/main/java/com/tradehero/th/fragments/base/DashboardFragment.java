@@ -1,21 +1,25 @@
 package com.tradehero.th.fragments.base;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -39,7 +43,6 @@ abstract public class DashboardFragment extends Fragment
 
     protected ActionBarOwnerMixin actionBarOwnerMixin;
     @NonNull protected SubscriptionList onStopSubscriptions;
-
 
     @Inject protected Lazy<DashboardNavigator> navigator;
     @Inject Lazy<ResideMenu> resideMenuLazy;
@@ -94,18 +97,10 @@ abstract public class DashboardFragment extends Fragment
         this.onStopSubscriptions = new SubscriptionList();
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-        if (onStopSubscriptions == null) {
-            onStopSubscriptions = new SubscriptionList();
-        }
-    }
-
     @Override public void onStop()
     {
         this.onStopSubscriptions.unsubscribe();
-        this.onStopSubscriptions = null;
+        this.onStopSubscriptions = new SubscriptionList();
         super.onStop();
     }
 
@@ -117,17 +112,13 @@ abstract public class DashboardFragment extends Fragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
+        if (isOptionMenuVisible)
         {
-            if (isOptionMenuVisible)
-            {
-                actionBar.show();
-            }
-            else
-            {
-                actionBar.hide();
-            }
+            showSupportActionBar();
+        }
+        else
+        {
+            hideSupportActionBar();
         }
 
         if (this instanceof WithTutorial)
@@ -144,12 +135,30 @@ abstract public class DashboardFragment extends Fragment
     {
         if (getActivity() != null)
         {
-            return getActivity().getActionBar();
+            return ((ActionBarActivity) getActivity()).getSupportActionBar();
         }
         else
         {
             Timber.e(new Exception(), "getActivity is Null");
             return null;
+        }
+    }
+
+    protected void hideSupportActionBar()
+    {
+        ActionBar supportActionBar = getSupportActionBar();
+        if(supportActionBar != null)
+        {
+            supportActionBar.hide();
+        }
+    }
+
+    protected void showSupportActionBar()
+    {
+        ActionBar supportActionBar = getSupportActionBar();
+        if(supportActionBar != null)
+        {
+            supportActionBar.show();
         }
     }
 

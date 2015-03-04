@@ -54,6 +54,7 @@
         android:minWidth="@dimen/size_8"
         android:gravity="center"
         android:lines="1"
+        android:text="@string/loading_loading"
         tools:text="146.264"
         />
 

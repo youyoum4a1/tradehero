@@ -1,11 +1,12 @@
 package com.tradehero.th.api.timeline;
 
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import java.util.Collections;
 import java.util.List;
 
-public class TimelineDTO
+public class TimelineDTO implements DTO
 {
     private List<UserProfileCompactDTO> users;
     private List<SecurityCompactDTO> securities;

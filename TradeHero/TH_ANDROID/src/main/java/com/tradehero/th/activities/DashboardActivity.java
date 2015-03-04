@@ -85,6 +85,7 @@ import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
+import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
@@ -183,6 +184,7 @@ public class DashboardActivity extends BaseActivity
     private boolean enrollmentScreenIsOpened = false;
 
     @InjectView(R.id.xp_toast_box) XpToast xpToast;
+
     @InjectView(R.id.my_toolbar) Toolbar toolbar;
 
     private Subscription notificationFetchSubscription;
@@ -318,6 +320,11 @@ public class DashboardActivity extends BaseActivity
         {
             showUpgradeDialog();
         }
+    }
+
+    public Toolbar getToolbar()
+    {
+        return toolbar;
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
@@ -768,6 +775,7 @@ public class DashboardActivity extends BaseActivity
                     SettingsFragment.class,
                     MainCompetitionFragment.class,
                     BuySellStockFragment.class,
+                    FXMainFragment.class,
                     BuySellFXFragment.class,
                     StoreScreenFragment.class,
                     LeaderboardCommunityFragment.class,

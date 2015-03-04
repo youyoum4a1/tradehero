@@ -47,6 +47,7 @@
         android:layout_toLeftOf="@id/notification_unread_flag"
         android:layout_alignParentLeft="true"
         tools:text="Tho Nguyen has become the best trader of the world!"
+        android:maxLines="4"
         />
 
     <TextView

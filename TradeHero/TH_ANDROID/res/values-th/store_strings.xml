@@ -5,6 +5,7 @@
   <string name="store_header_in_app_purchases">In-App Purchases</string>
   <string name="store_buy_virtual_dollars">ดอลลาร์เสมือน</string>
   <string name="store_buy_follow_credits">เครดิตติดตาม</string>
+  <string name="store_buy_restore_purchases">Restore Purchases</string>
   <string name="store_buy_stock_alerts">แจ้งเตือนราคาหุ้น</string>
   <string name="store_buy_reset_portfolio">รีเซทพอร์ทการลงทุน</string>
   <string name="store_header_manage_purchases">จัดการการซื้อ</string>

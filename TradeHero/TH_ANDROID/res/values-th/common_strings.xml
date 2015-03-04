@@ -30,6 +30,7 @@
   <string name="dashboard_education">ศูนย์การเรียนรู้</string>
   <string name="dashboard_community">บอร์ดผู้นำ</string>
   <string name="dashboard_message_center">ข้อความ</string>
+  <string name="dashboard_alerts">Alerts</string>
   <string name="dashboard_referral">แนะนำเพื่อน</string>
   <string name="dashboard_contest_center">การแข่งขัน</string>
   <string name="dashboard_store">เก็บบันทึก</string>

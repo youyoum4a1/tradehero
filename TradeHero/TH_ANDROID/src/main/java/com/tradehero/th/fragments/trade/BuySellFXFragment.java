@@ -89,9 +89,14 @@ public class BuySellFXFragment extends BuySellFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        fetchKChart(FXChartGranularity.min1);
         initTimeSpanButton();
         closeUnits = getCloseAttribute(getArguments());
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        fetchKChart(FXChartGranularity.min1);
     }
 
     @Nullable @Override protected PortfolioCompactDTO getPreferredApplicablePortfolio(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)

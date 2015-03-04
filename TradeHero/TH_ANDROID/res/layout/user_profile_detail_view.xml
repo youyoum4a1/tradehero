@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:background="@color/black">
+        tools:background="@color/tradehero_blue">
 
       <RelativeLayout
           android:layout_width="match_parent"
@@ -61,8 +61,6 @@
             android:shadowDy="1"
             android:shadowDx="1"
             android:shadowRadius="1"
-            android:layout_toLeftOf="@id/user_profile_edit"
-            android:layout_toStartOf="@id/user_profile_edit"
             android:layout_marginTop="@dimen/margin_small"
             tools:text="Lorem ipsum dolor sit amet contentulla"
             android:layout_toRightOf="@+id/user_profile_avatar"
@@ -70,14 +68,15 @@
 
         <TextView
             android:id="@+id/user_profile_roi"
-            style="@style/TH.Subhead"
+            style="@style/TH.Subhead.Inverse"
             android:layout_toRightOf="@+id/user_profile_avatar"
             android:layout_toEndOf="@+id/user_profile_avatar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/user_profile_display_name"
             android:textStyle="bold"
-            tools:text="+408%"/>
+            tools:text="+408%"
+            tools:background="@color/number_up"/>
 
 
         <include
@@ -88,6 +87,16 @@
             android:layout_below="@id/user_profile_roi"
             android:layout_toRightOf="@id/user_profile_avatar"
             android:layout_toEndOf="@id/user_profile_avatar"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TH.Caption.Inverse"
+            android:text="@string/user_profile_roi_in_stocks"
+            android:layout_alignTop="@id/user_profile_roi"
+            android:layout_alignEnd="@id/user_level_progress_bar"
+            android:layout_alignRight="@id/user_level_progress_bar"
             />
 
       </RelativeLayout>

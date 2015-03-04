@@ -34,7 +34,8 @@
   <string name="dashboard_trending">Trade</string>
   <string name="dashboard_education">Academy</string>
   <string name="dashboard_community">Leaderboards</string>
-  <string name="dashboard_message_center">Message</string>
+  <string name="dashboard_message_center">Notifications</string>
+  <string name="dashboard_alerts">Alerts</string>
   <string name="dashboard_referral">Refer Friends</string>
   <string name="dashboard_contest_center">Competitions</string>
   <string name="dashboard_store">Store</string>

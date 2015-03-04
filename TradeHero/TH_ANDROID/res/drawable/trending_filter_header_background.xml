@@ -4,6 +4,6 @@
     <color android:color="@color/tradehero_grid_border_color"/>
   </item>
   <item android:bottom="1dp">
-    <color android:color="#f7ffffff"/>
+    <color android:color="#F2F2F2"/>
   </item>
 </layer-list>
