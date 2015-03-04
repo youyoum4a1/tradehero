@@ -6,29 +6,29 @@
         android:background="@color/bg_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-
-
+        android:orientation="vertical" >
     <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="106dp"
+            android:layout_height="110dp"
             android:background="@drawable/bg_competition_banner">
 
-        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:layout_margin="10dp">
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="75dp"
+                        android:padding="10dp">
             <TextView
                     android:id="@+id/tvCompetitionIntro"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginRight="40dp"
                     android:lineSpacingExtra="3dp"
                     android:textColor="#ffffff"/>
-            <ImageView android:layout_width="20dp" android:layout_height="20dp"
+            <ImageView android:layout_width="20dp"
+                       android:layout_height="20dp"
                        android:id="@+id/imageview_edit_competition_intro"
                        android:layout_alignParentRight="true"
+                       android:layout_centerVertical="true"
                        android:layout_marginRight="10dp"
                        android:background="@drawable/competition_detail_edit"/>
         </RelativeLayout>

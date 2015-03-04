@@ -20,10 +20,12 @@ import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.chinabuild.cache.PortfolioCompactNewCache;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
+import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -126,6 +128,9 @@ public class CompetitionDetailFragment extends Fragment
     private TextView tvLeaderboardTime;
     private TextView tvGotoCompetition;
     private TextView tvJoinCompetition;
+    private int tvJoinCompetitionHeight;
+    private int tvJoinCompetitionWidth;
+    private int tvJoinCompetitionY;
     private RelativeLayout layoutJoinCompetition;
 
     @InjectView(R.id.btnCollegeSelect) Button btnCollegeSelect;
@@ -163,6 +168,9 @@ public class CompetitionDetailFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.competition_detail_layout, container, false);
         ButterKnife.inject(this, view);
+        tvJoinCompetitionHeight = (int)getActivity().getResources().getDimension(R.dimen.btn_join_competition_height);
+        tvJoinCompetitionWidth = (int)getActivity().getResources().getDimension(R.dimen.btn_join_competition_width);
+        tvJoinCompetitionY = (int)getActivity().getResources().getDimension(R.dimen.btn_join_competition_y);
         mRefreshView = (LinearLayout) inflater.inflate(R.layout.competition_detail_listview_header, null);
         tvCompetitionDetailMore.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         listRanks.setEmptyView(imgEmpty);
@@ -358,27 +366,26 @@ public class CompetitionDetailFragment extends Fragment
 
     @Override public void onResume() {
         super.onResume();
-
-//        if (THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_COMPETITION_JOIN))
-//        {
-//            showGuideView();
-//        }
+        if (THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_COMPETITION_JOIN)) {
+            showGuideView();
+        }
         setLeaderboardHeadLine();
     }
 
     private void showGuideView() {
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable()
-        {
+        handler.postDelayed(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
+                if(layoutJoinCompetition.getVisibility() != View.VISIBLE){
+                    return;
+                }
                 //Show Guide View
-                int width = tvGotoCompetition.getWidth();
-                int height = tvGotoCompetition.getHeight();
-                int position_x = ((DashboardActivity) getActivity()).SCREEN_W -
-                        (int) getActivity().getResources().getDimension(R.dimen.guide_competition_right_margin) - width / 2;
-                int position_y = (int) getActivity().getResources().getDimension(R.dimen.guide_competition_height) + height / 2;
+                int width = tvJoinCompetitionWidth;
+                int height = tvJoinCompetitionHeight;
+                int position_x = ((DashboardActivity) getActivity()).SCREEN_W /2;
+                int position_y = tvJoinCompetitionY + ((DashboardActivity) getActivity()).getStatusBarHeight();
+                THLog.d(width + "  " + height + "  " + position_x + "  " + position_y);
                 int radius = (int) Math.sqrt(width * width / 4 + height * height / 4) + 10;
                 ((DashboardActivity) getActivity()).showGuideView(position_x,
                         position_y, radius, GuideView.TYPE_GUIDE_COMPETITION_JOIN);
@@ -386,13 +393,13 @@ public class CompetitionDetailFragment extends Fragment
         }, 500);
     }
 
-    public void refreshStatus() {
+    private void refreshStatus() {
         if (userCompetitionDTO == null){
             return;
         }
         getMySelfRank();
-        if (userCompetitionDTO.isEnrolled)//只有参加了才去拿portfolio
-        {
+        //只有参加了才去拿portfolio
+        if (userCompetitionDTO.isEnrolled){
             fetchPortfolioCompactNew();
         }
         fetchUserProfile();

@@ -271,13 +271,18 @@ public class DashboardActivity extends SherlockFragmentActivity
     }
 
     private void setScreenWH() {
-        DisplayMetrics dm = new DisplayMetrics();
-        dm = this.getResources().getDisplayMetrics();
+        DisplayMetrics dm = getResources().getDisplayMetrics();
         int screenWidth = dm.widthPixels;
         int screenHeight = dm.heightPixels;
 
         SCREEN_W = screenWidth;
         SCREEN_H = screenHeight;
+    }
+
+    public int getStatusBarHeight() {
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int height = getResources().getDimensionPixelSize(resourceId);
+        return height;
     }
 
 }

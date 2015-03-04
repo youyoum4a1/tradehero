@@ -76,8 +76,8 @@ public class GuideView extends View {
         if (current_type == TYPE_GUIDE_COMPETITION_JOIN) {
             mCanvas.drawCircle(position_x_a, position_y_a, radius_a, mPaint);
             canvas.drawBitmap(bitmap, 0, 0, null);
-            int position_bitmap_a_x = position_x_a - radius_a - bitmap_a.getWidth();
-            int position_bitmap_a_y = position_y_a;
+            int position_bitmap_a_x = position_x_a - 20 - bitmap_a.getWidth();
+            int position_bitmap_a_y = position_y_a + radius_a;
             canvas.drawBitmap(bitmap_a, position_bitmap_a_x, position_bitmap_a_y, null);
         }
         if (current_type == TYPE_GUIDE_STOCK_BUY) {

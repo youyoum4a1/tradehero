@@ -235,4 +235,8 @@
   <dimen name="viewpager_tab_height">44dp</dimen>
   <dimen name="viewpager_tab_text_size">15sp</dimen>
   <dimen name="viewpager_focus_height">5px</dimen>
+
+  <dimen name="btn_join_competition_width">120dp</dimen>
+  <dimen name="btn_join_competition_height">32dp</dimen>
+  <dimen name="btn_join_competition_y">200dp</dimen>
 </resources>
