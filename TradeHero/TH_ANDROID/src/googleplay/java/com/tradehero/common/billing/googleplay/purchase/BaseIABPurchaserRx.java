@@ -25,6 +25,7 @@ import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.th.BuildConfig;
 import org.json.JSONException;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
@@ -72,8 +73,20 @@ abstract public class BaseIABPurchaserRx<
             IABPurchaseType>> get()
     {
         getBillingServiceResult().subscribe(
-                this::startPurchaseActivity,
-                subject::onError);
+                new Action1<IABServiceResult>()
+                {
+                    @Override public void call(IABServiceResult result)
+                    {
+                        BaseIABPurchaserRx.this.startPurchaseActivity(result);
+                    }
+                },
+                new Action1<Throwable>()
+                {
+                    @Override public void call(Throwable error)
+                    {
+                        subject.onError(error);
+                    }
+                });
         return subject.asObservable();
     }
 

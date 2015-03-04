@@ -24,15 +24,18 @@ import com.tradehero.th.api.social.ReferralCodeDTO;
 import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.share.SocialShareHelper;
+import com.tradehero.th.network.share.dto.SocialDialogResult;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
-import rx.functions.Actions;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class SettingsReferralCodeFragment extends DashboardFragment
@@ -101,10 +104,22 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
                 .subscribe(
-                        this::linkWith,
-                        this::handleFetchUserProfileFailed));
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO profile)
+                            {
+                                linkWith(profile);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable error)
+                            {
+                                SettingsReferralCodeFragment.this.handleFetchUserProfileFailed(error);
+                            }
+                        }));
     }
 
     protected void linkWith(@NonNull UserProfileDTO userProfileDTO)
@@ -137,10 +152,16 @@ public class SettingsReferralCodeFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 systemStatusCache.get(new SystemStatusKey())
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<SystemStatusKey, SystemStatusDTO>()))
                 .subscribe(
-                        this::linkWith,
-                        Actions.empty()));
+                        new Action1<SystemStatusDTO>()
+                        {
+                            @Override public void call(SystemStatusDTO systemStatusDTO)
+                            {
+                                linkWith(systemStatusDTO);
+                            }
+                        },
+                        new EmptyAction1<Throwable>()));
     }
 
     protected void linkWith(@NonNull SystemStatusDTO statusDTO)
@@ -170,7 +191,9 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     protected void shareToSocialNetwork(View view)
     {
         onStopSubscriptions.add(socialShareHelper.show(new ReferralCodeDTO(userProfileDTO.referralCode))
-                .subscribe(Actions.empty(), Actions.empty()));
+                .subscribe(
+                        new EmptyAction1<SocialDialogResult>(),
+                        new EmptyAction1<Throwable>()));
     }
 
     @SuppressWarnings("UnusedParameters")

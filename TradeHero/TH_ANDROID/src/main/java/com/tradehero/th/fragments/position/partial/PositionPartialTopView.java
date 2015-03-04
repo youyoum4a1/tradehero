@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +25,7 @@ import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -38,8 +40,11 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utils.THColorUtils;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 public class PositionPartialTopView extends LinearLayout
@@ -154,14 +159,32 @@ public class PositionPartialTopView extends LinearLayout
             unsubscribe(securityCompactCacheFetchSubscription);
             //noinspection Convert2MethodRef
             securityCompactCacheFetchSubscription = securityIdCache.get(positionDTO.getSecurityIntegerId())
-                    .map(new PairGetSecond<>())
+                    .map(new PairGetSecond<SecurityIntegerId, SecurityId>())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(this::linkWith)
-                    .flatMap(securityId -> securityCompactCache.get(securityId))
+                    .flatMap(new Func1<SecurityId, Observable<? extends Pair<SecurityId, SecurityCompactDTO>>>()
+                    {
+                        @Override public Observable<? extends Pair<SecurityId, SecurityCompactDTO>> call(SecurityId securityId)
+                        {
+                            linkWith(securityId);
+                            return securityCompactCache.get(securityId);
+                        }
+                    })
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            pair -> linkWith(pair.second),
-                            this::handleSecurityError);
+                            new Action1<Pair<SecurityId, SecurityCompactDTO>>()
+                            {
+                                @Override public void call(Pair<SecurityId, SecurityCompactDTO> pair)
+                                {
+                                    linkWith(pair.second);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable er)
+                                {
+                                    PositionPartialTopView.this.handleSecurityError(er);
+                                }
+                            });
         }
     }
 
@@ -411,11 +434,11 @@ public class PositionPartialTopView extends LinearLayout
 
                 if (securityCompactDTO.marketOpen == null || securityCompactDTO.marketOpen)
                 {
-                    stockLastPrice.setTextColor(getResources().getColor(R.color.exchange_symbol));
+                    stockLastPrice.setTextColor(getResources().getColor(R.color.text_primary));
                 }
                 else
                 {
-                    stockLastPrice.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                    stockLastPrice.setTextColor(getResources().getColor(R.color.text_secondary));
                 }
             }
         }

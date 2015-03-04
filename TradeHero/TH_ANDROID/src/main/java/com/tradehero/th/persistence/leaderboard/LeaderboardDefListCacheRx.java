@@ -8,10 +8,12 @@ import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOFactory;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.network.service.LeaderboardServiceWrapper;
+import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 @Singleton @UserCache
@@ -34,7 +36,7 @@ public class LeaderboardDefListCacheRx extends BaseFetchDTOCacheRx<LeaderboardDe
     }
     //</editor-fold>
 
-    @Override @NonNull protected Observable<LeaderboardDefDTOList> fetch(@NonNull LeaderboardDefListKey listKey)
+    @Override @NonNull protected Observable<LeaderboardDefDTOList> fetch(@NonNull final LeaderboardDefListKey listKey)
     {
         if (listKey.page != null && listKey.page > 1)
         {
@@ -42,15 +44,20 @@ public class LeaderboardDefListCacheRx extends BaseFetchDTOCacheRx<LeaderboardDe
         }
         return leaderboardServiceWrapper.getLeaderboardDefinitionsRx()
                 .observeOn(Schedulers.computation())
-                .map(LeaderboardDefDTOFactory::file)
-                .doOnNext(this::put) // We have to do it here to avoid an infinite loop
-                .map(filed -> {
-                    LeaderboardDefDTOList value = filed.get(listKey);
-                    if (value == null)
+                // We have to do it here to avoid an infinite loop
+                .map(new Func1<LeaderboardDefDTOList, LeaderboardDefDTOList>()
+                {
+                    @Override public LeaderboardDefDTOList call(LeaderboardDefDTOList list)
                     {
-                        throw new IllegalArgumentException("Key " + listKey + " not found");
+                        HashMap<LeaderboardDefListKey, LeaderboardDefDTOList> filedMap = LeaderboardDefDTOFactory.file(list);
+                        LeaderboardDefListCacheRx.this.put(filedMap);
+                        LeaderboardDefDTOList value = filedMap.get(listKey);
+                        if (value == null)
+                        {
+                            throw new IllegalArgumentException("Key " + listKey + " not found");
+                        }
+                        return value;
                     }
-                    return value;
                 });
     }
 

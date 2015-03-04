@@ -14,6 +14,7 @@ import com.tradehero.common.billing.amazon.service.AmazonPurchasingServicePurcha
 import com.tradehero.common.billing.purchasefetch.BaseBillingPurchaseFetcherRx;
 import com.tradehero.common.billing.purchasefetch.PurchaseFetchResult;
 import rx.Observable;
+import rx.functions.Func1;
 
 abstract public class BaseAmazonPurchaseFetcherRx<
         AmazonSKUType extends AmazonSKU,
@@ -43,28 +44,50 @@ abstract public class BaseAmazonPurchaseFetcherRx<
     @NonNull @Override public Observable<PurchaseFetchResult<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType>> get()
     {
         return fetchIncompletePurchases(purchasingService)
-                .flatMap(incomplete -> {
-                    try
+                .flatMap(new Func1<AmazonPurchaseIncompleteType, Observable<? extends AmazonPurchaseType>>()
+                {
+                    @Override public Observable<? extends AmazonPurchaseType> call(AmazonPurchaseIncompleteType incomplete)
                     {
-                        return Observable.just(complete(incomplete));
-                    } catch (Throwable e)
-                    {
-                        return Observable.error(e);
+                        try
+                        {
+                            return Observable.just(BaseAmazonPurchaseFetcherRx.this.complete(incomplete));
+                        } catch (Throwable e)
+                        {
+                            return Observable.error(e);
+                        }
                     }
                 })
-                .map(this::createResult);
+                .map(new Func1<AmazonPurchaseType, PurchaseFetchResult<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType>>()
+                {
+                    @Override public PurchaseFetchResult<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType> call(AmazonPurchaseType purchase)
+                    {
+                        return BaseAmazonPurchaseFetcherRx.this.createResult(purchase);
+                    }
+                });
     }
 
     protected Observable<AmazonPurchaseIncompleteType> fetchIncompletePurchases(@NonNull AmazonPurchasingService purchasingService)
     {
         return Observable.create(new AmazonPurchasingServicePurchaseUpdatesOperator(purchasingService))
-                .flatMap(this::getIncompletePurchases);
+                .flatMap(new Func1<PurchaseUpdatesResponse, Observable<? extends AmazonPurchaseIncompleteType>>()
+                {
+                    @Override public Observable<? extends AmazonPurchaseIncompleteType> call(PurchaseUpdatesResponse response)
+                    {
+                        return BaseAmazonPurchaseFetcherRx.this.getIncompletePurchases(response);
+                    }
+                });
     }
 
-    @NonNull protected Observable<AmazonPurchaseIncompleteType> getIncompletePurchases(@NonNull PurchaseUpdatesResponse purchaseUpdatesResponse)
+    @NonNull protected Observable<AmazonPurchaseIncompleteType> getIncompletePurchases(@NonNull final PurchaseUpdatesResponse purchaseUpdatesResponse)
     {
         return getReceipts(purchaseUpdatesResponse)
-                .map(receipt -> createIncompletePurchase(receipt, purchaseUpdatesResponse.getUserData()));
+                .map(new Func1<Receipt, AmazonPurchaseIncompleteType>()
+                {
+                    @Override public AmazonPurchaseIncompleteType call(Receipt receipt)
+                    {
+                        return BaseAmazonPurchaseFetcherRx.this.createIncompletePurchase(receipt, purchaseUpdatesResponse.getUserData());
+                    }
+                });
     }
 
     @NonNull public Observable<Receipt> getReceipts(@NonNull PurchaseUpdatesResponse purchaseUpdatesResponse)

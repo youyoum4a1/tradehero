@@ -6,17 +6,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionDefaultAudience;
 import com.facebook.TokenCachingStrategy;
 import com.facebook.android.Facebook;
+import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.social.facebook.FacebookRequestOperator;
 import com.tradehero.common.social.facebook.SubscriberCallback;
-import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.network.service.SocialLinker;
+import com.tradehero.th.network.share.SocialConstants;
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,9 +30,10 @@ import javax.inject.Singleton;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.internal.Assertions;
 import rx.android.AndroidSubscriptions;
+import rx.android.internal.Assertions;
 import rx.functions.Action0;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 @Singleton
@@ -55,7 +57,6 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
             @NonNull SocialLinker socialLinker,
             Context context,
             @NonNull TokenCachingStrategy tokenCachingStrategy,
-            @FacebookAppId String applicationId,
             @FacebookPermissions List<String> permissions)
     {
         super(socialLinker);
@@ -66,7 +67,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
         this.activityCode = 32665;
         this.permissions = permissions;
 
-        this.applicationId = applicationId;
+        this.applicationId = SocialConstants.FACEBOOK_APP_ID;
 
         if (applicationId != null)
         {
@@ -113,19 +114,29 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
 
     @Override public Observable<AuthData> createAuthDataObservable(Activity activity)
     {
-        Bundle parameters = new Bundle();
+        final Bundle parameters = new Bundle();
         parameters.putString("fields", "id");
         return createSessionObservable(activity)
-                .flatMap(session -> {
-                    FacebookRequestOperator operator = FacebookRequestOperator.builder(session, "me")
-                            .setParameters(parameters)
-                            .build();
-                    return Observable.create(operator)
-                            .doOnNext(response -> Timber.d("Response %s", response.getRawResponse()))
-                            .map(response -> new AuthData(
-                                    SocialNetworkEnum.FB,
-                                    session.getExpirationDate(),
-                                    session.getAccessToken()));
+                .flatMap(new Func1<Session, Observable<? extends AuthData>>()
+                {
+                    @Override public Observable<? extends AuthData> call(final Session session)
+                    {
+                        FacebookRequestOperator operator = FacebookRequestOperator.builder(session, "me")
+                                .setParameters(parameters)
+                                .build();
+                        return Observable.create(operator)
+                                .map(new Func1<Response, AuthData>()
+                                {
+                                    @Override public AuthData call(Response response)
+                                    {
+                                        Timber.d("Response %s", response.getRawResponse());
+                                        return new AuthData(
+                                                SocialNetworkEnum.FB,
+                                                session.getExpirationDate(),
+                                                session.getAccessToken());
+                                    }
+                                });
+                    }
                 });
     }
 

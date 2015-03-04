@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -63,7 +64,13 @@ public class TimelineHeaderButtonView extends LinearLayout
 
     protected OnClickListener createBtnClickListener(final TimelineFragment.TabType tabType)
     {
-        return view -> notifyClicked(tabType);
+        return new OnClickListener()
+        {
+            @Override public void onClick(View view)
+            {
+                TimelineHeaderButtonView.this.notifyClicked(tabType);
+            }
+        };
     }
 
     protected void notifyClicked(TimelineFragment.TabType tabType)

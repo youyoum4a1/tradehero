@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.subjects.BehaviorSubject;
 
 abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
@@ -31,10 +33,28 @@ abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType ext
         if (cachedFetcherSubscriptions.get(key) == null)
         {
             cachedFetcherSubscriptions.put(key, fetch(key)
-                    .doOnUnsubscribe(() -> removeFetcher(key))
+                    .doOnUnsubscribe(new Action0()
+                    {
+                        @Override public void call()
+                        {
+                            BaseFetchDTOCacheRx.this.removeFetcher(key);
+                        }
+                    })
                     .subscribe(
-                            value -> BaseFetchDTOCacheRx.this.onNext(key, value),
-                            error -> BaseFetchDTOCacheRx.this.onError(key, error)
+                            new Action1<DTOType>()
+                            {
+                                @Override public void call(DTOType value)
+                                {
+                                    BaseFetchDTOCacheRx.this.onNext(key, value);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable error)
+                                {
+                                    BaseFetchDTOCacheRx.this.onError(key, error);
+                                }
+                            }
                     ));
         }
         return cachedObservable;

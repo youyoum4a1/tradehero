@@ -23,6 +23,7 @@ import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
@@ -48,6 +49,7 @@ import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -55,10 +57,11 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
-import rx.functions.Actions;
+import rx.functions.Action1;
+import rx.functions.Func2;
 
 @Singleton public class DTOCacheUtilImpl
-    implements DTOCacheUtilRx
+        implements DTOCacheUtilRx
 {
     protected final CurrentUserId currentUserId;
 
@@ -178,7 +181,7 @@ import rx.functions.Actions;
 //        CollectionUtils.apply(systemCacheNews, DTOCacheNew::invalidateAll);
 //        CollectionUtils.apply(systemCacheRxs, DTOCacheRx::invalidateAll);
 
-        for(int i = 0, length = systemCacheRxs.size(); i < length; i++)
+        for (int i = 0, length = systemCacheRxs.size(); i < length; i++)
         {
             systemCacheRxs.get(i).invalidateAll();
         }
@@ -189,7 +192,7 @@ import rx.functions.Actions;
 //        CollectionUtils.apply(userCacheNews, DTOCacheNew::invalidateAll);
 //        CollectionUtils.apply(userCacheRxs, DTOCacheRx::invalidateAll);
 
-        for(int i = 0, length = userCacheRxs.size(); i < length; i++)
+        for (int i = 0, length = userCacheRxs.size(); i < length; i++)
         {
             userCacheRxs.get(i).invalidateAll();
         }
@@ -219,10 +222,24 @@ import rx.functions.Actions;
         Observable.zip(
                 userProfileCache.get().getOne(currentUserId.toUserBaseKey()),
                 exchangeCompactListCache.get().getOne(new ExchangeListType()),
-                (obs1, obs2) -> Pair.create(obs1.second, obs2.second))
+                new Func2<Pair<UserBaseKey, UserProfileDTO>, Pair<ExchangeListType, ExchangeCompactDTOList>, Pair<UserProfileDTO, ExchangeCompactDTOList>>()
+                {
+                    @Override public Pair<UserProfileDTO, ExchangeCompactDTOList> call(Pair<UserBaseKey, UserProfileDTO> obs1,
+                            Pair<ExchangeListType, ExchangeCompactDTOList> obs2)
+                    {
+                        return Pair.create(obs1.second, obs2.second);
+                    }
+                })
                 .first()
-                .doOnNext(this::preFetchTrending)
-                .subscribe(Actions.empty(), Actions.empty());
+                .subscribe(
+                        new Action1<Pair<UserProfileDTO, ExchangeCompactDTOList>>()
+                        {
+                            @Override public void call(Pair<UserProfileDTO, ExchangeCompactDTOList> t1)
+                            {
+                                DTOCacheUtilImpl.this.preFetchTrending(t1);
+                            }
+                        },
+                        new EmptyAction1<Throwable>());
     }
 
     protected void preFetchTrending(@NonNull Pair<? extends UserBaseDTO, ExchangeCompactDTOList> pair)
@@ -271,27 +288,33 @@ import rx.functions.Actions;
         this.questBonusListCacheLazy.get().getOne(new QuestBonusListId());
     }
 
-    public void prefetchesUponLogin(@Nullable UserProfileDTO profile)
+    public void prefetchesUponLogin(@Nullable final UserProfileDTO profile)
     {
         if (profile != null)
         {
             exchangeCompactListCache.get().getOne(new ExchangeListType())
-                    .doOnNext(pair -> {
-                        Country country = profile.getCountry();
-                        if (pair.second != null && country != null)
+                    .doOnNext(new Action1<Pair<ExchangeListType, ExchangeCompactDTOList>>()
+                    {
+                        @Override public void call(Pair<ExchangeListType, ExchangeCompactDTOList> pair)
                         {
-                            ExchangeCompactDTO initialExchange = pair.second.findFirstDefaultFor(country);
-                            if (initialExchange != null)
+                            Country country = profile.getCountry();
+                            if (pair.second != null && country != null)
                             {
-                                securityCompactListCache.get().getOne(
-                                        new TrendingBasicSecurityListType(
-                                                initialExchange.name,
-                                                1,
-                                                TrendingStockFragment.DEFAULT_PER_PAGE));
+                                ExchangeCompactDTO initialExchange = pair.second.findFirstDefaultFor(country);
+                                if (initialExchange != null)
+                                {
+                                    securityCompactListCache.get().getOne(
+                                            new TrendingBasicSecurityListType(
+                                                    initialExchange.name,
+                                                    1,
+                                                    TrendingStockFragment.DEFAULT_PER_PAGE));
+                                }
                             }
                         }
                     })
-                    .subscribe(Actions.empty(), Actions.empty());
+                    .subscribe(
+                            new EmptyAction1<Pair<ExchangeListType, ExchangeCompactDTOList>>(),
+                            new EmptyAction1<Throwable>());
         }
 
         //initialPrefetches();

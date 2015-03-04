@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import rx.Observable;
+import rx.functions.Action0;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
@@ -42,7 +43,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         Observable<Pair<DTOKeyType, DTOType>> cachedObservable = getObservable(key);
         if (cachedObservable == null)
         {
-            BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject;
+            final BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject;
             DTOType cachedValue = getCachedValue(key);
             if (cachedValue != null)
             {
@@ -54,10 +55,20 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
             }
             final RefCounter counter = new RefCounter(); // HACK This helps the cachedSubject act as a refCount.
             cachedObservable = cachedSubject
-                    .doOnSubscribe(counter::plusOne)
-                    .doOnUnsubscribe(() -> {
-                        counter.minusOne();
-                        removeConditional(key, counter, cachedSubject);
+                    .doOnSubscribe(new Action0()
+                    {
+                        @Override public void call()
+                        {
+                            counter.plusOne();
+                        }
+                    })
+                    .doOnUnsubscribe(new Action0()
+                    {
+                        @Override public void call()
+                        {
+                            counter.minusOne();
+                            BaseDTOCacheRx.this.removeConditional(key, counter, cachedSubject);
+                        }
                     });
             cachedSubjects.put(key, cachedSubject);
             cachedObservables.put(key, cachedObservable);

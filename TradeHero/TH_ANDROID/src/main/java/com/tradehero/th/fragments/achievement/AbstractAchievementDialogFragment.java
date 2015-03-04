@@ -61,6 +61,8 @@ import com.tradehero.th.network.share.dto.ConnectRequired;
 import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.persistence.achievement.UserAchievementCacheRx;
 import com.tradehero.th.persistence.level.LevelDefListCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.SocialAlertDialogRxUtil;
 import com.tradehero.th.utils.StringUtils;
@@ -75,7 +77,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
-import rx.functions.Actions;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 public abstract class AbstractAchievementDialogFragment extends BaseShareableDialogFragment
@@ -226,9 +228,13 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         {
             colorValueAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), mCurrentColor, color);
             colorValueAnimator.setDuration(500l);
-            colorValueAnimator.addUpdateListener(valueAnimator -> {
-                int color1 = (Integer) valueAnimator.getAnimatedValue();
-                setColor(color1);
+            colorValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+            {
+                @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
+                {
+                    int color1 = (Integer) valueAnimator.getAnimatedValue();
+                    AbstractAchievementDialogFragment.this.setColor(color1);
+                }
             });
             colorValueAnimator.addListener(new AnimatorListenerAdapter()
             {
@@ -490,12 +496,16 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
         btnColorAnimation = ObjectAnimator.ofPropertyValuesHolder(btnShare, propertyValuesHolders.toArray(array));
         btnColorAnimation.setDuration(getResources().getInteger(R.integer.achievement_share_button_animation_duration));
-        btnColorAnimation.addUpdateListener(valueAnimator -> {
-            int color = (Integer) valueAnimator.getAnimatedValue(PROPERTY_BTN_COLOR);
-            StateListDrawable drawable = GraphicUtil.createStateListDrawable(getActivity(), color);
-            int textColor = GraphicUtil.getContrastingColor(color);
-            GraphicUtil.setBackground(btnShare, drawable);
-            btnShare.setTextColor(textColor);
+        btnColorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        {
+            @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
+            {
+                int color = (Integer) valueAnimator.getAnimatedValue(PROPERTY_BTN_COLOR);
+                StateListDrawable drawable = GraphicUtil.createStateListDrawable(AbstractAchievementDialogFragment.this.getActivity(), color);
+                int textColor = GraphicUtil.getContrastingColor(color);
+                GraphicUtil.setBackground(btnShare, drawable);
+                btnShare.setTextColor(textColor);
+            }
         });
         btnColorAnimation.setStartDelay(getResources().getInteger(R.integer.achievement_share_button_animation_delay));
         btnColorAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -541,7 +551,9 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         else
         {
             onStopSubscriptions.add(SocialAlertDialogRxUtil.popSelectOneSocialNetwork(getActivity())
-                    .subscribe(Actions.empty(), Actions.empty()));
+                    .subscribe(
+                            new EmptyAction1<OnDialogClickEvent>(),
+                            new EmptyAction1<Throwable>()));
         }
     }
 
@@ -692,18 +704,22 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             final Bundle args = new Bundle();
             args.putBundle(BUNDLE_KEY_USER_ACHIEVEMENT_ID, userAchievementId.getArgs());
             return userAchievementCacheInner.get(userAchievementId)
-                    .map(pair -> {
-                        AbstractAchievementDialogFragment dialogFragment;
-                        if (pair.second.achievementDef.isQuest)
+                    .map(new Func1<Pair<UserAchievementId, UserAchievementDTO>, AbstractAchievementDialogFragment>()
+                    {
+                        @Override public AbstractAchievementDialogFragment call(Pair<UserAchievementId, UserAchievementDTO> pair)
                         {
-                            dialogFragment = new QuestDialogFragment();
+                            AbstractAchievementDialogFragment dialogFragment;
+                            if (pair.second.achievementDef.isQuest)
+                            {
+                                dialogFragment = new QuestDialogFragment();
+                            }
+                            else
+                            {
+                                dialogFragment = new AchievementDialogFragment();
+                            }
+                            dialogFragment.setArguments(args);
+                            return dialogFragment;
                         }
-                        else
-                        {
-                            dialogFragment = new AchievementDialogFragment();
-                        }
-                        dialogFragment.setArguments(args);
-                        return dialogFragment;
                     });
         }
     }

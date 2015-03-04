@@ -6,7 +6,6 @@ import com.tradehero.th.fragments.competition.FragmentCompetitionUITestModule;
 import com.tradehero.th.fragments.discovery.FragmentDiscoveryUITestModule;
 import com.tradehero.th.fragments.leaderboard.FragmentLeaderboardUITestModule;
 import com.tradehero.th.fragments.security.FragmentSecurityUITestModule;
-import com.tradehero.th.fragments.settings.FragmentSettingsUITestModule;
 import com.tradehero.th.fragments.social.FragmentSocialUITestModule;
 import com.tradehero.th.fragments.timeline.FragmentTimelineUITestModule;
 import com.tradehero.th.fragments.trade.FragmentTradeUITestModule;
@@ -24,7 +23,6 @@ import dagger.Module;
                 FragmentDiscoveryUITestModule.class,
                 FragmentLeaderboardUITestModule.class,
                 FragmentSecurityUITestModule.class,
-                FragmentSettingsUITestModule.class,
                 FragmentSocialUITestModule.class,
                 FragmentTimelineUITestModule.class,
                 FragmentTradeUITestModule.class,

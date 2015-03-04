@@ -16,13 +16,16 @@ import butterknife.OnClick;
 import com.tradehero.common.fragment.ActivityResultDTO;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.appsflyer.AppsFlyerConstants;
@@ -33,9 +36,12 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.view.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Actions;
+import rx.android.view.OnClickEvent;
+import rx.android.view.ViewObservable;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Register using email.
@@ -87,26 +93,47 @@ public class EmailSignUpFragment extends Fragment
         DeviceUtil.showKeyboardDelayed(emailEditText);
 
         signUpObservable = ViewObservable.clicks(signUpButton, false)
-                .flatMap(view1 -> profileView.obtainUserFormDTO())
-                .doOnNext(userFormDTO -> progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
-                        getString(R.string.authentication_connecting_tradehero_only), true))
-                .flatMap(userFormDTO -> {
-                    final AuthData authData = new AuthData(userFormDTO.email, userFormDTO.password);
-                    final Observable<UserProfileDTO> profileDTOObservable = userServiceWrapper.signUpWithEmailRx(authData.getTHToken(), userFormDTO);
-                    return Observable.zip(Observable.just(authData), profileDTOObservable, Pair::create);
+                .flatMap(new Func1<OnClickEvent, Observable<? extends UserFormDTO>>()
+                {
+                    @Override public Observable<? extends UserFormDTO> call(OnClickEvent view1)
+                    {
+                        return profileView.obtainUserFormDTO();
+                    }
+                })
+                .flatMap(new Func1<UserFormDTO, Observable<? extends Pair<AuthData, UserProfileDTO>>>()
+                {
+                    @Override public Observable<? extends Pair<AuthData, UserProfileDTO>> call(UserFormDTO userFormDTO)
+                    {
+                        progressDialog = ProgressDialog.show(EmailSignUpFragment.this.getActivity(),
+                                EmailSignUpFragment.this.getString(R.string.alert_dialog_please_wait),
+                                EmailSignUpFragment.this.getString(R.string.authentication_connecting_tradehero_only), true);
+
+                        final AuthData authData = new AuthData(userFormDTO.email, userFormDTO.password);
+                        final Observable<UserProfileDTO> profileDTOObservable =
+                                userServiceWrapper.signUpWithEmailRx(authData.getTHToken(), userFormDTO);
+                        return Observable.zip(Observable.just(authData), profileDTOObservable,
+                                new Func2<AuthData, UserProfileDTO, Pair<AuthData, UserProfileDTO>>()
+                                {
+                                    @Override public Pair<AuthData, UserProfileDTO> call(AuthData t1, UserProfileDTO t2)
+                                    {
+                                        return Pair.create(t1, t2);
+                                    }
+                                });
+                    }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .doOnNext(pair -> thAppsFlyer.sendTrackingWithEvent(AppsFlyerConstants.REGISTRATION_EMAIL))
+                .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
+                {
+                    @Override public void call(Pair<AuthData, UserProfileDTO> pair)
+                    {
+                        thAppsFlyer.sendTrackingWithEvent(AppsFlyerConstants.REGISTRATION_EMAIL);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(authDataAccountAction)
                 .doOnNext(new OpenDashboardAction(getActivity()))
                 .doOnError(new ToastOnErrorAction())
-                .doOnUnsubscribe(() -> {
-                    if (progressDialog != null)
-                    {
-                        progressDialog.dismiss();
-                    }
-                })
+                .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
                 .retry()
         ;
 
@@ -144,7 +171,9 @@ public class EmailSignUpFragment extends Fragment
         super.onResume();
         if (subscription == null || subscription.isUnsubscribed())
         {
-            subscription = signUpObservable.subscribe(Actions.empty(), Actions.empty());
+            subscription = signUpObservable.subscribe(
+                    new EmptyAction1<Pair<AuthData, UserProfileDTO>>(),
+                    new EmptyAction1<Throwable>());
         }
     }
 

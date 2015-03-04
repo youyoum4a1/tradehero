@@ -238,7 +238,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:minHeight="@dimen/clickable_element_min_dimen"
-      android:background="@color/stock_info_bg"
+      android:background="@color/white"
       android:gravity="center_vertical"
       android:paddingTop="@dimen/share_container_vertical_padding"
       android:paddingBottom="@dimen/share_container_vertical_padding"
@@ -250,8 +250,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_small"
         android:text="@string/buy_sell_confirm_share_on"
-        style="@style/TH.Body"
-        android:textColor="@color/authentication_button_light"
+        style="@style/TH.Body1.Inverse"
         />
 
     <include layout="@layout/share_panel_layout"/>

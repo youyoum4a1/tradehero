@@ -169,7 +169,7 @@ public class PortfolioCompactDTOUtil
             }
         }
         Timber.e(new IllegalArgumentException(), "Failed to get MarginCloseOutState for %f", marginCloseOut);
-        throw new IllegalArgumentException();
+        return MarginCloseOutState.DANGER;
     }
 
     @Nullable public static QuoteDTO createQuoteInPortfolioRefCcy(@Nullable QuoteDTO quoteDTO, @Nullable PortfolioCompactDTO portfolioCompactDTO)

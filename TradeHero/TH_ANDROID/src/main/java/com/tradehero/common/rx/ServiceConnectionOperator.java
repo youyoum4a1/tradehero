@@ -4,15 +4,16 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import com.tradehero.common.utils.THToast;
 import java.net.UnknownServiceException;
+import java.util.List;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
-import rx.subjects.BehaviorSubject;
 
 public class ServiceConnectionOperator implements Observable.OnSubscribe<IBinder>
 {
@@ -20,8 +21,6 @@ public class ServiceConnectionOperator implements Observable.OnSubscribe<IBinder
     @NonNull protected final Intent serviceIntent;
     protected final int flags;
     protected final int bindType;
-    private BehaviorSubject<IBinder> subject;
-    private ServiceConnection serviceConnection;
 
     //<editor-fold desc="Constructors">
     public ServiceConnectionOperator(
@@ -34,30 +33,35 @@ public class ServiceConnectionOperator implements Observable.OnSubscribe<IBinder
         this.serviceIntent = serviceIntent;
         this.flags = flags;
         this.bindType = bindType;
-        subject = BehaviorSubject.create();
-        serviceConnection = new ServiceConnection()
+    }
+    //</editor-fold>
+
+    @Override public void call(final Subscriber<? super IBinder> subscriber)
+    {
+        final ServiceConnection serviceConnection = new ServiceConnection()
         {
             @Override public void onServiceConnected(ComponentName name, IBinder service)
             {
-                subject.onNext(service);
+                subscriber.onNext(service);
             }
 
             @Override public void onServiceDisconnected(ComponentName name)
             {
                 THToast.show("ServiceConnectionOperator disconnected");
-                subject.onCompleted();
+                subscriber.onCompleted();
             }
         };
-        bind();
-    }
-    //</editor-fold>
 
-    private void bind()
-    {
-        Observable.just(flags)
+        Observable.create(
+                new Observable.OnSubscribe<Boolean>()
+                {
+                    @Override public void call(Subscriber<? super Boolean> subscriber)
+                    {
+                        List<ResolveInfo> resolveList = context.getPackageManager().queryIntentServices(serviceIntent, flags);
+                        subscriber.onNext(resolveList != null && !resolveList.isEmpty());
+                    }
+                })
                 .subscribeOn(Schedulers.computation())
-                .map(flags -> context.getPackageManager().queryIntentServices(serviceIntent, flags))
-                .map(resolveList -> resolveList != null && !resolveList.isEmpty())
                 .subscribe(new Observer<Boolean>()
                 {
                     @Override public void onNext(Boolean isServiceAvailable)
@@ -72,12 +76,12 @@ public class ServiceConnectionOperator implements Observable.OnSubscribe<IBinder
                                         bindType);
                             } catch (Exception e)
                             {
-                                subject.onError(e);
+                                subscriber.onError(e);
                             }
                         }
                         else
                         {
-                            subject.onError(new UnknownServiceException("Service not available: " + serviceIntent));
+                            subscriber.onError(new UnknownServiceException("Service not available: " + serviceIntent));
                         }
                     }
 
@@ -88,20 +92,8 @@ public class ServiceConnectionOperator implements Observable.OnSubscribe<IBinder
 
                     @Override public void onError(Throwable e)
                     {
-                        subject.onError(e);
+                        subscriber.onError(e);
                     }
                 });
-    }
-
-    @Override public void call(Subscriber<? super IBinder> subscriber)
-    {
-        subject.subscribe(subscriber);
-    }
-
-    public void onDestroy()
-    {
-        context.unbindService(serviceConnection);
-        serviceConnection = null;
-        subject.onCompleted();
     }
 }

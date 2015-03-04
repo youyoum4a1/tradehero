@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import javax.inject.Inject;
 import rx.Subscription;
@@ -113,9 +115,16 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
 
     @Override protected Subscription getTransactionSubscription(TransactionFormDTO transactionFormDTO)
     {
+        final ProgressDialog progressDialog = ProgressDialog.show(
+                getActivity(),
+                getActivity().getString(R.string.processing),
+                getActivity().getString(R.string.alert_dialog_please_wait),
+                true);
+
         return AppObservable.bindFragment(
                 this,
                 securityServiceWrapper.doTransactionRx(securityId, transactionFormDTO, IS_BUY))
+                .finallyDo(new DismissDialogAction0(progressDialog))
                 .subscribe(new BuySellObserver(IS_BUY));
     }
 

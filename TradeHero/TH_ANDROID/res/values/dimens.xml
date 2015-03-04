@@ -4,15 +4,16 @@
   <!--Text sizes-->
   <dimen name="text_xxsmall">10sp</dimen>
   <!-- Not advised to use this size. It's very small! -->
-  <dimen name="text_caption">12sp</dimen>
-  <dimen name="text_body">14sp</dimen>
-  <dimen name="text_subhead">16sp</dimen>
-  <dimen name="text_title">20sp</dimen>
-  <dimen name="text_headline">24sp</dimen>
-  <dimen name="text_display1">34sp</dimen>
-  <dimen name="text_display2">45sp</dimen>
-  <dimen name="text_display3">56sp</dimen>
-  <dimen name="text_display4">112sp</dimen>
+  <dimen name="text_caption">@dimen/abc_text_size_caption_material</dimen>
+  <dimen name="text_body">@dimen/abc_text_size_body_1_material</dimen>
+  <dimen name="text_body2">@dimen/abc_text_size_body_2_material</dimen>
+  <dimen name="text_subhead">@dimen/abc_text_size_subhead_material</dimen>
+  <dimen name="text_title">@dimen/abc_text_size_title_material</dimen>
+  <dimen name="text_headline">@dimen/abc_text_size_headline_material</dimen>
+  <dimen name="text_display1">@dimen/abc_text_size_display_1_material</dimen>
+  <dimen name="text_display2">@dimen/abc_text_size_display_2_material</dimen>
+  <dimen name="text_display3">@dimen/abc_text_size_display_2_material</dimen>
+  <dimen name="text_display4">@dimen/abc_text_size_display_4_material</dimen>
 
   <!--Margin sizes will instead of common margin-->
   <dimen name="margin_xsmall">@dimen/size_1</dimen>

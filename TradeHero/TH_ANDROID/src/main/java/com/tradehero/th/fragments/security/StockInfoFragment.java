@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -24,12 +25,15 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class StockInfoFragment extends DashboardFragment
@@ -68,7 +72,13 @@ public class StockInfoFragment extends DashboardFragment
         {
             yahooNewsListView.setAdapter(newsHeadlineAdapter);
             yahooNewsListView.setOnItemClickListener(
-                    (adapterView, view1, position, l) -> handleNewsClicked(position, (NewsItemDTOKey) adapterView.getItemAtPosition(position)));
+                    new AdapterView.OnItemClickListener()
+                    {
+                        @Override public void onItemClick(AdapterView<?> adapterView, View view1, int position, long l)
+                        {
+                            StockInfoFragment.this.handleNewsClicked(position, (NewsItemDTOKey) adapterView.getItemAtPosition(position));
+                        }
+                    });
         }
 
         topPager = (ViewPager) view.findViewById(R.id.top_pager);
@@ -268,8 +278,14 @@ public class StockInfoFragment extends DashboardFragment
                     .cast(NewsItemCompactDTO.class)
                     .toList()
                     .subscribe(
-                            newsHeadlineAdapter::setItems,
-                            e -> Timber.e(e, "failed to setItems"));
+                            new Action1<List<NewsItemCompactDTO>>()
+                            {
+                                @Override public void call(List<NewsItemCompactDTO> newsItemCompactDTOs)
+                                {
+                                    newsHeadlineAdapter.setItems(newsItemCompactDTOs);
+                                }
+                            },
+                            new TimberOnErrorAction("failed to setItems"));
         }
     }
 

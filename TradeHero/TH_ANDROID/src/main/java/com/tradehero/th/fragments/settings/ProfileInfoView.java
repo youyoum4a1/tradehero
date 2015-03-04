@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.settings;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -37,6 +36,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.GraphicUtil;
@@ -51,7 +51,6 @@ import rx.Observable;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
-import rx.functions.Actions;
 import rx.functions.Func8;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
@@ -79,7 +78,6 @@ public class ProfileInfoView extends LinearLayout
     @Inject AccountManager accountManager;
     @Inject DashboardNavigator dashboardNavigator;
 
-    ProgressDialog progressDialog;
     private UserProfileDTO userProfileDTO;
     private String newImagePath;
     @NonNull protected SubscriptionList subscriptions;
@@ -141,7 +139,9 @@ public class ProfileInfoView extends LinearLayout
                     .setMessage(R.string.error_fetch_image_library)
                     .setPositiveButton(R.string.cancel)
                     .build()
-                    .subscribe(Actions.empty(), Actions.empty());
+                    .subscribe(
+                            new EmptyAction1<OnDialogClickEvent>(),
+                            new EmptyAction1<Throwable>());
         }
     }
 
@@ -299,7 +299,7 @@ public class ProfileInfoView extends LinearLayout
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 getContext(),
                 R.layout.image_picker_item,
-                new String[]{
+                new String[] {
                         getContext().getString(R.string.user_profile_choose_image_from_camera),
                         getContext().getString(R.string.user_profile_choose_image_from_library)
                 });
@@ -309,22 +309,24 @@ public class ProfileInfoView extends LinearLayout
                 .setSingleChoiceItems(adapter, -1)
                 .setCanceledOnTouchOutside(true)
                 .build()
-                .subscribe(new Action1<OnDialogClickEvent>()
-                {
-                    @Override public void call(OnDialogClickEvent event)
-                    {
-                        event.dialog.dismiss();
-                        switch (event.which)
+                .subscribe(
+                        new Action1<OnDialogClickEvent>()
                         {
-                            case 0:
-                                onImageFromCameraRequested();
-                                break;
-                            case 1:
-                                onImageFromLibraryRequested();
-                                break;
-                        }
-                    }
-                }, Actions.empty()));
+                            @Override public void call(OnDialogClickEvent event)
+                            {
+                                event.dialog.dismiss();
+                                switch (event.which)
+                                {
+                                    case 0:
+                                        onImageFromCameraRequested();
+                                        break;
+                                    case 1:
+                                        onImageFromLibraryRequested();
+                                        break;
+                                }
+                            }
+                        },
+                        new EmptyAction1<Throwable>()));
     }
 
     private void onImageFromCameraRequested()

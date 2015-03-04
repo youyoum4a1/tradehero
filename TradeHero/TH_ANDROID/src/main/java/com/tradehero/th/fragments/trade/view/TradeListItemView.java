@@ -15,8 +15,10 @@ import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionDTOKey;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.fragments.trade.TradeListItemAdapter;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -26,14 +28,17 @@ import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.persistence.position.PositionCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
+import com.tradehero.th.rx.EmptyAction1;
 import dagger.Lazy;
 import java.text.DateFormat;
 import java.util.TimeZone;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
-import rx.Observer;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class TradeListItemView extends LinearLayout
         implements DTOView<TradeListItemAdapter.ExpandableTradeItem>
@@ -131,28 +136,33 @@ public class TradeListItemView extends LinearLayout
             detachPositionSubscription();
             positionSubscription = positionCache.get().get(tradeItem.getModel().positionDTOKey)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(pair1 -> {
-                        position = pair1.second;
-                        display();
-                    })
-                    .flatMap(pair1 -> securityIdCache.get().get(pair1.second.getSecurityIntegerId()))
-                    .flatMap(pair2 -> securityCache.get().get(pair2.second))
-                    .doOnNext(pair3 -> strDisplay = pair3.second.currencyDisplay)
-                    .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
+                    .flatMap(new Func1<Pair<PositionDTOKey, PositionDTO>, Observable<? extends Pair<SecurityIntegerId, SecurityId>>>()
                     {
-                        @Override public void onCompleted()
+                        @Override public Observable<? extends Pair<SecurityIntegerId, SecurityId>> call(Pair<PositionDTOKey, PositionDTO> pair1)
                         {
-                        }
-
-                        @Override public void onError(Throwable e)
-                        {
-                        }
-
-                        @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> securityIdSecurityCompactDTOPair)
-                        {
+                            position = pair1.second;
                             display();
+                            return securityIdCache.get().get(pair1.second.getSecurityIntegerId());
                         }
-                    });
+                    })
+                    .flatMap(new Func1<Pair<SecurityIntegerId, SecurityId>, Observable<? extends Pair<SecurityId, SecurityCompactDTO>>>()
+                    {
+                        @Override public Observable<? extends Pair<SecurityId, SecurityCompactDTO>> call(
+                                Pair<SecurityIntegerId, SecurityId> pair2)
+                        {
+                            return securityCache.get().get(pair2.second);
+                        }
+                    })
+                    .subscribe(
+                            new Action1<Pair<SecurityId, SecurityCompactDTO>>()
+                            {
+                                @Override public void call(Pair<SecurityId, SecurityCompactDTO> pair)
+                                {
+                                    strDisplay = pair.second.currencyDisplay;
+                                    display();
+                                }
+                            },
+                            new EmptyAction1<Throwable>());
         }
         else
         {

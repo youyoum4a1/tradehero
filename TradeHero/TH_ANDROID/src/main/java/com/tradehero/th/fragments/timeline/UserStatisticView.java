@@ -1,6 +1,9 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
@@ -11,30 +14,23 @@ import com.tradehero.common.widget.NumericalAnimatedTextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import javax.inject.Inject;
 import timber.log.Timber;
 
 public class UserStatisticView extends LinearLayout
-    implements DTOView<LeaderboardUserDTO>
+    implements DTOView<UserStatisticView.DTO>
 {
-    @InjectView(R.id.leaderboard_dayshold_tv) @Optional NumericalAnimatedTextView daysHoldTv;
-    @InjectView(R.id.leaderboard_position_tv) @Optional NumericalAnimatedTextView positionsCountTv;
-    @InjectView(R.id.leaderboard_tradecount_tv) @Optional NumericalAnimatedTextView tradeCountTv;
+    @InjectView(R.id.leaderboard_dayshold_tv) NumericalAnimatedTextView daysHoldTv;
+    @InjectView(R.id.leaderboard_position_tv) NumericalAnimatedTextView positionsCountTv;
+    @InjectView(R.id.leaderboard_tradecount_tv) NumericalAnimatedTextView tradeCountTv;
 
-    @InjectView(R.id.leaderboard_gauge_performance) @Optional GaugeView performanceGauge;
-    @InjectView(R.id.leaderboard_gauge_tradeconsistency) @Optional GaugeView tradeConsistencyGauge;
-    @InjectView(R.id.leaderboard_gauge_winrate) @Optional GaugeView winRateGauge;
-
-    @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCacheRx userProfileCache;
-
-    private LeaderboardUserDTO leaderboardUserDTO;
+    @InjectView(R.id.leaderboard_gauge_performance)
+    @Optional GaugeView performanceGauge;
+    @InjectView(R.id.leaderboard_gauge_tradeconsistency)
+    @Optional GaugeView tradeConsistencyGauge;
+    @InjectView(R.id.leaderboard_gauge_winrate)
+    @Optional GaugeView winRateGauge;
 
     //<editor-fold desc="Constructors">
     public UserStatisticView(Context context)
@@ -56,27 +52,19 @@ public class UserStatisticView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
         ButterKnife.inject(this);
-        HierarchyInjector.inject(this);
     }
 
-    @Override public void display(LeaderboardUserDTO dto)
+    @Override public void display(@Nullable DTO dto)
     {
-        this.leaderboardUserDTO = dto;
-        display();
-    }
-
-    protected void display()
-    {
-        if (leaderboardUserDTO != null)
+        if (dto != null)
         {
             // Statistic text view
-            displayTradeCount();
-            displayDaysHold();
-            displayPositionsCount();
-            showValueWithoutAnimation();
-            showExpandAnimation();
+            displayTradeCount(dto);
+            displayDaysHold(dto);
+            displayPositionsCount(dto);
+            showValueWithoutAnimation(dto);
+            showExpandAnimation(dto);
         }
         else
         {
@@ -100,37 +88,30 @@ public class UserStatisticView extends LinearLayout
         }
     }
 
-    private void showExpandAnimation()
+    private void showExpandAnimation(@NonNull DTO dto)
     {
-        String digitsWinRatio = THSignedPercentage
-                .builder(leaderboardUserDTO.getWinRatio() * 100)
-                .withOutSign()
-                .relevantDigitCount(3)
-                .build().toString();
         if (winRateGauge != null)
         {
-            winRateGauge.setContentText(digitsWinRatio);
-            winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
+            winRateGauge.setContentText(dto.digitsWinRatio);
+            winRateGauge.setSubText(dto.winRateGaugeSubText);
             winRateGauge.setAnimiationFlag(true);
-            winRateGauge.setTargetValue((float) leaderboardUserDTO.getWinRatio() * 100);
+            winRateGauge.setTargetValue(dto.winRateGaugeWinRatioValue);
         }
 
         if (performanceGauge != null)
         {
-            performanceGauge.setTopText(getContext().getString(R.string.leaderboard_SP_500));
-            performanceGauge.setSubText(
-                    getContext().getString(R.string.leaderboard_performance_title));
+            performanceGauge.setTopText(dto.performanceGaugeTopText);
+            performanceGauge.setSubText(dto.performanceGaugeSubText);
             performanceGauge.setAnimiationFlag(true);
             performanceGauge.setDrawStartValue(50f);
-            performanceGauge.setTargetValue((float) normalizePerformance());
+            performanceGauge.setTargetValue(dto.normalisedPerformance);
         }
 
         if (tradeConsistencyGauge != null)
         {
-            tradeConsistencyGauge.setSubText(
-                    getContext().getString(R.string.leaderboard_consistency_title));
+            tradeConsistencyGauge.setSubText(dto.tradeConsistencyGaugeSubText);
             tradeConsistencyGauge.setAnimiationFlag(true);
-            tradeConsistencyGauge.setTargetValue((float) normalizeConsistency());
+            tradeConsistencyGauge.setTargetValue(dto.normalisedConsistency);
         }
 
         if (tradeCountTv != null)
@@ -147,37 +128,32 @@ public class UserStatisticView extends LinearLayout
         }
     }
 
-    private void showValueWithoutAnimation()
+    private void showValueWithoutAnimation(@NonNull DTO dto)
     {
-        String digitsWinRatio = THSignedNumber.builder(leaderboardUserDTO.getWinRatio() * 100)
-                .relevantDigitCount(3)
-                .withOutSign()
-                .build().toString();
         if (winRateGauge != null)
         {
-            winRateGauge.setContentText(digitsWinRatio);
-            winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
+            winRateGauge.setContentText(dto.digitsWinRatio);
+            winRateGauge.setSubText(dto.winRateGaugeSubText);
             winRateGauge.setAnimiationFlag(false);
-            winRateGauge.setCurrentValue((float) leaderboardUserDTO.getWinRatio() * 100);
+            winRateGauge.setCurrentValue(dto.winRateGaugeWinRatioValue);
         }
 
         if (performanceGauge != null)
         {
-            performanceGauge.setTopText(getContext().getString(R.string.leaderboard_SP_500));
-            performanceGauge.setSubText(getContext().getString(R.string.leaderboard_performance_title));
+            performanceGauge.setTopText(dto.performanceGaugeTopText);
+            performanceGauge.setSubText(dto.performanceGaugeSubText);
             performanceGauge.setAnimiationFlag(false);
             performanceGauge.setDrawStartValue(50f);
-            performanceGauge.setCurrentValue((float) normalizePerformance());
+            performanceGauge.setCurrentValue(dto.normalisedPerformance);
         }
 
         if (tradeConsistencyGauge != null)
         {
-            tradeConsistencyGauge.setSubText(
-                    getContext().getString(R.string.leaderboard_consistency_title));
+            tradeConsistencyGauge.setSubText(dto.tradeConsistencyGaugeSubText);
             tradeConsistencyGauge.setAnimiationFlag(false);
-            tradeConsistencyGauge.setCurrentValue((float) normalizeConsistency());
+            tradeConsistencyGauge.setCurrentValue(dto.normalisedConsistency);
         }
-        Timber.d("showValueWithoutAnimation normalizeConsistency %s", normalizeConsistency());
+        Timber.d("showValueWithoutAnimation normalizeConsistency %s", dto.normalisedConsistency);
 
         if (tradeCountTv != null)
         {
@@ -193,87 +169,117 @@ public class UserStatisticView extends LinearLayout
         }
     }
 
-    private void displayPositionsCount()
+    private void displayPositionsCount(@NonNull DTO dto)
     {
         if (positionsCountTv != null)
         {
-            positionsCountTv.setEndValue(leaderboardUserDTO.numberOfPositionsInPeriod);
+            positionsCountTv.setEndValue(dto.leaderboardUserDTO.numberOfPositionsInPeriod);
             positionsCountTv.setFractionDigits(0);
         }
     }
 
-    private void displayDaysHold()
+    private void displayDaysHold(@NonNull DTO dto)
     {
         if (daysHoldTv != null)
         {
-            daysHoldTv.setEndValue(leaderboardUserDTO.avgHoldingPeriodMins * 1.0f / (60 * 24));
+            daysHoldTv.setEndValue(dto.daysHoldTvEndValue);
             daysHoldTv.setFractionDigits(2);
         }
     }
 
-    private void displayTradeCount()
+    private void displayTradeCount(@NonNull DTO dto)
     {
-        if (tradeCountTv != null && leaderboardUserDTO.avgNumberOfTradesPerMonth != null)
+        if (tradeCountTv != null)
         {
-            tradeCountTv.setEndValue(leaderboardUserDTO.avgNumberOfTradesPerMonth.floatValue());
+            tradeCountTv.setEndValue(dto.tradeCountTvEndValue);
             tradeCountTv.setFractionDigits(2);
         }
     }
 
-    private double normalizeConsistency()
+    public static class DTO
     {
-        try
-        {
-            Double minConsistency = LeaderboardUserDTO.MIN_CONSISTENCY;
-            Double maxConsistency = getAvgConsistency();
-            Double consistency = leaderboardUserDTO.getConsistency();
-            consistency = (consistency < minConsistency) ? minConsistency : consistency;
-            consistency = (consistency > maxConsistency) ? maxConsistency : consistency;
+        @NonNull final LeaderboardUserDTO leaderboardUserDTO;
+        final float daysHoldTvEndValue;
+        final float tradeCountTvEndValue;
+        final String performanceGaugeTopText;
+        final String performanceGaugeSubText;
+        final float normalisedPerformance;
+        final double avgConsistency;
+        final float normalisedConsistency;
+        @NonNull final String digitsWinRatio;
+        @NonNull String winRateGaugeSubText;
+        final float winRateGaugeWinRatioValue;
+        @NonNull final String tradeConsistencyGaugeSubText;
 
-            return 100 * (consistency - minConsistency) / (maxConsistency - minConsistency);
-        }
-        catch (Exception e)
+        public DTO(@NonNull Resources resources,
+                @NonNull LeaderboardUserDTO leaderboardUserDTO,
+                @NonNull UserProfileDTO currentUserProfile)
         {
-            Timber.e("normalizeConsistency", e);
-        }
-        return getAvgConsistency();
-    }
-
-    private double normalizePerformance()
-    {
-        try
-        {
-            Double v = leaderboardUserDTO.sharpeRatioInPeriodVsSP500;
-            Double min = (double) -2;
-            Double max = (double) 2;
-
-            if (v > max)
+            this.leaderboardUserDTO = leaderboardUserDTO;
+            this.daysHoldTvEndValue = leaderboardUserDTO.avgHoldingPeriodMins * 1.0f / (60 * 24);
+            this.tradeCountTvEndValue = leaderboardUserDTO.avgNumberOfTradesPerMonth == null ? 0 : leaderboardUserDTO.avgNumberOfTradesPerMonth.floatValue();
+            this.performanceGaugeTopText = resources.getString(R.string.leaderboard_SP_500);
+            this.performanceGaugeSubText = resources.getString(R.string.leaderboard_performance_title);
+            double r = 0;
+            try
             {
-                v = max;
+                Double v = leaderboardUserDTO.sharpeRatioInPeriodVsSP500;
+                Double min = (double) -2;
+                Double max = (double) 2;
+
+                if (v > max)
+                {
+                    v = max;
+                }
+                else if (v < min)
+                {
+                    v = min;
+                }
+                r = 100 * (v - min) / (max - min);
+                Timber.d("normalizePerformance sharpeRatioInPeriodVsSP500 %s result %s", leaderboardUserDTO.sharpeRatioInPeriodVsSP500, r);
+
             }
-            else if (v < min)
+            catch (Exception e)
             {
-                v = min;
+                Timber.e(e, "normalizePerformance");
             }
-            double r = 100 * (v - min) / (max - min);
-            Timber.d("normalizePerformance sharpeRatioInPeriodVsSP500 %s result %s", leaderboardUserDTO.sharpeRatioInPeriodVsSP500, r);
+            this.normalisedPerformance = (float) r;
 
-            return r;
-        }
-        catch (Exception e)
-        {
-            Timber.e("normalizePerformance", e);
-        }
-        return 0;
-    }
+            if (currentUserProfile.mostSkilledLbmu != null)
+            {
+                avgConsistency = currentUserProfile.mostSkilledLbmu.getAvgConsistency();
+            }
+            else
+            {
+                avgConsistency = LeaderboardUserDTO.MIN_CONSISTENCY;
+            }
 
-    private Double getAvgConsistency()
-    {
-        UserProfileDTO userProfileDTO = userProfileCache.getCachedValue(currentUserId.toUserBaseKey());
-        if (userProfileDTO != null)
-        {
-            return userProfileDTO.mostSkilledLbmu.getAvgConsistency();
+            double result = avgConsistency;
+            try
+            {
+                Double minConsistency = LeaderboardUserDTO.MIN_CONSISTENCY;
+                Double maxConsistency = avgConsistency;
+                Double consistency = leaderboardUserDTO.getConsistency();
+                consistency = (consistency < minConsistency) ? minConsistency : consistency;
+                consistency = (consistency > maxConsistency) ? maxConsistency : consistency;
+
+                result = 100 * (consistency - minConsistency) / (maxConsistency - minConsistency);
+            }
+            catch (Exception e)
+            {
+                Timber.e("normalizeConsistency", e);
+            }
+            this.normalisedConsistency = (float) result;
+
+            digitsWinRatio = THSignedNumber.builder(leaderboardUserDTO.getWinRatio() * 100)
+                    .relevantDigitCount(3)
+                    .withOutSign()
+                    .build().toString();
+            winRateGaugeSubText = resources.getString(R.string.leaderboard_win_ratio_title);
+            winRateGaugeWinRatioValue = (float) leaderboardUserDTO.getWinRatio() * 100;
+
+            tradeConsistencyGaugeSubText = resources.getString(R.string.leaderboard_consistency_title);
+
         }
-        return LeaderboardUserDTO.MIN_CONSISTENCY;
     }
 }

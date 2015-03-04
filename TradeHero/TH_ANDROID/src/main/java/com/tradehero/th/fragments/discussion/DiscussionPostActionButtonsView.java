@@ -20,10 +20,10 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Action1;
-import rx.functions.Actions;
 
 public class DiscussionPostActionButtonsView extends LinearLayout
 {
@@ -136,8 +136,8 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     }
 
     private void askToLinkSocial(
-            @NonNull CompoundButton compoundButton,
-            @NonNull SocialNetworkEnum socialNetworkEnum)
+            @NonNull final CompoundButton compoundButton,
+            @NonNull final SocialNetworkEnum socialNetworkEnum)
     {
         socialShareHelper.offerToConnect(socialNetworkEnum)
                 .subscribe(
@@ -148,7 +148,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
                                 compoundButton.setChecked(UserProfileDTOUtil.checkLinkedStatus(userProfileDTO, socialNetworkEnum));
                             }
                         },
-                        Actions.empty());
+                        new EmptyAction1<Throwable>());
     }
 
     public void populate(@NonNull PublishableFormDTO publishableFormDTO)

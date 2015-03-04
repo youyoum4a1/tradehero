@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import javax.inject.Inject;
 import rx.functions.Actions;
@@ -44,7 +46,9 @@ public class GooglePlayMarketUtil implements MarketUtil
                         .setMessage(R.string.webview_error_no_browser_for_intent_description)
                         .setPositiveButton(R.string.cancel)
                         .build()
-                        .subscribe(Actions.empty(), Actions.empty());
+                        .subscribe(
+                                new EmptyAction1<OnDialogClickEvent>(),
+                                new EmptyAction1<Throwable>());
             }
         }
     }

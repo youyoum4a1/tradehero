@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_medium"
-        android:background="@drawable/authentication_button"
+        android:background="@drawable/basic_white_selector"
         android:text="@string/authentication_register"
         style="@style/TH.Button.Inverse"
         android:layout_marginBottom="@dimen/dashboard_tabhost_height"

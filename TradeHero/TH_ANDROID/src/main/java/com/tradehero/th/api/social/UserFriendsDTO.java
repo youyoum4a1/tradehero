@@ -2,9 +2,11 @@ package com.tradehero.th.api.social;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.social.key.FriendKey;
 
 abstract public class UserFriendsDTO
-        implements Comparable<UserFriendsDTO>
+        implements Comparable<UserFriendsDTO>, DTO
 {
     public String name;       // name
     public int thUserId;
@@ -12,6 +14,8 @@ abstract public class UserFriendsDTO
 
     public String email; // Not provided from the server
     public boolean selected = false; // HACK not from server
+
+    @NonNull abstract public FriendKey getFriendKey();
 
     abstract public int getNetworkLabelImage();
 

@@ -1,25 +1,17 @@
 package com.tradehero.th.fragments.timeline;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.graphics.ForUserPhotoBackground;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.level.LevelDefListCacheRx;
-import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.widget.UserLevelProgressBar;
 import javax.inject.Inject;
 import rx.Observer;
@@ -35,11 +27,8 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @InjectView(R.id.user_profile_achievement_count) @Optional protected TextView achievementCount;
     @InjectView(R.id.user_level_progress_bar) @Optional protected UserLevelProgressBar userLevelProgressBar;
 
-    @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
     @Inject LevelDefListCacheRx levelDefListCache;
 
-    private Target topBackgroundTarget;
-    private Target topDefaultBackgroundTarget;
     protected Runnable displayTopViewBackgroundRunnable;
     private Subscription levelDefDTOListSubscription;
 
@@ -51,10 +40,8 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @Override public void initViews(View view)
     {
         super.initViews(view);
-        topBackgroundTarget = new BackgroundTarget();
-        topDefaultBackgroundTarget = new DefaultBackgroundTarget();
         LevelDefListId levelDefListId = new LevelDefListId();
-        if(!view.isInEditMode())
+        if (!view.isInEditMode())
         {
             levelDefDTOListSubscription = levelDefListCache.getOne(levelDefListId)
                     .observeOn(AndroidSchedulers.mainThread())
@@ -64,8 +51,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 
     @Override public void detachViews()
     {
-        topBackgroundTarget = null;
-        topDefaultBackgroundTarget = null;
         if (profileTop != null)
         {
             profileTop.removeCallbacks(displayTopViewBackgroundRunnable);
@@ -83,46 +68,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         displayCashOnHand();
         displayAchievementCount();
         displayLevelProgress();
-        loadBgPicture();
-    }
-
-    protected void loadBgPicture()
-    {
-        displayTopViewBackgroundRunnable = () -> {
-            if (userProfileDTO != null &&
-                    profileTop != null &&
-                    profileTop.getWidth() > 0 &&
-                    profileTop.getHeight() > 0 &&
-                    topBackgroundTarget != null)
-            {
-                loadDefaultBG();
-                if (userProfileDTO.picture != null)
-                {
-                    picasso.load(userProfileDTO.picture)
-                            .transform(peopleBackgroundTransformation)
-                            .resize(profileTop.getWidth(), profileTop.getHeight())
-                            .centerCrop()
-                            .into(topBackgroundTarget);
-                }
-            }
-        };
-        if (profileTop != null)
-        {
-            profileTop.post(displayTopViewBackgroundRunnable);
-        }
-    }
-
-    public void loadDefaultBG()
-    {
-        if (profileTop != null && topDefaultBackgroundTarget != null
-                && profileTop.getWidth() > 0 && profileTop.getHeight() > 0)
-        {
-            picasso.load(R.drawable.superman_facebook)
-                    .transform(peopleBackgroundTransformation)
-                    .resize(profileTop.getWidth(), profileTop.getHeight())
-                    .centerCrop()
-                    .into(topDefaultBackgroundTarget);
-        }
     }
 
     protected void displayTotalWealth()
@@ -239,30 +184,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                 userLevelProgressBar.setVisibility(View.INVISIBLE);
             }
         }
-    }
-
-    protected class BackgroundTarget implements Target
-    {
-        @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from)
-        {
-            if (profileTop != null)
-            {
-                GraphicUtil.setBackground(profileTop, new BitmapDrawable(context.getResources(), bitmap));
-            }
-        }
-
-        @Override public void onBitmapFailed(Drawable errorDrawable)
-        {
-        }
-
-        @Override public void onPrepareLoad(Drawable placeHolderDrawable)
-        {
-        }
-    }
-
-    protected class DefaultBackgroundTarget
-            extends BackgroundTarget
-    {
     }
 
     @SuppressWarnings("EmptyMethod")

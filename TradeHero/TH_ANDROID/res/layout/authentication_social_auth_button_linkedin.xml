@@ -12,7 +12,7 @@
       style="@style/TH.SocialAuthenticationButton"
       android:drawableLeft="@drawable/icn_li_white"
       android:drawableStart="@drawable/icn_li_white"
-      android:background="@drawable/btn_background_social_linkedin"
+      android:background="@drawable/linked_in_selector"
       android:text="@string/linkedin_login_in"
       app:type="linkedin"
       />

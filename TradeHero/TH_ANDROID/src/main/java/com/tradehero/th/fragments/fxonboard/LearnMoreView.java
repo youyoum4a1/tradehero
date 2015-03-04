@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import com.tradehero.th.R;
+import com.tradehero.th.rx.ReplaceWith;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.view.ViewObservable;
@@ -30,8 +31,8 @@ public class LearnMoreView extends LinearLayout
     {
         super.onAttachedToWindow();
         enrollmentSubscription = ViewObservable.clicks(findViewById(R.id.next_button), false)
-                //.flatMap(view -> fxService.enroll()) TODO when server ready, implement this
-                .map(view -> true) // continue to next screen
+                //.flatMap(view --> fxService.enroll()) TODO when server ready, implement this
+                .map(new ReplaceWith<>(true)) // continue to next screen
                 .subscribe(resultSubject);
     }
 

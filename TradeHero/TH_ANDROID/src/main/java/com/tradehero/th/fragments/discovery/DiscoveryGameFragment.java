@@ -14,6 +14,7 @@ import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.games.MiniGameDefDTO;
+import com.tradehero.th.api.games.MiniGameDefDTOList;
 import com.tradehero.th.api.games.MiniGameDefListKey;
 import com.tradehero.th.api.games.ViralMiniGameDefKey;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -23,16 +24,17 @@ import com.tradehero.th.fragments.games.ViralGamePopupDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.games.MiniGameDefListCache;
 import com.tradehero.th.rx.RxLoaderManager;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
-import timber.log.Timber;
 
 public class DiscoveryGameFragment extends DashboardFragment
 {
@@ -90,15 +92,21 @@ public class DiscoveryGameFragment extends DashboardFragment
     {
         ButterKnife.inject(this, view);
 
-        DiscoveryGameAdapter adapter = new DiscoveryGameAdapter(getActivity(), R.layout.discovery_game_item_view);
+        final DiscoveryGameAdapter adapter = new DiscoveryGameAdapter(getActivity(), R.layout.discovery_game_item_view);
         stickyListHeadersListView.setAdapter(adapter);
         stickyListHeadersListView.setEmptyView(emptyView);
 
         subscriptions = new CompositeSubscription();
         PublishSubject<List<MiniGameDefDTO>> miniGamesSubject = PublishSubject.create();
         subscriptions.add(miniGamesSubject.subscribe(
-                adapter::setItems,
-                e -> Timber.e(e, "Gotcha")));
+                new Action1<List<MiniGameDefDTO>>()
+                {
+                    @Override public void call(List<MiniGameDefDTO> miniGameDefDTOs)
+                    {
+                        adapter.setItems(miniGameDefDTOs);
+                    }
+                },
+                new TimberOnErrorAction("Gotcha")));
         subscriptions.add(miniGamesSubject.subscribe(new UpdateUIObserver()));
 
         subscriptions.add(
@@ -106,9 +114,9 @@ public class DiscoveryGameFragment extends DashboardFragment
                         MINIGAMES_LIST_LOADER_ID,
                         AppObservable.bindFragment(
                                 this,
-                                miniGameDefListCache.get(new MiniGameDefListKey()).map(new PairGetSecond<>())))
+                                miniGameDefListCache.get(new MiniGameDefListKey()).map(new PairGetSecond<MiniGameDefListKey, MiniGameDefDTOList>())))
                         .doOnError(new ToastOnErrorAction())
-                        .onErrorResumeNext(Observable.empty())
+                        .onErrorResumeNext(Observable.<MiniGameDefDTOList>empty())
                         .subscribe(miniGamesSubject));
     }
 

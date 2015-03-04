@@ -4,23 +4,22 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import retrofit.RetrofitError;
 import rx.Observable;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 abstract public class FollowUserAssistantTestBase
 {
     protected UserBaseKey heroId;
-    protected SimpleFollowUserAssistant.OnUserFollowedListener listener;
     protected UserServiceWrapper userServiceWrapper;
 
     public void setUp()
     {
         heroId = new UserBaseKey(123);
-        listener = mock(SimpleFollowUserAssistant.OnUserFollowedListener.class);
         userServiceWrapper = mock(UserServiceWrapper.class);
     }
 

@@ -1,7 +1,6 @@
 package com.tradehero.th.models.push.baidu.baidu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.models.push.baidu.BaiduPushMessageDTO;
 import java.io.IOException;
@@ -11,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
+import retrofit.converter.JacksonConverter;
 import retrofit.mime.TypedByteArray;
 
 import static com.tradehero.util.TestUtil.getResourceAsByteArray;

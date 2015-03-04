@@ -67,6 +67,7 @@
       android:src="@drawable/ic_tick_green"
       android:layout_gravity="center_vertical"
       android:visibility="gone"
+      tools:visibility="visible"
       android:contentDescription="@null"/>
 
 </com.tradehero.th.fragments.translation.TranslatableLanguageItemLinearView>

@@ -41,7 +41,7 @@ public class StoreItemFactory
     {
         StoreItemDTOList created = new StoreItemDTOList();
 
-        created.add(new StoreItemTitleDTO(R.string.store_header_in_app_purchases));
+//        created.add(new StoreItemTitleDTO(R.string.store_header_in_app_purchases));
         created.add(new StoreItemPromptPurchaseDTO(
                 R.string.store_buy_virtual_dollars,
                 R.drawable.icn_th_dollars,
@@ -52,33 +52,40 @@ public class StoreItemFactory
                 R.drawable.icn_follow_credits,
                 R.drawable.btn_buy_credits_large,
                 ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS));
-        if (includeAlerts)
-        {
-            created.add(new StoreItemPromptPurchaseDTO(
-                    R.string.store_buy_stock_alerts,
-                    R.drawable.icn_stock_alert,
-                    R.drawable.btn_buy_stock_alerts,
-                    ProductIdentifierDomain.DOMAIN_STOCK_ALERTS));
-        }
+//        if (includeAlerts)
+//        {
+//            created.add(new StoreItemPromptPurchaseDTO(
+//                    R.string.store_buy_stock_alerts,
+//                    R.drawable.icn_stock_alert,
+//                    R.drawable.btn_buy_stock_alerts,
+//                    ProductIdentifierDomain.DOMAIN_STOCK_ALERTS));
+//        }
         created.add(new StoreItemPromptPurchaseDTO(
                 R.string.store_buy_reset_portfolio,
                 R.drawable.icn_reset_portfolio,
                 R.drawable.btn_buy_reset_large,
                 ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO));
 
-        created.add(new StoreItemTitleDTO(R.string.store_header_manage_purchases));
-        created.add(new StoreItemHasFurtherDTO(
-                R.string.store_manage_heroes,
+        created.add(new StoreItemPromptPurchaseDTO(
+                R.string.store_buy_restore_purchases,
                 R.drawable.icn_follow_credits,
-                HeroManagerFragment.class));
-        created.add(new StoreItemHasFurtherDTO(
-                R.string.store_manage_followers,
-                R.drawable.icn_view_followers,
-                FollowerRevenueReportFragment.class));
-        created.add(new StoreItemHasFurtherDTO(
-                R.string.store_manage_stock_alerts,
-                R.drawable.icn_stock_alert,
-                AlertManagerFragment.class));
+                R.drawable.btn_buy_credits_large,
+                ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS));
+
+
+//        created.add(new StoreItemTitleDTO(R.string.store_header_manage_purchases));
+//        created.add(new StoreItemHasFurtherDTO(
+//                R.string.store_manage_heroes,
+//                R.drawable.icn_follow_credits,
+//                HeroManagerFragment.class));
+//        created.add(new StoreItemHasFurtherDTO(
+//                R.string.store_manage_followers,
+//                R.drawable.icn_view_followers,
+//                FollowerRevenueReportFragment.class));
+//        created.add(new StoreItemHasFurtherDTO(
+//                R.string.store_manage_stock_alerts,
+//                R.drawable.icn_stock_alert,
+//                AlertManagerFragment.class));
 
         return created;
     }

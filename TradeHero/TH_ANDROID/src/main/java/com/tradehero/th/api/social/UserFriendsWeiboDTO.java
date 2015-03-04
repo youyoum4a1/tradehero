@@ -2,6 +2,7 @@ package com.tradehero.th.api.social;
 
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
+import com.tradehero.th.api.social.key.WeiboFriendKey;
 
 public class UserFriendsWeiboDTO extends UserFriendsDTO
 {
@@ -22,6 +23,11 @@ public class UserFriendsWeiboDTO extends UserFriendsDTO
         this.wbId = wbId;
     }
     //</editor-fold>
+
+    @NonNull @Override public WeiboFriendKey getFriendKey()
+    {
+        return new WeiboFriendKey(wbId);
+    }
 
     @Override public int getNetworkLabelImage()
     {

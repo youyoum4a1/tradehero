@@ -84,8 +84,8 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentRight="true"
-          android:background="@color/number_red"
-          android:textColor="@color/white"
+          android:background="@drawable/basic_red_selector"
+          style="@style/TH.Button.Inverse"
           android:text="@string/position_force_closed"
           />
 

@@ -11,19 +11,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
@@ -37,7 +37,7 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import timber.log.Timber;
 
-abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
+abstract public class FollowerManagerTabFragment extends DashboardFragment
         implements SwipeRefreshLayout.OnRefreshListener
 {
     public static final int ITEM_ID_REFRESH_MENU = 0;
@@ -85,9 +85,13 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         swipeRefreshLayout.setOnRefreshListener(this);
         followerList.setAdapter(followerListAdapter);
         followerList.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-        followerList.setOnItemClickListener((parent, view1, position, id) -> {
-            ListView listView = (ListView) parent;
-            handleFollowerItemClicked(view1, position - listView.getHeaderViewsCount(), id);
+        followerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> parent, View view1, int position, long id)
+            {
+                ListView listView = (ListView) parent;
+                FollowerManagerTabFragment.this.handleFollowerItemClicked(view1, position - listView.getHeaderViewsCount(), id);
+            }
         });
         displayProgress(true);
     }
@@ -162,7 +166,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         {
             return R.string.manage_followers_title;
         }
-
     }
 
     protected HeroTypeResourceDTO getHeroTypeResource()
@@ -198,7 +201,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     {
         if (this.followerListAdapter != null)
         {
-            if(this.followerSummaryDTO.userFollowers.isEmpty())
+            if (this.followerSummaryDTO.userFollowers.isEmpty())
             {
                 emptyView.setVisibility(View.VISIBLE);
             }
@@ -225,7 +228,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     @Override public void onRefresh()
     {
-        if(followerSummaryDTO == null || followerSummaryDTO.userFollowers == null || followerSummaryDTO.userFollowers.size() == 0)
+        if (followerSummaryDTO == null || followerSummaryDTO.userFollowers == null || followerSummaryDTO.userFollowers.size() == 0)
         {
             displayProgress(true);
         }
@@ -260,16 +263,12 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     private void pushPayoutFragment(UserFollowerDTO followerDTO)
     {
-        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-        if (applicablePortfolioId != null)
-        {
-            FollowerHeroRelationId followerHeroRelationId =
-                    new FollowerHeroRelationId(applicablePortfolioId.userId,
-                            followerDTO.id, followerDTO.displayName);
-            Bundle args = new Bundle();
-            FollowerPayoutManagerFragment.put(args, followerHeroRelationId);
-            navigator.get().pushFragment(FollowerPayoutManagerFragment.class, args);
-        }
+        FollowerHeroRelationId followerHeroRelationId =
+                new FollowerHeroRelationId(currentUserId.get(),
+                        followerDTO.id, followerDTO.displayName);
+        Bundle args = new Bundle();
+        FollowerPayoutManagerFragment.put(args, followerHeroRelationId);
+        navigator.get().pushFragment(FollowerPayoutManagerFragment.class, args);
     }
 
     private void handleFollowerItemClicked(

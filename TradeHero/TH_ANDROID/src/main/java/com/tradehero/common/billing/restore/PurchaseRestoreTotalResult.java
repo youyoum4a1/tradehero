@@ -1,6 +1,7 @@
 package com.tradehero.common.billing.restore;
 
 import android.support.annotation.NonNull;
+import com.android.internal.util.Predicate;
 import com.tradehero.common.billing.BaseResult;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductIdentifier;
@@ -43,11 +44,27 @@ public class PurchaseRestoreTotalResult<
 
     public int getSucceededCount()
     {
-        return CollectionUtils.count(restoredList, item -> item.throwable == null);
+        return CollectionUtils.count(restoredList,
+                new Predicate<PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>>()
+                {
+                    @Override public boolean apply(
+                            PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType> item)
+                    {
+                        return item.throwable == null;
+                    }
+                });
     }
 
     public int getFailedCount()
     {
-        return CollectionUtils.count(restoredList, item -> item.throwable != null);
+        return CollectionUtils.count(restoredList,
+                new Predicate<PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>>()
+                {
+                    @Override public boolean apply(
+                            PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType> item)
+                    {
+                        return item.throwable != null;
+                    }
+                });
     }
 }

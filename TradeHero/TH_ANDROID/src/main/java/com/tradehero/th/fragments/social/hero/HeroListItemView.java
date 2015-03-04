@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.social.hero;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,13 +30,15 @@ import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 public class HeroListItemView extends RelativeLayout
         implements DTOView<HeroDTO>
 {
-    public static final int RES_ID_ACTIVE = R.drawable.image_icon_validation_valid;
-    public static final int RES_ID_INACTIVE = R.drawable.buyscreen_info;
-    public static final int RES_ID_CROSS_RED = R.drawable.cross_red;
+    @DrawableRes public static final int RES_ID_ACTIVE = R.drawable.image_icon_validation_valid;
+    @DrawableRes public static final int RES_ID_INACTIVE = R.drawable.buyscreen_info;
+    @DrawableRes public static final int RES_ID_CROSS_RED = android.R.drawable.ic_delete;
 
     @InjectView(R.id.follower_profile_picture) ImageView userIcon;
     @InjectView(R.id.hero_title) TextView title;
@@ -51,22 +55,25 @@ public class HeroListItemView extends RelativeLayout
     @Inject THRouter thRouter;
     @Inject DashboardNavigator navigator;
 
-    private OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
+    @NonNull private BehaviorSubject<UserAction> userActionSubject;
 
     //<editor-fold desc="Constructors">
     public HeroListItemView(Context context)
     {
         super(context);
+        userActionSubject = BehaviorSubject.create();
     }
 
     public HeroListItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        userActionSubject = BehaviorSubject.create();
     }
 
     public HeroListItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
+        userActionSubject = BehaviorSubject.create();
     }
     //</editor-fold>
 
@@ -77,13 +84,10 @@ public class HeroListItemView extends RelativeLayout
         HierarchyInjector.inject(this);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.ic_status) void onStatusIconClicked()
     {
-        //OnHeroStatusButtonClickedListener heroStatusButtonClickedListener = HeroListItemView.this.heroStatusButtonClickedListener.get();
-        if (heroStatusButtonClickedListener != null)
-        {
-            heroStatusButtonClickedListener.onHeroStatusButtonClicked(HeroListItemView.this, heroDTO);
-        }
+        userActionSubject.onNext(new UserActionDelete(heroDTO));
     }
 
     //<editor-fold desc="Reset views">
@@ -115,6 +119,12 @@ public class HeroListItemView extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
+    @NonNull public Observable<UserAction> getUserActionObservable()
+    {
+        return userActionSubject.asObservable();
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.follower_profile_picture) void onFollowerProfilePictureClicked(View v)
     {
         if (heroDTO != null)
@@ -128,11 +138,6 @@ public class HeroListItemView extends RelativeLayout
     public void setFollowerId(UserBaseKey followerId)
     {
         this.followerId = followerId;
-    }
-
-    public void setHeroStatusButtonClickedListener(OnHeroStatusButtonClickedListener heroStatusButtonClickedListener)
-    {
-        this.heroStatusButtonClickedListener = heroStatusButtonClickedListener;
     }
 
     public void display(HeroDTO heroDTO)
@@ -259,9 +264,18 @@ public class HeroListItemView extends RelativeLayout
     }
     //</editor-fold>
 
-    @Deprecated // Use Rx
-    public static interface OnHeroStatusButtonClickedListener
+    public static interface UserAction
     {
-        void onHeroStatusButtonClicked(HeroListItemView heroListItemView, HeroDTO heroDTO);
+    }
+
+    public static class UserActionDelete implements UserAction
+    {
+        @NonNull public final HeroDTO heroDTO;
+
+        public UserActionDelete(@NonNull HeroDTO heroDTO)
+        {
+            super();
+            this.heroDTO = heroDTO;
+        }
     }
 }

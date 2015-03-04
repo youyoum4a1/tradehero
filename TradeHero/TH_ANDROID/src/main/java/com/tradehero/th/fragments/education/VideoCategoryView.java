@@ -1,11 +1,6 @@
 package com.tradehero.th.fragments.education;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -27,12 +22,9 @@ import com.tradehero.th.api.education.VideoCategoryDTO;
 import com.tradehero.th.api.education.VideoCategoryId;
 import com.tradehero.th.api.education.VideoDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.education.PaginatedVideoCacheRx;
-import com.tradehero.th.utils.StringUtils;
 import java.util.Comparator;
-import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
@@ -68,7 +60,13 @@ public class VideoCategoryView extends RelativeLayout
         HierarchyInjector.inject(this);
         galleryAdapter = new VideoAdapter(
                 getContext(),
-                (lhs, rhs) -> lhs.getVideoId().compareTo(rhs.getVideoId()),
+                new Comparator<VideoDTO>()
+                {
+                    @Override public int compare(VideoDTO lhs, VideoDTO rhs)
+                    {
+                        return lhs.getVideoId().compareTo(rhs.getVideoId());
+                    }
+                },
                 R.layout.video_view);
     }
     //</editor-fold>

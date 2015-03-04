@@ -2,8 +2,6 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,25 +19,22 @@ import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
 import com.tradehero.th.api.users.UserTransactionHistoryListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.user.UserTransactionHistoryListCacheRx;
-import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
+import rx.Notification;
 import rx.Observer;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 
 public class SettingsTransactionHistoryFragment extends DashboardFragment
 {
     @InjectView(R.id.transaction_list) ListView transactionListView;
     private SettingsTransactionHistoryAdapter transactionListViewAdapter;
-    private ProgressDialog progressDialog;
 
     @Inject UserTransactionHistoryListCacheRx userTransactionHistoryListCache;
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
-
-    @Nullable protected Subscription transactionListCacheSubscription;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -68,11 +63,6 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         transactionListView.setAdapter(transactionListViewAdapter);
         transactionListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-
-        progressDialog = ProgressDialogUtil.show(
-                getActivity(),
-                R.string.alert_dialog_please_wait,
-                R.string.authentication_connecting_tradehero_only);
     }
 
     @Override public void onResume()
@@ -86,8 +76,6 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        unsubscribe(transactionListCacheSubscription);
-        transactionListCacheSubscription = null;
         transactionListView.setOnScrollListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -102,17 +90,18 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
 
     protected void fetchTransactionList()
     {
+        final ProgressDialog progressDialog = ProgressDialog.show(
+                getActivity(),
+                getString(R.string.alert_dialog_please_wait),
+                getString(R.string.authentication_connecting_tradehero_only),
+                true);
+
         UserTransactionHistoryListType key = new UserTransactionHistoryListType(currentUserId.toUserBaseKey());
-        unsubscribe(transactionListCacheSubscription);
-        transactionListCacheSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userTransactionHistoryListCache.get(key))
-                .subscribe(createTransactionHistoryObserver());
-    }
-
-    @NonNull protected Observer<Pair<UserTransactionHistoryListType, UserTransactionHistoryDTOList>> createTransactionHistoryObserver()
-    {
-        return new SettingsTransactionHistoryListObserver();
+                .doOnEach(new DismissDialogAction1<Notification<? super Pair<UserTransactionHistoryListType, UserTransactionHistoryDTOList>>>(progressDialog))
+                .subscribe(new SettingsTransactionHistoryListObserver()));
     }
 
     protected class SettingsTransactionHistoryListObserver implements Observer<Pair<UserTransactionHistoryListType, UserTransactionHistoryDTOList>>
@@ -122,7 +111,6 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
         {
             transactionListViewAdapter.setItems(pair.second);
             transactionListViewAdapter.notifyDataSetChanged();
-            progressDialog.hide();
         }
 
         @Override public void onCompleted()
@@ -132,7 +120,6 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
         @Override public void onError(Throwable e)
         {
             THToast.show("Unable to fetch transaction history. Please try again later.");
-            progressDialog.hide();
         }
     }
 }

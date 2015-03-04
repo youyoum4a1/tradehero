@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.achievement;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.InputType;
@@ -26,7 +27,8 @@ import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.AchievementMockServiceWrapper;
 import com.tradehero.th.persistence.achievement.QuestBonusListCacheRx;
-import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -61,7 +63,13 @@ public class QuestListTestingFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         swipeRefreshLayout.setEnabled(false);
         initAdapter();
-        listView.setOnItemClickListener(this::onItemClick);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> parent, View view1, int position, long id)
+            {
+                QuestListTestingFragment.this.onItemClick(parent, view1, position, id);
+            }
+        });
         listView.addHeaderView(createHeaderView());
     }
 
@@ -70,27 +78,15 @@ public class QuestListTestingFragment extends DashboardFragment
     {
         QuestBonusDTO questBonusDTO = list.get(i - listView.getHeaderViewsCount());
 
+        final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "Fetching Mock Quest", "Loading...", true);
+
         MockQuestBonusId mockQuestBonusId = new MockQuestBonusId(questBonusDTO.level, Integer.parseInt(mXPEarned.getText().toString()),
                 (Integer.parseInt(mXPEarned.getText().toString()) + Integer.parseInt(mXPFrom.getText().toString())));
         achievementMockServiceWrapper.getMockBonusDTORx(mockQuestBonusId)
-        .subscribe(new Observer<BaseResponseDTO>()
-        {
-            @Override public void onNext(BaseResponseDTO baseResponseDTO)
-            {
-                ProgressDialogUtil.dismiss(getActivity());
-            }
-
-            @Override public void onCompleted()
-            {
-            }
-
-            @Override public void onError(Throwable e)
-            {
-                ProgressDialogUtil.dismiss(getActivity());
-            }
-        });
-
-        ProgressDialogUtil.show(getActivity(), "Fetching Mock Quest", "Loading...");
+                .finallyDo(new DismissDialogAction0(progressDialog))
+                .subscribe(
+                        new EmptyAction1<BaseResponseDTO>(),
+                        new EmptyAction1<Throwable>());
     }
 
     private View createHeaderView()

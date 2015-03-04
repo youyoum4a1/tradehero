@@ -7,15 +7,18 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
+import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
-import com.tradehero.th.fragments.settings.SettingsReferralCodeFragment;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
+import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import java.util.ArrayList;
@@ -29,6 +32,15 @@ public enum RootFragmentType
     ME(R.layout.home_selector,
             R.string.dashboard_timeline, R.string.dashboard_timeline_key,
             R.drawable.icn_menu_home, MeTimelineFragment.class, AnalyticsConstants.TabBar_Me),
+    HOME(R.layout.residemenu_text_item,
+            R.string.dashboard_home, R.string.dashboard_home_key,
+            R.color.transparent, HomeFragment.class, AnalyticsConstants.TabBar_Home),
+    UPDATE_CENTER(R.layout.residemenu_text_item,
+            R.string.dashboard_message_center, R.string.dashboard_message_center_key,
+            R.color.transparent, UpdateCenterFragment.class, AnalyticsConstants.TabBar_UpdateCenter),
+    ALERTS(R.layout.residemenu_text_item,
+            R.string.dashboard_alerts, R.string.dashboard_alerts_key,
+            R.color.transparent, AlertManagerFragment.class, AnalyticsConstants.TabBar_Alerts),
     TRENDING(R.layout.tab_indicator_holo,
             R.string.dashboard_trending, R.string.dashboard_trending_key,
             R.drawable.icn_menu_trending, TrendingMainFragment.class, AnalyticsConstants.TabBar_Trade),
@@ -44,18 +56,18 @@ public enum RootFragmentType
     TIMELINE(R.layout.home_selector,
             R.string.dashboard_timeline, R.string.dashboard_timeline_key,
             R.color.transparent, MeTimelineFragment.class, AnalyticsConstants.TabBar_Me),
-    STORE(R.layout.residemenu_item_store,
+    STORE(R.layout.residemenu_text_item,
             R.string.dashboard_store, R.string.dashboard_store_key,
-            R.drawable.icn_menu_store, StoreScreenFragment.class, AnalyticsConstants.TabBar_Store),
-    FRIEND_REFERRAL(R.layout.residemenu_item_refererral,
+            R.color.transparent, StoreScreenFragment.class, AnalyticsConstants.TabBar_Store),
+    FRIEND_REFERRAL(R.layout.residemenu_text_item,
             R.string.dashboard_referral, R.string.dashboard_referral_key,
-            R.drawable.icn_menu_referral, SettingsReferralCodeFragment.class, AnalyticsConstants.TabBar_FriendReferral),
+            R.color.transparent, FriendsInvitationFragment.class, AnalyticsConstants.TabBar_FriendReferral),
     SETTING(R.layout.residemenu_item_settings,
             R.string.dashboard_menu_settings, R.string.dashboard_menu_settings_key,
-            R.drawable.icn_menu_settings, SettingsFragment.class, AnalyticsConstants.TabBar_Settings),
-    ADMIN_SETTINGS(R.layout.tab_indicator_holo,
+            R.color.transparent, SettingsFragment.class, AnalyticsConstants.TabBar_Settings),
+    ADMIN_SETTINGS(R.layout.residemenu_text_item,
             R.string.dashboard_admin_settings, R.string.dashboard_admin_settings_key,
-            R.drawable.icn_menu_settings, AdminSettingsFragment.class, AnalyticsConstants.TabBar_AdminSettings),
+            R.color.transparent, AdminSettingsFragment.class, AnalyticsConstants.TabBar_AdminSettings),
     DIVIDER(R.layout.residemenu_item_divider,
             R.string.dashboard_divider, R.string.dashboard_divider_key,
             R.drawable.icn_menu_settings, null, AnalyticsConstants.TabBar_Divider);
@@ -93,7 +105,7 @@ public enum RootFragmentType
     @NonNull public static Collection<RootFragmentType> forResideMenu()
     {
         List<RootFragmentType> forResideMenu = new ArrayList<>(Arrays.asList(
-                TIMELINE, DIVIDER, TRENDING, DISCOVERY, COMMUNITY, CONTEST_CENTER, DIVIDER, FRIEND_REFERRAL, STORE, SETTING
+                HOME, UPDATE_CENTER, ALERTS, FRIEND_REFERRAL, STORE, SETTING
         ));
         addAdminMenuIfNeeded(forResideMenu);
         return Collections.unmodifiableCollection(forResideMenu);
@@ -102,7 +114,7 @@ public enum RootFragmentType
     @NonNull public static Collection<RootFragmentType> forBottomBar()
     {
         List<RootFragmentType> forBottomBar = Arrays.asList(
-                ME, TRENDING, DISCOVERY, COMMUNITY, CONTEST_CENTER
+                TRENDING, ME, DISCOVERY, COMMUNITY, CONTEST_CENTER
         );
         return Collections.unmodifiableCollection(forBottomBar);
     }

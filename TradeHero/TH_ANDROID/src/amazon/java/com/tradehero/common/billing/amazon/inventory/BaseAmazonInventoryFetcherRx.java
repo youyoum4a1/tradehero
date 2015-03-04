@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import rx.Observable;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 /**
@@ -52,9 +53,21 @@ abstract public class BaseAmazonInventoryFetcherRx<
                 new AmazonPurchasingServiceProductDataOperator(
                         purchasingService,
                         getSkuSet()))
-                .doOnNext(this::reportUnavailable)
-                .flatMap(response -> Observable.from(response.getProductData().entrySet()))
-                .map(this::createResult);
+                .flatMap(new Func1<ProductDataResponse, Observable<? extends Map.Entry<String, Product>>>()
+                {
+                    @Override public Observable<? extends Map.Entry<String, Product>> call(ProductDataResponse response)
+                    {
+                        reportUnavailable(response);
+                        return Observable.from(response.getProductData().entrySet());
+                    }
+                })
+                .map(new Func1<Map.Entry<String, Product>, ProductInventoryResult<AmazonSKUType, AmazonProductDetailType>>()
+                {
+                    @Override public ProductInventoryResult<AmazonSKUType, AmazonProductDetailType> call(Map.Entry<String, Product> result)
+                    {
+                        return BaseAmazonInventoryFetcherRx.this.createResult(result);
+                    }
+                });
     }
 
     @NonNull protected Set<String> getSkuSet()

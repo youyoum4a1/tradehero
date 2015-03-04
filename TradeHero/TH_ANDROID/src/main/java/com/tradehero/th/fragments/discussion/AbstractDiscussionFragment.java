@@ -16,6 +16,7 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import dagger.Lazy;
@@ -23,7 +24,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 
-abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFragment
+abstract public class AbstractDiscussionFragment extends DashboardFragment
 {
     private static final String DISCUSSION_KEY_BUNDLE_KEY = AbstractDiscussionFragment.class.getName() + ".discussionKey";
 

@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.portfolio;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
@@ -18,6 +19,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Func1;
 
 @Singleton @UserCache
 public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, PortfolioDTO>
@@ -73,10 +75,22 @@ public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, Port
             "UnusedParameters") @Nullable OwnedPortfolioId typeQualifier)
     {
         return Observable.from(ownedPortfolioIds)
-                .flatMap(id -> get(id).take(1))
-                .map(new PairGetSecond<>())
+                .flatMap(new Func1<OwnedPortfolioId, Observable<? extends Pair<OwnedPortfolioId, PortfolioDTO>>>()
+                {
+                    @Override public Observable<? extends Pair<OwnedPortfolioId, PortfolioDTO>> call(OwnedPortfolioId id)
+                    {
+                        return PortfolioCacheRx.this.get(id).take(1);
+                    }
+                })
+                .map(new PairGetSecond<OwnedPortfolioId, PortfolioDTO>())
                 .toList()
-                .map(PortfolioDTOList::new);
+                .map(new Func1<List<PortfolioDTO>, PortfolioDTOList>()
+                {
+                    @Override public PortfolioDTOList call(List<PortfolioDTO> t1)
+                    {
+                        return new PortfolioDTOList(t1);
+                    }
+                });
     }
 
     public void invalidate(@NonNull UserBaseKey concernedUser)

@@ -11,8 +11,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import rx.Observable;
-import rx.android.view.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.view.OnClickEvent;
+import rx.android.view.ViewObservable;
+import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 
 public class TwitterEmailFragment extends Fragment
@@ -34,7 +36,13 @@ public class TwitterEmailFragment extends Fragment
 
         ViewObservable.clicks(twitterConfirm, false)
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .map(view1 -> twitterEmail.getText().toString())
+                .map(new Func1<OnClickEvent, String>()
+                {
+                    @Override public String call(OnClickEvent view1)
+                    {
+                        return twitterEmail.getText().toString();
+                    }
+                })
                 .subscribe(loginRequestSubject);
     }
 

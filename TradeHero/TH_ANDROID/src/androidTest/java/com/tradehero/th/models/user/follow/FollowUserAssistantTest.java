@@ -1,14 +1,15 @@
 package com.tradehero.th.models.user.follow;
 
+import android.util.Pair;
 import com.tradehero.THRobolectric;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.models.user.FollowUserAssistantTestBase;
 import com.tradehero.th.models.user.OpenFollowUserAssistant;
@@ -21,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import retrofit.RetrofitError;
+import rx.Observable;
 
 import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -48,15 +50,10 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @After public void tearDown()
     {
-        if (assistant != null)
-        {
-            assistant.setUserFollowedListener(null);
-        }
         userProfileCache.invalidateAll();
         billingInteractor = null;
         applicablePortfolioId = null;
         assistant = null;
-        receivedRequest = null;
     }
 
     protected UserProfileDTO mockMyProfileWithCC(double credits)
@@ -71,10 +68,9 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
     {
         doAnswer(new Answer()
         {
-            @Override public Object answer(InvocationOnMock invocation) throws Throwable
+            @Override public Observable<Pair<UserBaseKey, UserProfileDTO>> answer(InvocationOnMock invocation) throws Throwable
             {
-                assistant.onError(expected);
-                return null;
+                return Observable.error(expected);
             }
         }).when(userProfileCache).get(currentUserId.toUserBaseKey());
     }
@@ -147,33 +143,20 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followCallsCache()
     {
-        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, null, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId);
         // Prepare cache
         userProfileCache = mock(UserProfileCacheRx.class);
         ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
 
-        assistant.launchPremiumFollowRx();
+        assistant.launchPremiumFollowRx().subscribe();
 
         verify(userProfileCache, times(1)).get(currentUserId.toUserBaseKey());
     }
 
-    @Test public void callingErrorFromCacheNotifiesListener()
+    @Test(expected = IllegalArgumentException.class)
+    public void followErrorCacheNotifiesListener()
     {
-        assistant = new FollowUserAssistant(
-                THApp.context(),
-                heroId,
-                listener,
-                applicablePortfolioId);
-        //noinspection ThrowableInstanceNeverThrown
-        Throwable expected = new IllegalArgumentException();
-        assistant.onError(expected);
-
-        verify(listener, times(1)).onUserFollowFailed(heroId, expected);
-    }
-
-    @Test public void followErrorCacheNotifiesListener()
-    {
-        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, listener, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId);
         // Prepare cache
         userProfileCache = mock(UserProfileCacheRx.class);
         //noinspection ThrowableInstanceNeverThrown
@@ -181,14 +164,12 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         makeProfileCacheThrow(expected);
         ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
 
-        assistant.launchPremiumFollowRx();
-
-        verify(listener, times(1)).onUserFollowFailed(heroId, expected);
+        assistant.launchPremiumFollowRx().subscribe();
     }
 
     @Test public void followWithEnoughCCWillCallService() throws InterruptedException
     {
-        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, null, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId);
         // Prepare cache
         ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         UserProfileDTO myProfile = mockMyProfileWithCC(1d);
@@ -202,9 +183,10 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         verify(userServiceWrapper, times(1)).followRx(heroId);
     }
 
-    @Test public void followWithEnoughCCAndServiceFailedWillNotify() throws InterruptedException
+    @Test(expected = RetrofitError.class)
+    public void followWithEnoughCCAndServiceFailedWillNotify() throws InterruptedException
     {
-        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, listener, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId);
         // Prepare cache
         UserProfileDTO myProfile = mockMyProfileWithCC(1d);
         userProfileCache.onNext(currentUserId.toUserBaseKey(), myProfile);
@@ -214,15 +196,13 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         prepareUserServiceForFailFollow(assistant, expected);
         ((OpenFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchPremiumFollowRx();
+        assistant.launchPremiumFollowRx().subscribe();
         runBgUiTasks(3);
-
-        verify(listener, times(1)).onUserFollowFailed(heroId, expected);
     }
 
     @Test public void followWithEnoughCCAndServiceSuccessWillNotify() throws InterruptedException
     {
-        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, listener, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId);
         // Prepare cache
         UserProfileDTO myProfile = mockMyProfileWithCC(1d);
         userProfileCache.onNext(currentUserId.toUserBaseKey(), myProfile);
@@ -235,12 +215,12 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.launchPremiumFollowRx();
         runBgUiTasks(3);
 
-        verify(listener, times(1)).onUserFollowSuccess(heroId, expected);
+        //verify(listener, times(1)).onUserFollowSuccess(heroId, expected);
     }
 
     @Test public void followWithNotEnoughCCWillCallInteractor() throws InterruptedException
     {
-        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, null, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId);
         // Prepare cache
         UserProfileDTO myProfile = mockMyProfileWithCC(0d);
         userProfileCache.onNext(currentUserId.toUserBaseKey(), myProfile);
@@ -255,15 +235,15 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         //noinspection unchecked
         //verify(billingInteractor, times(1)).run(any(THUIBillingRequest.class));
         assertThat(((OpenFollowUserAssistant) assistant).getRequestCode()).isEqualTo(13);
-        assertThat(receivedRequest).isNotNull();
-        assertThat(receivedRequest.getDomainToPresent()).isEqualTo(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
-        assertThat(receivedRequest.getUserToPremiumFollow()).isEqualTo(heroId);
-        assertThat(receivedRequest.getApplicablePortfolioId()).isEqualTo(applicablePortfolioId);
+        //assertThat(receivedRequest).isNotNull();
+        //assertThat(receivedRequest.getDomainToPresent()).isEqualTo(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
+        //assertThat(receivedRequest.getUserToPremiumFollow()).isEqualTo(heroId);
+        //assertThat(receivedRequest.getApplicablePortfolioId()).isEqualTo(applicablePortfolioId);
     }
 
     @Test public void followWithNotEnoughCCAndBoughtFailedWillNotify()
     {
-        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, null, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId);
         // Prepare cache
         UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
         userProfileCache.onNext(currentUserId.toUserBaseKey(), myInitialProfile);
@@ -277,7 +257,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 
     @Test public void followWithNotEnoughCCAndBoughtSuccessWillCallService() throws InterruptedException
     {
-        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, null, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId);
         // Prepare cache
         UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
         userProfileCache.onNext(currentUserId.toUserBaseKey(), myInitialProfile);
@@ -296,9 +276,10 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
     }
 
     // This is very long but here to test that no listener /callback is lost in the process
-    @Test public void followWithNotEnoughCCAndBoughtSuccessAndServiceFollowFailedWillNotifyListener() throws InterruptedException
+    @Test(expected = RetrofitError.class)
+    public void followWithNotEnoughCCAndBoughtSuccessAndServiceFollowFailedWillNotifyListener() throws InterruptedException
     {
-        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, listener, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId);
         // Prepare cache
         UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
         userProfileCache.onNext(currentUserId.toUserBaseKey(), myInitialProfile);
@@ -312,16 +293,14 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         prepareUserServiceForFailFollow(assistant, retrofitError);
         ((OpenFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchPremiumFollowRx();
+        assistant.launchPremiumFollowRx().subscribe();
         runBgUiTasks(3);
-
-        verify(listener, times(1)).onUserFollowFailed(heroId, retrofitError);
     }
 
     // This is very long but here to test that no listener /callback is lost in the process
     @Test public void followWithNotEnoughCCAndBoughtSuccessAndServiceFollowSuccessWillNotifyListener() throws InterruptedException
     {
-        assistant = new OpenFollowUserAssistant(THApp.context(), heroId, listener, applicablePortfolioId);
+        assistant = new OpenFollowUserAssistant(THApp.context(), heroId);
         // Prepare cache
         UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
         userProfileCache.onNext(currentUserId.toUserBaseKey(), myInitialProfile);
@@ -338,6 +317,6 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.launchPremiumFollowRx();
         runBgUiTasks(3);
 
-        verify(listener, times(1)).onUserFollowSuccess(heroId, myProfileAfterFollow);
+        //verify(listener, times(1)).onUserFollowSuccess(heroId, myProfileAfterFollow);
     }
 }

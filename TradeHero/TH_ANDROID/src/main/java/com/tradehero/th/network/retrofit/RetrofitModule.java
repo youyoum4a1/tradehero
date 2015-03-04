@@ -12,7 +12,6 @@ import com.squareup.okhttp.OkHttpClient;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.log.RetrofitErrorHandlerLogger;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.api.ObjectMapperWrapper;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTODeserialiser;
@@ -47,6 +46,7 @@ import retrofit.RestAdapter;
 import retrofit.client.Client;
 import retrofit.client.OkClient;
 import retrofit.converter.Converter;
+import retrofit.converter.JacksonConverter;
 import timber.log.Timber;
 
 @Module(

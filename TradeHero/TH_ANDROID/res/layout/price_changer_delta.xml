@@ -27,7 +27,6 @@
         android:layout_height="wrap_content"
         style="@style/TH.Subhead"
         tools:text="Price Change -5.0%"
-        android:textColor="@color/sec_type"
         android:id="@+id/alert_edit_percentage_change"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"/>
@@ -43,11 +42,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_body"
+        style="@style/TH.Body"
         android:text="@string/stock_alert_price_change_help_text"
         android:id="@+id/alert_edit_price_change_help_text"
         android:layout_below="@id/alert_edit_percentage_change_actual_value"
-        android:textColor="@color/text_gray_normal"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:paddingTop="5dp"

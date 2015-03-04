@@ -24,13 +24,13 @@ import com.tradehero.th.network.share.dto.ConnectRequired;
 import com.tradehero.th.network.share.dto.SocialDialogResult;
 import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.SocialAlertDialogRxUtil;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
-import rx.functions.Action0;
 import rx.functions.Func1;
 
 public class SocialShareHelper
@@ -57,21 +57,15 @@ public class SocialShareHelper
     }
     //</editor-fold>
 
-    @NonNull public Observable<SocialDialogResult> show(@NonNull DTO whatToShare)
+    @NonNull public Observable<SocialDialogResult> show(@NonNull final DTO whatToShare)
     {
         return createDialog(whatToShare)
                 .flatMap(new Func1<Pair<Dialog, ShareDialogLayout>, Observable<ShareDialogLayout.UserAction>>()
                 {
-                    @Override public Observable<ShareDialogLayout.UserAction> call(Pair<Dialog, ShareDialogLayout> pair)
+                    @Override public Observable<ShareDialogLayout.UserAction> call(final Pair<Dialog, ShareDialogLayout> pair)
                     {
                         return pair.second.show(whatToShare)
-                                .finallyDo(new Action0()
-                                {
-                                    @Override public void call()
-                                    {
-                                        pair.first.dismiss();
-                                    }
-                                });
+                                .finallyDo(new DismissDialogAction0(pair.first));
                     }
                 })
                 .flatMap(new Func1<ShareDialogLayout.UserAction, Observable<? extends SocialDialogResult>>()
@@ -106,7 +100,7 @@ public class SocialShareHelper
         return Observable.error(new IllegalStateException("Unhandled UserAction " + userAction));
     }
 
-    @NonNull public Observable<SocialShareResult> share(@NonNull SocialShareFormDTO socialShareFormDTO)
+    @NonNull public Observable<SocialShareResult> share(@NonNull final SocialShareFormDTO socialShareFormDTO)
     {
         return socialSharerProvider.get().share(socialShareFormDTO)
                 .flatMap(new Func1<SocialShareResult, Observable<SocialShareResult>>()
@@ -135,7 +129,7 @@ public class SocialShareHelper
         return offerToConnect(toConnect.get(0));
     }
 
-    @NonNull public Observable<UserProfileDTO> offerToConnect(@NonNull SocialNetworkEnum socialNetwork)
+    @NonNull public Observable<UserProfileDTO> offerToConnect(@NonNull final SocialNetworkEnum socialNetwork)
     {
         return SocialAlertDialogRxUtil.popNeedToLinkSocial(
                 activityHolder.get(),
@@ -162,7 +156,7 @@ public class SocialShareHelper
 
     @NonNull public Observable<UserProfileDTO> handleNeedToLink(@NonNull SocialNetworkEnum socialNetwork)
     {
-        ProgressDialog progressDialog = new ProgressDialog(activityHolder.get());
+        final ProgressDialog progressDialog = new ProgressDialog(activityHolder.get());
         progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setMessage(activityHolder.get().getString(
@@ -172,12 +166,6 @@ public class SocialShareHelper
         AuthenticationProvider socialAuthenticationProvider = authenticationProviders.get(socialNetwork);
         return ((SocialAuthenticationProvider) socialAuthenticationProvider)
                 .socialLink(activityHolder.get())
-                .finallyDo(new Action0()
-                {
-                    @Override public void call()
-                    {
-                        progressDialog.dismiss();
-                    }
-                });
+                .finallyDo(new DismissDialogAction0(progressDialog));
     }
 }

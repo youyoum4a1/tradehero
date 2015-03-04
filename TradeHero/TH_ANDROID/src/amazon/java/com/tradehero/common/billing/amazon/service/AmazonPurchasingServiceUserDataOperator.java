@@ -21,7 +21,7 @@ public class AmazonPurchasingServiceUserDataOperator implements Observable.OnSub
     }
     //</editor-fold>
 
-    @Override public void call(Subscriber<? super UserDataResponse> subscriber)
+    @Override public void call(final Subscriber<? super UserDataResponse> subscriber)
     {
         amazonPurchasingService.getUserData(new PurchasingListener()
         {

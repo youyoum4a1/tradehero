@@ -1,11 +1,13 @@
 package com.tradehero.th.persistence.portfolio;
 
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.key.PortfolioCompactListKey;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -14,6 +16,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Func1;
 
 @Singleton @UserCache
 public class OwnedPortfolioIdListCacheRx extends BaseFetchDTOCacheRx<PortfolioCompactListKey, OwnedPortfolioIdList>
@@ -40,7 +43,13 @@ public class OwnedPortfolioIdListCacheRx extends BaseFetchDTOCacheRx<PortfolioCo
         if (key instanceof UserBaseKey)
         {
             return portfolioCompactListCacheRx.get().get((UserBaseKey) key)
-                    .map(pair -> new OwnedPortfolioIdList(pair.second, new PortfolioCompactDTO()));
+                    .map(new Func1<Pair<UserBaseKey, PortfolioCompactDTOList>, OwnedPortfolioIdList>()
+                    {
+                        @Override public OwnedPortfolioIdList call(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
+                        {
+                            return new OwnedPortfolioIdList(pair.second, new PortfolioCompactDTO());
+                        }
+                    });
         }
         if (key instanceof SecurityId)
         {

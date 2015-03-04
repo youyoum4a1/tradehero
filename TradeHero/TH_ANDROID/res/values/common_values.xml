@@ -2,11 +2,6 @@
 <resources>
 
   <dimen name="global_corner_radius">1dp</dimen>
-  <color name="button_blue">@color/tradehero_blue</color>
-  <color name="button_gray">#FFcecfd0</color>
-  <color name="button_green">#7fe072</color>
-  <color name="button_green_light">#a7fb9c</color>
-  <color name="button_yellow">#F0E68C</color>
 
   <!-- Dashboard keys -->
   <string name="dashboard_timeline_key" translatable="false">key_timeline</string>
@@ -15,6 +10,7 @@
   <string name="dashboard_education_key" translatable="false">key_academy</string>
   <string name="dashboard_community_key" translatable="false">key_social</string>
   <string name="dashboard_message_center_key" translatable="false">key_message</string>
+  <string name="dashboard_alerts_key" translatable="false">key_alerts</string>
   <string name="dashboard_referral_key" translatable="false">key_refer_friends</string>
   <string name="dashboard_contest_center_key" translatable="false">key_contest_center</string>
   <string name="dashboard_store_key" translatable="false">key_store</string>

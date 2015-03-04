@@ -4,24 +4,49 @@
       Base application theme, dependent on API level. This theme is replaced
       by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
   -->
+
+  <style name="Base.TradeHero"
+      parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="colorAccent">@color/text_secondary_accented</item>
+    <item name="colorPrimary">@color/tradehero_blue</item>
+    <item name="colorPrimaryDark">#ff0812c6</item>
+    <item name="colorControlNormal">@color/tradehero_blue</item>
+    <item name="colorControlHighlight">@color/tradehero_blue_pressed</item>
+    <item name="android:textColorPrimary">@color/text_primary</item>
+    <item name="android:textColorPrimaryInverse">@color/text_primary_inverse</item>
+    <item name="android:textColorSecondary">@color/text_secondary</item>
+    <item name="android:textColorSecondaryInverse">@color/text_secondary_inverse</item>
+    <item name="android:textColorHighlight">@color/text_primary_accented</item>
+    <item name="android:textColorHighlightInverse">@color/text_secondary_accented</item>
+  </style>
+
   <style name="TradeHero"
-      parent="@android:style/Theme.Holo.Light">
-    <item name="android:windowActionBar">true</item>
-    <item name="android:windowNoTitle">false</item>
+      parent="Base.TradeHero">
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowActionBarOverlay">false</item>
+  </style>
+
+  <style name="TradeHero.ActionBar" parent="Widget.AppCompat.Toolbar">
+    <item name="android:background">?attr/colorPrimary</item>
+    <item name="theme">@style/ThemeOverlay.ActionBar.TradeHero</item>
+    <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+  </style>
+
+  <style name="ThemeOverlay.ActionBar.TradeHero" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
     <item name="android:windowActionBarOverlay">true</item>
+    <!-- Support library compatibility -->
+    <item name="windowActionBarOverlay">true</item>
   </style>
 
   <style name="TradeHero.Settings"
       parent="TradeHero">
-    <item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>
-    <item name="android:windowActionBarOverlay">false</item>
   </style>
 
   <style name="AppBaseTheme.NoActionBar"
       parent="TradeHero">
     <item name="android:windowActionBar">false</item>
     <item name="android:windowNoTitle">true</item>
-    <item name="android:background">@color/splash_background_solid</item>
+    <item name="android:background">@color/white</item>
   </style>
 
   <style name="AppBaseTheme.NoActionBar2"
@@ -66,7 +91,7 @@
   <style name="TH.Btn_Price_Bar_Separator">
     <item name="android:layout_width">1dp</item>
     <item name="android:layout_height">match_parent</item>
-    <item name="android:background">@color/dark_gray</item>
+    <item name="android:background">@color/tradehero_divider_grey</item>
   </style>
 
   <style name="TH.Authentication">
@@ -100,19 +125,18 @@
 
   <style name="TradeHero.Dashboard"
       parent="TradeHero">
-    <item name="android:windowActionBarOverlay">false</item>
-    <item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>
-    <item name="android:actionBarTabStyle">@style/TradeHero.Dashboard.ActionBar.TabView</item>
-    <item name="android:actionBarTabBarStyle">@style/TradeHero.Dashboard.ActionBar.TabBar</item>
-    <item name="android:actionBarTabTextStyle">@style/TradeHero.Dashboard.ActionBar.TabText</item>
-    <item name="android:actionButtonStyle">@style/TradeHero.Dashboard.ActionBarButton</item>
-    <item name="android:actionMenuTextAppearance">@style/TradeHero.Dashboard.ActionBar.Menu</item>
-    <item name="android:actionBarItemBackground">@drawable/basic_transparent_selector</item>
-    <item name="android:actionMenuTextColor">@color/tradehero_blue</item>
-    <item name="android:actionOverflowButtonStyle">@style/TradeHero.Dashboard.ActionBar.OverflowButtonStyle</item>
-    <item name="android:popupMenuStyle">@style/TradeHero.Dashboard.ActionBar.PopupMenu</item>
-    <item name="android:actionBarWidgetTheme">@style/TradeHero.Dashboard.ActionBar.WidgetStyle</item>
-    <item name="android:dropDownListViewStyle">@style/TradeHero.Dashboard.ActionBar.DropDownListView</item>
+    <!--<item name="android:actionBarTabStyle">@style/TradeHero.Dashboard.ActionBar.TabView</item>-->
+    <!--<item name="android:actionBarTabBarStyle">@style/TradeHero.Dashboard.ActionBar.TabBar</item>-->
+    <!--<item name="android:actionBarTabTextStyle">@style/TradeHero.Dashboard.ActionBar.TabText</item>-->
+    <!--<item name="android:actionBarItemBackground">@drawable/basic_transparent_selector</item>-->
+    <!--<item name="android:actionMenuTextColor">@color/tradehero_blue</item>-->
+    <!--<item name="android:actionMenuTextAppearance">@style/TradeHero.Dashboard.ActionBar.Menu</item>-->
+    <!--<item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>-->
+    <!--<item name="android:actionButtonStyle">@style/TradeHero.Dashboard.ActionBarButton</item>-->
+    <!--<item name="android:actionOverflowButtonStyle">@style/TradeHero.Dashboard.ActionBar.OverflowButtonStyle</item>-->
+    <!--<item name="android:popupMenuStyle">@style/TradeHero.Dashboard.ActionBar.PopupMenu</item>-->
+    <!--<item name="android:actionBarWidgetTheme">@style/TradeHero.Dashboard.ActionBar.WidgetStyle</item>-->
+    <!--<item name="android:dropDownListViewStyle">@style/TradeHero.Dashboard.ActionBar.DropDownListView</item>-->
   </style>
 
 
@@ -123,8 +147,8 @@
 
   <style name="TradeHero.Dashboard.ActionBar.TabText"
       parent="@android:style/Widget.Holo.Light.ActionBar.TabText">
-    <item name="android:textColor">@color/tradehero_blue</item>
-    <item name="android:textAllCaps">true</item>
+    <item name="android:textColor">?android:textColorPrimaryInverse</item>
+    <item name="android:textAllCaps">false</item>
     <item name="android:textSize">@dimen/text_caption</item>
     <item name="android:textStyle">bold</item>
     <item name="android:gravity">center</item>
@@ -153,7 +177,7 @@
   </style>
 
   <style name="TradeHero.TabContainer">
-    <item name="android:background">@drawable/ab_background</item>
+    <item name="android:background">@drawable/bar_background</item>
     <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
   </style>
 
@@ -168,56 +192,54 @@
   <style name="UserProfile.Tabs" parent="TH.BuySell_ViewPager_Tabs">
   </style>
 
-  <style name="TradeHero.Dashboard.ActionBar"
-      parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-    <item name="android:titleTextStyle">@style/TradeHero.Dashboard.ActionBar.TitleTextStyle</item>
-    <item name="android:actionMenuTextColor">@color/tradehero_blue</item>
-    <item name="android:background">@drawable/ab_background</item>
-  </style>
+  <!--<style name="TradeHero.Dashboard.ActionBar"-->
+      <!--parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">-->
+    <!--<item name="android:titleTextStyle">@style/TradeHero.Dashboard.ActionBar.TitleTextStyle</item>-->
+    <!--<item name="android:actionMenuTextColor">@color/tradehero_blue</item>-->
+    <!--<item name="android:background">@drawable/bar_background</item>-->
+  <!--</style>-->
 
-  <style name="TradeHero.Dashboard.ActionBarButton"
-      parent="@android:style/Widget.Holo.Light.ActionButton">
-    <item name="android:background">@drawable/basic_transparent_selector</item>
-  </style>
+  <!--<style name="TradeHero.Dashboard.ActionBarButton"-->
+      <!--parent="@android:style/Widget.Holo.Light.ActionButton">-->
+    <!--<item name="android:background">@drawable/basic_transparent_selector</item>-->
+  <!--</style>-->
 
-  <style name="TradeHero.Dashboard.ActionBar.TitleTextStyle"
-      parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-    <item name="android:textColor">@color/black</item>
-  </style>
+  <!--<style name="TradeHero.Dashboard.ActionBar.TitleTextStyle"-->
+      <!--parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">-->
+    <!--<item name="android:textColor">@color/black</item>-->
+  <!--</style>-->
 
-  <style name="TradeHero.Dashboard.ActionBar.Menu"
-      parent="android:style/TextAppearance.Holo.Widget.ActionBar.Menu">
-    <item name="android:textSize">@dimen/text_subhead</item>
+  <!--<style name="TradeHero.Dashboard.ActionBar.Menu"-->
+      <!--parent="android:style/TextAppearance.Holo.Widget.ActionBar.Menu">-->
+    <!--<item name="android:textSize">@dimen/text_subhead</item>-->
     <!--<item name="android:textStyle">bold</item>-->
-    <item name="android:textColor">@color/tradehero_blue</item>
-    <item name="android:textAllCaps">false</item>
-  </style>
+    <!--<item name="android:textColor">@color/tradehero_blue</item>-->
+    <!--<item name="android:textAllCaps">false</item>-->
+  <!--</style>-->
 
-  <style name="TradeHero.Dashboard.ActionBar.DropDownListView"
-      parent="@android:style/Widget.Holo.Light.ListView.DropDown">
-    <item name="android:listSelector">@drawable/basic_transparent_selector</item>
-  </style>
+  <!--<style name="TradeHero.Dashboard.ActionBar.DropDownListView"-->
+      <!--parent="@android:style/Widget.Holo.Light.ListView.DropDown">-->
+    <!--<item name="android:listSelector">@drawable/basic_transparent_selector</item>-->
+  <!--</style>-->
 
-  <style name="TradeHero.Dashboard.ActionBar.PopupMenu"
-      parent="@android:style/Widget.Holo.Light.PopupMenu">
-    <item name="android:listSelector">@drawable/basic_transparent_selector</item>
-  </style>
+  <!--<style name="TradeHero.Dashboard.ActionBar.PopupMenu"-->
+      <!--parent="@android:style/Widget.Holo.Light.PopupMenu">-->
+    <!--<item name="android:listSelector">@drawable/basic_transparent_selector</item>-->
+  <!--</style>-->
 
-  <style name="TradeHero.Dashboard.ActionBar.OverflowButtonStyle"
-      parent="@android:style/Widget.Holo.Light.ActionButton.Overflow">
-    <item name="android:src">@drawable/ic_action_core_overflow</item>
-  </style>
+  <!--<style name="TradeHero.Dashboard.ActionBar.OverflowButtonStyle"-->
+      <!--parent="@android:style/Widget.Holo.Light.ActionButton.Overflow">-->
+    <!--<item name="android:src">@drawable/ic_action_core_overflow</item>-->
+  <!--</style>-->
 
-  <style name="TradeHero.Dashboard.ActionBar.WidgetStyle"
-      parent="@android:style/Widget">
-    <item name="android:textColor">@color/tradehero_blue</item>
-  </style>
+  <!--<style name="TradeHero.Dashboard.ActionBar.WidgetStyle"-->
+      <!--parent="@android:style/Widget">-->
+    <!--<item name="android:textColor">@color/tradehero_blue</item>-->
+  <!--</style>-->
 
   <style name="TH.Authentication.EditText"
       parent="@android:style/Widget.EditText">
-    <item name="android:ems">10</item>
     <item name="android:drawablePadding">2dp</item>
-    <item name="android:textColor">@color/black</item>
     <item name="android:padding">2dp</item>
     <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
   </style>
@@ -264,8 +286,8 @@
   </style>
 
   <style name="TH.Btn_Invite_Action" parent="TH.Button.Inverse">
-    <item name="android:background">@drawable/leaderboard_user_item_follow_action_button</item>
-    <item name="android:textColor">@color/white</item>
+    <item name="android:background">@drawable/basic_green_selector</item>
+    <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
     <item name="android:paddingTop">5dp</item>
     <item name="android:paddingBottom">5dp</item>
     <item name="android:paddingLeft">10dp</item>
@@ -316,7 +338,7 @@
     <item name="android:layout_height">60dp</item>
     <item name="showText">true</item>
     <item name="showRanges">true</item>
-    <item name="rangeColors">@array/rangeColors2</item>
+    <item name="rangeColors">@array/gauge_color_range</item>
     <item name="showOuterBorder">false</item>
     <item name="showInnerRim">false</item>
     <item name="showOuterShadow">false</item>
@@ -336,7 +358,7 @@
 
   <style name="TH.DiscussionActionButtons.Text"
       parent="TH.DiscussionActionButtons">
-    <item name="android:textColor">@drawable/timeline_action_button_text_color_xml</item>
+    <item name="android:textColor">?android:attr/textColorPrimary</item>
     <item name="android:textSize">@dimen/text_subhead</item>
     <item name="android:layout_gravity">center_vertical</item>
     <item name="android:drawablePadding">@dimen/discussion_action_buttons_drawable_padding</item>
@@ -561,7 +583,7 @@
   </style>
 
   <style name="TH.ResideMenuSmall">
-    <item name="android:alpha">0.5</item>
+    <item name="android:alpha">1</item>
   </style>
 
   <style name="TH.ResideMenuSmall.Text"
@@ -603,7 +625,7 @@
     <item name="android:paddingTop">@dimen/margin_xsmall</item>
     <item name="android:paddingBottom">@dimen/margin_xsmall</item>
     <item name="android:layout_gravity">bottom|center</item>
-    <item name="android:background">@drawable/authentication_button</item>
+    <item name="android:background">@drawable/basic_blue_selector</item>
   </style>
 
   <style name="TH.OnBoardDialog" parent="TH.Dialog">

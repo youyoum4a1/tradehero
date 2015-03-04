@@ -11,7 +11,7 @@
     >
 
   <TextView
-      android:background="@color/stock_info_bg"
+      android:background="@color/white"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:padding="10dp"
@@ -26,7 +26,7 @@
 
 
   <EditText
-      android:background="@color/stock_info_bg"
+      android:background="@color/white"
       android:layout_width="fill_parent"
       android:layout_height="300dp"
       android:gravity="top|left"
@@ -35,7 +35,7 @@
       android:id="@+id/edtInviteMessage"/>
 
   <TextView
-      android:background="@color/stock_info_bg"
+      android:background="@color/white"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:padding="10dp"
@@ -55,8 +55,7 @@
         android:layout_weight="1"
         android:text="@string/authentication_cancel"
         android:background="@drawable/security_dialog_btn_cancel"
-        android:textSize="@dimen/text_title"
-        android:textColor="@color/trending_gray_border"
+        style="@style/TH.Button"
         />
 
     <Button
@@ -66,8 +65,7 @@
         android:layout_weight="1"
         android:text="@string/authentication_confirm"
         android:background="@drawable/security_dialog_btn_confirm"
-        android:textSize="@dimen/text_title"
-        android:textColor="@color/white"
+        style="@style/TH.Button.Inverse"
         android:layout_marginLeft="1dp"
         />
 

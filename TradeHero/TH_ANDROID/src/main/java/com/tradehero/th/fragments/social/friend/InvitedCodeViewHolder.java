@@ -10,6 +10,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UpdateReferralCodeDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -18,6 +19,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 public class InvitedCodeViewHolder
 {
@@ -89,18 +91,28 @@ public class InvitedCodeViewHolder
         updateInviteCodeSubscription = userServiceWrapper.updateReferralCodeRx(currentUserId.toUserBaseKey(), formDTO)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        args -> showSubmitDone(),
-                        e -> {
-                            THException exception = new THException(e);
-                            String message = exception.getMessage();
-                            if (message != null && message.contains("Already invited"))
+                        new Action1<BaseResponseDTO>()
+                        {
+                            @Override public void call(BaseResponseDTO args)
                             {
-                                showSubmitDone();
+                                InvitedCodeViewHolder.this.showSubmitDone();
                             }
-                            else
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable e)
                             {
-                                THToast.show(exception);
-                                viewSwitcher.setDisplayedChild(VIEW_ENTER_CODE);
+                                THException exception = new THException(e);
+                                String message = exception.getMessage();
+                                if (message != null && message.contains("Already invited"))
+                                {
+                                    InvitedCodeViewHolder.this.showSubmitDone();
+                                }
+                                else
+                                {
+                                    THToast.show(exception);
+                                    viewSwitcher.setDisplayedChild(VIEW_ENTER_CODE);
+                                }
                             }
                         });
     }

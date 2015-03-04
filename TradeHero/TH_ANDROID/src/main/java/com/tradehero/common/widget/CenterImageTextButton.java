@@ -77,7 +77,15 @@ public class CenterImageTextButton extends Button
         //float scaledPx = textSize * densityMultiplier;
         //paint.setTextSize(scaledPx);
         mPaint.setTextSize(mTextSize);
-        CharSequence mTransformed = getTransformationMethod().getTransformation(mText, this);
+        CharSequence mTransformed;
+        if(getTransformationMethod() != null)
+        {
+            mTransformed = getTransformationMethod().getTransformation(mText, this);
+        }
+        else
+        {
+            mTransformed = mText;
+        }
         float textWidth = mPaint.measureText(mText);
 
         int compoundDrawablePadding = getCompoundDrawablePadding();

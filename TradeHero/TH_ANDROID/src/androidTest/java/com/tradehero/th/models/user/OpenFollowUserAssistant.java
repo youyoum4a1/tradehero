@@ -2,7 +2,6 @@ package com.tradehero.th.models.user;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
@@ -14,10 +13,9 @@ public class OpenFollowUserAssistant extends FollowUserAssistant
     //<editor-fold desc="Constructors">
     public OpenFollowUserAssistant(
             @NonNull Context context,
-            @NonNull UserBaseKey heroId,
-            @NonNull OwnedPortfolioId applicablePortfolioId)
+            @NonNull UserBaseKey heroId)
     {
-        super(context, heroId, applicablePortfolioId);
+        super(context, heroId);
     }
     //</editor-fold>
 

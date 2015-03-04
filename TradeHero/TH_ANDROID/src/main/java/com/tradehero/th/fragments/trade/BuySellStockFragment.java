@@ -25,10 +25,8 @@ import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.market.Exchange;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -37,7 +35,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
-import com.tradehero.th.fragments.alert.BaseAlertEditFragment;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground;
@@ -47,13 +44,11 @@ import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 import timber.log.Timber;
 
@@ -82,7 +77,6 @@ public class BuySellStockFragment extends BuySellFragment
 
     private PortfolioCompactDTO defaultPortfolio;
 
-    @Nullable protected Subscription userWatchlistPositionCacheSubscription;
     @Nullable protected WatchlistPositionDTOList watchedList;
 
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
@@ -107,24 +101,17 @@ public class BuySellStockFragment extends BuySellFragment
         mBottomViewPager.setAdapter(bottomViewPagerAdapter);
 
         mSlidingTabLayout.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
-        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
+        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         mSlidingTabLayout.setViewPager(mBottomViewPager);
 
         fetchAlertCompactList();
-        fetchWatchlist();
     }
 
     @Override public void onStart()
     {
         super.onStart();
         analytics.fireEvent(new ChartTimeEvent(securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
-    }
-
-    @Override public void onStop()
-    {
-        unsubscribe(userWatchlistPositionCacheSubscription);
-        userWatchlistPositionCacheSubscription = null;
-        super.onStop();
+        fetchWatchlist();
     }
 
     @Override public void onDestroyView()
@@ -132,14 +119,6 @@ public class BuySellStockFragment extends BuySellFragment
         bottomViewPagerAdapter = null;
         defaultPortfolio = null;
         super.onDestroyView();
-    }
-
-    @Override public void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        ProgressDialogUtil.dismiss(getActivity());
-        unsubscribe(userWatchlistPositionCacheSubscription);
-        userWatchlistPositionCacheSubscription = null;
     }
 
     public void fetchAlertCompactList()
@@ -170,11 +149,10 @@ public class BuySellStockFragment extends BuySellFragment
 
     public void fetchWatchlist()
     {
-        unsubscribe(userWatchlistPositionCacheSubscription);
-        userWatchlistPositionCacheSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userWatchlistPositionCache.get(currentUserId.toUserBaseKey()))
-                .subscribe(createUserWatchlistCacheObserver());
+                .subscribe(createUserWatchlistCacheObserver()));
     }
 
     @NonNull protected Observer<Pair<UserBaseKey, WatchlistPositionDTOList>> createUserWatchlistCacheObserver()
@@ -454,7 +432,13 @@ public class BuySellStockFragment extends BuySellFragment
         View rootView = getView();
         if (rootView != null)
         {
-            rootView.postDelayed(this::loadStockBgLogo, MS_DELAY_FOR_BG_IMAGE);
+            rootView.postDelayed(new Runnable()
+            {
+                @Override public void run()
+                {
+                    BuySellStockFragment.this.loadStockBgLogo();
+                }
+            }, MS_DELAY_FOR_BG_IMAGE);
         }
     }
 
@@ -543,11 +527,6 @@ public class BuySellStockFragment extends BuySellFragment
         if (mappedAlerts != null)
         {
             Bundle args = new Bundle();
-            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-            if (applicablePortfolioId != null)
-            {
-                BaseAlertEditFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-            }
             AlertId alertId = mappedAlerts.get(securityId);
             if (alertId != null)
             {

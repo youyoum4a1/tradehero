@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +39,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
@@ -60,6 +62,8 @@ import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
@@ -75,7 +79,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.functions.Func1;
 import timber.log.Timber;
@@ -88,6 +92,8 @@ public class PositionListFragment
     private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = PositionListFragment.class.getName() + ".showPositionDtoKey";
     private static final String BUNDLE_KEY_SHOWN_USER_ID_BUNDLE = PositionListFragment.class.getName() + ".userBaseKey";
     public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = PositionListFragment.class.getName() + ".firstPositionVisible";
+    public static final String BUNDLE_KEY_POSITION_TYPE = PositionListFragment.class.getName() + ".postion.type";
+
     private static final int FLIPPER_INDEX_LOADING = 0;
     private static final int FLIPPER_INDEX_LIST = 1;
     private static final int FLIPPER_INDEX_ERROR = 2;
@@ -121,6 +127,9 @@ public class PositionListFragment
     protected PositionItemAdapter positionItemAdapter;
 
     private int firstPositionVisible = 0;
+    @Inject protected THBillingInteractorRx userInteractorRx;
+
+    private int mPositionType;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
@@ -130,7 +139,12 @@ public class PositionListFragment
 
     @Nullable private static GetPositionsDTOKey getGetPositionsDTOKey(@NonNull Bundle args)
     {
-        return GetPositionsDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE));
+        Bundle bundledKey = args.getBundle(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE);
+        if (bundledKey != null)
+        {
+            return GetPositionsDTOKeyFactory.createFrom(bundledKey);
+        }
+        return null;
     }
 
     public static void putShownUser(@NonNull Bundle args, @NonNull UserBaseKey shownUser)
@@ -142,6 +156,17 @@ public class PositionListFragment
     {
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE));
     }
+
+    public static void putPositionType(@NonNull Bundle args, int positionType)
+    {
+        args.putInt(BUNDLE_KEY_POSITION_TYPE, positionType);
+    }
+
+    @Nullable private int getPositionType (@NonNull Bundle args)
+    {
+        return args.getInt(BUNDLE_KEY_POSITION_TYPE, PositionItemAdapter.VIEW_TYPE_OPEN_LONG);
+    }
+
     //</editor-fold>
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -157,14 +182,17 @@ public class PositionListFragment
         {
             shownUser = injectedUserBaseKey;
         }
-        if (args.containsKey(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE))
+        GetPositionsDTOKey keyFromArgs = getGetPositionsDTOKey(args);
+        if (keyFromArgs != null)
         {
-            getPositionsDTOKey = getGetPositionsDTOKey(args);
+            getPositionsDTOKey = keyFromArgs;
         }
         else
         {
             getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey.key, injectedPortfolioId.key);
         }
+
+        mPositionType = getPositionType(args);
         this.positionItemAdapter = createPositionItemAdapter();
     }
 
@@ -183,7 +211,13 @@ public class PositionListFragment
         ButterKnife.inject(this, view);
 
         positionListView.setAdapter(positionItemAdapter);
-        swipeToRefreshLayout.setOnRefreshListener(this::refreshSimplePage);
+        swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
+            @Override public void onRefresh()
+            {
+                PositionListFragment.this.refreshSimplePage();
+            }
+        });
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -199,11 +233,15 @@ public class PositionListFragment
             onStopSubscriptions.add(showFollowDialog(userProfileDTO)
                     .subscribe(
                             Actions.empty(), // TODO ?
-                            e -> {
-                                AlertDialogRxUtil.popErrorMessage(
-                                        getActivity(),
-                                        e);
-                                // TODO
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable e)
+                                {
+                                    AlertDialogRxUtil.popErrorMessage(
+                                            PositionListFragment.this.getActivity(),
+                                            e);
+                                    // TODO
+                                }
                             }
                     ));
         }
@@ -301,21 +339,19 @@ public class PositionListFragment
         return new PositionItemAdapter(
                 getActivity(),
                 getLayoutResIds(),
-                currentUserId);
+                currentUserId,
+                mPositionType);
     }
 
-    @NonNull protected Map<Integer, Integer> getLayoutResIds()
+    @NonNull private Map<Integer, Integer> getLayoutResIds()
     {
         Map<Integer, Integer> layouts = new HashMap<>();
         layouts.put(PositionItemAdapter.VIEW_TYPE_HEADER, R.layout.position_item_header);
         layouts.put(PositionItemAdapter.VIEW_TYPE_PLACEHOLDER, R.layout.position_quick_nothing);
         layouts.put(PositionItemAdapter.VIEW_TYPE_LOCKED, R.layout.position_locked_item);
         layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_LONG, R.layout.position_top_view);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_LONG_IN_PERIOD, R.layout.position_top_view);
         layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_SHORT, R.layout.position_top_view);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_SHORT_IN_PERIOD, R.layout.position_top_view);
         layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED, R.layout.position_top_view);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED_IN_PERIOD, R.layout.position_top_view);
         return layouts;
     }
 
@@ -324,14 +360,24 @@ public class PositionListFragment
         if (portfolioHeaderView != null)
         {
             onStopSubscriptions.add(portfolioHeaderView.getUserActionObservable()
-                    .flatMap(this::handleHeaderUserAction)
+                    .flatMap(new Func1<PortfolioHeaderView.UserAction, Observable<? extends UserProfileDTO>>()
+                    {
+                        @Override public Observable<? extends UserProfileDTO> call(PortfolioHeaderView.UserAction userAction)
+                        {
+                            return PositionListFragment.this.handleHeaderUserAction(userAction);
+                        }
+                    })
                     .subscribe(
                             Actions.empty(), // TODO ?
-                            e -> {
-                                AlertDialogRxUtil.popErrorMessage(
-                                        getActivity(),
-                                        e);
-                                // TODO
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable e)
+                                {
+                                    AlertDialogRxUtil.popErrorMessage(
+                                            PositionListFragment.this.getActivity(),
+                                            e);
+                                    // TODO
+                                }
                             }
                     ));
         }
@@ -366,17 +412,28 @@ public class PositionListFragment
                 getActivity(),
                 toBeFollowed,
                 UserProfileDTOUtil.IS_NOT_FOLLOWER)
-                .flatMap(request -> {
-                    Observable<UserProfileDTO> fromServer;
-                    if (request.isPremium)
+                .flatMap(new Func1<FollowRequest, Observable<? extends UserProfileDTO>>()
+                {
+                    @Override public Observable<? extends UserProfileDTO> call(final FollowRequest request)
                     {
-                        fromServer = premiumFollow(request.heroId);
+                        Observable<UserProfileDTO> fromServer;
+                        if (request.isPremium)
+                        {
+                            fromServer = PositionListFragment.this.premiumFollow(request.heroId);
+                        }
+                        else
+                        {
+                            fromServer = PositionListFragment.this.freeFollow(request.heroId);
+                        }
+                        return fromServer
+                                .doOnNext(new Action1<UserProfileDTO>()
+                                {
+                                    @Override public void call(UserProfileDTO userProfileDTO)
+                                    {
+                                        PositionListFragment.this.handleSuccessfulFollow(request);
+                                    }
+                                });
                     }
-                    else
-                    {
-                        fromServer = freeFollow(request.heroId);
-                    }
-                    return fromServer.doOnNext(profile -> handleSuccessfulFollow(request));
                 });
     }
 
@@ -395,16 +452,10 @@ public class PositionListFragment
 
     @NonNull protected Observable<UserProfileDTO> freeFollow(@NonNull UserBaseKey heroId)
     {
-        ProgressDialog progress = ProgressDialogUtil.create(getActivity(), R.string.following_this_hero);
+        final ProgressDialog progress = ProgressDialogUtil.create(getActivity(), R.string.following_this_hero);
         return userServiceWrapperLazy.get().freeFollowRx(heroId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new Action0()
-                {
-                    @Override public void call()
-                    {
-                        progress.dismiss();
-                    }
-                });
+                .finallyDo(new DismissDialogAction0(progress));
     }
 
     protected void handleSuccessfulFollow(@NonNull FollowRequest request)
@@ -424,8 +475,14 @@ public class PositionListFragment
                 this,
                 userProfileCache.get(shownUser))
                 .subscribe(
-                        pair -> linkWith(pair.second),
-                        this::handleUserProfileError));
+                        new Action1<Pair<UserBaseKey, UserProfileDTO>>()
+                        {
+                            @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
+                            {
+                                linkWith(pair.second);
+                            }
+                        },
+                        new ToastAction<Throwable>(getString(R.string.error_fetch_user_profile))));
     }
 
     public void linkWith(UserProfileDTO userProfileDTO)
@@ -433,16 +490,6 @@ public class PositionListFragment
         this.userProfileDTO = userProfileDTO;
         displayHeaderView();
         positionItemAdapter.linkWith(userProfileDTO);
-    }
-
-    public void handleUserProfileError(Throwable e)
-    {
-        THToast.show(R.string.error_fetch_user_profile);
-    }
-
-    public boolean isShownOwnedPortfolioIdForOtherPeople(@Nullable OwnedPortfolioId ownedPortfolioId)
-    {
-        return ownedPortfolioId != null && ownedPortfolioId.portfolioId <= 0;
     }
 
     protected void fetchPortfolio()
@@ -453,8 +500,14 @@ public class PositionListFragment
                     this,
                     portfolioCache.get(((OwnedPortfolioId) getPositionsDTOKey)))
                     .subscribe(
-                            pair -> linkWith(pair.second),
-                            error -> THToast.show(R.string.error_fetch_portfolio_info)
+                            new Action1<Pair<OwnedPortfolioId, PortfolioDTO>>()
+                            {
+                                @Override public void call(Pair<OwnedPortfolioId, PortfolioDTO> pair)
+                                {
+                                    linkWith(pair.second);
+                                }
+                            },
+                            new ToastAction<Throwable>(getString(R.string.error_fetch_portfolio_info))
                     ));
         }
         // We do not care for now about those that are loaded with LeaderboardMarkUserId
@@ -468,7 +521,6 @@ public class PositionListFragment
 
         preparePortfolioHeaderView(portfolioDTO);
         portfolioHeaderView.linkWith(portfolioDTO);
-        positionItemAdapter.linkWith(portfolioDTO);
     }
 
     private void showPrettyReviewAndInvite(@NonNull PortfolioCompactDTO compactDTO)
@@ -501,7 +553,7 @@ public class PositionListFragment
             // portfolio header
             int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);
             headerStub.setLayoutResource(headerLayoutId);
-            View inflatedHeader = headerStub.inflate();
+            final View inflatedHeader = headerStub.inflate();
             portfolioHeaderView = (PortfolioHeaderView) inflatedHeader;
             linkPortfolioHeader();
 
@@ -541,8 +593,20 @@ public class PositionListFragment
                     this,
                     getPositionsCache.get(getPositionsDTOKey))
                     .subscribe(
-                            pair -> this.linkWith(pair.second),
-                            this::handleGetPositionsError));
+                            new Action1<Pair<GetPositionsDTOKey, GetPositionsDTO>>()
+                            {
+                                @Override public void call(Pair<GetPositionsDTOKey, GetPositionsDTO> pair)
+                                {
+                                    PositionListFragment.this.linkWith(pair.second);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable error)
+                                {
+                                    PositionListFragment.this.handleGetPositionsError(error);
+                                }
+                            }));
         }
     }
 
@@ -577,7 +641,7 @@ public class PositionListFragment
         getPositionsCache.get(getPositionsDTOKey);
     }
 
-    public void display()
+    private void display()
     {
         displayHeaderView();
         displayActionBarTitle();
@@ -592,44 +656,30 @@ public class PositionListFragment
             {
                 portfolioHeaderView.linkWith(userProfileDTO);
             }
+
             if (portfolioDTO != null)
             {
                 portfolioHeaderView.linkWith(portfolioDTO);
             }
+
         }
     }
 
-    public void displayActionBarTitle()
+    private void displayActionBarTitle()
     {
         String title = null;
-        String subtitle;
+
         if (portfolioDTO != null)
         {
             title = portfolioDTO.title;
         }
 
-        if (getPositionsDTO != null && getPositionsDTO.positions != null)
-        {
-            subtitle = String.format(getResources().getString(R.string.position_list_action_bar_header),
-                    getPositionsDTO.positions.size());
-        }
-        else
-        {
-            subtitle = null;
-        }
-
-        if (title == null && subtitle != null)
-        {
-            title = subtitle;
-            subtitle = null;
-        }
-        else if (title == null)
+        if (title == null)
         {
             title = getString(R.string.position_list_action_bar_header_unknown);
         }
 
         setActionBarTitle(title);
-        setActionBarSubtitle(subtitle);
     }
 
     @Override public int getTutorialLayout()

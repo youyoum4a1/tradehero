@@ -2,6 +2,7 @@ package com.tradehero.th.api.social;
 
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
+import com.tradehero.th.api.social.key.FacebookFriendKey;
 
 public class UserFriendsFacebookDTO extends UserFriendsDTO
 {
@@ -29,6 +30,11 @@ public class UserFriendsFacebookDTO extends UserFriendsDTO
         this.fbPicUrl = fbPicUrl;
     }
     //</editor-fold>
+
+    @NonNull @Override public FacebookFriendKey getFriendKey()
+    {
+        return new FacebookFriendKey(fbId);
+    }
 
     @Override public int getNetworkLabelImage()
     {

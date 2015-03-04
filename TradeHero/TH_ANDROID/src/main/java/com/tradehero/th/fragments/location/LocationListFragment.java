@@ -16,29 +16,31 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class LocationListFragment extends DashboardFragment
 {
     private LocationAdapter mListAdapter;
     @Nullable private Subscription updateCountryCodeSubscription;
-    private ProgressDialog progressDialog;
     protected UserProfileDTO currentUserProfile;
 
     @Inject Context context;
@@ -102,7 +104,6 @@ public class LocationListFragment extends DashboardFragment
         listView.setOnScrollListener(null);
         listView.setEmptyView(null);
         ButterKnife.reset(this);
-        progressDialog = null;
         super.onDestroyView();
     }
 
@@ -120,10 +121,16 @@ public class LocationListFragment extends DashboardFragment
         AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
-                        .map(new PairGetSecond<>()))
+                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
                 .subscribe(
-                        this::linkWith,
-                        e -> THToast.show(R.string.error_fetch_your_user_profile));
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO profile)
+                            {
+                                LocationListFragment.this.linkWith(profile);
+                            }
+                        },
+                        new ToastAction<Throwable>(getString(R.string.error_fetch_your_user_profile)));
     }
 
     protected void linkWith(UserProfileDTO userProfileDTO)
@@ -156,7 +163,6 @@ public class LocationListFragment extends DashboardFragment
             int position,
             @SuppressWarnings("UnusedParameters") long l)
     {
-        getProgressDialog().show();
         updateCountryCode(((ListedLocationDTO) adapterView.getItemAtPosition(position)).country.name());
     }
 
@@ -171,6 +177,8 @@ public class LocationListFragment extends DashboardFragment
             return;
         }
 
+        final ProgressDialog progressDialog = getProgressDialogOld();
+
         UpdateCountryCodeFormDTO updateCountryCodeFormDTO = new UpdateCountryCodeFormDTO(countryCode);
         unsubscribe(updateCountryCodeSubscription);
         updateCountryCodeSubscription = AppObservable.bindFragment(
@@ -178,29 +186,29 @@ public class LocationListFragment extends DashboardFragment
                 userServiceWrapperLazy.get().updateCountryCodeRx(
                         currentUserId.toUserBaseKey(), updateCountryCodeFormDTO))
                 .observeOn(AndroidSchedulers.mainThread())
+                .finallyDo(new DismissDialogAction0(progressDialog))
                 .subscribe(
-                        args -> backToSettings(),
-                        e -> {
-                            THToast.show(new THException(e));
-                            getProgressDialog().hide();
-                        });
+                        new Action1<UpdateCountryCodeDTO>()
+                        {
+                            @Override public void call(UpdateCountryCodeDTO args)
+                            {
+                                LocationListFragment.this.backToSettings();
+                            }
+                        },
+                        new ToastOnErrorAction());
     }
 
     private void backToSettings()
     {
-        getProgressDialog().hide();
         navigator.get().popFragment();
     }
 
-    private ProgressDialog getProgressDialog()
+    private ProgressDialog getProgressDialogOld()
     {
-        if (progressDialog != null)
-        {
-            return progressDialog;
-        }
-        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading,
-                R.string.alert_dialog_please_wait);
-        progressDialog.hide();
-        return progressDialog;
+        return ProgressDialog.show(
+                getActivity(),
+                getString(R.string.loading_loading),
+                getString(R.string.alert_dialog_please_wait),
+                true);
     }
 }

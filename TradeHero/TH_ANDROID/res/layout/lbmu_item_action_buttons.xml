@@ -26,7 +26,7 @@
         />
 
 
-    <TextView
+    <Button
         android:id="@+id/leaderboard_user_item_follow"
         android:text="@string/leaderboard_follow"
         style="@style/Leaderboard_ActionButton_Blue"

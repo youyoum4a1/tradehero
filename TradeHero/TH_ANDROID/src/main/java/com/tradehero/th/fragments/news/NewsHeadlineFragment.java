@@ -14,7 +14,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
@@ -34,6 +33,8 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 /**
@@ -149,11 +151,16 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         securitySubscription = AppObservable.bindFragment(
                 this,
                 securityCompactCache.get(securityId))
-                .map(new PairGetSecond<>())
+                .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
                 .subscribe(
-                        this::linkWith,
-                        e -> {
-                        });
+                        new Action1<SecurityCompactDTO>()
+                        {
+                            @Override public void call(SecurityCompactDTO compactDTO)
+                            {
+                                linkWith(compactDTO);
+                            }
+                        },
+                        new EmptyAction1<Throwable>());
     }
 
     public void linkWith(SecurityCompactDTO securityCompactDTO)
@@ -175,10 +182,16 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         securityNewsSubscription = AppObservable.bindFragment(
                 this,
                 newsTitleCache.get(listKey))
-                .map(new PairGetSecond<>())
+                .map(new PairGetSecond<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>())
                 .subscribe(
-                        this::linkWith,
-                        e -> THToast.show(R.string.error_fetch_security_info));
+                        new Action1<PaginatedDTO<NewsItemCompactDTO>>()
+                        {
+                            @Override public void call(PaginatedDTO<NewsItemCompactDTO> paginatedDTO)
+                            {
+                                linkWith(paginatedDTO);
+                            }
+                        },
+                        new ToastAction<Throwable>(getString(R.string.error_fetch_security_info)));
     }
 
     public void linkWith(PaginatedDTO<NewsItemCompactDTO> news)

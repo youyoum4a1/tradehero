@@ -91,7 +91,7 @@
             android:layout_height="wrap_content"
             android:text="@string/trade_list_avg_price"
             android:gravity="right"
-            android:textColor="@color/light_grey"
+            android:textColor="@color/grey"
             />
 
         <TextView

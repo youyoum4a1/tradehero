@@ -140,7 +140,13 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Override public void onResume()
     {
         super.onResume();
-        dashboardTabHost.get().setOnTranslate((x, y) -> broadcastView.setTranslationY(y));
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                broadcastView.setTranslationY(y);
+            }
+        });
     }
 
     @Override public void onPause()
@@ -210,8 +216,14 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         {
             addTab(resourceDTO);
         }
-        GraphicUtil.setBackground(mTabHost.getTabWidget(), getResources().getDrawable(R.drawable.ab_background));
-        mTabHost.setOnTabChangedListener(this::onTabChanged);
+        GraphicUtil.setBackground(mTabHost.getTabWidget(), getResources().getDrawable(R.drawable.bar_background));
+        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
+        {
+            @Override public void onTabChanged(String tabId)
+            {
+                FollowerManagerFragment.this.onTabChanged(tabId);
+            }
+        });
         return mTabHost;
     }
 

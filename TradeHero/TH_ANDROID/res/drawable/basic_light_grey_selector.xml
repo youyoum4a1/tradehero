@@ -2,5 +2,5 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android" android:exitFadeDuration="@android:integer/config_mediumAnimTime">
   <item android:drawable="@color/white" android:state_pressed="true"/>
-  <item android:drawable="@color/light_grey"/>
+  <item android:drawable="@color/grey"/>
 </selector>

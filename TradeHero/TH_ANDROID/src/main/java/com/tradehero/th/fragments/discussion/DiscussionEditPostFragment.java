@@ -36,16 +36,19 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
+import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
-import rx.functions.Actions;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class DiscussionEditPostFragment extends DashboardFragment
@@ -62,7 +65,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     private DiscussionDTO discussionDTO;
     private Subscription discussionEditSubscription;
-    private ProgressDialog progressDialog;
     protected MenuItem postMenuButton;
     private Subscription hasSelectedSubscription;
 
@@ -199,13 +201,46 @@ public class DiscussionEditPostFragment extends DashboardFragment
             discussionPostActionButtonsView.populate(discussionFormDTO);
             discussionPostActionButtonsView.onPostDiscussion();
 
-            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
+            final ProgressDialog progressDialog = ProgressDialog.show(
+                    getActivity(),
+                    getString(R.string.alert_dialog_please_wait),
+                    getString(R.string.processing),
+                    true);
             unsubscribe(discussionEditSubscription);
             discussionEditSubscription = AppObservable.bindFragment(
                     this,
                     discussionServiceWrapper.createDiscussionRx(discussionFormDTO))
-                    .subscribe(new SecurityDiscussionEditCallback());
+                    .finallyDo(new DismissDialogAction0(progressDialog))
+                    .subscribe(
+                            new Action1<DiscussionDTO>()
+                            {
+                                @Override public void call(DiscussionDTO discussion)
+                                {
+                                    DiscussionEditPostFragment.this.onDiscussionReceived(discussion);
+                                }
+                            },
+                            new ToastOnErrorAction());
         }
+    }
+
+    public void onDiscussionReceived(DiscussionDTO discussionDTO)
+    {
+        linkWith(discussionDTO);
+
+        if (discussionPostActionButtonsView.isShareEnabled(SocialNetworkEnum.WECHAT))
+        {
+            socialSharerLazy.get().share(WeChatDTOFactory.createFrom(discussionDTO))
+                    .subscribe(
+                            new EmptyAction1<SocialShareResult>(),
+                            new EmptyAction1<Throwable>()); // Proper callback?
+        }
+
+        DeviceUtil.dismissKeyboard(getActivity());
+        if (discussionPostedListener != null)
+        {
+            discussionPostedListener.onDiscussionPosted();
+        }
+        navigator.get().popFragment();
     }
 
     protected DiscussionFormDTO buildDiscussionFormDTO()
@@ -299,48 +334,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
     public void setCommentPostedListener(DiscussionPostedListener discussionPostedListener)
     {
         this.discussionPostedListener = discussionPostedListener;
-    }
-
-    private class SecurityDiscussionEditCallback implements Observer<DiscussionDTO>
-    {
-        @Override public void onNext(DiscussionDTO discussionDTO)
-        {
-            onFinish();
-
-            linkWith(discussionDTO);
-
-            if (discussionPostActionButtonsView.isShareEnabled(SocialNetworkEnum.WECHAT))
-            {
-                socialSharerLazy.get().share(WeChatDTOFactory.createFrom(discussionDTO))
-                        .subscribe(Actions.empty(), Actions.empty()); // Proper callback?
-            }
-
-            DeviceUtil.dismissKeyboard(getActivity());
-            if (discussionPostedListener != null)
-            {
-                discussionPostedListener.onDiscussionPosted();
-            }
-            navigator.get().popFragment();
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            onFinish();
-
-            THToast.show(new THException(e));
-        }
-
-        private void onFinish()
-        {
-            if (progressDialog != null)
-            {
-                progressDialog.hide();
-            }
-        }
     }
 
     @SuppressWarnings("UnusedDeclaration")

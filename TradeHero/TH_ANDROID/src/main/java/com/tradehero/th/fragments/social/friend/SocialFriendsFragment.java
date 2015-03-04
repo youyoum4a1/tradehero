@@ -33,6 +33,7 @@ import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.social.friend.FriendsListCacheRx;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -43,6 +44,8 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
@@ -124,7 +127,13 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        dashboardTabHost.get().setOnTranslate((x, y) -> inviteFollowAllContainer.setTranslationY(y));
+        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                inviteFollowAllContainer.setTranslationY(y);
+            }
+        });
         socialFriendsListAdapter.setOnElementClickedListener(this);
     }
 
@@ -155,7 +164,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         return new SocialFriendsAdapter(
                 getActivity(),
-                new ArrayList<>(),
+                new ArrayList<SocialFriendListItemDTO>(),
                 R.layout.social_friends_item,
                 R.layout.social_friends_item_header);
     }
@@ -172,25 +181,42 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 filterSubject
-                        .doOnNext(pair -> {
-                            filterText = pair.first;
-                            listedSocialItems = pair.second;
-                        })
-                        .flatMap(this::getFilteredObservable))
-                .doOnNext(list -> displayContentView())
+                        .flatMap(new Func1<Pair<String, List<SocialFriendListItemDTO>>, Observable<? extends List<SocialFriendListItemDTO>>>()
+                        {
+                            @Override public Observable<? extends List<SocialFriendListItemDTO>> call(
+                                    Pair<String, List<SocialFriendListItemDTO>> pair)
+                            {
+                                filterText = pair.first;
+                                listedSocialItems = pair.second;
+                                return SocialFriendsFragment.this.getFilteredObservable(pair);
+                            }
+                        }))
                 .subscribe(
-                        socialFriendsListAdapter::setItemsToShow,
-                        e -> Timber.e(e, "error when filtering")));
+                        new Action1<List<SocialFriendListItemDTO>>()
+                        {
+                            @Override public void call(List<SocialFriendListItemDTO> list)
+                            {
+                                SocialFriendsFragment.this.displayContentView();
+                                socialFriendsListAdapter.setItemsToShow(list);
+                            }
+                        },
+                        new TimberOnErrorAction("error when filtering")));
     }
 
     @NonNull protected Observable<List<SocialFriendListItemDTO>> getFilteredObservable(
-            @NonNull Pair<String, List<SocialFriendListItemDTO>> pair)
+            @NonNull final Pair<String, List<SocialFriendListItemDTO>> pair)
     {
         if (pair.first.trim().length() > 0)
         {
             return Observable.from(pair.second)
                     .subscribeOn(Schedulers.computation())
-                    .filter(item -> item.toString().toLowerCase().contains(pair.first.toLowerCase()))
+                    .filter(new Func1<SocialFriendListItemDTO, Boolean>()
+                    {
+                        @Override public Boolean call(SocialFriendListItemDTO item)
+                        {
+                            return item.toString().toLowerCase().contains(pair.first.toLowerCase());
+                        }
+                    })
                     .toList();
         }
         else
@@ -215,14 +241,26 @@ public abstract class SocialFriendsFragment extends DashboardFragment
                 this,
                 getFetchAllFriendsObservable())
                 .subscribe(
-                        this::linkWith,
-                        this::handleFriendListError));
+                        new Action1<UserFriendsDTOList>()
+                        {
+                            @Override public void call(UserFriendsDTOList list)
+                            {
+                                SocialFriendsFragment.this.linkWith(list);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable error)
+                            {
+                                SocialFriendsFragment.this.handleFriendListError(error);
+                            }
+                        }));
     }
 
     @NonNull protected Observable<UserFriendsDTOList> getFetchAllFriendsObservable()
     {
         return friendsListCache.get(friendsListKey)
-                .map(new PairGetSecond<>());
+                .map(new PairGetSecond<FriendsListKey, UserFriendsDTOList>());
     }
 
     protected void linkWith(@NonNull UserFriendsDTOList value)
@@ -230,7 +268,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         this.friendDTOList = new UserFriendsDTOList(new TreeSet<>(value)); // HACK to remove duplicates
         this.followableFriends = value.getTradeHeroUsers();
         this.invitableFriends = value.getNonTradeHeroUsers();
-        filterSubject.onNext(new Pair<>(filterText, createListedItems(value)));
+        filterSubject.onNext(new Pair<String, List<SocialFriendListItemDTO>>(filterText, createListedItems(value)));
         displayFollowAll();
         displayInviteAll();
     }

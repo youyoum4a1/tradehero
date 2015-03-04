@@ -54,21 +54,17 @@ public class LeaderboardMarkUserPagerFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        initViews(view);
-    }
-
-    private void initViews(View view)
-    {
         leaderboardPagerAdapter = new LeaderboardPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(leaderboardPagerAdapter);
         pagerSlidingTabLayout.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
-        pagerSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
+        pagerSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabLayout.setViewPager(viewPager);
     }
 
     @Override public void onDestroyView()
     {
         leaderboardPagerAdapter = null;
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 

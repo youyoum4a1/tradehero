@@ -149,23 +149,27 @@ public class PulsatingRing extends View
         animator.setRepeatCount(ValueAnimator.INFINITE);
         animator.setRepeatMode(ValueAnimator.RESTART);
         animator.setInterpolator(new LinearInterpolator());
-        animator.addUpdateListener(animation -> {
-            float value = (Float) animation.getAnimatedValue();
-            for (int i = 0; i < pulsatingRingHolders.size(); i++)
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        {
+            @Override public void onAnimationUpdate(ValueAnimator animation)
             {
-                int cutValue = i * factor;
-                PulsatingRingHolder r = pulsatingRingHolders.get(i);
-                if (value >= cutValue)
+                float value = (Float) animation.getAnimatedValue();
+                for (int i = 0; i < pulsatingRingHolders.size(); i++)
                 {
-                    r.circleR = mMinRad + (int) (((value - cutValue) / maxVal) * mUsableRad);
+                    int cutValue = i * factor;
+                    PulsatingRingHolder r = pulsatingRingHolders.get(i);
+                    if (value >= cutValue)
+                    {
+                        r.circleR = mMinRad + (int) (((value - cutValue) / maxVal) * mUsableRad);
+                    }
+                    else
+                    {
+                        r.circleR = mMinRad + (int) (((value + (maxVal - cutValue)) / maxVal) * mUsableRad);
+                    }
+                    PulsatingRing.this.calculateAlpha(r.paint, r.circleR);
                 }
-                else
-                {
-                    r.circleR = mMinRad + (int) (((value + (maxVal - cutValue)) / maxVal) * mUsableRad);
-                }
-                calculateAlpha(r.paint, r.circleR);
+                PulsatingRing.this.invalidate();
             }
-            invalidate();
         });
 
         return animator;

@@ -2,11 +2,13 @@ package com.tradehero.th.persistence.message;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.utils.CollectionUtils;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
@@ -67,13 +69,19 @@ public class MessageHeaderListCacheRx extends BaseFetchDTOCacheRx<MessageListKey
      * Invalidate the keys where the parameter is listed in the value.
      * @param messageHeaderId
      */
-    public void invalidateKeysThatList(@NonNull MessageHeaderId messageHeaderId)
+    public void invalidateKeysThatList(@NonNull final MessageHeaderId messageHeaderId)
     {
         for (Map.Entry<MessageListKey, ReadablePaginatedMessageHeaderDTO> entry : new HashMap<>(snapshot()).entrySet())
         {
             if (CollectionUtils.contains(
                     entry.getValue().getData(),
-                    value -> value.getDTOKey().equals(messageHeaderId)))
+                    new Predicate<MessageHeaderDTO>()
+                    {
+                        @Override public boolean apply(MessageHeaderDTO value)
+                        {
+                            return value.getDTOKey().equals(messageHeaderId);
+                        }
+                    }))
             {
                 invalidateSameListing(entry.getKey());
             }

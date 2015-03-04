@@ -3,9 +3,12 @@ package com.tradehero.common.billing.samsung.rx;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
+import com.sec.android.iap.lib.listener.OnGetItemListener;
+import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.samsung.BaseSamsungOperator;
 import com.tradehero.common.billing.samsung.exception.SamsungItemListException;
+import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
@@ -48,7 +51,7 @@ public class SamsungItemListOperator extends BaseSamsungOperator
     }
     //</editor-fold>
 
-    @Override public void call(Subscriber<? super List<ItemVo>> subscriber)
+    @Override public void call(final Subscriber<? super List<ItemVo>> subscriber)
     {
         getSamsungIapHelper().getItemList(
                 groupId,
@@ -56,15 +59,19 @@ public class SamsungItemListOperator extends BaseSamsungOperator
                 endNum,
                 itemType,
                 mode,
-                (errorVo, itemList) -> {
-                    if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)
+                new OnGetItemListener()
+                {
+                    @Override public void onGetItem(ErrorVo errorVo, ArrayList<ItemVo> itemList)
                     {
-                        subscriber.onNext(itemList);
-                        subscriber.onCompleted();
-                    }
-                    else
-                    {
-                        subscriber.onError(new SamsungItemListException(errorVo, groupId, mode));
+                        if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)
+                        {
+                            subscriber.onNext(itemList);
+                            subscriber.onCompleted();
+                        }
+                        else
+                        {
+                            subscriber.onError(new SamsungItemListException(errorVo, groupId, mode));
+                        }
                     }
                 });
     }

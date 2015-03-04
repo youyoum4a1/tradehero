@@ -11,6 +11,7 @@ import android.util.Pair;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.RequestCodeHolder;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
+import com.tradehero.common.billing.restore.PurchaseRestoreResultWithError;
 import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
@@ -24,10 +25,12 @@ import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.VersionUtils;
 import java.net.UnknownServiceException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import rx.Observable;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 abstract public class THBillingAlertDialogRxUtil<
@@ -65,24 +68,28 @@ abstract public class THBillingAlertDialogRxUtil<
     }
     //</editor-fold>
 
-    @NonNull public Observable<Integer> getUnusedRequestCode(@NonNull RequestCodeHolder requestCodeHolder)
+    @NonNull public Observable<Integer> getUnusedRequestCode(@NonNull final RequestCodeHolder requestCodeHolder)
     {
         return Observable.just(MAX_RANDOM_RETRIES)
                 .subscribeOn(Schedulers.computation())
-                .flatMap(retries -> {
-                    int randomNumber;
-                    while (retries-- > 0)
+                .flatMap(new Func1<Integer, Observable<? extends Integer>>()
+                {
+                    @Override public Observable<? extends Integer> call(Integer retries)
                     {
-                        randomNumber = (int) (Math.random() * Integer.MAX_VALUE);
-                        if (requestCodeHolder.isUnusedRequestCode(randomNumber))
+                        int randomNumber;
+                        while (retries-- > 0)
                         {
-                            return Observable.just(randomNumber);
+                            randomNumber = (int) (Math.random() * Integer.MAX_VALUE);
+                            if (requestCodeHolder.isUnusedRequestCode(randomNumber))
+                            {
+                                return Observable.just(randomNumber);
+                            }
                         }
+                        return Observable.error(
+                                new IllegalStateException(String.format(
+                                        "Could not find an unused requestCode after %d trials",
+                                        MAX_RANDOM_RETRIES)));
                     }
-                    return Observable.error(
-                            new IllegalStateException(String.format(
-                                    "Could not find an unused requestCode after %d trials",
-                                    MAX_RANDOM_RETRIES)));
                 });
     }
 
@@ -107,7 +114,13 @@ abstract public class THBillingAlertDialogRxUtil<
             @NonNull final Context activityContext)
     {
         return popBillingUnavailableRx(activityContext)
-                .flatMap(pair -> handlePopBillingUnavailable(activityContext, pair));
+                .flatMap(new Func1<OnDialogClickEvent, Observable<? extends OnDialogClickEvent>>()
+                {
+                    @Override public Observable<? extends OnDialogClickEvent> call(OnDialogClickEvent pair)
+                    {
+                        return THBillingAlertDialogRxUtil.this.handlePopBillingUnavailable(activityContext, pair);
+                    }
+                });
     }
 
     @NonNull public Observable<OnDialogClickEvent> popBillingUnavailableRx(
@@ -158,21 +171,40 @@ abstract public class THBillingAlertDialogRxUtil<
     }
 
     @NonNull public Observable<THProductDetailType> popBuyDialogAndHandle(
-            @NonNull Activity activityContext,
-            @NonNull ProductIdentifierDomain domain,
-            @NonNull THProductDetailDomainInformerRxType domainInformer)
+            @NonNull final Activity activityContext,
+            @NonNull final ProductIdentifierDomain domain,
+            @NonNull final THProductDetailDomainInformerRxType domainInformer)
     {
         return getUnusedRequestCode(domainInformer)
-                .flatMap(requestCode -> domainInformer.getDetailsOfDomain(requestCode, domain))
-                .map(result -> result.detail)
+                .flatMap(new Func1<Integer, Observable<? extends ProductInventoryResult<ProductIdentifierType, THProductDetailType>>>()
+                {
+                    @Override public Observable<? extends ProductInventoryResult<ProductIdentifierType, THProductDetailType>> call(
+                            Integer requestCode)
+                    {
+                        return domainInformer.getDetailsOfDomain(requestCode, domain);
+                    }
+                })
                 .toList()
-                .flatMap(productDetails -> popBuyDialogAndHandle(activityContext, domain, productDetails));
+                .flatMap(
+                        new Func1<List<ProductInventoryResult<ProductIdentifierType, THProductDetailType>>, Observable<? extends THProductDetailType>>()
+                        {
+                            @Override public Observable<? extends THProductDetailType> call(
+                                    List<ProductInventoryResult<ProductIdentifierType, THProductDetailType>> productResults)
+                            {
+                                List<THProductDetailType> productDetails = new ArrayList<THProductDetailType>();
+                                for (ProductInventoryResult<ProductIdentifierType, THProductDetailType> result : productResults)
+                                {
+                                    productDetails.add(result.detail);
+                                }
+                                return popBuyDialogAndHandle(activityContext, domain, productDetails);
+                            }
+                        });
     }
 
     @NonNull public Observable<ProductInventoryResult<ProductIdentifierType, THProductDetailType>> popBuyDialogAndHandle(
             @NonNull Activity activityContext,
             @NonNull ProductIdentifierDomain domain,
-            @NonNull List<ProductInventoryResult<ProductIdentifierType, THProductDetailType>> productDetails,
+            @NonNull final List<ProductInventoryResult<ProductIdentifierType, THProductDetailType>> productDetails,
             @Nullable ProductInventoryResult<ProductIdentifierType, THProductDetailType> typeQualifier)
     {
         return popBuyDialog(
@@ -180,17 +212,29 @@ abstract public class THBillingAlertDialogRxUtil<
                 domain,
                 CollectionUtils.map(
                         productDetails,
-                        result -> result.detail))
-                .map(new PairGetSecond<>())
-                .flatMap(detail -> {
-                    for (ProductInventoryResult<ProductIdentifierType, THProductDetailType> candidate : productDetails)
-                    {
-                        if (candidate.id.equals(detail.getProductIdentifier()))
+                        new Func1<ProductInventoryResult<ProductIdentifierType, THProductDetailType>, THProductDetailType>()
                         {
-                            return Observable.just(candidate);
+                            @Override public THProductDetailType call(
+                                    ProductInventoryResult<ProductIdentifierType, THProductDetailType> result)
+                            {
+                                return result.detail;
+                            }
+                        }))
+                .map(new PairGetSecond<DialogInterface, THProductDetailType>())
+                .flatMap(new Func1<THProductDetailType, Observable<? extends ProductInventoryResult<ProductIdentifierType, THProductDetailType>>>()
+                {
+                    @Override public Observable<? extends ProductInventoryResult<ProductIdentifierType, THProductDetailType>> call(
+                            THProductDetailType detail)
+                    {
+                        for (ProductInventoryResult<ProductIdentifierType, THProductDetailType> candidate : productDetails)
+                        {
+                            if (candidate.id.equals(detail.getProductIdentifier()))
+                            {
+                                return Observable.just(candidate);
+                            }
                         }
+                        return Observable.error(new IllegalStateException("Should have found result for " + detail.getProductIdentifier()));
                     }
-                    return Observable.error(new IllegalStateException("Should have found result for " + detail.getProductIdentifier()));
                 });
     }
 
@@ -200,7 +244,7 @@ abstract public class THBillingAlertDialogRxUtil<
             @NonNull List<THProductDetailType> productDetails)
     {
         return popBuyDialog(activityContext, domain, productDetails)
-                .map(new PairGetSecond<>());
+                .map(new PairGetSecond<DialogInterface, THProductDetailType>());
     }
 
     @NonNull public Observable<Pair<DialogInterface, THProductDetailType>> popBuyDialog(
@@ -219,15 +263,24 @@ abstract public class THBillingAlertDialogRxUtil<
                 .setSingleChoiceItems(detailAdapter, 0)
                 .setNegativeButton(R.string.store_buy_virtual_dollar_window_button_cancel)
                 .build()
-                .filter(event -> event.which >= 0)
-                .map(pair -> Pair.create(pair.dialog, (THProductDetailType) detailAdapter.getItem(pair.which)));
+                .flatMap(new Func1<OnDialogClickEvent, Observable<Pair<DialogInterface, THProductDetailType>>>()
+                {
+                    @Override public Observable<Pair<DialogInterface, THProductDetailType>> call(OnDialogClickEvent event)
+                    {
+                        if (event.which >= 0)
+                        {
+                            return Observable.just(Pair.create(event.dialog, (THProductDetailType) detailAdapter.getItem(event.which)));
+                        }
+                        return Observable.empty();
+                    }
+                });
     }
     //</editor-fold>
 
     //<editor-fold desc="Purchases Restored">
     @NonNull public Observable<OnDialogClickEvent> popRestoreResultAndHandle(
-            @NonNull Context activityContext,
-            @NonNull PurchaseRestoreTotalResult<
+            @NonNull final Context activityContext,
+            @NonNull final PurchaseRestoreTotalResult<
                     ProductIdentifierType,
                     THOrderIdType,
                     THProductPurchaseType> result)
@@ -253,16 +306,27 @@ abstract public class THBillingAlertDialogRxUtil<
                     .setNegativeButton(R.string.iap_send_support_email_restore_fail_cancel)
                     .setCanceledOnTouchOutside(true)
                     .build()
-                    .flatMap(event -> {
-                        if (event.isPositive())
+                    .flatMap(new Func1<OnDialogClickEvent, Observable<? extends OnDialogClickEvent>>()
+                    {
+                        @Override public Observable<? extends OnDialogClickEvent> call(OnDialogClickEvent event)
                         {
-                            sendSupportEmailPurchaseRestoreFailed(
-                                    activityContext,
-                                    CollectionUtils.map(
-                                            result.restoredList,
-                                            restored -> restored.throwable));
+                            if (event.isPositive())
+                            {
+                                THBillingAlertDialogRxUtil.this.sendSupportEmailPurchaseRestoreFailed(
+                                        activityContext,
+                                        CollectionUtils.map(
+                                                result.restoredList,
+                                                new Func1<PurchaseRestoreResultWithError<ProductIdentifierType, THOrderIdType, THProductPurchaseType>, Throwable>()
+                                                {
+                                                    @Override public Throwable call(
+                                                            PurchaseRestoreResultWithError<ProductIdentifierType, THOrderIdType, THProductPurchaseType> restored)
+                                                    {
+                                                        return restored.throwable;
+                                                    }
+                                                }));
+                            }
+                            return Observable.empty();
                         }
-                        return Observable.empty();
                     });
         }
         else if (result.getFailedCount() > 0 && result.getSucceededCount() > 0)
@@ -277,16 +341,27 @@ abstract public class THBillingAlertDialogRxUtil<
                     .setNegativeButton(R.string.iap_send_support_email_restore_fail_partial_cancel)
                     .setCanceledOnTouchOutside(true)
                     .build()
-                    .flatMap(event -> {
-                        if (event.isPositive())
+                    .flatMap(new Func1<OnDialogClickEvent, Observable<? extends OnDialogClickEvent>>()
+                    {
+                        @Override public Observable<? extends OnDialogClickEvent> call(OnDialogClickEvent event)
                         {
-                            sendSupportEmailPurchaseRestoreFailedPartial(
-                                    activityContext,
-                                    CollectionUtils.map(
-                                            result.restoredList,
-                                            restored -> restored.throwable));
+                            if (event.isPositive())
+                            {
+                                THBillingAlertDialogRxUtil.this.sendSupportEmailPurchaseRestoreFailedPartial(
+                                        activityContext,
+                                        CollectionUtils.map(
+                                                result.restoredList,
+                                                new Func1<PurchaseRestoreResultWithError<ProductIdentifierType, THOrderIdType, THProductPurchaseType>, Throwable>()
+                                                {
+                                                    @Override public Throwable call(
+                                                            PurchaseRestoreResultWithError<ProductIdentifierType, THOrderIdType, THProductPurchaseType> restored)
+                                                    {
+                                                        return restored.throwable;
+                                                    }
+                                                }));
+                            }
+                            return Observable.empty();
                         }
-                        return Observable.empty();
                     });
         }
         else
@@ -300,7 +375,13 @@ abstract public class THBillingAlertDialogRxUtil<
                     .setCanceledOnTouchOutside(true)
                     .build();
         }
-        return observable.flatMap(pair -> Observable.empty()); // We do not want anything propagated
+        return observable.flatMap(new Func1<OnDialogClickEvent, Observable<? extends OnDialogClickEvent>>()
+        {
+            @Override public Observable<? extends OnDialogClickEvent> call(OnDialogClickEvent pair)
+            {
+                return Observable.empty();
+            }
+        }); // We do not want anything propagated
     }
 
     public void sendSupportEmailPurchaseRestoreFailed(
@@ -324,11 +405,17 @@ abstract public class THBillingAlertDialogRxUtil<
     }
 
     @NonNull public Observable<OnDialogClickEvent> popRestoreFailedAndHandle(
-            @NonNull Context activityContext,
-            @NonNull Throwable throwable)
+            @NonNull final Context activityContext,
+            @NonNull final Throwable throwable)
     {
         return popRestoreFailed(activityContext)
-                .flatMap(pair -> handlePopRestoreFailed(activityContext, throwable, pair));
+                .flatMap(new Func1<OnDialogClickEvent, Observable<? extends OnDialogClickEvent>>()
+                {
+                    @Override public Observable<? extends OnDialogClickEvent> call(OnDialogClickEvent pair)
+                    {
+                        return THBillingAlertDialogRxUtil.this.handlePopRestoreFailed(activityContext, throwable, pair);
+                    }
+                });
     }
 
     @NonNull public static Observable<OnDialogClickEvent> popRestoreFailed(

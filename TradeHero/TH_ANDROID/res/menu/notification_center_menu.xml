@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
   <item
       android:id="@+id/btn_new_message"
       android:title="@string/message_center_new_message_title"
       android:icon="@drawable/icn_message"
-      android:showAsAction="always"
+      app:showAsAction="always"
       android:visible="true">
     <menu>
       <item android:id="@+id/menu_private"

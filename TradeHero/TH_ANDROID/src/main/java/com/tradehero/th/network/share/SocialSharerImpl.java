@@ -45,7 +45,7 @@ public class SocialSharerImpl implements SocialSharer
     }
     //</editor-fold>
 
-    @NonNull @Override public Observable<SocialShareResult> share(@NonNull SocialShareFormDTO shareFormDTO)
+    @NonNull @Override public Observable<SocialShareResult> share(@NonNull final SocialShareFormDTO shareFormDTO)
     {
         return userProfileCache.getOne(currentUserId.toUserBaseKey())
                 .flatMap(new Func1<Pair<UserBaseKey, UserProfileDTO>, Observable<? extends SocialShareResult>>()

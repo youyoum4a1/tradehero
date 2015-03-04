@@ -52,7 +52,7 @@ public class ContestCenterFragment extends DashboardFragment
         ContestCenterPagerAdapter adapter = new ContestCenterPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(adapter);
         pagerSlidingTabLayout.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
-        pagerSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
+        pagerSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabLayout.setViewPager(viewPager);
     }
 

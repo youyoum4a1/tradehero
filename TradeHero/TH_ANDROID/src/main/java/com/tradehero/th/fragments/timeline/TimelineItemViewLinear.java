@@ -33,10 +33,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.functions.Func1;
-import timber.log.Timber;
 
 public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLinear<TimelineItemDTO>
 {
@@ -66,9 +63,21 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
         if (userAction instanceof DiscussionActionButtonsView.MoreUserAction)
         {
             return createActionPopupMenu()
-                    .flatMap(popupMenu -> Observable.create(new PopupMenuItemClickOperator(popupMenu, true)))
-                    .map(this::handleMenuItemClicked)
-                    .flatMap(result -> Observable.empty());
+                    .flatMap(new Func1<PopupMenu, Observable<? extends MenuItem>>()
+                    {
+                        @Override public Observable<? extends MenuItem> call(PopupMenu popupMenu)
+                        {
+                            return Observable.create(new PopupMenuItemClickOperator(popupMenu, true));
+                        }
+                    })
+                    .flatMap(new Func1<MenuItem, Observable<? extends DiscussionActionButtonsView.UserAction>>()
+                    {
+                        @Override public Observable<? extends DiscussionActionButtonsView.UserAction> call(MenuItem menuItem)
+                        {
+                            Boolean ignored = TimelineItemViewLinear.this.handleMenuItemClicked(menuItem);
+                            return Observable.empty();
+                        }
+                    });
         }
         if (userAction instanceof DiscussionActionButtonsView.CommentUserAction)
         {
@@ -90,8 +99,8 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
 
     @NonNull private Observable<PopupMenu> createActionPopupMenu()
     {
-        PopupMenu popupMenu = new PopupMenu(getContext(), findViewById(R.id.discussion_action_button_more));
-        MenuInflater menuInflater = popupMenu.getMenuInflater();
+        final PopupMenu popupMenu = new PopupMenu(getContext(), findViewById(R.id.discussion_action_button_more));
+        final MenuInflater menuInflater = popupMenu.getMenuInflater();
 
         if (((TimelineItemViewHolder) viewHolder).canShowStockMenu())
         {

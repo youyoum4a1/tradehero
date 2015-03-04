@@ -50,6 +50,7 @@
       android:layout_centerVertical="true"
       android:src="@drawable/ic_tick_green"
       android:visibility="gone"
+      tools:visibility="visible"
       android:contentDescription="@null"/>
 
 </com.tradehero.th.fragments.location.LocationRelativeView>

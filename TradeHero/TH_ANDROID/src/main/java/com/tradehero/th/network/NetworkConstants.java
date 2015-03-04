@@ -4,7 +4,6 @@ import com.tradehero.th.utils.Constants;
 
 public class NetworkConstants
 {
-    public static final String YAHOO_FINANCE_ENDPOINT = "http://finance.yahoo.com";
     public static final String TRADEHERO_PROD_ENDPOINT = "https://www.tradehero.mobi/";
     public static final String TRADEHERO_PROD_API_ENDPOINT = TRADEHERO_PROD_ENDPOINT + "api/";
     //public static final String TRADEHERO_PROD_API_ENDPOINT = "http://jackbao.cloudapp.net/api/";

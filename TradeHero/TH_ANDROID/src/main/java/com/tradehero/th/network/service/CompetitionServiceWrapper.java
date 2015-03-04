@@ -43,7 +43,7 @@ import rx.Observable;
     {
         return this.competitionServiceRx.getCompetitionLeaderboard(
                 competitionLeaderboardId.providerId,
-                competitionLeaderboardId.competitionId,
+                competitionLeaderboardId.id,
                 competitionLeaderboardId.page,
                 competitionLeaderboardId.perPage);
     }

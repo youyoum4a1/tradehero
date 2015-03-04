@@ -3,6 +3,7 @@ package com.tradehero.common.social.facebook;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.facebook.FacebookRequestError;
 import com.facebook.HttpMethod;
 import com.facebook.Request;
 import com.facebook.Response;
@@ -33,16 +34,29 @@ public class FacebookRequestOperator implements Observable.OnSubscribe<Response>
     }
     //</editor-fold>
 
-    @Override public void call(Subscriber<? super Response> subscriber)
+    @Override public void call(final Subscriber<? super Response> subscriber)
     {
         Request request = new Request(
                 session,
                 graphPath,
                 parameters,
                 httpMethod,
-                response -> Observable
-                        .create(new FacebookResponseOperator(response))
-                        .subscribe(subscriber),
+                new Request.Callback()
+                {
+                    @Override public void onCompleted(Response response)
+                    {
+                        FacebookRequestError e = response.getError();
+                        if (e != null)
+                        {
+                            subscriber.onError(new FacebookRequestException(e));
+                        }
+                        else
+                        {
+                            subscriber.onNext(response);
+                            subscriber.onCompleted();
+                        }
+                    }
+                },
                 version);
         Timber.d("Facebook request version %s", request.getVersion());
         Request.executeBatchAsync(request);

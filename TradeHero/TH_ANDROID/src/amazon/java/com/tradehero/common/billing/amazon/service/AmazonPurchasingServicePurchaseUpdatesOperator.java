@@ -26,7 +26,7 @@ public class AmazonPurchasingServicePurchaseUpdatesOperator implements Observabl
         call(true, subscriber);
     }
 
-    private void call(boolean reset, Subscriber<? super PurchaseUpdatesResponse> subscriber)
+    private void call(final boolean reset, final Subscriber<? super PurchaseUpdatesResponse> subscriber)
     {
         amazonPurchasingService.getPurchaseUpdates(
                 reset,

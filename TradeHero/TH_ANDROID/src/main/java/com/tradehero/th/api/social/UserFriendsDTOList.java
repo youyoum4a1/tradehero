@@ -1,11 +1,14 @@
 package com.tradehero.th.api.social;
 
 import android.support.annotation.NonNull;
+import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.BaseArrayListHasExpiration;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.utils.CollectionUtils;
+import com.tradehero.th.api.social.key.FriendKey;
 import java.util.Collection;
 import java.util.List;
+import rx.functions.Func1;
 
 public class UserFriendsDTOList extends BaseArrayListHasExpiration<UserFriendsDTO>
         implements DTO
@@ -26,11 +29,34 @@ public class UserFriendsDTOList extends BaseArrayListHasExpiration<UserFriendsDT
 
     @NonNull public List<UserFriendsDTO> getTradeHeroUsers()
     {
-        return CollectionUtils.filter(this, UserFriendsDTO::isTradeHeroUser);
+        return CollectionUtils.filter(this, new Predicate<UserFriendsDTO>()
+        {
+            @Override public boolean apply(UserFriendsDTO friends)
+            {
+                return friends.isTradeHeroUser();
+            }
+        });
     }
 
     @NonNull public List<UserFriendsDTO> getNonTradeHeroUsers()
     {
-        return CollectionUtils.filter(this, UserFriendsDTO::isNonTradeHeroUser);
+        return CollectionUtils.filter(this, new Predicate<UserFriendsDTO>()
+        {
+            @Override public boolean apply(UserFriendsDTO friends)
+            {
+                return friends.isNonTradeHeroUser();
+            }
+        });
+    }
+
+    @NonNull public List<FriendKey> getFriendKeys()
+    {
+        return CollectionUtils.map(this, new Func1<UserFriendsDTO, FriendKey>()
+        {
+            @Override public FriendKey call(UserFriendsDTO userFriendsDTO)
+            {
+                return userFriendsDTO.getFriendKey();
+            }
+        });
     }
 }

@@ -13,8 +13,9 @@ import android.view.ViewGroup;
 import android.widget.TabHost;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.HeroDTOExtWrapper;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.social.follower.AllHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
@@ -28,7 +29,7 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class HeroManagerFragment extends BasePurchaseManagerFragment
+public class HeroManagerFragment extends DashboardFragment
         implements OnHeroesLoadedListener
 {
     /**
@@ -43,6 +44,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     FragmentTabHost mTabHost;
     List<TabHost.TabSpec> tabSpecList;
+    @Inject CurrentUserId currentUserId;
 
     public static void putFollowerId(@NonNull Bundle args, @NonNull UserBaseKey followerId)
     {
@@ -71,7 +73,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         {
             addTab(resourceDTO);
         }
-        GraphicUtil.setBackground(mTabHost.getTabWidget(), getResources().getDrawable(R.drawable.ab_background));
+        GraphicUtil.setBackground(mTabHost.getTabWidget(), getResources().getDrawable(R.drawable.bar_background));
         return mTabHost;
     }
 

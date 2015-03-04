@@ -11,7 +11,7 @@
   <dimen name="user_level_next_level_w_h">42dp</dimen>
 
   <color name="user_level_progress_current_text_color">#ffff8e0f</color>
-  <color name="user_level_progress_next_text_color">@color/dark_gray</color>
+  <color name="user_level_progress_next_text_color">@color/text_secondary</color>
 
   <integer name="user_level_progress_bar_xp_increase_delay">1000</integer>
   <integer name="user_level_progress_bar_xp_increase_duration">1000</integer>

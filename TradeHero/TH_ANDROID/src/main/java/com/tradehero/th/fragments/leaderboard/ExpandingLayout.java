@@ -96,10 +96,14 @@ public class ExpandingLayout extends LinearLayout
 
         int duration = EXPAND_COLLAPSE_MAX_DURATION * (distToTravel / measuredHeight);
         animator.setDuration(duration);
-        animator.addUpdateListener(animation -> {
-            mCurrentHeight = (int) animation.getAnimatedValue();
-            getLayoutParams().height = mCurrentHeight;
-            requestLayout();
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        {
+            @Override public void onAnimationUpdate(ValueAnimator animation)
+            {
+                mCurrentHeight = (int) animation.getAnimatedValue();
+                ExpandingLayout.this.getLayoutParams().height = mCurrentHeight;
+                ExpandingLayout.this.requestLayout();
+            }
         });
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.start();

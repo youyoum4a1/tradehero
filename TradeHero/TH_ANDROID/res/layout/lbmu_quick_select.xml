@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         style="@style/TH.UserNameTitle"
-        android:shadowColor="@color/light_grey"
+        android:shadowColor="@color/grey"
         android:shadowDy="1"
         android:shadowRadius="1"
         tools:text="Superman"

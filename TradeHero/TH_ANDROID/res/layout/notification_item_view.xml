@@ -42,11 +42,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_small"
-        android:textColorLink="@color/timeline_item_link"
+        android:textColorLink="@color/tradehero_blue"
         style="@style/TH.Body"
         android:layout_toLeftOf="@id/notification_unread_flag"
         android:layout_alignParentLeft="true"
         tools:text="Tho Nguyen has become the best trader of the world!"
+        android:maxLines="4"
         />
 
     <TextView

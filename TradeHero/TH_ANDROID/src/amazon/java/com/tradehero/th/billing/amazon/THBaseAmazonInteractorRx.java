@@ -2,6 +2,7 @@ package com.tradehero.th.billing.amazon;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import com.tradehero.common.billing.amazon.AmazonConstants;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;
@@ -9,6 +10,7 @@ import com.tradehero.common.billing.amazon.AmazonSKUListKey;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
@@ -19,6 +21,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
+import rx.functions.Func1;
 
 public class THBaseAmazonInteractorRx
         extends
@@ -67,36 +70,52 @@ public class THBaseAmazonInteractorRx
     {
         return portfolioCompactListCache.get(currentUserId.toUserBaseKey())
                 .take(1)
-                .map(pair -> pair.second.getDefaultPortfolio())
-                .flatMap(dto -> {
-                    if (dto == null)
+                .flatMap(new Func1<Pair<UserBaseKey, PortfolioCompactDTOList>, Observable<? extends PortfolioCompactDTO>>()
+                {
+                    @Override public Observable<? extends PortfolioCompactDTO> call(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
                     {
-                        return Observable.error(new IllegalArgumentException("Default portfolio cannot be null"));
+                        PortfolioCompactDTO dto = pair.second.getDefaultPortfolio();
+                        if (dto == null)
+                        {
+                            return Observable.error(new IllegalArgumentException("Default portfolio cannot be null"));
+                        }
+                        return Observable.just(dto);
                     }
-                    return Observable.just(dto);
                 });
     }
 
     @NonNull @Override public Observable<THAmazonPurchaseOrder> createPurchaseOrder(
-            @NonNull ProductInventoryResult<AmazonSKU, THAmazonProductDetail> inventoryResult)
+            @NonNull final ProductInventoryResult<AmazonSKU, THAmazonProductDetail> inventoryResult)
     {
         return getDefaultPortfolio()
-                .map(dto -> new THAmazonPurchaseOrder(
-                        inventoryResult.id,
-                        1,
-                        dto.getOwnedPortfolioId()));
+                .map(new Func1<PortfolioCompactDTO, THAmazonPurchaseOrder>()
+                {
+                    @Override public THAmazonPurchaseOrder call(PortfolioCompactDTO dto)
+                    {
+                        return new THAmazonPurchaseOrder(
+                                inventoryResult.id,
+                                1,
+                                dto.getOwnedPortfolioId());
+                    }
+                });
     }
 
     @NonNull @Override public Observable<THAmazonPurchaseOrder> createPurchaseOrder(
-            @NonNull ProductInventoryResult<AmazonSKU, THAmazonProductDetail> inventoryResult,
-            @NonNull UserBaseKey heroId)
+            @NonNull final ProductInventoryResult<AmazonSKU, THAmazonProductDetail> inventoryResult,
+            @NonNull final UserBaseKey heroId)
     {
         return getDefaultPortfolio()
-                .map(dto -> new THAmazonPurchaseOrder(
-                        inventoryResult.id,
-                        1,
-                        dto.getOwnedPortfolioId(),
-                        heroId));
+                .map(new Func1<PortfolioCompactDTO, THAmazonPurchaseOrder>()
+                {
+                    @Override public THAmazonPurchaseOrder call(PortfolioCompactDTO dto)
+                    {
+                        return new THAmazonPurchaseOrder(
+                                inventoryResult.id,
+                                1,
+                                dto.getOwnedPortfolioId(),
+                                heroId);
+                    }
+                });
     }
 
     @Override public void manageSubscriptions()

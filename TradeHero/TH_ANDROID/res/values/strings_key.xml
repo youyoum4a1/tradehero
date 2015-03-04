@@ -20,6 +20,7 @@
   <string name="key_settings_misc_sign_out" translatable="false">key_settings_misc_sign_out</string>
   <string name="key_settings_primary_send_feedback" translatable="false">key_settings_primary_send_feedback</string>
   <string name="key_settings_primary_send_love" translatable="false">key_settings_primary_send_love</string>
+  <string name="key_settings_primary_view_intro" translatable="false">key_settings_primary_view_intro</string>
   <string name="key_settings_account_group" translatable="false">key_settings_account_group</string>
   <string name="key_settings_primary_profile" translatable="false">key_settings_primary_profile</string>
   <string name="key_settings_primary_paypal" translatable="false">key_settings_primary_paypal</string>

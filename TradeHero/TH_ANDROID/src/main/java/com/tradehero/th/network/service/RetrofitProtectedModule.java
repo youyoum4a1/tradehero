@@ -1,6 +1,5 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.retrofit.RequestHeaders;
 import dagger.Module;
@@ -120,7 +119,6 @@ public class RetrofitProtectedModule
     @Provides @Singleton TranslationServiceBingRx provideBingTranslationServiceRx(RestAdapter.Builder builder)
     {
         return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
-                .setConverter(new CustomXmlConverter())
                 .build().create(TranslationServiceBingRx.class);
     }
 
@@ -132,11 +130,6 @@ public class RetrofitProtectedModule
     @Provides @Singleton UserServiceRx provideUserServiceRx(RestAdapter adapter)
     {
         return adapter.create(UserServiceRx.class);
-    }
-
-    @Provides @Singleton UserTimelineMarkerServiceRx provideUserTimelineMarkerServiceRx(RestAdapter adapter)
-    {
-        return adapter.create(UserTimelineMarkerServiceRx.class);
     }
 
     @Provides @Singleton UserTimelineServiceRx provideUserTimelineServiceRx(RestAdapter adapter)
@@ -157,11 +150,6 @@ public class RetrofitProtectedModule
     @Provides @Singleton WeChatServiceRx provideWeChatServiceRx(RestAdapter adapter)
     {
         return adapter.create(WeChatServiceRx.class);
-    }
-
-    @Provides @Singleton YahooNewsServiceRx provideYahooServiceRx(RestAdapter.Builder builder)
-    {
-        return builder.setEndpoint(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsServiceRx.class);
     }
 
     @Provides @Singleton HomeServiceRx provideHomeServiceRx(RestAdapter.Builder builder, RequestHeaders requestHeaders)

@@ -10,7 +10,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
@@ -24,12 +23,14 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.rx.ToastAction;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 
 public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
@@ -70,7 +71,13 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
         if (mHelpVideoLink != null)
         {
-            mHelpVideoLink.setOnClickListener(this::handleVideoLinkClicked);
+            mHelpVideoLink.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    WarrantInfoValueFragment.this.handleVideoLinkClicked(v);
+                }
+            });
         }
     }
 
@@ -138,10 +145,16 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
             securityCompactCacheSubscription = AppObservable.bindFragment(
                     this,
                     securityCompactCache.get(securityId))
-                    .map(new PairGetSecond<>())
+                    .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
                     .subscribe(
-                            this::linkWith,
-                            e -> THToast.show(R.string.error_fetch_security_info));
+                            new Action1<SecurityCompactDTO>()
+                            {
+                                @Override public void call(SecurityCompactDTO compactDTO)
+                                {
+                                    linkWith(compactDTO);
+                                }
+                            },
+                            new ToastAction<Throwable>(getString(R.string.error_fetch_security_info)));
         }
     }
 

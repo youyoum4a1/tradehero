@@ -4,8 +4,10 @@ package com.tradehero.th.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
+import com.facebook.SessionState;
 import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
@@ -21,16 +23,21 @@ public class FacebookShareActivity extends Activity
     private static final String BUNDLE_KEY_LINK = "linkUrl";
     private static final String BUNDLE_KEY_PICTURE = "pictureUrl";
 
-    private Session.StatusCallback callback = (session, state, exception) -> {
-        if (state.isOpened())
-        {
-            share(getIntent().getExtras());
-        }
-    };
+    private Session.StatusCallback callback;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        callback = new Session.StatusCallback()
+        {
+            @Override public void call(Session session, SessionState state, Exception exception)
+            {
+                if (state.isOpened())
+                {
+                    FacebookShareActivity.this.share(getIntent().getExtras());
+                }
+            }
+        };
         Bundle extras = getIntent().getExtras();
         Session session = Session.getActiveSession();
         if (session == null || !session.isOpened())
@@ -41,6 +48,12 @@ public class FacebookShareActivity extends Activity
         {
             share(extras);
         }
+    }
+
+    @Override protected void onDestroy()
+    {
+        callback = null;
+        super.onDestroy();
     }
 
     private String getName(Bundle b)
@@ -77,37 +90,42 @@ public class FacebookShareActivity extends Activity
         params.putString("link", getLinkUrl(b));
         params.putString("picture", getPictureUrl(b));
 
-        WebDialog feedDialog = (
+        WebDialog feedDialog;
+        feedDialog = (
                 new WebDialog.FeedDialogBuilder(this,
                         Session.getActiveSession(),
                         params))
-                .setOnCompleteListener((values, error) -> {
-                    if (error == null)
+                .setOnCompleteListener(new WebDialog.OnCompleteListener()
+                {
+                    @Override public void onComplete(Bundle values, FacebookException error)
                     {
-                        // When the story is posted, echo the success
-                        // and the post Id.
-                        final String postId = values.getString("post_id");
-                        if (postId != null)
+                        if (error == null)
                         {
-                            THToast.show(R.string.share_success);
+                            // When the story is posted, echo the success
+                            // and the post Id.
+                            final String postId = values.getString("post_id");
+                            if (postId != null)
+                            {
+                                THToast.show(R.string.share_success);
+                            }
+                            else
+                            {
+                                // User clicked the Cancel button
+                                THToast.show(R.string.share_cancel);
+                            }
+                        }
+                        else if (error instanceof FacebookOperationCanceledException)
+                        {
+                            // User clicked the "x" button
+                            THToast.show(R.string.share_cancel);
                         }
                         else
                         {
-                            // User clicked the Cancel button
-                            THToast.show(R.string.share_cancel);
+                            // Generic, ex: network error
+                            THToast.show(new THException(error));
                         }
+                        FacebookShareActivity.this.finish();
                     }
-                    else if (error instanceof FacebookOperationCanceledException)
-                    {
-                        // User clicked the "x" button
-                        THToast.show(R.string.share_cancel);
-                    }
-                    else
-                    {
-                        // Generic, ex: network error
-                        THToast.show(new THException(error));
-                    }
-                    FacebookShareActivity.this.finish();
                 })
                 .build();
         feedDialog.show();

@@ -16,6 +16,7 @@ import dagger.Lazy;
 import java.util.Arrays;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -69,11 +70,9 @@ public class WebDialogFactory
 
     public Observable<UserProfileDTO> authenticateWithPermission(@NonNull final Activity activity)
     {
-        return Observable.just(facebookAuthenticationProvider.get())
-                .observeOn(Schedulers.computation())
-                .map(facebookAuthenticationProvider1 -> facebookAuthenticationProvider1)
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(facebookAuthenticationProvider1 -> facebookAuthenticationProvider1.logIn(activity))
+        return facebookAuthenticationProvider.get()
+                .logIn(activity)
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .flatMap(socialServiceWrapperLazy.get().connectFunc1(currentUserId.toUserBaseKey()));
     }
@@ -89,24 +88,34 @@ public class WebDialogFactory
             @NonNull final Activity activity,
             @NonNull final Iterable<? extends UserFriendsFacebookDTO> userFriendsFacebookDTOs)
     {
-        return userProfileDTO -> Observable.create(subscriber -> {
-            Bundle postParams = new Bundle();
-            //addTo(postParams, userFriendsFacebookDTOs);
-            addInvitation(postParams, userProfileDTO);
+        return new Func1<UserProfileDTO, Observable<String>>()
+        {
+            @Override public Observable<String> call(final UserProfileDTO userProfileDTO)
+            {
+                return Observable.create(new Observable.OnSubscribe<String>()
+                {
+                    @Override public void call(Subscriber<? super String> subscriber)
+                    {
+                        Bundle postParams = new Bundle();
+                        //addTo(postParams, userFriendsFacebookDTOs);
+                        WebDialogFactory.this.addInvitation(postParams, userProfileDTO);
 
-            //FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(getActivity())
-            //        .setApplicationName("TradeHero")
-            //        .setCaption("Caption")
-            //        .build();
-            //FacebookDialog.PendingCall call = shareDialog.present();
+                        //FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(getActivity())
+                        //        .setApplicationName("TradeHero")
+                        //        .setCaption("Caption")
+                        //        .build();
+                        //FacebookDialog.PendingCall call = shareDialog.present();
 
-            WebDialog postDialog = new WebDialog.FeedDialogBuilder(
-                    activity,
-                    Session.getActiveSession(),
-                    postParams)
-                    .setOnCompleteListener(new SubscriberOnCompleteListener(subscriber))
-                    .build();
-            postDialog.show();
-        });
+                        WebDialog postDialog = new WebDialog.FeedDialogBuilder(
+                                activity,
+                                Session.getActiveSession(),
+                                postParams)
+                                .setOnCompleteListener(new SubscriberOnCompleteListener(subscriber))
+                                .build();
+                        postDialog.show();
+                    }
+                });
+            }
+        };
     }
 }

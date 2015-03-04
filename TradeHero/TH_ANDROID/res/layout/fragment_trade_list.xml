@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:clipToPadding="false"
-        android:divider="@color/light_grey"
+        android:divider="@color/tradehero_divider_grey"
         android:dividerHeight="1dp"
         android:paddingBottom="@dimen/clickable_element_min_dimen"
       />

@@ -10,6 +10,7 @@ import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.WeakHashMap;
 import rx.Observable;
+import rx.functions.Func1;
 
 public abstract class SocialAuthenticationProvider implements AuthenticationProvider
 {
@@ -59,6 +60,12 @@ public abstract class SocialAuthenticationProvider implements AuthenticationProv
             @NonNull Activity activity)
     {
         return logIn(activity)
-                .flatMap(authData -> socialLinker.link(new AccessTokenForm(authData)));
+                .flatMap(new Func1<AuthData, Observable<? extends UserProfileDTO>>()
+                {
+                    @Override public Observable<? extends UserProfileDTO> call(AuthData authData)
+                    {
+                        return socialLinker.link(new AccessTokenForm(authData));
+                    }
+                });
     }
 }

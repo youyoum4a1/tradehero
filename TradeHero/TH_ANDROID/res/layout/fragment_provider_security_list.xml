@@ -26,7 +26,8 @@
       android:numColumns="@integer/trending_list_column_count"
       android:paddingRight="@dimen/trending_horizontal_spacing"
       android:paddingLeft="@dimen/trending_horizontal_spacing"
-      android:paddingTop="56dp"
+      android:layout_marginTop="@dimen/clickable_element_min_dimen"
+      android:paddingTop="@dimen/margin_xsmall"
       android:paddingBottom="@dimen/trending_grid_padding_bottom"
       android:clipToPadding="false"
       android:listSelector="@drawable/basic_transparent_selector"
@@ -60,14 +61,13 @@
       android:id="@+id/provider_securities_tradable"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/price_bar_text_default"
+      android:background="@color/tradehero_tab_bg_color"
       android:paddingTop="8dp"
       android:paddingBottom="8dp"
       android:gravity="center"
+      android:minHeight="@dimen/clickable_element_min_dimen"
       android:text="@string/provider_security_list_tradable"
-      android:textSize="@dimen/text_subhead"
-      android:textColor="@color/white"
-      android:textStyle="bold"
+      style="@style/TH.Subhead.Inverse"
       />
 
   <ProgressBar

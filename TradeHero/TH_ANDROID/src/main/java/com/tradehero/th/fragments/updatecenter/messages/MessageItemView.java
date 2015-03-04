@@ -84,7 +84,7 @@ public class MessageItemView extends LinearLayout
         this.messageHeaderDTO = dto;
         if (messageHeaderDTO != null)
         {
-            setBackgroundColor(getResources().getColor(R.color.private_message_item_bg));
+            setBackgroundColor(getResources().getColor(R.color.white));
         }
         display();
     }

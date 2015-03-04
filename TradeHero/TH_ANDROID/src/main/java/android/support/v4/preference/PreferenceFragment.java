@@ -339,15 +339,14 @@ public abstract class PreferenceFragment extends Fragment implements
     {
         return new OnKeyListener()
         {
-
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event)
             {
                 Object selectedItem = mList.getSelectedItem();
                 if (selectedItem instanceof Preference)
                 {
-                    @SuppressWarnings("unused")
-                    View selectedView = mList.getSelectedView();
+                    //@SuppressWarnings("unused")
+                    //View selectedView = mList.getSelectedView();
                     //return ((Preference)selectedItem).onKey(
                     //        selectedView, keyCode, event);
                     return false;

@@ -2,6 +2,7 @@ package com.tradehero.th.api.social;
 
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
+import com.tradehero.th.api.social.key.TwitterFriendKey;
 
 public class UserFriendsTwitterDTO extends UserFriendsDTO
 {
@@ -22,6 +23,11 @@ public class UserFriendsTwitterDTO extends UserFriendsDTO
         this.twId = twId;
     }
     //</editor-fold>
+
+    @NonNull @Override public TwitterFriendKey getFriendKey()
+    {
+        return new TwitterFriendKey(twId);
+    }
 
     @Override public int getNetworkLabelImage()
     {

@@ -23,6 +23,7 @@ import com.tradehero.th.models.position.DTOProcessorGetPositions;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Func1;
 
 @Singleton public class LeaderboardServiceWrapper
 {
@@ -97,7 +98,13 @@ import rx.Observable;
         else if (leaderboardKey instanceof FriendsPerPagedLeaderboardKey)
         {
             return leaderboardServiceRx.getNewFriendsLeaderboard()
-                    .map(leaderboardFriendsDTO -> leaderboardFriendsDTO.leaderboard);
+                    .map(new Func1<LeaderboardFriendsDTO, LeaderboardDTO>()
+                    {
+                        @Override public LeaderboardDTO call(LeaderboardFriendsDTO leaderboardFriendsDTO)
+                        {
+                            return leaderboardFriendsDTO.leaderboard;
+                        }
+                    });
         }
         else if (leaderboardKey instanceof PerPagedLeaderboardKey)
         {

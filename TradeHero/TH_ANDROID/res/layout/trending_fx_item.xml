@@ -13,27 +13,10 @@
     tools:context=".activities.DashboardActivity"
     >
 
-  <TextView
-      android:id="@+id/fx_pair_name"
-      style="@style/TH.Subhead"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerHorizontal="true"
-      android:layout_marginTop="@dimen/margin_xsmall"
-      android:ellipsize="marquee"
-      android:lines="1"
-      android:marqueeRepeatLimit="marquee_forever"
-      android:singleLine="true"
-      android:textColor="@color/trending_grid_item_stock_name"
-      android:textStyle="bold"
-      tools:text="Company Name"
-      />
-
   <LinearLayout
       android:id="@+id/flags_container_outer"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@id/fx_pair_name"
       android:gravity="center"
       >
 
@@ -41,10 +24,24 @@
 
   </LinearLayout>
 
+  <TextView
+      android:id="@+id/fx_pair_name"
+      style="@style/TH.Title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerHorizontal="true"
+      android:layout_below="@id/flags_container_outer"
+      android:ellipsize="marquee"
+      android:lines="1"
+      android:marqueeRepeatLimit="marquee_forever"
+      android:singleLine="true"
+      tools:text="Company Name"
+      />
+
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@id/flags_container_outer"
+      android:layout_below="@id/fx_pair_name"
       android:gravity="center"
       android:orientation="horizontal"
       >
@@ -57,6 +54,7 @@
         android:minWidth="@dimen/size_8"
         android:gravity="center"
         android:lines="1"
+        android:text="@string/loading_loading"
         tools:text="146.264"
         />
 

@@ -15,6 +15,7 @@ import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import java.util.Set;
 import java.util.TreeSet;
 import rx.Observable;
+import rx.functions.Action1;
 
 public class PortfolioSelectorView extends RelativeLayout
 {
@@ -88,9 +89,13 @@ public class PortfolioSelectorView extends RelativeLayout
                         getContext(),
                         selectedPortfolio,
                         usedMenuOwnedPortfolioIds))
-                .doOnNext(menuOwnedPortfolioId -> {
-                    currentMenu = menuOwnedPortfolioId;
-                    display();
+                .doOnNext(new Action1<MenuOwnedPortfolioId>()
+                {
+                    @Override public void call(MenuOwnedPortfolioId menuOwnedPortfolioId)
+                    {
+                        currentMenu = menuOwnedPortfolioId;
+                        PortfolioSelectorView.this.display();
+                    }
                 });
     }
 }

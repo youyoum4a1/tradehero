@@ -25,7 +25,7 @@ public class AmazonPurchasingServicePurchaseOperator implements Observable.OnSub
     }
     //</editor-fold>
 
-    @Override public void call(Subscriber<? super PurchaseResponse> subscriber)
+    @Override public void call(final Subscriber<? super PurchaseResponse> subscriber)
     {
         amazonPurchasingService.purchase(
                 sku,

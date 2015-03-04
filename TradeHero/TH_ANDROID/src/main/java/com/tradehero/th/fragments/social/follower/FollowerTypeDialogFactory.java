@@ -14,7 +14,9 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.MessageType;
 import rx.Observable;
+import rx.android.widget.OnItemClickEvent;
 import rx.android.widget.WidgetObservable;
+import rx.functions.Func1;
 
 public class FollowerTypeDialogFactory
 {
@@ -32,7 +34,13 @@ public class FollowerTypeDialogFactory
         return Pair.create(
                 THDialog.showUpDialog(activity, expanded, null),
                 WidgetObservable.itemClicks(list)
-                .map(event -> (MessageType) event.parent().getItemAtPosition(event.position())));
+                .map(new Func1<OnItemClickEvent, MessageType>()
+                {
+                    @Override public MessageType call(OnItemClickEvent event)
+                    {
+                        return (MessageType) event.parent().getItemAtPosition(event.position());
+                    }
+                }));
     }
 
     @NonNull public static ArrayAdapter createMessageTypeAdapter(@NonNull Activity activity)

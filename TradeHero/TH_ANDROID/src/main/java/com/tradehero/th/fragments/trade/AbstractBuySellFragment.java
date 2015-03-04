@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.common.utils.THToast;
+import com.android.internal.util.Predicate;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
@@ -29,14 +29,17 @@ import com.tradehero.th.persistence.prefs.ShowMarketClosed;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.route.THRouter;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
-import rx.functions.Actions;
-import timber.log.Timber;
+import rx.functions.Func1;
 
 public class AbstractBuySellFragment extends BasePurchaseManagerFragment
 {
@@ -172,9 +175,21 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 quoteServiceWrapper.getQuoteRx(securityId)
-                        .repeatWhen(observable -> observable.delay(getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS)))
+                        .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
+                        {
+                            @Override public Observable<?> call(Observable<? extends Void> observable)
+                            {
+                                return observable.delay(AbstractBuySellFragment.this.getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS);
+                            }
+                        }))
                 .subscribe(
-                        this::linkWith,
+                        new Action1<QuoteDTO>()
+                        {
+                            @Override public void call(QuoteDTO quote)
+                            {
+                                linkWith(quote);
+                            }
+                        },
                         new ToastOnErrorAction()));
     }
 
@@ -192,14 +207,15 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(this, securityCompactCache
                 .get(this.securityId))
-                .subscribe(new Action1<Pair<SecurityId, SecurityCompactDTO>>()
-                           {
-                               @Override public void call(Pair<SecurityId, SecurityCompactDTO> pair)
-                               {
-                                   linkWith(pair.second, true);
-                               }
-                           },
-                        Actions.empty()));
+                .subscribe(
+                        new Action1<Pair<SecurityId, SecurityCompactDTO>>()
+                        {
+                            @Override public void call(Pair<SecurityId, SecurityCompactDTO> pair)
+                            {
+                                linkWith(pair.second, true);
+                            }
+                        },
+                        new EmptyAction1<Throwable>()));
     }
 
     public void linkWith(final SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -219,14 +235,18 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                positionCompactListCache.get(securityId)
-                        .map(pair -> pair.second))
+                positionCompactListCache.get(securityId))
                 .subscribe(
-                        this::linkWith,
-                        e -> {
-                            THToast.show("Failed to fetch positions for this security");
-                            Timber.e(e, "Failed to fetch positions for this security");
-                        }));
+                        new Action1<Pair<SecurityId, PositionDTOCompactList>>()
+                        {
+                            @Override public void call(Pair<SecurityId, PositionDTOCompactList> pair)
+                            {
+                                linkWith(pair.second);
+                            }
+                        },
+                        new ToastAndLogOnErrorAction(
+                                getString(R.string.error_fetch_position_list_info),
+                                "Failed to fetch positions for this security")));
     }
 
     public void linkWith(final PositionDTOCompactList positionDTOCompacts)
@@ -245,7 +265,13 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
     {
         if (positionDTOCompactList != null && portfolioCompactDTO != null)
         {
-            this.positionDTOCompact = positionDTOCompactList.findFirstWhere(position -> position.portfolioId == portfolioCompactDTO.id);
+            this.positionDTOCompact = positionDTOCompactList.findFirstWhere(new Predicate<PositionDTOCompact>()
+            {
+                @Override public boolean apply(PositionDTOCompact position)
+                {
+                    return position.portfolioId == portfolioCompactDTO.id;
+                }
+            });
         }
     }
 
@@ -344,6 +370,7 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
     protected void notifyMarketClosed()
     {
         AlertDialogBuySellRxUtil.popMarketClosed(getActivity(), securityId)
-                .subscribe(Actions.empty(), Actions.empty());
+                .subscribe(new EmptyAction1<OnDialogClickEvent>(),
+                        new EmptyAction1<Throwable>());
     }
 }

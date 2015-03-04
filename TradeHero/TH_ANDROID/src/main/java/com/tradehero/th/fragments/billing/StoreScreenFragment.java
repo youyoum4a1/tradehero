@@ -2,7 +2,9 @@ package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,17 +16,22 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.tradehero.common.billing.purchase.PurchaseResult;
+import com.tradehero.common.billing.tester.BillingTestResult;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemDTOList;
 import com.tradehero.th.fragments.billing.store.StoreItemFactory;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
@@ -33,18 +40,23 @@ import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.system.SystemStatusCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Actions;
 import timber.log.Timber;
 
 @Routable({
         "store", "store/:action"
 })
-public class StoreScreenFragment extends BasePurchaseManagerFragment
+public class StoreScreenFragment extends DashboardFragment
         implements WithTutorial
 {
     public static boolean alreadyNotifiedNeedCreateAccount = false;
@@ -53,11 +65,14 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
     @Inject SystemStatusCache systemStatusCache;
+    @Inject UserProfileCacheRx userProfileCacheRx;
 
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
     @InjectView(R.id.store_option_list) protected ListView listView;
     private StoreItemAdapter storeItemAdapter;
+    @Inject protected THBillingInteractorRx userInteractorRx;
+    @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -92,18 +107,23 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Store));
 
+        fetchUserProfile();
         storeItemAdapter.clear();
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 StoreItemFactory.createAll(systemStatusCache, StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS)
                         .take(1))
                 .subscribe(
-                        storeItemDTOs -> {
-                            storeItemAdapter.clear();
-                            storeItemAdapter.addAll(storeItemDTOs);
-                            storeItemAdapter.notifyDataSetChanged();
+                        new Action1<StoreItemDTOList>()
+                        {
+                            @Override public void call(StoreItemDTOList storeItemDTOs)
+                            {
+                                storeItemAdapter.clear();
+                                storeItemAdapter.addAll(storeItemDTOs);
+                                storeItemAdapter.notifyDataSetChanged();
+                            }
                         },
-                        e -> THToast.show(new THException(e))));
+                        new ToastOnErrorAction()));
 
         cancelOthersAndShowBillingAvailable();
     }
@@ -127,6 +147,21 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         super.onDestroy();
     }
 
+    protected void fetchUserProfile()
+    {
+        onStopSubscriptions.add(AppObservable.bindFragment(this, userProfileCacheRx.get(currentUserId.toUserBaseKey()))
+                .subscribe(new Action1<Pair<UserBaseKey, UserProfileDTO>>()
+                {
+                    @Override public void call(Pair<UserBaseKey, UserProfileDTO> userProfileDTO)
+                    {
+                        purchaseApplicableOwnedPortfolioId =
+                                new OwnedPortfolioId(userProfileDTO.second.portfolio.id, currentUserId.get());
+                        StoreScreenFragment.this.launchRoutedAction();
+                    }
+                },
+                new EmptyAction1<Throwable>()));
+    }
+
     public void cancelOthersAndShowBillingAvailable()
     {
         if (alreadyNotifiedNeedCreateAccount)
@@ -138,23 +173,23 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.testAndClear())
-                .finallyDo(() -> alreadyNotifiedNeedCreateAccount = true)
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        alreadyNotifiedNeedCreateAccount = true;
+                    }
+                })
                 .subscribe(
-                        Actions.empty(),
-                        Actions.empty()));
-    }
-
-    @Override protected void handleReceivedPortfolioCompactList(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
-    {
-        super.handleReceivedPortfolioCompactList(portfolioCompactDTOs);
-        launchRoutedAction();
+                        new EmptyAction1<BillingTestResult>(),
+                        new EmptyAction1<Throwable>()));
     }
 
     protected void launchRoutedAction()
     {
         if (productDomainIdentifierOrdinal != null)
         {
-            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+            OwnedPortfolioId applicablePortfolioId = purchaseApplicableOwnedPortfolioId;
             if (applicablePortfolioId == null)
             {
                 Timber.e(new Exception("Null portfolio id"), "Even when received portfolio list");
@@ -166,10 +201,8 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                         this,
                         userInteractorRx.purchase(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]))
                         .subscribe(
-                                pair -> {
-                                },
-                                error -> THToast.show(new THException((Throwable) error))
-                        ));
+                                Actions.empty(),
+                                new ToastOnErrorAction()));
             }
         }
     }
@@ -190,8 +223,20 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                     this,
                     userInteractorRx.purchaseAndClear(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain))
                     .subscribe(
-                            obj -> this.handlePurchaseFinished((PurchaseResult) obj),
-                            e -> this.handlePurchaseFailed((Throwable) e));
+                            new Action1<PurchaseResult>()
+                            {
+                                @Override public void call(PurchaseResult purchaseResult)
+                                {
+                                    StoreScreenFragment.this.handlePurchaseFinished(purchaseResult);
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable e)
+                                {
+                                    StoreScreenFragment.this.handlePurchaseFailed(e);
+                                }
+                            });
         }
         else if (clickedItem instanceof StoreItemHasFurtherDTO)
         {
@@ -245,11 +290,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle();
         HeroManagerFragment.putFollowerId(bundle, currentUserId.toUserBaseKey());
-        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
-        if (applicablePortfolio != null)
-        {
-            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
-        }
         pushFragment(HeroManagerFragment.class, bundle);
     }
 

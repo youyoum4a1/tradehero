@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
@@ -22,6 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Func1;
 
 @Singleton public class THBaseIABInteractorRx
         extends
@@ -75,36 +78,52 @@ import rx.Observable;
     {
         return portfolioCompactListCache.get(currentUserId.toUserBaseKey())
                 .take(1)
-                .map(pair -> pair.second.getDefaultPortfolio())
-                .flatMap(dto -> {
-                    if (dto == null)
+                .flatMap(new Func1<Pair<UserBaseKey, PortfolioCompactDTOList>, Observable<? extends PortfolioCompactDTO>>()
+                {
+                    @Override public Observable<? extends PortfolioCompactDTO> call(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
                     {
-                        return Observable.error(new IllegalArgumentException("Default portfolio cannot be null"));
+                        PortfolioCompactDTO dto = pair.second.getDefaultPortfolio();
+                        if (dto == null)
+                        {
+                            return Observable.error(new IllegalArgumentException("Default portfolio cannot be null"));
+                        }
+                        return Observable.just(dto);
                     }
-                    return Observable.just(dto);
                 });
     }
 
     @NonNull @Override public Observable<THIABPurchaseOrder> createPurchaseOrder(
-            @NonNull ProductInventoryResult<IABSKU, THIABProductDetail> inventoryResult)
+            @NonNull final ProductInventoryResult<IABSKU, THIABProductDetail> inventoryResult)
     {
         return getDefaultPortfolio()
-                .map(dto -> new THIABPurchaseOrder(
-                        inventoryResult.id,
-                        inventoryResult.detail.getType(),
-                        dto.getOwnedPortfolioId()));
+                .map(new Func1<PortfolioCompactDTO, THIABPurchaseOrder>()
+                {
+                    @Override public THIABPurchaseOrder call(PortfolioCompactDTO dto)
+                    {
+                        return new THIABPurchaseOrder(
+                                inventoryResult.id,
+                                inventoryResult.detail.getType(),
+                                dto.getOwnedPortfolioId());
+                    }
+                });
     }
 
     @NonNull @Override public Observable<THIABPurchaseOrder> createPurchaseOrder(
-            @NonNull ProductInventoryResult<IABSKU, THIABProductDetail> inventoryResult,
-            @NonNull UserBaseKey heroId)
+            @NonNull final ProductInventoryResult<IABSKU, THIABProductDetail> inventoryResult,
+            @NonNull final UserBaseKey heroId)
     {
         return getDefaultPortfolio()
-                .map(dto -> new THIABPurchaseOrder(
-                        inventoryResult.id,
-                        inventoryResult.detail.getType(),
-                        dto.getOwnedPortfolioId(),
-                        heroId));
+                .map(new Func1<PortfolioCompactDTO, THIABPurchaseOrder>()
+                {
+                    @Override public THIABPurchaseOrder call(PortfolioCompactDTO dto)
+                    {
+                        return new THIABPurchaseOrder(
+                                inventoryResult.id,
+                                inventoryResult.detail.getType(),
+                                dto.getOwnedPortfolioId(),
+                                heroId);
+                    }
+                });
     }
 
     @Override public void manageSubscriptions()

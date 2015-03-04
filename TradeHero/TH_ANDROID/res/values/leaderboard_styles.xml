@@ -20,13 +20,13 @@
   </style>
 
   <style name="Leaderboard_ActionButton" parent="Leaderboard_ActionWidget">
-    <item name="android:background">@drawable/leaderboard_user_item_action_button</item>
-    <item name="android:textColor">@color/leaderboard_user_item_text_color</item>
+    <item name="android:background">@drawable/basic_transparent_selector</item>
+    <item name="android:textColor">?android:textColorPrimary</item>
   </style>
 
   <style name="Leaderboard_ActionButton_Blue" parent="Leaderboard_ActionButton">
-    <item name="android:background">@drawable/leaderboard_user_item_follow_action_button</item>
-    <item name="android:textColor">@color/white</item>
+    <item name="android:background">@drawable/basic_blue_selector</item>
+    <item name="android:textColor">?android:textColorPrimaryInverse</item>
   </style>
 
   <dimen name="leaderboard_user_item_action_button_horizontal_padding">5dp</dimen>

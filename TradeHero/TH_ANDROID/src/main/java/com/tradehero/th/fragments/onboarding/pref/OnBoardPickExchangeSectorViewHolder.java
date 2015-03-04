@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Spinner;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.android.internal.util.Predicate;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
@@ -123,7 +124,13 @@ public class OnBoardPickExchangeSectorViewHolder
             SectorCompactDTOList sectors = exchangeSectorCompactsCopy.sectors;
             if (sectors != null)
             {
-                SectorCompactDTO sectorCompactDTO = sectors.findFirstWhere(sectorCompactDTO1 -> sectorCompactDTO1.id == DEFAULT_SECTOR_ID);
+                SectorCompactDTO sectorCompactDTO = sectors.findFirstWhere(new Predicate<SectorCompactDTO>()
+                {
+                    @Override public boolean apply(SectorCompactDTO sectorCompactDTO1)
+                    {
+                        return sectorCompactDTO1.id == DEFAULT_SECTOR_ID;
+                    }
+                });
                 if (sectorCompactDTO != null)
                 {
                     sectorSpinnerCopy.setSelection(sectors.indexOf(sectorCompactDTO));

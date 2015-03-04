@@ -18,6 +18,7 @@ import dagger.Module;
                 PositionPartialBottomOpenView.class,
                 PositionLockedView.class,
                 PositionPartialBottomInPeriodViewHolder.class,
+                TabbedPositionListFragment.class,
         },
         library = true,
         complete = false

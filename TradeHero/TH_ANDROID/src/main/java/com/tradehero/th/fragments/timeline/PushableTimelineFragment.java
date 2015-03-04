@@ -49,15 +49,15 @@ public class PushableTimelineFragment extends TimelineFragment
      */
     @Nullable protected Boolean isPurchaserFollowingUserShown()
     {
-        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-        if (applicablePortfolioId != null)
-        {
-            UserProfileDTO purchaserProfile = userProfileCache.get().getCachedValue(applicablePortfolioId.getUserBaseKey());
+//        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+//        if (applicablePortfolioId != null)
+//        {
+            UserProfileDTO purchaserProfile = userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
             if (purchaserProfile != null)
             {
                 return purchaserProfile.isFollowingUser(shownUserBaseKey);
             }
-        }
+//        }
         return null;
     }
 
