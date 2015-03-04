@@ -59,6 +59,7 @@ import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
+import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
@@ -100,6 +101,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private static final Pair<Long, TimeUnit> APPARENT_DURATION = Pair.create(500l, TimeUnit.MILLISECONDS);
     @Inject CurrentUserId currentUserId;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
+    @Inject @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier;
     @Inject Analytics analytics;
     @Inject protected THBillingInteractorRx billingInteractorRx;
     @Inject protected SessionServiceWrapper sessionServiceWrapper;
@@ -887,6 +889,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     protected void onSignedOut(@SuppressWarnings("UnusedParameters") UserProfileDTO userProfileDTO, @Nullable ProgressDialog progressDialog)
     {
+        savedPushDeviceIdentifier.delete();
         for (Map.Entry<SocialNetworkEnum, AuthenticationProvider> entry : authenticationProviderMap.entrySet())
         {
             if (authHeader.startsWith(entry.getKey().getAuthHeader()))

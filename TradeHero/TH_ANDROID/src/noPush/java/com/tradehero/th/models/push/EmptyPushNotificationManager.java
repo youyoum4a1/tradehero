@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import com.tradehero.common.utils.THToast;
 import javax.inject.Inject;
+import rx.Observable;
 
 public class EmptyPushNotificationManager implements PushNotificationManager
 {
@@ -13,9 +14,10 @@ public class EmptyPushNotificationManager implements PushNotificationManager
     }
     //</editor-fold>
 
-    @Override public void initialise()
+    @NonNull @Override public Observable<InitialisationCompleteDTO> initialise()
     {
         THToast.show("Initialise not implemented");
+        return Observable.empty();
     }
 
     @Override public void verify(@NonNull Activity activity)

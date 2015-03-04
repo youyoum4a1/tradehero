@@ -11,7 +11,6 @@ import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.translation.UserTranslationSettingDTOFactory;
-import com.tradehero.th.models.push.PushModule;
 import com.tradehero.th.models.share.preference.SocialShareSetPreference;
 import com.tradehero.th.persistence.market.ExchangeMarketPreference;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
@@ -95,7 +94,7 @@ public class PreferenceModule
 
     @Provides @Singleton @SavedPushDeviceIdentifier StringPreference provideSavedPushIdentifier(@ForUser SharedPreferences sharedPreferences)
     {
-        return new StringPreference(sharedPreferences, PREF_SAVED_PUSH_IDENTIFIER, PushModule.getPushId());
+        return new StringPreference(sharedPreferences, PREF_SAVED_PUSH_IDENTIFIER, "No Id");
     }
 
     @Provides @Singleton @FirstLaunch BooleanPreference provideFirstLaunchPreference(@ForApp SharedPreferences sharedPreferences)

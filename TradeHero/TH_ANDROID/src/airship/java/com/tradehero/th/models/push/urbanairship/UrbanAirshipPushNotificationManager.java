@@ -16,15 +16,18 @@ import com.urbanairship.actions.ActionResult;
 import com.urbanairship.google.PlayServicesUtils;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 @Singleton public final class UrbanAirshipPushNotificationManager implements PushNotificationManager
 {
-    private final AirshipConfigOptions options;
+    @NonNull private final AirshipConfigOptions options;
     @Nullable private static UAirship uAirship;
 
     //<editor-fold desc="Constructors">
-    @Inject public UrbanAirshipPushNotificationManager(AirshipConfigOptions options)
+    @Inject public UrbanAirshipPushNotificationManager(@NonNull AirshipConfigOptions options)
     {
         this.options = options;
     }
@@ -35,36 +38,55 @@ import timber.log.Timber;
         return uAirship;
     }
 
-    @Override public void initialise()
+    @NonNull @Override public Observable<InitialisationCompleteDTO> initialise()
     {
-        UAirship.takeOff(
-                THApp.context(),
-                options,
-                new UAirship.OnReadyCallback()
+        return Observable.create(
+                new Observable.OnSubscribe<UAirship>()
                 {
-                    @Override public void onAirshipReady(UAirship uAirship)
+                    @Override public void call(final Subscriber<? super UAirship> subscriber)
                     {
+                        UAirship.takeOff(
+                                THApp.context(),
+                                options,
+                                new UAirship.OnReadyCallback()
+                                {
+                                    @Override public void onAirshipReady(UAirship uAirship)
+                                    {
+                                        subscriber.onNext(uAirship);
+                                    }
+                                });
+                    }
+                })
+                .map(new Func1<UAirship, InitialisationCompleteDTO>()
+                {
+                    @Override public InitialisationCompleteDTO call(UAirship uAirship)
+                    {
+                        final String channelId = uAirship.getPushManager().getChannelId();
                         UrbanAirshipPushNotificationManager.uAirship = uAirship;
                         uAirship.getPushManager().setDeviceTagsEnabled(false);
-                        THToast.show("My UrbanAirship Application Channel ID: " + uAirship.getPushManager().getChannelId());
+                        THToast.show("My UrbanAirship Application Channel ID: " + channelId);
                         Timber.i("My UrbanAirship Application Channel ID below");
-                        Timber.i("My UrbanAirship Application Channel ID: %s", uAirship.getPushManager().getChannelId());
+                        Timber.i("My UrbanAirship Application Channel ID: %s", channelId);
                         if (BuildConfig.DEBUG)
                         {
                             uAirship.getPushManager().setUserNotificationsEnabled(true);
                         }
+
+                        ActionRegistry.shared().registerAction(
+                                new Action()
+                                {
+                                    @Override public ActionResult perform(String s, ActionArguments actionArguments)
+                                    {
+                                        Timber.e(new Exception("Reporting"), "s is %s, argument are %s", s,
+                                                actionArguments);
+                                        return ActionResult.newEmptyResult();
+                                    }
+                                },
+                                "TODO");
+
+                        return new InitialisationComplete(channelId, uAirship);
                     }
                 });
-
-        ActionRegistry.shared().registerAction(new Action()
-        {
-            @Override public ActionResult perform(String s, ActionArguments actionArguments)
-            {
-                Timber.e(new Exception("Reporting"), "s is %s, argument are %s", s, actionArguments);
-                return ActionResult.newEmptyResult();
-            }
-        },
-        "TODO");
     }
 
     @Override public void verify(@NonNull Activity activity)
@@ -94,5 +116,16 @@ import timber.log.Timber;
     @Override public void setVibrateEnabled(boolean enabled)
     {
         UAirship.shared().getPushManager().setVibrateEnabled(enabled);
+    }
+
+    public static class InitialisationComplete extends PushNotificationManager.InitialisationCompleteDTO
+    {
+        @NonNull public final UAirship uAirship;
+
+        public InitialisationComplete(@NonNull String pushId, @NonNull UAirship uAirship)
+        {
+            super(pushId);
+            this.uAirship = uAirship;
+        }
     }
 }
