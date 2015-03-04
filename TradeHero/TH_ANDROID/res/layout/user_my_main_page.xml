@@ -16,7 +16,7 @@
             <View
                     android:id="@+id/view_discuss_line"
                     android:layout_alignParentBottom="true"
-                    android:layout_height="3px"
+                    android:layout_height="@dimen/viewpager_focus_height"
                     android:layout_width="fill_parent"
                     android:background="@color/tradehero_blue"/>
             <TextView
@@ -37,7 +37,7 @@
                     android:id="@+id/view_tradehistory_line"
                     android:visibility="gone"
                     android:layout_alignParentBottom="true"
-                    android:layout_height="3px"
+                    android:layout_height="@dimen/viewpager_focus_height"
                     android:layout_width="fill_parent"
                     android:background="@color/tradehero_blue"/>
             <TextView

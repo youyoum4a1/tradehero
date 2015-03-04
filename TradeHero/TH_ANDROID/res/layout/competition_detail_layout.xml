@@ -1,160 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/contest_center_content_screen"
-    android:background="@color/bg_fragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/contest_center_content_screen"
+        android:background="@color/bg_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
 
-
-  <RelativeLayout
-      android:layout_width="fill_parent"
-      android:layout_height="96dp"
-      android:background="@drawable/bg_competition_banner">
-    <TextView
-        android:id="@+id/tvCompetitionIntro"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingRight="40dp"
-        android:paddingBottom="10dp"
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp"
-        android:textColor="@color/black"
-        android:text=" ">
-    </TextView>
-
-    <TextView
-        android:id="@+id/tvCompetitionPeriod"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="5dp"
-        android:textColor="@color/white"
-        android:text=" ">
-    </TextView>
-
-    <TextView
-        android:id="@+id/tvCompetitionExchange"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:layout_above="@id/tvCompetitionPeriod"
-        android:textColor="@color/white"
-        android:text=" ">
-    </TextView>
-  </RelativeLayout>
-
-  <RelativeLayout
-      android:layout_width="fill_parent"
-      android:layout_height="48dp"
-      >
-
-    <TextView
-        android:id="@+id/tvCompetitionDetailMore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:textColor="#1789d5"
-        android:visibility="gone"
-        android:text="比赛详情>>"/>
-
-
-    <TextView
-        android:id="@+id/tvTitleCreator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_centerVertical="true"
-        android:text="创建人："/>
-
-    <TextView
-        android:id="@+id/tvCompetitionCreator"
-        android:layout_toRightOf="@id/tvTitleCreator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/tvCompetitionDetailMore"
-        android:layout_marginRight="2dp"
-        android:textColor="#1789d5"
-        android:layout_centerVertical="true"
-        android:singleLine="true"
-        android:text=""/>
-
-    <TextView
-        android:visibility="invisible"
-        android:id="@+id/tvGotoCompetition"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:background="@drawable/icon_goto_competition_xml"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
-        android:gravity="center_vertical"
-        android:layout_centerVertical="true"
-        android:textColor="@color/white"
-        android:text="去比赛"/>
-  </RelativeLayout>
-
-  <View
-      android:id="@+id/viewLine"
-      android:layout_width="fill_parent"
-      android:layout_height="1px"
-      android:background="@color/separate_line_color"/>
-
-  <com.tradehero.common.widget.BetterViewAnimator
-      android:id="@+id/bvaViewAll"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent">
-
-
-    <com.tradehero.th.widget.TradeHeroProgressBar
-        android:id="@+id/tradeheroprogressbar_competition_detail"
-        android:layout_width="@dimen/loading_logo_width"
-        android:layout_height="@dimen/loading_logo_height"
-        android:layout_gravity="center"
-        android:background="@drawable/logo"/>
 
     <RelativeLayout
-        android:id="@+id/rlRankAll"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent">
+            android:layout_width="fill_parent"
+            android:layout_height="106dp"
+            android:background="@drawable/bg_competition_banner">
 
-      <ImageView android:id="@+id/imgEmpty"
-          android:background="@drawable/empty"
-          android:layout_gravity="center"
-          android:layout_width="150dp"
-          android:layout_height="150dp"/>
-
-      <com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView
-          android:id="@+id/listRanks"
-          xmlns:ptr="http://schemas.android.com/apk/res-auto"
-          ptr:ptrHeaderTextColor="@color/black"
-          android:scrollingCache="false"
-          android:fadingEdge="none"
-          android:dividerHeight="1px"
-          android:divider="@color/transparent"
-          android:layout_width="fill_parent"
-          android:layout_height="fill_parent">
-      </com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView>
-
-      <Button android:layout_height="48dp"
-          android:visibility="gone"
-          android:id="@+id/btnCollegeSelect"
-          android:layout_width="fill_parent"
-          android:layout_alignParentBottom="true"
-          android:textColor="@color/white"
-          android:background="@drawable/bg_college_xml"
-          android:text="选择所在高校"/>
-
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_margin="10dp">
+            <TextView
+                    android:id="@+id/tvCompetitionIntro"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginRight="40dp"
+                    android:lineSpacingExtra="3dp"
+                    android:textColor="#ffffff"/>
+            <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                       android:id="@+id/imageview_edit_competition_intro"
+                       android:layout_alignParentRight="true"
+                       android:layout_marginRight="10dp"
+                       android:background="@drawable/competition_detail_edit"/>
+        </RelativeLayout>
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="35dp" android:background="#30000000"
+                        android:layout_alignParentBottom="true">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                          android:layout_marginLeft="10dp"
+                          android:layout_alignParentLeft="true"
+                          android:layout_centerVertical="true">
+                <TextView
+                        android:id="@+id/tvCompetitionExchange"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:layout_marginRight="5dp"
+                        android:textColor="@color/white"/>
+                <TextView
+                        android:id="@+id/tvCompetitionPeriod"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:textColor="@color/white"/>
+            </LinearLayout>
+            <TextView
+                    android:id="@+id/tvCompetitionDetailMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="#ffffff"
+                    android:textSize="13sp"
+                    android:layout_marginRight="10dp"
+                    android:visibility="gone"
+                    android:text="@string/regulation_competition"/>
+        </RelativeLayout>
     </RelativeLayout>
-  </com.tradehero.common.widget.BetterViewAnimator>
+
+    <com.tradehero.common.widget.BetterViewAnimator
+            android:id="@+id/bvaViewAll"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+
+        <com.tradehero.th.widget.TradeHeroProgressBar
+                android:id="@+id/tradeheroprogressbar_competition_detail"
+                android:layout_width="@dimen/loading_logo_width"
+                android:layout_height="@dimen/loading_logo_height"
+                android:layout_gravity="center"
+                android:background="@drawable/logo"/>
+
+        <RelativeLayout
+                android:id="@+id/rlRankAll"
+                android:layout_height="fill_parent"
+                android:layout_width="fill_parent">
+
+            <ImageView android:id="@+id/imgEmpty"
+                       android:background="@drawable/empty"
+                       android:layout_gravity="center"
+                       android:layout_width="150dp"
+                       android:layout_height="150dp"/>
+
+            <com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView
+                    android:id="@+id/listRanks"
+                    xmlns:ptr="http://schemas.android.com/apk/res-auto"
+                    ptr:ptrHeaderTextColor="@color/black"
+                    android:scrollingCache="false"
+                    android:fadingEdge="none"
+                    android:dividerHeight="1px"
+                    android:divider="@color/transparent"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+            </com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView>
+
+            <Button android:layout_height="48dp"
+                    android:visibility="gone"
+                    android:id="@+id/btnCollegeSelect"
+                    android:layout_width="fill_parent"
+                    android:layout_alignParentBottom="true"
+                    android:textColor="@color/white"
+                    android:background="@drawable/bg_college_xml"
+                    android:text="选择所在高校"/>
+
+        </RelativeLayout>
+    </com.tradehero.common.widget.BetterViewAnimator>
 </LinearLayout>
 

@@ -1,41 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/llListViewHeader"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
-
-  <include
-      android:id="@+id/includeMyPosition"
-      layout="@layout/leaderboard_my_position_item"
-      android:layout_marginBottom="3dp"
-      android:layout_marginTop="3dp"/>
-
-  <LinearLayout
-      android:id="@+id/llCompetitionLeaderboardTitle"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:visibility="gone"
-      android:orientation="horizontal"
-      android:background="@color/gray_1">
-    <TextView
-        android:id="@+id/tvHeadLine"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        android:text="比赛排名"/>
-
-    <TextView
-        android:id="@+id/tvLeaderboardTime"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/llListViewHeader"
+        android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        android:text=""/>
-  </LinearLayout>
+        android:layout_height="wrap_content">
+
+
+    <LinearLayout
+            android:id="@+id/llCompetitionLeaderboardTitle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="horizontal"
+            android:background="@color/gray_1">
+        <TextView
+                android:id="@+id/tvHeadLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/black"
+                android:textSize="13sp"
+                android:text="@string/competition_rank"/>
+
+        <TextView
+                android:id="@+id/tvLeaderboardTime"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="#838383"
+                android:textSize="13sp"/>
+    </LinearLayout>
+    <RelativeLayout
+            android:id="@+id/includeMyPosition"
+            android:layout_width="fill_parent"
+            android:layout_height="72dp"
+            android:background="@drawable/listview_item_selector">
+
+        <LinearLayout
+                android:id="@+id/llRank"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:layout_width="48dp"
+                android:layout_height="48dp">
+
+            <TextView
+                    android:id="@+id/tvUserRank"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" - - "
+                    android:textColor="@color/text_gray_normal"
+                    android:textSize="24sp"/>
+        </LinearLayout>
+
+        <ImageView
+                android:id="@+id/imgUserHead"
+                android:layout_toRightOf="@id/llRank"
+                android:layout_margin="5dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerVertical="true"/>
+
+        <TextView
+                android:id="@+id/tvUserName"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:maxEms="7"
+                android:layout_toRightOf="@id/imgUserHead"
+                android:layout_alignTop="@id/imgUserHead"
+                android:layout_marginTop="1dp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"/>
+
+        <LinearLayout
+                android:layout_toRightOf="@id/imgUserHead"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="2dp"
+                android:layout_alignBottom="@id/imgUserHead"
+                >
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_gray_normal"
+                    android:text="收益率："
+                    android:textSize="14sp"/>
+
+            <TextView
+                    android:id="@+id/tvUserExtraValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_gray_normal"
+                    android:text=" - - "
+                    android:textSize="14sp"/>
+        </LinearLayout>
+
+        <TextView
+                android:id="@+id/tvGotoCompetition"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:background="@drawable/icon_goto_competition_xml"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="15dp"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:textColor="@color/white"
+                android:text="@string/go_competition"/>
+    </RelativeLayout>
+
+    <RelativeLayout android:id="@+id/relativelayout_join_competition"
+                    android:layout_width="match_parent"
+                    android:clickable="false"
+                    android:layout_height="72dp">
+        <TextView
+                android:id="@+id/tvJoinCompetition"
+                android:layout_width="120dp"
+                android:layout_height="32dp"
+                android:background="@drawable/icon_goto_competition_xml"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:textColor="@color/white"
+                android:text="@string/to_join_competition"/>
+    </RelativeLayout>
+    <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="68dp"
+            android:background="@color/separate_line_color"/>
 </LinearLayout>

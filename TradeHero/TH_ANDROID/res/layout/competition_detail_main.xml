@@ -16,7 +16,7 @@
             <View
                     android:id="@+id/view_competition_detail_line"
                     android:layout_alignParentBottom="true"
-                    android:layout_height="3px"
+                    android:layout_height="@dimen/viewpager_focus_height"
                     android:layout_width="fill_parent"
                     android:background="@color/tradehero_blue"/>
             <TextView
@@ -25,7 +25,7 @@
                     android:layout_width="fill_parent"
                     android:textSize="@dimen/viewpager_tab_text_size"
                     android:gravity="center"
-                    android:textColor="@color/tradehero_blue"
+                    android:textColor="@color/black2"
                     android:text="@string/competition_detail"/>
         </RelativeLayout>
 
@@ -37,7 +37,7 @@
                     android:id="@+id/view_competition_discuss_line"
                     android:visibility="gone"
                     android:layout_alignParentBottom="true"
-                    android:layout_height="3px"
+                    android:layout_height="@dimen/viewpager_focus_height"
                     android:layout_width="fill_parent"
                     android:background="@color/tradehero_blue"/>
             <TextView

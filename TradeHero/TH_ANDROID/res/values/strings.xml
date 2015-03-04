@@ -505,6 +505,10 @@
   <string name="competition_discuss">讨论</string>
   <string name="mine_trade_history">交易信息</string>
   <string name="mine_discuss">讨论</string>
+  <string name="regulation_competition">详细规则></string>
+  <string name="competition_rank">比赛排名</string>
+  <string name="go_competition">去比赛</string>
+  <string name="to_join_competition">报名</string>
 
   <!-- Administrator -->
   <string name="administrator_add_favorite">加精</string>

@@ -43,9 +43,6 @@ public class CompetitionMainFragment extends DashboardFragment implements View.O
     private TextView discussTV;
     private ViewPager viewPager;
 
-    private int blueColor;
-    private int blackColor;
-
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
     private ArrayList<Fragment> fragmentList = new ArrayList();
 
@@ -75,8 +72,6 @@ public class CompetitionMainFragment extends DashboardFragment implements View.O
         detailTV = (TextView)view.findViewById(R.id.textview_competition_detail_subtitle);
         discussTV = (TextView)view.findViewById(R.id.textview_competition_discuss_subtitle);
         viewPager = (ViewPager)view.findViewById(R.id.viewpager_competition_detail_page);
-        blueColor = getActivity().getResources().getColor(R.color.tradehero_blue);
-        blackColor = getActivity().getResources().getColor(R.color.black2);
         detailTV.setOnClickListener(this);
         discussTV.setOnClickListener(this);
         initViewPager();
@@ -152,14 +147,10 @@ public class CompetitionMainFragment extends DashboardFragment implements View.O
 
     private void refreshTabs(int position){
         if(position == 0){
-            detailTV.setTextColor(blueColor);
-            discussTV.setTextColor(blackColor);
             detailLineView.setVisibility(View.VISIBLE);
             discussLineView.setVisibility(View.GONE);
         }
         if(position == 1){
-            detailTV.setTextColor(blackColor);
-            discussTV.setTextColor(blueColor);
             detailLineView.setVisibility(View.GONE);
             discussLineView.setVisibility(View.VISIBLE);
         }

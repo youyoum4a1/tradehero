@@ -18,7 +18,7 @@
     <View
         android:id="@+id/viewLine00"
         android:layout_alignParentBottom="true"
-        android:layout_height="3px"
+        android:layout_height="@dimen/viewpager_focus_height"
         android:layout_width="fill_parent"
         android:background="@color/tradehero_blue">
     </View>
@@ -48,7 +48,7 @@
         android:id="@+id/viewLine11"
         android:visibility="gone"
         android:layout_alignParentBottom="true"
-        android:layout_height="3px"
+        android:layout_height="@dimen/viewpager_focus_height"
         android:layout_width="fill_parent"
         android:background="@color/tradehero_blue">
     </View>
@@ -78,7 +78,7 @@
         android:id="@+id/viewLine22"
         android:visibility="gone"
         android:layout_alignParentBottom="true"
-        android:layout_height="3px"
+        android:layout_height="@dimen/viewpager_focus_height"
         android:layout_width="fill_parent"
         android:background="@color/tradehero_blue">
     </View>

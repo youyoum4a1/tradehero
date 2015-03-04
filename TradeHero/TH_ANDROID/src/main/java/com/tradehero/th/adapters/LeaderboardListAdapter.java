@@ -22,6 +22,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.StringUtils;
 import dagger.Lazy;
+
 import javax.inject.Inject;
 
 public class LeaderboardListAdapter extends BaseAdapter
@@ -105,7 +106,7 @@ public class LeaderboardListAdapter extends BaseAdapter
         LeaderboardUserDTO item = (LeaderboardUserDTO) getItem(position);
         if (item != null)
         {
-            ViewHolder holder = null;
+            ViewHolder holder;
             if (convertView == null)
             {
                 if (leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION || leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION_FOR_SCHOOL)

@@ -232,6 +232,7 @@
 
   <dimen name="button_corner_radius">4dp</dimen>
 
-  <dimen name="viewpager_tab_height">45dp</dimen>
+  <dimen name="viewpager_tab_height">44dp</dimen>
   <dimen name="viewpager_tab_text_size">15sp</dimen>
+  <dimen name="viewpager_focus_height">5px</dimen>
 </resources>
