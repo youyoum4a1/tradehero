@@ -31,6 +31,7 @@ public class GuideView extends View {
 
     public final static int TYPE_GUIDE_COMPETITION_JOIN = 1;
     public final static int TYPE_GUIDE_STOCK_BUY = 2;
+    public final static int TYPE_GUIDE_COMPETITION_EDIT = 3;
 
     public GuideView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -54,6 +55,11 @@ public class GuideView extends View {
         mCanvas = new Canvas();
         mCanvas.setBitmap(bitmap);
         mCanvas.drawBitmap(bm, new Rect(0, 0, bm.getWidth(), bm.getHeight()), new Rect(0, 0, screen_width, screen_height), null);
+
+        if(type == TYPE_GUIDE_COMPETITION_EDIT){
+            bitmap_a = BitmapFactory.decodeResource(getResources(), R.drawable.guide_competition_edit_intro);
+        }
+        invalidate();
     }
 
     public void draw(int position_x_a, int position_y_a, int radius_a, int screen_width, int screen_height, int type) {
@@ -105,6 +111,13 @@ public class GuideView extends View {
             src.set(0,0, bitmapBWidth, bitmapBHeight);
             dst.set(beginX, beginY, beginX + bitmapBWidth/2, beginY + bitmapBHeight/2);
             canvas.drawBitmap(bitmap_b, src, dst, null);
+        }
+
+        if(current_type == TYPE_GUIDE_COMPETITION_EDIT){
+            canvas.drawBitmap(bitmap, 0, 0, null);
+            int position_bitmap_a_x = 20;
+            int position_bitmap_a_y = position_y_a;
+            canvas.drawBitmap(bitmap_a, position_bitmap_a_x, position_bitmap_a_y, null);
         }
     }
 

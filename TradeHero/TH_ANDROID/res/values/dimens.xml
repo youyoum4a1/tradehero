@@ -239,4 +239,5 @@
   <dimen name="btn_join_competition_width">120dp</dimen>
   <dimen name="btn_join_competition_height">32dp</dimen>
   <dimen name="btn_join_competition_y">200dp</dimen>
+  <dimen name="guide_competition_edit_intro">100dp</dimen>
 </resources>

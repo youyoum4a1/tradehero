@@ -213,6 +213,13 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
     }
 
+    public void showGuideView(int position_y, int guide_type){
+        if(guideRL.getVisibility()==View.GONE){
+            guideRL.draw(position_y, SCREEN_W, SCREEN_H, guide_type);
+            guideRL.setVisibility(View.VISIBLE);
+        }
+    }
+
     public void dismissGuideView(){
         if(guideRL.getVisibility()==View.VISIBLE){
             guideRL.setVisibility(View.GONE);
@@ -224,6 +231,9 @@ public class DashboardActivity extends SherlockFragmentActivity
             if(guideType == GuideView.TYPE_GUIDE_STOCK_BUY){
                 THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_STOCK_BUY);
                 return;
+            }
+            if(guideType == GuideView.TYPE_GUIDE_COMPETITION_EDIT){
+                THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_COMPETITION_INTRO_EDIT);
             }
         }
     }

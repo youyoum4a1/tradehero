@@ -1,7 +1,6 @@
 package com.tradehero.chinabuild.fragment.competition;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -98,7 +97,6 @@ public class CompetitionDetailFragment extends Fragment
 
     public UserCompetitionDTO userCompetitionDTO;
     public int competitionId;
-    private ProgressDialog mTransactionDialog;
     @Inject ProgressDialogUtil progressDialogUtil;
 
     @Inject protected AlertDialogUtil alertDialogUtil;
@@ -131,6 +129,7 @@ public class CompetitionDetailFragment extends Fragment
     private int tvJoinCompetitionHeight;
     private int tvJoinCompetitionWidth;
     private int tvJoinCompetitionY;
+    private int guideCompetitionEditIntroHeight;
     private RelativeLayout layoutJoinCompetition;
 
     @InjectView(R.id.btnCollegeSelect) Button btnCollegeSelect;
@@ -168,9 +167,7 @@ public class CompetitionDetailFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.competition_detail_layout, container, false);
         ButterKnife.inject(this, view);
-        tvJoinCompetitionHeight = (int)getActivity().getResources().getDimension(R.dimen.btn_join_competition_height);
-        tvJoinCompetitionWidth = (int)getActivity().getResources().getDimension(R.dimen.btn_join_competition_width);
-        tvJoinCompetitionY = (int)getActivity().getResources().getDimension(R.dimen.btn_join_competition_y);
+        initResources();
         mRefreshView = (LinearLayout) inflater.inflate(R.layout.competition_detail_listview_header, null);
         tvCompetitionDetailMore.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         listRanks.setEmptyView(imgEmpty);
@@ -182,10 +179,8 @@ public class CompetitionDetailFragment extends Fragment
 
         if (userCompetitionDTO != null) {
             initCompetitionTitle();
-            fetchCompetitionDetail(false);
-        } else {
-            fetchCompetitionDetail(true);
         }
+        fetchCompetitionDetail();
 
         if (adapter.getCount() == 0) {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_competition_detail);
@@ -256,6 +251,13 @@ public class CompetitionDetailFragment extends Fragment
         listRanks.setMode(PullToRefreshBase.Mode.BOTH);
         getMySelfRank();
         tvCompetitionDetailMore.setVisibility(userCompetitionDTO.detailUrl == null ? View.GONE : View.VISIBLE);
+    }
+
+    private void initResources(){
+        tvJoinCompetitionHeight = (int)getActivity().getResources().getDimension(R.dimen.btn_join_competition_height);
+        tvJoinCompetitionWidth = (int)getActivity().getResources().getDimension(R.dimen.btn_join_competition_width);
+        tvJoinCompetitionY = (int)getActivity().getResources().getDimension(R.dimen.btn_join_competition_y);
+        guideCompetitionEditIntroHeight = (int)getActivity().getResources().getDimension(R.dimen.guide_competition_edit_intro);
     }
 
     private void initRankList() {
@@ -334,7 +336,6 @@ public class CompetitionDetailFragment extends Fragment
                 layoutJoinCompetition.setVisibility(View.VISIBLE);
                 includeMyPosition.setVisibility(View.GONE);
             }
-
         }
 
         if (adapter != null && adapter.getCount() == 0) {
@@ -369,13 +370,15 @@ public class CompetitionDetailFragment extends Fragment
 
     @Override public void onResume() {
         super.onResume();
-        if (THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_COMPETITION_JOIN)) {
-            showGuideView();
+        if(isShowEditIntroCompetitionGuideView()){
+            showEditIntroCompetitionGuideView();
+        }else if(THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_COMPETITION_JOIN)) {
+            showJoinCompetitionGuideView();
         }
         setLeaderboardHeadLine();
     }
 
-    private void showGuideView() {
+    private void showJoinCompetitionGuideView() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -388,13 +391,35 @@ public class CompetitionDetailFragment extends Fragment
                 int height = tvJoinCompetitionHeight;
                 int position_x = ((DashboardActivity) getActivity()).SCREEN_W /2;
                 int position_y = tvJoinCompetitionY + ((DashboardActivity) getActivity()).getStatusBarHeight();
-                THLog.d(width + "  " + height + "  " + position_x + "  " + position_y);
                 int radius = (int) Math.sqrt(width * width / 4 + height * height / 4) + 10;
                 ((DashboardActivity) getActivity()).showGuideView(position_x,
                         position_y, radius, GuideView.TYPE_GUIDE_COMPETITION_JOIN);
             }
         }, 500);
     }
+
+    private void showEditIntroCompetitionGuideView(){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                THLog.d("fdafdsafdsafdsf");
+                ((DashboardActivity) getActivity()).showGuideView(guideCompetitionEditIntroHeight, GuideView.TYPE_GUIDE_COMPETITION_EDIT);
+            }
+        }, 500);
+    }
+
+    private boolean isShowEditIntroCompetitionGuideView(){
+        if(userCompetitionDTO == null){
+            return false;
+        }
+        if(creatorIsMe() && THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_COMPETITION_INTRO_EDIT)){
+            return true;
+        }
+        return false;
+    }
+
+
 
     private void refreshStatus() {
         if (userCompetitionDTO == null){
@@ -420,14 +445,10 @@ public class CompetitionDetailFragment extends Fragment
     }
 
     //通过competitionId去获取比赛详情
-    public void fetchCompetitionDetail(boolean showDialog) {
+    public void fetchCompetitionDetail() {
         if (competitionId == 0) {
             noFoundCompetition();
             return;
-        }
-        if (showDialog) {
-            mTransactionDialog = progressDialogUtil.show(CompetitionDetailFragment.this.getActivity(),
-                    R.string.processing, R.string.alert_dialog_please_wait);
         }
         competitionCacheLazy.get().getCompetitionDetail(competitionId, callbackGetCompetition);
     }
@@ -446,8 +467,6 @@ public class CompetitionDetailFragment extends Fragment
     }
 
     public void toJoinCompetition() {
-        mTransactionDialog = progressDialogUtil.show(CompetitionDetailFragment.this.getActivity(),
-                R.string.processing, R.string.alert_dialog_please_wait);
         competitionCacheLazy.get().enrollUGCompetition(userCompetitionDTO.id, callbackEnrollUGC);
         analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_COMPETITION_DETAIL_JOIN));
     }
@@ -479,9 +498,6 @@ public class CompetitionDetailFragment extends Fragment
         }
 
         private void onFinish() {
-            if (mTransactionDialog != null) {
-                mTransactionDialog.dismiss();
-            }
             if (progressBar != null) {
                 progressBar.stopLoading();
             }
@@ -491,7 +507,6 @@ public class CompetitionDetailFragment extends Fragment
     protected class EnrollUGCCallback implements retrofit.Callback<UserCompetitionDTO> {
         @Override
         public void success(UserCompetitionDTO userCompetitionDTO, Response response) {
-            onFinish();
             if (response.getStatus() == 200) {
                 THToast.show("报名成功！");
                 CompetitionDetailFragment.this.userCompetitionDTO = userCompetitionDTO;
@@ -500,14 +515,7 @@ public class CompetitionDetailFragment extends Fragment
             }
         }
 
-        private void onFinish() {
-            if (mTransactionDialog != null) {
-                mTransactionDialog.dismiss();
-            }
-        }
-
         @Override public void failure(RetrofitError retrofitError)  {
-            onFinish();
             THException thException = new THException(retrofitError);
             THToast.show(thException);
         }
