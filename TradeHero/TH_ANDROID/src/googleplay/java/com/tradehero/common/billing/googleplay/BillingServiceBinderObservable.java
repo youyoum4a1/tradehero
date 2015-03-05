@@ -39,7 +39,7 @@ public class BillingServiceBinderObservable
         {
             bindSubject();
         }
-        return serviceSubject.share();
+        return serviceSubject.asObservable();
     }
 
     private void bindSubject()
