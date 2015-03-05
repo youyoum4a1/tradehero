@@ -115,7 +115,7 @@ public class ShareSellDialogFragment extends BaseDialogFragment
         mGetMoneyText.setText(getString(R.string.share_sell_title_money, mGetMoney));
     }
 
-    @OnClick(R.id.btn_cancel)
+    @OnClick(R.id.imageview_btn_cancel)
     public void onCancel()
     {
         dismiss();

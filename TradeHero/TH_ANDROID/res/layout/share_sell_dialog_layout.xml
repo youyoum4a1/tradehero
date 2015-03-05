@@ -102,7 +102,7 @@
   </LinearLayout>
 
   <ImageView
-      android:id="@+id/btn_cancel"
+      android:id="@+id/imageview_btn_cancel"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"

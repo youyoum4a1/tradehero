@@ -60,7 +60,7 @@
                         android:maxLength="30"
                         android:singleLine="true"
                         android:textSize="16sp"
-                        android:hint="4-30位字符"/>
+                        android:hint="@string/competition_intro_hint"/>
 
             </LinearLayout>
 

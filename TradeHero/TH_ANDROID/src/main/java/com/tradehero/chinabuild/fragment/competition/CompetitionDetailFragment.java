@@ -1,6 +1,7 @@
 package com.tradehero.chinabuild.fragment.competition;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -10,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -145,6 +147,12 @@ public class CompetitionDetailFragment extends Fragment
 
     private LinearLayout mRefreshView;
 
+    //Edit introduction of Competition
+    private Dialog editCompetitionDlg;
+    private EditText etCompetitionIntro;
+    private TextView tvCancel;
+    private TextView tvConfirm;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,6 +177,7 @@ public class CompetitionDetailFragment extends Fragment
         initResources();
         mRefreshView = (LinearLayout) inflater.inflate(R.layout.competition_detail_listview_header, null);
         tvCompetitionDetailMore.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+
         listRanks.setEmptyView(imgEmpty);
         adapter = new LeaderboardListAdapter(getActivity());
         initRankList();
@@ -187,6 +196,14 @@ public class CompetitionDetailFragment extends Fragment
         } else {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlRankAll);
         }
+        tvCompetitionIntro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(creatorIsMe()) {
+                    showDlgEditCompetitionIntro();
+                }
+            }
+        });
         return view;
     }
 
@@ -693,8 +710,7 @@ public class CompetitionDetailFragment extends Fragment
         setSchollView();
     }
 
-    public void setSchollView()
-    {
+    public void setSchollView() {
         if (mUserProfileDTO == null || userCompetitionDTO == null) return;
         boolean showSchoolButton = false;
         if (userCompetitionDTO != null && userCompetitionDTO.isEnrolled && userCompetitionDTO.isOngoing && userCompetitionDTO.isForSchool && (!mUserProfileDTO.isHaveSchool())) {
@@ -814,5 +830,38 @@ public class CompetitionDetailFragment extends Fragment
             return true;
         }
         return false;
+    }
+
+    private void showDlgEditCompetitionIntro(){
+        if(editCompetitionDlg==null){
+            editCompetitionDlg = new Dialog(getActivity());
+            editCompetitionDlg.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            editCompetitionDlg.setCanceledOnTouchOutside(false);
+            editCompetitionDlg.setCancelable(false);
+            editCompetitionDlg.setContentView(R.layout.edit_dialog_layout);
+            etCompetitionIntro = (EditText)editCompetitionDlg.findViewById(R.id.edittext_intro_edit);
+            tvCancel = (TextView)editCompetitionDlg.findViewById(R.id.textview_intro_edit_cancel);
+            tvCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                   editCompetitionDlg.dismiss();
+                }
+            });
+            tvConfirm = (TextView)editCompetitionDlg.findViewById(R.id.textview_intro_edit_ok);
+            tvConfirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    editCompetitionDlg.dismiss();
+                }
+            });
+        }
+        if(userCompetitionDTO==null){
+            etCompetitionIntro.setText("");
+        }else{
+            etCompetitionIntro.setText(userCompetitionDTO.description);
+        }
+        if(!editCompetitionDlg.isShowing()) {
+            editCompetitionDlg.show();
+        }
     }
 }

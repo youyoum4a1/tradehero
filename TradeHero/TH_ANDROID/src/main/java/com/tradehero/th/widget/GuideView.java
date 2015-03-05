@@ -115,9 +115,11 @@ public class GuideView extends View {
 
         if(current_type == TYPE_GUIDE_COMPETITION_EDIT){
             canvas.drawBitmap(bitmap, 0, 0, null);
-            int position_bitmap_a_x = 20;
-            int position_bitmap_a_y = position_y_a;
-            canvas.drawBitmap(bitmap_a, position_bitmap_a_x, position_bitmap_a_y, null);
+            int bitmapHeight = bitmap_a.getHeight();
+            int bitmapWidth = bitmap_a.getWidth();
+            src.set(0, 0, bitmapWidth, bitmapHeight);
+            dst.set(60, position_y_a, 60 + bitmapWidth*2/3, position_y_a + bitmapHeight*2/3);
+            canvas.drawBitmap(bitmap_a, src, dst, null);
         }
     }
 

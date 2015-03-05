@@ -1,12 +1,10 @@
 package com.tradehero.th.utils;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.drawable.ColorDrawable;
-import android.view.*;
+import android.view.Window;
 import android.widget.ListAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
@@ -20,7 +18,6 @@ import javax.inject.Inject;
 public class AlertDialogUtil
 {
     private ProgressDialog mProgressDialog;
-    private AlertDialog mReferralCodeDialog;
 
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
 
@@ -206,34 +203,6 @@ public class AlertDialogUtil
         alertDialog.show();
         alertDialog.setCanceledOnTouchOutside(true);
         return alertDialog;
-    }
-
-    @NotNull
-    public Dialog popTutorialContent(
-            @NotNull final Context context,
-            int layoutResourceId)
-    {
-        final Dialog dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.tutorial_master_layout);
-        ViewGroup tutorialContentView = (ViewGroup) dialog.findViewById(R.id.tutorial_content);
-        LayoutInflater.from(context).inflate(layoutResourceId, tutorialContentView, true);
-        ((View) tutorialContentView.getParent()).setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View v)
-            {
-                dialog.dismiss();
-            }
-        });
-
-        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
-        lp.dimAmount = 0.95f; // Dim level. 0.0 - no dim, 1.0 - completely opaque
-        dialog.getWindow().setAttributes(lp);
-        dialog.getWindow()
-                .setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-
-        dialog.show();
-        return dialog;
     }
 
     @NotNull

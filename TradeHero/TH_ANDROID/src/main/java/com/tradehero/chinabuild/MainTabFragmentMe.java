@@ -33,7 +33,6 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
@@ -52,7 +51,6 @@ public class MainTabFragmentMe extends AbsBaseFragment
     DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject PortfolioCache portfolioCache;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtil;
 
     @InjectView(R.id.rlCustomHeadView) RelativeLayout rlCustomHeadLayout;
     @InjectView(R.id.tvHeadLeft) TextView tvHeadLeft;

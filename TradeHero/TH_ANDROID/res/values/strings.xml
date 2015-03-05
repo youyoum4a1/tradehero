@@ -509,6 +509,7 @@
   <string name="competition_rank">比赛排名</string>
   <string name="go_competition">去比赛</string>
   <string name="to_join_competition">报名</string>
+  <string name="competition_intro_hint">4-30位字符</string>
 
   <!-- Administrator -->
   <string name="administrator_add_favorite">加精</string>
