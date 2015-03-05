@@ -3,10 +3,15 @@ package com.tradehero.th.models.push.urbanairship;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BuildConfig;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.models.push.PushNotificationManager;
+import com.tradehero.th.network.service.SessionServiceWrapper;
+import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
+import com.tradehero.th.rx.ReplaceWith;
 import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;
 import com.urbanairship.actions.Action;
@@ -24,12 +29,18 @@ import timber.log.Timber;
 @Singleton public final class UrbanAirshipPushNotificationManager implements PushNotificationManager
 {
     @NonNull private final AirshipConfigOptions options;
+    @NonNull private final SessionServiceWrapper sessionServiceWrapper;
+    @NonNull private final StringPreference savedPushDeviceIdentifier;
     @Nullable private static UAirship uAirship;
 
     //<editor-fold desc="Constructors">
-    @Inject public UrbanAirshipPushNotificationManager(@NonNull AirshipConfigOptions options)
+    @Inject public UrbanAirshipPushNotificationManager(@NonNull AirshipConfigOptions options,
+            @NonNull SessionServiceWrapper sessionServiceWrapper,
+            @NonNull @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier)
     {
         this.options = options;
+        this.sessionServiceWrapper = sessionServiceWrapper;
+        this.savedPushDeviceIdentifier = savedPushDeviceIdentifier;
     }
     //</editor-fold>
 
@@ -38,8 +49,9 @@ import timber.log.Timber;
         return uAirship;
     }
 
-    @NonNull @Override public Observable<InitialisationCompleteDTO> initialise()
+    @NonNull @Override public Observable<PushNotificationManager.InitialisationCompleteDTO> initialise()
     {
+        final long before = System.nanoTime();
         return Observable.create(
                 new Observable.OnSubscribe<UAirship>()
                 {
@@ -57,9 +69,9 @@ import timber.log.Timber;
                                 });
                     }
                 })
-                .map(new Func1<UAirship, InitialisationCompleteDTO>()
+                .flatMap(new Func1<UAirship, Observable<PushNotificationManager.InitialisationCompleteDTO>>()
                 {
-                    @Override public InitialisationCompleteDTO call(UAirship uAirship)
+                    @Override public Observable<PushNotificationManager.InitialisationCompleteDTO> call(UAirship uAirship)
                     {
                         final String channelId = uAirship.getPushManager().getChannelId();
                         UrbanAirshipPushNotificationManager.uAirship = uAirship;
@@ -72,21 +84,30 @@ import timber.log.Timber;
                             uAirship.getPushManager().setUserNotificationsEnabled(true);
                         }
 
-                        ActionRegistry.shared().registerAction(
-                                new Action()
-                                {
-                                    @Override public ActionResult perform(String s, ActionArguments actionArguments)
-                                    {
-                                        Timber.e(new Exception("Reporting"), "s is %s, argument are %s", s,
-                                                actionArguments);
-                                        return ActionResult.newEmptyResult();
-                                    }
-                                },
-                                "TODO");
+                        registerActions();
 
-                        return new InitialisationComplete(channelId, uAirship);
+                        InitialisationCompleteDTO initialisationCompleteDTO = new InitialisationCompleteDTO(channelId, uAirship);
+                        Timber.d("UrbanAirship Initialisation %d milliseconds", (System.nanoTime() - before) / 1000000);
+                        savedPushDeviceIdentifier.set(channelId);
+                        return sessionServiceWrapper.updateDeviceRx()
+                                .map(new ReplaceWith<UserProfileDTO, PushNotificationManager.InitialisationCompleteDTO>(initialisationCompleteDTO));
                     }
                 });
+    }
+
+    private void registerActions()
+    {
+        ActionRegistry.shared().registerAction(
+                new Action()
+                {
+                    @Override public ActionResult perform(String s, ActionArguments actionArguments)
+                    {
+                        Timber.e(new Exception("Reporting"), "s is %s, argument are %s", s,
+                                actionArguments);
+                        return ActionResult.newEmptyResult();
+                    }
+                },
+                "TODO");
     }
 
     @Override public void verify(@NonNull Activity activity)
@@ -118,11 +139,11 @@ import timber.log.Timber;
         UAirship.shared().getPushManager().setVibrateEnabled(enabled);
     }
 
-    public static class InitialisationComplete extends PushNotificationManager.InitialisationCompleteDTO
+    public static class InitialisationCompleteDTO extends PushNotificationManager.InitialisationCompleteDTO
     {
         @NonNull public final UAirship uAirship;
 
-        public InitialisationComplete(@NonNull String pushId, @NonNull UAirship uAirship)
+        public InitialisationCompleteDTO(@NonNull String pushId, @NonNull UAirship uAirship)
         {
             super(pushId);
             this.uAirship = uAirship;

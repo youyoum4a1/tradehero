@@ -28,7 +28,6 @@ import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.OnlineStateReceiver;
@@ -96,12 +95,10 @@ import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenter
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
-import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.notification.NotificationCacheRx;
 import com.tradehero.th.persistence.prefs.IsFxShown;
 import com.tradehero.th.persistence.prefs.IsOnBoardShown;
-import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
@@ -133,7 +130,6 @@ import rx.Notification;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -173,8 +169,6 @@ public class DashboardActivity extends BaseActivity
 
     @Inject THRouter thRouter;
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
-    @Inject @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier;
-    @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject Analytics analytics;
     @Inject Lazy<BroadcastUtils> broadcastUtilsLazy;
     @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
@@ -246,20 +240,6 @@ public class DashboardActivity extends BaseActivity
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
         pushNotificationManager.get().enablePush();
-        AppObservable.bindActivity(this, sessionServiceWrapper.updateDeviceRx()).subscribe(
-                new Action1<UserProfileDTO>()
-                {
-                    @Override public void call(UserProfileDTO userProfileDTO)
-                    {
-                    }
-                },
-                new Action1<Throwable>()
-                {
-                    @Override public void call(Throwable throwable)
-                    {
-                        Timber.e(throwable, "Failed to updateDevice");
-                    }
-                });
 
         initBroadcastReceivers();
 

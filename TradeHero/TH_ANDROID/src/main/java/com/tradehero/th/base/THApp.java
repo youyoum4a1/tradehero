@@ -8,13 +8,11 @@ import com.crashlytics.android.Crashlytics;
 import com.tradehero.common.application.PApplication;
 import com.tradehero.common.log.CrashReportingTree;
 import com.tradehero.common.log.EasyDebugTree;
-import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.inject.BaseInjector;
 import com.tradehero.th.inject.ExInjector;
 import com.tradehero.th.models.push.PushNotificationManager;
-import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import dagger.ObjectGraph;
@@ -28,7 +26,6 @@ public class THApp extends PApplication
     public static boolean timberPlanted = false;
 
     @Inject protected PushNotificationManager pushNotificationManager;
-    @Inject @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier;
     private ObjectGraph objectGraph;
 
     @Override protected void init()
@@ -42,21 +39,23 @@ public class THApp extends PApplication
 
         DaggerUtils.setObjectGraph(objectGraph);
 
-        pushNotificationManager.initialise().subscribe(
-                new Action1<PushNotificationManager.InitialisationCompleteDTO>()
-                {
-                    @Override public void call(PushNotificationManager.InitialisationCompleteDTO initialisationCompleteDTO)
-                    {
-                        savedPushDeviceIdentifier.set(initialisationCompleteDTO.pushId);
-                    }
-                },
-                new Action1<Throwable>()
-                {
-                    @Override public void call(Throwable throwable)
-                    {
-                        Timber.e(throwable, "Failed to initialise PushNotificationManager");
-                    }
-                });
+        pushNotificationManager.initialise()
+                .subscribe(
+                        new Action1<PushNotificationManager.InitialisationCompleteDTO>()
+                        {
+                            @Override public void call(PushNotificationManager.InitialisationCompleteDTO initialisationCompleteDTO)
+                            {
+                                // Nothing to do
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable throwable)
+                            {
+                                // Likely to happen as long as the server expects credentials on this one
+                                Timber.e(throwable, "Failed to initialise PushNotificationManager");
+                            }
+                        });
 
         THLog.showDeveloperKeyHash(this);
     }
