@@ -277,9 +277,11 @@ dependencies {
   compile fileTree(dir: 'libs', include: ['*.jar'])
   chinaCompile fileTree(dir: 'libs/baidu', include: ['*.jar'])
   releaseCompile fileTree(dir: 'libs/analytics', include: ['*.jar'])
-  compile(project(':ResideMenu')) {
-    exclude group: 'com.android.support', module: 'support-v4'
-  }
+
+  compile 'com.special.residemenu:library:1.0.TH-SNAPSHOT@aar'
+
+  // For residemenu
+  compile 'com.nineoldandroids:library:2.4.0'
 
   // for qq
   releaseCompile fileTree(dir: 'libs/qq', include: ['*.jar'])

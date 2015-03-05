@@ -14,6 +14,7 @@ import com.tradehero.th.BuildConfig;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
@@ -42,6 +43,7 @@ public class BaseIABServiceCaller extends BaseRequestCodeActor
         this.bindType = Context.BIND_AUTO_CREATE;
         serviceSubject = BehaviorSubject.create();
         this.billingServiceBinderSubscription = billingServiceBinderObservable.getBinder()
+                .observeOn(Schedulers.computation())
                 .flatMap(new Func1<IBinder, Observable<? extends IABServiceResult>>()
                 {
                     @Override public Observable<? extends IABServiceResult> call(IBinder binder)
