@@ -298,10 +298,8 @@ public class CompetitionDetailFragment extends Fragment
     /*
     进入持仓页面
      */
-    private void enterPortfolio()
-    {
-        if (this.portfolioCompactDTO != null)
-        {
+    private void enterPortfolio() {
+        if (this.portfolioCompactDTO != null) {
             Bundle bundle = new Bundle();
             bundle.putSerializable(PortfolioFragment.BUNLDE_PORTFOLIO_DTO, this.portfolioCompactDTO);
             bundle.putInt(PortfolioFragment.BUNLDE_COMPETITION_ID, userCompetitionDTO.id);

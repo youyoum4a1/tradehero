@@ -13,12 +13,6 @@ public class Constants
 
     public static final boolean PICASSO_DEBUG = !RELEASE;
 
-    private static final int COMMON_ITEM_PER_PAGE = RELEASE ? 42 : 10;
-
-    public static final int TIMELINE_ITEM_PER_PAGE = COMMON_ITEM_PER_PAGE;
-
-    public static final int LEADERBOARD_MARK_USER_ITEM_PER_PAGE = COMMON_ITEM_PER_PAGE;
-
     // this constant is dedicated for static content page (html, image, cdn that
     // may be needed later, for Api endpoint, refer to retrofit module, we want to make it
     // generic and easy to switch between endpoint (prod, dev, test server) as much as possible.
@@ -26,7 +20,6 @@ public class Constants
     public static final String BASE_STATIC_CONTENT_URL = "https://www.tradehero.mobi/";
     public static final String PRIVACY_TERMS_OF_SERVICE = "http://cn.tradehero.mobi/privacy";
 
-    public static final String PRIVACY_TERMS_OF_USE = BASE_STATIC_CONTENT_URL + "terms";
     public static final String APP_HOME = BASE_STATIC_CONTENT_URL + "AppHome";
 
     // Request Header
@@ -63,5 +56,5 @@ public class Constants
     public final static int NOTIFICATION_ID = 999;
 
     //Manager Account
-    public final static boolean isManager = true;
+    public final static boolean isManager = false;
 }

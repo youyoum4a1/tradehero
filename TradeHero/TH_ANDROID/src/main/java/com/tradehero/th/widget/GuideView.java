@@ -16,7 +16,6 @@ public class GuideView extends View {
     private int radius_a = -1;
 
     private int screen_width;
-    private int screen_height;
 
     private Paint mPaint;
 
@@ -44,13 +43,25 @@ public class GuideView extends View {
         setFocusable(true);
     }
 
+    public void draw(int position_y_a, int screen_width, int screen_height, int type){
+        current_type = type;
+
+        this.position_y_a = position_y_a;
+        this.screen_width = screen_width;
+
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.guide_bg);
+        bitmap = Bitmap.createBitmap(screen_width, screen_height, Bitmap.Config.ARGB_8888);
+        mCanvas = new Canvas();
+        mCanvas.setBitmap(bitmap);
+        mCanvas.drawBitmap(bm, new Rect(0, 0, bm.getWidth(), bm.getHeight()), new Rect(0, 0, screen_width, screen_height), null);
+    }
+
     public void draw(int position_x_a, int position_y_a, int radius_a, int screen_width, int screen_height, int type) {
         current_type = type;
 
         this.position_x_a = position_x_a;
         this.position_y_a = position_y_a;
         this.radius_a = radius_a;
-        this.screen_height = screen_height;
         this.screen_width = screen_width;
 
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.guide_bg);
