@@ -15,7 +15,6 @@ import com.tradehero.th.models.share.preference.SocialSharePreferenceDTOFactory;
 import com.tradehero.th.models.share.preference.SocialShareSetPreference;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
-import com.urbanairship.push.PushManager;
 import dagger.Module;
 import dagger.Provides;
 import java.util.HashSet;
@@ -94,7 +93,7 @@ public class PreferenceModule
 
     @Provides @Singleton @SavedPushDeviceIdentifier StringPreference provideSavedPushIdentifier(@ForUser SharedPreferences sharedPreferences)
     {
-        return new StringPreference(sharedPreferences, PREF_SAVED_PUSH_IDENTIFIER, PushManager.shared().getAPID());
+        return new StringPreference(sharedPreferences, PREF_SAVED_PUSH_IDENTIFIER, "noIdYet");
     }
 
     @Provides @Singleton @FirstLaunch BooleanPreference provideFirstLaunchPreference(@ForApp SharedPreferences sharedPreferences)
