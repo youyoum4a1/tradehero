@@ -1,7 +1,10 @@
 package com.tradehero.th.models.push.urbanairship;
 
+import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.models.push.PushNotificationManager;
+import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.PushManager;
@@ -17,13 +20,16 @@ import timber.log.Timber;
 {
     private final Lazy<PushNotificationBuilder> customPushNotificationBuilder;
     private final AirshipConfigOptions options;
+    @NonNull @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier;
 
     @Inject public UrbanAirshipPushNotificationManager(
             Lazy<PushNotificationBuilder> customPushNotificationBuilder,
-            AirshipConfigOptions options)
+            AirshipConfigOptions options,
+            @NonNull @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier)
     {
         this.customPushNotificationBuilder = customPushNotificationBuilder;
         this.options = options;
+        this.savedPushDeviceIdentifier = savedPushDeviceIdentifier;
     }
 
     @Override public void initialise()
@@ -33,6 +39,7 @@ import timber.log.Timber;
         PushManager.enablePush();
         PushManager.shared().setNotificationBuilder(customPushNotificationBuilder.get());
         PushManager.shared().setIntentReceiver(UrbanAirshipIntentReceiver.class);
+        savedPushDeviceIdentifier.set(PushManager.shared().getAPID());
 
         Timber.d("My Application onCreate - App APID: %s", PushManager.shared().getAPID());
     }
