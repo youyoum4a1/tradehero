@@ -407,11 +407,11 @@ public class CompetitionDetailFragment extends Fragment
                 int height = tvJoinCompetitionHeight;
                 int position_x = ((DashboardActivity) getActivity()).SCREEN_W /2;
                 int position_y = tvJoinCompetitionY + ((DashboardActivity) getActivity()).getStatusBarHeight();
-                int radius = (int) Math.sqrt(width * width / 4 + height * height / 4) + 10;
+                int radius = (int) Math.sqrt(width * width / 4 + height * height / 4);
                 ((DashboardActivity) getActivity()).showGuideView(position_x,
                         position_y, radius, GuideView.TYPE_GUIDE_COMPETITION_JOIN);
             }
-        }, 500);
+        }, 1000);
     }
 
     private void showEditIntroCompetitionGuideView(){
@@ -421,7 +421,7 @@ public class CompetitionDetailFragment extends Fragment
             public void run() {
                 ((DashboardActivity) getActivity()).showGuideView(guideCompetitionEditIntroHeight, GuideView.TYPE_GUIDE_COMPETITION_EDIT);
             }
-        }, 500);
+        }, 1000);
     }
 
     private boolean isShowEditIntroCompetitionGuideView(){

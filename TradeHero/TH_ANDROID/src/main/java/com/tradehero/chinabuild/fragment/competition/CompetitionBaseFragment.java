@@ -84,7 +84,6 @@ public class CompetitionBaseFragment extends DashboardFragment
         competitionListCacheListenerVip = createCompetitionListCacheListenerVip();
         competitionListCacheListenerMine = createCompetitionListCacheListenerMine();
         adapterList = new CompetitionListAdapter(getActivity(), getCompetitionPageType());
-        //fetchCompetition(true);
     }
 
     @Override
@@ -119,7 +118,11 @@ public class CompetitionBaseFragment extends DashboardFragment
         fetchVipCompetition(false);//获取官方推荐比赛
 
         listCompetitions.setEmptyView(imgEmpty);
-        listCompetitions.setMode(PullToRefreshBase.Mode.BOTH);
+        if(getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_MINE){
+            listCompetitions.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        }else {
+            listCompetitions.setMode(PullToRefreshBase.Mode.BOTH);
+        }
         listCompetitions.setAdapter(adapterList);
         listCompetitions.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
