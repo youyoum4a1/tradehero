@@ -24,7 +24,6 @@ import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -403,7 +402,6 @@ public class CompetitionDetailFragment extends Fragment
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                THLog.d("fdafdsafdsafdsf");
                 ((DashboardActivity) getActivity()).showGuideView(guideCompetitionEditIntroHeight, GuideView.TYPE_GUIDE_COMPETITION_EDIT);
             }
         }, 500);
