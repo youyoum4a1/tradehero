@@ -11,7 +11,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 
 public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListItemView
@@ -41,13 +40,10 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
     }
     //</editor-fold>
 
-    @Override public void linkWith(CompetitionZoneDTO competitionZoneDTO, boolean andDisplay)
+    @Override public void display(CompetitionZoneDTO competitionZoneDTO)
     {
-        super.linkWith(competitionZoneDTO, andDisplay);
-        if (andDisplay)
-        {
-            displayROI();
-        }
+        super.display(competitionZoneDTO);
+        displayROI();
     }
 
     //<editor-fold desc="Display Methods">

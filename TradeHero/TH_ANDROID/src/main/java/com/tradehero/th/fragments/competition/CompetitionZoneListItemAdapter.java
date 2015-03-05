@@ -14,11 +14,13 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
 import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
+import com.tradehero.th.fragments.competition.zone.AbstractCompetitionZoneListItemView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTOUtil;
 import java.util.ArrayList;
 import java.util.List;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZoneDTO>
 {
@@ -31,12 +33,11 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
     public static final int ITEM_TYPE_LOADING = 6;
     public static final int ITEM_TYPE_PRIZE_POOL = 7;
 
+    @NonNull private final CompetitionZoneDTOUtil competitionZoneDTOUtil;
     @NonNull private final Integer[] viewTypeToResId;
+    @NonNull protected final PublishSubject<AbstractCompetitionZoneListItemView.UserAction> userActionSubject;
     private List<Integer> orderedTypes;
     private List<CompetitionZoneDTO> orderedItems;
-
-    @NonNull private final CompetitionZoneDTOUtil competitionZoneDTOUtil;
-    private CompetitionZoneLegalMentionsView.OnElementClickedListener parentOnLegalElementClicked;
 
     private UserProfileCompactDTO portfolioUserProfileCompactDTO;
     private ProviderDTO providerDTO;
@@ -70,10 +71,17 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
         this.viewTypeToResId[ITEM_TYPE_LEGAL_MENTIONS] = legalResId;
         this.viewTypeToResId[ITEM_TYPE_LOADING] = R.layout.loading_item;
 
+        this.userActionSubject = PublishSubject.create();
+
         orderedTypes = new ArrayList<>();
         orderedItems = new ArrayList<>();
     }
     //</editor-fold>
+
+    @NonNull public Observable<AbstractCompetitionZoneListItemView.UserAction> getUserActionObservable()
+    {
+        return userActionSubject.asObservable();
+    }
 
     @Override public boolean hasStableIds()
     {
@@ -190,14 +198,12 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
         return new CompetitionZoneDTO(null, null);
     }
 
-    @Override public View getView(int position, View convertView, ViewGroup parent)
+    @NonNull @Override protected View inflate(int position, ViewGroup viewGroup)
     {
-        View view = super.getView(position, convertView, parent);
-        switch (getItemViewType(position))
+        View view = super.inflate(position, viewGroup);
+        if (view instanceof AbstractCompetitionZoneListItemView)
         {
-            case ITEM_TYPE_LEGAL_MENTIONS:
-                ((CompetitionZoneLegalMentionsView) view).setOnElementClickedListener(this.parentOnLegalElementClicked);
-                break;
+            ((AbstractCompetitionZoneListItemView) view).getUserActionObservable().subscribe(userActionSubject);
         }
         return view;
     }
@@ -212,10 +218,5 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
         int viewType = getItemViewType(position);
         return viewType != ITEM_TYPE_HEADER &&
                 viewType != ITEM_TYPE_LEGAL_MENTIONS;
-    }
-
-    public void setParentOnLegalElementClicked(CompetitionZoneLegalMentionsView.OnElementClickedListener parentOnLegalElementClicked)
-    {
-        this.parentOnLegalElementClicked = parentOnLegalElementClicked;
     }
 }

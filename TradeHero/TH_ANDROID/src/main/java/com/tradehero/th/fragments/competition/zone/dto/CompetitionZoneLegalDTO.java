@@ -4,8 +4,6 @@ import android.support.annotation.Nullable;
 
 public class CompetitionZoneLegalDTO extends CompetitionZoneDTO
 {
-    @Nullable public LinkType requestedLink = null;
-
     //<editor-fold desc="Constructors">
     public CompetitionZoneLegalDTO(@Nullable String title, @Nullable String description)
     {
@@ -19,11 +17,5 @@ public class CompetitionZoneLegalDTO extends CompetitionZoneDTO
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 '}';
-    }
-
-    public enum LinkType
-    {
-        RULES,
-        TERMS
     }
 }
