@@ -1,6 +1,8 @@
 package com.tradehero.chinabuild.fragment.competition;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,14 +13,21 @@ import android.widget.ListView;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.adapters.UserTimeLineAdapter;
 import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.CompetitionServiceWrapper;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
@@ -51,10 +60,24 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
     private UserCompetitionDTO userCompetitionDTO;
     private int competitionId;
 
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    private UserProfileDTO mUserProfileDTO;
+
+    @Inject protected AlertDialogUtil alertDialogUtil;
+
+    @Override
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+        DaggerUtils.inject(this);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getCompetitionArguments();
+        userProfileCacheListener = new UserProfileFetchListener();
     }
 
     @Override
@@ -64,6 +87,7 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
         ivEmpty = (ImageView)view.findViewById(R.id.imgEmpty);
         ivCreateCompetitionTimeLine = (ImageView)view.findViewById(R.id.ivCreateCompetitionTimeLine);
         ivCreateCompetitionTimeLine.setOnClickListener(this);
+        ivCreateCompetitionTimeLine.setVisibility(View.GONE);
         tradeHeroProgressBar = (TradeHeroProgressBar)view.findViewById(R.id.tradeheroprogressbar_competition_discuss);
         if(adapter==null){
             adapter = new UserTimeLineAdapter(getActivity());
@@ -86,12 +110,22 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
             tradeHeroProgressBar.startLoading();
             retrieveDiscuss();
         }
+
+        fetchUserProfile();
+
         return view;
     }
 
-    @Override public void onAttach(Activity activity){
-        super.onAttach(activity);
-        DaggerUtils.inject(this);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        detachUserProfileCache();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        userProfileCacheListener=null;
     }
 
     @Override
@@ -102,6 +136,12 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
                 gotoCreateCompetitionDiscussion();
                 break;
         }
+    }
+
+    private void fetchUserProfile() {
+        detachUserProfileCache();
+        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     private void getCompetitionArguments(){
@@ -185,12 +225,50 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
     }
 
     private void gotoCreateCompetitionDiscussion(){
-        Bundle bundle = new Bundle();
-        if(userCompetitionDTO!=null){
-            bundle.putSerializable(CompetitionDetailFragment.BUNDLE_COMPETITION_DTO, userCompetitionDTO);
-        }else{
-            bundle.putSerializable(CompetitionDetailFragment.BUNDLE_COMPETITION_ID, competitionId);
+        if (mUserProfileDTO == null) {
+            return;
         }
-        pushFragment(CompetitionDiscussionSendFragment.class, bundle);
+        if (mUserProfileDTO.isVisitor) {
+            alertDialogUtil.popWithOkCancelButton(getActivity(), R.string.app_name,
+                    R.string.guest_user_dialog_summary,
+                    R.string.ok, R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (getActivity() == null) {
+                                return;
+                            }
+                            Intent gotoAuthticationIntent = new Intent(getActivity(), AuthenticationActivity.class);
+                            startActivity(gotoAuthticationIntent);
+                            getActivity().finish();
+                        }
+                    });
+        } else {
+            Bundle bundle = new Bundle();
+            if (userCompetitionDTO != null) {
+                bundle.putSerializable(CompetitionDetailFragment.BUNDLE_COMPETITION_DTO, userCompetitionDTO);
+            } else {
+                bundle.putSerializable(CompetitionDetailFragment.BUNDLE_COMPETITION_ID, competitionId);
+            }
+            pushFragment(CompetitionDiscussionSendFragment.class, bundle);
+        }
+    }
+
+    private void detachUserProfileCache()
+    {
+        userProfileCache.get().unregister(userProfileCacheListener);
+    }
+
+    protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> {
+        @Override
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value){
+            mUserProfileDTO = value;
+            if(ivCreateCompetitionTimeLine!=null && mUserProfileDTO!=null){
+                if(!mUserProfileDTO.isVisitor){
+                    ivCreateCompetitionTimeLine.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+        @Override
+        public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error) { }
     }
 }

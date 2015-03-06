@@ -18,7 +18,7 @@ public class CompetitionDiscussionSendFragment extends DiscussSendFragment {
     @Override public void onResume() {
         super.onResume();
         getCompetitionArguments();
-        initPostContent();
+        discussionPostContent.setHint(getString(R.string.competition_discussion_create_hint));
     }
 
     @Override protected DiscussionFormDTO buildDiscussionFormDTO()
@@ -39,15 +39,6 @@ public class CompetitionDiscussionSendFragment extends DiscussSendFragment {
             return competitionId;
         }
     }
-
-    private void initPostContent(){
-        String competitionName = "";
-        if(userCompetitionDTO!=null){
-            competitionName = userCompetitionDTO.name;
-        }
-        discussionPostContent.setHint(getString(R.string.discussion_new_post_hint, competitionName));
-    }
-
     private void getCompetitionArguments(){
         Bundle bundle = getArguments();
         if (bundle != null) {

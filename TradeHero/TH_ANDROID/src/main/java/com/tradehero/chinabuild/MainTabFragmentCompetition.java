@@ -14,9 +14,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.chinabuild.fragment.AbsBaseFragment;
-import com.tradehero.chinabuild.fragment.competition.CompetitionAllFragment;
 import com.tradehero.chinabuild.fragment.competition.CompetitionCreateFragment;
 import com.tradehero.chinabuild.fragment.competition.CompetitionMineFragment;
+import com.tradehero.chinabuild.fragment.competition.CompetitionsFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUniteFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -97,7 +97,7 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
             switch (position)
             {
                 case 0:
-                    return new CompetitionAllFragment();
+                    return new CompetitionsFragment();
 
                 case 1:
                     return new CompetitionMineFragment();

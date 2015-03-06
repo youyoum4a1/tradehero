@@ -419,7 +419,7 @@ public class CompetitionDetailFragment extends Fragment
                 ((DashboardActivity) getActivity()).showGuideView(position_x,
                         position_y, radius, GuideView.TYPE_GUIDE_COMPETITION_JOIN);
             }
-        }, 1000);
+        }, 500);
     }
 
     private void showEditIntroCompetitionGuideView(){
@@ -429,7 +429,7 @@ public class CompetitionDetailFragment extends Fragment
             public void run() {
                 ((DashboardActivity) getActivity()).showGuideView(guideCompetitionEditIntroHeight, GuideView.TYPE_GUIDE_COMPETITION_EDIT);
             }
-        }, 1000);
+        }, 500);
     }
 
     private boolean isShowEditIntroCompetitionGuideView(){

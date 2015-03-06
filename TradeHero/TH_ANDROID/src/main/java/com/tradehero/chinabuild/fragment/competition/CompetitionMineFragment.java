@@ -4,27 +4,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.tradehero.th.R;
+import com.tradehero.th.fragments.base.DashboardFragment;
 
 /**
- * Created by huhaiping on 14-9-9.
  * 我参加的比赛
  */
-public class CompetitionMineFragment extends CompetitionBaseFragment
-{
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
+public class CompetitionMineFragment extends DashboardFragment {
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    public int getCompetitionPageType()
-    {
-        return CompetitionUtils.COMPETITION_PAGE_MINE;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.competition_base_layout, container, false);
+        return view;
     }
 }

@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:text="1"
         android:textColor="#c8c7cc"
-        android:textSize="24sp"/>
+        android:textSize="22sp"/>
   </LinearLayout>
 
   <ImageView
@@ -64,7 +64,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/text_gray_normal"
-        android:text=""
         android:textSize="14sp"/>
     <TextView
         android:id="@+id/tvUserExtraValue"
@@ -92,7 +91,7 @@
         android:layout_toLeftOf="@+id/imgRightArrow"
         android:layout_marginTop="1dp"
         android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:layout_width="wrap_content"/>
 
     <TextView

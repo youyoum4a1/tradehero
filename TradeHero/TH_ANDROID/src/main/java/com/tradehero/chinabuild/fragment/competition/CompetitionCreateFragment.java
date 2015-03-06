@@ -280,7 +280,6 @@ public class CompetitionCreateFragment extends DashboardFragment
                 }
                 THToast.show("创建成功！");
                 CompetitionCreateFragment.this.userCompetitionDTO = userCompetitionDTO;
-                CompetitionBaseFragment.needRefresh = true;
                 if (cbCompetitionInvite.isChecked())
                 {
                     if(getActivity()==null){

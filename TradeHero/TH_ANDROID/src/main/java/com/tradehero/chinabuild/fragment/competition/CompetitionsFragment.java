@@ -48,14 +48,13 @@ import java.util.List;
 /**
  * Created by huhaiping on 14-9-9. 显示所有比赛和我参加的比赛
  */
-public class CompetitionBaseFragment extends DashboardFragment
+public class CompetitionsFragment extends DashboardFragment
 {
     @Inject Lazy<Picasso> picasso;
     @Inject Lazy<CompetitionNewCache> competitionNewCacheLazy;
     private DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> competitionListCacheListenerOffical;
     private DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> competitionListCacheListenerUser;
     private DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> competitionListCacheListenerVip;
-    private DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> competitionListCacheListenerMine;
 
     @Inject Analytics analytics;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
@@ -70,9 +69,6 @@ public class CompetitionBaseFragment extends DashboardFragment
     private CompetitionListAdapter adapterList;
 
     private UserCompetitionDTOList userCompetitionVipDTOs;
-    public static boolean needRefresh = false;
-
-    CompetitionListTypeMine mineKey = new CompetitionListTypeMine();
     CompetitionListTypeUser userKey = new CompetitionListTypeUser();
 
     @Override
@@ -82,7 +78,6 @@ public class CompetitionBaseFragment extends DashboardFragment
         competitionListCacheListenerOffical = createCompetitionListCacheListenerOffical();
         competitionListCacheListenerUser = createCompetitionListCacheListenerUser();
         competitionListCacheListenerVip = createCompetitionListCacheListenerVip();
-        competitionListCacheListenerMine = createCompetitionListCacheListenerMine();
         adapterList = new CompetitionListAdapter(getActivity(), getCompetitionPageType());
     }
 
@@ -118,11 +113,7 @@ public class CompetitionBaseFragment extends DashboardFragment
         fetchVipCompetition(false);//获取官方推荐比赛
 
         listCompetitions.setEmptyView(imgEmpty);
-        if(getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_MINE){
-            listCompetitions.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
-        }else {
-            listCompetitions.setMode(PullToRefreshBase.Mode.BOTH);
-        }
+        listCompetitions.setMode(PullToRefreshBase.Mode.BOTH);
         listCompetitions.setAdapter(adapterList);
         listCompetitions.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -206,37 +197,22 @@ public class CompetitionBaseFragment extends DashboardFragment
     {
         ButterKnife.reset(this);
         detachOfficalCompetition();
-        detachMineCompetition();
         detachUserCompetition();
         detachVipCompetition();
         super.onDestroyView();
     }
 
-    public boolean isNeedRefresh()
-    {
-        return needRefresh && (getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_MINE);
-    }
-
-    @Override public void onResume()
-    {
+    @Override public void onResume() {
         super.onResume();
-        Timber.d("OnRusme: StockGodList 1 ");
-        if (isNeedRefresh() || (adapterList != null && adapterList.getCount() == 0))
-        {
+        if (adapterList != null && adapterList.getCount() == 0){
             fetchCompetition(true);
         }
+        showGuideView();
     }
 
     public void fetchCompetition(boolean refresh)
     {
-        if (getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_MINE)
-        {
-            //我的比赛页
-            mineKey = new CompetitionListTypeMine();
-            mineKey.page = 1;
-            fetchMineCompetition(refresh);
-        }
-        else if (getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_ALL)
+        if (getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_ALL)
         {
             userKey = new CompetitionListTypeUser();
             userKey.page = 1;
@@ -245,17 +221,8 @@ public class CompetitionBaseFragment extends DashboardFragment
         }
     }
 
-    public void fetchCompetitionMore(boolean refresh)
-    {
-        //fetchVipCompetition(refresh);//获取官方推荐比赛
-        if (getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_MINE)
-        {
-            //我的比赛页
-            fetchMineCompetition(refresh);
-        }
-        else if (getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_ALL)
-        {
-            //fetchOfficalCompetition(refresh);
+    public void fetchCompetitionMore(boolean refresh) {
+        if (getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_ALL) {
             fetchUserCompetition(refresh);
         }
     }
@@ -327,11 +294,6 @@ public class CompetitionBaseFragment extends DashboardFragment
         competitionNewCacheLazy.get().unregister(competitionListCacheListenerVip);
     }
 
-    protected void detachMineCompetition()
-    {
-        competitionNewCacheLazy.get().unregister(competitionListCacheListenerMine);
-    }
-
     public void fetchOfficalCompetition(boolean refresh)
     {
         detachOfficalCompetition();
@@ -357,39 +319,8 @@ public class CompetitionBaseFragment extends DashboardFragment
         competitionNewCacheLazy.get().getOrFetchAsync(vipKey, refresh);
     }
 
-    public void fetchMineCompetition(boolean refresh)
-    {
-        betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
-        detachMineCompetition();
-        competitionNewCacheLazy.get().register(mineKey, competitionListCacheListenerMine);
-        competitionNewCacheLazy.get().getOrFetchAsync(mineKey, refresh);
-    }
-
-    public void initVipCompetition(UserCompetitionDTOList userCompetitionDTOs)
-    {
-        Timber.d("初始化 广告栏 比赛");
+    public void initVipCompetition(UserCompetitionDTOList userCompetitionDTOs) {
         initCompetitionAdv(userCompetitionDTOs);
-    }
-
-    //我的比赛
-    public void initMyCompetition(CompetitionListType key, UserCompetitionDTOList userCompetitionDTOs)
-    {
-        needRefresh = false;
-        if (adapterList != null)
-        {
-            if (key.page == 1)
-            {
-                adapterList.setMyCompetitionDtoList(userCompetitionDTOs);
-            }
-            else
-            {
-                adapterList.addMyCompetitionDtoList(userCompetitionDTOs);
-            }
-        }
-        if (userCompetitionDTOs != null && userCompetitionDTOs.size() > 0)
-        {
-            mineKey.page += 1;
-        }
     }
 
     //官方比赛
@@ -421,20 +352,6 @@ public class CompetitionBaseFragment extends DashboardFragment
         }
     }
 
-    public UserCompetitionDTOList removeVipCompetition(UserCompetitionDTOList userCompetitionDTOs)
-    {
-        if (userCompetitionDTOs != null)
-        {
-            ArrayList<UserCompetitionDTO> list = new ArrayList<>();
-            int size = userCompetitionDTOs.size();
-            for (int i = 0; i < size; i++)
-            {
-                list.add(userCompetitionDTOs.get(i));
-            }
-        }
-        return null;
-    }
-
     public int getCompetitionPageType()
     {
         return CompetitionUtils.COMPETITION_PAGE_ALL;
@@ -451,11 +368,6 @@ public class CompetitionBaseFragment extends DashboardFragment
     }
 
     protected DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> createCompetitionListCacheListenerVip()
-    {
-        return new CompetitionListCacheListener();
-    }
-
-    protected DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> createCompetitionListCacheListenerMine()
     {
         return new CompetitionListCacheListener();
     }
@@ -482,11 +394,6 @@ public class CompetitionBaseFragment extends DashboardFragment
             {
                 initVipCompetition(value);
                 onFinish(false);
-            }
-            else if (key instanceof CompetitionListTypeMine)
-            {
-                initMyCompetition(key, value);
-                onFinish(true);
             }
         }
 

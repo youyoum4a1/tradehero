@@ -309,11 +309,10 @@ import java.util.Locale;
                         TimeLineCommentDialogLayout.class,
                         TimeLineReportDialogLayout.class,
 
-                        CompetitionAllFragment.class,
                         CompetitionMineFragment.class,
                         CompetitionCreateFragment.class,
                         CompetitionSearchFragment.class,
-                        CompetitionBaseFragment.class,
+                        CompetitionsFragment.class,
                         CompetitionDetailFragment.class,
 
                         CompetitionListAdapter.class,

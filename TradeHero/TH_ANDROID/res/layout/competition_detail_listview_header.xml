@@ -19,7 +19,7 @@
                 android:id="@+id/tvHeadLine"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="15dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/black"
@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:text=" - - "
                     android:textColor="@color/text_gray_normal"
-                    android:textSize="24sp"/>
+                    android:textSize="22sp"/>
         </LinearLayout>
 
         <ImageView
@@ -77,7 +77,7 @@
                 android:layout_alignTop="@id/imgUserHead"
                 android:layout_marginTop="1dp"
                 android:textColor="@color/black"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_width="wrap_content"/>
 
         <LinearLayout

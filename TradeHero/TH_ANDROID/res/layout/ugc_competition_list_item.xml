@@ -85,8 +85,7 @@
                         android:textSize="11sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:text="7-24至8－28"/>
+                        android:singleLine="true"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -101,7 +100,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        android:text="百万虚拟币奖励，更多真金白银奖励"/>
+                        android:layout_marginRight="15dp"/>
             </RelativeLayout>
 
             <RelativeLayout

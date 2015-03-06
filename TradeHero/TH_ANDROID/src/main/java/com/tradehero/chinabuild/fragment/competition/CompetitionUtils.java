@@ -2,8 +2,9 @@ package com.tradehero.chinabuild.fragment.competition;
 
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
-import java.util.ArrayList;
 import timber.log.Timber;
+
+import java.util.ArrayList;
 
 /**
  * Created by huhaiping on 14-9-10. 比赛相关常量定义
@@ -14,13 +15,7 @@ public class CompetitionUtils
     public static final int UGC_PROVIDER_ID = 33;
 
     public static final int COMPETITION_PAGE_ALL = 0;//所有比赛
-    public static final int COMPETITION_PAGE_MINE = 1;//我的比赛
     public static final int COMPETITION_PAGE_SEARCH = 2;//搜索出来的比赛
-
-    public static final int COMPETITION_TYPE_OFFICAL = 0;//官方创建的
-    public static final int COMPETITION_TYPE_USER = 1;//用户创建的
-    public static final int COMPETITOIN_TYPE_MY = 2;//我参加的
-    public static final int COMPETITION_TYPE_VIP = 3;//官方推荐的
 
     public static final String[] strPeriods =
             {

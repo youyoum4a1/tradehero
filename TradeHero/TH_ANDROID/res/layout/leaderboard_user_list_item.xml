@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#c8c7cc"
-        android:textSize="24sp"/>
+        android:textSize="22sp"/>
   </LinearLayout>
 
   <ImageView
@@ -55,7 +55,7 @@
       android:layout_alignTop="@id/imgUserHead"
       android:layout_marginTop="1dp"
       android:textColor="@color/black"
-      android:textSize="18sp"
+      android:textSize="16sp"
       android:layout_width="wrap_content"/>
 
   <LinearLayout

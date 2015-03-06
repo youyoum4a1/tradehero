@@ -22,6 +22,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="46dp"
+                    android:layout_marginLeft="5dp"
                     android:lineSpacingExtra="3dp"
                     android:textColor="#ffffff"/>
             <ImageView android:layout_width="wrap_content"
@@ -30,14 +31,14 @@
                        android:layout_alignParentRight="true"
                        android:layout_centerVertical="true"
                        android:visibility="gone"
-                       android:layout_marginRight="10dp"
+                       android:layout_marginRight="5dp"
                        android:background="@drawable/competition_detail_edit"/>
         </RelativeLayout>
         <RelativeLayout android:layout_width="match_parent" android:layout_height="35dp" android:background="#30000000"
                         android:layout_alignParentBottom="true">
             <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:orientation="horizontal"
-                          android:layout_marginLeft="10dp"
+                          android:layout_marginLeft="15dp"
                           android:layout_alignParentLeft="true"
                           android:layout_centerVertical="true">
                 <TextView
@@ -62,7 +63,7 @@
                     android:layout_centerVertical="true"
                     android:textColor="#ffffff"
                     android:textSize="13sp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="15dp"
                     android:visibility="gone"
                     android:text="@string/regulation_competition"/>
         </RelativeLayout>
