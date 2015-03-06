@@ -146,6 +146,8 @@ public class AnalyticsConstants
     public static final String ProviderId = "ProviderId";
     public static final String Competition_Home = "Competition/Home";
     public static final String CompetitionJoined = "CompetitionJoined";//
+    public static final String TradeSubTagViewed = "Trade SubTag Viewed";//
+    public static final String ActivateTradeFX = "Activate Trade FX";//
 
     //Attribute
     public static final String ClickedFrom = "ClickedFrom";//
@@ -171,4 +173,11 @@ public class AnalyticsConstants
     public static final String GamePlayed = "GamePlayed";//
     public static final String TimeInGame = "TimeInGame";//
     public static final String PreviousScreen = "PreviousScreen";//
+    public static final String Stocks = "Stocks";//
+    public static final String FX = "FX";//
+    public static final String PageOne = "Page 1 View";//
+    public static final String PageTwo = "Page 2 View";//
+    public static final String PageThr = "Page 3 View";//
+    public static final String ActiviteFXTap = "Active FX Tap";//
+    public static final String PressXTap = "Press X Tap";//
 }

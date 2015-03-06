@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -30,6 +31,8 @@ import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -44,6 +47,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
     public static final int MS_DELAY_FOR_QUOTE_FETCH = 5000;
 
     @Inject SecurityServiceWrapper securityServiceWrapper;
+    @Inject Analytics analytics;
 
     @InjectView(R.id.btn_enroll) View btnEnroll;
 
@@ -81,6 +85,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
     {
         super.onStart();
         waitForEnrolled();
+        analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.TradeSubTagViewed, AnalyticsConstants.TradeSubTagViewed, AnalyticsConstants.FX));
     }
 
     @Override public void onStop()

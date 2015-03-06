@@ -55,6 +55,7 @@ import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
@@ -126,7 +127,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         super.onResume();
 
-        analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Trade));
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Trade));
+        analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.TradeSubTagViewed, AnalyticsConstants.TradeSubTagViewed, AnalyticsConstants.Stocks));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

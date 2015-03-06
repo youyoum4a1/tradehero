@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.education.VideoDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
@@ -28,6 +29,8 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.VideoServiceWrapper;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +59,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
     @Inject protected SecurityPositionDetailCacheRx securityPositionDetailCache;
     @Inject VideoServiceWrapper videoServiceWrapper;
     @Inject Lazy<DashboardNavigator> navigator;
+    @Inject Analytics analytics;
     private SubscriptionList subscriptionList;
     private VideoAdapter videoAdapter;
     @NonNull private BehaviorSubject<UserActionType> userActionTypeBehaviorSubject;
@@ -103,9 +107,15 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
                         shouldShowNext -> {
                             if (shouldShowNext)
                             {
-                                if (viewAnimator.getDisplayedChild() == 1)
+                                if (viewAnimator.getDisplayedChild() == 0)
+                                {
+                                    analytics.addEvent(new SingleAttributeEvent(AnalyticsConstants.ActivateTradeFX, AnalyticsConstants.ActivateTradeFX, AnalyticsConstants.PageTwo));
+                                }
+                                else if (viewAnimator.getDisplayedChild() == 1)
                                 {
                                     checkFXPortfolio();
+                                    analytics.addEvent(new SingleAttributeEvent(AnalyticsConstants.ActivateTradeFX, AnalyticsConstants.ActivateTradeFX, AnalyticsConstants.ActiviteFXTap));
+                                    analytics.addEvent(new SingleAttributeEvent(AnalyticsConstants.ActivateTradeFX, AnalyticsConstants.ActivateTradeFX, AnalyticsConstants.PageThr));
                                 }
                                 viewAnimator.showNext();
                             }
@@ -149,6 +159,8 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
             VideoDTO videoDTO = videoAdapter.getItem(position);
             VideoDTOUtil.openVideoDTO(getActivity(), navigator.get(), videoDTO);
         });
+
+        analytics.addEvent(new SingleAttributeEvent(AnalyticsConstants.ActivateTradeFX, AnalyticsConstants.ActivateTradeFX, AnalyticsConstants.PageOne));
     }
 
     @Override public void onDismiss(DialogInterface dialog)
@@ -204,6 +216,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
         notifyUserAction(UserActionType.CANCELLED);
         dismiss();
         // TODO mark fx onboard handled
+        analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.ActivateTradeFX, AnalyticsConstants.ActivateTradeFX, AnalyticsConstants.PressXTap));
     }
 
     protected void notifyUserAction(@NonNull UserActionType actionType)
