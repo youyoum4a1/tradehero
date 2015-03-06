@@ -63,9 +63,13 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         Spannable span = new SpannableString(rule);
         span.setSpan(clickableSpan, 0, rule.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         span.setSpan(textColorSpan, 0, rule.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        lbmuRoi.setMovementMethod(LinkMovementMethod.getInstance());
-        lbmuRoi.setText(span);
-        lbmuRoi.setBackgroundResource(R.drawable.basic_transparent_selector);
+
+        if(lbmuRoi!=null)
+        {
+            lbmuRoi.setMovementMethod(LinkMovementMethod.getInstance());
+            lbmuRoi.setText(span);
+            lbmuRoi.setBackgroundResource(R.drawable.basic_transparent_selector);
+        }
 
         infoButtonContainer.setVisibility(View.GONE);
     }

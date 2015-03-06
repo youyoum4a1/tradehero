@@ -551,8 +551,11 @@ public class LeaderboardMarkUserItemView
             innerViewContainer.setBackgroundResource(R.color.white);
         }
 
-        lbmuRoi.setText(R.string.leaderboard_not_ranked);
-        lbmuPosition.setText("-");
+        if(lbmuRoi!=null)
+        {
+            lbmuRoi.setText(R.string.leaderboard_not_ranked);
+            lbmuPosition.setText("-");
+        }
     }
 
     @Override public void onExpand(boolean expand)
