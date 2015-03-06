@@ -111,6 +111,7 @@ import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.XpToast;
+import com.urbanairship.push.PushManager;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
@@ -404,6 +405,8 @@ public class DashboardActivity extends BaseActivity
     @Override protected void onResume()
     {
         super.onResume();
+        savedPushDeviceIdentifier.set(PushManager.shared().getAPID());
+
         launchActions();
         analytics.openSession();
 

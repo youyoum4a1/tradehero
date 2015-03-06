@@ -9,11 +9,9 @@ import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.PushManager;
 import com.urbanairship.push.PushNotificationBuilder;
-
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import dagger.Lazy;
 import timber.log.Timber;
 
 @Singleton public final class UrbanAirshipPushNotificationManager implements PushNotificationManager
@@ -40,7 +38,6 @@ import timber.log.Timber;
         PushManager.shared().setNotificationBuilder(customPushNotificationBuilder.get());
         PushManager.shared().setIntentReceiver(UrbanAirshipIntentReceiver.class);
         savedPushDeviceIdentifier.set(PushManager.shared().getAPID());
-
         Timber.d("My Application onCreate - App APID: %s", PushManager.shared().getAPID());
     }
 
