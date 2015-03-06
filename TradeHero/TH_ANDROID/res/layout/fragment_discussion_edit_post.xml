@@ -10,7 +10,6 @@
   <include
       android:id="@+id/discussion_new_post_action_buttons"
       layout="@layout/discussion_edit_post_action_buttons"
-      android:layout_alignParentBottom="true"
       />
 
   <EditText

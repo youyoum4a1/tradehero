@@ -354,6 +354,7 @@ import java.util.Locale;
                         CompetitionCollegeFragment.class,
                         CompetitionMainFragment.class,
                         CompetitionDiscussFragment.class,
+                        CompetitionDiscussionSendFragment.class,
                         NewsItemAdapter.class,
 
                         LoginSuggestDialogFragment.class,

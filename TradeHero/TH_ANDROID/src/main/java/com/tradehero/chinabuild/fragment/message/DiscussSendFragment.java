@@ -64,7 +64,7 @@ public class DiscussSendFragment extends DashboardFragment
 
     @InjectView(R.id.btnAt) Button btnAt;
     @InjectView(R.id.btnSelectStock) Button btnSelectStock;
-    @InjectView(R.id.edtDiscussionPostContent) EditText discussionPostContent;
+    protected @InjectView(R.id.edtDiscussionPostContent) EditText discussionPostContent;
 
     @Inject RichTextCreator parser;
     private DiscussionKey discussionKey;

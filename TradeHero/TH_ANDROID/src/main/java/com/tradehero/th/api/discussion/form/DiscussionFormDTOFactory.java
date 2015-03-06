@@ -3,6 +3,7 @@ package com.tradehero.th.api.discussion.form;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.news.form.NewsItemDiscussionFormDTO;
 import com.tradehero.th.api.timeline.form.TimelineItemCommentFormDTO;
+
 import javax.inject.Inject;
 
 public class DiscussionFormDTOFactory
@@ -34,6 +35,9 @@ public class DiscussionFormDTOFactory
                 break;
             case BROADCAST_MESSAGE:
                 created = new BroadcastDiscussionFormDTO();
+                break;
+            case COMPETITION:
+                created = new CompetitionDiscussFormDTO();
                 break;
             default:
                 throw new IllegalStateException("Invalid type of DiscussionType" + discussionType);

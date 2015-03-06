@@ -15,11 +15,15 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.UserTimeLineAdapter;
 import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.CompetitionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -40,7 +44,7 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
 
     private UserTimeLineAdapter adapter;
 
-    private final int perPage = 15;
+    private final int perPage = 20;
     private int pageNum = 1;
 
     @Inject Lazy<CompetitionServiceWrapper> competitionService;
@@ -95,6 +99,7 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
         int viewId = view.getId();
         switch(viewId){
             case R.id.ivCreateCompetitionTimeLine:
+                gotoCreateCompetitionDiscussion();
                 break;
         }
     }
@@ -165,5 +170,27 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
             lvTimeLine.setEmptyView(ivEmpty);
             lvTimeLine.setMode(PullToRefreshBase.Mode.BOTH);
         }
+    }
+
+    private Fragment pushFragment(@NotNull Class fragmentClass, Bundle args) {
+        return getDashboardNavigator().pushFragment(fragmentClass, args);
+    }
+
+    private DashboardNavigator getDashboardNavigator() {
+        @Nullable DashboardNavigatorActivity activity = ((DashboardNavigatorActivity) getActivity());
+        if (activity != null) {
+            return activity.getDashboardNavigator();
+        }
+        return null;
+    }
+
+    private void gotoCreateCompetitionDiscussion(){
+        Bundle bundle = new Bundle();
+        if(userCompetitionDTO!=null){
+            bundle.putSerializable(CompetitionDetailFragment.BUNDLE_COMPETITION_DTO, userCompetitionDTO);
+        }else{
+            bundle.putSerializable(CompetitionDetailFragment.BUNDLE_COMPETITION_ID, competitionId);
+        }
+        pushFragment(CompetitionDiscussionSendFragment.class, bundle);
     }
 }

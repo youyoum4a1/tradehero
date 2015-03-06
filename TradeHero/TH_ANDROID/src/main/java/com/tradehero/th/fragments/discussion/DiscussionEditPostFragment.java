@@ -49,7 +49,6 @@ import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 
@@ -72,14 +71,12 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Inject DiscussionCache discussionCache;
     @Inject WeChatDTOFactory weChatDTOFactory;
 
-    private DiscussionDTO discussionDTO;
     private MiddleCallback<DiscussionDTO> discussionEditMiddleCallback;
     private ProgressDialog progressDialog;
     private TextWatcher discussionEditTextWatcher;
 
     private HasSelectedItem selectionFragment;
     private DiscussionKey discussionKey;
-    private boolean isPosted;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -99,8 +96,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Override public void onDestroyOptionsMenu()
     {
         setActionBarSubtitle(null);
-        Timber.d("onDestroyOptionsMenu");
-
         super.onDestroyOptionsMenu();
     }
 
@@ -129,7 +124,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     //<editor-fold desc="View's events handling">
     // TODO following views' events should be handled inside DiscussionPostActionButtonsView
     @OnClick(R.id.btn_security_tag)
-    void onSecurityButtonClicked(View clickedButton)
+    void onSecurityButtonClicked()
     {
         Bundle bundle = new Bundle();
         bundle.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT, this.getClass().getName());
@@ -137,18 +132,13 @@ public class DiscussionEditPostFragment extends DashboardFragment
     }
 
     @OnClick(R.id.btn_mention)
-    void onMentionButtonClicked(View clickedButton)
+    void onMentionButtonClicked()
     {
         Bundle bundle = new Bundle();
         bundle.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT, this.getClass().getName());
         selectionFragment = getDashboardNavigator().pushFragment(PeopleSearchFragment.class, bundle);
     }
     //</editor-fold>
-
-    private void linkWith(DiscussionDTO discussionDTO, boolean andDisplay)
-    {
-        this.discussionDTO = discussionDTO;
-    }
 
     private boolean validate()
     {
@@ -220,9 +210,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-
-        isPosted = false;
-
         Bundle args = getArguments();
         if (args != null)
         {
@@ -268,8 +255,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
             editable = editable.replace(start, end, extraText);
             nonMarkUpText = unSpanText(editable).toString();
         }
-
-        Timber.d("Original text: %s", nonMarkUpText);
         discussionPostContent.setText(parser.load(nonMarkUpText).create(), TextView.BufferType.SPANNABLE);
         discussionPostContent.setSelection(discussionPostContent.length());
     }
@@ -320,26 +305,17 @@ public class DiscussionEditPostFragment extends DashboardFragment
         }
     }
 
-    public boolean isPosted()
-    {
-        return isPosted;
-    }
-
     private class SecurityDiscussionEditCallback implements Callback<DiscussionDTO>
     {
         @Override public void success(DiscussionDTO discussionDTO, Response response)
         {
             onFinish();
-
             linkWith(discussionDTO, true);
 
             if (discussionPostActionButtonsView.isShareEnabled(SocialNetworkEnum.WECHAT))
             {
                 socialSharerLazy.get().share(weChatDTOFactory.createFrom(discussionDTO)); // Proper callback?
             }
-
-            isPosted = true;
-
             DeviceUtil.dismissKeyboard(getActivity());
             getDashboardNavigator().popFragment();
         }
@@ -347,7 +323,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
         @Override public void failure(RetrofitError error)
         {
             onFinish();
-
             THToast.show(new THException(error));
         }
 
