@@ -76,22 +76,6 @@ import javax.inject.Singleton;
         return createDiscussionProcessor().process(discussionService.getComment(discussionKey.id));
     }
 
-    public MiddleCallback<DiscussionDTO> getComment(DiscussionKey discussionKey, Callback<DiscussionDTO> callback)
-    {
-        MiddleCallback<DiscussionDTO> middleCallback = new BaseMiddleCallback<>(
-                callback, createDiscussionProcessor());
-        discussionServiceAsync.getComment(discussionKey.id, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Create Discussion">
-    public DiscussionDTO createDiscussion(DiscussionFormDTO discussionFormDTO)
-    {
-        return createDiscussionCreateProcessor(discussionFormDTO.stubKey).process(
-                discussionService.createDiscussion(discussionFormDTO));
-    }
-
     public MiddleCallback<DiscussionDTO> createDiscussion(
             DiscussionFormDTO discussionFormDTO,
             Callback<DiscussionDTO> callback)
@@ -137,44 +121,12 @@ import javax.inject.Singleton;
                 discussionsKey.perPage);
     }
 
-    @Deprecated
-    public PaginatedDTO<DiscussionDTO> getPaginatedDiscussions(DiscussionListKey discussionsKey)
-    {
-        return discussionService.getDiscussions(
-                discussionsKey.inReplyToType,
-                discussionsKey.inReplyToId,
-                discussionsKey.toMap());
-    }
-
     public PaginatedDTO<DiscussionDTO> getMessageThread(MessageDiscussionListKey discussionsKey)
     {
         return discussionService.getMessageThread(
                 discussionsKey.inReplyToType,
                 discussionsKey.inReplyToId,
                 discussionsKey.toMap());
-    }
-
-    public MiddleCallback<PaginatedDTO<DiscussionDTO>> getMessageThread(
-            MessageDiscussionListKey discussionsKey,
-            Callback<PaginatedDTO<DiscussionDTO>> callback)
-    {
-        MiddleCallback<PaginatedDTO<DiscussionDTO>> middleCallback = new BaseMiddleCallback<>(callback);
-        discussionServiceAsync.getMessageThread(
-                discussionsKey.inReplyToType,
-                discussionsKey.inReplyToId,
-                discussionsKey.toMap(),
-                middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Vote">
-    public DiscussionDTO vote(DiscussionVoteKey discussionVoteKey)
-    {
-        return createDiscussionCreateProcessor(null).process(discussionService.vote(
-                discussionVoteKey.inReplyToType,
-                discussionVoteKey.inReplyToId,
-                discussionVoteKey.voteDirection));
     }
 
     public MiddleCallback<DiscussionDTO> vote(DiscussionVoteKey discussionVoteKey, Callback<DiscussionDTO> callback)

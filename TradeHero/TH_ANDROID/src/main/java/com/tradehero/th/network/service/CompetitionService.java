@@ -3,13 +3,9 @@ package com.tradehero.th.network.service;
 import com.tradehero.chinabuild.data.UserCompetitionDTOList;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
-import com.tradehero.th.api.competition.CompetitionFormDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
-import retrofit.http.Body;
 import retrofit.http.GET;
-import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
@@ -33,26 +29,6 @@ public interface CompetitionService
             @Query("perPage") Integer perPage);
     //</editor-fold>
 
-    //<editor-fold desc="Enroll">
-    @POST("/providers/enroll") UserProfileDTO enroll(
-            @Body CompetitionFormDTO form);
-    //</editor-fold>
-
-    //<editor-fold desc="Outbound">
-    @POST("/providers/outbound") UserProfileDTO outbound(
-            @Body CompetitionFormDTO form);
-    //</editor-fold>
-
-    //创建UGC
-    //POST https://tradehero.mobi/api/usercompetitions HTTP/1.1
-    //Authorization: Basic amFja0B0cmFkZWhlcm8ubW9iaToxMTExMTE=
-    //    Content-Type: application/json; charset=UTF-8
-    //TH-Language-Code: zh-CN
-    //Content-Length: 117
-    //{"name":"不服来战","description":"进来看看到底谁是真正的大牛","durationDays":"10","exchangeIds":[4]}
-    //@POST("/usercompetitions") Object creatUGC(
-    //        @Body UGCFromDTO form
-    //);
 
     //默认推荐比赛 api/usercompetitions/search?name=
     @GET("/usercompetitions/search?name=") UserCompetitionDTOList getRecommandCompetitions(

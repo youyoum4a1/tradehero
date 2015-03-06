@@ -1,24 +1,12 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
-import com.tradehero.th.api.alert.AlertPlanDTO;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
-import com.tradehero.th.api.users.RestorePurchaseForm;
 import com.tradehero.th.api.users.UserProfileDTO;
-import java.util.List;
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Path;
-import retrofit.http.Query;
+import retrofit.http.*;
 
 public interface AlertPlanService
 {
-    //<editor-fold desc="Get Alert Plans">
-    @GET("/users/{userId}/alertPlans")
-    List<AlertPlanDTO> getAlertPlans(
-            @Path("userId") int userId);
-    //</editor-fold>
 
     //<editor-fold desc="Subscribe To Alert Plan">
     @POST("/users/{userId}/alertPlans")
@@ -41,10 +29,4 @@ public interface AlertPlanService
             @Query("google_play_signature") String googlePlaySignature);
     //</editor-fold>
 
-    //<editor-fold desc="Restore Purchases">
-    @POST("/users/{userId}/alertPlans/restore")
-    UserProfileDTO restorePurchases(
-            @Path("userId") int userId,
-            @Body RestorePurchaseForm restorePurchaseForm);
-    //</editor-fold>
 }

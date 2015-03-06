@@ -17,17 +17,11 @@ import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.password.ResetPasswordDTO;
 import com.tradehero.th.api.users.password.ResetPasswordFormDTO;
-import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
-import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
-import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
-import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.social.DTOProcessorFriendInvited;
 import com.tradehero.th.models.user.*;
-import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
-import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.DTOCacheUtil;
@@ -107,51 +101,6 @@ import java.util.List;
                 dtoCacheUtil);
     }
 
-    public UserProfileDTO signUpWithEmail(
-            String authorization,
-            UserFormDTO userFormDTO)
-    {
-        UserProfileDTO created;
-        if (userFormDTO.profilePicture == null)
-        {
-            created = userService.signUpWithEmail(
-                    authorization,
-                    userFormDTO.biography,
-                    userFormDTO.deviceToken,
-                    userFormDTO.displayName,
-                    userFormDTO.email,
-                    userFormDTO.emailNotificationsEnabled,
-                    userFormDTO.firstName,
-                    userFormDTO.lastName,
-                    userFormDTO.location,
-                    userFormDTO.password,
-                    userFormDTO.passwordConfirmation,
-                    userFormDTO.pushNotificationsEnabled,
-                    userFormDTO.username,
-                    userFormDTO.website);
-        }
-        else
-        {
-            created = userService.signUpWithEmail(
-                    authorization,
-                    userFormDTO.biography,
-                    userFormDTO.deviceToken,
-                    userFormDTO.displayName,
-                    userFormDTO.email,
-                    userFormDTO.emailNotificationsEnabled,
-                    userFormDTO.firstName,
-                    userFormDTO.lastName,
-                    userFormDTO.location,
-                    userFormDTO.password,
-                    userFormDTO.passwordConfirmation,
-                    userFormDTO.pushNotificationsEnabled,
-                    userFormDTO.username,
-                    userFormDTO.website,
-                    userFormDTO.profilePicture);
-        }
-        return createSignInUpProfileProcessor().process(created);
-    }
-
     public MiddleCallback<UserProfileDTO> signUpWithEmail(
             String authorization,
             UserFormDTO userFormDTO,
@@ -209,14 +158,6 @@ import java.util.List;
     }
     //</editor-fold>
 
-    //<editor-fold desc="Sign-Up">
-    public UserProfileDTO signUp(
-            String authorization,
-            UserFormDTO userFormDTO)
-    {
-        return createSignInUpProfileProcessor().process(userService.signUp(authorization, userFormDTO));
-    }
-
     public MiddleCallback<UserProfileDTO> signUp(
             String authorization,
             UserFormDTO userFormDTO,
@@ -232,99 +173,6 @@ import java.util.List;
     @NotNull protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
     {
         return new DTOProcessorUpdateUserProfile(userProfileCache);
-    }
-
-    public UserProfileDTO updateProfile(
-            UserBaseKey userBaseKey,
-            UserFormDTO userFormDTO)
-    {
-        UserProfileDTO updated;
-        if (userFormDTO.profilePicture == null)
-        {
-            updated = userService.updateProfile(
-                    userBaseKey.key,
-                    userFormDTO.deviceToken,
-                    userFormDTO.displayName,
-                    userFormDTO.email,
-                    userFormDTO.firstName,
-                    userFormDTO.lastName,
-                    userFormDTO.password,
-                    userFormDTO.passwordConfirmation,
-                    userFormDTO.username,
-                    userFormDTO.emailNotificationsEnabled,
-                    userFormDTO.pushNotificationsEnabled,
-                    userFormDTO.biography,
-                    userFormDTO.location,
-                    userFormDTO.website);
-        }
-        else
-        {
-            updated = userService.updateProfile(
-                    userBaseKey.key,
-                    userFormDTO.deviceToken,
-                    userFormDTO.displayName,
-                    userFormDTO.email,
-                    userFormDTO.firstName,
-                    userFormDTO.lastName,
-                    userFormDTO.password,
-                    userFormDTO.passwordConfirmation,
-                    userFormDTO.username,
-                    userFormDTO.emailNotificationsEnabled,
-                    userFormDTO.pushNotificationsEnabled,
-                    userFormDTO.biography,
-                    userFormDTO.location,
-                    userFormDTO.website,
-                    userFormDTO.profilePicture);
-        }
-        return createUpdateProfileProcessor().process(updated);
-    }
-
-    public MiddleCallback<UserProfileDTO> updateProfile(
-            UserBaseKey userBaseKey,
-            UserFormDTO userFormDTO,
-            Callback<UserProfileDTO> callback)
-    {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
-        if (userFormDTO.profilePicture == null)
-        {
-            userServiceAsync.updateProfile(
-                    userBaseKey.key,
-                    userFormDTO.deviceToken,
-                    userFormDTO.displayName,
-                    userFormDTO.email,
-                    userFormDTO.firstName,
-                    userFormDTO.lastName,
-                    userFormDTO.password,
-                    userFormDTO.passwordConfirmation,
-                    userFormDTO.username,
-                    userFormDTO.emailNotificationsEnabled,
-                    userFormDTO.pushNotificationsEnabled,
-                    userFormDTO.biography,
-                    userFormDTO.location,
-                    userFormDTO.website,
-                    middleCallback);
-        }
-        else
-        {
-            userServiceAsync.updateProfile(
-                    userBaseKey.key,
-                    userFormDTO.deviceToken,
-                    userFormDTO.displayName,
-                    userFormDTO.email,
-                    userFormDTO.firstName,
-                    userFormDTO.lastName,
-                    userFormDTO.password,
-                    userFormDTO.passwordConfirmation,
-                    userFormDTO.username,
-                    userFormDTO.emailNotificationsEnabled,
-                    userFormDTO.pushNotificationsEnabled,
-                    userFormDTO.biography,
-                    userFormDTO.location,
-                    userFormDTO.website,
-                    userFormDTO.profilePicture,
-                    middleCallback);
-        }
-        return middleCallback;
     }
 
     public MiddleCallback<UserProfileDTO> updatePhoto(
@@ -388,60 +236,11 @@ import java.util.List;
         return middleCallback;
     }
 
-    public UserProfileDTO updateProfilePropertyEmailNotifications(
-            UserBaseKey userBaseKey,
-            Boolean emailNotificationsEnabled)
-    {
-        UserFormDTO userFormDTO = new UserFormDTO();
-        userFormDTO.emailNotificationsEnabled = emailNotificationsEnabled;
-        return this.updateProfile(userBaseKey, userFormDTO);
-    }
-
-    public MiddleCallback<UserProfileDTO> updateProfilePropertyEmailNotifications(
-            UserBaseKey userBaseKey,
-            Boolean emailNotificationsEnabled,
-            Callback<UserProfileDTO> callback)
-    {
-        UserFormDTO userFormDTO = new UserFormDTO();
-        userFormDTO.emailNotificationsEnabled = emailNotificationsEnabled;
-        return this.updateProfile(userBaseKey, userFormDTO, callback);
-    }
-
-    public UserProfileDTO updateProfilePropertyPushNotifications(
-            UserBaseKey userBaseKey,
-            Boolean pushNotificationsEnabled)
-    {
-        UserFormDTO userFormDTO = new UserFormDTO();
-        userFormDTO.pushNotificationsEnabled = pushNotificationsEnabled;
-        return this.updateProfile(userBaseKey, userFormDTO);
-    }
-
-    public MiddleCallback<UserProfileDTO> updateProfilePropertyPushNotifications(
-            UserBaseKey userBaseKey,
-            Boolean pushNotificationsEnabled,
-            Callback<UserProfileDTO> callback)
-    {
-        UserFormDTO userFormDTO = new UserFormDTO();
-        userFormDTO.pushNotificationsEnabled = pushNotificationsEnabled;
-        return this.updateProfile(userBaseKey, userFormDTO, callback);
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Check Display Name Available">
     public UserAvailabilityDTO checkDisplayNameAvailable(String username)
     {
         return userService.checkDisplayNameAvailable(username);
     }
-
-    public MiddleCallback<UserAvailabilityDTO> checkDisplayNameAvailable(
-            String username,
-            Callback<UserAvailabilityDTO> callback)
-    {
-        MiddleCallback<UserAvailabilityDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.checkDisplayNameAvailable(username, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="Forgot Password">
     public MiddleCallback<ForgotPasswordDTO> forgotPasswordEmail(
@@ -478,14 +277,6 @@ import java.util.List;
         return this.userService.searchUsers(key.searchString, key.page, key.perPage);
     }
 
-    public MiddleCallback<UserSearchResultDTOList> searchUsers(UserListType key, Callback<UserSearchResultDTOList> callback)
-    {
-        if (key instanceof SearchUserListType)
-        {
-            return searchUsers((SearchUserListType) key, callback);
-        }
-        throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
-    }
 
     protected MiddleCallback<UserSearchResultDTOList> searchUsers(SearchUserListType key, Callback<UserSearchResultDTOList> callback)
     {
@@ -512,37 +303,11 @@ import java.util.List;
          return userService.searchAllowableRecipients(key.searchString, key.page, key.perPage);
     }
 
-    public BaseMiddleCallback<PaginatedAllowableRecipientDTO> searchAllowableRecipients(SearchAllowableRecipientListType key, Callback<PaginatedAllowableRecipientDTO> callback)
-    {
-        BaseMiddleCallback<PaginatedAllowableRecipientDTO>
-                middleCallback = new BaseMiddleCallback<>(callback);
-        if (key == null)
-        {
-            userServiceAsync.searchAllowableRecipients(null, null, null, middleCallback);
-        }
-        else
-        {
-            userServiceAsync.searchAllowableRecipients(key.searchString, key.page, key.perPage, middleCallback);
-        }
-        return middleCallback;
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Get User">
     public UserProfileDTO getUser(UserBaseKey userKey)
     {
         return userService.getUser(userKey.key);
     }
-
-    public MiddleCallback<UserProfileDTO> getUser(
-            UserBaseKey userKey,
-            Callback<UserProfileDTO> callback)
-    {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.getUser(userKey.key, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="Get User Transactions History">
     @NotNull public UserTransactionHistoryDTOList getUserTransactions(
@@ -551,85 +316,6 @@ import java.util.List;
         return userService.getUserTransactions(userBaseKey.key);
     }
 
-    @NotNull public MiddleCallback<UserTransactionHistoryDTOList> getUserTransactions(
-            @NotNull UserBaseKey userBaseKey,
-            @Nullable Callback<UserTransactionHistoryDTOList> callback)
-    {
-        MiddleCallback<UserTransactionHistoryDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.getUserTransactions(userBaseKey.key, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Update PayPal Email">
-    @NotNull protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(@NotNull UserBaseKey playerId)
-    {
-        return new DTOProcessorUpdatePayPalEmail(userProfileCache, playerId);
-    }
-
-    public UpdatePayPalEmailDTO updatePayPalEmail(UserBaseKey userBaseKey,
-            UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
-    {
-        return createUpdatePaypalEmailProcessor(userBaseKey).process(
-                userService.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO));
-    }
-
-    public MiddleCallback<UpdatePayPalEmailDTO> updatePayPalEmail(UserBaseKey userBaseKey,
-            UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO,
-            Callback<UpdatePayPalEmailDTO> callback)
-    {
-        MiddleCallback<UpdatePayPalEmailDTO>
-                middleCallback = new BaseMiddleCallback<>(callback, createUpdatePaypalEmailProcessor(userBaseKey));
-        userServiceAsync.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO,
-                middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Update Alipay account">
-    @NotNull protected DTOProcessor<UpdateAlipayAccountDTO> createUpdateAlipayAccountProcessor(@NotNull UserBaseKey playerId)
-    {
-        return new DTOProcessorUpdateAlipayAccount(userProfileCache, playerId);
-    }
-
-    public UpdateAlipayAccountDTO updateAlipayAccount(
-            UserBaseKey userBaseKey,
-            UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
-    {
-        return createUpdateAlipayAccountProcessor(userBaseKey).process(
-                userService.updateAlipayAccount(userBaseKey.key, updateAlipayAccountFormDTO));
-    }
-
-    public MiddleCallback<UpdateAlipayAccountDTO> updateAlipayAccount(
-            UserBaseKey userBaseKey,
-            UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO,
-            Callback<UpdateAlipayAccountDTO> callback)
-    {
-        MiddleCallback<UpdateAlipayAccountDTO>
-                middleCallback = new BaseMiddleCallback<>(callback, createUpdateAlipayAccountProcessor(userBaseKey));
-        userServiceAsync.updateAlipayAccount(userBaseKey.key, updateAlipayAccountFormDTO,
-                middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Delete User">
-    @NotNull protected DTOProcessor<Response> createUserDeletedProcessor(@NotNull UserBaseKey playerId)
-    {
-        return new DTOProcessorUserDeleted(userProfileCache, playerId);
-    }
-    public Response deleteUser(UserBaseKey userKey)
-    {
-        return createUserDeletedProcessor(userKey).process(userService.deleteUser(userKey.key));
-    }
-
-    public MiddleCallback<Response> deleteUser(UserBaseKey userKey, Callback<Response> callback)
-    {
-        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback, createUserDeletedProcessor(userKey));
-        userServiceAsync.deleteUser(userKey.key, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="Get Social Friends">
     public UserFriendsDTOList getFriends(@NotNull FriendsListKey friendsListKey)
@@ -663,35 +349,6 @@ import java.util.List;
         return received;
     }
 
-    public MiddleCallback<UserFriendsDTOList> getFriends(
-            @NotNull FriendsListKey friendsListKey,
-            @Nullable Callback<UserFriendsDTOList> callback)
-    {
-        MiddleCallback<UserFriendsDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        if (friendsListKey.searchQuery != null)
-        {
-            userServiceAsync.searchSocialFriends(
-                    friendsListKey.userBaseKey.key,
-                    friendsListKey.socialNetworkEnum,
-                    friendsListKey.searchQuery,
-                    middleCallback);
-        }
-        else if (friendsListKey.socialNetworkEnum != null)
-        {
-            userServiceAsync.getSocialFriends(
-                    friendsListKey.userBaseKey.key,
-                    friendsListKey.socialNetworkEnum,
-                    middleCallback);
-        }
-        else
-        {
-            userServiceAsync.getFriends(
-                    friendsListKey.userBaseKey.key,
-                    middleCallback);
-        }
-        return middleCallback;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="Search Social Friends">
     public MiddleCallback<UserFriendsDTOList> searchSocialFriends(
@@ -703,18 +360,6 @@ import java.util.List;
         MiddleCallback<UserFriendsDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.searchSocialFriends(userKey.key, socialNetworkEnum, query, middleCallback);
         return middleCallback;
-    }
-
-    public UserFriendsDTOList searchSocialFriends(@NotNull UserBaseKey userKey, @NotNull SocialNetworkEnum socialNetworkEnum, @NotNull String query)
-    {
-        return userService.searchSocialFriends(userKey.key, socialNetworkEnum, query);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Follow Batch Free">
-    public Response followBatchFree(FollowFriendsForm followFriendsForm)
-    {
-        return userService.followBatchFree(followFriendsForm);
     }
 
     public MiddleCallback<UserProfileDTO> followBatchFree(FollowFriendsForm followFriendsForm,Callback<UserProfileDTO> callback)
@@ -816,11 +461,6 @@ import java.util.List;
                 userToFollow);
     }
 
-    public UserProfileDTO freeFollow(@NotNull UserBaseKey userBaseKey)
-    {
-        return createFollowFreeUserProcessor(userBaseKey).process(userService.freeFollow(userBaseKey.key));
-    }
-
     @NotNull public MiddleCallback<UserProfileDTO> freeFollow(
             @NotNull UserBaseKey userBaseKey,
             @Nullable Callback<UserProfileDTO> callback)
@@ -843,11 +483,6 @@ import java.util.List;
                 userToFollow);
     }
 
-    public UserProfileDTO unfollow(@NotNull UserBaseKey userBaseKey)
-    {
-        return createUnfollowUserProcessor(userBaseKey).process(userService.unfollow(userBaseKey.key));
-    }
-
     public MiddleCallback<UserProfileDTO> unfollow(
             @NotNull UserBaseKey userBaseKey,
             @Nullable Callback<UserProfileDTO> callback)
@@ -864,15 +499,6 @@ import java.util.List;
         return userService.getHeroes(heroKey.key);
     }
 
-    public BaseMiddleCallback<HeroDTOList> getHeroes(
-            @NotNull UserBaseKey heroKey,
-            @Nullable Callback<HeroDTOList> callback)
-    {
-        BaseMiddleCallback<HeroDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.getHeroes(heroKey.key, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="Update Country Code">
     @NotNull protected DTOProcessor<UpdateCountryCodeDTO> createUpdateCountryCodeProcessor(
@@ -888,40 +514,12 @@ import java.util.List;
                 updateCountryCodeFormDTO);
     }
 
-    @NotNull public UpdateCountryCodeDTO updateCountryCode(
-            @NotNull UserBaseKey userKey,
-            @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
-    {
-        return createUpdateCountryCodeProcessor(userKey, updateCountryCodeFormDTO).process(
-                userService.updateCountryCode(userKey.key, updateCountryCodeFormDTO));
-    }
-
-    @NotNull public MiddleCallback<UpdateCountryCodeDTO> updateCountryCode(
-            @NotNull UserBaseKey userKey,
-            @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO,
-            @Nullable Callback<UpdateCountryCodeDTO> callback)
-    {
-        MiddleCallback<UpdateCountryCodeDTO> middleCallback = new BaseMiddleCallback<>(callback,
-                createUpdateCountryCodeProcessor(userKey, updateCountryCodeFormDTO));
-        userServiceAsync.updateCountryCode(userKey.key, updateCountryCodeFormDTO, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Update Referral Code">
     @NotNull protected DTOProcessor<Response> createUpdateReferralCodeProcessor(
             @NotNull UpdateReferralCodeDTO updateReferralCodeDTO,
             @NotNull UserBaseKey invitedUserId)
     {
         return new DTOProcessorUpdateReferralCode(userProfileCache, updateReferralCodeDTO, invitedUserId);
-    }
-
-    @NotNull public Response updateReferralCode(
-            @NotNull UserBaseKey invitedUserId,
-            @NotNull UpdateReferralCodeDTO updateReferralCodeDTO)
-    {
-        return createUpdateReferralCodeProcessor(updateReferralCodeDTO, invitedUserId).process(
-                userService.updateReferralCode(invitedUserId.key, updateReferralCodeDTO));
     }
 
     @NotNull public MiddleCallback<Response> updateReferralCode(

@@ -6,19 +6,16 @@ import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.chinabuild.data.RecommendItems;
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
-import com.tradehero.th.api.users.*;
+import com.tradehero.th.api.users.UpdateReferralCodeDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserSearchResultDTOList;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.password.ResetPasswordDTO;
 import com.tradehero.th.api.users.password.ResetPasswordFormDTO;
-import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
-import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
-import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
-import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import retrofit.Callback;
@@ -84,24 +81,6 @@ interface UserServiceAsync
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 
-    //<editor-fold desc="Update Profile">
-    @FormUrlEncoded @PUT("/users/{userId}/updateUser")
-    void updateProfile(
-            @Path("userId") int userId,
-            @Field("deviceToken") String deviceToken,
-            @Field("displayName") String displayName,
-            @Field("email") String email,
-            @Field("firstName") String firstName,
-            @Field("lastName") String lastName,
-            @Field("password") String password,
-            @Field("passwordConfirmation") String passwordConfirmation,
-            @Field("username") String username,
-            @Field("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
-            @Field("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
-            @Field("biography") String biography,
-            @Field("location") String location,
-            @Field("website") String website,
-            Callback<UserProfileDTO> cb);
 
     @Multipart @PUT("/users/{userId}/updateUser")
     void updateProfile(
@@ -149,20 +128,6 @@ interface UserServiceAsync
             Callback<UserProfileDTO> cb);
     //</editor-fold>
 
-    //<editor-fold desc="Signin">
-    @POST("users/signin")
-    void signIn(
-            @Body WebSignInFormDTO webSignInFormDTO,
-            Callback<Response> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Check Display Name Available">
-    @GET("/checkDisplayNameAvailable")
-    void checkDisplayNameAvailable(
-            @Query("displayName") String username,
-            Callback<UserAvailabilityDTO> callback);
-    //</editor-fold>
-
     //<editor-fold desc="Forgot Password">
     @POST("/forgotPassword")
     void forgotPasswordEmail(
@@ -182,64 +147,6 @@ interface UserServiceAsync
             @Query("perPage") Integer perPage,
             Callback<UserSearchResultDTOList> callback);
     //</editor-fold>
-
-    //<editor-fold desc="Search Allowable Recipients">
-    @GET("/users/allowableRecipients")
-    void searchAllowableRecipients(
-            @Query("searchTerm") String searchString,
-            @Query("page") Integer page,
-            @Query("perPage") Integer perPage,
-            Callback<PaginatedAllowableRecipientDTO> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Get User">
-    @GET("/users/{userId}")
-    void getUser(
-            @Path("userId") int userId,
-            Callback<UserProfileDTO> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Get User Transactions History">
-    @GET("/users/{userId}/transactionHistory")
-    void getUserTransactions(
-            @Path("userId") int userId,
-            Callback<UserTransactionHistoryDTOList> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Update PayPal Email">
-    @POST("/users/{userId}/updatePayPalEmail")
-    void updatePayPalEmail(
-            @Path("userId") int userId,
-            @Body UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO,
-            Callback<UpdatePayPalEmailDTO> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Update Alipay Account">
-    @POST("/users/{userId}/updateAlipayAccount")
-    void updateAlipayAccount(
-            @Path("userId") int userId,
-            @Body UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO,
-            Callback<UpdateAlipayAccountDTO> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Delete User">
-    @DELETE("/users/{userId}")
-    void deleteUser(
-            @Path("userId") int userId,
-            Callback<Response> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Get Friends">
-    @GET("/users/{userId}/getFriends")
-    void getFriends(
-            @Path("userId") int userId,
-            Callback<UserFriendsDTOList> callback);
-
-    @GET("/users/{userId}/GetNewFriends")
-    void getSocialFriends(
-            @Path("userId") int userId,
-            @Query("socialNetwork") SocialNetworkEnum socialNetwork,
-            Callback<UserFriendsDTOList> callback);
 
     @GET("/users/{userId}/SearchFriends")
     void searchSocialFriends(
@@ -296,20 +203,6 @@ interface UserServiceAsync
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 
-    //<editor-fold desc="Get Heroes">
-    @GET("/users/{userId}/heroes")
-    void getHeroes(
-            @Path("userId") int userId,
-            Callback<HeroDTOList> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Update Country Code">
-    @POST("/users/{userId}/updateCountryCode")
-    void updateCountryCode(
-            @Path("userId") int userId,
-            @Body UpdateCountryCodeFormDTO updateCountryCodeFormDTO,
-            Callback<UpdateCountryCodeDTO> callback);
-    //</editor-fold>
 
     //<editor-fold desc="Update Referral Code">
     @POST("/users/{userId}/updateInviteCode")

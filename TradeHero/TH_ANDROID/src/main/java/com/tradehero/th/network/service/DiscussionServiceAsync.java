@@ -7,60 +7,17 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
-import java.util.Map;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
-import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
-import retrofit.http.Query;
-import retrofit.http.QueryMap;
 
 interface DiscussionServiceAsync
 {
-    //<editor-fold desc="Get Comment">
-    @GET("/discussions/{commentId}")
-    void getComment(
-            @Path("commentId") int commentId,
-            Callback<DiscussionDTO> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Get Discussions">
-    @Deprecated // Use getMessageThread
-    @GET("/discussions/")
-    void getDiscussions(
-            @Query("inReplyToType") DiscussionType inReplytoType,
-            @Query("inReplyToId") int inReplyToId,
-            @Query("page") Integer page, // = 1
-            @Query("perPage") Integer perPage,
-            Callback<PaginatedDTO<DiscussionDTO>> callback); // = 42
-    //</editor-fold>
-
-    //<editor-fold desc="Get Message Thread">
-    @GET("/discussions/{inReplyToType}/{inReplyToId}/getMessages")
-    void getMessageThread(
-            @Path("inReplyToType") DiscussionType inReplyToType,
-            @Path("inReplyToId") int inReplyToId,
-            @Query("senderUserId") int senderUserId,
-            @Query("recipientUserId") int recipientUserId,
-            @Query("maxCount") Integer maxCount,
-            @Query("maxId") Integer maxId,
-            @Query("minId") Integer minId,
-            Callback<PaginatedDTO<DiscussionDTO>> callback);
-
-    @GET("/discussions/{inReplyToType}/{inReplyToId}/getMessages")
-    void getMessageThread(
-            @Path("inReplyToType") DiscussionType inReplyToType,
-            @Path("inReplyToId") int inReplyToId,
-            @QueryMap Map<String, Object> options,
-            Callback<PaginatedDTO<DiscussionDTO>> callback);
-    //</editor-fold>
-
     //<editor-fold desc="Create Discussion">
     @POST("/discussions")
     void createDiscussion(

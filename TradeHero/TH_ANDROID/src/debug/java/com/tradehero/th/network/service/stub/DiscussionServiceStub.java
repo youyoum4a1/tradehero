@@ -1,20 +1,14 @@
 package com.tradehero.th.network.service.stub;
 
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.VoteDirection;
-import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.api.pagination.RangeDTO;
-import com.tradehero.th.api.pagination.RangeSequenceDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.network.service.DiscussionService;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+
 import javax.inject.Inject;
+import java.util.Map;
 
 public class DiscussionServiceStub implements DiscussionService
 {
@@ -48,76 +42,6 @@ public class DiscussionServiceStub implements DiscussionService
         return null;
     }
 
-    @Override public PaginatedDTO<DiscussionDTO> getDiscussions(
-            DiscussionType inReplyToType,
-            int inReplyToId,
-            Map<String, Object> options)
-    {
-        PaginatedDTO<DiscussionDTO> paginatedDTO = new PaginatedDTO<>();
-
-        List<DiscussionDTO> discussionDTOs = new ArrayList<>();
-
-        for (int i = 0; i < 10; ++i)
-        {
-            DiscussionDTO discussionDTO = new DiscussionDTO();
-            discussionDTO.id = i;
-            discussionDTO.text = inReplyToType.description + ": asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd asd " + i;
-            discussionDTO.userId = (i % 2 == 0) ? currentUserId.toUserBaseKey().key : 23;
-            discussionDTOs.add(discussionDTO);
-        }
-
-        paginatedDTO.setData(discussionDTOs);
-
-        return paginatedDTO;
-    }
-
-    @Override public PaginatedDTO<DiscussionDTO> getMessageThread(
-            DiscussionType inReplyToType, int inReplyToId,
-            int senderUserId, int recipientUserId,
-            Integer maxCount, Integer maxId, Integer minId)
-    {
-        maxCount = maxCount == null ? DEFAULT_MAX_COUNT : maxCount;
-        PaginatedDTO<DiscussionDTO> rangedDTO = new PaginatedDTO<>();
-        DiscussionDTOList data = new DiscussionDTOList();
-        if (maxId != null)
-        {
-            maxId = addFromAboveDown(data, maxCount, maxId, minId);
-        }
-        else if (minId != null)
-        {
-            maxId = addFromBelowUp(data, maxCount, minId);
-        }
-        else
-        {
-            throw new IllegalArgumentException("Cannot find such stuff");
-        }
-        rangedDTO.setData(data);
-        RangeSequenceDTO sequenceDTO = new RangeSequenceDTO();
-        sequenceDTO.prev = new RangeDTO(maxCount, minId - 1, null);
-        sequenceDTO.next = new RangeDTO(maxCount, null, maxId + 1);
-        //rangedDTO.setSequenceDTO(sequenceDTO);
-        return rangedDTO;
-    }
-
-    private int addFromAboveDown(DiscussionDTOList data, int maxCount, int maxId, Integer minId)
-    {
-        minId = minId == null ? 0 : minId;
-        while (maxCount-- > 0 && maxId >= minId)
-        {
-            data.add(getComment(maxId--));
-        }
-        return maxId;
-    }
-
-    private int addFromBelowUp(DiscussionDTOList data, int maxCount, int minId)
-    {
-        while (maxCount-- > 0)
-        {
-            data.add(getComment(minId++));
-        }
-        return minId;
-    }
-
     @Override public PaginatedDTO<DiscussionDTO> getMessageThread(
             DiscussionType inReplyToType,
             int inReplyToId,
@@ -126,18 +50,6 @@ public class DiscussionServiceStub implements DiscussionService
         return null;
     }
 
-    @Override public DiscussionDTO createDiscussion(DiscussionFormDTO discussionFormDTO)
-    {
-        return null;
-    }
-
-    @Override public DiscussionDTO vote(
-            DiscussionType inReplyToType,
-            int inReplyToId,
-            VoteDirection direction)
-    {
-        return null;
-    }
 
     @Override public DiscussionDTO share(
             DiscussionType inReplyToType,

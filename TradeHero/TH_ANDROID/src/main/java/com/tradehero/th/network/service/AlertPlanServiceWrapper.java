@@ -1,9 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
-import com.tradehero.th.api.alert.AlertPlanDTO;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
-import com.tradehero.th.api.users.RestorePurchaseForm;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
@@ -11,12 +9,12 @@ import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton public class AlertPlanServiceWrapper
 {
@@ -35,21 +33,6 @@ import retrofit.Callback;
         this.userProfileCache = userProfileCache;
     }
 
-    //<editor-fold desc="Get Alert Plans">
-    public List<AlertPlanDTO> getAlertPlans(@NotNull UserBaseKey userBaseKey)
-    {
-        return alertPlanService.getAlertPlans(userBaseKey.key);
-    }
-
-    public MiddleCallback<List<AlertPlanDTO>> getAlertPlans(
-            @NotNull UserBaseKey userBaseKey,
-            @Nullable Callback<List<AlertPlanDTO>> callback)
-    {
-        MiddleCallback<List<AlertPlanDTO>> middleCallback = new BaseMiddleCallback<>(callback);
-        alertPlanServiceAsync.getAlertPlans(userBaseKey.key, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="Subscribe to Alert Plan">
     public UserProfileDTO subscribeToAlertPlan(
@@ -113,24 +96,6 @@ import retrofit.Callback;
     }
     //</editor-fold>
 
-    //<editor-fold desc="Restore Purchases">
-    public UserProfileDTO restorePurchases(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull RestorePurchaseForm restorePurchaseForm)
-    {
-        return createDTOProcessorUserProfile().process(alertPlanService.restorePurchases(userBaseKey.key, restorePurchaseForm));
-    }
-
-    public MiddleCallback<UserProfileDTO> restorePurchases(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull RestorePurchaseForm restorePurchaseForm,
-            @Nullable Callback<UserProfileDTO> callback)
-    {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorUserProfile());
-        alertPlanServiceAsync.restorePurchases(userBaseKey.key, restorePurchaseForm, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
 
     protected DTOProcessor<UserProfileDTO> createDTOProcessorUserProfile()
     {

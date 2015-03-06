@@ -17,33 +17,27 @@ public class TimelineDTO
     private List<TradeDTO> trades;
 
 
-    public UserProfileCompactDTO getUserById(int userId)
-    {
-        for (UserProfileCompactDTO userProfileCompactDTO: users)
-        {
-            if (userProfileCompactDTO != null && userProfileCompactDTO.id == userId)
-            {
+    public UserProfileCompactDTO getUserById(int userId) {
+        for (UserProfileCompactDTO userProfileCompactDTO: users) {
+            if (userProfileCompactDTO != null && userProfileCompactDTO.id == userId) {
                 return userProfileCompactDTO;
             }
         }
-
-        return null;
+ return null;
     }
 
-    public List<TimelineItemDTO> getEnhancedItems()
-    {
-        if (enhancedItems != null)
-        {
-            return Collections.unmodifiableList(enhancedItems);
-        }
-        else
-        {
+    public List<TimelineItemDTO> getEnhancedItems() {
+        if (enhancedItems == null) {
             return null;
         }
+        return Collections.unmodifiableList(enhancedItems);
     }
 
     public List<SecurityCompactDTO> getSecurities()
     {
+        if(securities==null){
+            return null;
+        }
         return Collections.unmodifiableList(securities);
     }
 
@@ -54,6 +48,9 @@ public class TimelineDTO
 
     public List<UserProfileCompactDTO> getUsers()
     {
+        if(users==null){
+            return null;
+        }
         return Collections.unmodifiableList(users);
     }
 
@@ -64,13 +61,17 @@ public class TimelineDTO
 
     public List<DiscussionDTO> getComments()
     {
-        if(comments == null)return null;
+        if(comments == null){
+            return null;
+        }
         return Collections.unmodifiableList(comments);
     }
 
     public List<TradeDTO> getTrades()
     {
-        if(trades == null)return null;
+        if(trades == null){
+            return null;
+        }
         return Collections.unmodifiableList(trades);
     }
 

@@ -23,11 +23,6 @@ public class RetrofitProtectedModule
         return adapter.create(AlertPlanServiceAsync.class);
     }
 
-    @Provides @Singleton AlertServiceAsync provideAlertService(RestAdapter adapter)
-    {
-        return adapter.create(AlertServiceAsync.class);
-    }
-
     @Provides @Singleton CompetitionServiceAsync provideCompetitionService(RestAdapter adapter)
     {
         return adapter.create(CompetitionServiceAsync.class);
@@ -36,11 +31,6 @@ public class RetrofitProtectedModule
     @Provides @Singleton DiscussionServiceAsync provideDiscussionServiceAsync(RestAdapter adapter)
     {
         return adapter.create(DiscussionServiceAsync.class);
-    }
-
-    @Provides @Singleton FollowerServiceAsync provideFollowerService(RestAdapter adapter)
-    {
-        return adapter.create(FollowerServiceAsync.class);
     }
 
     @Provides @Singleton LeaderboardServiceAsync provideLeaderboardService(RestAdapter adapter)
@@ -121,11 +111,6 @@ public class RetrofitProtectedModule
                 .build().create(TranslationServiceBingAsync.class);
     }
 
-    @Provides @Singleton TranslationTokenServiceAsync provideTranslationTokenServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(TranslationTokenServiceAsync.class);
-    }
-
     @Provides @Singleton UserServiceAsync provideUserService(RestAdapter adapter)
     {
         return adapter.create(UserServiceAsync.class);
@@ -149,11 +134,6 @@ public class RetrofitProtectedModule
     @Provides @Singleton WeChatServiceAsync provideWeChatServiceAsync(RestAdapter adapter)
     {
         return adapter.create(WeChatServiceAsync.class);
-    }
-
-    @Provides @Singleton YahooNewsServiceAsync provideYahooServiceAsync(RestAdapter.Builder builder)
-    {
-        return builder.setEndpoint(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsServiceAsync.class);
     }
 
     @Provides @Singleton HomeServiceAsync provideHomeServiceAsync(RestAdapter.Builder builder, RequestHeaders requestHeaders)

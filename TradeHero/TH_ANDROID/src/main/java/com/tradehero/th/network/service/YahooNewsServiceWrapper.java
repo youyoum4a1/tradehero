@@ -9,15 +9,12 @@ import javax.inject.Singleton;
 @Singleton public class YahooNewsServiceWrapper
 {
     @NotNull private final YahooNewsService yahooNewsService;
-    @NotNull private final YahooNewsServiceAsync yahooNewsServiceAsync;
 
     @Inject public YahooNewsServiceWrapper(
-            @NotNull YahooNewsService yahooNewsService,
-            @NotNull YahooNewsServiceAsync yahooNewsServiceAsync)
+            @NotNull YahooNewsService yahooNewsService)
     {
         super();
         this.yahooNewsService = yahooNewsService;
-        this.yahooNewsServiceAsync = yahooNewsServiceAsync;
     }
 
     public Response getNews(@NotNull String yahooSymbol)

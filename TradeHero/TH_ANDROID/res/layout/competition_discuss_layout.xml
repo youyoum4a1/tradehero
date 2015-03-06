@@ -1,7 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+    <com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView
+            android:id="@+id/pulltorefreshlistview_competition_timelines"
+            xmlns:ptr="http://schemas.android.com/apk/res-auto"
+            ptr:ptrHeaderTextColor="@color/black"
+            android:scrollingCache="false"
+            android:fadingEdge="none"
+            android:dividerHeight="1px"
+            android:divider="@color/transparent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+    </com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView>
+    <ImageView android:id="@+id/imgEmpty"
+               android:background="@drawable/empty"
+               android:layout_gravity="center"
+               android:layout_width="150dp"
+               android:visibility="gone"
+               android:layout_height="150dp"/>
+    <com.tradehero.th.widget.TradeHeroProgressBar
+            android:id="@+id/tradeheroprogressbar_competition_discuss"
+            android:layout_width="@dimen/loading_logo_width"
+            android:layout_height="@dimen/loading_logo_height"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:background="@drawable/logo"/>
 
+    <ImageView
+            android:id="@+id/ivCreateCompetitionTimeLine"
+            android:background="@drawable/issue_xml"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="60dp"
+            android:gravity="center" />
 </RelativeLayout>

@@ -96,8 +96,8 @@ public class CompetitionDetailFragment extends Fragment
     @Inject protected PortfolioCompactNewCache portfolioCompactNewCache;
     private DTOCacheNew.Listener<PortfolioId, PortfolioCompactDTO> portfolioCompactNewFetchListener;
 
-    public UserCompetitionDTO userCompetitionDTO;
-    public int competitionId;
+    private UserCompetitionDTO userCompetitionDTO;
+    private int competitionId;
     @Inject ProgressDialogUtil progressDialogUtil;
 
     @Inject protected AlertDialogUtil alertDialogUtil;
@@ -197,6 +197,14 @@ public class CompetitionDetailFragment extends Fragment
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlRankAll);
         }
         tvCompetitionIntro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(creatorIsMe()) {
+                    showDlgEditCompetitionIntro();
+                }
+            }
+        });
+        ivEditCompetitionIntro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(creatorIsMe()) {
@@ -851,7 +859,7 @@ public class CompetitionDetailFragment extends Fragment
             tvConfirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    editCompetitionDlg.dismiss();
+                    commitEditCompetitionIntro();
                 }
             });
         }
@@ -859,9 +867,17 @@ public class CompetitionDetailFragment extends Fragment
             etCompetitionIntro.setText("");
         }else{
             etCompetitionIntro.setText(userCompetitionDTO.description);
+            etCompetitionIntro.setSelection(userCompetitionDTO.description.length());
         }
         if(!editCompetitionDlg.isShowing()) {
             editCompetitionDlg.show();
         }
+    }
+
+    private void commitEditCompetitionIntro(){
+        if(etCompetitionIntro.getText().length()<4){
+            return;
+        }
+        editCompetitionDlg.dismiss();
     }
 }
