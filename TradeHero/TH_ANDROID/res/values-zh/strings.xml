@@ -2,14 +2,9 @@
 <resources>
   <string name="follow">关注</string>
   <string name="follow_all">全部关注</string>
-  <string name="upgrade_to_premium">高级关注</string>
-  <string name="following_premium">关注中\n(高级)</string>
-  <string name="select_endpoint">选择 Api 端口</string>
-  <string name="current_endpoint">"目前端口: "</string>
   <string name="action_invite">邀请好友</string>
   <string name="update">更新</string>
   <string name="empty_video_list">当前没有任何学习视频</string>
-  <string name="loading_required_information">读取所需信息中</string>
   <string name="server_response">""</string>
   <string name="link">连接 %1$s</string>
   <string name="link_description">分享前，请连接您的 %1$s 账号…</string>

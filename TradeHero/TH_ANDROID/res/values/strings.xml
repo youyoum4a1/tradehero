@@ -2,21 +2,15 @@
 <resources>
   <string name="follow">Follow</string>
   <string name="follow_all">Follow All</string>
-  <string name="upgrade_to_premium">Upgrade to Premium</string>
-  <string name="following_premium">Following\n(Premium)</string>
-  <string name="select_endpoint">Select Api Endpoint</string>
-  <string name="current_endpoint">"Current Endpoint: "</string>
   <string name="action_invite">Invite Friends</string>
   <string name="update">Update</string>
   <string name="empty_video_list">There is no learning video at the moment.</string>
-  <string name="loading_required_information">Loading Required Information</string>
   <string name="server_response">"Server response: "</string>
   <string name="link">Link %1$s</string>
   <string name="link_description">You need to link your %1$s account before sharing…</string>
   <string name="link_now">Link now!</string>
   <string name="later">Later</string>
   <string name="please_update_token_title">Social authentication expired</string>
-  <string name="please_update_token_description">Please reauthenticate with your preferred social network</string>
 
 
   <string name="discussion">Discussion</string>
@@ -511,6 +505,7 @@
   <string name="to_join_competition">报名</string>
   <string name="competition_intro_hint">4-30位字符</string>
   <string name="competition_discussion_create_hint">聊聊比赛吧～</string>
+  <string name="competition_mine_more">点击加载历史比赛</string>
 
   <!-- Administrator -->
   <string name="administrator_add_favorite">加精</string>

@@ -7,26 +7,36 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.chinabuild.cache.CompetitionListType;
 import com.tradehero.chinabuild.cache.CompetitionListTypeVip;
 import com.tradehero.chinabuild.cache.CompetitionNewCache;
+import com.tradehero.chinabuild.data.CompetitionDataItem;
+import com.tradehero.chinabuild.data.CompetitionInterface;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.chinabuild.data.UserCompetitionDTOList;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.CompetitionListAdapter;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.network.service.CompetitionServiceWrapper;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.viewpagerindicator.CirclePageIndicator;
 import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -51,11 +61,22 @@ public class CompetitionMineFragment extends DashboardFragment {
     @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
 
+
+    private CompetitionListAdapter adapterList;
+
+    private View footerView;
+    private TextView tvMoreCompetition;
+
+    private TradeHeroProgressBar progressBar;
+    private PullToRefreshListView listCompetitions;
+
+    @Inject Lazy<CompetitionServiceWrapper> competitionServiceWrapper;
+
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         competitionListCacheListenerVip = new CompetitionListCacheListener();
+        adapterList = new CompetitionListAdapter(getActivity(), CompetitionUtils.COMPETITION_PAGE_MINE);
     }
 
     @Override
@@ -63,6 +84,21 @@ public class CompetitionMineFragment extends DashboardFragment {
         View view = inflater.inflate(R.layout.competition_mine_layout, container, false);
         ButterKnife.inject(this, view);
 
+        footerView = inflater.inflate(R.layout.competition_mine_footer, null);
+        tvMoreCompetition = (TextView)footerView.findViewById(R.id.textview_competition_mine_more);
+        tvMoreCompetition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //tvMoreCompetition.setClickable(false);
+                retrieveMineCloseCompetitionsMore();
+            }
+        });
+        initViews(view);
+        if(adapterList==null || adapterList.getCount()<=0){
+            showProgressBar();
+            retrieveMineOpenCompetitions();
+
+        }
         fetchVipCompetition(false);//获取官方推荐比赛
         return view;
     }
@@ -74,12 +110,85 @@ public class CompetitionMineFragment extends DashboardFragment {
         super.onDestroyView();
     }
 
+    private void retrieveMineOpenCompetitions(){
+        competitionServiceWrapper.get().retrieveMyOpenCompetition(new CompetitoinsMineOpenCallback());
+    }
+
+    private void retrieveMineCloseCompetitionsMore(){}
+
+    private class CompetitoinsMineOpenCallback implements Callback<UserCompetitionDTOList>{
+
+
+        @Override
+        public void success(UserCompetitionDTOList userCompetitionDTOs, Response response) {
+            if(adapterList!=null) {
+                adapterList.setMyCompetitionDtoList(userCompetitionDTOs);
+            }
+            onFinish();
+        }
+
+        @Override
+        public void failure(RetrofitError retrofitError) {
+            THException exception = new THException(retrofitError);
+            THToast.show(exception.getMessage());
+            onFinish();
+        }
+
+        private void onFinish(){
+            if(listCompetitions==null){
+                return;
+            }
+            listCompetitions.onRefreshComplete();
+            dismissProgressBar();
+        }
+    }
+
+    private class CompetitionMineClosedCallback implements Callback<UserCompetitionDTOList>{
+
+
+        @Override
+        public void success(UserCompetitionDTOList userCompetitionDTOs, Response response) {
+
+        }
+
+        @Override
+        public void failure(RetrofitError retrofitError) {
+
+        }
+    }
+
+    private void initViews(View view){
+        progressBar = (TradeHeroProgressBar)view.findViewById(R.id.tradeheroprogressbar_competition);
+        listCompetitions = (PullToRefreshListView)view.findViewById(R.id.listCompetitions);
+        listCompetitions.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        listCompetitions.setAdapter(adapterList);
+        listCompetitions.getRefreshableView().addFooterView(footerView);
+        listCompetitions.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+                retrieveMineOpenCompetitions();
+            }
+
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) { }
+        });
+        listCompetitions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int id, long position) {
+                CompetitionInterface item = adapterList.getItem((int) position);
+                if (item instanceof CompetitionDataItem) {
+                    gotoCompetitionDetailFragment(((CompetitionDataItem) item).userCompetitionDTO);
+                }
+            }
+        });
+    }
+
     private void initCompetitionAdv(UserCompetitionDTOList userCompetitionDTOs)
     {
         this.userCompetitionVipDTOs = userCompetitionDTOs;
         int sizeVip = userCompetitionDTOs.size();
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        views = new ArrayList<View>();
+        views = new ArrayList();
         if (sizeVip > 0) llCompetitionAdv.setVisibility(View.VISIBLE);
         for (int i = 0; i < sizeVip; i++)
         {
@@ -190,5 +299,19 @@ public class CompetitionMineFragment extends DashboardFragment {
     protected void detachVipCompetition()
     {
         competitionNewCacheLazy.get().unregister(competitionListCacheListenerVip);
+    }
+
+    private void showProgressBar(){
+        if(progressBar!=null){
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.startLoading();
+        }
+    }
+
+    private void dismissProgressBar(){
+        if(progressBar!=null){
+            progressBar.stopLoading();
+            progressBar.setVisibility(View.GONE);
+        }
     }
 }

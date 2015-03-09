@@ -15,6 +15,7 @@ public class CompetitionUtils
     public static final int UGC_PROVIDER_ID = 33;
 
     public static final int COMPETITION_PAGE_ALL = 0;//所有比赛
+    public static final int COMPETITION_PAGE_MINE = 1;//我的比赛
     public static final int COMPETITION_PAGE_SEARCH = 2;//搜索出来的比赛
 
     public static final String[] strPeriods =

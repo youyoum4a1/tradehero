@@ -39,7 +39,6 @@ import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.viewpagerindicator.CirclePageIndicator;
 import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -133,13 +132,11 @@ public class CompetitionsFragment extends DashboardFragment
         {
             @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                Timber.d("下拉刷新");
                 fetchCompetition(true);
             }
 
             @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                Timber.d("上拉加载更多");
                 fetchCompetitionMore(true);
             }
         });
@@ -157,7 +154,7 @@ public class CompetitionsFragment extends DashboardFragment
         this.userCompetitionVipDTOs = userCompetitionDTOs;
         int sizeVip = userCompetitionDTOs.size();
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        views = new ArrayList<View>();
+        views = new ArrayList();
         if (sizeVip > 0) llCompetitionAdv.setVisibility(View.VISIBLE);
         for (int i = 0; i < sizeVip; i++)
         {

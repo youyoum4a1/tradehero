@@ -12,7 +12,6 @@ import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -104,10 +103,9 @@ import javax.inject.Singleton;
         return middleCallback;
     }
 
-    public void getCompetitionDiscuss(int competitionId, int page, int perPage, Callback<TimelineDTO> callback){
-        competitionServiceAsync.getCompetitionDiscuss(competitionId, page,perPage, callback);
+    public void retrieveMyOpenCompetition(Callback<UserCompetitionDTOList> callback){
+        competitionServiceAsync.getMyOpenCompetition(callback);
     }
-
 
     @NotNull public UserCompetitionDTOList getCompetition(CompetitionListType key)
     {

@@ -164,8 +164,12 @@ public class CompetitionListAdapter extends BaseAdapter
 
     private void doRefreshData()
     {
-        listData = new ArrayList();
-        if (competitionPageType == CompetitionUtils.COMPETITION_PAGE_ALL)
+        listData = new ArrayList<CompetitionInterface>();
+        if (competitionPageType == CompetitionUtils.COMPETITION_PAGE_MINE)
+        {
+            listData.addAll(MyCompetitionDtoList);
+        }
+        else if (competitionPageType == CompetitionUtils.COMPETITION_PAGE_ALL)
         {
             if (getOfficalCompetitionCount() > 0)
             {
@@ -285,6 +289,11 @@ public class CompetitionListAdapter extends BaseAdapter
                     holder.rlCompetitionDataExtroOffical.setVisibility(View.VISIBLE);
 
                     holder.tvCompetitionIntro.setText(((CompetitionDataItem) data).userCompetitionDTO.description);
+                }
+                else if (competitionPageType == CompetitionUtils.COMPETITION_PAGE_MINE)
+                {
+                    holder.rlCompetitionDataExtroMine.setVisibility(View.VISIBLE);
+                    holder.rlCompetitionDataExtroOffical.setVisibility(View.GONE);
                 }
 
                 THSignedNumber roi = THSignedPercentage.builder(((CompetitionDataItem) data).userCompetitionDTO.roi * 100)

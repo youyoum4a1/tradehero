@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:background="@drawable/listview_item_selector">
 
     <LinearLayout
@@ -152,5 +153,6 @@
         </LinearLayout>
 
     </RelativeLayout>
-</RelativeLayout>
+    <View android:layout_width="match_parent" android:layout_height="1px" android:background="@color/separate_line_color"/>
+</LinearLayout>
 

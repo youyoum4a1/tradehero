@@ -2,8 +2,8 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.chinabuild.data.UGCFromDTO;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
+import com.tradehero.chinabuild.data.UserCompetitionDTOList;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.timeline.TimelineDTO;
 import retrofit.Callback;
 import retrofit.http.*;
 
@@ -31,11 +31,7 @@ interface CompetitionServiceAsync
             Callback<LeaderboardDTO> callback);
     //</editor-fold>
 
-    @GET("/discussions/competition/{competitionId}") void getCompetitionDiscuss(
-            @Path("competitionId") int competitionId,
-            @Query("page")int page,
-            @Query("perPage")int perPage,
-            Callback<TimelineDTO> callback);
+    @GET("/usercompetitions?filterType=10&sortType=1") void getMyOpenCompetition(Callback<UserCompetitionDTOList> callback);
 }
 
 
