@@ -102,7 +102,6 @@ public class XpToast extends RelativeLayout
     @Override protected void onDetachedFromWindow()
     {
         mLevelDefListCacheSubscription.unsubscribe();
-        mLevelDefListCacheSubscription = null;
         if (userLevelProgressBar != null)
         {
             userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
