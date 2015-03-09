@@ -152,8 +152,8 @@ public class MainCompetitionFragment extends CompetitionFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        displayActionBarTitle();
         super.onCreateOptionsMenu(menu, inflater);
+        displayActionBarTitle();
     }
     //</editor-fold>
 

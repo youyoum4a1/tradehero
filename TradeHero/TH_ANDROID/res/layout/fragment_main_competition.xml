@@ -6,7 +6,7 @@
     android:background="@null"
     >
 
-  <ListView
+  <com.tradehero.common.widget.THListView
       android:id="@+id/competition_zone_list"
       android:layout_width="match_parent"
       android:layout_height="match_parent"

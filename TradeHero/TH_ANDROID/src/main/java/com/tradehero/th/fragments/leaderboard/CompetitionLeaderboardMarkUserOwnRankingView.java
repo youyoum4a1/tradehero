@@ -71,7 +71,10 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
             lbmuRoi.setBackgroundResource(R.drawable.basic_transparent_selector);
         }
 
-        infoButtonContainer.setVisibility(View.GONE);
+        if(infoButtonContainer != null)
+        {
+            infoButtonContainer.setVisibility(View.GONE);
+        }
     }
 
     @Override public void display(LeaderboardUserDTO leaderboardUserDTO)
