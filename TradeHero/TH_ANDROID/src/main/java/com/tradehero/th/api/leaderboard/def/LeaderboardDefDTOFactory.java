@@ -27,9 +27,6 @@ public class LeaderboardDefDTOFactory implements Func1<LeaderboardDefDTOList, Le
 
     @NonNull public LeaderboardDefDTOList call(@NonNull LeaderboardDefDTOList leaderboardDefDTOs)
     {
-        leaderboardDefDTOs.add(new InviteFriendsLeaderboardDefDTO(context));
-        leaderboardDefDTOs.add(new HeroLeaderboardDefDTO(context));
-        leaderboardDefDTOs.add(new FollowerLeaderboardDefDTO(context));
         leaderboardDefDTOs.add(new FriendLeaderboardDefDTO(context));
         leaderboardDefDTOs.add(new ExchangeContainerLeaderboardDefDTO(context));
         return leaderboardDefDTOs;

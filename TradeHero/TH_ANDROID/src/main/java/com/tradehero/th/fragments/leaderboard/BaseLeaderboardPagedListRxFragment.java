@@ -108,12 +108,6 @@ abstract public class BaseLeaderboardPagedListRxFragment<
     protected void linkWith(LeaderboardDefDTO leaderboardDefDTO)
     {
         this.leaderboardDefDTO = leaderboardDefDTO;
-        if (leaderboardDefDTO != null
-                && leaderboardDefDTO.name != null
-                && !leaderboardDefDTO.name.isEmpty())
-        {
-            setActionBarTitle(leaderboardDefDTO.name);
-        }
     }
 
     protected void fetchCurrentUserProfile()

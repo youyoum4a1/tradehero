@@ -450,10 +450,10 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     {
         if (mRankHeaderView != null && mRankHeaderView instanceof LeaderboardMarkUserItemView)
         {
-            LeaderboardMarkUserItemView leaderboardMarkUserItemView = (LeaderboardMarkUserItemView) mRankHeaderView;
+            LeaderboardMarkUserOwnRankingView leaderboardMarkUserItemView = (LeaderboardMarkUserOwnRankingView) mRankHeaderView;
             if (requisite == null || requisite.currentLeaderboardUserDTO == null)
             {
-                leaderboardMarkUserItemView.displayUserIsNotRanked();
+                leaderboardMarkUserItemView.displayUserIsNotRanked(requisite.currentUserProfileDTO);
                 // user is not ranked, disable expandable view
                 leaderboardMarkUserItemView.setOnClickListener(null);
             }
@@ -473,6 +473,10 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         if (userRankingHeaderView instanceof LeaderboardMarkUserItemView)
         {
             LeaderboardMarkUserItemView ownRankingView = (LeaderboardMarkUserItemView) userRankingHeaderView;
+            if (ownRankingView.expandMark != null)
+            {
+                ownRankingView.expandMark.setVisibility(View.GONE);
+            }
             if (ownRankingView.expandingLayout != null)
             {
                 ownRankingView.expandingLayout.setVisibility(View.GONE);

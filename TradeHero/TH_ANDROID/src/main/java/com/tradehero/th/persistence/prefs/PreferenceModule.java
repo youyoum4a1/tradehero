@@ -56,6 +56,8 @@ public class PreferenceModule
     private static final String PREF_IS_ONBOARD_SHOWN_FLAG = "PREF_IS_ONBOARD_SHOWN";
     private static final String PREF_IS_FX_SHOWN_FLAG = "PREF_IS_FX_SHOWN_FLAG";
 
+    public static final String PREF_ON_BOARDING_EXCHANGE = "PREF_ON_BOARDING_EXCHANGE";
+
     @Provides @Singleton @ForUser SharedPreferences provideUserSharePreferences(Context context)
     {
         return context.getSharedPreferences(USER_PREFERENCE_KEY, Context.MODE_PRIVATE);
@@ -190,5 +192,10 @@ public class PreferenceModule
 
         Timber.e(new NullPointerException(), "There was no AuthHeader available");
         return null;
+    }
+
+    @Provides @Singleton @THPreference(PREF_ON_BOARDING_EXCHANGE) StringPreference provideOnBoardExchange(@ForUser SharedPreferences sharedPreferences)
+    {
+        return new StringPreference(sharedPreferences, PREF_ON_BOARDING_EXCHANGE, "");
     }
 }
