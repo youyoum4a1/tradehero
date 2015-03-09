@@ -396,31 +396,10 @@ public class CompetitionDetailFragment extends Fragment
         super.onResume();
         if(isShowEditIntroCompetitionGuideView()){
             showEditIntroCompetitionGuideView();
-        }else if(THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_COMPETITION_JOIN)) {
-            showJoinCompetitionGuideView();
         }
         setLeaderboardHeadLine();
     }
 
-    private void showJoinCompetitionGuideView() {
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(layoutJoinCompetition.getVisibility() != View.VISIBLE){
-                    return;
-                }
-                //Show Guide View
-                int width = tvJoinCompetitionWidth;
-                int height = tvJoinCompetitionHeight;
-                int position_x = ((DashboardActivity) getActivity()).SCREEN_W /2;
-                int position_y = tvJoinCompetitionY + ((DashboardActivity) getActivity()).getStatusBarHeight();
-                int radius = (int) Math.sqrt(width * width / 4 + height * height / 4);
-                ((DashboardActivity) getActivity()).showGuideView(position_x,
-                        position_y, radius, GuideView.TYPE_GUIDE_COMPETITION_JOIN);
-            }
-        }, 500);
-    }
 
     private void showEditIntroCompetitionGuideView(){
         Handler handler = new Handler();

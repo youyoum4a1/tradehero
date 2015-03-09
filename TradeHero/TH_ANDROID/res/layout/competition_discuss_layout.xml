@@ -9,7 +9,9 @@
             ptr:ptrHeaderTextColor="@color/black"
             android:scrollingCache="false"
             android:fadingEdge="none"
-            android:dividerHeight="1px"
+            android:dividerHeight="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:divider="@color/transparent"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">

@@ -43,8 +43,6 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
     @Inject Lazy<Picasso> picasso;
     private List<AbstractDiscussionCompactDTO> listData;
 
-    public boolean isSimpleModule = false;//是否支持 赞分享等
-
     private Animation praiseAnimation;
     private Animation despiseAnimation;
 

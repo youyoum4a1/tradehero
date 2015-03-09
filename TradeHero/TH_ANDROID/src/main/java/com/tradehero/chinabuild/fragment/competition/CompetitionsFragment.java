@@ -65,7 +65,7 @@ public class CompetitionsFragment extends DashboardFragment
     @InjectView(R.id.llCompetitionAdv) RelativeLayout llCompetitionAdv;//广告栏
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) CirclePageIndicator indicator;
-    private List<View> views = new ArrayList<View>();
+    private List<View> views = new ArrayList();
     private CompetitionListAdapter adapterList;
 
     private UserCompetitionDTOList userCompetitionVipDTOs;
@@ -257,8 +257,7 @@ public class CompetitionsFragment extends DashboardFragment
 
     public int count;
     public boolean isStartedScroll = false;
-    public void startScrol()
-    {
+    public void startScrol(){
         if(isStartedScroll)return;
         final Handler handler = new Handler();
         Runnable runnable = new Runnable()
@@ -266,12 +265,11 @@ public class CompetitionsFragment extends DashboardFragment
             @Override
             public void run()
             {
-                try
-                {
+                try {
                     pager.setCurrentItem(count++ % pageAdapter.getCount(), true);
                     handler.postDelayed(this, 3000);
-                } catch (Exception e)
-                {
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         };

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:background="@color/bg_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+    <RelativeLayout
+            android:id="@+id/llCompetitionAdv"
+            android:visibility="gone"
+            android:layout_width="fill_parent"
+            android:layout_height="90dp">
+
+        <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                />
+
+        <com.viewpagerindicator.CirclePageIndicator
+                android:id="@+id/indicator"
+                android:layout_height="wrap_content"
+                android:layout_width="120dp"
+                android:padding="1dp"
+                android:layout_marginBottom="2dp"
+                android:background="@color/transparent"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                />
+    </RelativeLayout>
+
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
+        <com.tradehero.th.widget.TradeHeroProgressBar
+                android:id="@+id/tradeheroprogressbar_competition"
+                android:layout_width="@dimen/loading_logo_width"
+                android:layout_height="@dimen/loading_logo_height"
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                android:background="@drawable/logo"
+                />
+        <com.tradehero.chinabuild.listview.SecurityListView
+                xmlns:ptr="http://schemas.android.com/apk/res-auto"
+                ptr:ptrHeaderTextColor="@color/black"
+                android:id="@+id/listCompetitions"
+                android:scrollingCache="false"
+                android:fadingEdge="none"
+                android:dividerHeight="1px"
+                android:divider="@color/separate_line_color"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+        </com.tradehero.chinabuild.listview.SecurityListView>
+
+        <ImageView android:id="@+id/imgEmpty"
+                   android:background="@drawable/empty"
+                   android:layout_centerInParent="true"
+                   android:visibility="gone"
+                   android:layout_width="150dp"
+                   android:layout_height="150dp"/>
+
+    </RelativeLayout>
+</LinearLayout>
+

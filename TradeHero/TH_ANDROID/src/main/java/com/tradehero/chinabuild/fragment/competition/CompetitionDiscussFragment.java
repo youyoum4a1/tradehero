@@ -13,19 +13,25 @@ import android.widget.ListView;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
+import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
+import com.tradehero.th.adapters.SecurityTimeLineDiscussOrNewsAdapter;
 import com.tradehero.th.adapters.UserTimeLineAdapter;
-import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.tradehero.th.api.discussion.DiscussionKeyList;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.CompetitionServiceWrapper;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
@@ -33,11 +39,10 @@ import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TimeLines for Each Competition
@@ -51,7 +56,7 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
     private ImageView ivCreateCompetitionTimeLine;
     private TradeHeroProgressBar tradeHeroProgressBar;
 
-    private UserTimeLineAdapter adapter;
+    private SecurityTimeLineDiscussOrNewsAdapter adapter;
 
     private final int perPage = 20;
     private int pageNum = 1;
@@ -67,6 +72,12 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
 
     @Inject protected AlertDialogUtil alertDialogUtil;
 
+    @Inject DiscussionCache discussionCache;
+    @Inject DiscussionListCacheNew discussionListCache;
+    private PaginatedDiscussionListKey discussionListKey;
+
+    private CompetitionDiscussListener competitionDiscussListener;
+
     @Override
     public void onAttach(Activity activity){
         super.onAttach(activity);
@@ -78,37 +89,71 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
         super.onCreate(savedInstanceState);
         getCompetitionArguments();
         userProfileCacheListener = new UserProfileFetchListener();
+        discussionListKey = new PaginatedDiscussionListKey(DiscussionType.COMPETITION, getCompetitionId(), 1, 20);
+        discussionListCache.invalidate(discussionListKey);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.competition_discuss_layout, container, false);
-        lvTimeLine = (PullToRefreshListView)view.findViewById(R.id.pulltorefreshlistview_competition_timelines);
-        ivEmpty = (ImageView)view.findViewById(R.id.imgEmpty);
-        ivCreateCompetitionTimeLine = (ImageView)view.findViewById(R.id.ivCreateCompetitionTimeLine);
+        lvTimeLine = (PullToRefreshListView) view.findViewById(R.id.pulltorefreshlistview_competition_timelines);
+        ivEmpty = (ImageView) view.findViewById(R.id.imgEmpty);
+        ivCreateCompetitionTimeLine = (ImageView) view.findViewById(R.id.ivCreateCompetitionTimeLine);
         ivCreateCompetitionTimeLine.setOnClickListener(this);
         ivCreateCompetitionTimeLine.setVisibility(View.GONE);
-        tradeHeroProgressBar = (TradeHeroProgressBar)view.findViewById(R.id.tradeheroprogressbar_competition_discuss);
-        if(adapter==null){
-            adapter = new UserTimeLineAdapter(getActivity());
+        tradeHeroProgressBar = (TradeHeroProgressBar) view.findViewById(R.id.tradeheroprogressbar_competition_discuss);
+        if (adapter == null) {
+            adapter = new SecurityTimeLineDiscussOrNewsAdapter(getActivity());
         }
+        adapter.setTimeLineOperater(new UserTimeLineAdapter.TimeLineOperater() {
+            @Override
+            public void OnTimeLineItemClicked(int position) {
+                AbstractDiscussionCompactDTO dto = adapter.getItem(position);
+                enterTimeLineDetail(dto);
+            }
+
+            @Override
+            public void OnTimeLinePraiseClicked(int position) {
+            }
+
+            @Override
+            public void OnTimeLinePraiseDownClicked(int position) {
+            }
+
+            @Override
+            public void OnTimeLineCommentsClicked(int position) {
+            }
+
+            @Override
+            public void OnTimeLineShareClicked(int position) {
+            }
+
+            @Override
+            public void OnTimeLineBuyClicked(int position) {
+            }
+        });
+
         lvTimeLine.setAdapter(adapter);
         lvTimeLine.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                retrieveDiscuss();
+                discussionListKey.page = 1;
+                fetchSecurityDiscuss();
             }
 
-            @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-                retrieveMoreDiscuss();
-            }
+             @Override
+             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+                fetchSecurityDiscuss();
+             }
         });
         lvTimeLine.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
-        if(adapter.getCount()==0){
+        if (adapter.getCount() == 0)
+
+        {
             tradeHeroProgressBar.setVisibility(View.VISIBLE);
             tradeHeroProgressBar.startLoading();
-            retrieveDiscuss();
+            discussionListKey.page = 1;
+            fetchSecurityDiscuss();
         }
 
         fetchUserProfile();
@@ -120,6 +165,7 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
     public void onDestroyView() {
         super.onDestroyView();
         detachUserProfileCache();
+        detachCompetitionDiscuss();
     }
 
     @Override
@@ -156,13 +202,22 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
         }
     }
 
-    private void retrieveDiscuss(){
-        competitionService.get().getCompetitionDiscuss(getCompetitionId(), pageNum, perPage, new TimeLineCallback());
+    public void fetchSecurityDiscuss()
+    {
+        if (discussionListKey != null)
+        {
+            detachCompetitionDiscuss();
+            competitionDiscussListener = new CompetitionDiscussListener();
+            discussionListCache.register(discussionListKey, competitionDiscussListener);
+            discussionListCache.getOrFetchAsync(discussionListKey, true);
+        }
     }
 
-    private void retrieveMoreDiscuss(){
-        pageNum++;
-        retrieveDiscuss();
+    private void detachCompetitionDiscuss()
+    {
+        if(competitionDiscussListener!=null) {
+            discussionListCache.unregister(competitionDiscussListener);
+        }
     }
 
     private int getCompetitionId(){
@@ -174,27 +229,34 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
     }
 
 
-    public class TimeLineCallback implements Callback<TimelineDTO> {
+    public class CompetitionDiscussListener implements DiscussionListCacheNew.DiscussionKeyListListener {
         @Override
-        public void success(TimelineDTO timelineDTO, Response response) {
-            if(adapter!=null){
-                if(pageNum==1) {
-                    adapter.setListData(timelineDTO);
-                }else{
-                    adapter.addItems(timelineDTO);
-                }
-                adapter.notifyDataSetChanged();
+        public void onDTOReceived(@NotNull DiscussionListKey key, @NotNull DiscussionKeyList value) {
+            List<AbstractDiscussionCompactDTO> listData = new ArrayList<>();
+            for (int i = 0; i < value.size(); i++)
+            {
+                AbstractDiscussionCompactDTO dto = discussionCache.get(value.get(i));
+                listData.add(dto);
+            }
+
+            if (discussionListKey.page == 1)
+            {
+                adapter.setListData(listData);
+            }
+            else
+            {
+                adapter.addListData(listData);
+            }
+
+            if (value != null && value.size() > 0)
+            {
+                discussionListKey.page += 1;
             }
             onFinish();
         }
 
         @Override
-        public void failure(RetrofitError retrofitError) {
-            THException exception = new THException(retrofitError);
-            THToast.show(exception.getMessage());
-            if(pageNum>1){
-                pageNum--;
-            }
+        public void onErrorThrown(@NotNull DiscussionListKey key, @NotNull Throwable error) {
             onFinish();
         }
 
@@ -210,7 +272,9 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
             lvTimeLine.setEmptyView(ivEmpty);
             lvTimeLine.setMode(PullToRefreshBase.Mode.BOTH);
         }
+
     }
+
 
     private Fragment pushFragment(@NotNull Class fragmentClass, Bundle args) {
         return getDashboardNavigator().pushFragment(fragmentClass, args);
@@ -270,5 +334,12 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
         }
         @Override
         public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error) { }
+    }
+
+    private void enterTimeLineDetail(AbstractDiscussionCompactDTO dto)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, dto.getDiscussionKey().getArgs());
+        pushFragment(TimeLineItemDetailFragment.class, bundle);
     }
 }

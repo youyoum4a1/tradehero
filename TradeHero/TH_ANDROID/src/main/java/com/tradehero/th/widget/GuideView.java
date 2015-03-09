@@ -29,7 +29,6 @@ public class GuideView extends View {
 
     private int current_type = -1;
 
-    public final static int TYPE_GUIDE_COMPETITION_JOIN = 1;
     public final static int TYPE_GUIDE_STOCK_BUY = 2;
     public final static int TYPE_GUIDE_COMPETITION_EDIT = 3;
 
@@ -76,10 +75,6 @@ public class GuideView extends View {
         mCanvas.setBitmap(bitmap);
         mCanvas.drawBitmap(bm, new Rect(0, 0, bm.getWidth(), bm.getHeight()), new Rect(0, 0, screen_width, screen_height), null);
 
-        if (type == TYPE_GUIDE_COMPETITION_JOIN) {
-            bitmap_a = BitmapFactory.decodeResource(getResources(), R.drawable.guide_competition_goto);
-        }
-
         if (type == TYPE_GUIDE_STOCK_BUY) {
             bitmap_a = BitmapFactory.decodeResource(getResources(), R.drawable.guide_stock_buy);
             bitmap_b = BitmapFactory.decodeResource(getResources(), R.drawable.guide_stock_bug_gesture);
@@ -90,13 +85,6 @@ public class GuideView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (current_type == TYPE_GUIDE_COMPETITION_JOIN) {
-            mCanvas.drawCircle(position_x_a, position_y_a, radius_a, mPaint);
-            canvas.drawBitmap(bitmap, 0, 0, null);
-            int position_bitmap_a_x = position_x_a - 20 - bitmap_a.getWidth();
-            int position_bitmap_a_y = position_y_a + radius_a;
-            canvas.drawBitmap(bitmap_a, position_bitmap_a_x, position_bitmap_a_y, null);
-        }
         if (current_type == TYPE_GUIDE_STOCK_BUY) {
             mCanvas.drawRect(new Rect(0, position_y_a - radius_a, screen_width, position_y_a + radius_a), mPaint);
             canvas.drawBitmap(bitmap, 0, 0, null);

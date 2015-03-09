@@ -16,10 +16,11 @@
       android:layout_height="wrap_content">
 
     <LinearLayout
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_width="fill_parent">
       <ImageView
           android:id="@+id/imgSecurityTLUserHeader"
@@ -28,9 +29,10 @@
           android:scaleType="fitXY"
           android:background="@drawable/default_image"/>
 
-      <RelativeLayout
+      <LinearLayout
           android:layout_marginLeft="5dp"
-          android:layout_height="fill_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
           android:layout_width="fill_parent">
 
 
@@ -39,10 +41,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:layout_gravity="left"
             android:layout_marginLeft="2dp"
             android:textSize="14sp"
-            android:text="xxx"
             android:textColor="@color/tradehero_blue"
             />
 
@@ -52,11 +52,9 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textSize="11sp"
-            android:layout_below="@id/tvUserTLName"
-            android:text="刚刚"
             android:textColor="@color/text_gray_normal"
             />
-      </RelativeLayout>
+      </LinearLayout>
     </LinearLayout>
 
 
@@ -64,10 +62,11 @@
         android:layout_below="@id/llAllTimeLine"
         android:id="@+id/llUserTLNoTrade"
         android:layout_width="fill_parent"
+        android:layout_marginBottom="6dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:layout_height="wrap_content">
       <com.tradehero.th.widget.MarkdownTextView
-          android:paddingLeft="10dp"
-          android:paddingRight="10dp"
           android:id="@+id/tvUserTLContent"
           android:layout_width="fill_parent"
           android:lineSpacingExtra="4dp"
@@ -81,7 +80,7 @@
           />
       <RelativeLayout
           android:layout_below="@id/tvUserTLContent"
-          android:layout_marginTop="6dp"
+          android:visibility="gone"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content">
         <include layout="@layout/timeline_operater_line"/>

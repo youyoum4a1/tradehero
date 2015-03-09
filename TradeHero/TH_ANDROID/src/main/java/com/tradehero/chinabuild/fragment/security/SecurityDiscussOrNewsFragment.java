@@ -58,7 +58,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -113,7 +112,6 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
             securityId = new SecurityId(securityIdBundle);
             securityDTOId = args.getInt(BUNDLE_KEY_SECURIYT_COMPACT_ID);
             typeDiscussOrNews = args.getInt(BUNDLE_KEY_DISCUSS_OR_NEWS_TYPE);
-            Timber.d("SecurityID = " + securityId.toString());
             discussionListKey = new PaginatedDiscussionListKey(DiscussionType.SECURITY, securityDTOId, 1, 20);
             listKey = new NewsItemListSecurityKey(new SecurityIntegerId(securityDTOId), 1, 20);
         }
@@ -163,7 +161,6 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
         {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
-                Timber.d("Clicked item position = " + l);
             }
         });
 
@@ -171,26 +168,22 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
         {
             @Override public void OnTimeLineItemClicked(int position)
             {
-                Timber.d("Item position = " + position);
                 AbstractDiscussionCompactDTO dto = adapter.getItem(position);
                 enterTimeLineDetail(dto);
             }
 
             @Override public void OnTimeLinePraiseClicked(int position)
             {
-                Timber.d("Praise position = " + position);
             }
 
             @Override public void OnTimeLinePraiseDownClicked(int position)
             {
-                Timber.d("Praise position = " + position);
             }
 
             @Override public void OnTimeLineCommentsClicked(int position)
             {
                 AbstractDiscussionCompactDTO dto = adapter.getItem(position);
                 DiscussionKey discussionKey = dto.getDiscussionKey();
-                Timber.d("Comments position = " + position);
                 Bundle bundle = new Bundle();
                 bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE,
                         discussionKey.getArgs());
@@ -199,7 +192,6 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
 
             @Override public void OnTimeLineShareClicked(int position)
             {
-                Timber.d("Share position = " + position);
                 shareToWechatMoment(adapter.getItemString(position));
             }
 
@@ -213,15 +205,11 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
         {
             @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                Timber.d("下拉刷新");
-
                 refreshData(true);
             }
 
             @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                Timber.d("上拉加载更多");
-
                 refreshDataMore(false);
             }
         });
@@ -422,7 +410,6 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
 
     @Override public void onDTOReceived(@NotNull DiscussionListKey key, @NotNull DiscussionKeyList value)
     {
-        Timber.d("value = " + value.size());
         List<AbstractDiscussionCompactDTO> listData = new ArrayList<>();
         for (int i = 0; i < value.size(); i++)
         {
@@ -449,7 +436,6 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
 
     @Override public void onErrorThrown(@NotNull DiscussionListKey key, @NotNull Throwable error)
     {
-        Timber.d(error.getMessage());
         onFinish();
     }
 

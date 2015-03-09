@@ -224,10 +224,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         if(guideRL.getVisibility()==View.VISIBLE){
             guideRL.setVisibility(View.GONE);
             int guideType = guideRL.getType();
-            if(guideType == GuideView.TYPE_GUIDE_COMPETITION_JOIN){
-                THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_COMPETITION_JOIN);
-                return;
-            }
             if(guideType == GuideView.TYPE_GUIDE_STOCK_BUY){
                 THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_STOCK_BUY);
                 return;
