@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -36,6 +37,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.ServerEndpoint;
+import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -58,6 +60,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;
     @Inject THApp app;
     @Inject Provider<NotificationOpenedHandler> notificationOpenedHandler;
+    @Inject @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier;
     @Inject @ForQuestListTestingFragment Provider<Class> questListTestingFragmentClassProvider;
     @Inject @ForAchievementListTestingFragment Provider<Class> achievementListTestingFragmentClassProvider;
     @Inject @ForXpTestingFragment Provider<Class> xpTestingFragmentClassProvider;
@@ -206,6 +209,8 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
 
         LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
         View view = layoutInflater.inflate(R.layout.debug_ask_for_notification_id, null);
+        final TextView pushIdView = (TextView) view.findViewById(R.id.push_id);
+        pushIdView.setText(savedPushDeviceIdentifier.get());
         final EditText input = (EditText) view.findViewById(R.id.pushNotification);
         alert.setView(view);
         alert.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
