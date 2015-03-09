@@ -60,7 +60,6 @@ import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -377,19 +376,19 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
 
     public void displayStockName()
     {
-        if (securityCompactDTO != null)
-        {
-            if (!StringUtils.isNullOrEmpty(securityCompactDTO.name))
-            {
-                setActionBarTitle(securityCompactDTO.name);
-                setActionBarSubtitle(securityCompactDTO.getExchangeSymbol());
-            }
-            else
-            {
-                setActionBarTitle(securityCompactDTO.getExchangeSymbol());
-                setActionBarSubtitle(null);
-            }
-        }
+        //if (securityCompactDTO != null)
+        //{
+        //    if (!StringUtils.isNullOrEmpty(securityCompactDTO.name))
+        //    {
+        //        setActionBarTitle(securityCompactDTO.name);
+        //        setActionBarSubtitle(securityCompactDTO.getExchangeSymbol());
+        //    }
+        //    else
+        //    {
+        //        setActionBarTitle(securityCompactDTO.getExchangeSymbol());
+        //        setActionBarSubtitle(null);
+        //    }
+        //}
 
         if (mMarketClosedIcon != null)
         {

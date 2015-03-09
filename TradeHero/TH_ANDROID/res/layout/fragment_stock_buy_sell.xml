@@ -10,14 +10,6 @@
     tools:context=".activities.DashboardActivity"
     >
 
-  <ProgressBar
-      android:id="@+id/quote_refresh_countdown"
-      android:layout_width="match_parent"
-      style="@android:style/Widget.ProgressBar.Horizontal"
-      android:layout_height="4dp"
-      android:progressDrawable="@drawable/progress_thin_square"
-      />
-
   <com.tradehero.th.fragments.trade.view.PortfolioSelectorView
       android:id="@+id/portfolio_selector_container"
       android:layout_width="match_parent"
@@ -49,6 +41,14 @@
 
   </com.tradehero.th.fragments.trade.view.PortfolioSelectorView>
 
+  <ProgressBar
+      android:id="@+id/quote_refresh_countdown"
+      android:layout_width="match_parent"
+      style="@android:style/Widget.ProgressBar.Horizontal"
+      android:layout_height="4dp"
+      android:visibility="gone"
+      android:progressDrawable="@drawable/progress_thin_square"
+      />
   <RelativeLayout
       android:id="@+id/chart_frame"
       android:layout_width="match_parent"
@@ -62,8 +62,10 @@
         android:layout_height="0dp"
         android:layout_alignParentTop="true"
         android:scaleType="centerCrop"
-        android:alpha="0.2"
+        android:alpha="1.0"
+        android:background="@color/tradehero_blue"
         android:layout_alignBottom="@+id/buy_sell_action_buttons_bottom_margin"/>
+
 
     <ImageView
         android:id="@+id/market_closed_icon"
@@ -81,12 +83,12 @@
 
     <ImageView
         android:id="@+id/stock_logo"
-        android:layout_width="@dimen/big_image_w_h"
+        android:layout_width="@dimen/medium_image_w_h"
         android:layout_height="@dimen/big_image_w_h"
         android:adjustViewBounds="true"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginLeft="@dimen/margin_medium"
@@ -105,8 +107,21 @@
         android:layout_alignTop="@id/stock_logo"
         android:layout_toRightOf="@id/stock_logo"
         android:layout_toEndOf="@id/stock_logo"
+        android:textColor="@color/white"
+        android:textSize="18sp"
         android:text="@string/buy_sell_loading_ask_price"
         />
+
+    <TextView
+        android:id="@+id/tvStockRoi"
+        style="@style/TH.Subhead.Inverse"
+        android:layout_alignTop="@id/stock_logo"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/buy_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="+408%"
+        tools:background="@color/number_up"/>
 
     <TextView
         android:id="@+id/sell_price"
@@ -118,6 +133,8 @@
         android:layout_below="@id/buy_price"
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_marginStart="@dimen/margin_small"
+        android:textColor="@color/white"
+        android:textSize="18sp"
         android:text="@string/buy_sell_loading_bid_price"
         />
 
@@ -131,7 +148,10 @@
         android:layout_toEndOf="@id/stock_logo"
         android:layout_alignStart="@id/sell_price"
         android:layout_alignLeft="@id/sell_price"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"
         tools:text="06 Feb 05:00"/>
+
 
     <LinearLayout
         android:id="@+id/buy_sell_action_buttons"
@@ -139,16 +159,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/stock_logo"
         android:orientation="horizontal"
+        android:textSize="14sp"
         android:layout_marginTop="@dimen/margin_xsmall"
         android:paddingLeft="@dimen/margin_small"
         android:paddingRight="@dimen/margin_small"
         >
 
-      <Button
-          android:id="@+id/btn_add_trigger"
-          style="@style/TH.Btn_BuySell_Action"
-          android:text="@string/stock_alert_add_alert"
-          />
+      <!--<Button-->
+          <!--android:id="@+id/btn_add_trigger"-->
+          <!--style="@style/TH.Btn_BuySell_Action"-->
+          <!--android:text="@string/stock_alert_add_alert"-->
+          <!--android:visibility="gone"-->
+          <!--/>-->
 
     </LinearLayout>
 
@@ -177,15 +199,16 @@
 
     <include layout="@layout/buy_sell_buttons"/>
 
-    <Button
-        android:id="@+id/btn_add_watch_list"
-        style="@style/TH.Btn_BuySell_Action"
-        android:text="@string/watchlist_add_title"
-        android:enabled="false"
-        android:layout_alignBottom="@+id/buy_sell_action_buttons_bottom_margin"
-        android:layout_toRightOf="@+id/vprice_as_of"
-        android:layout_toEndOf="@+id/vprice_as_of"
-        />
+    <!--<Button-->
+        <!--android:id="@+id/btn_add_watch_list"-->
+        <!--style="@style/TH.Btn_BuySell_Action"-->
+        <!--android:text="@string/watchlist_add_title"-->
+        <!--android:enabled="false"-->
+        <!--android:visibility="gone"-->
+        <!--android:layout_alignBottom="@+id/buy_sell_action_buttons_bottom_margin"-->
+        <!--android:layout_toRightOf="@+id/vprice_as_of"-->
+        <!--android:layout_toEndOf="@+id/vprice_as_of"-->
+        <!--/>-->
 
   </RelativeLayout>
 

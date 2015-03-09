@@ -1,30 +1,32 @@
 package com.tradehero.th.fragments.trade;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import com.android.common.SlidingTabLayout;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
-import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.CircleProgressBar;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -37,13 +39,13 @@ import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.models.graphics.ForSecurityItemBackground;
-import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import java.util.Map;
@@ -55,9 +57,6 @@ import timber.log.Timber;
 @Routable("security/:securityRawInfo")
 public class BuySellStockFragment extends BuySellFragment
 {
-    @InjectView(R.id.stock_bg_logo) protected ImageView mStockBgLogo;
-    @InjectView(R.id.stock_logo) protected ImageView mStockLogo;
-
     @InjectView(R.id.buy_price) protected TextView mBuyPrice;
     @InjectView(R.id.sell_price) protected TextView mSellPrice;
     @InjectView(R.id.vprice_as_of) protected TextView mVPriceAsOf;
@@ -66,14 +65,8 @@ public class BuySellStockFragment extends BuySellFragment
     @InjectView(R.id.chart_frame) protected RelativeLayout mInfoFrame;
     @InjectView(R.id.trade_bottom_pager) protected ViewPager mBottomViewPager;
 
-    @InjectView(R.id.btn_add_trigger) protected Button mBtnAddTrigger;
-    @InjectView(R.id.btn_add_watch_list) protected Button mBtnAddWatchlist;
-
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
-    @Inject Picasso picasso;
-    @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
-    @Inject @ForSecurityItemBackground protected Transformation backgroundTransformation;
 
     private PortfolioCompactDTO defaultPortfolio;
 
@@ -83,6 +76,14 @@ public class BuySellStockFragment extends BuySellFragment
     @Nullable private Map<SecurityId, AlertId> mappedAlerts;
 
     @Inject Analytics analytics;
+
+    protected TextView mTvStockTitle;
+    protected TextView mTvStockSubTitle;
+    protected CircleProgressBar circleProgressBar;
+    protected Button btnWatched;
+    protected Button btnAlerted;
+
+    @InjectView(R.id.tvStockRoi) protected TextView tvStockRoi;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -112,6 +113,63 @@ public class BuySellStockFragment extends BuySellFragment
         super.onStart();
         analytics.fireEvent(new ChartTimeEvent(securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
         fetchWatchlist();
+    }
+
+    //<editor-fold desc="ActionBar">
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        setCustomActionBar();
+        initStockProgressbar();
+    }
+
+    public void setCustomActionBar()
+    {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+
+        LayoutInflater inflator = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflator.inflate(R.layout.stock_detail_custom_actionbar, null);
+        mTvStockTitle = (TextView) v.findViewById(R.id.tvStockTitle);
+        mTvStockSubTitle = (TextView) v.findViewById(R.id.tvStockSubTitle);
+        circleProgressBar = (CircleProgressBar) v.findViewById(R.id.circleProgressbar);
+        btnWatched = (Button) v.findViewById(R.id.btnWatched);
+        btnAlerted = (Button) v.findViewById(R.id.btnAlerted);
+
+        btnAlerted.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                handleBtnAddTriggerClicked();
+            }
+        });
+
+        btnWatched.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                handleBtnWatchlistClicked();
+            }
+        });
+
+        actionBar.setCustomView(v);
+    }
+
+    private void initStockProgressbar()
+    {
+        progressAnimation = new Animation()
+        {
+            @Override protected void applyTransformation(float interpolatedTime, android.view.animation.Transformation t)
+            {
+                super.applyTransformation(interpolatedTime, t);
+                circleProgressBar.setProgress((int) (getMillisecondQuoteRefresh() * (/*1 -*/ interpolatedTime)));
+            }
+        };
+        progressAnimation.setDuration(getMillisecondQuoteRefresh());
+        circleProgressBar.setMaxProgress((int) getMillisecondQuoteRefresh());
+        circleProgressBar.setProgress((int) getMillisecondQuoteRefresh());
     }
 
     @Override public void onDestroyView()
@@ -206,8 +264,25 @@ public class BuySellStockFragment extends BuySellFragment
         addDefaultMainPortfolioIfShould();
         if (andDisplay)
         {
-            loadStockLogo();
+            //loadStockLogo();
             displayAsOf();
+        }
+
+        if (securityCompactDTO != null)
+        {
+            if (!StringUtils.isNullOrEmpty(securityCompactDTO.name))
+            {
+                mTvStockTitle.setText(securityCompactDTO.name);
+                mTvStockSubTitle.setText(securityCompactDTO.getExchangeSymbol());
+            }
+            else
+            {
+                mTvStockTitle.setText(securityCompactDTO.getExchangeSymbol());
+                mTvStockSubTitle.setText(null);
+            }
+
+            Picasso.with(getActivity()).load(securityCompactDTO.imageBlobUrl).resize((int) (circleProgressBar.getWidth() * 0.60),
+                    (int) (circleProgressBar.getHeight() * 0.60)).centerInside().into(mTarget);
         }
     }
 
@@ -261,6 +336,8 @@ public class BuySellStockFragment extends BuySellFragment
             mBuyPrice.setText(buyPriceText);
             mSellPrice.setText(sellPriceText);
         }
+
+        displayStockRoi();
     }
 
     public void displayAsOf()
@@ -293,42 +370,28 @@ public class BuySellStockFragment extends BuySellFragment
 
     public void displayTriggerButton()
     {
-        if (mBtnAddTrigger != null)
+        if (btnAlerted != null)
         {
-            if (mappedAlerts != null)
-            {
-                mBtnAddTrigger.setEnabled(true);
-                if (mappedAlerts.get(securityId) != null)
-                {
-                    mBtnAddTrigger.setText(R.string.stock_alert_edit_alert);
-                }
-                else
-                {
-                    mBtnAddTrigger.setText(R.string.stock_alert_add_alert);
-                }
-            }
-            else // TODO check if failed
-            {
-                mBtnAddTrigger.setEnabled(false);
-            }
+            btnAlerted.setVisibility(mappedAlerts != null ? View.VISIBLE : View.GONE);
+            btnAlerted.setAlpha(mappedAlerts.get(securityId) != null ? 1.0f : 0.50f);
         }
     }
 
     public void displayWatchlistButton()
     {
-        if (mBtnAddWatchlist != null)
+        if (btnWatched != null)
         {
             if (securityId == null || watchedList == null)
             {
                 // TODO show disabled
-                mBtnAddWatchlist.setEnabled(false);
+                btnWatched.setVisibility(View.GONE);
             }
             else
             {
-                mBtnAddWatchlist.setEnabled(true);
-                mBtnAddWatchlist.setText(watchedList.contains(securityId) ?
-                        R.string.watchlist_edit_title :
-                        R.string.watchlist_add_title);
+                btnWatched.setVisibility(View.VISIBLE);
+                btnWatched.setAlpha(watchedList.contains(securityId) ?
+                        1.0f :
+                        0.50f);
             }
         }
     }
@@ -350,178 +413,6 @@ public class BuySellStockFragment extends BuySellFragment
         return supportSell;
     }
 
-    public void loadStockLogo()
-    {
-        if (mStockLogo != null)
-        {
-            if (mStockBgLogo != null)
-            {
-                mStockBgLogo.setVisibility(View.INVISIBLE);
-            }
-            if (isMyUrlOk() && securityCompactDTO != null)
-            {
-                picasso.load(securityCompactDTO.imageBlobUrl)
-                        .transform(foregroundTransformation)
-                        .into(mStockLogo, new Callback()
-                        {
-                            @Override public void onSuccess()
-                            {
-                                loadStockBgLogoDelayed();
-                            }
-
-                            @Override public void onError()
-                            {
-                                loadStockLogoExchange();
-                            }
-                        });
-            }
-            else
-            {
-                loadStockLogoExchange();
-            }
-        }
-        else
-        {
-            loadStockBgLogoDelayed();
-        }
-    }
-
-    public void loadStockLogoExchange()
-    {
-        if (mStockLogo != null)
-        {
-            if (securityCompactDTO != null && securityCompactDTO.exchange != null)
-            {
-                try
-                {
-                    Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
-                    mStockLogo.setImageResource(exchange.logoId);
-                    loadStockBgLogoDelayed();
-                } catch (IllegalArgumentException e)
-                {
-                    Timber.e("Unknown Exchange %s", securityCompactDTO.exchange, e);
-                    loadStockLogoDefault();
-                } catch (OutOfMemoryError e)
-                {
-                    Timber.e(e, securityCompactDTO.exchange);
-                    loadStockLogoDefault();
-                }
-            }
-            else
-            {
-                loadStockLogoDefault();
-            }
-        }
-        else
-        {
-            loadStockBgLogoDelayed();
-        }
-    }
-
-    public void loadStockLogoDefault()
-    {
-        if (mStockLogo != null)
-        {
-            mStockLogo.setImageResource(R.drawable.default_image);
-        }
-        loadStockBgLogoDelayed();
-    }
-
-    public void loadStockBgLogoDelayed()
-    {
-        View rootView = getView();
-        if (rootView != null)
-        {
-            rootView.postDelayed(new Runnable()
-            {
-                @Override public void run()
-                {
-                    BuySellStockFragment.this.loadStockBgLogo();
-                }
-            }, MS_DELAY_FOR_BG_IMAGE);
-        }
-    }
-
-    public void loadStockBgLogo()
-    {
-        if (mStockBgLogo != null)
-        {
-            if (isMyUrlOk() && securityCompactDTO != null)
-            {
-                RequestCreator requestCreator = picasso.load(securityCompactDTO.imageBlobUrl)
-                        .transform(backgroundTransformation);
-                resizeBackground(requestCreator, mStockBgLogo, new Callback()
-                {
-                    @Override public void onSuccess()
-                    {
-                        if (mStockBgLogo != null)
-                        {
-                            mStockBgLogo.setVisibility(View.VISIBLE);
-                        }
-                    }
-
-                    @Override public void onError()
-                    {
-                        loadStockBgLogoExchange();
-                    }
-                });
-            }
-            else
-            {
-                loadStockBgLogoExchange();
-            }
-        }
-    }
-
-    public void loadStockBgLogoExchange()
-    {
-        if (mStockBgLogo != null)
-        {
-            if (securityCompactDTO != null && securityCompactDTO.exchange != null)
-            {
-                try
-                {
-                    Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
-                    RequestCreator requestCreator = picasso.load(exchange.logoId)
-                            .transform(backgroundTransformation);
-                    resizeBackground(requestCreator, mStockBgLogo, null);
-                    mStockBgLogo.setVisibility(View.VISIBLE);
-                } catch (IllegalArgumentException e)
-                {
-                    loadStockBgLogoDefault();
-                }
-            }
-            else
-            {
-                loadStockBgLogoDefault();
-            }
-        }
-    }
-
-    public void loadStockBgLogoDefault()
-    {
-        if (mStockBgLogo != null)
-        {
-            mStockBgLogo.setImageResource(R.drawable.default_image);
-        }
-    }
-
-    protected void resizeBackground(RequestCreator requestCreator, ImageView imageView,
-            Callback callback)
-    {
-        int width = mStockBgLogo.getWidth();
-        int height = mStockBgLogo.getHeight();
-        if (width > 0 && height > 0)
-        {
-            requestCreator.resize(width, height)
-                    .centerCrop()
-                    .into(imageView, callback);
-        }
-    }
-    //</editor-fold>
-
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.btn_add_trigger)
     protected void handleBtnAddTriggerClicked()
     {
         if (mappedAlerts != null)
@@ -545,8 +436,6 @@ public class BuySellStockFragment extends BuySellFragment
         }
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.btn_add_watch_list)
     protected void handleBtnWatchlistClicked()
     {
         if (securityId != null)
@@ -570,5 +459,53 @@ public class BuySellStockFragment extends BuySellFragment
     private void trackBuyClickEvent()
     {
         analytics.fireEvent(new BuySellEvent(isTransactionTypeBuy, securityId));
+    }
+
+    private com.squareup.picasso.Target mTarget = new com.squareup.picasso.Target()
+    {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from)
+        {
+            // Do whatever you want with the Bitmap
+            if (circleProgressBar != null)
+            {
+                circleProgressBar.setBitmapBg(bitmap);
+            }
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable)
+        {
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable)
+        {
+        }
+    };
+
+    private void displayStockRoi()
+    {
+        if (tvStockRoi != null)
+        {
+            if (securityCompactDTO != null && securityCompactDTO.risePercent != null)
+            {
+                double roi = securityCompactDTO.risePercent;
+                THSignedPercentage
+                        .builder(roi * 100)
+                        .withSign()
+                        .relevantDigitCount(3)
+                        .withDefaultColor()
+                        .defaultColorForBackground()
+                        .signTypePlusMinusAlways()
+                        .build()
+                        .into(tvStockRoi);
+            }
+            else
+            {
+                //tvStockRoi.setText(R.string.na);
+                tvStockRoi.setVisibility(View.GONE);
+            }
+        }
     }
 }
