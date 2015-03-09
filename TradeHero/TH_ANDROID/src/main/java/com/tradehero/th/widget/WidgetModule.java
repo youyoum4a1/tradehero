@@ -1,11 +1,14 @@
 package com.tradehero.th.widget;
 
 import com.tradehero.th.fragments.onboarding.hero.SelectableUserViewRelative;
+import com.tradehero.th.widget.validation.WidgetValidationModule;
 import dagger.Module;
 
 @Module(
+        includes = {
+                WidgetValidationModule.class,
+        },
         injects = {
-                ServerValidatedUsernameText.class,
                 MarkdownTextView.class,
                 VotePair.class,
                 XpToast.class,

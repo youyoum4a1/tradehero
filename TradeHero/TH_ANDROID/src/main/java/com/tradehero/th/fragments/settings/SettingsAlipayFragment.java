@@ -28,16 +28,16 @@ import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.widget.ServerValidatedEmailText;
+import com.tradehero.th.widget.validation.ValidatedText;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
 
 public class SettingsAlipayFragment extends DashboardFragment
 {
-    @InjectView(R.id.settings_alipay_email_text) protected ServerValidatedEmailText alipayAccountText;
-    @InjectView(R.id.settings_alipay_id_text) protected ServerValidatedEmailText alipayAccountIDText;
-    @InjectView(R.id.settings_alipay_realname_text) protected ServerValidatedEmailText alipayAccountRealNameText;
+    @InjectView(R.id.settings_alipay_email_text) protected ValidatedText alipayAccountText;
+    @InjectView(R.id.settings_alipay_id_text) protected ValidatedText alipayAccountIDText;
+    @InjectView(R.id.settings_alipay_realname_text) protected ValidatedText alipayAccountRealNameText;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject UserProfileCacheRx userProfileCache;
