@@ -64,8 +64,10 @@ public class CompetitionMineFragment extends DashboardFragment {
 
     private CompetitionListAdapter adapterList;
 
+    //Footer View
     private View footerView;
     private TextView tvMoreCompetition;
+    private RelativeLayout noJoinAnyCompetitionLayout;
 
     private TradeHeroProgressBar progressBar;
     private PullToRefreshListView listCompetitions;
@@ -85,14 +87,8 @@ public class CompetitionMineFragment extends DashboardFragment {
         ButterKnife.inject(this, view);
 
         footerView = inflater.inflate(R.layout.competition_mine_footer, null);
-        tvMoreCompetition = (TextView)footerView.findViewById(R.id.textview_competition_mine_more);
-        tvMoreCompetition.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //tvMoreCompetition.setClickable(false);
-                retrieveMineCloseCompetitionsMore();
-            }
-        });
+        initFooterView();
+
         initViews(view);
         if(adapterList==null || adapterList.getCount()<=0){
             showProgressBar();
@@ -117,11 +113,9 @@ public class CompetitionMineFragment extends DashboardFragment {
     private void retrieveMineCloseCompetitionsMore(){}
 
     private class CompetitoinsMineOpenCallback implements Callback<UserCompetitionDTOList>{
-
-
         @Override
         public void success(UserCompetitionDTOList userCompetitionDTOs, Response response) {
-            if(adapterList!=null) {
+            if(adapterList!=null ) {
                 adapterList.setMyCompetitionDtoList(userCompetitionDTOs);
             }
             onFinish();
@@ -135,10 +129,19 @@ public class CompetitionMineFragment extends DashboardFragment {
         }
 
         private void onFinish(){
-            if(listCompetitions==null){
-                return;
+            if(adapterList.getCount()> 0 && noJoinAnyCompetitionLayout!=null){
+                if(noJoinAnyCompetitionLayout.getVisibility()==View.VISIBLE){
+                    noJoinAnyCompetitionLayout.setVisibility(View.GONE);
+                }
+            }else{
+                if(noJoinAnyCompetitionLayout.getVisibility()==View.GONE){
+                    noJoinAnyCompetitionLayout.setVisibility(View.VISIBLE);
+                }
             }
-            listCompetitions.onRefreshComplete();
+            if(listCompetitions!=null){
+                listCompetitions.onRefreshComplete();
+            }
+
             dismissProgressBar();
         }
     }
@@ -181,6 +184,21 @@ public class CompetitionMineFragment extends DashboardFragment {
                 }
             }
         });
+    }
+
+    private void initFooterView(){
+        tvMoreCompetition = (TextView)footerView.findViewById(R.id.textview_competition_mine_more);
+        tvMoreCompetition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //tvMoreCompetition.setClickable(false);
+                retrieveMineCloseCompetitionsMore();
+            }
+        });
+        noJoinAnyCompetitionLayout = (RelativeLayout)footerView.findViewById(R.id.relativelayout_not_join_any_competition);
+        if(noJoinAnyCompetitionLayout.getVisibility() == View.VISIBLE) {
+            noJoinAnyCompetitionLayout.setVisibility(View.GONE);
+        }
     }
 
     private void initCompetitionAdv(UserCompetitionDTOList userCompetitionDTOs)

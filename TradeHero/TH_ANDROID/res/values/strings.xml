@@ -504,6 +504,7 @@
   <string name="go_competition">去比赛</string>
   <string name="to_join_competition">报名</string>
   <string name="competition_intro_hint">4-30位字符</string>
+  <string name="competition_intro_warning">比赛简介为4-30位字符</string>
   <string name="competition_discussion_create_hint">聊聊比赛吧～</string>
   <string name="competition_mine_more">点击加载历史比赛</string>
 

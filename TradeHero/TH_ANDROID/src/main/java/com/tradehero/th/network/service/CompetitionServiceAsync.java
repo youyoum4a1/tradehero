@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.chinabuild.data.CompetitionDescription;
 import com.tradehero.chinabuild.data.UGCFromDTO;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.chinabuild.data.UserCompetitionDTOList;
@@ -32,6 +33,11 @@ interface CompetitionServiceAsync
     //</editor-fold>
 
     @GET("/usercompetitions?filterType=10&sortType=1") void getMyOpenCompetition(Callback<UserCompetitionDTOList> callback);
+
+    @PUT("/usercompetitions/{competitionId}") void updateCompetitionDescription(
+            @Path("competitionId") int competitionId,
+            @Body CompetitionDescription description,
+            Callback<UserCompetitionDTO> callback);
 }
 
 

@@ -20,6 +20,7 @@ import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.chinabuild.cache.PortfolioCompactNewCache;
+import com.tradehero.chinabuild.data.CompetitionDescription;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
@@ -52,6 +53,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
+import com.tradehero.th.network.service.CompetitionServiceWrapper;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCache;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
@@ -127,9 +129,6 @@ public class CompetitionDetailFragment extends Fragment
     private TextView tvLeaderboardTime;
     private TextView tvGotoCompetition;
     private TextView tvJoinCompetition;
-    private int tvJoinCompetitionHeight;
-    private int tvJoinCompetitionWidth;
-    private int tvJoinCompetitionY;
     private int guideCompetitionEditIntroHeight;
     private RelativeLayout layoutJoinCompetition;
 
@@ -143,11 +142,14 @@ public class CompetitionDetailFragment extends Fragment
     private int currentPage = 1;
     private int PER_PAGE = 20;
 
+    private String competitionDescriptionWarning;
+
     private boolean isShowHeadLine = false;
 
     private LinearLayout mRefreshView;
 
     //Edit introduction of Competition
+    @Inject Lazy<CompetitionServiceWrapper> competitionServiceWrapper;
     private Dialog editCompetitionDlg;
     private EditText etCompetitionIntro;
     private TextView tvCancel;
@@ -174,7 +176,8 @@ public class CompetitionDetailFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.competition_detail_layout, container, false);
         ButterKnife.inject(this, view);
-        initResources();
+        guideCompetitionEditIntroHeight = (int)getActivity().getResources().getDimension(R.dimen.guide_competition_edit_intro);
+        competitionDescriptionWarning = getActivity().getResources().getString(R.string.competition_intro_warning);
         mRefreshView = (LinearLayout) inflater.inflate(R.layout.competition_detail_listview_header, null);
         tvCompetitionDetailMore.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
 
@@ -277,13 +280,6 @@ public class CompetitionDetailFragment extends Fragment
         tvCompetitionDetailMore.setVisibility(userCompetitionDTO.detailUrl == null ? View.GONE : View.VISIBLE);
     }
 
-    private void initResources(){
-        tvJoinCompetitionHeight = (int)getActivity().getResources().getDimension(R.dimen.btn_join_competition_height);
-        tvJoinCompetitionWidth = (int)getActivity().getResources().getDimension(R.dimen.btn_join_competition_width);
-        tvJoinCompetitionY = (int)getActivity().getResources().getDimension(R.dimen.btn_join_competition_y);
-        guideCompetitionEditIntroHeight = (int)getActivity().getResources().getDimension(R.dimen.guide_competition_edit_intro);
-    }
-
     private void initRankList() {
         ListView lv = listRanks.getRefreshableView();
         lv.addHeaderView(mRefreshView);
@@ -365,7 +361,7 @@ public class CompetitionDetailFragment extends Fragment
         if (adapter != null && adapter.getCount() == 0) {
             fetchCompetitionLeaderboard();
         }
-        setSchollView();
+        setScrollView();
     }
 
     @Override public void onDestroyView() {
@@ -694,13 +690,14 @@ public class CompetitionDetailFragment extends Fragment
                 .error(R.drawable.superman_facebook)
                 .into(imgUserHead);
         //设置是否显示 高校选择按钮
-        setSchollView();
+        setScrollView();
     }
 
-    public void setSchollView() {
+    public void setScrollView() {
         if (mUserProfileDTO == null || userCompetitionDTO == null) return;
         boolean showSchoolButton = false;
-        if (userCompetitionDTO != null && userCompetitionDTO.isEnrolled && userCompetitionDTO.isOngoing && userCompetitionDTO.isForSchool && (!mUserProfileDTO.isHaveSchool())) {
+        if (userCompetitionDTO != null && userCompetitionDTO.isEnrolled && userCompetitionDTO.isOngoing
+                && userCompetitionDTO.isForSchool && (!mUserProfileDTO.isHaveSchool())) {
             showSchoolButton = true;
         }
         btnCollegeSelect.setVisibility(showSchoolButton ? View.VISIBLE : View.GONE);
@@ -711,8 +708,7 @@ public class CompetitionDetailFragment extends Fragment
         if (value == null) return;
         this.portfolioCompactDTO = value;
         this.portfolioCompactDTO.userId = currentUserId.toUserBaseKey().getUserId();
-        if (value != null && value.roiSinceInception != null /*&& userCompetitionDTO.isOngoing*/)
-        {
+        if (value != null && value.roiSinceInception != null) {
             THSignedNumber roi = THSignedPercentage.builder(value.roiSinceInception * 100)
                     .withSign()
                     .signTypeArrow()
@@ -854,9 +850,36 @@ public class CompetitionDetailFragment extends Fragment
     }
 
     private void commitEditCompetitionIntro(){
-        if(etCompetitionIntro.getText().length()<4){
+        if(etCompetitionIntro.getText().length()<4 || etCompetitionIntro.getText().length()>30){
+            THToast.show(competitionDescriptionWarning);
             return;
         }
+        updateCompetitionDescription(etCompetitionIntro.getText().toString());
         editCompetitionDlg.dismiss();
+    }
+
+    private void updateCompetitionDescription(String description){
+        CompetitionDescription competitionDescription = new CompetitionDescription(description);
+        competitionServiceWrapper.get().updateCompetitionDescription(competitionId, competitionDescription, new UpdateCompetitionDescriptionCallback());
+    }
+
+
+    private class UpdateCompetitionDescriptionCallback implements Callback<UserCompetitionDTO>{
+
+        @Override
+        public void success(UserCompetitionDTO userCompetitionDTONew, Response response) {
+            if(userCompetitionDTO!=null && userCompetitionDTONew!=null){
+                userCompetitionDTO.description = userCompetitionDTONew.description;
+                if(tvCompetitionIntro!=null) {
+                    tvCompetitionIntro.setText(userCompetitionDTO.getHostUserName() + ": " + userCompetitionDTO.description);
+                }
+            }
+        }
+
+        @Override
+        public void failure(RetrofitError retrofitError) {
+            THException exception = new THException(retrofitError);
+            THToast.show(exception);
+        }
     }
 }

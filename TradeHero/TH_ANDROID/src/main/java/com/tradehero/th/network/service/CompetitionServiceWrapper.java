@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.chinabuild.cache.*;
+import com.tradehero.chinabuild.data.CompetitionDescription;
 import com.tradehero.chinabuild.data.UGCFromDTO;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.chinabuild.data.UserCompetitionDTOList;
@@ -105,6 +106,10 @@ import javax.inject.Singleton;
 
     public void retrieveMyOpenCompetition(Callback<UserCompetitionDTOList> callback){
         competitionServiceAsync.getMyOpenCompetition(callback);
+    }
+
+    public void updateCompetitionDescription(int competitionId, CompetitionDescription description, Callback<UserCompetitionDTO> callback){
+        competitionServiceAsync.updateCompetitionDescription(competitionId, description, callback);
     }
 
     @NotNull public UserCompetitionDTOList getCompetition(CompetitionListType key)
