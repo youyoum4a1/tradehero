@@ -87,10 +87,6 @@ public class THException extends Exception
                 }
             }
         }
-        //else if (throwable instanceof FacebookOperationCanceledException)
-        //{
-        //    this.code = ExceptionCode.UserCanceled;
-        //}
         return super.initCause(throwable);
     }
 

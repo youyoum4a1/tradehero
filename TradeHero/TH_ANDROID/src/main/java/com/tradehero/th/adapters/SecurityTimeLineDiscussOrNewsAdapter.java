@@ -56,18 +56,23 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
         despiseAnimation = AnimationUtils.loadAnimation(context, R.anim.vote_ani);
     }
 
-    public void setListData(List<AbstractDiscussionCompactDTO> listCompactDTO)
-    {
-        if (listCompactDTO != null && listCompactDTO.size() == 0)
-        {
+    public void setListData(List<AbstractDiscussionCompactDTO> listCompactDTO) {
+        if (listCompactDTO != null && listCompactDTO.size() == 0) {
             listCompactDTO.add(new EmptyDiscussionCompactDTO());
         }
         listData = listCompactDTO;
         notifyDataSetChanged();
     }
 
-    public void addListData(List<AbstractDiscussionCompactDTO> listCompactDTO)
-    {
+    public void setListDataWithoutEmpty(List<AbstractDiscussionCompactDTO> listCompactDTO){
+        if(listCompactDTO == null){
+            return;
+        }
+        listData = listCompactDTO;
+        notifyDataSetChanged();
+    }
+
+    public void addListData(List<AbstractDiscussionCompactDTO> listCompactDTO) {
         listData.addAll(listCompactDTO);
         notifyDataSetChanged();
     }
@@ -111,7 +116,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
     {
 
         final AbstractDiscussionCompactDTO item = getItem(position);
-        ViewHolder holder = null;
+        ViewHolder holder;
         if (convertView == null)
         {
             convertView = inflater.inflate(R.layout.security_time_line_item, viewGroup, false);
@@ -138,9 +143,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
             holder.tvTLComment = (TextView) convertView.findViewById(R.id.tvTLComment);
 
             convertView.setTag(holder);
-        }
-        else
-        {
+        } else {
             holder = (ViewHolder) convertView.getTag();
         }
 

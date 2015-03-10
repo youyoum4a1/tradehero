@@ -104,8 +104,12 @@ import javax.inject.Singleton;
         return middleCallback;
     }
 
-    public void retrieveMyOpenCompetition(Callback<UserCompetitionDTOList> callback){
-        competitionServiceAsync.getMyOpenCompetition(callback);
+    public void retrieveMyOpenCompetitions(Callback<UserCompetitionDTOList> callback){
+        competitionServiceAsync.getMyOpenCompetitions(callback);
+    }
+
+    public void retrieveMyClosedCompetitions(int perPage, int page, Callback<UserCompetitionDTOList> callback){
+        competitionServiceAsync.getMyClosedCompetitions(perPage, page, callback);
     }
 
     public void updateCompetitionDescription(int competitionId, CompetitionDescription description, Callback<UserCompetitionDTO> callback){

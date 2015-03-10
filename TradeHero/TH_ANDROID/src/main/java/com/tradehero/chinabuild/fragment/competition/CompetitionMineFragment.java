@@ -61,7 +61,6 @@ public class CompetitionMineFragment extends DashboardFragment {
     @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
 
-
     private CompetitionListAdapter adapterList;
 
     //Footer View
@@ -73,6 +72,8 @@ public class CompetitionMineFragment extends DashboardFragment {
     private PullToRefreshListView listCompetitions;
 
     @Inject Lazy<CompetitionServiceWrapper> competitionServiceWrapper;
+    private final int perPage = 20;
+    private int page = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,7 +86,6 @@ public class CompetitionMineFragment extends DashboardFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.competition_mine_layout, container, false);
         ButterKnife.inject(this, view);
-
         footerView = inflater.inflate(R.layout.competition_mine_footer, null);
         initFooterView();
 
@@ -93,7 +93,6 @@ public class CompetitionMineFragment extends DashboardFragment {
         if(adapterList==null || adapterList.getCount()<=0){
             showProgressBar();
             retrieveMineOpenCompetitions();
-
         }
         fetchVipCompetition(false);//获取官方推荐比赛
         return view;
@@ -107,16 +106,20 @@ public class CompetitionMineFragment extends DashboardFragment {
     }
 
     private void retrieveMineOpenCompetitions(){
-        competitionServiceWrapper.get().retrieveMyOpenCompetition(new CompetitoinsMineOpenCallback());
+        competitionServiceWrapper.get().retrieveMyOpenCompetitions(new CompetitoinsMineOpenCallback());
     }
 
-    private void retrieveMineCloseCompetitionsMore(){}
+    private void retrieveMineCloseCompetitionsMore(){
+        page++;
+        competitionServiceWrapper.get().retrieveMyClosedCompetitions(perPage, page, new CompetitionMineClosedCallback());
+    }
 
     private class CompetitoinsMineOpenCallback implements Callback<UserCompetitionDTOList>{
         @Override
         public void success(UserCompetitionDTOList userCompetitionDTOs, Response response) {
             if(adapterList!=null ) {
                 adapterList.setMyCompetitionDtoList(userCompetitionDTOs);
+                page = 0;
             }
             onFinish();
         }
@@ -151,12 +154,27 @@ public class CompetitionMineFragment extends DashboardFragment {
 
         @Override
         public void success(UserCompetitionDTOList userCompetitionDTOs, Response response) {
-
+            if(adapterList!=null){
+                adapterList.addMyCompetitionDtoList(userCompetitionDTOs);
+            }
+            onFinish();
         }
 
         @Override
         public void failure(RetrofitError retrofitError) {
+            THException exception = new THException(retrofitError);
+            THToast.show(exception.getMessage());
+            if(page > 0){
+                page--;
+            }
+            onFinish();
+        }
 
+        private void onFinish(){
+            if(tvMoreCompetition!=null){
+                tvMoreCompetition.setClickable(true);
+            }
+            dismissProgressBar();
         }
     }
 
@@ -178,6 +196,9 @@ public class CompetitionMineFragment extends DashboardFragment {
         listCompetitions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int id, long position) {
+                if(position<0){
+                    return;
+                }
                 CompetitionInterface item = adapterList.getItem((int) position);
                 if (item instanceof CompetitionDataItem) {
                     gotoCompetitionDetailFragment(((CompetitionDataItem) item).userCompetitionDTO);
@@ -191,7 +212,8 @@ public class CompetitionMineFragment extends DashboardFragment {
         tvMoreCompetition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //tvMoreCompetition.setClickable(false);
+                showProgressBar();
+                tvMoreCompetition.setClickable(false);
                 retrieveMineCloseCompetitionsMore();
             }
         });
@@ -233,7 +255,7 @@ public class CompetitionMineFragment extends DashboardFragment {
         pager.setAdapter(pageAdapter);
         indicator.setViewPager(pager);
 
-        startScrol();
+        startScroll();
     }
 
     private void gotoCompetitionDetailFragment(UserCompetitionDTO userCompetitionDTO){
@@ -243,7 +265,7 @@ public class CompetitionMineFragment extends DashboardFragment {
     }
 
 
-    private void startScrol(){
+    private void startScroll(){
         if(isStartedScroll)return;
         final Handler handler = new Handler();
         Runnable runnable = new Runnable()
@@ -271,24 +293,20 @@ public class CompetitionMineFragment extends DashboardFragment {
             }
         }
 
-        @Override public void onErrorThrown(@NotNull CompetitionListType key, @NotNull Throwable error)
-        {
+        @Override public void onErrorThrown(@NotNull CompetitionListType key, @NotNull Throwable error) {
             THToast.show(getString(R.string.error_network_connection));
         }
 
     }
 
-    private PagerAdapter pageAdapter = new PagerAdapter()
-    {
+    private PagerAdapter pageAdapter = new PagerAdapter() {
         @Override
-        public void destroyItem(View container, int position, Object object)
-        {
+        public void destroyItem(View container, int position, Object object) {
             ((ViewPager) container).removeView(views.get(position));
         }
 
         @Override
-        public Object instantiateItem(View container, int position)
-        {
+        public Object instantiateItem(View container, int position) {
             ((ViewPager) container).addView(views.get(position));
             return views.get(position);
         }

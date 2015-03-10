@@ -32,7 +32,12 @@ interface CompetitionServiceAsync
             Callback<LeaderboardDTO> callback);
     //</editor-fold>
 
-    @GET("/usercompetitions?filterType=10&sortType=1") void getMyOpenCompetition(Callback<UserCompetitionDTOList> callback);
+    @GET("/usercompetitions?filterType=10&sortType=1") void getMyOpenCompetitions(Callback<UserCompetitionDTOList> callback);
+
+    @GET("/usercompetitions?filterType=136&sortType=5") void getMyClosedCompetitions(
+            @Query("perPage") int perPage,
+            @Query("page") int page,
+            Callback<UserCompetitionDTOList> callback);
 
     @PUT("/usercompetitions/{competitionId}") void updateCompetitionDescription(
             @Path("competitionId") int competitionId,

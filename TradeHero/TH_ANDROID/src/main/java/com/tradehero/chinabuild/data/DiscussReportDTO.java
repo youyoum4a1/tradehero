@@ -6,8 +6,4 @@ public class DiscussReportDTO {
     public int reportType;
     public long discussionId;
 
-    @Override
-    public String toString() {
-        return "discussionType: " + discussionType + "  reportType: " + reportType + "  discussionId: " + discussionId;
-    }
 }

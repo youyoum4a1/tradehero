@@ -58,9 +58,6 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
 
     private SecurityTimeLineDiscussOrNewsAdapter adapter;
 
-    private final int perPage = 20;
-    private int pageNum = 1;
-
     @Inject Lazy<CompetitionServiceWrapper> competitionService;
     private UserCompetitionDTO userCompetitionDTO;
     private int competitionId;
@@ -233,23 +230,18 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
         @Override
         public void onDTOReceived(@NotNull DiscussionListKey key, @NotNull DiscussionKeyList value) {
             List<AbstractDiscussionCompactDTO> listData = new ArrayList<>();
-            for (int i = 0; i < value.size(); i++)
-            {
+            for (int i = 0; i < value.size(); i++) {
                 AbstractDiscussionCompactDTO dto = discussionCache.get(value.get(i));
                 listData.add(dto);
             }
 
-            if (discussionListKey.page == 1)
-            {
-                adapter.setListData(listData);
-            }
-            else
-            {
+            if (discussionListKey.page == 1) {
+                adapter.setListDataWithoutEmpty(listData);
+            } else {
                 adapter.addListData(listData);
             }
 
-            if (value != null && value.size() > 0)
-            {
+            if (value != null && value.size() > 0) {
                 discussionListKey.page += 1;
             }
             onFinish();
@@ -269,10 +261,9 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
                 tradeHeroProgressBar.stopLoading();
                 tradeHeroProgressBar.setVisibility(View.GONE);
             }
-            lvTimeLine.setEmptyView(ivEmpty);
+            lvTimeLine.getRefreshableView().setEmptyView(ivEmpty);
             lvTimeLine.setMode(PullToRefreshBase.Mode.BOTH);
         }
-
     }
 
 

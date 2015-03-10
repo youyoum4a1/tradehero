@@ -29,27 +29,23 @@ public class CompetitionListAdapter extends BaseAdapter
     private Context context;
     private LayoutInflater inflater;
     private ArrayList<CompetitionInterface> listData;
-    private ArrayList<CompetitionDataItem> OfficalCompetitionDtoList;//官方比赛
-    private ArrayList<CompetitionDataItem> UserCompetitionDtoList;//用户自建比赛
-    private ArrayList<CompetitionDataItem> MyCompetitionDtoList;//我参加的比赛
-    private ArrayList<CompetitionDataItem> SearchCompetitionDtoList;//搜索出来的比赛
+    private ArrayList<CompetitionDataItem> OfficalCompetitionDtoList= new ArrayList();//官方比赛
+    private ArrayList<CompetitionDataItem> UserCompetitionDtoList = new ArrayList();//用户自建比赛
+    private ArrayList<CompetitionDataItem> MyCompetitionDtoList= new ArrayList();//我参加的比赛
+    private ArrayList<CompetitionDataItem> SearchCompetitionDtoList= new ArrayList();//搜索出来的比赛
 
-    public CompetitionListAdapter(Context context, int pageType)
-    {
+    public CompetitionListAdapter(Context context, int pageType) {
         DaggerUtils.inject(this);
         this.context = context;
         competitionPageType = pageType;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public void setOfficalCompetitionDtoList(ArrayList<UserCompetitionDTO> list)
-    {
+    public void setOfficalCompetitionDtoList(ArrayList<UserCompetitionDTO> list) {
         ArrayList<CompetitionDataItem> listItem = new ArrayList<CompetitionDataItem>();
-        if (list != null)
-        {
+        if (list != null) {
             int sizeList = list.size();
-            for (int i = 0; i < sizeList; i++)
-            {
+            for (int i = 0; i < sizeList; i++) {
                 listItem.add(new CompetitionDataItem(list.get(i)));
             }
         }
@@ -57,25 +53,19 @@ public class CompetitionListAdapter extends BaseAdapter
         doRefreshData();
     }
 
-    public void setUserCompetitionDataList(ArrayList<CompetitionDataItem> listItem)
-    {
-        if(listItem!=null)
-        {
+    public void setUserCompetitionDataList(ArrayList<CompetitionDataItem> listItem) {
+        if(listItem!=null) {
             SearchCompetitionDtoList = listItem;
             doRefreshData();
         }
     }
 
-    public void setUserCompetitionDtoList(ArrayList<UserCompetitionDTO> list)
-    {
+    public void setUserCompetitionDtoList(ArrayList<UserCompetitionDTO> list) {
         ArrayList<CompetitionDataItem> listItem = new ArrayList<CompetitionDataItem>();
-        if (list != null)
-        {
+        if (list != null) {
             int sizeList = list.size();
-            for (int i = 0; i < sizeList; i++)
-            {
-                if (!list.get(i).isOfficial)
-                {
+            for (int i = 0; i < sizeList; i++) {
+                if (!list.get(i).isOfficial)  {
                     listItem.add(new CompetitionDataItem(list.get(i)));
                 }
             }
@@ -84,29 +74,24 @@ public class CompetitionListAdapter extends BaseAdapter
         doRefreshData();
     }
 
-    public void addUserCompetitionDtoList(ArrayList<UserCompetitionDTO> list)
-    {
-        ArrayList<CompetitionDataItem> listItem = new ArrayList<CompetitionDataItem>();
-        if (list != null)
-        {
+    public void addUserCompetitionDtoList(ArrayList<UserCompetitionDTO> list) {
+        if (list != null) {
             int sizeList = list.size();
-            for (int i = 0; i < sizeList; i++)
-            {
-                listItem.add(new CompetitionDataItem(list.get(i)));
+            for (int i = 0; i < sizeList; i++) {
+                if(isNotExist(list.get(i), UserCompetitionDtoList)){
+                    UserCompetitionDtoList.add(new CompetitionDataItem(list.get(i)));
+                }
             }
         }
-        UserCompetitionDtoList.addAll(listItem);
         doRefreshData();
     }
 
-    public void setMyCompetitionDtoList(ArrayList<UserCompetitionDTO> list)
-    {
+    public void setMyCompetitionDtoList(ArrayList<UserCompetitionDTO> list) {
         ArrayList<CompetitionDataItem> listItem = new ArrayList<CompetitionDataItem>();
-        if (list != null)
-        {
+        if (list != null)  {
+            MyCompetitionDtoList.clear();
             int sizeList = list.size();
-            for (int i = 0; i < sizeList; i++)
-            {
+            for (int i = 0; i < sizeList; i++) {
                 listItem.add(new CompetitionDataItem(list.get(i)));
             }
         }
@@ -114,29 +99,35 @@ public class CompetitionListAdapter extends BaseAdapter
         doRefreshData();
     }
 
-    public void addMyCompetitionDtoList(ArrayList<UserCompetitionDTO> list)
-    {
-        ArrayList<CompetitionDataItem> listItem = new ArrayList<CompetitionDataItem>();
-        if (list != null)
-        {
+    public void addMyCompetitionDtoList(ArrayList<UserCompetitionDTO> list) {
+        if (list != null) {
             int sizeList = list.size();
-            for (int i = 0; i < sizeList; i++)
-            {
-                listItem.add(new CompetitionDataItem(list.get(i)));
+            for (int i = 0; i < sizeList; i++) {
+                if(isNotExist(list.get(i), MyCompetitionDtoList)){
+                    MyCompetitionDtoList.add(new CompetitionDataItem(list.get(i)));
+                }
             }
         }
-        MyCompetitionDtoList.addAll(listItem);
         doRefreshData();
     }
 
-    public void setSearchCompetitionDtoList(ArrayList<UserCompetitionDTO> list)
-    {
+    private boolean isNotExist(UserCompetitionDTO userCompetitionDTO, ArrayList<CompetitionDataItem> competitionDataItems){
+        if(competitionDataItems ==null || competitionDataItems.size()==0){
+            return true;
+        }
+        for(CompetitionDataItem old: competitionDataItems){
+            if(userCompetitionDTO.id == old.userCompetitionDTO.id){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void setSearchCompetitionDtoList(ArrayList<UserCompetitionDTO> list) {
         ArrayList<CompetitionDataItem> listItem = new ArrayList<CompetitionDataItem>();
-        if (list != null)
-        {
+        if (list != null) {
             int sizeList = list.size();
-            for (int i = 0; i < sizeList; i++)
-            {
+            for (int i = 0; i < sizeList; i++) {
                 listItem.add(new CompetitionDataItem(list.get(i)));
             }
         }
@@ -144,46 +135,34 @@ public class CompetitionListAdapter extends BaseAdapter
         doRefreshData();
     }
 
-    public int getOfficialCompetitions()
-    {
-        if (OfficalCompetitionDtoList == null)
-        {
+    public int getOfficialCompetitions() {
+        if (OfficalCompetitionDtoList == null) {
             return 0;
         }
         return OfficalCompetitionDtoList.size();
     }
 
-    public int getUserCompetitions()
-    {
-        if (UserCompetitionDtoList == null)
-        {
+    public int getUserCompetitions() {
+        if (UserCompetitionDtoList == null) {
             return 0;
         }
         return UserCompetitionDtoList.size();
     }
 
-    private void doRefreshData()
-    {
-        listData = new ArrayList<CompetitionInterface>();
-        if (competitionPageType == CompetitionUtils.COMPETITION_PAGE_MINE)
-        {
+    private void doRefreshData() {
+        listData = new ArrayList<>();
+        if (competitionPageType == CompetitionUtils.COMPETITION_PAGE_MINE) {
             listData.addAll(MyCompetitionDtoList);
-        }
-        else if (competitionPageType == CompetitionUtils.COMPETITION_PAGE_ALL)
-        {
-            if (getOfficalCompetitionCount() > 0)
-            {
+        } else if (competitionPageType == CompetitionUtils.COMPETITION_PAGE_ALL) {
+            if (getOfficalCompetitionCount() > 0) {
                 listData.add(new CompetitionHeadItem(getHeadStrOfOfficalCompetition()));
                 listData.addAll(OfficalCompetitionDtoList);
             }
-            if (getUserCompetitionCount() > 0)
-            {
+            if (getUserCompetitionCount() > 0) {
                 listData.add(new CompetitionHeadItem(getHeadStrOfUserCompetition()));
                 listData.addAll(UserCompetitionDtoList);
             }
-        }
-        else if (competitionPageType == CompetitionUtils.COMPETITION_PAGE_SEARCH)
-        {
+        } else if (competitionPageType == CompetitionUtils.COMPETITION_PAGE_SEARCH) {
             listData.addAll(SearchCompetitionDtoList);
         }
         notifyDataSetChanged();
@@ -308,8 +287,7 @@ public class CompetitionListAdapter extends BaseAdapter
         return convertView;
     }
 
-    static class ViewHolder
-    {
+    static class ViewHolder {
         public LinearLayout llCompetitionHead = null;
         public TextView tvCompetitionHead = null;
         public RelativeLayout rlCompetitionData = null;
