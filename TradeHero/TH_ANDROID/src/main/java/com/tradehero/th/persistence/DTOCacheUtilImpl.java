@@ -325,7 +325,9 @@ import rx.functions.Func2;
         preFetchWatchlist();
         preFetchTranslationToken();
 
-        conveniencePrefetches(); // TODO move them so time after the others
+        // TODO move them so time after the others
+        preFetchAlerts();
+        preFetchLeaderboardDefs();
     }
 
     public void preFetchWatchlist()
@@ -336,14 +338,6 @@ import rx.functions.Func2;
     public void preFetchProviders()
     {
         this.providerListCache.get().getOne(new ProviderListKey());
-    }
-
-    public void conveniencePrefetches()
-    {
-        preFetchAlerts();
-        preFetchTranslationToken();
-        preFetchLeaderboardDefs();
-        //preFetchHomeContent();
     }
 
     public void preFetchAlerts()

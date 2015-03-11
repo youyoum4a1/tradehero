@@ -147,10 +147,26 @@
 -dontwarn com.bea.**
 -dontwarn rx.internal.**
 
--dontwarn com.urbanairship.richpush.RichPushMessageJavaScript
+# UrbanAirship -->
+-keepnames class * implements android.os.Parcelable {
+  public static final ** CREATOR;
+}
+
+## Required even for GCM only apps
+-dontwarn com.amazon.device.messaging.**
+-dontwarn com.google.android.gms.location.**
+
+## Required for the Javascript Interface
+-keepclassmembers class com.urbanairship.js.UAJavascriptInterface {
+   public *;
+}
+
+## Autopilot
+-keep public class * extends com.urbanairship.Autopilot
 
 # msgpack is used by urbanairship
 -dontwarn org.msgpack.**
+# UrbanAirship <--
 
 #Retrofit Services
 -keep class retrofit.http.** { *; } # Keep the annotations
@@ -186,7 +202,7 @@
 # Facebook
 -keep class com.facebook.model.** { *; }
 
-# For Google Play Service
+# For Google Play Service -->
 -keep class * extends java.util.ListResourceBundle {
     protected Object[][] getContents();
 }
@@ -203,5 +219,6 @@
 -keepnames class * implements android.os.Parcelable {
     public static final ** CREATOR;
 }
+# For Google Play Service <--
 
 -keep class com.google.android.gms.tagmanager.**  { *; }

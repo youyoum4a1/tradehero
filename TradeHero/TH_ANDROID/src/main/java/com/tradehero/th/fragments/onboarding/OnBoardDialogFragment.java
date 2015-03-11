@@ -13,6 +13,7 @@ import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
@@ -41,7 +42,9 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardUserListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeMarketPreference;
 import com.tradehero.th.persistence.market.ExchangeSectorCompactListCacheRx;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
+import com.tradehero.th.persistence.prefs.PreferenceModule;
 import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
+import com.tradehero.th.persistence.prefs.THPreference;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -66,6 +69,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject BroadcastUtils broadcastUtils;
     @Inject @PreferredExchangeMarket ExchangeMarketPreference preferredMarketCountry;
+    @Inject @THPreference(PreferenceModule.PREF_ON_BOARDING_EXCHANGE) StringPreference onBoardExchangePref;
 
     @InjectView(R.id.next_button) Button nextButton;
     @InjectView(R.id.done_button) Button doneButton;
@@ -101,7 +105,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     {
         super.onCreate(savedInstanceState);
         //exchange
-        exchangeSectorViewHolder = new OnBoardPickExchangeSectorViewHolder(getActivity(), preferredMarketCountry);
+        exchangeSectorViewHolder = new OnBoardPickExchangeSectorViewHolder(getActivity(), preferredMarketCountry, onBoardExchangePref);
         //hero
         heroViewHolder = new OnBoardPickHeroViewHolder(getActivity());
         //stock

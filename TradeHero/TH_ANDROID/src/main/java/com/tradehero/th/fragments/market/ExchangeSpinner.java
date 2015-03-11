@@ -31,4 +31,19 @@ public class ExchangeSpinner extends Spinner
             index++;
         }
     }
+
+    public void setSelectionById(int id)
+    {
+        SpinnerAdapter adapter = getAdapter();
+        int index = 0;
+        while (index < adapter.getCount())
+        {
+            ExchangeCompactDTO item = (ExchangeCompactDTO) adapter.getItem(index);
+            if (item.id == id)
+            {
+                setSelection(index);
+            }
+            index++;
+        }
+    }
 }

@@ -113,14 +113,14 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        chartImageButtonClickReceiver = createImageButtonClickBroadcastReceiver();
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-
+        setRetainInstance(true);
+        chartImageButtonClickReceiver = createImageButtonClickBroadcastReceiver();
         mSelectedPortfolioContainer.setDefaultPortfolioId(getApplicablePortfolioId(getArguments()));
 
         mBuySellBtnContainer.setVisibility(View.GONE);

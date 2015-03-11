@@ -3,16 +3,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     >
+
   <application
       android:icon="@drawable/notification_logo"
       android:label="@string/app_name_dev"
       tools:replace="android:icon,android:label">
-    <provider
-        android:name="com.urbanairship.UrbanAirshipProvider"
-        android:authorities="com.tradehero.th.dev.urbanairship.provider"
-        android:exported="false"
-        android:multiprocess="true"
-        tools:replace="android:authorities"
-        />
+
   </application>
+
 </manifest>

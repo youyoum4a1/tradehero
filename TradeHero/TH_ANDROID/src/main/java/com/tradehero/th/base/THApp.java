@@ -17,10 +17,11 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import dagger.ObjectGraph;
 import javax.inject.Inject;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class THApp extends PApplication
-    implements ExInjector
+        implements ExInjector
 {
     public static boolean timberPlanted = false;
 
@@ -38,7 +39,23 @@ public class THApp extends PApplication
 
         DaggerUtils.setObjectGraph(objectGraph);
 
-        pushNotificationManager.initialise();
+        pushNotificationManager.initialise()
+                .subscribe(
+                        new Action1<PushNotificationManager.InitialisationCompleteDTO>()
+                        {
+                            @Override public void call(PushNotificationManager.InitialisationCompleteDTO initialisationCompleteDTO)
+                            {
+                                // Nothing to do
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable throwable)
+                            {
+                                // Likely to happen as long as the server expects credentials on this one
+                                Timber.e(throwable, "Failed to initialise PushNotificationManager");
+                            }
+                        });
 
         THLog.showDeveloperKeyHash(this);
     }
@@ -73,7 +90,7 @@ public class THApp extends PApplication
 
     protected Object[] getModules()
     {
-        return new Object[] { new AppModule(this) };
+        return new Object[] {new AppModule(this)};
     }
 
     public void restartActivity(Class<? extends Activity> activityClass)

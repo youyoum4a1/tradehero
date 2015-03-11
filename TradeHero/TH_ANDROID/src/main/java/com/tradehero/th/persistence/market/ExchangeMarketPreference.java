@@ -11,7 +11,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 
 public class ExchangeMarketPreference extends IntPreference
 {
-    private final static int UNSET_VALUE = -1;
+    public final static int UNSET_VALUE = -1;
 
     //<editor-fold desc="Constructors">
     public ExchangeMarketPreference(@NonNull SharedPreferences preference,

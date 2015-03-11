@@ -1,142 +1,219 @@
 package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.ButterKnife;
+import android.widget.Button;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
+import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOUtil;
+import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
+import com.tradehero.th.api.security.key.FxPairSecurityId;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.models.number.THSignedFXRate;
+import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.utils.THColorUtils;
 import javax.inject.Inject;
 
 @Routable("securityFx/:securityRawInfo")
-public class FXMainFragment extends DashboardFragment
+public class FXMainFragment extends BuySellFragment
 {
-    //@Inject Analytics analytics;
-    @Inject THRouter thRouter;
+    private final static String BUNDLE_KEY_CLOSE_UNITS_BUNDLE = FXMainFragment.class.getName() + ".units";
+    private final static long MILLISECOND_FX_QUOTE_REFRESH = 5000;
+    @ColorRes private static final int DEFAULT_BUTTON_TEXT_COLOR = R.color.text_primary_inverse;
+
     @InjectView(R.id.pager) ViewPager tabViewPager;
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
-    private DiscoveryPagerAdapter discoveryPagerAdapter;
-    //private long beginTime;
-    //private int oldPageItem;
+    @Inject CurrentUserId currentUserId;
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    private int closeUnits;
+    private QuoteDTO oldQuoteDTO;
+    private DiscoveryPagerAdapter discoveryPagerAdapter;
+
+    private static int getCloseAttribute(@NonNull Bundle args)
     {
-        super.onCreate(savedInstanceState);
+        return args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
+    }
+
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
+    {
+        return inflater.inflate(R.layout.fragment_fx_main, container, false);
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        closeUnits = getCloseAttribute(getArguments());
+
         discoveryPagerAdapter = new DiscoveryPagerAdapter(this.getChildFragmentManager());
         discoveryPagerAdapter.setBundle(getArguments());
-        thRouter.inject(this);
-    }
-
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        View view = inflater.inflate(R.layout.discovery_main_fragment, container, false);
-        ButterKnife.inject(this, view);
-        initViews();
-        return view;
-    }
-
-    private void initViews()
-    {
         tabViewPager.setAdapter(discoveryPagerAdapter);
         if (!Constants.RELEASE)
         {
             tabViewPager.setOffscreenPageLimit(0);
         }
-
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
-
-        //displayNewIcon();
-
-        //beginTime = System.currentTimeMillis();
-        //oldPageItem = 0;
-        //pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
-        //{
-        //    @Override
-        //    public void onPageScrolled(int i, float v, int i2)
-        //    {
-        //    }
-        //
-        //    @Override
-        //    public void onPageSelected(int i)
-        //    {
-        //        reportAnalytics();
-        //        beginTime = System.currentTimeMillis();
-        //        oldPageItem = i;
-        //    }
-        //
-        //    @Override
-        //    public void onPageScrollStateChanged(int i)
-        //    {
-        //    }
-        //});
     }
 
-    //private void displayNewIcon()
-    //{
-    //    for (int i = 0; i < discoveryPagerAdapter.getCount(); i++)
-    //    {
-    //        if (discoveryPagerAdapter.isNew(i))
-    //        {
-    //            THTabView tabView = (THTabView) pagerSlidingTabStrip.getTabStrip().getChildAt(i);
-    //            tabView.setIcon(R.drawable.icn_new_discover);
-    //        }
-    //    }
-    //}
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    @Nullable @Override protected PortfolioCompactDTO getPreferredApplicablePortfolio(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
     {
-        super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle(R.string.fx);
+        return portfolioCompactDTOs.getDefaultFxPortfolio();
+    }
+
+    private void showCloseDialog()
+    {
+        if (closeUnits != 0
+                && quoteDTO != null
+                && securityCompactDTO != null)
+        {
+            isTransactionTypeBuy = closeUnits < 0;
+            showBuySellDialog(Math.abs(closeUnits));
+            closeUnits = 0;
+        }
     }
 
     @Override public void onDestroyView()
     {
-        //reportAnalytics();
-        tabViewPager.setAdapter(null);
-        ButterKnife.reset(this);
         super.onDestroyView();
+        this.oldQuoteDTO = null;
     }
 
-    //private void reportAnalytics()
-    //{
-    //    AnalyticsDuration duration = AnalyticsDuration.sinceTimeMillis(beginTime);
-    //    if (oldPageItem == 0)
-    //    {
-    //        analytics.fireEvent(new SingleAttributeEvent(
-    //                AnalyticsConstants.DiscoverNewsViewed,
-    //                AnalyticsConstants.TimeOnScreen,
-    //                duration.toString()));
-    //    }
-    //    else if (oldPageItem == 1)
-    //    {
-    //        analytics.fireEvent(new SingleAttributeEvent(
-    //                AnalyticsConstants.DiscoverDiscussionsViewed,
-    //                AnalyticsConstants.TimeOnScreen,
-    //                duration.toString()));
-    //    }
-    //}
-
-    @Override public void onDestroy()
+    @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
     {
-        this.discoveryPagerAdapter = null;
-        super.onDestroy();
+        MenuOwnedPortfolioId currentMenu = mSelectedPortfolioContainer.getCurrentMenu();
+        if (currentMenu != null && portfolioCompactDTO.id == currentMenu.portfolioId)
+        {
+            this.portfolioCompactDTO = portfolioCompactDTO;
+            FXInfoFragment.setPortfolioCompactDTO(portfolioCompactDTO);
+            FXInfoFragment.setPurchaseApplicableOwnedPortfolioId(currentMenu);
+        }
+        super.linkWith(portfolioCompactDTO);
+    }
+
+    @Override protected long getMillisecondQuoteRefresh()
+    {
+        return MILLISECOND_FX_QUOTE_REFRESH;
+    }
+
+    //<editor-fold desc="Display Methods"> //hide switch portfolios for temp
+    @Override public void displayStockName()
+    {
+        super.displayStockName();
+        if (securityCompactDTO instanceof FxSecurityCompactDTO)
+        {
+            FxPairSecurityId fxPairSecurityId = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
+            setActionBarTitle(String.format("%s/%s", fxPairSecurityId.left, fxPairSecurityId.right));
+            setActionBarSubtitle(null);
+        }
+    }
+
+    @Override public void displayBuySellPrice()
+    {
+        if (mBuyBtn != null && mSellBtn != null && quoteDTO != null)
+        {
+            int precision = 0;
+            if (quoteDTO.ask != null && quoteDTO.bid != null)
+            {
+                precision = SecurityCompactDTOUtil.getExpectedPrecision(quoteDTO.ask, quoteDTO.bid);
+            }
+
+            if (quoteDTO.ask == null)
+            {
+                mBuyBtn.setText(R.string.buy_sell_ask_price_not_available);
+            }
+            else
+            {
+                double diff = (oldQuoteDTO != null && oldQuoteDTO.ask != null) ? quoteDTO.ask - oldQuoteDTO.ask : 0.0;
+                formatButtonText(quoteDTO.ask, diff, precision, mBuyBtn, getString(R.string.fx_buy));
+            }
+
+            if (quoteDTO.bid == null)
+            {
+                mSellBtn.setText(R.string.buy_sell_bid_price_not_available);
+            }
+            else
+            {
+                double diff = (oldQuoteDTO != null && oldQuoteDTO.bid != null) ? quoteDTO.bid - oldQuoteDTO.bid : 0.0;
+                formatButtonText(quoteDTO.bid, diff, precision, mSellBtn, getString(R.string.fx_sell));
+            }
+        }
+    }
+
+    protected void formatButtonText(double value, double diff, int precision, Button btn, String format)
+    {
+        THSignedFXRate.builder(value)
+                .signTypeArrow()
+                .withSignValue(diff)
+                .enhanceTo((int) (btn.getTextSize() + 15))
+                .enhanceWithColor(THColorUtils.getColorResourceIdForNumber(diff, DEFAULT_BUTTON_TEXT_COLOR))
+                .withValueColor(DEFAULT_BUTTON_TEXT_COLOR)
+                .relevantDigitCount(SecurityCompactDTOUtil.DEFAULT_RELEVANT_DIGITS)
+                .expectedPrecision(precision)
+                .withDefaultColor()
+                .withFallbackColor(R.color.text_primary_inverse)
+                .format(format)
+                .build()
+                .into(btn);
+    }
+
+    @Override public boolean isBuySellReady()
+    {
+        return quoteDTO != null && positionDTOCompactList != null && applicableOwnedPortfolioIds != null;
+    }
+
+    @Override protected boolean getSupportSell()
+    {
+        return true;
+    }
+    //</editor-fold>
+
+    protected void linkWith(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
+    {
+        PortfolioCompactDTO defaultFxPortfolio = portfolioCompactDTOs.getDefaultFxPortfolio();
+        if (defaultFxPortfolio != null)
+        {
+            mSelectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(), defaultFxPortfolio));
+        }
+        setInitialSellQuantityIfCan();
+        showCloseDialog();
+    }
+
+    @Override
+    protected void conditionalDisplayPortfolioChanged(boolean isPortfolioChanged)
+    {
+    }
+
+    @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    {
+        super.linkWith(securityCompactDTO, andDisplay);
+        showCloseDialog();
+    }
+
+    @Override protected void linkWith(QuoteDTO quoteDTO)
+    {
+        this.oldQuoteDTO = this.quoteDTO;
+        super.linkWith(quoteDTO);
+        showCloseDialog();
     }
 
     private class DiscoveryPagerAdapter extends FragmentPagerAdapter
@@ -164,11 +241,6 @@ public class FXMainFragment extends DashboardFragment
         {
             return FXMainTabType.values().length;
         }
-
-        //public boolean isNew(int position)
-        //{
-        //    return FXMainTabType.values()[position].isNew;
-        //}
 
         public void setBundle(Bundle args)
         {

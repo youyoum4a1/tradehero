@@ -14,6 +14,11 @@ public class SamsungMarketUtil implements MarketUtil
     }
     //</editor-fold>
 
+    @Override public void testMarketValid(@NonNull Activity activity)
+    {
+        // TODO decide what to do
+    }
+
     @Override public void showAppOnMarket(@NonNull Activity activity)
     {
         THToast.show("TODO open Samsung market");

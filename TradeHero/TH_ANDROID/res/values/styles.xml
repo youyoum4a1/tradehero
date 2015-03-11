@@ -229,6 +229,16 @@
     <item name="android:clipChildren">false</item>
   </style>
 
+  <style name="TH.ListItem.LB">
+    <item name="android:paddingTop">0dp</item>
+    <item name="android:paddingBottom">0dp</item>
+    <item name="android:paddingLeft">0dp</item>
+    <item name="android:paddingRight">0dp</item>
+    <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
+    <item name="android:clipToPadding">false</item>
+    <item name="android:clipChildren">false</item>
+  </style>
+
   <style name="TH.ListItem.Clickable" parent="TH.ListItem">
     <item name="android:background">@drawable/basic_white_selector</item>
   </style>

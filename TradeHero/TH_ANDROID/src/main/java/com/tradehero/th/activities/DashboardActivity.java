@@ -83,9 +83,9 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trade.BuySellFXFragment;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trade.FXMainFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
+import com.tradehero.th.fragments.trade.FXInfoFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
@@ -178,13 +178,13 @@ public class DashboardActivity extends BaseActivity
     @Inject @ForAnalytics Lazy<DashboardNavigator.DashboardFragmentWatcher> analyticsReporter;
     @Inject THAppsFlyer thAppsFlyer;
     @Inject ProviderUtil providerUtil;
+    @Inject MarketUtil marketUtil;
 
     @Inject Lazy<ProviderListCacheRx> providerListCache;
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
     private boolean enrollmentScreenIsOpened = false;
 
     @InjectView(R.id.xp_toast_box) XpToast xpToast;
-
     @InjectView(R.id.my_toolbar) Toolbar toolbar;
 
     private Subscription notificationFetchSubscription;
@@ -418,6 +418,7 @@ public class DashboardActivity extends BaseActivity
                             {
                                 fragment.show(DashboardActivity.this.getFragmentManager(), AbstractAchievementDialogFragment.TAG);
                             }
+
                             @Override public void onCompleted()
                             {
                                 broadcastUtilsLazy.get().nextPlease();
@@ -776,7 +777,8 @@ public class DashboardActivity extends BaseActivity
                     MainCompetitionFragment.class,
                     BuySellStockFragment.class,
                     FXMainFragment.class,
-                    BuySellFXFragment.class,
+                    FXMainFragment.class,
+                    FXInfoFragment.class,
                     StoreScreenFragment.class,
                     LeaderboardCommunityFragment.class,
                     CompetitionWebViewFragment.class,

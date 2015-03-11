@@ -83,7 +83,7 @@ public class BuySellStockFragment extends BuySellFragment
     protected Button btnWatched;
     protected Button btnAlerted;
 
-    @InjectView(R.id.tvStockRoi) protected TextView tvStockRoi;
+    @InjectView(R.id.tv_stock_roi) protected TextView tvStockRoi;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -94,7 +94,6 @@ public class BuySellStockFragment extends BuySellFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        setRetainInstance(true);
         bottomViewPagerAdapter =
                 new BuySellBottomStockPagerAdapter(getActivity(), this.getChildFragmentManager());
         bottomViewPagerAdapter.linkWith(securityId);

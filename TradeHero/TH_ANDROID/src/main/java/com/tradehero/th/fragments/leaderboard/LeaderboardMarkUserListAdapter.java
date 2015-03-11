@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
+import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedViewDTOAdapterImpl;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
@@ -60,6 +61,11 @@ public class LeaderboardMarkUserListAdapter extends PagedViewDTOAdapterImpl<
     @Override public LeaderboardMarkUserItemView getView(int position, View convertView, ViewGroup viewGroup)
     {
         LeaderboardMarkUserItemView dtoView = super.getView(position, convertView, viewGroup);
+        if (position % 2 == 0) {
+            dtoView.setBackgroundResource(R.color.lb_item_even);
+        } else {
+            dtoView.setBackgroundResource(R.color.lb_item_odd);
+        }
         dtoView.linkWith(applicablePortfolioId);
 
         boolean expanded = getItem(position).leaderboardUserDTO.isExpanded();
