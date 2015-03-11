@@ -166,7 +166,7 @@ public class UserSelectionScreenFragment extends DashboardFragment
     protected void onUserClicked(AdapterView<?> parent, View view, int position, long id)
     {
         nextButton.setVisibility(View.VISIBLE);
-        SelectableUserDTO dto = (SelectableUserDTO) parent.getItemAtPosition(position);
+        OnBoardUserItemView.DTO dto = (OnBoardUserItemView.DTO) parent.getItemAtPosition(position);
         if (!dto.selected && selectedUsers.size() >= MAX_SELECTABLE_USERS)
         {
             THToast.show(getString(R.string.on_board_user_selected_max, MAX_SELECTABLE_USERS));
