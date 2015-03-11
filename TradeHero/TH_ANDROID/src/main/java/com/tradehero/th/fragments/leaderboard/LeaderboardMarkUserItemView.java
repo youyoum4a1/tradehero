@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Spanned;
@@ -21,7 +20,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.ContainerDTO;
@@ -35,7 +33,6 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
-import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -49,7 +46,6 @@ import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.utils.StringUtils;
@@ -75,13 +71,11 @@ public class LeaderboardMarkUserItemView
     @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
-    @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject DashboardNavigator navigator;
 
     protected OwnedPortfolioId applicablePortfolioId;
     // data
     @Nullable protected DTO viewDTO;
-
     // top view
     @InjectView(R.id.leaderboard_user_item_display_name) protected TextView lbmuDisplayName;
     @InjectView(R.id.lbmu_roi) protected TextView lbmuRoi;
@@ -94,7 +88,7 @@ public class LeaderboardMarkUserItemView
     @InjectView(R.id.leaderboard_user_item_fof) @Optional @Nullable MarkdownTextView lbmuFoF;
     @InjectView(R.id.leaderboard_user_item_follow) View lbmuFollowUser;
     @InjectView(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
-    @InjectView(R.id.leaderboard_user_item_country_logo) @Optional @Nullable ImageView countryLogo;
+    @InjectView(R.id.mark_expand_down) @Optional @Nullable ImageView expandMark;
 
     @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
 
@@ -102,6 +96,8 @@ public class LeaderboardMarkUserItemView
 
     @NonNull protected SubscriptionList subscriptions;
     @NonNull protected BehaviorSubject<UserBaseDTO> followRequestedBehavior;
+
+    protected UserProfileDTO currentUserProfileDTO;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
@@ -139,11 +135,7 @@ public class LeaderboardMarkUserItemView
             HierarchyInjector.inject(lbmuFoF);
         }
         lbmuProfilePicture.setLayerType(LAYER_TYPE_SOFTWARE, null);
-        //Add touch feedback
-        if (innerViewContainer != null)
-        {
-            innerViewContainer.setBackgroundResource(R.drawable.basic_white_selector);
-        }
+
     }
 
     @Override protected void onAttachedToWindow()
@@ -165,7 +157,6 @@ public class LeaderboardMarkUserItemView
 
     @Override protected void onDetachedFromWindow()
     {
-        picasso.get().cancelRequest(countryLogo);
         picasso.get().cancelRequest(lbmuProfilePicture);
         if (lbmuFoF != null)
         {
@@ -202,7 +193,7 @@ public class LeaderboardMarkUserItemView
         }
         if (lbmuPosition != null)
         {
-            lbmuPosition.setText(viewDTO.lbmuPosition);
+            lbmuPosition.setText(getPosition(viewDTO));
             lbmuPosition.setTextColor(viewDTO.lbmuPositionColor);
         }
         if (lbmuRoiAnnualized != null)
@@ -220,26 +211,15 @@ public class LeaderboardMarkUserItemView
             {
                 picasso.get()
                         .load(viewDTO.leaderboardUserDTO.picture)
-                        .transform(peopleIconTransformation)
                         .into(lbmuProfilePicture);
             }
             else
             {
                 picasso.get().load(R.drawable.superman_facebook)
-                        .transform(peopleIconTransformation)
                         .into(lbmuProfilePicture);
             }
         }
-        if (countryLogo != null)
-        {
-            try
-            {
-                countryLogo.setImageResource(viewDTO.countryFlagResId);
-            } catch (OutOfMemoryError e)
-            {
-                Timber.e(e, null);
-            }
-        }
+
         if (lbmuFollowUser != null)
         {
             lbmuFollowUser.setVisibility(viewDTO.lbmuFollowUserVisibility);
@@ -248,6 +228,24 @@ public class LeaderboardMarkUserItemView
         {
             lbmuFollowingUser.setVisibility(viewDTO.lbmuFollowingUserVisibility);
         }
+    }
+
+    private String getPosition(DTO viewDTO) {
+        LeaderboardUserDTO leaderboardItem = viewDTO.leaderboardUserDTO;
+        Integer currentRank = leaderboardItem.ordinalPosition + 1;
+        if (leaderboardItem.getPosition() != null)
+        {
+            return "" + (leaderboardItem.getPosition() + 1);
+        }
+        else //noinspection PointlessBooleanExpression,ConstantConditions
+            if (MAX_OWN_LEADER_RANKING < 0 || currentRank <= MAX_OWN_LEADER_RANKING)
+            {
+                return "" + currentRank;
+            }
+            else
+            {
+                return viewDTO.maxOwnLeaderRanking;
+            }
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -399,16 +397,34 @@ public class LeaderboardMarkUserItemView
         }
     }
 
-    protected void displayUserIsNotRanked()
+    protected void displayUserIsNotRanked(UserProfileDTO currentUserProfileDTO)
     {
-        // disable touch feedback so we don't confuse the user
-        if (innerViewContainer != null)
-        {
-            innerViewContainer.setBackgroundResource(R.color.white);
-        }
-
+        this.currentUserProfileDTO = currentUserProfileDTO;
         lbmuRoi.setText(R.string.leaderboard_not_ranked);
         lbmuPosition.setText("-");
+
+        if (currentUserProfileDTO == null) {
+            return;
+        }
+
+        if (lbmuDisplayName != null) {
+            lbmuDisplayName.setText(currentUserProfileDTO.displayName);
+        }
+
+        if (lbmuProfilePicture != null)
+        {
+            if (currentUserProfileDTO.picture != null)
+            {
+                picasso.get()
+                        .load(currentUserProfileDTO.picture)
+                        .into(lbmuProfilePicture);
+            }
+            else
+            {
+                picasso.get().load(R.drawable.superman_facebook)
+                        .into(lbmuProfilePicture);
+            }
+        }
     }
 
     public void setExpanded(boolean expand)
@@ -426,14 +442,13 @@ public class LeaderboardMarkUserItemView
         @NonNull final UserStatisticView.DTO userStatisticsDto;
         final String lbmuDisplayName;
         @NonNull final Spanned lbmuRoi;
-        @NonNull final String lbmuPosition;
         final int lbmuPositionColor;
         @NonNull final Spanned lbmuRoiAnnualized;
         final String lbmuFoF;
         @ViewVisibilityValue final int lbmuFoFVisibility;
-        @DrawableRes final int countryFlagResId;
         @ViewVisibilityValue final int lbmuFollowUserVisibility;
         @ViewVisibilityValue final int lbmuFollowingUserVisibility;
+        private String maxOwnLeaderRanking;
         private boolean expanded;
 
         public DTO(@NonNull Resources resources,
@@ -447,25 +462,13 @@ public class LeaderboardMarkUserItemView
             this.lbmuDisplayName = leaderboardItem.displayName;
             this.lbmuRoi = THSignedPercentage
                     .builder(leaderboardItem.roiInPeriod * 100)
-                    .withSign()
-                    .signTypeArrow()
+                    .signTypePlusMinusAlways()
                     .relevantDigitCount(3)
                     .withDefaultColor()
                     .build().createSpanned();
-            Integer currentRank = leaderboardItem.ordinalPosition + 1;
-            if (leaderboardItem.getPosition() != null)
-            {
-                lbmuPosition = "" + (leaderboardItem.getPosition() + 1);
-            }
-            else //noinspection PointlessBooleanExpression,ConstantConditions
-                if (MAX_OWN_LEADER_RANKING < 0 || currentRank <= MAX_OWN_LEADER_RANKING)
-                {
-                    lbmuPosition = "" + currentRank;
-                }
-                else
-                {
-                    lbmuPosition = resources.getString(R.string.leaderboard_max_ranked_position, MAX_OWN_LEADER_RANKING);
-                }
+
+            maxOwnLeaderRanking = resources.getString(R.string.leaderboard_max_ranked_position, MAX_OWN_LEADER_RANKING);
+
             this.lbmuPositionColor = currentUserId.get() == leaderboardItem.id ?
                     resources.getColor(R.color.light_green_normal) :
                     resources.getColor(R.color.text_primary);
@@ -484,7 +487,7 @@ public class LeaderboardMarkUserItemView
                     && !StringUtils.isNullOrEmptyOrSpaces(leaderboardItem.friendOfMarkupString)
                     ? VISIBLE
                     : GONE;
-            this.countryFlagResId = Country.getCountryLogo(R.drawable.default_image, leaderboardItem.countryCode);
+
             if (currentUserId.get() == leaderboardItem.id)
             {
                 // you can't follow yourself

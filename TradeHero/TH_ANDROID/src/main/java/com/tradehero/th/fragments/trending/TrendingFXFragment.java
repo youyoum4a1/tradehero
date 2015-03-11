@@ -29,7 +29,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
-import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
@@ -256,13 +255,13 @@ public class TrendingFXFragment extends TrendingBaseFragment
     private void handleSecurityItemOnClick(@NonNull SecurityCompactDTO securityCompactDTO)
     {
         Bundle args = new Bundle();
-        BuySellFXFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+        FXMainFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
 
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
 
         if (ownedPortfolioId != null)
         {
-            BuySellFXFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+            FXMainFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
         navigator.get().pushFragment(FXMainFragment.class, args);

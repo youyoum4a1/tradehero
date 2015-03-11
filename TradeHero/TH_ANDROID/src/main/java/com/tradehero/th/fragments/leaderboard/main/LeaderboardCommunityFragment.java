@@ -1,44 +1,47 @@
 package com.tradehero.th.fragments.leaderboard.main;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnItemClickSticky;
+import com.android.common.SlidingTabLayout;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.def.ExchangeContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
-import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserPagerFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardType;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
-import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
-import com.tradehero.th.models.leaderboard.LeaderboardDefDTOKnowledge;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
+import com.tradehero.th.persistence.prefs.PreferenceModule;
+import com.tradehero.th.persistence.prefs.THPreference;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -51,8 +54,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
-import timber.log.Timber;
 
 @Routable("providers")
 public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
@@ -61,50 +62,24 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Inject Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache;
     @Inject Analytics analytics;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
-    @Inject Lazy<LeaderboardDefDTOKnowledge> leaderboardDefDTOKnowledge;
+    @Inject @THPreference(PreferenceModule.PREF_ON_BOARDING_EXCHANGE)
+    StringPreference onBoardExchangePref;
+
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCacheRx userProfileCache;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
-    @InjectView(R.id.leaderboard_community_list) StickyListHeadersListView leaderboardDefListView;
-
-    @SuppressWarnings("UnusedDeclaration")
-    @OnItemClickSticky(R.id.leaderboard_community_list) void handleLeaderboardItemClicked(AdapterView<?> parent, View view, int position, long id)
-    {
-        LeaderboardDefDTO leaderboardDefDTO = (LeaderboardDefDTO) parent.getItemAtPosition(position);
-        if (leaderboardDefDTO instanceof DrillDownLeaderboardDefDTO)
-        {
-            DrillDownLeaderboardDefDTO drillDownLeaderboardDefDTO = (DrillDownLeaderboardDefDTO) leaderboardDefDTO;
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboards_DrillDown));
-            if (drillDownLeaderboardDefDTO instanceof ExchangeContainerLeaderboardDefDTO)
-            {
-                pushLeaderboardDefExchange(drillDownLeaderboardDefDTO);
-            }
-            else
-            {
-                throw new IllegalArgumentException("Unhandled drillDownLeaderboardDefDTO " + drillDownLeaderboardDefDTO);
-            }
-        }
-        else if (leaderboardDefDTOKnowledge.get().hasForexType(leaderboardDefDTO.id))
-        {
-            pushTabbedLeaderboardFragment(leaderboardDefDTO);
-        }
-        else
-        {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboards_ShowLeaderboard));
-            pushLeaderboardListViewFragment(leaderboardDefDTO);
-        }
-    }
+    @InjectView(R.id.pager) ViewPager tabViewPager;
+    @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
     private BaseWebViewFragment webFragment;
-    private LeaderboardCommunityAdapter leaderboardDefListAdapter;
     private int currentDisplayedChildLayoutId;
+    private String countryCode;
     @Nullable protected Subscription leaderboardDefListFetchSubscription;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        leaderboardDefListAdapter = new LeaderboardCommunityAdapter(
-                getActivity(),
-                R.layout.leaderboard_definition_item_view);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -116,8 +91,13 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        leaderboardDefListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-        leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
+    }
+
+    private void setUpViewPager(LeaderboardDefDTOList leaderboardDefDTOs) {
+        tabViewPager.setAdapter(new TabbedLBPageAdapter(getChildFragmentManager(), leaderboardDefDTOs));
+        pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
+        pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
+        pagerSlidingTabStrip.setViewPager(tabViewPager);
     }
 
     @Override public void onStart()
@@ -156,7 +136,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroy()
     {
-        leaderboardDefListAdapter = null;
         detachWebFragment();
         super.onDestroy();
     }
@@ -195,29 +174,42 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         unsubscribe(leaderboardDefListFetchSubscription);
 
-        Observable<LeaderboardDefDTOList> leaderboardDefObservable =
-                leaderboardDefListCache.get().get(new LeaderboardDefListKey(1))
-                        .map(new PairGetSecond<LeaderboardDefListKey, LeaderboardDefDTOList>())
-                        .map(new Func1<LeaderboardDefDTOList, LeaderboardDefDTOList>()
-                        {
-                            @Override public LeaderboardDefDTOList call(LeaderboardDefDTOList leaderboardDefDTOs)
-                            {
-                                return communityPageDTOFactory.collectFromCaches(null);
-                            }
-                        }) // TODO remove communityPageDTOFactory
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread());
+        Observable observable = userProfileCache.getOne(currentUserId.toUserBaseKey())
+                .switchMap(new Func1<Pair<UserBaseKey, UserProfileDTO>, Observable<?>>()
+        {
+            @Override public Observable<?> call(Pair<UserBaseKey, UserProfileDTO> pair)
+            {
+                countryCode = null; //onBoardExchangePref.get();
+                UserProfileDTO userProfileDTO = pair.second;
+                if (TextUtils.isEmpty(countryCode)) {
+                    countryCode = userProfileDTO.countryCode;
+                }
+                Observable<LeaderboardDefDTOList> leaderboardDefObservable =
+                        leaderboardDefListCache.get().get(new LeaderboardDefListKey(1))
+                                .map(new PairGetSecond<LeaderboardDefListKey, LeaderboardDefDTOList>())
+                                .map(new Func1<LeaderboardDefDTOList, LeaderboardDefDTOList>()
+                                {
+                                    @Override public LeaderboardDefDTOList call(LeaderboardDefDTOList leaderboardDefDTOs)
+                                    {
+                                        return communityPageDTOFactory.collectFromCaches(countryCode);
+                                    }
+                                })
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread());
+                return leaderboardDefObservable;
+            }
+        });
 
         leaderboardDefListFetchSubscription = AppObservable.bindFragment(
                 this,
-                leaderboardDefObservable)
+                observable)
                 .subscribe(
                         new Action1<LeaderboardDefDTOList>()
                         {
                             @Override public void call(LeaderboardDefDTOList leaderboardDefDTOs)
                             {
-                                communityScreen.setDisplayedChildByLayoutId(R.id.leaderboard_community_list);
-                                leaderboardDefListAdapter.setItems(leaderboardDefDTOs);
+                                setUpViewPager(leaderboardDefDTOs);
+                                communityScreen.setDisplayedChildByLayoutId(R.id.lb_pager_wrapper);
                             }
                         },
                         new ToastAction<Throwable>(getString(R.string.error_fetch_leaderboard_def_list_key)));
@@ -238,88 +230,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         }
     }
 
-    //<editor-fold desc="Navigation">
-    protected void pushLeaderboardListViewFragment(@NonNull LeaderboardDefDTO dto)
-    {
-        Bundle bundle = new Bundle(getArguments());
-
-        switch (dto.id)
-        {
-            case LeaderboardDefKeyKnowledge.FRIEND_ID:
-                pushFriendsFragment(dto);
-                break;
-            case LeaderboardDefKeyKnowledge.HERO_ID:
-                pushHeroFragment();
-                break;
-            case LeaderboardDefKeyKnowledge.FOLLOWER_ID:
-                pushFollowerFragment();
-                break;
-            case LeaderboardDefKeyKnowledge.INVITE_FRIENDS_ID:
-                pushInvitationFragment();
-                break;
-            default:
-                Timber.d("LeaderboardMarkUserListFragment %s", bundle);
-                LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
-                navigator.get().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
-                break;
-        }
-    }
-
-    protected void pushFriendsFragment(LeaderboardDefDTO dto)
-    {
-        Bundle args = new Bundle();
-        FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(args, dto.getLeaderboardDefKey());
-        if (navigator != null)
-        {
-            navigator.get().pushFragment(FriendLeaderboardMarkUserListFragment.class, args);
-        }
-    }
-
-    protected void pushHeroFragment()
-    {
-        Bundle bundle = new Bundle();
-        HeroManagerFragment.putFollowerId(bundle, currentUserId.toUserBaseKey());
-//        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
-//        if (applicablePortfolio != null)
-//        {
-//            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
-//        }
-        navigator.get().pushFragment(HeroManagerFragment.class, bundle);
-    }
-
-    protected void pushFollowerFragment()
-    {
-        Bundle bundle = new Bundle();
-        FollowerManagerFragment.putHeroId(bundle, currentUserId.toUserBaseKey());
-        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
-        if (applicablePortfolio != null)
-        {
-            //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
-        }
-        navigator.get().pushFragment(FollowerManagerFragment.class, bundle);
-    }
-
-    private void pushLeaderboardDefExchange(LeaderboardDefDTO leaderboardDefDTOExchange)
-    {
-        Bundle bundle = new Bundle(getArguments());
-        (new ExchangeLeaderboardDefListKey(1)).putParameters(bundle);
-        LeaderboardDefListFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOExchange.getLeaderboardDefKey());
-        if (navigator != null)
-        {
-            navigator.get().pushFragment(LeaderboardDefListFragment.class, bundle);
-        }
-    }
-
-    private void pushTabbedLeaderboardFragment(LeaderboardDefDTO leaderboardDefDTO)
-    {
-        Bundle bundle = new Bundle(getArguments());
-        LeaderboardMarkUserPagerFragment.putLeaderboardDefKey(bundle, leaderboardDefDTO.getLeaderboardDefKey());
-        if (navigator != null)
-        {
-            navigator.get().pushFragment(LeaderboardMarkUserPagerFragment.class, bundle);
-        }
-    }
-
     private void pushSearchFragment()
     {
         if (navigator != null)
@@ -328,12 +238,40 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void pushInvitationFragment()
-    {
-        if (navigator != null)
+    private class TabbedLBPageAdapter extends FragmentPagerAdapter {
+        private LeaderboardDefDTOList leaderboardDefDTOs;
+
+        public TabbedLBPageAdapter(FragmentManager fm, LeaderboardDefDTOList leaderboardDefDTOs)
         {
-            navigator.get().pushFragment(FriendsInvitationFragment.class);
+            super(fm);
+            this.leaderboardDefDTOs = leaderboardDefDTOs;
+        }
+
+        @Override public Fragment getItem(int position)
+        {
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboards_ShowLeaderboard));
+            LeaderboardDefDTO leaderboardDefDTO = leaderboardDefDTOs.get(position);
+            Bundle args = new Bundle(getArguments());
+
+            if (leaderboardDefDTO.id == LeaderboardDefKeyKnowledge.FRIEND_ID) {
+                FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(args, leaderboardDefDTO.getLeaderboardDefKey());
+                return  Fragment.instantiate(getActivity(), FriendLeaderboardMarkUserListFragment.class.getName(), args);
+            }
+
+            LeaderboardMarkUserListFragment.putLeaderboardDefKey(args, leaderboardDefDTO.getLeaderboardDefKey());
+            LeaderboardMarkUserListFragment.putLeaderboardType(args, LeaderboardType.STOCKS);
+            return  Fragment.instantiate(getActivity(), LeaderboardMarkUserListFragment.class.getName(), args);
+
+        }
+
+        @Override public int getCount()
+        {
+            return leaderboardDefDTOs.size();
+        }
+
+        @Override public CharSequence getPageTitle(int position)
+        {
+            return leaderboardDefDTOs.get(position).name;
         }
     }
-    //</editor-fold>
 }

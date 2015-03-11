@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,10 +13,8 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePrizePoolDTO;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
@@ -27,7 +26,6 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
     @InjectView(R.id.prize_pool_next_prize) TextView nextPrizePool;
     @InjectView(R.id.prize_pool_player_needed) TextView playersNeeded;
     @Inject Picasso picasso;
-    @Inject DashboardNavigator navigator;
     private ProviderPrizePoolDTO providerPrizePoolDTO;
 
     //<editor-fold desc="Constructors">
@@ -69,19 +67,15 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
         super.onDetachedFromWindow();
     }
 
-    public void linkWith(CompetitionZoneDTO competitionZoneDTO, boolean andDisplay)
+    @Override public void display(CompetitionZoneDTO competitionZoneDTO)
     {
         if (!(competitionZoneDTO instanceof CompetitionZonePrizePoolDTO))
         {
             throw new IllegalArgumentException("Only accepts CompetitionZonePrizePoolDTO");
         }
-        super.linkWith(competitionZoneDTO, andDisplay);
+        super.display(competitionZoneDTO);
         providerPrizePoolDTO = ((CompetitionZonePrizePoolDTO) competitionZoneDTO).providerPrizePoolDTO;
-
-        if (andDisplay)
-        {
-            displayText();
-        }
+        displayText();
     }
 
     private void displayText()
@@ -113,11 +107,16 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
     @OnClick(R.id.invite_friend)
     public void inviteFriendClicked(View view)
     {
-        pushInvitationFragment();
+        userActionSubject.onNext(new UserAction(competitionZoneDTO));
     }
 
-    private void pushInvitationFragment()
+    public static class UserAction extends AbstractCompetitionZoneListItemView.UserAction
     {
-        navigator.pushFragment(FriendsInvitationFragment.class);
+        //<editor-fold desc="Constructors">
+        public UserAction(@NonNull CompetitionZoneDTO competitionZoneDTO)
+        {
+            super(competitionZoneDTO);
+        }
+        //</editor-fold>
     }
 }

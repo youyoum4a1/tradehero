@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.android.internal.util.Predicate;
@@ -50,7 +49,6 @@ import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
-import java.util.Date;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -77,9 +75,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     @Inject LeaderboardCacheRx leaderboardCache;
 
     @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
-    protected View headerView;
 
-    private TextView leaderboardMarkUserMarkingTime;
     private View mRankHeaderView;
 
     protected LeaderboardFilterFragment leaderboardFilterFragment;
@@ -131,7 +127,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     {
         View view = inflater.inflate(R.layout.leaderboard_mark_user_listview, container, false);
         ButterKnife.inject(this, view);
-        inflateHeaderView(inflater);
+        inflateHeaderView();
         listView.setEmptyView(inflateEmptyView(inflater, container));
         return view;
     }
@@ -145,46 +141,11 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         return inflater.inflate(R.layout.leaderboard_empty_view, container, false);
     }
 
-    protected void inflateHeaderView(
-            @NonNull LayoutInflater inflater)
+    private void inflateHeaderView()
     {
-        headerView = inflater.inflate(getHeaderViewResId(), null);
-        if (headerView != null)
-        {
-            ((ListView) listView).addHeaderView(headerView, null, false);
-            initHeaderView();
-        }
-
         View userRankingHeaderView = inflateAndGetUserRankHeaderView();
         setupOwnRankingView(userRankingHeaderView);
         ((ListView) listView).addHeaderView(userRankingHeaderView);
-    }
-
-    @LayoutRes protected int getHeaderViewResId()
-    {
-        return R.layout.leaderboard_listview_header;
-    }
-
-    protected void initHeaderView()
-    {
-        if (headerView != null)
-        {
-            String leaderboardDefDesc = leaderboardDefDTO == null ? null : leaderboardDefDTO.desc;
-            TextView leaderboardMarkUserTimePeriod = (TextView) headerView.findViewById(R.id.leaderboard_time_period);
-            if (leaderboardMarkUserTimePeriod != null)
-            {
-                if (leaderboardDefDesc != null)
-                {
-                    leaderboardMarkUserTimePeriod.setText(leaderboardDefDesc);
-                    leaderboardMarkUserTimePeriod.setVisibility(View.VISIBLE);
-                }
-                else
-                {
-                    leaderboardMarkUserTimePeriod.setVisibility(View.GONE);
-                }
-            }
-            leaderboardMarkUserMarkingTime = (TextView) headerView.findViewById(R.id.leaderboard_marking_time);
-        }
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -269,7 +230,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     @Override public void onDestroyView()
     {
         mRankHeaderView = null;
-        headerView = null;
         super.onDestroyView();
     }
 
@@ -345,12 +305,14 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     @Override protected void linkWith(LeaderboardDefDTO leaderboardDefDTO)
     {
         super.linkWith(leaderboardDefDTO);
-        initHeaderView();
     }
 
     protected void saveCurrentFilterKey()
     {
-        savedPreference.set(currentLeaderboardKey);
+        if (savedPreference != null)
+        {
+            savedPreference.set(currentLeaderboardKey);
+        }
     }
 
     @Override protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
@@ -453,7 +415,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
             LeaderboardMarkUserItemView leaderboardMarkUserItemView = (LeaderboardMarkUserItemView) mRankHeaderView;
             if (requisite == null || requisite.currentLeaderboardUserDTO == null)
             {
-                leaderboardMarkUserItemView.displayUserIsNotRanked();
+                leaderboardMarkUserItemView.displayUserIsNotRanked(requisite.currentUserProfileDTO);
                 // user is not ranked, disable expandable view
                 leaderboardMarkUserItemView.setOnClickListener(null);
             }
@@ -473,6 +435,10 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         if (userRankingHeaderView instanceof LeaderboardMarkUserItemView)
         {
             LeaderboardMarkUserItemView ownRankingView = (LeaderboardMarkUserItemView) userRankingHeaderView;
+            if (ownRankingView.expandMark != null)
+            {
+                ownRankingView.expandMark.setVisibility(View.GONE);
+            }
             if (ownRankingView.expandingLayout != null)
             {
                 ownRankingView.expandingLayout.setVisibility(View.GONE);
@@ -521,16 +487,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
             {
                 filterIcon.setIcon(R.drawable.ic_action_icn_actionbar_filteroff);
             }
-        }
-    }
-
-    @Override protected void onNext(@NonNull PagedLeaderboardKey key, @NonNull LeaderboardMarkUserItemView.DTOList value)
-    {
-        super.onNext(key, value);
-        Date markingTime = value.leaderboardDTO.markUtc;
-        if (markingTime != null && leaderboardMarkUserMarkingTime != null)
-        {
-            leaderboardMarkUserMarkingTime.setText(String.format("(%s)", prettyTime.get().format(markingTime)));
         }
     }
 

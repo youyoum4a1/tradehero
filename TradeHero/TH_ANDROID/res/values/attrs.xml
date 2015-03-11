@@ -6,29 +6,19 @@
     <attr name="validDrawable" format="reference"/>
     <attr name="invalidDrawableRight" format="reference"/>
     <attr name="validDrawableRight" format="reference"/>
-  </declare-styleable>
 
-  <declare-styleable name="SelfValidatedText">
     <attr name="minTextLength" format="integer"/>
     <attr name="maxTextLength" format="integer"/>
     <attr name="validatePattern" format="string"/>
     <attr name="delayValidationByMilliSec" format="integer"/>
-    <attr name="invalidMinTextLengthMessage" format="string"/>
-    <attr name="invalidMaxTextLengthMessage" format="string"/>
-    <attr name="invalidBetweenTextLengthMessage" format="string"/>
     <attr name="invalidPatternMessage" format="string"/>
-  </declare-styleable>
-
-  <declare-styleable name="ValidatedPasswordText">
+    <attr name="validateOnlyIfHadInteraction" format="boolean"/>
     <attr name="validateOnlyIfNotEmpty" format="boolean"/>
+    <attr name="progressIndicator" format="reference"/>
   </declare-styleable>
 
   <declare-styleable name="MatchingPasswordText">
     <attr name="matchWith" format="reference"/>
-  </declare-styleable>
-
-  <declare-styleable name="ServerValidatedText">
-    <attr name="progressIndicator" format="reference"/>
   </declare-styleable>
 
   <declare-styleable name="QuickPriceButton">
@@ -166,6 +156,21 @@
 
   <declare-styleable name="TopStockListView">
     <attr name="topStock" format="reference" />
+  </declare-styleable>
+
+  <declare-styleable name="CircleProgressBar">
+    <attr name="progress_complete_color" format="color"></attr>
+    <attr name="progress_uncomplete_color" format="color"></attr>
+    <attr name="progress_fill_color" format="color"></attr>
+    <attr name="progress_text_color" format="color"></attr>
+    <attr name="progress_fill_radius" format="dimension"></attr>
+    <attr name="progress_text_size" format="dimension"></attr>
+    <attr name="progress_progress" format="integer"></attr>
+    <attr name="progress_maxprogress" format="integer"></attr>
+    <attr name="progress_text_visibility" format="enum">
+      <enum name="visible" value="1"></enum>
+      <enum name="invisible" value="0"></enum>
+    </attr>
   </declare-styleable>
 
 </resources>

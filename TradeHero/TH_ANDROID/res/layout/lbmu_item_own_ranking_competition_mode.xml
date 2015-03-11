@@ -5,11 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:paddingTop="@dimen/leaderboard_current_user_rank_vertical_margin"
-    android:paddingBottom="@dimen/leaderboard_current_user_rank_vertical_margin"
     android:descendantFocusability="afterDescendants"
-    android:background="@null"
-    tools:background="@color/red"
+    android:background="@color/lb_header_bg"
     >
 
   <include

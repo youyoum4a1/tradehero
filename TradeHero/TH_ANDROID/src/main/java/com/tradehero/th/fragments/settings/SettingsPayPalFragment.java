@@ -29,7 +29,7 @@ import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.widget.ServerValidatedEmailText;
+import com.tradehero.th.widget.validation.ValidatedText;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
@@ -37,7 +37,7 @@ import timber.log.Timber;
 
 public class SettingsPayPalFragment extends DashboardFragment
 {
-    @InjectView(R.id.settings_paypal_email_text) protected ServerValidatedEmailText paypalEmailText;
+    @InjectView(R.id.settings_paypal_email_text) protected ValidatedText paypalEmailText;
     @InjectView(R.id.settings_paypal_update_button) protected Button submitButton;
 
     @Inject UserServiceWrapper userServiceWrapper;

@@ -20,6 +20,7 @@ import butterknife.OnClick;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -35,6 +36,7 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
     @InjectView(R.id.competition_own_ranking_info_text) TextView infoText;
 
     @Inject ProviderUtil providerUtil;
+    protected ProviderDTO providerDTO;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -62,6 +64,8 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         if (parentViewDTO instanceof DTO)
         {
             DTO viewDTO = (DTO) parentViewDTO;
+            this.providerDTO = viewDTO.providerDTO;
+
             if (infoButtonContainer != null)
             {
                 infoButtonContainer.setVisibility(viewDTO.infoButtonContainerVisibility);
@@ -73,9 +77,10 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         }
     }
 
-    @Override protected void displayUserIsNotRanked()
+    public void displayUserIsNotRanked(UserProfileDTO currentUserProfileDTO, ProviderDTO providerDTO)
     {
-        super.displayUserIsNotRanked();
+        super.displayUserIsNotRanked(currentUserProfileDTO);
+        this.providerDTO = providerDTO;
 
         String rule = getContext().getString(R.string.leaderboard_see_competition_rules);
 
@@ -117,7 +122,7 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
 
     public String getRules()
     {
-        return providerUtil.getRulesPage(((CompetitionLeaderboardMarkUserItemView.DTO) viewDTO).providerDTO.getProviderId());
+        return providerUtil.getRulesPage(providerDTO.getProviderId());
     }
 
     @Override protected void handleOpenProfileButtonClicked()

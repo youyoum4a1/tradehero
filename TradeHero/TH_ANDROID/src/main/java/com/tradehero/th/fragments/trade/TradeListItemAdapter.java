@@ -180,7 +180,8 @@ public class TradeListItemAdapter
         }
     }
 
-    @Override @NonNull public View getView(int position, View convertView, ViewGroup viewGroup)
+    @Override @NonNull public View
+    getView(int position, View convertView, ViewGroup viewGroup)
     {
         int itemType = getItemViewType(position);
         Object item = getItem(position);
@@ -203,6 +204,10 @@ public class TradeListItemAdapter
                 if (convertView == null)
                 {
                     convertView = getInflater().inflate(getPositionLayoutResId(shownPositionDTO), viewGroup, false);
+                    View hintForward = convertView.findViewById(R.id.hint_forward);
+                    if (hintForward != null) {
+                        hintForward.setVisibility(View.GONE);
+                    }
                 }
 
                 ((PositionView) convertView).linkWith(this.shownPositionDTO, false);

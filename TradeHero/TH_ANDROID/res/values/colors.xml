@@ -94,6 +94,10 @@
   <color name="yellow_light">@color/pale_yellow</color>
   <color name="yellow_dark">@color/orange</color>
 
+  <color name="lb_header_bg">#C9F1FF</color>
+  <color name="lb_item_even">@android:color/white</color>
+  <color name="lb_item_odd">#EFEFEF</color>
+  
   <string-array name="gauge_color_range" translatable="false">
     <item>#FF0C2B</item>
     <item>#FF1D0C</item>

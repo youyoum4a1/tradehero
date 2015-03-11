@@ -15,7 +15,6 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import com.facebook.FacebookOperationCanceledException;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -34,7 +33,6 @@ import com.tradehero.th.fragments.social.friend.SocialFriendHandlerFacebook;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
@@ -70,7 +68,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @Inject Provider<Activity> activityProvider;
     @Inject Lazy<SocialFriendHandlerFacebook> socialFriendHandlerFacebookLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject THRouter thRouter;
     @Inject Analytics analytics;
     @Inject DashboardNavigator dashboardNavigator;
@@ -114,7 +111,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         if (avatar != null)
         {
             picasso.load(R.drawable.superman_facebook)
-                    .transform(peopleIconTransformation)
                     .into(avatar);
         }
     }
@@ -148,7 +144,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             if (userFriendsDTO != null && userFriendsDTO.getProfilePictureURL() != null)
             {
                 picasso.load(userFriendsDTO.getProfilePictureURL())
-                        .transform(peopleIconTransformation)
                         .placeholder(avatar.getDrawable())
                         .into(avatar);
             }

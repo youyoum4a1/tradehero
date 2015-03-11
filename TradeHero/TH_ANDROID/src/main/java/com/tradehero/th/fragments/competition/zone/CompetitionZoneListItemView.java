@@ -54,19 +54,15 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
         super.onDetachedFromWindow();
     }
 
-    public void linkWith(CompetitionZoneDTO competitionZoneDTO, boolean andDisplay)
+    //<editor-fold desc="Display Methods">
+    @Override public void display(CompetitionZoneDTO competitionZoneDTO)
     {
-        super.linkWith(competitionZoneDTO, andDisplay);
-
-        if (andDisplay)
-        {
-            displayIcon();
-            displayTitle();
-            displayDescription();
-        }
+        super.display(competitionZoneDTO);
+        displayIcon();
+        displayTitle();
+        displayDescription();
     }
 
-    //<editor-fold desc="Display Methods">
     public void display()
     {
         displayIcon();

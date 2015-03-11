@@ -1,41 +1,42 @@
 package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
-import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.android.internal.util.Predicate;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.fx.FXChartGranularity;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
+import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOUtil;
-import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
-import com.tradehero.th.api.security.key.FxPairSecurityId;
-import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.portfolio.header.MarginCloseOutStatusTextView;
 import com.tradehero.th.models.chart.ChartTimeSpan;
-import com.tradehero.th.models.number.THSignedFXRate;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
+import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
+import com.tradehero.th.persistence.position.PositionCompactListCacheRx;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.utils.THColorUtils;
 import com.tradehero.th.widget.KChartsView;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import java.util.concurrent.TimeUnit;
@@ -43,77 +44,129 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 @Routable("securityFx/:securityRawInfo")
-public class BuySellFXFragment extends BuySellFragment
+public class FXInfoFragment extends DashboardFragment
         implements TimeSpanButtonSet.OnTimeSpanButtonSelectedListener
 {
-    private final static String BUNDLE_KEY_CLOSE_UNITS_BUNDLE = BuySellFXFragment.class.getName() + ".units";
     private final static long MILLISECOND_FX_QUOTE_REFRESH = 5000;
     private final static long MILLISECOND_FX_CANDLE_CHART_REFRESH = 60000;
-
-    @ColorRes private static final int DEFAULT_BUTTON_TEXT_COLOR = R.color.text_primary_inverse;
+    private final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = "securityId";
 
     @Inject SecurityServiceWrapper securityServiceWrapper;
-    @Inject CurrentUserId currentUserId;
+    @Inject protected PositionCompactListCacheRx positionCompactListCache;
+    @Inject protected QuoteServiceWrapper quoteServiceWrapper;
 
     @InjectView(R.id.margin_close_out_status) protected MarginCloseOutStatusTextView marginCloseOutStatus;
     @InjectView(R.id.chart_image_wrapper) protected BetterViewAnimator mChartWrapper;
     @InjectView(R.id.my_charts_view) protected KChartsView mKChartsView;
     @InjectView(R.id.chart_time_span_button_set) protected TimeSpanButtonSet mTimeSpanButtonSet;
-
     @InjectView(R.id.ll_position_status) protected LinearLayout llPositionStatus;
     @InjectView(R.id.tv_position_units) protected TextView tvPositionUnits;
     @InjectView(R.id.tv_position_money) protected TextView tvPositionMoney;
 
-    private int closeUnits;
-    private QuoteDTO oldQuoteDTO;
-
-    public static void putCloseAttribute(@NonNull Bundle args, int units)
-    {
-        args.putInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, units);
-    }
-
-    private static int getCloseAttribute(@NonNull Bundle args)
-    {
-        return args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
-    }
+    @InjectRoute protected SecurityId securityId;
+    @Nullable protected PositionDTOCompactList positionDTOCompactList;
+    @Nullable protected PositionDTOCompact positionDTOCompact;
+    @Nullable static protected PortfolioCompactDTO portfolioCompactDTO;
+    @Nullable protected QuoteDTO quoteDTO;
+    @Nullable static protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_fx_buy_sell, container, false);
+        return inflater.inflate(R.layout.fragment_fx_info, container, false);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
+        setRetainInstance(false);
         initTimeSpanButton();
-        closeUnits = getCloseAttribute(getArguments());
+        securityId = getSecurityId(getArguments());
     }
 
     @Override public void onStart()
     {
         super.onStart();
         fetchKChart(FXChartGranularity.min1);
+        fetchPositionCompactList();
+        fetchQuote();
     }
 
-    @Nullable @Override protected PortfolioCompactDTO getPreferredApplicablePortfolio(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
+    @Nullable public static SecurityId getSecurityId(@NonNull Bundle args)
     {
-        return portfolioCompactDTOs.getDefaultFxPortfolio();
-    }
-
-    private void showCloseDialog()
-    {
-        if (closeUnits != 0
-                && quoteDTO != null
-                && securityCompactDTO != null)
+        Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
+        if (securityIdBundle == null)
         {
-            isTransactionTypeBuy = closeUnits < 0;
-            showBuySellDialog(Math.abs(closeUnits));
-            closeUnits = 0;
+            return null;
         }
+        return new SecurityId(securityIdBundle);
+    }
+
+    protected void fetchPositionCompactList()
+    {
+        onStopSubscriptions.add(AppObservable.bindFragment(
+                this,
+                positionCompactListCache.get(securityId))
+                .subscribe(
+                        new Action1<Pair<SecurityId, PositionDTOCompactList>>()
+                        {
+                            @Override public void call(Pair<SecurityId, PositionDTOCompactList> pair)
+                            {
+                                linkWith(pair.second);
+                            }
+                        },
+                        new ToastAndLogOnErrorAction(
+                                getString(R.string.error_fetch_position_list_info),
+                                "Failed to fetch positions for this security")));
+    }
+
+    public void linkWith(final PositionDTOCompactList positionDTOCompacts)
+    {
+        this.positionDTOCompactList = positionDTOCompacts;
+        if (positionDTOCompactList != null && portfolioCompactDTO != null)
+        {
+            this.positionDTOCompact = positionDTOCompactList.findFirstWhere(new Predicate<PositionDTOCompact>()
+            {
+                @Override public boolean apply(PositionDTOCompact position)
+                {
+                    return position.portfolioId == portfolioCompactDTO.id;
+                }
+            });
+        }
+        displayPositionStatus();
+    }
+
+    protected void fetchQuote()
+    {
+        onStopSubscriptions.add(AppObservable.bindFragment(
+                this,
+                quoteServiceWrapper.getQuoteRx(securityId)
+                        .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
+                        {
+                            @Override public Observable<?> call(Observable<? extends Void> observable)
+                            {
+                                return observable.delay(MILLISECOND_FX_QUOTE_REFRESH, TimeUnit.MILLISECONDS);
+                            }
+                        }))
+                .subscribe(
+                        new Action1<QuoteDTO>()
+                        {
+                            @Override public void call(QuoteDTO quote)
+                            {
+                                quoteDTO = quote;
+                                if (portfolioCompactDTO != null)
+                                {
+                                    marginCloseOutStatus.linkWith(portfolioCompactDTO);
+                                }
+                                displayPositionStatus();
+                            }
+                        },
+                        new ToastOnErrorAction()));
     }
 
     private void initTimeSpanButton()
@@ -126,24 +179,6 @@ public class BuySellFXFragment extends BuySellFragment
     @Override public void onDestroyView()
     {
         super.onDestroyView();
-        this.oldQuoteDTO = null;
-    }
-
-    @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
-    {
-        MenuOwnedPortfolioId currentMenu = mSelectedPortfolioContainer.getCurrentMenu();
-        if (currentMenu != null && portfolioCompactDTO.id == currentMenu.portfolioId)
-        {
-            this.portfolioCompactDTO = portfolioCompactDTO;
-        }
-        super.linkWith(portfolioCompactDTO);
-        marginCloseOutStatus.linkWith(portfolioCompactDTO);
-        displayPositionStatus();
-    }
-
-    @Override protected long getMillisecondQuoteRefresh()
-    {
-        return MILLISECOND_FX_QUOTE_REFRESH;
     }
 
     private void fetchKChart(@NonNull FXChartGranularity granularity)
@@ -162,23 +197,6 @@ public class BuySellFXFragment extends BuySellFragment
     }
 
     //<editor-fold desc="Display Methods"> //hide switch portfolios for temp
-    @Override public void displayStockName()
-    {
-        super.displayStockName();
-        if (securityCompactDTO instanceof FxSecurityCompactDTO)
-        {
-            FxPairSecurityId fxPairSecurityId = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
-            setActionBarTitle(String.format("%s/%s", fxPairSecurityId.left, fxPairSecurityId.right));
-            setActionBarSubtitle(null);
-        }
-    }
-
-    @Override public void linkWith(final PositionDTOCompactList positionDTOCompacts)
-    {
-        super.linkWith(positionDTOCompacts);
-        displayPositionStatus();
-    }
-
     public void displayPositionStatus()
     {
         if (positionDTOCompact == null)
@@ -235,58 +253,18 @@ public class BuySellFXFragment extends BuySellFragment
         }
     }
 
-    @Override public void displayBuySellPrice()
+    public Double getUnRealizedPLRefCcy()
     {
-        if (mBuyBtn != null && mSellBtn != null && quoteDTO != null)
+        OwnedPortfolioId ownedPortfolioId = purchaseApplicableOwnedPortfolioId;
+        if (ownedPortfolioId != null && positionDTOCompactList != null
+                && this.quoteDTO != null && portfolioCompactDTO != null)
         {
-            int precision = 0;
-            if (quoteDTO.ask != null && quoteDTO.bid != null)
-            {
-                precision = SecurityCompactDTOUtil.getExpectedPrecision(quoteDTO.ask, quoteDTO.bid);
-            }
-
-            if (quoteDTO.ask == null)
-            {
-                mBuyBtn.setText(R.string.buy_sell_ask_price_not_available);
-            }
-            else
-            {
-                double diff = (oldQuoteDTO != null && oldQuoteDTO.ask != null) ? quoteDTO.ask - oldQuoteDTO.ask : 0.0;
-                formatButtonText(quoteDTO.ask, diff, precision, mBuyBtn, getString(R.string.fx_buy));
-            }
-
-            if (quoteDTO.bid == null)
-            {
-                mSellBtn.setText(R.string.buy_sell_bid_price_not_available);
-            }
-            else
-            {
-                double diff = (oldQuoteDTO != null && oldQuoteDTO.bid != null) ? quoteDTO.bid - oldQuoteDTO.bid : 0.0;
-                formatButtonText(quoteDTO.bid, diff, precision, mSellBtn, getString(R.string.fx_sell));
-            }
+            return positionDTOCompactList.getUnRealizedPLRefCcy(
+                    this.quoteDTO,
+                    this.portfolioCompactDTO
+            );
         }
-    }
-
-    protected void formatButtonText(double value, double diff, int precision, Button btn, String format)
-    {
-        THSignedFXRate.builder(value)
-                .signTypeArrow()
-                .withSignValue(diff)
-                .enhanceTo((int) (btn.getTextSize() + 15))
-                .enhanceWithColor(THColorUtils.getColorResourceIdForNumber(diff, DEFAULT_BUTTON_TEXT_COLOR))
-                .withValueColor(DEFAULT_BUTTON_TEXT_COLOR)
-                .relevantDigitCount(SecurityCompactDTOUtil.DEFAULT_RELEVANT_DIGITS)
-                .expectedPrecision(precision)
-                .withDefaultColor()
-                .withFallbackColor(R.color.text_primary_inverse)
-                .format(format)
-                .build()
-                .into(btn);
-    }
-
-    @Override public boolean isBuySellReady()
-    {
-        return quoteDTO != null && positionDTOCompactList != null && applicableOwnedPortfolioIds != null;
+        return null;
     }
 
     @Override
@@ -295,27 +273,11 @@ public class BuySellFXFragment extends BuySellFragment
         fetchKChart(FXChartGranularity.getBestApproximation(selected));
         mChartWrapper.setDisplayedChild(0);
     }
-
-    @Override protected boolean getSupportSell()
-    {
-        return true;
-    }
     //</editor-fold>
 
     @NonNull protected Observer<FXChartDTO> createFXHistoryFetchObserver()
     {
         return new TrendingFXHistoryFetchObserver();
-    }
-
-    protected void linkWith(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
-    {
-        PortfolioCompactDTO defaultFxPortfolio = portfolioCompactDTOs.getDefaultFxPortfolio();
-        if (defaultFxPortfolio != null)
-        {
-            mSelectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(), defaultFxPortfolio));
-        }
-        setInitialSellQuantityIfCan();
-        showCloseDialog();
     }
 
     protected class TrendingFXHistoryFetchObserver implements Observer<FXChartDTO>
@@ -336,22 +298,13 @@ public class BuySellFXFragment extends BuySellFragment
         }
     }
 
-    @Override
-    protected void conditionalDisplayPortfolioChanged(boolean isPortfolioChanged)
+    public static void setPurchaseApplicableOwnedPortfolioId(@Nullable OwnedPortfolioId spurchaseApplicableOwnedPortfolioId)
     {
+        purchaseApplicableOwnedPortfolioId = spurchaseApplicableOwnedPortfolioId;
     }
 
-    @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    public static void setPortfolioCompactDTO(@Nullable PortfolioCompactDTO sportfolioCompactDTO)
     {
-        super.linkWith(securityCompactDTO, andDisplay);
-        showCloseDialog();
-    }
-
-    @Override protected void linkWith(QuoteDTO quoteDTO)
-    {
-        this.oldQuoteDTO = this.quoteDTO;
-        super.linkWith(quoteDTO);
-        showCloseDialog();
-        displayPositionStatus();
+        portfolioCompactDTO = sportfolioCompactDTO;
     }
 }

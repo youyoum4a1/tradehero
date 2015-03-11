@@ -17,7 +17,6 @@ import dagger.Module;
                 LeaderboardMarkUserOwnRankingView.class,
                 FriendLeaderboardMarkUserListFragment.class,
                 CompetitionLeaderboardMarkUserListFragment.class,
-                CompetitionLeaderboardMarkUserListOnGoingFragment.class,
                 CompetitionLeaderboardTimedHeader.class,
                 LeaderboardCommunityFragment.class,
                 LeaderboardFilterFragment.class,

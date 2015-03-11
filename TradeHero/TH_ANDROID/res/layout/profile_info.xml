@@ -13,11 +13,11 @@
       tools:background="@color/black"
       >
 
-    <com.tradehero.th.widget.ServerValidatedEmailText
+    <com.tradehero.th.widget.validation.ValidatedText
         android:id="@+id/authentication_sign_up_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="left|bottom"
+        android:layout_gravity="start|bottom"
         android:hint="@string/user_profile_email"
         android:textColorHint="@color/red"
         android:inputType="textEmailAddress"
@@ -25,6 +25,7 @@
         style="@style/TH.Authentication.EditText"
 
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
+        android:drawableEnd="@drawable/accounts_glyph_transparent_default"
         app:invalidDrawableRight="@drawable/warning_red"
         app:validDrawableRight="@drawable/tick_green"
 
@@ -34,9 +35,9 @@
         app:delayValidationByMilliSec="500"
         >
       <requestFocus/>
-    </com.tradehero.th.widget.ServerValidatedEmailText>
+    </com.tradehero.th.widget.validation.ValidatedText>
 
-    <com.tradehero.th.widget.ValidatedPasswordText
+    <com.tradehero.th.widget.validation.ValidatedText
         android:id="@+id/authentication_sign_up_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,6 +49,7 @@
         style="@style/TH.Authentication.EditText"
 
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
+        android:drawableEnd="@drawable/accounts_glyph_transparent_default"
         app:invalidDrawableRight="@drawable/warning_red"
         app:validDrawableRight="@drawable/tick_green"
 
@@ -55,7 +57,7 @@
         app:delayValidationByMilliSec="1000"
         />
 
-    <com.tradehero.th.widget.MatchingPasswordText
+    <com.tradehero.th.widget.validation.MatchingPasswordText
         android:id="@+id/authentication_sign_up_confirm_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,6 +69,7 @@
         style="@style/TH.Authentication.EditText"
 
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
+        android:drawableEnd="@drawable/accounts_glyph_transparent_default"
         app:invalidDrawableRight="@drawable/warning_red"
         app:validDrawableRight="@drawable/tick_green"
 
@@ -80,7 +83,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginTop="@dimen/margin_small">
 
-      <com.tradehero.th.widget.ServerValidatedUsernameText
+      <com.tradehero.th.widget.validation.DisplayNameValidatedText
           android:id="@+id/authentication_sign_up_username"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -90,6 +93,7 @@
           style="@style/TH.Authentication.EditText"
 
           android:drawableRight="@drawable/accounts_glyph_transparent_default"
+          android:drawableEnd="@drawable/accounts_glyph_transparent_default"
           app:invalidDrawableRight="@drawable/warning_red"
           app:validDrawableRight="@drawable/tick_green"
 
@@ -97,14 +101,15 @@
           app:delayValidationByMilliSec="500"
           app:progressIndicator="@+id/authentication_sign_up_username_validator"
           >
-      </com.tradehero.th.widget.ServerValidatedUsernameText>
+      </com.tradehero.th.widget.validation.DisplayNameValidatedText>
 
       <ProgressBar
           android:id="@+id/authentication_sign_up_username_validator"
           android:layout_width="32dip"
           android:layout_height="32dip"
-          android:layout_gravity="right|center"
+          android:layout_gravity="end|center"
           android:layout_marginRight="5dip"
+          android:layout_marginEnd="5dip"
           android:visibility="invisible"
           />
 
@@ -130,6 +135,7 @@
           android:layout_width="@dimen/big_image_w_h"
           android:layout_height="@dimen/big_image_w_h"
           android:layout_alignParentLeft="true"
+          android:layout_alignParentStart="true"
           android:layout_centerVertical="true"
           android:adjustViewBounds="true"
           android:gravity="center"
@@ -141,7 +147,9 @@
           android:layout_height="wrap_content"
           android:layout_centerVertical="true"
           android:layout_toRightOf="@id/image_optional"
+          android:layout_toEndOf="@id/image_optional"
           android:layout_marginLeft="@dimen/margin_medium"
+          android:layout_marginStart="@dimen/margin_medium"
           android:orientation="vertical">
 
         <EditText

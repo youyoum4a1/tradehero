@@ -38,13 +38,18 @@ public class DTOAdapterNew<DTOType>
     {
         if (convertView == null)
         {
-            convertView = inflater.inflate(getViewResId(position), viewGroup, false);
+            convertView = inflate(position, viewGroup);
         }
 
         //noinspection unchecked
         DTOView<DTOType> dtoView = (DTOView<DTOType>) convertView;
         dtoView.display(getItem(position));
         return convertView;
+    }
+
+    @NonNull protected View inflate(int position, ViewGroup viewGroup)
+    {
+        return inflater.inflate(getViewResId(position), viewGroup, false);
     }
 
     public void setLayoutResourceId(int layoutResourceId)

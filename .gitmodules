@@ -1,6 +1,3 @@
 [submodule "java-code-styles"]
 	path = java-code-styles
 	url = git@github.com:TradeHero/java-code-styles.git
-[submodule "AndroidResideMenu"]
-	path = AndroidResideMenu
-	url = git@github.com:TradeHero/AndroidResideMenu.git

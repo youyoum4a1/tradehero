@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -15,7 +16,6 @@ public class CompetitionZoneLegalMentionsView extends AbstractCompetitionZoneLis
 {
     @InjectView(R.id.competition_legal_rules) TextView rules;
     @InjectView(R.id.competition_legal_terms) TextView terms;
-    private OnElementClickedListener elementClickedListener;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -55,19 +55,15 @@ public class CompetitionZoneLegalMentionsView extends AbstractCompetitionZoneLis
         super.onDetachedFromWindow();
     }
 
-    public void linkWith(CompetitionZoneDTO competitionZoneDTO, boolean andDisplay)
+    @Override public void display(CompetitionZoneDTO competitionZoneDTO)
     {
         if (!(competitionZoneDTO instanceof CompetitionZoneLegalDTO))
         {
             throw new IllegalArgumentException("Only accepts CompetitionZoneLegalDTO");
         }
-        super.linkWith(competitionZoneDTO, andDisplay);
-
-        if (andDisplay)
-        {
-            displayRules();
-            displayTerms();
-        }
+        super.display(competitionZoneDTO);
+        displayRules();
+        displayTerms();
     }
 
     //<editor-fold desc="Display Methods">
@@ -102,39 +98,44 @@ public class CompetitionZoneLegalMentionsView extends AbstractCompetitionZoneLis
     }
     //</editor-fold>
 
-    public void setOnElementClickedListener(OnElementClickedListener elementClickedListener)
-    {
-        this.elementClickedListener = elementClickedListener;
-    }
-
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.competition_legal_rules)
     void pushRulesFragment()
     {
         Timber.d("pushRulesFragment");
-        notifyElementClicked(CompetitionZoneLegalDTO.LinkType.RULES);
+        notifyElementClicked(LinkType.RULES);
         // Rely on item click listener
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.competition_legal_terms) void pushTermsFragment()
+    @OnClick(R.id.competition_legal_terms)
+    void pushTermsFragment()
     {
         Timber.d("pushTermsFragment");
-        notifyElementClicked(CompetitionZoneLegalDTO.LinkType.TERMS);
+        notifyElementClicked(LinkType.TERMS);
     }
 
-    private void notifyElementClicked(CompetitionZoneLegalDTO.LinkType linkType)
+    private void notifyElementClicked(@NonNull LinkType linkType)
     {
-        OnElementClickedListener listenerCopy = this.elementClickedListener;
-        ((CompetitionZoneLegalDTO) competitionZoneDTO).requestedLink = linkType;
-        if (listenerCopy != null)
+        userActionSubject.onNext(new UserAction(competitionZoneDTO, linkType));
+    }
+
+    public static enum LinkType
+    {
+        RULES,
+        TERMS
+    }
+
+    public static class UserAction extends AbstractCompetitionZoneListItemView.UserAction
+    {
+        @NonNull public final LinkType linkType;
+
+        //<editor-fold desc="Constructors">
+        public UserAction(@NonNull CompetitionZoneDTO competitionZoneDTO, @NonNull LinkType linkType)
         {
-            listenerCopy.onElementClicked(competitionZoneDTO);
+            super(competitionZoneDTO);
+            this.linkType = linkType;
         }
-    }
-
-    public static interface OnElementClickedListener
-    {
-        void onElementClicked(CompetitionZoneDTO competitionZoneDTO);
+        //</editor-fold>
     }
 }

@@ -46,11 +46,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
         FriendLeaderboardUserDTOList,
         ProcessableLeaderboardFriendsDTO>
 {
-    @Nullable protected View headerView;
-
-    private TextView leaderboardMarkUserMarkingTime;
     @Inject Analytics analytics;
-    @Inject Provider<PrettyTime> prettyTime;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardFriendsCacheRx leaderboardFriendsCache;
 
@@ -62,41 +58,9 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
 
         if (listView != null)
         {
-            headerView = inflateHeaderView(inflater, container);
-            if (headerView != null)
-            {
-                ((ListView) listView).addHeaderView(headerView, null, false);
-                initHeaderView();
-            }
             listView.setEmptyView(inflateEmptyView(inflater, container));
         }
         return view;
-    }
-
-    protected View inflateHeaderView(@NonNull LayoutInflater inflater, ViewGroup container)
-    {
-        return inflater.inflate(R.layout.leaderboard_listview_header, null);
-    }
-
-    protected void initHeaderView()
-    {
-        String leaderboardDefDesc = leaderboardDefDTO == null ? null : leaderboardDefDTO.desc;
-        TextView leaderboardMarkUserTimePeriod =
-                (TextView) headerView.findViewById(R.id.leaderboard_time_period);
-        if (leaderboardMarkUserTimePeriod != null)
-        {
-            if (leaderboardDefDesc != null)
-            {
-                leaderboardMarkUserTimePeriod.setText(leaderboardDefDesc);
-                leaderboardMarkUserTimePeriod.setVisibility(View.VISIBLE);
-            }
-            else
-            {
-                leaderboardMarkUserTimePeriod.setVisibility(View.GONE);
-            }
-        }
-        leaderboardMarkUserMarkingTime =
-                (TextView) headerView.findViewById(R.id.leaderboard_marking_time);
     }
 
     @Override public void onStart()
@@ -144,12 +108,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
         super.onStop();
     }
 
-    @Override public void onDestroyView()
-    {
-        headerView = null;
-        super.onDestroyView();
-    }
-
     @Override public void onDestroy()
     {
         itemViewAdapter.clear();
@@ -189,17 +147,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
         {
             ((LeaderboardFriendsSetAdapter) itemViewAdapter).setCurrentUserProfileDTO(currentUserProfileDTO);
             ((LeaderboardFriendsSetAdapter) itemViewAdapter).notifyDataSetChanged();
-        }
-    }
-
-    @Override protected void onNext(@NonNull LeaderboardFriendsKey key, @NonNull ProcessableLeaderboardFriendsDTO value)
-    {
-        super.onNext(key, value);
-        Date markingTime = value.leaderboardFriendsDTO.leaderboard.markUtc;
-        if (markingTime != null && leaderboardMarkUserMarkingTime != null)
-        {
-            leaderboardMarkUserMarkingTime.setText(
-                    String.format("(%s)", prettyTime.get().format(markingTime)));
         }
     }
 

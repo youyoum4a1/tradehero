@@ -220,7 +220,7 @@ public class UserStatisticView extends LinearLayout
             this.performanceGaugeTopText = resources.getString(R.string.leaderboard_SP_500);
             this.performanceGaugeSubText = resources.getString(R.string.leaderboard_performance_title);
             double r = 0;
-            try
+            if (leaderboardUserDTO.sharpeRatioInPeriodVsSP500 != null)
             {
                 Double v = leaderboardUserDTO.sharpeRatioInPeriodVsSP500;
                 Double min = (double) -2;
@@ -235,12 +235,6 @@ public class UserStatisticView extends LinearLayout
                     v = min;
                 }
                 r = 100 * (v - min) / (max - min);
-                Timber.d("normalizePerformance sharpeRatioInPeriodVsSP500 %s result %s", leaderboardUserDTO.sharpeRatioInPeriodVsSP500, r);
-
-            }
-            catch (Exception e)
-            {
-                Timber.e(e, "normalizePerformance");
             }
             this.normalisedPerformance = (float) r;
 

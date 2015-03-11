@@ -11,7 +11,10 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -40,17 +43,23 @@ import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.GraphicUtil;
-import com.tradehero.th.widget.MatchingPasswordText;
-import com.tradehero.th.widget.ServerValidatedEmailText;
-import com.tradehero.th.widget.ServerValidatedUsernameText;
-import com.tradehero.th.widget.ValidatedPasswordText;
+import com.tradehero.th.widget.validation.DisplayNameValidator;
+import com.tradehero.th.widget.validation.MatchingPasswordText;
+import com.tradehero.th.widget.validation.PasswordConfirmTextValidator;
+import com.tradehero.th.widget.validation.DisplayNameValidatedText;
+import com.tradehero.th.widget.validation.TextValidator;
+import com.tradehero.th.widget.validation.ValidatedText;
+import com.tradehero.th.widget.validation.ValidatedView;
+import com.tradehero.th.widget.validation.ValidationMessage;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
+import rx.Observer;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
+import rx.functions.Func4;
 import rx.functions.Func8;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
@@ -63,10 +72,15 @@ public class ProfileInfoView extends LinearLayout
     public static final int REQUEST_GALLERY = 1309;
     public static final int REQUEST_CAMERA = 1310;
 
-    @InjectView(R.id.authentication_sign_up_email) ServerValidatedEmailText email;
-    @InjectView(R.id.authentication_sign_up_password) ValidatedPasswordText password;
+    @InjectView(R.id.authentication_sign_up_email) ValidatedText email;
+    TextValidator emailValidator;
+    @InjectView(R.id.authentication_sign_up_password) ValidatedText password;
+    TextValidator passwordValidator;
     @InjectView(R.id.authentication_sign_up_confirm_password) MatchingPasswordText confirmPassword;
-    @InjectView(R.id.authentication_sign_up_username) ServerValidatedUsernameText displayName;
+    PasswordConfirmTextValidator confirmPasswordValidator;
+    TextWatcher targetPasswordWatcher;
+    @InjectView(R.id.authentication_sign_up_username) DisplayNameValidatedText displayName;
+    DisplayNameValidator displayNameValidator;
     @InjectView(R.id.authentication_sign_up_referral_code) EditText referralCode;
     @InjectView(R.id.et_firstname) EditText firstName;
     @InjectView(R.id.et_lastname) EditText lastName;
@@ -95,6 +109,10 @@ public class ProfileInfoView extends LinearLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
+        emailValidator = email.getValidator();
+        passwordValidator = password.getValidator();
+        confirmPasswordValidator = confirmPassword.getValidator();
+        displayNameValidator = displayName.getValidator();
     }
 
     @Override protected void onAttachedToWindow()
@@ -106,22 +124,94 @@ public class ProfileInfoView extends LinearLayout
         {
             populateCredentials();
         }
+        email.setOnFocusChangeListener(emailValidator);
+        email.addTextChangedListener(emailValidator);
+        subscriptions.add(emailValidator.getValidationMessageObservable().subscribe(createValidatorObserver(email)));
+        password.setOnFocusChangeListener(passwordValidator);
+        password.addTextChangedListener(passwordValidator);
+        subscriptions.add(passwordValidator.getValidationMessageObservable().subscribe(createValidatorObserver(password)));
+        confirmPassword.setOnFocusChangeListener(confirmPasswordValidator);
+        confirmPassword.addTextChangedListener(confirmPasswordValidator);
+        targetPasswordWatcher = confirmPasswordValidator.getPasswordTextWatcher();
+        password.addTextChangedListener(targetPasswordWatcher);
+        subscriptions.add(confirmPasswordValidator.getValidationMessageObservable().subscribe(createValidatorObserver(confirmPassword)));
+        displayName.setOnFocusChangeListener(displayNameValidator);
+        displayName.addTextChangedListener(displayNameValidator);
+        if (userProfileDTO != null)
+        {
+            populate(userProfileDTO);
+        }
+        subscriptions.add(displayNameValidator.getValidationMessageObservable().subscribe(createValidatorObserver(displayName)));
     }
 
     @Override protected void onDetachedFromWindow()
     {
+        displayName.removeTextChangedListener(displayNameValidator);
+        displayName.setOnFocusChangeListener(null);
+        password.removeTextChangedListener(targetPasswordWatcher);
+        targetPasswordWatcher = null;
+        confirmPassword.removeTextChangedListener(confirmPasswordValidator);
+        confirmPassword.setOnFocusChangeListener(null);
+        password.removeTextChangedListener(passwordValidator);
+        password.setOnFocusChangeListener(null);
+        email.removeTextChangedListener(emailValidator);
+        email.setOnFocusChangeListener(null);
+
         subscriptions.unsubscribe();
         subscriptions = new SubscriptionList();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
-    public boolean areFieldsValid()
+    @NonNull protected Observer<ValidationMessage> createValidatorObserver(@NonNull final ValidatedText validatedText)
     {
-        return (email == null || email.getVisibility() == GONE || email.isValid()) &&
-                (password == null || password.getVisibility() == GONE || password.isValid()) &&
-                (confirmPassword == null || confirmPassword.getVisibility() == GONE || confirmPassword.isValid()) &&
-                (displayName == null || displayName.isValid());
+        return new Observer<ValidationMessage>()
+        {
+            @Nullable private String previousMessage;
+
+            @Override public void onNext(ValidationMessage validationMessage)
+            {
+                validatedText.setStatus(validationMessage.getValidStatus());
+                String message = validationMessage.getMessage();
+                if (message != null && !TextUtils.isEmpty(message) && !message.equals(previousMessage))
+                {
+                    THToast.show(validationMessage.getMessage());
+                }
+                previousMessage = message;
+            }
+
+            @Override public void onCompleted()
+            {
+            }
+
+            @Override public void onError(Throwable e)
+            {
+                Timber.e(e, "Failed to listen to validation message");
+            }
+        };
+    }
+
+    @NonNull public Observable<Boolean> getFieldsValidObservable()
+    {
+        return Observable.combineLatest(
+                emailValidator.getValidationMessageObservable(),
+                passwordValidator.getValidationMessageObservable(),
+                confirmPasswordValidator.getValidationMessageObservable(),
+                displayNameValidator.getValidationMessageObservable(),
+                new Func4<ValidationMessage, ValidationMessage, ValidationMessage, ValidationMessage, Boolean>()
+                {
+                    @Override public Boolean call(ValidationMessage emailValidation,
+                            ValidationMessage passwordValidation,
+                            ValidationMessage confirmPasswordValidation,
+                            ValidationMessage displayNameValidation)
+                    {
+                        return emailValidation.getValidStatus().equals(ValidatedView.Status.VALID)
+                                && passwordValidation.getValidStatus().equals(ValidatedView.Status.VALID)
+                                && confirmPasswordValidation.getValidStatus().equals(ValidatedView.Status.VALID)
+                                && displayNameValidation.getValidStatus().equals(ValidatedView.Status.VALID);
+                    }
+                }
+        );
     }
 
     public void handleDataFromLibrary(Intent data)
@@ -168,13 +258,14 @@ public class ProfileInfoView extends LinearLayout
         return created;
     }
 
-    public void populate(UserProfileDTO userProfileDTO)
+    public void populate(@NonNull UserProfileDTO userProfileDTO)
     {
         this.userProfileDTO = userProfileDTO;
         firstName.setText(userProfileDTO.firstName);
         lastName.setText(userProfileDTO.lastName);
+        displayNameValidator.setOriginalUsernameValue(userProfileDTO.displayName);
+        displayNameValidator.setText(userProfileDTO.displayName);
         displayName.setText(userProfileDTO.displayName);
-        displayName.setOriginalUsernameValue(userProfileDTO.displayName);
         referralCode.setText(userProfileDTO.inviteCode);
         if (userProfileDTO.inviteCode != null)
         {
@@ -259,6 +350,14 @@ public class ProfileInfoView extends LinearLayout
     }
     //endregion
 
+    public void validate()
+    {
+        emailValidator.validate();
+        passwordValidator.validate();
+        confirmPasswordValidator.validate();
+        displayNameValidator.validate();
+    }
+
     private void populateCredentials()
     {
         Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
@@ -283,12 +382,22 @@ public class ProfileInfoView extends LinearLayout
                 }
             }
 
+            if (emailValue != null)
+            {
+                this.emailValidator.setText(emailValue);
+            }
             this.email.setText(emailValue);
+            if (passwordValue != null)
+            {
+                this.passwordValidator.setText(passwordValue);
+            }
             this.password.setText(passwordValue);
+            if (passwordValue != null)
+            {
+                this.confirmPasswordValidator.setText(passwordValue);
+            }
+            this.confirmPasswordValidator.setMainPassword(passwordValue);
             this.confirmPassword.setText(passwordValue);
-
-            this.password.setValidateOnlyIfNotEmpty(passwordValue == null);
-            this.confirmPassword.setValidateOnlyIfNotEmpty(passwordValue == null);
         }
     }
 
@@ -409,7 +518,15 @@ public class ProfileInfoView extends LinearLayout
                 WidgetObservable.text(firstName, true),
                 WidgetObservable.text(lastName, true),
                 Observable.just(profileImage),
-                new Func8<OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, ImageView, UserFormDTO>()
+                new Func8<OnTextChangeEvent,
+                        OnTextChangeEvent,
+                        OnTextChangeEvent,
+                        OnTextChangeEvent,
+                        OnTextChangeEvent,
+                        OnTextChangeEvent,
+                        OnTextChangeEvent,
+                        ImageView,
+                        UserFormDTO>()
                 {
                     @Override public UserFormDTO call(
                             OnTextChangeEvent serverValidatedEmailText,
@@ -421,10 +538,6 @@ public class ProfileInfoView extends LinearLayout
                             OnTextChangeEvent lastName1,
                             ImageView profileImage)
                     {
-                        email.forceValidate();
-                        password.forceValidate();
-                        confirmPassword.forceValidate();
-                        displayName.forceValidate();
                         return userFormBuilderProvider.get()
                                 .email(email.getText().toString())
                                 .password(password.getText().toString())

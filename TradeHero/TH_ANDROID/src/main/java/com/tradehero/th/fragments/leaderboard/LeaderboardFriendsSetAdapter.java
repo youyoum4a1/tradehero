@@ -179,7 +179,16 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
             }
         }
 
+        setBackgroundColor(convertView, position);
         return convertView;
+    }
+
+    private void setBackgroundColor(View view, int position) {
+        if (position % 2 == 0) {
+            view.setBackgroundResource(R.color.lb_item_even);
+        } else {
+            view.setBackgroundResource(R.color.lb_item_odd);
+        }
     }
 
     @NonNull @Override protected View inflate(int position, ViewGroup viewGroup)

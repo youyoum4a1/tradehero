@@ -43,7 +43,9 @@ import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.competition.zone.AbstractCompetitionZoneListItemView;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
+import com.tradehero.th.fragments.competition.zone.CompetitionZonePrizePoolView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTOUtil;
@@ -55,9 +57,9 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePreSeasonD
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
@@ -78,7 +80,6 @@ import java.util.List;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
 import timber.log.Timber;
@@ -114,15 +115,10 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @RouteProperty("providerId") Integer routedProviderId;
 
-    @Nullable private Subscription userProfileCacheSubscription;
     protected UserProfileCompactDTO userProfileCompactDTO;
-    @Nullable private Subscription competitionListCacheSubscription;
     protected CompetitionDTOList competitionDTOs;
-    @Nullable private Subscription displayCellListCacheFetchSubscription;
     private ProviderDisplayCellDTOList providerDisplayCellDTOList;
-    @Nullable private Subscription displayPrizePoolSubscription;
     protected List<ProviderPrizePoolDTO> providerPrizePoolDTOs;
-    @Nullable private Subscription competitionPreSeasonSubscription;
     private List<CompetitionPreSeasonDTO> competitionPreSeasonDTOs;
 
     @Inject protected CurrentUserId currentUserId;
@@ -173,13 +169,6 @@ public class MainCompetitionFragment extends CompetitionFragment
         this.progressBar.setVisibility(View.VISIBLE);
         this.listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         this.listView.setAdapter(this.competitionZoneListItemAdapter);
-        competitionZoneListItemAdapter.setParentOnLegalElementClicked(new CompetitionZoneLegalMentionsView.OnElementClickedListener()
-        {
-            @Override public void onElementClicked(CompetitionZoneDTO competitionZoneDTO)
-            {
-                MainCompetitionFragment.this.handleItemClicked(competitionZoneDTO);
-            }
-        });
         competitionZoneDTOUtil.randomiseAd();
     }
 
@@ -199,6 +188,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         fetchDisplayCells();
         fetchPreSeason();
         fetchPrizePool();
+        registerAdapterUserActions();
     }
 
     @Override public void onResume()
@@ -225,25 +215,9 @@ public class MainCompetitionFragment extends CompetitionFragment
         super.onPause();
     }
 
-    @Override public void onStop()
-    {
-        unsubscribe(userProfileCacheSubscription);
-        userProfileCacheSubscription = null;
-        unsubscribe(competitionListCacheSubscription);
-        competitionListCacheSubscription = null;
-        unsubscribe(displayCellListCacheFetchSubscription);
-        displayCellListCacheFetchSubscription = null;
-        unsubscribe(competitionPreSeasonSubscription);
-        competitionPreSeasonSubscription = null;
-        unsubscribe(displayPrizePoolSubscription);
-        displayPrizePoolSubscription = null;
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         this.listView.setOnScrollListener(null);
-        this.competitionZoneListItemAdapter.setParentOnLegalElementClicked(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -272,8 +246,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void fetchCurrentUserProfile()
     {
-        unsubscribe(userProfileCacheSubscription);
-        userProfileCacheSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
@@ -291,7 +264,7 @@ public class MainCompetitionFragment extends CompetitionFragment
                             {
                                 MainCompetitionFragment.this.handleFetchCurrentUserProfileFailed(t1);
                             }
-                        });
+                        }));
     }
 
     protected void linkWith(@NonNull UserProfileCompactDTO userProfileCompactDTO)
@@ -312,8 +285,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void fetchCompetitionList()
     {
-        unsubscribe(competitionListCacheSubscription);
-        competitionListCacheSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 competitionListCache.get(providerId)
                         .map(new PairGetSecond<ProviderId, CompetitionDTOList>()))
@@ -331,7 +303,7 @@ public class MainCompetitionFragment extends CompetitionFragment
                             {
                                 MainCompetitionFragment.this.handleFetchCompetitionListFailed(t1);
                             }
-                        });
+                        }));
     }
 
     protected void linkWith(@NonNull CompetitionDTOList competitionDTOs1)
@@ -352,8 +324,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void fetchDisplayCells()
     {
-        unsubscribe(displayCellListCacheFetchSubscription);
-        displayCellListCacheFetchSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 providerDisplayListCellCache.get(new ProviderDisplayCellListKey(providerId))
                         .map(new PairGetSecond<ProviderDisplayCellListKey, ProviderDisplayCellDTOList>()))
@@ -371,7 +342,7 @@ public class MainCompetitionFragment extends CompetitionFragment
                             {
                                 MainCompetitionFragment.this.handleFetchDisplayCellListFailed(error);
                             }
-                        });
+                        }));
     }
 
     protected void linkWith(@NonNull ProviderDisplayCellDTOList providerDisplayCellDTOList)
@@ -392,8 +363,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void fetchPreSeason()
     {
-        unsubscribe(competitionPreSeasonSubscription);
-        competitionPreSeasonSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 competitionPreSeasonCacheRx.get(providerId)
                         .map(new PairGetSecond<ProviderId, CompetitionPreSeasonDTO>()))
@@ -411,7 +381,7 @@ public class MainCompetitionFragment extends CompetitionFragment
                             {
                                 MainCompetitionFragment.this.handleFetchPreSeasonFailed(error);
                             }
-                        });
+                        }));
     }
 
     protected void linkWith(@NonNull CompetitionPreSeasonDTO preSeasonDTO)
@@ -434,8 +404,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void fetchPrizePool()
     {
-        unsubscribe(displayPrizePoolSubscription);
-        displayPrizePoolSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this, providerServiceWrapper.getProviderPrizePoolRx(providerId))
                 .subscribe(
                         new Action1<ProviderPrizePoolDTO>()
@@ -451,7 +420,7 @@ public class MainCompetitionFragment extends CompetitionFragment
                             {
                                 MainCompetitionFragment.this.handleFetchPrizePoolFailed(error);
                             }
-                        });
+                        }));
     }
 
     protected void linkWith(@NonNull ProviderPrizePoolDTO prizePoolDTO)
@@ -522,7 +491,9 @@ public class MainCompetitionFragment extends CompetitionFragment
     @OnClick(R.id.btn_trade_now)
     public void handleTradeNowClicked(View view)
     {
-        pushTradeNowElement();
+        Bundle args = new Bundle();
+        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+        providerTradableSecuritiesHelperLazy.get().pushTradableSecuritiesList(args, ownedPortfolioId, providerDTO.associatedPortfolio, providerId);
     }
 
     private void displayTradeNowButton()
@@ -543,51 +514,86 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     //<editor-fold desc="Click Handling">
     @OnItemClick(R.id.competition_zone_list)
-    protected void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+    protected void onItemClick(AdapterView<?> adapterView,
+            @SuppressWarnings("UnusedParameters") View view,
+            int i,
+            @SuppressWarnings("UnusedParameters") long l)
     {
-        if (adapterView == null)
+        Object itemClicked = adapterView.getItemAtPosition(i);
+        if (itemClicked == null)
         {
-            Timber.e(new NullPointerException("adapterView was null"), "onItemClient");
+            Timber.e(new NullPointerException("itemClicked was null"), "onItemClient");
         }
         else
         {
-            Object itemClicked = adapterView.getItemAtPosition(i);
-            if (itemClicked == null)
-            {
-                Timber.e(new NullPointerException("itemClicked was null"), "onItemClient");
-            }
-            else
-            {
-                handleItemClicked((CompetitionZoneDTO) itemClicked);
-            }
+            handleItemClicked((CompetitionZoneDTO) itemClicked);
         }
     }
 
     protected void handleItemClicked(@NonNull CompetitionZoneDTO competitionZoneDTO)
     {
+        Bundle args = new Bundle();
         if (competitionZoneDTO instanceof CompetitionZonePortfolioDTO)
         {
-            pushPortfolioElement((CompetitionZonePortfolioDTO) competitionZoneDTO);
+            // TODO We need to be able to launch async when the portfolio Id is finally not null
+            OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+            if (ownedPortfolioId != null)
+            {
+                PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+                PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
+                PositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+                CompetitionLeaderboardPositionListFragment.putProviderId(args, providerId);
+                navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
+            }
         }
         else if (competitionZoneDTO instanceof CompetitionZoneVideoDTO)
         {
-            pushVideoElement((CompetitionZoneVideoDTO) competitionZoneDTO);
+            ProviderVideoListFragment.putProviderId(args, providerId);
+            navigator.get().pushFragment(ProviderVideoListFragment.class, args);
         }
         else if (competitionZoneDTO instanceof CompetitionZoneWizardDTO)
         {
-            pushWizardElement((CompetitionZoneWizardDTO) competitionZoneDTO);
+            String competitionUrl = ((CompetitionZoneWizardDTO) competitionZoneDTO).getWebUrl();
+            if (competitionUrl == null)
+            {
+                competitionUrl = providerUtil.getWizardPage(providerId);
+                CompetitionWebViewFragment.putIsOptionMenuVisible(args, false);
+            }
+
+            CompetitionWebViewFragment.putUrl(args, competitionUrl);
+            this.webViewFragment = navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
+            this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
         }
         else if (competitionZoneDTO instanceof CompetitionZoneLeaderboardDTO)
         {
-            pushLeaderboardElement((CompetitionZoneLeaderboardDTO) competitionZoneDTO);
+            LeaderboardDefDTO leaderboardDefDTO = ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO.leaderboard;
+            CompetitionLeaderboardMarkUserListFragment.putProviderId(args, providerId);
+            CompetitionLeaderboardMarkUserListFragment.putCompetition(args, ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO);
+
+            OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+            if (ownedPortfolioId != null)
+            {
+                CompetitionLeaderboardMarkUserListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+            }
+
+            if (navigator != null)
+            {
+                navigator.get().pushFragment(CompetitionLeaderboardMarkUserListFragment.class, args);
+            }
         }
         else if (competitionZoneDTO instanceof CompetitionZoneLegalDTO)
         {
-            pushLegalElement((CompetitionZoneLegalDTO) competitionZoneDTO);
+            // Nothing to do, handled by Listener
         }
         else if (competitionZoneDTO instanceof CompetitionZoneAdvertisementDTO)
         {
-            pushAdvertisement((CompetitionZoneAdvertisementDTO) competitionZoneDTO);
+            AdDTO adDTO = ((CompetitionZoneAdvertisementDTO) competitionZoneDTO).getAdDTO();
+            if (adDTO != null && adDTO.redirectUrl != null)
+            {
+                String url = providerUtil.appendUserId(adDTO.redirectUrl, '&');
+                CompetitionWebViewFragment.putUrl(args, url);
+                navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
+            }
         }
         else if (competitionZoneDTO instanceof CompetitionZoneDisplayCellDTO)
         {
@@ -595,112 +601,10 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
         else if (competitionZoneDTO instanceof CompetitionZonePreSeasonDTO)
         {
-            handlePreSeasonCellClicked();
+            CompetitionPreseasonDialogFragment dialog = CompetitionPreseasonDialogFragment.newInstance(providerId);
+            dialog.show(getActivity().getFragmentManager(), CompetitionPreseasonDialogFragment.TAG);
         }
         // TODO others?
-    }
-
-    private void handlePreSeasonCellClicked()
-    {
-        CompetitionPreseasonDialogFragment dialog = CompetitionPreseasonDialogFragment.newInstance(providerId);
-        dialog.show(getActivity().getFragmentManager(), CompetitionPreseasonDialogFragment.TAG);
-    }
-
-    private void pushAdvertisement(@NonNull CompetitionZoneAdvertisementDTO competitionZoneDTO)
-    {
-        AdDTO adDTO = competitionZoneDTO.getAdDTO();
-        if (adDTO != null && adDTO.redirectUrl != null)
-        {
-            Bundle args = new Bundle();
-            String url = providerUtil.appendUserId(adDTO.redirectUrl, '&');
-            CompetitionWebViewFragment.putUrl(args, url);
-            navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
-        }
-    }
-
-    private void pushTradeNowElement()
-    {
-        Bundle args = new Bundle();
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        providerTradableSecuritiesHelperLazy.get().pushTradableSecuritiesList(args, ownedPortfolioId, providerDTO.associatedPortfolio, providerId);
-    }
-
-    private void pushPortfolioElement(@NonNull CompetitionZonePortfolioDTO competitionZoneDTO)
-    {
-        // TODO We need to be able to launch async when the portfolio Id is finally not null
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if (ownedPortfolioId != null)
-        {
-            Bundle args = new Bundle();
-            PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
-            PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
-            PositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-            CompetitionLeaderboardPositionListFragment.putProviderId(args, providerId);
-            navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
-        }
-    }
-
-    private void pushVideoElement(@NonNull CompetitionZoneVideoDTO competitionZoneDTO)
-    {
-        Bundle args = new Bundle();
-        ProviderVideoListFragment.putProviderId(args, providerId);
-        navigator.get().pushFragment(ProviderVideoListFragment.class, args);
-    }
-
-    private void pushWizardElement(@NonNull CompetitionZoneWizardDTO competitionZoneDTO)
-    {
-        Bundle args = new Bundle();
-
-        String competitionUrl = competitionZoneDTO.getWebUrl();
-        if (competitionUrl == null)
-        {
-            competitionUrl = providerUtil.getWizardPage(providerId);
-            CompetitionWebViewFragment.putIsOptionMenuVisible(args, false);
-        }
-
-        CompetitionWebViewFragment.putUrl(args, competitionUrl);
-        this.webViewFragment = navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
-        this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
-    }
-
-    private void pushLeaderboardElement(@NonNull CompetitionZoneLeaderboardDTO competitionZoneDTO)
-    {
-        LeaderboardDefDTO leaderboardDefDTO = competitionZoneDTO.competitionDTO.leaderboard;
-        Bundle args = new Bundle();
-        CompetitionLeaderboardMarkUserListFragment.putProviderId(args, providerId);
-        CompetitionLeaderboardMarkUserListFragment.putCompetition(args, competitionZoneDTO.competitionDTO);
-
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if (ownedPortfolioId != null)
-        {
-            CompetitionLeaderboardMarkUserListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        }
-
-        if (navigator != null && leaderboardDefDTO.isWithinUtcRestricted())
-        {
-            navigator.get().pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class, args);
-        }
-        else if (navigator != null)
-        {
-            navigator.get().pushFragment(CompetitionLeaderboardMarkUserListFragment.class, args);
-        }
-    }
-
-    private void pushLegalElement(@NonNull CompetitionZoneLegalDTO competitionZoneDTO)
-    {
-        Bundle args = new Bundle();
-        if ((competitionZoneDTO).requestedLink.equals(CompetitionZoneLegalDTO.LinkType.RULES))
-        {
-            CompetitionWebViewFragment.putUrl(args, providerUtil.getRulesPage(providerId));
-        }
-        else
-        {
-            CompetitionWebViewFragment.putUrl(args, providerUtil.getTermsPage(providerId));
-        }
-        if (navigator != null)
-        {
-            navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
-        }
     }
 
     private void handleDisplayCellClicked(@NonNull CompetitionZoneDisplayCellDTO competitionZoneDisplayCellDTO)
@@ -752,6 +656,52 @@ public class MainCompetitionFragment extends CompetitionFragment
             mApplicablePortfolioId = providerDTO.getAssociatedOwnedPortfolioId();
         }
         return mApplicablePortfolioId;
+    }
+
+    protected void registerAdapterUserActions()
+    {
+        onStopSubscriptions.add(competitionZoneListItemAdapter.getUserActionObservable()
+                .subscribe(
+                        new Action1<AbstractCompetitionZoneListItemView.UserAction>()
+                        {
+                            @Override public void call(AbstractCompetitionZoneListItemView.UserAction userAction)
+                            {
+                                handleUserAction(userAction);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable throwable)
+                            {
+                                Timber.e(throwable, "When listening to adapter clicks");
+                            }
+                        }));
+    }
+
+    private void handleUserAction(@NonNull AbstractCompetitionZoneListItemView.UserAction userAction)
+    {
+        if (userAction instanceof CompetitionZonePrizePoolView.UserAction)
+        {
+            navigator.get().pushFragment(FriendsInvitationFragment.class);
+        }
+        else if (userAction instanceof CompetitionZoneLegalMentionsView.UserAction)
+        {
+            CompetitionZoneLegalMentionsView.LinkType linkType =
+                    ((CompetitionZoneLegalMentionsView.UserAction) userAction).linkType;
+            Bundle args = new Bundle();
+            if (linkType.equals(CompetitionZoneLegalMentionsView.LinkType.RULES))
+            {
+                CompetitionWebViewFragment.putUrl(args, providerUtil.getRulesPage(providerId));
+            }
+            else
+            {
+                CompetitionWebViewFragment.putUrl(args, providerUtil.getTermsPage(providerId));
+            }
+            if (navigator != null)
+            {
+                navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
+            }
+        }
     }
     //</editor-fold>
 

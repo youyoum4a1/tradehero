@@ -19,8 +19,6 @@ public class PositionView extends LinearLayout
     @InjectView(R.id.position_partial_top) protected PositionPartialTopView topView;
     @InjectView(R.id.expanding_layout) protected AbstractPartialBottomView/*<PositionDTO, ExpandableListItem<PositionDTO>>*/ bottomView;
 
-    @InjectView(R.id.color_indicator) protected ColorIndicator colorIndicator;
-
     protected boolean hasHistoryButton = true;
     protected ExpandableListItem<PositionDTO> expandableListItem;
     protected PositionDTO positionDTO;
@@ -88,11 +86,6 @@ public class PositionView extends LinearLayout
         {
             this.bottomView.linkWith(positionDTO, andDisplay);
         }
-
-        if (andDisplay)
-        {
-            displayModelPart();
-        }
     }
 
     public PositionDTO getPositionDTO()
@@ -106,12 +99,6 @@ public class PositionView extends LinearLayout
     {
         displayTopView();
         displayBottomView();
-        displayModelPart();
-    }
-
-    public void displayModelPart()
-    {
-        displayColorIndicator();
     }
 
     public void displayTopView()
@@ -127,15 +114,6 @@ public class PositionView extends LinearLayout
         if (bottomView != null)
         {
             bottomView.display();
-        }
-    }
-
-    protected void displayColorIndicator()
-    {
-        if (colorIndicator != null && positionDTO != null)
-        {
-            Double roi = positionDTO.getROISinceInception();
-            colorIndicator.linkWith(roi);
         }
     }
 
