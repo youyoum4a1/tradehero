@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.authentication;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,10 +14,13 @@ import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import com.tradehero.common.fragment.ActivityResultDTO;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -36,6 +40,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnClickEvent;
@@ -44,6 +49,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.internal.util.SubscriptionList;
+import timber.log.Timber;
 
 /**
  * Register using email.
@@ -59,9 +65,11 @@ public class EmailSignUpFragment extends Fragment
     @InjectView(R.id.profile_info) ProfileInfoView profileView;
     @InjectView(R.id.authentication_sign_up_email) EditText emailEditText;
     @InjectView(R.id.authentication_sign_up_button) View signUpButton;
+    @InjectView(R.id.social_network_button_list) View socialButtonList;
 
     private SubscriptionList onStopSubscriptions;
     @Nullable private ActivityResultDTO receivedActivityResult;
+    @Nullable Observer<SocialNetworkEnum> socialNetworkEnumObserver;
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
@@ -77,6 +85,12 @@ public class EmailSignUpFragment extends Fragment
         analytics.tagScreen(AnalyticsConstants.Register_Form);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.RegisterFormScreen));
         analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Email));
+    }
+
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        this.socialNetworkEnumObserver = ((AuthenticationActivity) activity).getSelectedSocialNetworkObserver();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -99,6 +113,15 @@ public class EmailSignUpFragment extends Fragment
                     copy.resultCode,
                     copy.data);
             receivedActivityResult = null;
+        }
+
+        try
+        {
+            view.setBackgroundResource(R.drawable.login_bg_4);
+        } catch (Throwable e)
+        {
+            Timber.e(e, "Failed to set guide background");
+            view.setBackgroundColor(getResources().getColor(R.color.authentication_guide_bg_color));
         }
     }
 
@@ -144,6 +167,27 @@ public class EmailSignUpFragment extends Fragment
     {
         ButterKnife.reset(this);
         super.onDestroyView();
+    }
+
+    @Override public void onDetach()
+    {
+        this.socialNetworkEnumObserver = null;
+        super.onDetach();
+    }
+
+    @SuppressWarnings({"unused"}) @OnClick({
+            R.id.btn_linkedin_signin,
+            R.id.btn_facebook_signin,
+            R.id.btn_twitter_signin,
+            R.id.btn_qq_signin,
+            R.id.btn_weibo_signin,
+    }) @Optional
+    protected void onSignInButtonClicked(View view)
+    {
+        if (socialNetworkEnumObserver != null)
+        {
+            socialNetworkEnumObserver.onNext(((AuthenticationImageButton) view).getType());
+        }
     }
 
     protected Observable<Pair<AuthData, UserProfileDTO>> getSignUpObservable()

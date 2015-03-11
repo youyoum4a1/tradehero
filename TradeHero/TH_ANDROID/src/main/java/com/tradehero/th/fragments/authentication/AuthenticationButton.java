@@ -1,4 +1,4 @@
-package com.tradehero.common.widget;
+package com.tradehero.th.fragments.authentication;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -12,11 +12,6 @@ public class AuthenticationButton extends Button
     private SocialNetworkEnum type;
 
     //region constructors
-    public AuthenticationButton(Context context)
-    {
-        super(context);
-    }
-
     public AuthenticationButton(Context context, AttributeSet attrs)
     {
         super(context, attrs);
@@ -32,18 +27,21 @@ public class AuthenticationButton extends Button
 
     private void init(Context context, AttributeSet attrs)
     {
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AuthenticationButton);
-        int indexEnum = a.getInt(R.styleable.AuthenticationButton_type, -1);
-        if (indexEnum == -1)
+        if (!isInEditMode())
         {
-            throw new IllegalArgumentException("There was no Type defined");
+            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AuthenticationButton);
+            int indexEnum = a.getInt(R.styleable.AuthenticationButton_type, -1);
+            if (indexEnum == -1)
+            {
+                throw new IllegalArgumentException("There was no Type defined");
+            }
+            if (indexEnum >= SocialNetworkEnum.values().length)
+            {
+                throw new IllegalArgumentException("IndexEnum of " + indexEnum + " is too large");
+            }
+            type = SocialNetworkEnum.fromIndex(a.getInt(R.styleable.AuthenticationButton_type, -1));
+            a.recycle();
         }
-        if (indexEnum >= SocialNetworkEnum.values().length)
-        {
-            throw new IllegalArgumentException("IndexEnum of " + indexEnum + " is too large");
-        }
-        type = SocialNetworkEnum.fromIndex(a.getInt(R.styleable.AuthenticationButton_type, -1));
-        a.recycle();
     }
 
     public SocialNetworkEnum getType()

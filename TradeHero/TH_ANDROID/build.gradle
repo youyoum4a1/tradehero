@@ -315,6 +315,9 @@ dependencies {
     exclude group: 'com.squareup.retrofit', module: 'retrofit'
     exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
   }
+  compile ('com.viewpagerindicator:library:2.4.1') {
+    exclude group: 'com.google.android', module: 'support-v4'
+  }
 
   compile 'com.tradehero:metrics:2.0-SNAPSHOT'
   compile 'com.squareup.dagger:dagger:1.2.2'

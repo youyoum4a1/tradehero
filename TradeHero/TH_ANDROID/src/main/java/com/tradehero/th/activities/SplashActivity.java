@@ -23,6 +23,7 @@ import com.tradehero.th.utils.metrics.events.AppLaunchEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class SplashActivity extends BaseActivity
 {
@@ -45,6 +46,15 @@ public class SplashActivity extends BaseActivity
         if (appVersion != null)
         {
             appVersion.setText(VersionUtils.getAppVersion(this));
+        }
+        try
+        {
+            getWindow().getDecorView().findViewById(android.R.id.content).setBackgroundResource(R.drawable.login_bg_1);
+        } catch (Throwable e)
+        {
+            Timber.e(e, "Failed to set guide background");
+            getWindow().getDecorView().findViewById(android.R.id.content).setBackgroundColor(
+                    getResources().getColor(R.color.authentication_guide_bg_color));
         }
     }
 
@@ -92,7 +102,7 @@ public class SplashActivity extends BaseActivity
 
         if (firstLaunchPreference.get() || resetHelpScreens.get())
         {
-            ActivityHelper.launchGuide(this);
+            ActivityHelper.launchAuthentication(this);
             firstLaunchPreference.set(false);
             resetHelpScreens.set(false);
             finish();

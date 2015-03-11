@@ -41,6 +41,7 @@ import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 public class SettingsProfileFragment extends DashboardFragment
 {
@@ -56,13 +57,25 @@ public class SettingsProfileFragment extends DashboardFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_settings_profile, container, false);
+        return inflater.inflate(R.layout.fragment_settings_profile, container, false);
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         updateButton.setText(R.string.update);
         referralCodeEditText.setVisibility(View.GONE);
         scrollView.setOnScrollChangedListener(dashboardBottomTabScrollViewScrollListener.get());
         setHasOptionsMenu(true);
-        return view;
+        try
+        {
+            view.setBackgroundResource(R.drawable.login_bg_4);
+        } catch (Throwable e)
+        {
+            Timber.e(e, "Failed to set guide background");
+            view.setBackgroundColor(getResources().getColor(R.color.authentication_guide_bg_color));
+        }
     }
 
     @Override public void onStart()

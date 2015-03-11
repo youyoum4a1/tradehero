@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    tools:background="@drawable/login_bg_4"
     >
 
   <ImageView
       android:id="@+id/authentication_back_button"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/margin_small"
+      android:layout_width="@dimen/size_6"
+      android:layout_height="@dimen/size_6"
       android:src="@drawable/settings_back_light_default"
       android:background="@drawable/basic_transparent_selector"
       />
@@ -22,6 +23,7 @@
       android:requiresFadingEdge="vertical"
       android:fadingEdge="vertical"
       android:fadingEdgeLength="@dimen/size_3"
+      android:fillViewport="true"
       >
 
     <RelativeLayout
@@ -30,16 +32,8 @@
         style="@style/TH.Authentication"
         >
 
-      <ImageView
-          android:id="@+id/authentication_logo"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:src="@drawable/logo_text"
-          />
-
       <com.tradehero.th.widget.validation.ValidatedText
           android:id="@+id/authentication_sign_in_email"
-          android:layout_below="@id/authentication_logo"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
           android:text=""
@@ -49,11 +43,7 @@
           android:inputType="textEmailAddress"
           style="@style/TH.Authentication.EditText"
           app:minTextLength="3"
-          >
-
-        <requestFocus />
-
-      </com.tradehero.th.widget.validation.ValidatedText>
+          />
 
       <com.tradehero.th.widget.validation.ValidatedText
           android:id="@+id/et_pwd_login"
@@ -70,14 +60,12 @@
 
       <Button
           android:id="@+id/btn_login"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
           android:layout_below="@id/et_pwd_login"
-          android:layout_centerHorizontal="true"
+          style="@style/TH.SocialAuthenticationButton"
           android:layout_marginTop="@dimen/margin_small"
-          android:background="@drawable/basic_white_selector"
+          android:background="@drawable/basic_green_selector"
           android:text="@string/authentication_login"
-          style="@style/TH.Button.Inverse"
+          android:gravity="center"
           android:enabled="false"
           />
 
@@ -94,9 +82,25 @@
           style="@style/TH.Button"
           />
 
+      <TextView
+          android:id="@+id/alternative_signup_header"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/authentication_sign_in_forgot_password"
+          style="@style/TH.Subhead"
+          android:text="@string/authentication_log_in_alternative"
+          />
+
+      <include
+          layout="@layout/social_network_button_list_wrapper"
+          android:id="@+id/social_network_button_list"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/alternative_signup_header"
+          />
+
     </RelativeLayout>
 
   </ScrollView>
-
 
 </RelativeLayout>

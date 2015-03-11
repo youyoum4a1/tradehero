@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/TH.GuideContainer"
+    tools:background="@drawable/login_bg_1"
+    >
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_weight="2"
+      android:src="@drawable/splash_logo"
+      android:layout_gravity="center_horizontal"
+      />
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="2"
+      />
+
+    <include
+        android:id="@+id/authentication_agreement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/authentication_agreement_vertical_padding"
+        layout="@layout/authentication_agreement"
+        />
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/size_1"
+      android:padding="@dimen/size_1"
+      android:layout_gravity="center"
+      android:text="@string/swipe_learn_more"
+      android:drawableLeft="@drawable/icn_arrow_left"
+      android:drawablePadding="@dimen/size_1"
+      android:textColor="@color/white"
+      android:textSize="@dimen/text_subhead"
+      tools:ignore="RtlHardcoded"
+      />
+
+</LinearLayout>
