@@ -19,7 +19,8 @@ import com.tradehero.chinabuild.fragment.*;
 import com.tradehero.chinabuild.fragment.message.NotificationFragment;
 import com.tradehero.chinabuild.fragment.userCenter.MyMainPage;
 import com.tradehero.chinabuild.fragment.userCenter.UserAccountPage;
-import com.tradehero.chinabuild.fragment.userCenter.UserFriendsListFragment;
+import com.tradehero.chinabuild.fragment.userCenter.UserFansListFragment;
+import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -213,11 +214,11 @@ public class MainTabFragmentMe extends AbsBaseFragment
                 break;
             case R.id.llItemAllHero:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ME_STOCK_HEROES));
-                enterFriendsListFragment(UserFriendsListFragment.TYPE_FRIENDS_HERO);
+                enterHeroesListFragment();
                 break;
             case R.id.llItemAllFans:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ME_STOCK_FOLLOWER));
-                enterFriendsListFragment(UserFriendsListFragment.TYPE_FRIENDS_FOLLOWS);
+                enterFollowersListFragment();
                 break;
         }
     }
@@ -225,16 +226,21 @@ public class MainTabFragmentMe extends AbsBaseFragment
     public void enterUserAllAmount()
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
+        bundle.putInt(UserHeroesListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
         gotoDashboard(UserAccountPage.class.getName(), bundle);
     }
 
-    public void enterFriendsListFragment(int type)
+    private void enterHeroesListFragment()
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
-        bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_FRIENDS_TYPE, type);
-        gotoDashboard(UserFriendsListFragment.class.getName(), bundle);
+        bundle.putInt(UserHeroesListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
+        gotoDashboard(UserHeroesListFragment.class.getName(), bundle);
+    }
+
+    private void enterFollowersListFragment(){
+        Bundle bundle = new Bundle();
+        bundle.putInt(UserHeroesListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
+        gotoDashboard(UserFansListFragment.class.getName(), bundle);
     }
 
     @Override public void onDestroyView()

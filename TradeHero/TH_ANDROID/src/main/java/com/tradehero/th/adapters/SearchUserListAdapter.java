@@ -8,16 +8,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
-import com.tradehero.chinabuild.fragment.userCenter.UserFriendsListFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 
 public class SearchUserListAdapter extends BaseAdapter
 {
@@ -25,8 +25,6 @@ public class SearchUserListAdapter extends BaseAdapter
     private Context context;
     private LayoutInflater inflater;
     private List<UserSearchResultDTO> userSearchResultDTOs;
-
-    public int friendsType = UserFriendsListFragment.TYPE_FRIENDS_FOLLOWS;
 
     public SearchUserListAdapter(Context context)
     {
@@ -48,11 +46,6 @@ public class SearchUserListAdapter extends BaseAdapter
         notifyDataSetChanged();
     }
 
-    public void setFriendsType(int type)
-    {
-        this.friendsType = type;
-    }
-
     @Override public int getCount()
     {
         return userSearchResultDTOs == null ? 0 : userSearchResultDTOs.size();
@@ -70,10 +63,10 @@ public class SearchUserListAdapter extends BaseAdapter
 
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-        UserSearchResultDTO item = (UserSearchResultDTO) getItem(position);
+        UserSearchResultDTO item = getItem(position);
         if (item != null)
         {
-            ViewHolder holder = null;
+            ViewHolder holder;
             if (convertView == null)
             {
                 convertView = inflater.inflate(R.layout.user_search_list_item, viewGroup, false);

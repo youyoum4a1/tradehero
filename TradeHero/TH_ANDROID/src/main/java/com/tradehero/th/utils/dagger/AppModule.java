@@ -327,7 +327,8 @@ import java.util.Locale;
                         MyEditAccountFragment.class,
                         MySocialFragment.class,
                         DefaultIntentReceiver.class,
-                        UserFriendsListFragment.class,
+                        UserHeroesListFragment.class,
+                        UserFansListFragment.class,
                         UserAccountPage.class,
 
                         BindGuestUserFragment.class,

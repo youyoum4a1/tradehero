@@ -130,10 +130,6 @@ import javax.inject.Singleton;
         {
             return competitionService.getVipCompetitions(key.page, key.PER_PAGE);
         }
-        else if (key instanceof CompetitionListTypeMine)
-        {
-            return competitionService.getMyCompetitions(key.page, key.PER_PAGE);
-        }
         else if (key instanceof CompetitionListTypeSearch)
         {
             return competitionService.getSearchCompetitions(((CompetitionListTypeSearch) key).name, key.page, key.PER_PAGE);

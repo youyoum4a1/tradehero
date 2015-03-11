@@ -37,28 +37,43 @@ public class UserFriendsListAdapter extends BaseAdapter
 
     private OnUserItemClickListener listener;
 
-    public UserFriendsListAdapter(Context context)
+    private boolean isDivideByCharType = false;
+
+    public UserFriendsListAdapter(Context context, boolean isDivideByCharType)
     {
         DaggerUtils.inject(this);
         this.context = context;
+        this.isDivideByCharType = isDivideByCharType;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         chars = context.getResources().getStringArray(R.array.character_divider);
     }
 
-    public void setListData(List<UserProfileCompactDTO> list)
-    {
-        userProfileCompactDTOs = list;
-        convertUserData(userProfileCompactDTOs);
+    public void setListData(List<UserProfileCompactDTO> list) {
+        if(list == null){
+            return;
+        }
+        if(isDivideByCharType) {
+            userProfileCompactDTOs = list;
+            convertUserData(userProfileCompactDTOs);
+        }else {
+            sortedUsers.clear();
+            sortedUsers.addAll(list);
+        }
     }
 
-    public void addListData(List<UserProfileCompactDTO> list)
-    {
-        if (userProfileCompactDTOs == null) {
-            userProfileCompactDTOs = new ArrayList<>();
+    public void addListData(List<UserProfileCompactDTO> list)  {
+        if(list == null){
+            return;
         }
-        userProfileCompactDTOs.addAll(list);
-        convertUserData(userProfileCompactDTOs);
+        if(isDivideByCharType) {
+            if (userProfileCompactDTOs == null) {
+                userProfileCompactDTOs = new ArrayList<>();
+            }
+            userProfileCompactDTOs.addAll(list);
+            convertUserData(userProfileCompactDTOs);
+        }else {
+            sortedUsers.addAll(list);
+        }
     }
 
     @Override public int getCount()
@@ -92,40 +107,44 @@ public class UserFriendsListAdapter extends BaseAdapter
                 holder.tvUserExtraValue = (TextView) convertView.findViewById(R.id.tvUserExtraValue);
                 holder.dividerTV = (TextView)convertView.findViewById(R.id.textview_users_divider);
                 holder.userRL = (RelativeLayout)convertView.findViewById(R.id.relativelayout_user_item);
-                holder.footView = (View)convertView.findViewById(R.id.view_divider_foot);
-                holder.headView = (View)convertView.findViewById(R.id.view_divider_head);
+                holder.footView = convertView.findViewById(R.id.view_divider_foot);
+                holder.headView = convertView.findViewById(R.id.view_divider_head);
                 convertView.setTag(holder);
             }
             else
             {
                 holder = (ViewHolder) convertView.getTag();
             }
-
-            if(position == 0){
-                holder.dividerTV.setVisibility(View.VISIBLE);
-                holder.dividerTV.setText(item.displayNamePinYinFirstChar.toUpperCase());
-                holder.headView.setVisibility(View.VISIBLE);
-            }else{
-                int beforePosition = position - 1;
-                UserProfileCompactDTO itemBefore = (UserProfileCompactDTO) getItem(beforePosition);
-                if(item.displayNamePinYinFirstChar.equalsIgnoreCase(itemBefore.displayNamePinYinFirstChar)){
-                    holder.dividerTV.setVisibility(View.GONE);
-                    holder.dividerTV.setText("");
-                    holder.headView.setVisibility(View.GONE);
-                }else{
+            if(isDivideByCharType) {
+                if (position == 0) {
                     holder.dividerTV.setVisibility(View.VISIBLE);
                     holder.dividerTV.setText(item.displayNamePinYinFirstChar.toUpperCase());
                     holder.headView.setVisibility(View.VISIBLE);
+                } else {
+                    int beforePosition = position - 1;
+                    UserProfileCompactDTO itemBefore = (UserProfileCompactDTO) getItem(beforePosition);
+                    if (item.displayNamePinYinFirstChar.equalsIgnoreCase(itemBefore.displayNamePinYinFirstChar)) {
+                        holder.dividerTV.setVisibility(View.GONE);
+                        holder.dividerTV.setText("");
+                        holder.headView.setVisibility(View.GONE);
+                    } else {
+                        holder.dividerTV.setVisibility(View.VISIBLE);
+                        holder.dividerTV.setText(item.displayNamePinYinFirstChar.toUpperCase());
+                        holder.headView.setVisibility(View.VISIBLE);
+                    }
                 }
-            }
-            if(position<(getCount()-1)){
-                int afterPosition = position + 1;
-                UserProfileCompactDTO itemAfter = (UserProfileCompactDTO) getItem(afterPosition);
-                if(!item.displayNamePinYinFirstChar.equalsIgnoreCase(itemAfter.displayNamePinYinFirstChar)){
-                    holder.footView.setVisibility(View.GONE);
-                }else{
-                    holder.footView.setVisibility(View.VISIBLE);
+                if (position < (getCount() - 1)) {
+                    int afterPosition = position + 1;
+                    UserProfileCompactDTO itemAfter = (UserProfileCompactDTO) getItem(afterPosition);
+                    if (!item.displayNamePinYinFirstChar.equalsIgnoreCase(itemAfter.displayNamePinYinFirstChar)) {
+                        holder.footView.setVisibility(View.GONE);
+                    } else {
+                        holder.footView.setVisibility(View.VISIBLE);
+                    }
                 }
+            }else {
+                holder.footView.setVisibility(View.VISIBLE);
+                holder.headView.setVisibility(View.GONE);
             }
             picasso.get()
                     .load(item.picture)

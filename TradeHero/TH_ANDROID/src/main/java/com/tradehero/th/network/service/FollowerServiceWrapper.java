@@ -5,6 +5,7 @@ import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.UserBaseKey;
 import org.jetbrains.annotations.NotNull;
+import retrofit.Callback;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -24,6 +25,10 @@ import javax.inject.Singleton;
     public FollowerSummaryDTO getAllFollowersSummary(UserBaseKey heroId)
     {
         return followerService.getAllFollowersSummary(heroId.key);
+    }
+
+    public void getFollowers(UserBaseKey heroId, int perPage, int page, Callback<FollowerSummaryDTO> callback){
+        followerService.getFollowers(heroId.key, perPage,page, callback);
     }
 
     //<editor-fold desc="Get Follower Subscription Detail">

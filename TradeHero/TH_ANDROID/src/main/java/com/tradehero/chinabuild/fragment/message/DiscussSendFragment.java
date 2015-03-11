@@ -17,7 +17,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.chinabuild.data.DiscoveryDiscussFormDTO;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.chinabuild.fragment.search.SearchFragment;
-import com.tradehero.chinabuild.fragment.userCenter.UserFriendsListFragment;
+import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.common.text.Span;
@@ -250,10 +250,9 @@ public class DiscussSendFragment extends DashboardFragment
         if (view.getId() == R.id.btnAt)
         {
             Bundle bundle = new Bundle();
-            bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
-            bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_FRIENDS_TYPE, UserFriendsListFragment.TYPE_FRIENDS_ALL);
+            bundle.putInt(UserHeroesListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
             bundle.putString(BUNDLE_KEY_RETURN_FRAGMENT, DiscussSendFragment.this.getClass().getName());
-            selectionFragment = (UserFriendsListFragment) pushFragment(UserFriendsListFragment.class, bundle);
+            selectionFragment = (UserHeroesListFragment) pushFragment(UserHeroesListFragment.class, bundle);
         }
         else if (view.getId() == R.id.btnSelectStock)
         {

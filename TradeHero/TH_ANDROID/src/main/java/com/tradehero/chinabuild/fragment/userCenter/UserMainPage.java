@@ -60,7 +60,6 @@ import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 
@@ -139,7 +138,6 @@ public class UserMainPage extends DashboardFragment
                 isMyMainPage = true;
             }
         }
-        Timber.d("UserID = " + userID);
         userProfileCacheListener = createUserProfileFetchListener();
         currentUserProfileCacheListener = createCurrentUserProfileFetchListener();
         adapter = new UserTimeLineAdapter(getActivity(), isMyMainPage);
@@ -705,32 +703,34 @@ public class UserMainPage extends DashboardFragment
         switch (id)
         {
             case R.id.llItemAllAmount:
-                Timber.d("clicked llItemAllAmount");
                 enterUserAllAmount();
                 break;
             case R.id.llItemAllHero:
-                Timber.d("clicked llItemAllHero");
-                enterFriendsListFragment(UserFriendsListFragment.TYPE_FRIENDS_HERO);
+                enterHeroesListFragment();
                 break;
             case R.id.llItemAllFans:
-                Timber.d("clicked llItemAllFans");
-                enterFriendsListFragment(UserFriendsListFragment.TYPE_FRIENDS_FOLLOWS);
+                enterFollowersListFragment();
                 break;
         }
     }
 
-    public void enterUserAllAmount()
+    private void enterUserAllAmount()
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_USER_ID, userBaseKey.key);
+        bundle.putInt(UserHeroesListFragment.BUNDLE_SHOW_USER_ID, userBaseKey.key);
         pushFragment(UserAccountPage.class, bundle);
     }
 
-    public void enterFriendsListFragment(int type)
+    private void enterHeroesListFragment()
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_USER_ID, userBaseKey.key);
-        bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_FRIENDS_TYPE, type);
-        pushFragment(UserFriendsListFragment.class, bundle);
+        bundle.putInt(UserHeroesListFragment.BUNDLE_SHOW_USER_ID, userBaseKey.key);
+        pushFragment(UserHeroesListFragment.class, bundle);
+    }
+
+    private void enterFollowersListFragment(){
+        Bundle bundle = new Bundle();
+        bundle.putInt(UserHeroesListFragment.BUNDLE_SHOW_USER_ID, userBaseKey.key);
+        pushFragment(UserFansListFragment.class, bundle);
     }
 }

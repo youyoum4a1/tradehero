@@ -95,6 +95,7 @@ public class CompetitionMineFragment extends DashboardFragment {
         if(adapterList==null || adapterList.getCount()<=0){
             showProgressBar();
             retrieveMineOpenCompetitions();
+            tvMoreCompetition.setVisibility(View.GONE);
         }else{
             if(noMoreHistory){
                 tvMoreCompetition.setVisibility(View.GONE);
@@ -128,7 +129,6 @@ public class CompetitionMineFragment extends DashboardFragment {
             if(adapterList!=null && tvMoreCompetition!=null) {
                 adapterList.setMyCompetitionDtoList(userCompetitionDTOs);
                 page = 0;
-                tvMoreCompetition.setVisibility(View.VISIBLE);
                 noMoreHistory = false;
             }
             onFinish();
@@ -153,6 +153,9 @@ public class CompetitionMineFragment extends DashboardFragment {
             }
             if(listCompetitions!=null){
                 listCompetitions.onRefreshComplete();
+            }
+            if(tvMoreCompetition!=null && tvMoreCompetition.getVisibility()!=View.VISIBLE) {
+                tvMoreCompetition.setVisibility(View.VISIBLE);
             }
 
             dismissProgressBar();
