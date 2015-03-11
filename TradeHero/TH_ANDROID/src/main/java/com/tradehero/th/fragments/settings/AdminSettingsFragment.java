@@ -50,6 +50,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     private static final CharSequence KEY_USER_INFO = "user_info";
     private static final CharSequence KEY_SERVER_ENDPOINT = "server_endpoint";
     private static final CharSequence KEY_SEND_FAKE_PUSH = "send_fake_push";
+    private static final CharSequence KEY_SEND_FAKE_PUSH_ACTION = "send_fake_push_action";
     private static final CharSequence KEY_DAILY_TEST_SCREEN = "show_daily_quest_test_screen";
     private static final CharSequence KEY_ACHIEVEMENT_TEST_SCREEN = "show_achievement_test_screen";
     private static final CharSequence KEY_XP_TEST_SCREEN = "show_xp_test_screen";
@@ -154,6 +155,15 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
             @Override public boolean onPreferenceClick(Preference preference)
             {
                 return AdminSettingsFragment.this.askForNotificationId();
+            }
+        });
+
+        Preference sendFakePushAction = findPreference(KEY_SEND_FAKE_PUSH_ACTION);
+        sendFakePushAction.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                return AdminSettingsFragment.this.sendFakeAction();
             }
         });
 
@@ -276,6 +286,8 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         AlertDialogRxUtil.build(getActivity())
                 .setView(view)
                 .setPositiveButton(R.string.ok)
+                .setCancelable(true)
+                .setCanceledOnTouchOutside(true)
                 .build()
                 .subscribe(new Action1<OnDialogClickEvent>()
                 {
@@ -304,6 +316,12 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         Intent fakeIntent = new Intent();
         fakeIntent.putExtra(PushConstants.KEY_PUSH_ID, String.valueOf(notificationId));
         notificationOpenedHandler.get().handle(fakeIntent);
+    }
+
+    private boolean sendFakeAction()
+    {
+        FakePushNotificationUtil.showDialogAndSend(getActivity());
+        return true;
     }
 
     private boolean onServerEndpointChanged(String serverEndpoint)

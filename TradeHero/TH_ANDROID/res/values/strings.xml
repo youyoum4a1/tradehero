@@ -86,6 +86,7 @@
   <string name="about_screen_text_processing_by">Text processing by:</string>
   <string name="about_screen_sentiment_analysis_by">Sentiment analysis by:</string>
   <string name="send_fake_push" translatable="false">Send a fake PushNotification</string>
+  <string name="send_fake_push_action" translatable="false">Send a fake Push Action</string>
 
   <string name="buy_sell_loading_ask_price">Loading ask price…</string>
   <string name="buy_sell_loading_bid_price">Loading bid price…</string>
