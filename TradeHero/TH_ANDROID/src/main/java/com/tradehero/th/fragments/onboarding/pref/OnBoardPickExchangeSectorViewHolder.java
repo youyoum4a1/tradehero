@@ -66,8 +66,9 @@ public class OnBoardPickExchangeSectorViewHolder
         {
             @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
-                Object item  = exchangeAdapter.getItem(position);
-                Class clazz = item.getClass();
+                ExchangeCompactSpinnerDTO dto  = exchangeAdapter.getItem(position);
+                onBoardExchangePref.set(dto.countryCode);
+                preferredMarketCountry.set(dto.getExchangeIntegerId());
             }
 
             @Override public void onNothingSelected(AdapterView<?> parent)
@@ -112,6 +113,11 @@ public class OnBoardPickExchangeSectorViewHolder
 
     protected void setExchangeSpinnerToUserCountry()
     {
+        int id = preferredMarketCountry.get();
+        if (id != ExchangeMarketPreference.UNSET_VALUE) {
+            exchangeSpinner.setSelectionById(id);
+            return;
+        }
         UserProfileDTO userProfileCopy = userProfile;
         Country userCountry = null;
         if (userProfileCopy != null)
@@ -122,14 +128,13 @@ public class OnBoardPickExchangeSectorViewHolder
         {
             userCountry = Country.US;
         }
-        ExchangeSpinner exchangeSpinnerCopy = exchangeSpinner;
-        ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOsCopy = exchangeCompactSpinnerDTOs;
-        if (exchangeSpinnerCopy != null && exchangeCompactSpinnerDTOsCopy != null)
+
+        if (exchangeSpinner != null && exchangeCompactSpinnerDTOs != null)
         {
-            ExchangeCompactSpinnerDTO found = exchangeCompactSpinnerDTOsCopy.findFirstDefaultFor(userCountry);
+            ExchangeCompactSpinnerDTO found = exchangeCompactSpinnerDTOs.findFirstDefaultFor(userCountry);
             if (found != null)
             {
-                exchangeSpinnerCopy.setSelection(found);
+                exchangeSpinner.setSelectionById(found.id);
             }
         }
     }

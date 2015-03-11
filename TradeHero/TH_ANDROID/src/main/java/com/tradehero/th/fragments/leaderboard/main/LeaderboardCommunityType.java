@@ -4,6 +4,5 @@ enum LeaderboardCommunityType
 {
     TimeRestricted,
     SkillAndCountry,
-    Connected,
-    DrillDown
+    Exchange
 }

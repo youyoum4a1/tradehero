@@ -97,6 +97,8 @@ public class LeaderboardMarkUserItemView
     @NonNull protected SubscriptionList subscriptions;
     @NonNull protected BehaviorSubject<UserBaseDTO> followRequestedBehavior;
 
+    protected UserProfileDTO currentUserProfileDTO;
+
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
     {
@@ -133,11 +135,7 @@ public class LeaderboardMarkUserItemView
             HierarchyInjector.inject(lbmuFoF);
         }
         lbmuProfilePicture.setLayerType(LAYER_TYPE_SOFTWARE, null);
-        //Add touch feedback
-        if (innerViewContainer != null)
-        {
-            innerViewContainer.setBackgroundResource(R.drawable.basic_white_selector);
-        }
+
     }
 
     @Override protected void onAttachedToWindow()
@@ -399,16 +397,34 @@ public class LeaderboardMarkUserItemView
         }
     }
 
-    protected void displayUserIsNotRanked()
+    protected void displayUserIsNotRanked(UserProfileDTO currentUserProfileDTO)
     {
-        // disable touch feedback so we don't confuse the user
-        if (innerViewContainer != null)
-        {
-            innerViewContainer.setBackgroundResource(R.color.white);
-        }
-
+        this.currentUserProfileDTO = currentUserProfileDTO;
         lbmuRoi.setText(R.string.leaderboard_not_ranked);
         lbmuPosition.setText("-");
+
+        if (currentUserProfileDTO == null) {
+            return;
+        }
+
+        if (lbmuDisplayName != null) {
+            lbmuDisplayName.setText(currentUserProfileDTO.displayName);
+        }
+
+        if (lbmuProfilePicture != null)
+        {
+            if (currentUserProfileDTO.picture != null)
+            {
+                picasso.get()
+                        .load(currentUserProfileDTO.picture)
+                        .into(lbmuProfilePicture);
+            }
+            else
+            {
+                picasso.get().load(R.drawable.superman_facebook)
+                        .into(lbmuProfilePicture);
+            }
+        }
     }
 
     public void setExpanded(boolean expand)
@@ -446,8 +462,7 @@ public class LeaderboardMarkUserItemView
             this.lbmuDisplayName = leaderboardItem.displayName;
             this.lbmuRoi = THSignedPercentage
                     .builder(leaderboardItem.roiInPeriod * 100)
-                    .withSign()
-                    .signTypeArrow()
+                    .signTypePlusMinusAlways()
                     .relevantDigitCount(3)
                     .withDefaultColor()
                     .build().createSpanned();

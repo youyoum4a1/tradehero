@@ -57,7 +57,6 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePreSeasonD
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
@@ -577,11 +576,7 @@ public class MainCompetitionFragment extends CompetitionFragment
                 CompetitionLeaderboardMarkUserListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
             }
 
-            if (navigator != null && leaderboardDefDTO != null && leaderboardDefDTO.isWithinUtcRestricted())
-            {
-                navigator.get().pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class, args);
-            }
-            else if (navigator != null)
+            if (navigator != null)
             {
                 navigator.get().pushFragment(CompetitionLeaderboardMarkUserListFragment.class, args);
             }

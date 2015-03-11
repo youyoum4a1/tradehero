@@ -12,7 +12,6 @@ import timber.log.Timber;
 
 public class LeaderboardMarkUserOwnRankingView extends LeaderboardMarkUserItemView
 {
-    private UserProfileDTO currentUserProfileDTO;
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
     public LeaderboardMarkUserOwnRankingView(Context context)
@@ -32,43 +31,6 @@ public class LeaderboardMarkUserOwnRankingView extends LeaderboardMarkUserItemVi
         super(context, attrs, defStyle);
     }
     //</editor-fold>
-
-    protected void displayUserIsNotRanked(UserProfileDTO currentUserProfileDTO)
-    {
-        this.currentUserProfileDTO = currentUserProfileDTO;
-
-        // disable touch feedback so we don't confuse the user
-        if (innerViewContainer != null)
-        {
-            innerViewContainer.setBackgroundResource(R.color.white);
-        }
-
-        lbmuRoi.setText(R.string.leaderboard_not_ranked);
-        lbmuPosition.setText("-");
-
-        if (currentUserProfileDTO == null) {
-            return;
-        }
-
-        if (lbmuDisplayName != null) {
-            lbmuDisplayName.setText(currentUserProfileDTO.displayName);
-        }
-
-        if (lbmuProfilePicture != null)
-        {
-            if (currentUserProfileDTO.picture != null)
-            {
-                picasso.get()
-                        .load(currentUserProfileDTO.picture)
-                        .into(lbmuProfilePicture);
-            }
-            else
-            {
-                picasso.get().load(R.drawable.superman_facebook)
-                        .into(lbmuProfilePicture);
-            }
-        }
-    }
 
     @Override protected void handleOpenProfileButtonClicked()
     {

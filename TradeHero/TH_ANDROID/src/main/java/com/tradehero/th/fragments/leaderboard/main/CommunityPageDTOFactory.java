@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.leaderboard.main;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
@@ -33,9 +35,21 @@ class CommunityPageDTOFactory
             key = MainLeaderboardDefListKeyFactory.createFrom(type);
             Timber.d("Type %s, key %s", type, key);
             cached = leaderboardDefListCache.getCachedValue(key);
+            int size = collected.size();
             if (cached != null)
             {
-                collected.addAll(cached);
+                if ((type == LeaderboardCommunityType.Exchange) && (!TextUtils.isEmpty(countryCode))) {
+                    for (LeaderboardDefDTO dto : cached) {
+                        if (dto.countryCodes.contains(countryCode)) {
+                            collected.add(size, dto);
+                        } else {
+                            collected.add(dto);
+                        }
+                    }
+                } else
+                {
+                    collected.addAll(cached);
+                }
             }
             if (ENABLE_COUNTRY_LEADERBOARD_DEF && countryCode != null && key.equals(new MostSkilledLeaderboardDefListKey(1)))
             {

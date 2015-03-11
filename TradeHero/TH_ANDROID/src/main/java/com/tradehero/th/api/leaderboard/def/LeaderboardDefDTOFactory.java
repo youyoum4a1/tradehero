@@ -2,6 +2,7 @@ package com.tradehero.th.api.leaderboard.def;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.leaderboard.key.ConnectedLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.DrillDownLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
@@ -9,6 +10,8 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.TimePeriodLeaderboardDefListKey;
+import com.tradehero.th.persistence.prefs.PreferenceModule;
+import com.tradehero.th.persistence.prefs.THPreference;
 import java.util.HashMap;
 import javax.inject.Inject;
 import rx.functions.Func1;

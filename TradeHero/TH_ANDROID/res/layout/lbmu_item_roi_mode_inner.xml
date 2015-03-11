@@ -7,9 +7,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:gravity="center_vertical"
-      android:paddingTop="@dimen/lbmu_roi_mode_vertical_padding"
-      android:paddingBottom="@dimen/lbmu_roi_mode_vertical_padding"
-      android:background="@drawable/basic_white_selector"
       >
 
     <include layout="@layout/lbmu_item_top_view_inner"

@@ -6,15 +6,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -23,6 +27,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
@@ -30,9 +37,11 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardType;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
-import com.tradehero.th.models.leaderboard.LeaderboardDefDTOKnowledge;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
+import com.tradehero.th.persistence.prefs.PreferenceModule;
+import com.tradehero.th.persistence.prefs.THPreference;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -53,7 +62,11 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Inject Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache;
     @Inject Analytics analytics;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
-    @Inject Lazy<LeaderboardDefDTOKnowledge> leaderboardDefDTOKnowledge;
+    @Inject @THPreference(PreferenceModule.PREF_ON_BOARDING_EXCHANGE)
+    StringPreference onBoardExchangePref;
+
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCacheRx userProfileCache;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(R.id.pager) ViewPager tabViewPager;
@@ -61,6 +74,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     private BaseWebViewFragment webFragment;
     private int currentDisplayedChildLayoutId;
+    private String countryCode;
     @Nullable protected Subscription leaderboardDefListFetchSubscription;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -160,22 +174,35 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         unsubscribe(leaderboardDefListFetchSubscription);
 
-        Observable<LeaderboardDefDTOList> leaderboardDefObservable =
-                leaderboardDefListCache.get().get(new LeaderboardDefListKey(1))
-                        .map(new PairGetSecond<LeaderboardDefListKey, LeaderboardDefDTOList>())
-                        .map(new Func1<LeaderboardDefDTOList, LeaderboardDefDTOList>()
-                        {
-                            @Override public LeaderboardDefDTOList call(LeaderboardDefDTOList leaderboardDefDTOs)
-                            {
-                                return communityPageDTOFactory.collectFromCaches(null);
-                            }
-                        }) // TODO remove communityPageDTOFactory
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread());
+        Observable observable = userProfileCache.getOne(currentUserId.toUserBaseKey())
+                .switchMap(new Func1<Pair<UserBaseKey, UserProfileDTO>, Observable<?>>()
+        {
+            @Override public Observable<?> call(Pair<UserBaseKey, UserProfileDTO> pair)
+            {
+                countryCode = null; //onBoardExchangePref.get();
+                UserProfileDTO userProfileDTO = pair.second;
+                if (TextUtils.isEmpty(countryCode)) {
+                    countryCode = userProfileDTO.countryCode;
+                }
+                Observable<LeaderboardDefDTOList> leaderboardDefObservable =
+                        leaderboardDefListCache.get().get(new LeaderboardDefListKey(1))
+                                .map(new PairGetSecond<LeaderboardDefListKey, LeaderboardDefDTOList>())
+                                .map(new Func1<LeaderboardDefDTOList, LeaderboardDefDTOList>()
+                                {
+                                    @Override public LeaderboardDefDTOList call(LeaderboardDefDTOList leaderboardDefDTOs)
+                                    {
+                                        return communityPageDTOFactory.collectFromCaches(countryCode);
+                                    }
+                                })
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread());
+                return leaderboardDefObservable;
+            }
+        });
 
         leaderboardDefListFetchSubscription = AppObservable.bindFragment(
                 this,
-                leaderboardDefObservable)
+                observable)
                 .subscribe(
                         new Action1<LeaderboardDefDTOList>()
                         {

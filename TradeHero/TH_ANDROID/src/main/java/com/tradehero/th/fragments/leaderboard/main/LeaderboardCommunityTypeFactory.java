@@ -10,13 +10,9 @@ class LeaderboardCommunityTypeFactory
     @NonNull
     public static LeaderboardCommunityType createFrom(@NonNull LeaderboardDefDTO leaderboardDefDTO)
     {
-        if (leaderboardDefDTO instanceof ConnectedLeaderboardDefDTO)
-        {
-            return LeaderboardCommunityType.Connected;
-        }
         if (leaderboardDefDTO instanceof DrillDownLeaderboardDefDTO)
         {
-            return LeaderboardCommunityType.DrillDown;
+            return LeaderboardCommunityType.Exchange;
         }
         return LeaderboardCommunityType.TimeRestricted;
     }

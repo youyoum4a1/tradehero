@@ -320,45 +320,41 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
     {
         super.updateCurrentRankHeaderView(requisite);
         View rankHeaderView = getRankHeaderView();
+
         if (rankHeaderView != null
                 && rankHeaderView instanceof CompetitionLeaderboardMarkUserItemView
                 && requisite instanceof CompetitionLeaderboardMarkUserItemView.Requisite)
         {
-            CompetitionLeaderboardMarkUserItemView leaderboardMarkUserItemView = (CompetitionLeaderboardMarkUserItemView) rankHeaderView;
+            CompetitionLeaderboardMarkUserOwnRankingView leaderboardMarkUserItemView = (CompetitionLeaderboardMarkUserOwnRankingView) rankHeaderView;
+            CompetitionLeaderboardMarkUserItemView.Requisite thisRequisite = (CompetitionLeaderboardMarkUserItemView.Requisite) requisite;
             if (requisite.currentLeaderboardUserDTO == null)
             {
-                leaderboardMarkUserItemView.displayUserIsNotRanked();
-                // user is not ranked, disable expandable view
+                leaderboardMarkUserItemView.displayUserIsNotRanked(requisite.currentUserProfileDTO, thisRequisite.providerDTO);
                 leaderboardMarkUserItemView.setOnClickListener(null);
             }
             else if (leaderboardMarkUserItemView instanceof CompetitionLeaderboardMarkUserOwnRankingView)
             {
-                CompetitionLeaderboardDTO competitionLeaderboardDTO = ((CompetitionLeaderboardMarkUserItemView.Requisite) requisite).competitionLeaderboardDTO;
+                CompetitionLeaderboardDTO competitionLeaderboardDTO = thisRequisite.competitionLeaderboardDTO;
                 leaderboardMarkUserItemView.display(new CompetitionLeaderboardMarkUserOwnRankingView.DTO(
                         getResources(),
                         currentUserId,
                         requisite.currentLeaderboardUserDTO,
                         requisite.currentUserProfileDTO,
                         competitionLeaderboardDTO.prizes == null? 0 : competitionLeaderboardDTO.prizes.size(),
-                        ((CompetitionLeaderboardMarkUserItemView.Requisite) requisite).providerDTO));
+                        thisRequisite.providerDTO));
             }
             else
             {
-                CompetitionLeaderboardDTO competitionLeaderboardDTO = ((CompetitionLeaderboardMarkUserItemView.Requisite) requisite).competitionLeaderboardDTO;
+                CompetitionLeaderboardDTO competitionLeaderboardDTO = thisRequisite.competitionLeaderboardDTO;
                 leaderboardMarkUserItemView.display(new CompetitionLeaderboardMarkUserItemView.DTO(
                         getResources(),
                         currentUserId,
                         requisite.currentLeaderboardUserDTO,
                         requisite.currentUserProfileDTO,
                         competitionLeaderboardDTO.prizes == null? 0 : competitionLeaderboardDTO.prizes.size(),
-                        ((CompetitionLeaderboardMarkUserItemView.Requisite) requisite).providerDTO));
+                        thisRequisite.providerDTO));
             }
         }
-    }
-
-    @Override protected void saveCurrentFilterKey()
-    {
-        // Do nothing
     }
 
     private void pushWizardElement()

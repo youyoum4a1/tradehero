@@ -6,9 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:paddingTop="@dimen/lbmu_roi_mode_vertical_padding"
-    android:paddingBottom="@dimen/lbmu_roi_mode_vertical_padding"
-    android:background="@drawable/basic_white_selector"
     >
 
   <ImageView
@@ -27,7 +24,7 @@
 
   <include
       layout="@layout/lbmu_item_top_view_inner"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_toLeftOf="@id/leaderboard_prize_amount"
       android:layout_alignParentLeft="true"
