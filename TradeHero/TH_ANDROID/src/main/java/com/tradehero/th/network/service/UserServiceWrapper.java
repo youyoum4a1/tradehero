@@ -278,21 +278,6 @@ import java.util.List;
     }
 
 
-    protected MiddleCallback<UserSearchResultDTOList> searchUsers(SearchUserListType key, Callback<UserSearchResultDTOList> callback)
-    {
-        MiddleCallback<UserSearchResultDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        if (key.searchString == null)
-        {
-            this.userServiceAsync.searchUsers(null, null, null, middleCallback);
-        }
-        else
-        {
-            this.userServiceAsync.searchUsers(key.searchString, key.page, key.perPage, middleCallback);
-        }
-        return middleCallback;
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Search Allowable Recipients">
     public PaginatedAllowableRecipientDTO searchAllowableRecipients(SearchAllowableRecipientListType key)
     {
@@ -394,12 +379,6 @@ import java.util.List;
     }
     //</editor-fold>
 
-    //<editor-fold desc="Add Credit">
-    public UserProfileDTO addCredit(UserBaseKey userKey, GooglePlayPurchaseDTO purchaseDTO)
-    {
-        return createUpdateProfileProcessor().process(userService.addCredit(userKey.key, purchaseDTO));
-    }
-
     public MiddleCallback<UserProfileDTO> addCredit(UserBaseKey userKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
@@ -499,20 +478,6 @@ import java.util.List;
         return userService.getHeroes(heroKey.key);
     }
 
-
-    //<editor-fold desc="Update Country Code">
-    @NotNull protected DTOProcessor<UpdateCountryCodeDTO> createUpdateCountryCodeProcessor(
-            @NotNull UserBaseKey playerId,
-            @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
-    {
-        return new DTOProcessorUpdateCountryCode(
-                userProfileCache,
-                providerListCache.get(),
-                providerCache.get(),
-                providerCompactCache.get(),
-                playerId,
-                updateCountryCodeFormDTO);
-    }
 
     //<editor-fold desc="Update Referral Code">
     @NotNull protected DTOProcessor<Response> createUpdateReferralCodeProcessor(

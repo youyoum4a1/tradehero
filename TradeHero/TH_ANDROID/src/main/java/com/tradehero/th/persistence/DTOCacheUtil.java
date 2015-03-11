@@ -25,7 +25,6 @@ import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
-import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
@@ -76,7 +75,6 @@ import javax.inject.Singleton;
     protected final Lazy<ExchangeCompactListCache> exchangeCompactListCache;
     protected final Lazy<FollowerSummaryCache> followerSummaryCache;
     protected final Lazy<GetPositionsCache> getPositionsCache;
-    protected final Lazy<HomeContentCache> homeContentCache;
     protected final Lazy<LeaderboardDefCache> leaderboardDefCache;
     protected final Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     protected final Lazy<LeaderboardPositionIdCache> leaderboardPositionIdCache;
@@ -133,7 +131,6 @@ import javax.inject.Singleton;
             Lazy<ExchangeCompactListCache> exchangeCompactListCache,
             Lazy<FollowerSummaryCache> followerSummaryCache,
             Lazy<GetPositionsCache> getPositionsCache,
-            Lazy<HomeContentCache> homeContentCache,
             Lazy<LeaderboardCache> leaderboardCache,
             Lazy<LeaderboardDefCache> leaderboardDefCache,
             Lazy<LeaderboardDefListCache> leaderboardDefListCache,
@@ -183,7 +180,6 @@ import javax.inject.Singleton;
         this.exchangeCompactListCache = exchangeCompactListCache;
         this.followerSummaryCache = followerSummaryCache;
         this.getPositionsCache = getPositionsCache;
-        this.homeContentCache = homeContentCache;
         this.leaderboardCache = leaderboardCache;
         this.leaderboardDefCache = leaderboardDefCache;
         this.leaderboardDefListCache = leaderboardDefListCache;
@@ -233,7 +229,6 @@ import javax.inject.Singleton;
         discussionListCache.get().invalidateAll();
         followerSummaryCache.get().invalidateAll();
         getPositionsCache.get().invalidateAll();
-        homeContentCache.get().invalidateAll();
         leaderboardDefCache.get().invalidateAll();
         leaderboardDefListCache.get().invalidateAll();
         leaderboardPositionIdCache.get().invalidateAll();

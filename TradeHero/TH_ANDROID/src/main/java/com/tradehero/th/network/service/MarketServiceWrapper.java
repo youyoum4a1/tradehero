@@ -5,11 +5,12 @@ import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton public class MarketServiceWrapper
 {
@@ -31,15 +32,6 @@ import retrofit.Callback;
     {
         return marketService.getExchanges();
     }
-
-    @NotNull public MiddleCallback<ExchangeCompactDTOList> getExchanges(
-            @Nullable Callback<ExchangeCompactDTOList> callback)
-    {
-        MiddleCallback<ExchangeCompactDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        marketServiceAsync.getExchanges(middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="Get Exchange">
     public ExchangeDTO getExchange(@NotNull ExchangeIntegerId exchangeId)

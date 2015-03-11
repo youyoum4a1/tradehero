@@ -1,7 +1,5 @@
 package com.tradehero.th.base;
 
-import android.app.Activity;
-import android.content.Intent;
 import com.tradehero.common.application.PApplication;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.timber.CrashReportingTree;
@@ -12,7 +10,6 @@ import com.tradehero.th.filter.FilterModule;
 import com.tradehero.th.fragments.competition.CompetitionModule;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
-import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -78,8 +75,7 @@ public class Application extends PApplication
                 BuySellFragment.class,
                 CompetitionWebViewFragment.class,
                 PositionListFragment.class,
-                TradeListFragment.class,
-                HomeFragment.class
+                TradeListFragment.class
         );
         thRouter.registerAlias("messages", "updatecenter/0");
         thRouter.registerAlias("notifications", "updatecenter/1");
@@ -121,15 +117,5 @@ public class Application extends PApplication
             return listModules.toArray();
         }
         return modules;
-    }
-
-    public void restartActivity(Class<? extends Activity> activityClass)
-    {
-        Intent newApp = new Intent(this, activityClass);
-        newApp.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(newApp);
-
-        DaggerUtils.initialize(getModules());
-        DaggerUtils.inject(this);
     }
 }

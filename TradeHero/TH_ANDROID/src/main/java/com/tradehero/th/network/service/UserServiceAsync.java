@@ -11,7 +11,6 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.users.UpdateReferralCodeDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserSearchResultDTOList;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.password.ResetPasswordDTO;
@@ -81,26 +80,6 @@ interface UserServiceAsync
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 
-
-    @Multipart @PUT("/users/{userId}/updateUser")
-    void updateProfile(
-            @Path("userId") int userId,
-            @Part("deviceToken") String deviceToken,
-            @Part("displayName") String displayName,
-            @Part("email") String email,
-            @Part("firstName") String firstName,
-            @Part("lastName") String lastName,
-            @Part("password") String password,
-            @Part("passwordConfirmation") String passwordConfirmation,
-            @Part("username") String username,
-            @Part("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
-            @Part("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
-            @Part("biography") String biography,
-            @Part("location") String location,
-            @Part("website") String website,
-            @Part("profilePicture") TypedOutput profilePicture,
-            Callback<UserProfileDTO> cb);
-
     @Multipart @PUT("/users/{userId}/updateUser")
     void updatePhoto(
             @Path("userId") int userId,
@@ -139,14 +118,6 @@ interface UserServiceAsync
                               Callback<ResetPasswordDTO> callback);
     //</editor-fold>
 
-    //<editor-fold desc="Search Users">
-    @GET("/users/search")
-    void searchUsers(
-            @Query("q") String searchString,
-            @Query("page") Integer page,
-            @Query("perPage") Integer perPage,
-            Callback<UserSearchResultDTOList> callback);
-    //</editor-fold>
 
     @GET("/users/{userId}/SearchFriends")
     void searchSocialFriends(

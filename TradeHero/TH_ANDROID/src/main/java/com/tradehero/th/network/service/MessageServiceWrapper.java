@@ -5,21 +5,12 @@ import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.MessageHeaderId;
-import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
-import com.tradehero.th.api.discussion.key.MessageListKey;
-import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
-import com.tradehero.th.api.discussion.key.TypedMessageListKey;
+import com.tradehero.th.api.discussion.key.*;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.models.discussion.DTOProcessorAllMessagesRead;
-import com.tradehero.th.models.discussion.DTOProcessorDiscussionCreate;
-import com.tradehero.th.models.discussion.DTOProcessorMessageDeleted;
-import com.tradehero.th.models.discussion.DTOProcessorMessageRead;
-import com.tradehero.th.models.discussion.DTOProcessorReadablePaginatedMessageReceived;
+import com.tradehero.th.models.discussion.*;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
@@ -28,12 +19,13 @@ import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton
 public class MessageServiceWrapper
@@ -182,52 +174,16 @@ public class MessageServiceWrapper
         return messageService.getMessageHeader(messageHeaderId.commentId, null);
     }
 
-    public MiddleCallback<MessageHeaderDTO> getMessageHeader(MessageHeaderId messageHeaderId, Callback<MessageHeaderDTO> callback)
-    {
-        MiddleCallback<MessageHeaderDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        if (messageHeaderId instanceof MessageHeaderUserId)
-        {
-            messageServiceAsync.getMessageHeader(
-                    messageHeaderId.commentId,
-                    ((MessageHeaderUserId) messageHeaderId).userBaseKey.key,
-                    middleCallback);
-        }
-        else
-        {
-            messageServiceAsync.getMessageHeader(messageHeaderId.commentId, null, middleCallback);
-        }
-        return middleCallback;
-    }
-
     public MessageHeaderDTO getMessageThread(UserBaseKey correspondentId)
     {
         return messageService.getMessageThread(correspondentId.key);
     }
-
-    public MiddleCallback<MessageHeaderDTO> getMessageThread(UserBaseKey correspondentId, Callback<MessageHeaderDTO> callback)
-    {
-        MiddleCallback<MessageHeaderDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        messageServiceAsync.getMessageThread(correspondentId.key, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="Get Messaging Relationship Status">
     public UserMessagingRelationshipDTO getMessagingRelationgshipStatus(UserBaseKey recipient)
     {
         return messageService.getMessagingRelationgshipStatus(recipient.key);
     }
-
-    public MiddleCallback<UserMessagingRelationshipDTO> getMessagingRelationgshipStatus(
-            UserBaseKey recipient,
-            Callback<UserMessagingRelationshipDTO> callback)
-    {
-        MiddleCallback<UserMessagingRelationshipDTO>
-                middleCallback = new BaseMiddleCallback<>(callback);
-        messageServiceAsync.getMessagingRelationshipStatus(recipient.key, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="Create Message">
     protected DTOProcessor<DiscussionDTO> createDiscussionCreateProcessor(DiscussionKey stubKey)
@@ -237,11 +193,6 @@ public class MessageServiceWrapper
                 discussionCache.get(),
                 userMessagingRelationshipCache.get(),
                 stubKey);
-    }
-
-    public DiscussionDTO createMessage(MessageCreateFormDTO form)
-    {
-        return createDiscussionCreateProcessor(null).process(messageService.createMessage(form));
     }
 
     public MiddleCallback<DiscussionDTO> createMessage(MessageCreateFormDTO form, Callback<DiscussionDTO> callback)
@@ -265,16 +216,6 @@ public class MessageServiceWrapper
                 messageHeaderListCache.get(),
                 messageHeaderId,
                 readerId);
-    }
-
-    public Response deleteMessage(
-            @NotNull MessageHeaderId messageHeaderId,
-            int senderUserId,
-            int recipientUserId,
-            @NotNull UserBaseKey readerId)
-    {
-        return createMessageHeaderDeletedProcessor(messageHeaderId, readerId).process(
-                messageService.deleteMessage(messageHeaderId.commentId, senderUserId, recipientUserId));
     }
 
     public MiddleCallback<Response> deleteMessage(
@@ -301,17 +242,6 @@ public class MessageServiceWrapper
                 userProfileCache.get(),
                 messageHeaderId,
                 readerId);
-    }
-
-    @NotNull public Response readMessage(
-            int commentId,
-            int senderUserId,
-            int recipientUserId,
-            @NotNull MessageHeaderId messageHeaderId,
-            @NotNull UserBaseKey readerId)
-    {
-        return createMessageHeaderReadProcessor(messageHeaderId, readerId).process(
-                messageService.readMessage(commentId, senderUserId, recipientUserId));
     }
 
     @NotNull public MiddleCallback<Response> readMessage(

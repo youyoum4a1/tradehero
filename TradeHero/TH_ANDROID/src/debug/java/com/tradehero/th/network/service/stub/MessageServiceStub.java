@@ -1,19 +1,18 @@
 package com.tradehero.th.network.service.stub;
 
-import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
-import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.network.service.MessageService;
+import retrofit.client.Response;
+import timber.log.Timber;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.inject.Inject;
-import retrofit.client.Response;
-import timber.log.Timber;
 
 public class MessageServiceStub implements MessageService
 {
@@ -86,23 +85,6 @@ public class MessageServiceStub implements MessageService
     {
         UserMessagingRelationshipDTO statusDTO = new UserMessagingRelationshipDTO();
         return statusDTO;
-    }
-
-    @Override public DiscussionDTO createMessage(MessageCreateFormDTO form)
-    {
-        throw new IllegalArgumentException("Implement it");
-    }
-
-    @Override public Response deleteMessage(int commentId, int senderUserId,
-            int recipientUserId)
-    {
-        throw new RuntimeException("Not implemented");
-    }
-
-    @Override public Response readMessage(int commentId, int senderUserId,
-            int recipientUserId)
-    {
-        throw new RuntimeException("Not implemented");
     }
 
     @Override public Response readAllMessage()

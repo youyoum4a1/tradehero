@@ -49,31 +49,11 @@ public class NotificationServiceWrapper
         return notificationService.getNotifications(notificationListKey.toMap());
     }
 
-    @NotNull public MiddleCallback<PaginatedNotificationDTO> getNotifications(
-            @NotNull NotificationListKey notificationListKey,
-            @Nullable Callback<PaginatedNotificationDTO> callback)
-    {
-        MiddleCallback<PaginatedNotificationDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        notificationServiceAsync.getNotifications(notificationListKey.toMap(), middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Get Notification Detail">
     public NotificationDTO getNotificationDetail(@NotNull NotificationKey pushKey)
     {
         return notificationService.getNotificationDetail(pushKey.key);
     }
-
-    @NotNull public MiddleCallback<NotificationDTO> getNotificationDetail(
-            @NotNull NotificationKey pushKey,
-            @Nullable Callback<NotificationDTO> callback)
-    {
-        MiddleCallback<NotificationDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        notificationServiceAsync.getNotificationDetail(pushKey.key, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="Mark As Read">
     @NotNull private DTOProcessor<Response> createNotificationReadDTOProcessor(
@@ -85,14 +65,6 @@ public class NotificationServiceWrapper
                 notificationCache.get(),
                 readerId,
                 userProfileCache.get());
-    }
-
-    public Response markAsRead(
-            @NotNull final UserBaseKey readerId,
-            @NotNull NotificationKey pushKey)
-    {
-        return createNotificationReadDTOProcessor(readerId, pushKey).process(
-                notificationService.markAsRead(pushKey.key));
     }
 
     @NotNull public MiddleCallback<Response> markAsRead(
@@ -113,12 +85,6 @@ public class NotificationServiceWrapper
                 notificationCache.get(),
                 readerId,
                 userProfileCache.get());
-    }
-
-    public Response markAsReadAll(@NotNull final UserBaseKey readerId)
-    {
-        return createNotificationAllReadDTOProcessor(readerId).process(
-                notificationService.markAsReadAll());
     }
 
     @NotNull public MiddleCallback<Response> markAsReadAll(

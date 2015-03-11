@@ -75,6 +75,8 @@ public class CompetitionMineFragment extends DashboardFragment {
     private final int perPage = 20;
     private int page = 0;
 
+    private boolean noMoreHistory = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +95,12 @@ public class CompetitionMineFragment extends DashboardFragment {
         if(adapterList==null || adapterList.getCount()<=0){
             showProgressBar();
             retrieveMineOpenCompetitions();
+        }else{
+            if(noMoreHistory){
+                tvMoreCompetition.setVisibility(View.GONE);
+            }else{
+                tvMoreCompetition.setVisibility(View.VISIBLE);
+            }
         }
         fetchVipCompetition(false);//获取官方推荐比赛
         return view;
@@ -106,7 +114,7 @@ public class CompetitionMineFragment extends DashboardFragment {
     }
 
     private void retrieveMineOpenCompetitions(){
-        competitionServiceWrapper.get().retrieveMyOpenCompetitions(new CompetitoinsMineOpenCallback());
+        competitionServiceWrapper.get().retrieveMyOpenCompetitions(new CompetitionsMineOpenCallback());
     }
 
     private void retrieveMineCloseCompetitionsMore(){
@@ -114,12 +122,14 @@ public class CompetitionMineFragment extends DashboardFragment {
         competitionServiceWrapper.get().retrieveMyClosedCompetitions(perPage, page, new CompetitionMineClosedCallback());
     }
 
-    private class CompetitoinsMineOpenCallback implements Callback<UserCompetitionDTOList>{
+    private class CompetitionsMineOpenCallback implements Callback<UserCompetitionDTOList>{
         @Override
         public void success(UserCompetitionDTOList userCompetitionDTOs, Response response) {
-            if(adapterList!=null ) {
+            if(adapterList!=null && tvMoreCompetition!=null) {
                 adapterList.setMyCompetitionDtoList(userCompetitionDTOs);
                 page = 0;
+                tvMoreCompetition.setVisibility(View.VISIBLE);
+                noMoreHistory = false;
             }
             onFinish();
         }
@@ -156,6 +166,10 @@ public class CompetitionMineFragment extends DashboardFragment {
         public void success(UserCompetitionDTOList userCompetitionDTOs, Response response) {
             if(adapterList!=null){
                 adapterList.addMyCompetitionDtoList(userCompetitionDTOs);
+                if(userCompetitionDTOs.size()<perPage && tvMoreCompetition!=null){
+                    tvMoreCompetition.setVisibility(View.GONE);
+                    noMoreHistory = true;
+                }
             }
             onFinish();
         }

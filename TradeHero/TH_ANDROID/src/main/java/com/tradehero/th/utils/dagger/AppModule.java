@@ -38,8 +38,6 @@ import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
 import com.tradehero.th.fragments.discussion.*;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
-import com.tradehero.th.fragments.home.HomeFragment;
-import com.tradehero.th.fragments.home.HomeWebView;
 import com.tradehero.th.fragments.news.*;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
@@ -253,8 +251,6 @@ import java.util.Locale;
                         FriendsInvitationFragment.class,
                         SocialFriendsFragmentLinkedIn.class,
                         SocialFriendsFragmentWeibo.class,
-                        HomeFragment.class,
-                        HomeWebView.class,
                         GuideActivity.class,
 
                         //China Build Start

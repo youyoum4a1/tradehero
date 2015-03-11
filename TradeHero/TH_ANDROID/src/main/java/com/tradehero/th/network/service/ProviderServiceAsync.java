@@ -1,6 +1,5 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderCompactDTOList;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
@@ -43,13 +42,6 @@ interface ProviderServiceAsync
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
             Callback<SecurityCompactDTOList> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Get Help Videos">
-    @GET("/providers/{providerId}/helpVideos")
-    void getHelpVideos(
-            @Path("providerId") int providerId,
-            Callback<HelpVideoDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Cells">

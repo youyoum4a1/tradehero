@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import butterknife.ButterKnife;
-import com.tradehero.chinabuild.listview.SecurityListView;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.UserFriendsListAdapter;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -19,7 +19,7 @@ import com.tradehero.th.widget.TradeHeroProgressBar;
 public class UserFansListFragment extends DashboardFragment {
 
     private TradeHeroProgressBar tradeheroprogressbar_users;
-    private SecurityListView fansLV;
+    private PullToRefreshListView fansLV;
     private ImageView emptyIV;
 
     private UserFriendsListAdapter adapter;
@@ -33,7 +33,7 @@ public class UserFansListFragment extends DashboardFragment {
         View view = inflater.inflate(R.layout.user_fans_list_fragment, container, false);
         ButterKnife.inject(this, view);
         tradeheroprogressbar_users = (TradeHeroProgressBar) view.findViewById(R.id.tradeheroprogressbar_users);
-        fansLV = (SecurityListView) view.findViewById(R.id.listFriends);
+        fansLV = (PullToRefreshListView) view.findViewById(R.id.listFriends);
         emptyIV = (ImageView) view.findViewById(R.id.imgEmpty);
 
         initArgument();
@@ -59,8 +59,7 @@ public class UserFansListFragment extends DashboardFragment {
         Bundle bundle = getArguments();
         typeFriends = bundle.getInt(UserFriendsListFragment.BUNDLE_SHOW_FRIENDS_TYPE, 0);
         int userId = bundle.getInt(UserFriendsListFragment.BUNDLE_SHOW_USER_ID, 0);
-        if (userId != 0)
-        {
+        if (userId != 0) {
             showUserBaseKey = new UserBaseKey(userId);
         }
     }

@@ -2,12 +2,11 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.PaginatedNotificationDTO;
-import java.util.Map;
-import retrofit.client.Response;
 import retrofit.http.GET;
-import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.QueryMap;
+
+import java.util.Map;
 
 public interface NotificationService
 {
@@ -16,10 +15,4 @@ public interface NotificationService
 
     @GET("/notifications/{pushId}")
     NotificationDTO getNotificationDetail(@Path("pushId") int pushId);
-
-    @POST("/notifications/read/{readPushId}")
-    Response markAsRead(@Path("readPushId") int readPushId);
-
-    @POST("/notifications/read/-1")
-    Response markAsReadAll();
 }

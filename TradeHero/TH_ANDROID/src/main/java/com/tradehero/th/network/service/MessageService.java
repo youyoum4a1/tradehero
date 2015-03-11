@@ -1,13 +1,9 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
-import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import retrofit.client.Response;
-import retrofit.http.Body;
-import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
@@ -41,27 +37,6 @@ public interface MessageService
     //<editor-fold desc="Get Messaging Relationship Status">
     @GET("/messages/status/{recipientUserId}")
     UserMessagingRelationshipDTO getMessagingRelationgshipStatus(
-            @Path("recipientUserId") int recipientUserId);
-    //</editor-fold>
-
-    //<editor-fold desc="Create Message">
-    @POST("/messages")
-    DiscussionDTO createMessage(@Body MessageCreateFormDTO form);
-    //</editor-fold>
-
-    //<editor-fold desc="Delete Message">
-    @DELETE("/messages/delete/{commentId}/{senderUserId}/{recipientUserId}")
-    Response deleteMessage(
-            @Path("commentId") int commentId,
-            @Path("senderUserId") int senderUserId,
-            @Path("recipientUserId") int recipientUserId);
-    //</editor-fold>
-
-    //<editor-fold desc="Read Message">
-    @POST("/messages/read/{commentId}/{senderUserId}/{recipientUserId}")
-    Response readMessage(
-            @Path("commentId") int commentId,
-            @Path("senderUserId") int senderUserId,
             @Path("recipientUserId") int recipientUserId);
     //</editor-fold>
 

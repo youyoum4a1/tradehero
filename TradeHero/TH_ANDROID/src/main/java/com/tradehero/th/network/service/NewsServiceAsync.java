@@ -1,22 +1,16 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.chinabuild.data.NewsDTOSet;
-import com.tradehero.th.api.news.*;
+import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import retrofit.Callback;
-import retrofit.client.Response;
-import retrofit.http.*;
+import retrofit.http.GET;
+import retrofit.http.Path;
+import retrofit.http.Query;
 
 interface NewsServiceAsync
 {
-    //countries
-    @GET("/news/countries") void getCountryLanguagePairs(Callback<PaginatedDTO<CountryLanguagePairDTO>> callback);
-
-    //social categories
-    @GET("/news/categories") void getCategories(Callback<PaginatedDTO<NewsItemCategoryDTO>> callback);
-
-    @GET("/news/sources") void getSources(Callback<PaginatedDTO<NewsItemSourceDTO>> callback);
 
     //news of specific region
     @GET("/news/regional") void getRegional(
@@ -53,12 +47,6 @@ interface NewsServiceAsync
 
     @GET("/news/{newsId}")
     void getNewsDetails(@Path("newsId") long newsId, Callback<NewsItemDTO> callback);
-
-    @POST("/discussions/news/{headlineItemId}/share")
-    void shareHeadlineItem(
-            @Path("headlineItemId") int headlineItemId,
-            @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO,
-            Callback<Response> callback);
 
     @GET("/news/topics")
     void retrieveNews(

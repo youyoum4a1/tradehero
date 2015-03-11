@@ -60,56 +60,6 @@ import javax.inject.Singleton;
         return returned;
     }
 
-    @NotNull public GetPositionsDTO getPositionsDirect(int userId, int page, int perpage)
-    {
-        GetPositionsDTO returned = null;
-
-        this.positionService.getPositionsDirect(
-                userId,
-                page,
-                perpage);
-
-        return returned;
-    }
-
-    @NotNull public MiddleCallback<GetPositionsDTO> getPositions(
-            @NotNull OwnedPortfolioId ownedPortfolioId,
-            @Nullable Callback<GetPositionsDTO> callback)
-    {
-        MiddleCallback<GetPositionsDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        if (ownedPortfolioId instanceof PerPagedOwnedPortfolioId)
-        {
-            PerPagedOwnedPortfolioId perPagedOwnedPortfolioId = (PerPagedOwnedPortfolioId) ownedPortfolioId;
-            this.positionServiceAsync.getPositions(
-                    perPagedOwnedPortfolioId.userId,
-                    perPagedOwnedPortfolioId.portfolioId,
-                    perPagedOwnedPortfolioId.page,
-                    perPagedOwnedPortfolioId.perPage,
-                    middleCallback);
-        }
-        else if (ownedPortfolioId instanceof PagedOwnedPortfolioId)
-        {
-            PagedOwnedPortfolioId pagedOwnedPortfolioId = (PagedOwnedPortfolioId) ownedPortfolioId;
-            this.positionServiceAsync.getPositions(
-                    pagedOwnedPortfolioId.userId,
-                    pagedOwnedPortfolioId.portfolioId,
-                    pagedOwnedPortfolioId.page,
-                    null,
-                    middleCallback);
-        }
-        else
-        {
-            this.positionServiceAsync.getPositions(
-                    ownedPortfolioId.userId,
-                    ownedPortfolioId.portfolioId,
-                    null,
-                    null,
-                    middleCallback);
-        }
-        return middleCallback;
-    }
-    //</editor-fold>
-
     @NotNull public MiddleCallback<GetPositionsDTO> getPositionsDirect(
             @NotNull int userId, int page, int perPage,
             @Nullable Callback<GetPositionsDTO> callback)

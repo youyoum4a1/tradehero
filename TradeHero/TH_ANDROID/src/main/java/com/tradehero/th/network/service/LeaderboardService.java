@@ -87,29 +87,8 @@ public interface LeaderboardService
             @Query("perPage") Integer perPage);
     //</editor-fold>
 
-    //<editor-fold desc="Get Friends Leaderboard">
-    @GET("/leaderboards/friends")
-    LeaderboardDTO getFriendsLeaderboard(
-            @Query("page") Integer page,
-            @Query("perPage") Integer perPage,
-            @Query("includeFoF") Boolean includeFoF);
 
     @GET("/leaderboards/newfriends")
     LeaderboardFriendsDTO getNewFriendsLeaderboard();
 
-    /**
-     *
-     * @param page pagination parameter
-     * @param sortType sort by HQ/ROI...
-     * @param includeFoF whether to include second level friends to the leaderboard
-     * @return
-     */
-    @Deprecated
-    @GET("/leaderboards/friends")
-    LeaderboardDTO getFriendsLeaderboard(
-            @Query("page") Integer page,
-            @Query("perPage") Integer perPage,
-            @Query("includeFoF") Boolean includeFoF,
-            @Query("sortType") Integer sortType);
-    //</editor-fold>
 }

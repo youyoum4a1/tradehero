@@ -2,20 +2,8 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.security.SecurityCompactExtraDTOList;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIntegerIdList;
-import com.tradehero.th.api.security.TransactionFormDTO;
-import com.tradehero.th.api.security.key.SearchHotSecurityListType;
-import com.tradehero.th.api.security.key.SearchSecurityListType;
-import com.tradehero.th.api.security.key.SecurityListType;
-import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
-import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
-import com.tradehero.th.api.security.key.TrendingPriceSecurityListType;
-import com.tradehero.th.api.security.key.TrendingSecurityListType;
-import com.tradehero.th.api.security.key.TrendingVolumeSecurityListType;
+import com.tradehero.th.api.security.*;
+import com.tradehero.th.api.security.key.*;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.security.DTOProcessorMultiSecurities;
@@ -26,12 +14,13 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import java.util.Map;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.Map;
 
 @Singleton public class SecurityServiceWrapper
 {
@@ -68,12 +57,6 @@ import retrofit.Callback;
     @NotNull private DTOProcessor<Map<Integer, SecurityCompactDTO>> createMultipleSecurityProcessor()
     {
         return new DTOProcessorMultiSecurities(securityCompactCache);
-    }
-
-    public Map<Integer, SecurityCompactDTO> getMultipleSecurities(@NotNull SecurityIntegerIdList ids)
-    {
-        return createMultipleSecurityProcessor().process(
-                securityService.getMultipleSecurities(ids.getCommaSeparated()));
     }
 
     @NotNull public MiddleCallback<Map<Integer, SecurityCompactDTO>> getMultipleSecurities(

@@ -1,11 +1,9 @@
 package com.tradehero.th.network.service;
 
-import android.app.NotificationManager;
 import android.content.Context;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.users.*;
 import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.models.user.DTOProcessorLogout;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserLogin;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
@@ -70,13 +68,6 @@ import javax.inject.Singleton;
         return new DTOProcessorUpdateUserProfile(userProfileCache);
     }
 
-    protected DTOProcessor<UserProfileDTO> createLogoutProcessor()
-    {
-        return new DTOProcessorLogout(
-                dtoCacheUtil,
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE));
-    }
-    //</editor-fold>
 
     //<editor-fold desc="Login">
     public UserLoginDTO login(String authorization, LoginFormDTO loginFormDTO)
@@ -94,32 +85,12 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    //<editor-fold desc="Login and social register">
-    public UserLoginDTO signupAndLogin(String authorization, LoginSignUpFormDTO loginSignUpFormDTO)
-    {
-        loginSignUpFormDTO.channelType = Constants.TAP_STREAM_TYPE.type;
-        return sessionService.signupAndLogin(authorization, loginSignUpFormDTO);
-    }
 
     public MiddleCallback<UserLoginDTO> signupAndLogin(String authorization, LoginSignUpFormDTO loginSignUpFormDTO, Callback<UserLoginDTO> callback)
     {
         loginSignUpFormDTO.channelType = Constants.TAP_STREAM_TYPE.type;
         MiddleCallback<UserLoginDTO> middleCallback = new BaseMiddleCallback<>(callback, createUserLoginProcessor());
         sessionServiceAsync.signupAndLogin(authorization, loginSignUpFormDTO, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Logout">
-    public UserProfileDTO logout()
-    {
-        return createLogoutProcessor().process(sessionService.logout());
-    }
-
-    public MiddleCallback<UserProfileDTO> logout(Callback<UserProfileDTO> callback)
-    {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createLogoutProcessor());
-        sessionServiceAsync.logout(middleCallback);
         return middleCallback;
     }
     //</editor-fold>

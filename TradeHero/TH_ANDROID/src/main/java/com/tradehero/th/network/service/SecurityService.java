@@ -1,23 +1,13 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityCompactExtraDTOList;
 import com.tradehero.th.api.security.TransactionFormDTO;
-import java.util.Map;
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Path;
-import retrofit.http.Query;
+import retrofit.http.*;
 
 public interface SecurityService
 {
-    //<editor-fold desc="Get Multiple Securities">
-    @GET("/securities/multi/") Map<Integer, SecurityCompactDTO> getMultipleSecurities(
-            @Query("securityIds") String commaSeparatedIntegerIds);
-    //</editor-fold>
 
     //<editor-fold desc="Get Basic Trending">
     @GET("/securities/trending/") SecurityCompactDTOList getTrendingSecurities(
@@ -79,14 +69,6 @@ public interface SecurityService
             @Query("perPage") Integer perPage);
 
     //</editor-fold>
-
-    ////<editor-fold desc="Get Trending For All">
-    //@GET("/securities/trendingExchange/")
-    //         SecurityCompactDTOList getTrendingSecuritiesAllInExchange(
-    //        @Query("exchange") String exchange,
-    //        @Query("page") Integer page,
-    //        @Query("perPage") Integer perPage);
-    ////</editor-fold>
 
     //<editor-fold desc="Search Securities">
     @GET("/securities/search") SecurityCompactDTOList searchSecurities(

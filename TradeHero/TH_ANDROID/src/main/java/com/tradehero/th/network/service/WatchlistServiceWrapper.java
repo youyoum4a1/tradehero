@@ -92,13 +92,6 @@ import javax.inject.Singleton;
                 portfolioCache.get());
     }
 
-    @Nullable public WatchlistPositionDTO updateWatchlistEntry(
-            @NotNull PositionCompactId positionId,
-            @NotNull WatchlistPositionFormDTO watchlistPositionFormDTO)
-    {
-        return createWatchlistUpdateProcessor(currentUserId.toUserBaseKey()).process(watchlistService.updateWatchlistEntry(positionId.key, watchlistPositionFormDTO));
-    }
-
     @NotNull public MiddleCallback<WatchlistPositionDTO> updateWatchlistEntry(
             @NotNull PositionCompactId positionId,
             @NotNull WatchlistPositionFormDTO watchlistPositionFormDTO,
@@ -157,12 +150,6 @@ import javax.inject.Singleton;
     @NotNull public MiddleCallback<WatchlistPositionDTO> deleteWatchlist(@NotNull WatchlistPositionDTO watchlistPositionDTO, @Nullable Callback<WatchlistPositionDTO> callback)
     {
         return deleteWatchlist(watchlistPositionDTO.getPositionCompactId(), callback);
-    }
-
-    @Nullable public WatchlistPositionDTO deleteWatchlist(@NotNull PositionCompactId positionCompactId)
-    {
-        return createWatchlistDeleteProcessor(currentUserId.toUserBaseKey()).process(
-                watchlistService.deleteWatchlist(positionCompactId.key));
     }
 
     @NotNull

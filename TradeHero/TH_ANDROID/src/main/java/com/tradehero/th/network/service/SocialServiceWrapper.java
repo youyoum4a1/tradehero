@@ -9,23 +9,21 @@ import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 @Singleton public class SocialServiceWrapper
 {
-    @NotNull private final SocialService socialService;
     @NotNull private final SocialServiceAsync socialServiceAsync;
     @NotNull private final UserProfileCache userProfileCache;
 
     @Inject public SocialServiceWrapper(
-            @NotNull SocialService socialService,
             @NotNull SocialServiceAsync socialServiceAsync,
             @NotNull UserProfileCache userProfileCache)
     {
-        this.socialService = socialService;
         this.socialServiceAsync = socialServiceAsync;
         this.userProfileCache = userProfileCache;
     }
@@ -35,12 +33,6 @@ import retrofit.Callback;
         return new DTOProcessorUpdateUserProfile(userProfileCache);
     }
 
-    //<editor-fold desc="Connect">
-    public UserProfileDTO connect(UserBaseKey userBaseKey, UserFormDTO userFormDTO)
-    {
-        return createConnectDTOProcessor().process(socialService.connect(userBaseKey.key, userFormDTO));
-    }
-
     public MiddleCallback<UserProfileDTO> connect(UserBaseKey userBaseKey, UserFormDTO userFormDTO, Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createConnectDTOProcessor());
@@ -48,12 +40,6 @@ import retrofit.Callback;
         return middleCallback;
     }
     //</editor-fold>
-
-    //<editor-fold desc="Disconnect">
-    public UserProfileDTO disconnect(UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO)
-    {
-        return createConnectDTOProcessor().process(socialService.disconnect(userBaseKey.key, socialNetworkFormDTO));
-    }
 
     public MiddleCallback<UserProfileDTO> disconnect(UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO, Callback<UserProfileDTO> callback)
     {

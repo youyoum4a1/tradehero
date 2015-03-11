@@ -22,7 +22,6 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.notification.NotificationCache;
@@ -43,7 +42,6 @@ public class DashboardActivity extends SherlockFragmentActivity
 {
     @Inject AppContainer appContainer;
 
-    private final DashboardTabType INITIAL_TAB = DashboardTabType.HOME;
     private DashboardNavigator navigator;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject CurrentUserId currentUserId;

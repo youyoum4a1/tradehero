@@ -66,12 +66,6 @@ public interface UserService
             @Body InviteFormDTO inviteFormDTO);
     //</editor-fold>
 
-    //<editor-fold desc="Add Follow Credit">
-    @POST("/users/{userId}/addCredit") UserProfileDTO addCredit(
-            @Path("userId") int userId,
-            @Body GooglePlayPurchaseDTO purchaseDTO);
-    //</editor-fold>
-
     //<editor-fold desc="Follow Hero">
     @POST("/users/{userId}/follow") UserProfileDTO follow(
             @Path("userId") int userId);

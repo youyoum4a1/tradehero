@@ -112,11 +112,6 @@ public class RetrofitModule
         return adapter.create(ProviderService.class);
     }
 
-    @Provides @Singleton QuoteService provideQuoteService(RestAdapter adapter)
-    {
-        return adapter.create(QuoteService.class);
-    }
-
     @Provides @Singleton SecurityService provideSecurityService(RestAdapter adapter)
     {
         return adapter.create(SecurityService.class);
@@ -125,11 +120,6 @@ public class RetrofitModule
     @Provides @Singleton SessionService provideSessionService(RestAdapter adapter)
     {
         return adapter.create(SessionService.class);
-    }
-
-    @Provides @Singleton SocialService provideSocialService(RestAdapter adapter)
-    {
-        return adapter.create(SocialService.class);
     }
 
     @Provides @Singleton TradeService provideTradeService(RestAdapter adapter)
@@ -169,14 +159,6 @@ public class RetrofitModule
         return builder.setEndpoint(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
     }
 
-    @Provides @Singleton HomeService provideHomeService(RestAdapter.Builder builder, RequestHeaders requestHeaders)
-    {
-        return builder.setEndpoint(NetworkConstants.TRADEHERO_PROD_ENDPOINT)
-                .setRequestInterceptor(requestHeaders)
-                .build()
-                .create(HomeService.class);
-    }
-    //</editor-fold>
 
     @Provides JsonDeserializer<PositionDTO> providesPositionDTODeserialiser(PositionDTODeserialiser deserialiser)
     {

@@ -1,19 +1,11 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
-import retrofit.http.*;
+import retrofit.http.GET;
+import retrofit.http.Query;
 
 public interface WatchlistService
 {
-
-    //<editor-fold desc="Edit a watch item">
-    @PUT("/watchlistPositions/{position}")
-    WatchlistPositionDTO updateWatchlistEntry(
-            @Path("position") int position,
-            @Body WatchlistPositionFormDTO watchlistPositionFormDTO);
-    //</editor-fold>
 
     //<editor-fold desc="Query for watchlist">
     @GET("/watchlistPositions")
@@ -24,8 +16,4 @@ public interface WatchlistService
             @Query("skipCache") Boolean skipCache);
     //</editor-fold>
 
-    //<editor-fold desc="Delete Watchlist">
-    @DELETE("/watchlistPositions/{watchlistId}")
-    WatchlistPositionDTO deleteWatchlist(@Path("watchlistId") int watchlistId);
-    //</editor-fold>
 }

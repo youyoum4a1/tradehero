@@ -2,16 +2,12 @@ package com.tradehero.th.fragments.dashboard;
 
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 
 public enum DashboardTabType
 {
-    HOME(R.layout.tab_indicator_holo,
-            R.string.dashboard_home, R.string.dashboard_home_key,
-            R.drawable.launcher, HomeFragment.class),
     TRENDING(R.layout.tab_indicator_holo,
             R.string.dashboard_trending, R.string.dashboard_trending_key,
             R.drawable.launcher, TrendingFragment.class),

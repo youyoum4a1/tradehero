@@ -1,8 +1,6 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.chinabuild.data.NewsDTOSet;
-import com.tradehero.th.api.news.CountryLanguagePairDTO;
-import com.tradehero.th.api.news.NewsItemCategoryDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.*;
@@ -26,31 +24,6 @@ import javax.inject.Singleton;
     {
         this.newsServiceSync = newsServiceSync;
         this.newsServiceAsync = newsServiceAsync;
-    }
-
-    public PaginatedDTO<CountryLanguagePairDTO> getCountryLanguagePairs()
-    {
-        return newsServiceSync.getCountryLanguagePairs();
-    }
-
-    public MiddleCallback<PaginatedDTO<CountryLanguagePairDTO>> getCountryLanguagePairs(Callback<PaginatedDTO<CountryLanguagePairDTO>> callback)
-    {
-        MiddleCallback<PaginatedDTO<CountryLanguagePairDTO>> middleCallback = new BaseMiddleCallback<>(callback);
-        newsServiceAsync.getCountryLanguagePairs(middleCallback);
-        return middleCallback;
-    }
-
-    public PaginatedDTO<NewsItemCategoryDTO> getNewsCategories()
-    {
-        return newsServiceSync.getCategories();
-    }
-
-    public MiddleCallback<PaginatedDTO<NewsItemCategoryDTO>> getNewsCategories(Callback<PaginatedDTO<NewsItemCategoryDTO>> callback)
-    {
-        MiddleCallback<PaginatedDTO<NewsItemCategoryDTO>>
-                middleCallback = new BaseMiddleCallback<>(callback);
-        newsServiceAsync.getCategories(middleCallback);
-        return middleCallback;
     }
 
     public PaginatedDTO<NewsItemCompactDTO> getNews(NewsItemListKey key)
