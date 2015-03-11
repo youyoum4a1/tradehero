@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:animateLayoutChanges="true"
+    >
+
+  <com.android.common.SlidingTabLayout
+      android:id="@+id/tabs"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      style="@style/TradeHero.TabContainer"/>
+
+
+  <ProgressBar
+      android:id="@+id/quote_refresh_countdown"
+      android:layout_width="match_parent"
+      style="@android:style/Widget.ProgressBar.Horizontal"
+      android:layout_height="4dp"
+      android:progressDrawable="@drawable/progress_thin_square"
+      />
+
+  <com.tradehero.th.fragments.trade.view.PortfolioSelectorView
+      android:id="@+id/portfolio_selector_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="8dp"
+      android:visibility="gone"
+      android:background="@drawable/tradehero_spinner_background_holo_light"
+      >
+    <!--TODO use dropdown/spinner view-->
+
+    <TextView
+        android:id="@+id/selected_title_anchor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text="@string/buy_sell_portfolio_selected_title"
+        style="@style/TH.Body"
+        android:layout_centerVertical="true"/>
+
+    <TextView
+        android:id="@+id/portfolio_selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@id/selected_title_anchor"
+        tools:text="Main Portfolio"
+        style="@style/TH.Body.Accented"
+        android:layout_centerVertical="true"/>
+
+  </com.tradehero.th.fragments.trade.view.PortfolioSelectorView>
+
+  <RelativeLayout
+      android:id="@+id/chart_frame"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:orientation="vertical"
+      >
+
+    <ImageView
+        android:id="@+id/market_closed_icon"
+        android:layout_width="@dimen/medium_image_w_h"
+        android:layout_height="@dimen/medium_image_w_h"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@null"
+        android:scaleType="centerInside"
+        android:visibility="visible"
+        android:background="@drawable/basic_transparent_selector"
+        android:src="@drawable/market_sleep_grey"
+        />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_wrapper"
+        tools:background="@android:color/holo_red_dark"
+        />
+
+    <LinearLayout
+        android:id="@+id/bottom_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:minHeight="@dimen/dashboard_tabhost_height">
+
+      <LinearLayout
+          android:id="@+id/bottom_button"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/margin_xsmall"
+          android:paddingLeft="@dimen/margin_small"
+          android:paddingRight="@dimen/margin_small"
+          android:background="@drawable/buy_sell_action_buttons_background"
+          android:paddingBottom="@dimen/dashboard_tabhost_height"
+          android:animateLayoutChanges="true"
+          >
+
+        <Button
+            android:id="@+id/btn_sell"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            style="@style/TH.Body1.Inverse"
+            android:background="@drawable/dark_blue_rounded_button_selector"
+            android:layout_marginBottom="5dp"
+            android:text="@string/fx_sell"
+            android:visibility="gone"
+            />
+
+        <Button
+            android:id="@+id/btn_buy"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            style="@style/TH.Body1.Inverse"
+            android:background="@drawable/dark_blue_rounded_button_selector"
+            android:layout_marginLeft="@dimen/margin_xsmall"
+            android:layout_marginBottom="5dp"
+            android:text="@string/fx_buy"
+            />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </RelativeLayout>
+
+</LinearLayout>

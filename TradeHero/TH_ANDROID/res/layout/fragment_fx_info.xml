@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:animateLayoutChanges="true"
+    >
+
+  <com.tradehero.th.fragments.trade.view.PortfolioSelectorView
+      android:id="@+id/portfolio_selector_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="8dp"
+      android:visibility="gone"
+      android:background="@drawable/tradehero_spinner_background_holo_light"
+      >
+    <!--TODO use dropdown/spinner view-->
+
+    <TextView
+        android:id="@+id/selected_title_anchor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text="@string/buy_sell_portfolio_selected_title"
+        style="@style/TH.Body"
+        android:layout_centerVertical="true"/>
+
+    <TextView
+        android:id="@+id/portfolio_selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@id/selected_title_anchor"
+        tools:text="Main Portfolio"
+        style="@style/TH.Body.Accented"
+        android:layout_centerVertical="true"/>
+
+  </com.tradehero.th.fragments.trade.view.PortfolioSelectorView>
+
+  <LinearLayout
+      android:id="@+id/ll_position_status"
+      android:layout_margin="10dp"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:visibility="gone"
+      tools:visibility="visible"
+      android:gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/tv_position_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Long position: 45 units"/>
+
+    <TextView
+        android:id="@+id/tv_position_money"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="US$ 200"
+        android:layout_marginLeft="20dp"/>
+
+  </LinearLayout>
+
+  <com.tradehero.th.fragments.portfolio.header.MarginCloseOutStatusTextView
+      android:id="@+id/margin_close_out_status"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="@dimen/margin_xsmall"
+      style="@style/TH.Subhead.Inverse"
+      tools:background="@color/orange"
+      tools:text="Margin is approaching"
+      android:gravity="center"
+      android:visibility="gone"
+      tools:visibility="visible"
+      />
+
+  <RelativeLayout
+      android:id="@+id/chart_frame"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:orientation="vertical"
+      >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+      <com.tradehero.common.widget.BetterViewAnimator
+          android:id="@+id/chart_image_wrapper"
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"
+          android:animateLayoutChanges="true"
+          >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:minHeight="@dimen/chart_loading_text_height"
+            android:gravity="center"
+            android:text="@string/chart_loading_image"
+            />
+
+        <com.tradehero.th.widget.KChartsView
+            android:id="@+id/my_charts_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+      </com.tradehero.common.widget.BetterViewAnimator>
+
+      <com.tradehero.th.widget.news.TimeSpanButtonSet
+          android:id="@+id/chart_time_span_button_set"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/timespan_button_min_height"
+          android:layout_marginLeft="@dimen/timespan_horizontal_margin"
+          android:layout_marginRight="@dimen/timespan_horizontal_margin"
+          android:layout_marginTop="@dimen/timespan_vertical_margin"
+          android:layout_marginBottom="@dimen/timespan_vertical_margin"
+          android:background="@drawable/trend_price_bar"
+          android:orientation="horizontal"
+          tools:visibility="visible"
+          >
+
+        <include layout="@layout/fx_chart_buttons_merge"/>
+
+      </com.tradehero.th.widget.news.TimeSpanButtonSet>
+
+    </LinearLayout>
+
+  </RelativeLayout>
+
+</LinearLayout>

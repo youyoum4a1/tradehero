@@ -94,7 +94,6 @@ public class BuySellStockFragment extends BuySellFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        setRetainInstance(true);
         bottomViewPagerAdapter =
                 new BuySellBottomStockPagerAdapter(getActivity(), this.getChildFragmentManager());
         bottomViewPagerAdapter.linkWith(securityId);
