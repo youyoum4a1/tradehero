@@ -267,6 +267,7 @@ public class CompetitionDetailFragment extends Fragment
 
     private void noFoundCompetition() {
         if (getActivity() != null) {
+            THToast.show(R.string.no_network_hint);
             popCurrentFragment();
         }
     }

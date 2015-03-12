@@ -440,6 +440,7 @@
   <!-- App Update -->
 
   <string name="goto_choose_stock">去选股</string>
+  <string name="no_network_hint">请检查您的网络</string>
 
   <!-- Discovery Discuss Reward -->
   <string name="discovery_discuss_send_reward">悬赏贴</string>
