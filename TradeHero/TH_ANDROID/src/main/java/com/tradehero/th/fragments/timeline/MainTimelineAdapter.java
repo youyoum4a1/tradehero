@@ -42,10 +42,11 @@ public class MainTimelineAdapter extends ArrayAdapter
     public MainTimelineAdapter(@NonNull Activity context,
             @LayoutRes int timelineItemViewResId,
             @LayoutRes int portfolioItemViewResId,
-            @LayoutRes int statResId)
+            @LayoutRes int statResId,
+            boolean isCurrentUser)
     {
         super(context, 0);
-        portfolioListAdapter = new SimpleOwnPortfolioListItemAdapter(context, portfolioItemViewResId);
+        portfolioListAdapter = new SimpleOwnPortfolioListItemAdapter(context, portfolioItemViewResId, isCurrentUser);
         portfolioAdapterViewTypeOffset = PORTFOLIO_ITEM_TYPE_OFFSET;
 
         subTimelineAdapter = new SubTimelineAdapterNew(context, timelineItemViewResId);
