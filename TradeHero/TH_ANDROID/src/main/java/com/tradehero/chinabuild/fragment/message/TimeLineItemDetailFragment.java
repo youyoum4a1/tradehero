@@ -171,7 +171,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     private LinearLayout timeline_detail_llTLComment;
     private TextView timeline_detail_tvTLComment;
 
-    //If it is a time line, time line api is to delete it. If it is a discussion, discussion api is to delete it.
+    //If it is a time line, time line api is used to delete it. If it is a discussion, discussion api is for deleting.
     public static final String BUNDLE_ARGUMENT_DISCUSSION_TYPE = "bundle_argument_discuss_type";
     public static final int DISCUSSION_TIME_LINE_TYPE = 1;
     public static final int DISCUSSION_DISCUSSION_TYPE = 2;
@@ -1093,9 +1093,28 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             @Override
             public void success(Response response, Response response2) {
                 adapter.removeDeletedItem(discussionItemId);
-                if(discussion_type == DISCUSSION_DISCUSSION_TYPE){
-                    popCurrentFragment();
-                }
+                onFinish();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                THException thException = new THException(retrofitError);
+                THToast.show(thException);
+                onFinish();
+            }
+
+            private void onFinish() {
+                dismissProgressDlg();
+            }
+        });
+    }
+
+    private void deleteDiscussion(final int discussionItemId) {
+        showDeleteProgressDlg();
+        discussionServiceWrapper.get().deleteDiscussionItem(discussionItemId, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                popCurrentFragment();
                 onFinish();
             }
 
@@ -1226,7 +1245,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                         deleteTimeLineItem(itemId);
                     }
                     if(discussion_type == DISCUSSION_DISCUSSION_TYPE) {
-                        deleteDiscussionItem(itemId);
+                        deleteDiscussion(itemId);
                     }
                     deleteOrApplyTimeLineConfirmDialog.dismiss();
                 }
