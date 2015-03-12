@@ -36,8 +36,6 @@ import rx.subjects.BehaviorSubject;
 public class HeroListItemView extends RelativeLayout
         implements DTOView<HeroDTO>
 {
-    @DrawableRes public static final int RES_ID_ACTIVE = R.drawable.image_icon_validation_valid;
-    @DrawableRes public static final int RES_ID_INACTIVE = R.drawable.buyscreen_info;
     @DrawableRes public static final int RES_ID_CROSS_RED = android.R.drawable.ic_delete;
 
     @InjectView(R.id.follower_profile_picture) ImageView userIcon;

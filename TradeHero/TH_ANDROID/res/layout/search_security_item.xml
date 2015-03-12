@@ -102,7 +102,7 @@
           android:baselineAlignBottom="true"
           android:contentDescription="@null"
           android:scaleType="centerInside"
-          android:src="@drawable/market_sleep_grey"
+          android:src="@drawable/buyscreen_stock_inactive"
           />
 
       <TextView

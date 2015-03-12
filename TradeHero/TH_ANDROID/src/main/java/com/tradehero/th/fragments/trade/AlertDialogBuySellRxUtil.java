@@ -31,7 +31,7 @@ public class AlertDialogBuySellRxUtil extends AlertDialogRxUtil
         }
 
         return buildDefault(activityContext)
-                .setIcon(R.drawable.market_sleep_grey)
+                .setIcon(R.drawable.buyscreen_stock_inactive)
                 .setTitle(R.string.alert_dialog_market_close_title)
                 .setMessage(message)
                 .setPositiveButton(R.string.alert_dialog_market_close_cancel)

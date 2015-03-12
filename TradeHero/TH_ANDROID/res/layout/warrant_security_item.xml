@@ -155,8 +155,9 @@
       android:paddingRight="8dp"
       android:contentDescription="@null"
       android:scaleType="centerInside"
-      android:src="@drawable/market_sleep_grey"
+      android:src="@drawable/buyscreen_stock_inactive"
       android:visibility="gone"
+      tools:visibility="visible"
       />
 
 </com.tradehero.th.fragments.security.WarrantSecurityItemView>

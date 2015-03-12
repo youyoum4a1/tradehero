@@ -6,7 +6,6 @@
   <item
       android:id="@+id/admin_settings"
       app:showAsAction="never"
-      android:icon="@drawable/admin"
       android:title="@string/admin_setting"
       />
 </menu>
