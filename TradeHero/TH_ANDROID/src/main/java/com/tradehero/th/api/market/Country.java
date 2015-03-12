@@ -92,6 +92,7 @@ public enum Country
     GL(R.drawable.square_gl, R.string.location_name_gl),
     GM(R.drawable.square_gm, R.string.location_name_gm),
     GN(R.drawable.square_gn, R.string.location_name_gn),
+    GP(R.drawable.square_fr, R.string.location_name_gp),
     GQ(R.drawable.square_gq, R.string.location_name_gq),
     GR(R.drawable.square_gr, R.string.location_name_gr),
     GS(R.drawable.square_gs, R.string.location_name_gs),

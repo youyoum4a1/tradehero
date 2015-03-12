@@ -1,5 +1,7 @@
 package com.tradehero.th.api.timeline;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
@@ -8,7 +10,7 @@ import java.util.List;
 
 public class TimelineDTO implements DTO
 {
-    private List<UserProfileCompactDTO> users;
+    @Nullable private List<UserProfileCompactDTO> users;
     private List<SecurityCompactDTO> securities;
     private List<TimelineItemDTO> enhancedItems;
 
@@ -56,8 +58,12 @@ public class TimelineDTO implements DTO
         this.securities = securities;
     }
 
-    public List<UserProfileCompactDTO> getUsers()
+    @NonNull public List<UserProfileCompactDTO> getUsers()
     {
+        if (users == null)
+        {
+            return Collections.emptyList();
+        }
         return Collections.unmodifiableList(users);
     }
 

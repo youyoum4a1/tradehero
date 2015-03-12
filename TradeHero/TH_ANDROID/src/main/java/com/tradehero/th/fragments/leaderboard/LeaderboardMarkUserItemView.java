@@ -135,7 +135,6 @@ public class LeaderboardMarkUserItemView
             HierarchyInjector.inject(lbmuFoF);
         }
         lbmuProfilePicture.setLayerType(LAYER_TYPE_SOFTWARE, null);
-
     }
 
     @Override protected void onAttachedToWindow()
@@ -230,7 +229,8 @@ public class LeaderboardMarkUserItemView
         }
     }
 
-    private String getPosition(DTO viewDTO) {
+    private String getPosition(DTO viewDTO)
+    {
         LeaderboardUserDTO leaderboardItem = viewDTO.leaderboardUserDTO;
         Integer currentRank = leaderboardItem.ordinalPosition + 1;
         if (leaderboardItem.getPosition() != null)
@@ -397,17 +397,19 @@ public class LeaderboardMarkUserItemView
         }
     }
 
-    protected void displayUserIsNotRanked(UserProfileDTO currentUserProfileDTO)
+    protected void displayUserIsNotRanked(@Nullable UserProfileDTO currentUserProfileDTO)
     {
         this.currentUserProfileDTO = currentUserProfileDTO;
         lbmuRoi.setText(R.string.leaderboard_not_ranked);
         lbmuPosition.setText("-");
 
-        if (currentUserProfileDTO == null) {
+        if (currentUserProfileDTO == null)
+        {
             return;
         }
 
-        if (lbmuDisplayName != null) {
+        if (lbmuDisplayName != null)
+        {
             lbmuDisplayName.setText(currentUserProfileDTO.displayName);
         }
 

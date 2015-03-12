@@ -178,7 +178,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         {
             // HACK because cannot find the reason of
             // https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/547fe02d65f8dfea153e0fa5
-            Timber.e(e, "on cache %s", getClass());
+            Timber.e("on cache %s", getClass(), e);
         } finally
         {
             cachedValuesLock.unlock();

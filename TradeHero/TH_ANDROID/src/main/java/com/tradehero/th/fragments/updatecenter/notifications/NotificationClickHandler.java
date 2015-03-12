@@ -109,7 +109,6 @@ public class NotificationClickHandler
         Integer replyTypeId = notificationDTO.replyableTypeId;
         if (replyTypeId != null)
         {
-            Timber.e(new Exception("Just reporting"), "notification %s", notificationDTO);
             DiscussionType discussionType = DiscussionType.fromValue(replyTypeId);
             Bundle bundle = new Bundle();
 

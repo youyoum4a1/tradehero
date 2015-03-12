@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.achievement;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -43,12 +44,12 @@ public class AchievementListFragment extends DashboardFragment
     private Subscription achievementListSubscription;
     UserBaseKey shownUserId;
 
-    public static void putUserId(Bundle bundle, UserBaseKey userBaseKey)
+    public static void putUserId(@NonNull Bundle bundle, @NonNull UserBaseKey userBaseKey)
     {
         bundle.putBundle(BUNDLE_KEY_USER_ID, userBaseKey.getArgs());
     }
 
-    private UserBaseKey getUserId()
+    @NonNull private UserBaseKey getUserId()
     {
         return new UserBaseKey(getArguments().getBundle(BUNDLE_KEY_USER_ID));
     }

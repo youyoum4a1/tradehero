@@ -183,6 +183,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         watchlistPositionListView.removeCallbacks(null);
+        watchlistPositionListView.setOnScrollListener(null);
         watchlistPositionListView.setSwipeListViewListener(null);
         watchlistPositionListView.removeCallbacks(null);
 
