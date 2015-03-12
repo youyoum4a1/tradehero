@@ -27,7 +27,6 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
     public static final int VIEW_TYPE_OPEN_SHORT = 5;
     public static final int VIEW_TYPE_CLOSED = 7;
 
-
     protected Map<Integer, Integer> itemTypeToLayoutId;
     private UserProfileDTO userProfileDTO;
 
@@ -61,7 +60,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         {
             return VIEW_TYPE_OPEN_LONG;
         }
-        else if (item == null)
+        else if (item instanceof PositionNothingView.DTO)
         {
             return VIEW_TYPE_PLACEHOLDER;
         }
@@ -102,8 +101,10 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
     @Override public boolean isEnabled(int position)
     {
         int viewType = getItemViewType(position);
-        return viewType != VIEW_TYPE_HEADER && (!(viewType == VIEW_TYPE_PLACEHOLDER && userProfileDTO != null) || userProfileDTO.getBaseKey()
-                .equals(currentUserId.toUserBaseKey()));
+        return viewType != VIEW_TYPE_HEADER
+                && (viewType != VIEW_TYPE_PLACEHOLDER
+                || userProfileDTO == null
+                || userProfileDTO.getBaseKey().equals(currentUserId.toUserBaseKey()));
     }
 
     protected int getLayoutForPosition(int position)
@@ -141,10 +142,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         }
         else if (itemViewType == VIEW_TYPE_PLACEHOLDER)
         {
-            if (convertView instanceof PositionNothingView)
-            {
-                ((PositionNothingView) convertView).display(isEnabled(position));
-            }
+            ((PositionNothingView) convertView).display((PositionNothingView.DTO) item);
         }
         else if (convertView instanceof PositionView)
         {

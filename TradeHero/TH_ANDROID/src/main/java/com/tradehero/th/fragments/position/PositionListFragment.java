@@ -691,7 +691,14 @@ public class PositionListFragment
         List<Object> filtered = new ArrayList<>();
         for (Object dto : dtoList)
         {
-            if (dto instanceof PositionPartialTopView.DTO)
+            if (dto instanceof PositionLockedView.DTO)
+            {
+                if (!positionType.equals(TabbedPositionListFragment.TabType.CLOSED))
+                {
+                    filtered.add(dto);
+                }
+            }
+            else if (dto instanceof PositionPartialTopView.DTO)
             {
                 Boolean isClosed = ((PositionPartialTopView.DTO) dto).positionDTO.isClosed();
                 Integer shares = ((PositionPartialTopView.DTO) dto).positionDTO.shares;
@@ -716,6 +723,11 @@ public class PositionListFragment
                     filtered.add(dto);
                 }
             }
+        }
+
+        if (filtered.size() == 0)
+        {
+            filtered.add(new PositionNothingView.DTO(getResources(), shownUser.equals(currentUserId.toUserBaseKey())));
         }
 
         return filtered;
