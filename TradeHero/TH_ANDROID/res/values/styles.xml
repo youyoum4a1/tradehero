@@ -53,13 +53,6 @@
     <item name="android:background">@color/white</item>
   </style>
 
-  <style name="AppBaseTheme.NoActionBar2"
-      parent="TradeHero">
-    <item name="android:windowActionBar">false</item>
-    <item name="android:windowNoTitle">true</item>
-    <item name="android:windowBackground">@drawable/authentication_bg</item>
-  </style>
-
   <style name="TH"/>
 
   <style name="TH.Btn_Bar_Base"
