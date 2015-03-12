@@ -1,50 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/sign_up_form_wrapper"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    style="@style/TH.Authentication"
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:gravity="top">
-
-  <ImageView
-      android:id="@+id/authentication_back_button"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/margin_small"
-      android:background="@drawable/basic_transparent_selector"
-      android:src="@drawable/settings_back_light_default"/>
+    >
 
   <ScrollView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:layout_alignParentTop="true"
+      android:layout_above="@+id/authentication_sign_up_button"
       android:requiresFadingEdge="vertical"
       android:fadingEdge="vertical"
-      android:fadingEdgeLength="@dimen/size_3">
+      android:fadingEdgeLength="@dimen/size_2">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TH.Authentication"
         android:orientation="vertical">
+
+      <ImageView
+          android:id="@+id/authentication_back_button"
+          android:layout_width="@dimen/size_6"
+          android:layout_height="@dimen/size_6"
+          android:background="@drawable/basic_transparent_selector"
+          android:src="@drawable/settings_back_light_default"/>
 
       <include
           layout="@layout/profile_info"/>
 
-      <Button
-          android:id="@+id/authentication_sign_up_button"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/margin_medium"
-          android:background="@drawable/basic_white_selector"
-          android:text="@string/authentication_register"
-          style="@style/TH.Button.Inverse"
-          />
     </LinearLayout>
 
   </ScrollView>
 
-</LinearLayout>
+  <Button
+      android:id="@+id/authentication_sign_up_button"
+      style="@style/TH.SocialAuthenticationButton"
+      android:layout_above="@+id/alternative_signup_header"
+      android:background="@drawable/basic_green_selector"
+      android:text="@string/authentication_register"
+      android:gravity="center"
+      android:enabled="false"
+      />
+
+  <TextView
+      android:id="@+id/alternative_signup_header"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_above="@+id/social_network_button_list"
+      style="@style/TH.Subhead"
+      android:text="@string/authentication_sign_up_alternative"
+      />
+
+  <include
+      layout="@layout/social_network_button_list_wrapper"
+      android:id="@+id/social_network_button_list"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      />
+
+</RelativeLayout>

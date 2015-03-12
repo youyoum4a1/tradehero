@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="swipe_learn_more">Swipe to learn more</string>
+  <string name="guide_learn_to_trade">Learn to trade</string>
+  <string name="guide_follow_trade_heroes">Follow Trade Heroes.</string>
+  <string name="guide_be_a_hero">Be a hero</string>
+  <string name="guide_trade_well_gain_followers">Trade well and gain followers.</string>
+  <string name="guide_no_risk">No risk</string>
+  <string name="guide_initial_cash_for_investment">100,000 virtual dollars to invest!</string>
+  <string name="guide_many_exchanges">28 Exchanges</string>
+  <string name="guide_trade_global_market">Trade in the global market.</string>
+  <string name="guide_competitions">Competitions</string>
+  <string name="guide_competition_win_cash">Win real cash prizes by joining sponsored competitions.</string>
+  <string name="guide_achievements">Achievements</string>
+  <string name="guide_achievement_collect">Collect badges as you complete key tasks and reach trading goals.</string>
+  <string name="guide_tnw_comment">TradeHero\'s secret to standing out is value-added information.</string>
+  <string name="guide_tia_comment">Probably the best startup idea from Singapore</string>
+
+</resources>

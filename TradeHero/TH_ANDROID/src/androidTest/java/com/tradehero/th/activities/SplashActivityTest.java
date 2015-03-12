@@ -48,18 +48,18 @@ public class SplashActivityTest
         assertThat(appVersionView.getText()).isEqualTo(VersionUtils.getAppVersion(activity));
     }
 
-    @Test public void shouldOpenGuideScreenOnFirstLaunch()
+    @Test public void shouldOpenAuthenticationScreenOnFirstLaunch()
     {
         firstLaunchPreference.set(true);
         SplashActivity activity = Robolectric.setupActivity(SplashActivity.class);
 
         ShadowActivity shadowSplashActivity = shadowOf(activity);
         assertThat(activity.isFinishing()).isTrue();
-        assertThat(shadowSplashActivity.getNextStartedActivity().getComponent().getClassName()).isEqualTo(GuideActivity.class.getName());
+        assertThat(shadowSplashActivity.getNextStartedActivity().getComponent().getClassName()).isEqualTo(AuthenticationActivity.class.getName());
         assertThat(firstLaunchPreference.get()).isFalse();
     }
 
-    @Test public void shouldNotOpenGuideScreenAfterFirstLaunch()
+    @Test public void shouldNotOpenAuthenticationScreenAfterFirstLaunch()
     {
         firstLaunchPreference.set(false);
         SplashActivity activity = Robolectric.setupActivity(SplashActivity.class);

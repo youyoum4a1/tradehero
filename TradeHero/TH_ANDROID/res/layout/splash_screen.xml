@@ -4,11 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/authentication_bg"
-    android:paddingTop="20dip"
-    android:paddingBottom="20dip"
-    android:paddingLeft="20dip"
-    android:paddingRight="20dip">
+    tools:background="@drawable/login_bg_1"
+    android:padding="@dimen/margin_small">
 
   <LinearLayout
       android:layout_above="@+id/copyright"
@@ -18,11 +15,12 @@
       android:layout_alignParentTop="true"
       android:layout_centerHorizontal="true"
       >
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/margin_small"
         android:src="@drawable/splash_logo"
         android:layout_gravity="center_horizontal"
         android:contentDescription="@null"
@@ -32,9 +30,10 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="@dimen/margin_small"
         android:layout_gravity="center"
         />
+
   </LinearLayout>
 
   <LinearLayout
