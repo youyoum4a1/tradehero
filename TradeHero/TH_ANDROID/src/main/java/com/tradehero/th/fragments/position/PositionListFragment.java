@@ -129,7 +129,7 @@ public class PositionListFragment
     private int firstPositionVisible = 0;
     @Inject protected THBillingInteractorRx userInteractorRx;
 
-    private int mPositionType;
+    private TabbedPositionListFragment.TabType positionType;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
@@ -157,14 +157,16 @@ public class PositionListFragment
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE));
     }
 
-    public static void putPositionType(@NonNull Bundle args, int positionType)
+    public static void putPositionType(@NonNull Bundle args, TabbedPositionListFragment.TabType positionType)
     {
-        args.putInt(BUNDLE_KEY_POSITION_TYPE, positionType);
+        args.putString(BUNDLE_KEY_POSITION_TYPE, positionType.name());
     }
 
-    @Nullable private int getPositionType (@NonNull Bundle args)
+    @NonNull private TabbedPositionListFragment.TabType getPositionType (@NonNull Bundle args)
     {
-        return args.getInt(BUNDLE_KEY_POSITION_TYPE, PositionItemAdapter.VIEW_TYPE_OPEN_LONG);
+        return TabbedPositionListFragment.TabType.valueOf(args.getString(
+                BUNDLE_KEY_POSITION_TYPE,
+                TabbedPositionListFragment.TabType.LONG.name()));
     }
 
     //</editor-fold>
@@ -192,7 +194,7 @@ public class PositionListFragment
             getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey.key, injectedPortfolioId.key);
         }
 
-        mPositionType = getPositionType(args);
+        positionType = getPositionType(args);
         this.positionItemAdapter = createPositionItemAdapter();
     }
 
@@ -340,7 +342,7 @@ public class PositionListFragment
                 getActivity(),
                 getLayoutResIds(),
                 currentUserId,
-                mPositionType);
+                positionType);
     }
 
     @NonNull private Map<Integer, Integer> getLayoutResIds()

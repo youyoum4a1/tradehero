@@ -18,6 +18,7 @@ import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.position.view.PositionView;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,18 +37,25 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
 
     @NonNull protected final CurrentUserId currentUserId;
 
-    private int mPositionType;
+    @NonNull private final TabbedPositionListFragment.TabType positionType;
+
+    @NonNull private final Map<TabbedPositionListFragment.TabType, Integer> viewTypeCorrespondance;
 
     //<editor-fold desc="Constructors">
     public PositionItemAdapter(
             @NonNull Context context,
             @NonNull Map<Integer, Integer> itemTypeToLayoutId,
-            @NonNull CurrentUserId currentUserId, int postionType)
+            @NonNull CurrentUserId currentUserId,
+            @NonNull TabbedPositionListFragment.TabType positionType)
     {
         super(context, 0);
         this.itemTypeToLayoutId = itemTypeToLayoutId;
         this.currentUserId = currentUserId;
-        mPositionType = postionType;
+        this.positionType = positionType;
+        this.viewTypeCorrespondance = new HashMap<>();
+        viewTypeCorrespondance.put(TabbedPositionListFragment.TabType.CLOSED, VIEW_TYPE_CLOSED);
+        viewTypeCorrespondance.put(TabbedPositionListFragment.TabType.LONG, VIEW_TYPE_OPEN_LONG);
+        viewTypeCorrespondance.put(TabbedPositionListFragment.TabType.SHORT, VIEW_TYPE_OPEN_SHORT);
     }
     //</editor-fold>
 
@@ -136,7 +144,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
 
         for (PositionDTO positionDTO : dtos)
         {
-            if (getItemViewType(positionDTO) == mPositionType)
+            if (getItemViewType(positionDTO) == viewTypeCorrespondance.get(positionType))
             {
                 positions.add(positionDTO);
             }
