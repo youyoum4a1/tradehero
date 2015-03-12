@@ -1,6 +1,7 @@
 package com.tradehero.common.widget;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import com.tradehero.th.R;
@@ -27,7 +28,7 @@ public class ColorIndicator extends RelativeLayout
     }
     //</editor-fold>
 
-    public void linkWith(Double percentage)
+    public void linkWith(@Nullable Double percentage)
     {
         if (percentage == null || percentage == 0.0)
         {

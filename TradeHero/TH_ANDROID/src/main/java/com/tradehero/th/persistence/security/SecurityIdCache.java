@@ -1,12 +1,9 @@
 package com.tradehero.th.persistence.security;
 
 import android.support.annotation.NonNull;
-import android.util.Pair;
-import com.tradehero.common.persistence.ActionOnNextCache;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.SystemCache;
-import com.tradehero.common.rx.PairGetFirst;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
@@ -40,14 +37,14 @@ public class SecurityIdCache extends BaseFetchDTOCacheRx<SecurityIntegerId, Secu
     @NonNull @Override protected Observable<SecurityId> fetch(@NonNull SecurityIntegerId key)
     {
         return securityServiceWrapper.getSecurityRx(key)
-                .map(new Func1<SecurityCompactDTO, Pair<SecurityId, SecurityCompactDTO>>()
+                .map(new Func1<SecurityCompactDTO, SecurityId>()
                 {
-                    @Override public Pair<SecurityId, SecurityCompactDTO> call(SecurityCompactDTO securityCompactDTO)
+                    @Override public SecurityId call(SecurityCompactDTO securityCompactDTO)
                     {
-                        return Pair.create(securityCompactDTO.getSecurityId(), securityCompactDTO);
+                        SecurityId securityId  = securityCompactDTO.getSecurityId();
+                        securityCompactCache.get().onNext(securityId, securityCompactDTO);
+                        return securityId;
                     }
-                })
-                .doOnNext(new ActionOnNextCache<>(securityCompactCache.get()))
-                .map(new PairGetFirst<SecurityId, SecurityCompactDTO>());
+                });
     }
 }

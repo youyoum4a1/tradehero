@@ -10,6 +10,12 @@ public class ExpandableListItem<T> implements ExpandableItem, OnSizeChangedListe
     {
         this.model = model;
     }
+
+    public ExpandableListItem(boolean expanded, T model)
+    {
+        this.expanded = expanded;
+        this.model = model;
+    }
     //</editor-fold>
 
     public T getModel()
