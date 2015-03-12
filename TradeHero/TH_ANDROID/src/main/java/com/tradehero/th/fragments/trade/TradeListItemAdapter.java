@@ -1,9 +1,11 @@
 package com.tradehero.th.fragments.trade;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.persistence.LoadingDTO;
@@ -12,6 +14,7 @@ import com.tradehero.th.adapters.ExpandableDTOAdapter;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.position.view.PositionView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.widget.list.BaseListHeaderView;
@@ -44,7 +47,7 @@ public class TradeListItemAdapter
     private List<Integer> itemTypes;
     private List<Object> objects;
 
-    @Nullable protected PositionDTO shownPositionDTO;
+    @Nullable protected Pair<PositionDTO, SecurityCompactDTO> shownPositionDTO;
     @Nullable protected List<PositionTradeDTOKey> underlyingItems;
 
     //<editor-fold desc="Constructors">
@@ -54,6 +57,12 @@ public class TradeListItemAdapter
         recreateObjects();
     }
     //</editor-fold>
+
+    public void setShownPositionDTO(Pair<PositionDTO, SecurityCompactDTO> positionDTO)
+    {
+        this.shownPositionDTO = positionDTO;
+        notifyDataSetChanged();
+    }
 
     @Override public void setUnderlyingItems(final List<PositionTradeDTOKey> underlyingItems)
     {
@@ -77,7 +86,7 @@ public class TradeListItemAdapter
         itemTypesTemp.add(ITEM_TYPE_HEADER_POSITION_SUMMARY);
         if (this.shownPositionDTO != null)
         {
-            Boolean isClosed = this.shownPositionDTO.isClosed();
+            Boolean isClosed = this.shownPositionDTO.first.isClosed();
             if (isClosed != null && isClosed)
             {
                 objectsTemp.add(R.string.trade_list_header_closed_summary);
@@ -122,7 +131,9 @@ public class TradeListItemAdapter
         else
         {
             itemTypesTemp.add(ITEM_TYPE_TRADE_LOADING);
-            objectsTemp.add(new LoadingDTO(){});
+            objectsTemp.add(new LoadingDTO()
+            {
+            });
         }
 
         this.itemTypes = itemTypesTemp;
@@ -132,11 +143,6 @@ public class TradeListItemAdapter
     @Override protected ExpandableTradeItem wrap(final PositionTradeDTOKey underlyingItem)
     {
         return new ExpandableTradeItem(underlyingItem);
-    }
-
-    public void setShownPositionDTO(PositionDTO positionDTO)
-    {
-        this.shownPositionDTO = positionDTO;
     }
 
     @Override public int getViewTypeCount()
@@ -180,8 +186,7 @@ public class TradeListItemAdapter
         }
     }
 
-    @Override @NonNull public View
-    getView(int position, View convertView, ViewGroup viewGroup)
+    @Override @NonNull public View getView(int position, View convertView, ViewGroup viewGroup)
     {
         int itemType = getItemViewType(position);
         Object item = getItem(position);
@@ -203,15 +208,18 @@ public class TradeListItemAdapter
                 }
                 if (convertView == null)
                 {
-                    convertView = getInflater().inflate(getPositionLayoutResId(shownPositionDTO), viewGroup, false);
+                    convertView = getInflater().inflate(getPositionLayoutResId(shownPositionDTO.first), viewGroup, false);
                     View hintForward = convertView.findViewById(R.id.hint_forward);
-                    if (hintForward != null) {
+                    if (hintForward != null)
+                    {
                         hintForward.setVisibility(View.GONE);
                     }
                 }
 
-                ((PositionView) convertView).linkWith(this.shownPositionDTO, false);
-                ((PositionView) convertView).display();
+                // TODO better?
+                ((PositionView) convertView).display(new PositionView.DTO(convertView.getResources(),
+                        new ExpandableListItem<>(true, shownPositionDTO.first),
+                        shownPositionDTO.second));
                 break;
 
             case ITEM_TYPE_POSITION_LOADING:

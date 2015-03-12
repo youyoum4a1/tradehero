@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/TH.GuideContainer"
+    tools:background="@drawable/login_bg_3"
+    tools:context=".AuthenticationActivity"
+    >
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="2"
+      />
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/icn_login_globe"
+      android:layout_gravity="center_horizontal"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/TH.Subhead.Guide"
+      android:text="@string/guide_many_exchanges"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/TH.Body.Guide"
+      android:text="@string/guide_trade_global_market"
+      />
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/icn_menu_contest_center"
+      android:layout_gravity="center_horizontal"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/TH.Subhead.Guide"
+      android:text="@string/guide_competitions"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/TH.Body.Guide"
+      android:text="@string/guide_competition_win_cash"
+      />
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_profile_achievements"
+      android:layout_gravity="center_horizontal"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/TH.Subhead.Guide"
+      android:text="@string/guide_achievements"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/TH.Body.Guide"
+      android:text="@string/guide_achievement_collect"
+      />
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="2"
+      />
+
+</LinearLayout>

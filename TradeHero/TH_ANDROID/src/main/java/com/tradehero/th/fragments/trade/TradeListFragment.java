@@ -47,11 +47,9 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
-import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -59,9 +57,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
 public class TradeListFragment extends BasePurchaseManagerFragment
@@ -91,9 +91,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Nullable protected TradeDTOList tradeDTOList;
     @Nullable protected Subscription alertsSubscription;
     @Nullable protected Map<SecurityId, AlertId> mappedAlerts;
-    @Nullable protected Subscription securityIdSubscription;
     @Nullable protected SecurityId securityId;
-    @Nullable protected Subscription securityCompactSubscription;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
     @Nullable protected Subscription actionDialogSubscription;
 
@@ -172,8 +170,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyOptionsMenu()
     {
-        unsubscribe(securityCompactSubscription);
-        securityCompactSubscription = null;
         setActionBarSubtitle(null);
         super.onDestroyOptionsMenu();
     }
@@ -186,10 +182,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         positionSubscription = null;
         unsubscribe(tradesSubscription);
         tradesSubscription = null;
-        unsubscribe(securityIdSubscription);
-        securityIdSubscription = null;
-        unsubscribe(securityCompactSubscription);
-        securityCompactSubscription = null;
         unsubscribe(actionDialogSubscription);
         actionDialogSubscription = null;
         super.onStop();
@@ -242,27 +234,59 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         if (positionSubscription == null)
         {
-            positionSubscription = AppObservable.bindFragment(this, positionCache.get(positionDTOKey))
-                    .map(new PairGetSecond<PositionDTOKey, PositionDTO>())
-                    .subscribe(
-                            new Action1<PositionDTO>()
+            positionSubscription = AppObservable.bindFragment(
+                    this,
+                    positionCache.get(positionDTOKey)
+                            .flatMap(new Func1<Pair<PositionDTOKey, PositionDTO>, Observable<Pair<PositionDTO, SecurityCompactDTO>>>()
                             {
-                                @Override public void call(PositionDTO position)
+                                @Override public Observable<Pair<PositionDTO, SecurityCompactDTO>> call(
+                                        final Pair<PositionDTOKey, PositionDTO> positionPair)
                                 {
-                                    linkWith(position);
+                                    return securityIdCache.getOne(positionPair.second.getSecurityIntegerId())
+                                            .flatMap(
+                                                    new Func1<Pair<SecurityIntegerId, SecurityId>, Observable<Pair<SecurityId, SecurityCompactDTO>>>()
+                                                    {
+                                                        @Override
+                                                        public Observable<Pair<SecurityId, SecurityCompactDTO>> call(
+                                                                Pair<SecurityIntegerId, SecurityId> securityIntegerIdSecurityIdPair)
+                                                        {
+                                                            return securityCompactCache.getOne(securityIntegerIdSecurityIdPair.second);
+                                                        }
+                                                    })
+                                            .map(new Func1<Pair<SecurityId, SecurityCompactDTO>, Pair<PositionDTO, SecurityCompactDTO>>()
+                                            {
+                                                @Override public Pair<PositionDTO, SecurityCompactDTO> call(
+                                                        Pair<SecurityId, SecurityCompactDTO> securityPair)
+                                                {
+                                                    return Pair.create(positionPair.second, securityPair.second);
+                                                }
+                                            });
+                                }
+                            })
+            )
+
+                    .subscribe(
+                            new Action1<Pair<PositionDTO, SecurityCompactDTO>>()
+                            {
+                                @Override public void call(Pair<PositionDTO, SecurityCompactDTO> positionPair)
+                                {
+                                    linkWith(positionPair);
                                 }
                             },
                             new ToastAction<Throwable>(getString(R.string.error_fetch_position_list_info)));
         }
     }
 
-    public void linkWith(PositionDTO positionDTO)
+    public void linkWith(Pair<PositionDTO, SecurityCompactDTO> positionPair)
     {
-        this.positionDTO = positionDTO;
-        adapter.setShownPositionDTO(positionDTO);
+        this.positionDTO = positionPair.first;
+        this.securityCompactDTO = positionPair.second;
+        this.securityId = positionPair.second.getSecurityId();
+        adapter.setShownPositionDTO(positionPair);
         adapter.notifyDataSetChanged();
         fetchTrades();
-        softFetchSecurityId();
+        getActivity().invalidateOptionsMenu();
+        displayActionBarTitle();
     }
 
     protected void fetchTrades()
@@ -300,65 +324,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             created.add(new PositionTradeDTOKey(positionDTOKey, tradeDTO));
         }
         return created;
-    }
-
-    protected void softFetchSecurityId()
-    {
-        if (positionDTO != null)
-        {
-            SecurityId cachedSecurityId = securityIdCache.getCachedValue(new SecurityIntegerId(positionDTO.securityId));
-            if (cachedSecurityId != null)
-            {
-                linkWith(cachedSecurityId);
-            }
-            else if (securityIdSubscription == null)
-            {
-                securityIdSubscription = AppObservable.bindFragment(
-                        this,
-                        securityIdCache.get(new SecurityIntegerId(positionDTO.securityId)))
-                        .map(new PairGetSecond<SecurityIntegerId, SecurityId>())
-                        .subscribe(
-                                new Action1<SecurityId>()
-                                {
-                                    @Override public void call(SecurityId securityId)
-                                    {
-                                        linkWith(securityId);
-                                    }
-                                },
-                                new EmptyAction1<Throwable>());
-            }
-        }
-    }
-
-    protected void linkWith(@NonNull SecurityId securityId)
-    {
-        this.securityId = securityId;
-        fetchSecurityCompact();
-    }
-
-    protected void fetchSecurityCompact()
-    {
-        if (securityId != null && securityCompactSubscription == null)
-        {
-            securityCompactSubscription = AppObservable.bindFragment(this, securityCompactCache.get(securityId))
-                    .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
-                    .subscribe(
-                            new Action1<SecurityCompactDTO>()
-                            {
-                                @Override public void call(SecurityCompactDTO compactDTO)
-                                {
-                                    linkWith(compactDTO);
-                                }
-                            },
-                            new ToastOnErrorAction());
-        }
-    }
-
-    protected void linkWith(@NonNull SecurityCompactDTO securityCompactDTO)
-    {
-        this.securityCompactDTO = securityCompactDTO;
-        getActivity().invalidateOptionsMenu();
-        displayActionBarTitle();
     }
 
     public void displayActionBarTitle()

@@ -42,7 +42,6 @@
 
   <LinearLayout
       android:id="@+id/ll_position_status"
-      android:layout_margin="10dp"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:visibility="gone"
@@ -68,7 +67,6 @@
       android:id="@+id/margin_close_out_status"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:padding="@dimen/margin_xsmall"
       style="@style/TH.Subhead.Inverse"
       tools:background="@color/orange"
       tools:text="Margin is approaching"
@@ -82,6 +80,7 @@
       android:layout_width="match_parent"
       android:layout_height="0dp"
       android:layout_weight="1"
+      android:layout_marginTop="@dimen/margin_small"
       android:orientation="vertical"
       >
 

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/TH.GuideContainer"
+    tools:background="@drawable/login_bg_2"
+    tools:context=".AuthenticationActivity"
+    >
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="2"
+      />
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_profile_followers"
+      android:layout_gravity="center_horizontal"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/TH.Subhead.Guide"
+      android:text="@string/guide_learn_to_trade"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/TH.Body.Guide"
+      android:text="@string/guide_follow_trade_heroes"
+      />
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_profile_heroes"
+      android:layout_gravity="center_horizontal"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/TH.Subhead.Guide"
+      android:text="@string/guide_be_a_hero"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/TH.Body.Guide"
+      android:text="@string/guide_trade_well_gain_followers"
+      />
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/icn_login_cash"
+      android:layout_gravity="center_horizontal"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/TH.Subhead.Guide"
+      android:text="@string/guide_no_risk"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/TH.Body.Guide"
+      android:text="@string/guide_initial_cash_for_investment"
+      />
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="2"
+      />
+
+</LinearLayout>

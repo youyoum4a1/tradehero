@@ -63,7 +63,7 @@ public enum SocialNetworkEnum
         return super.toString();
     }
 
-    public static SocialNetworkEnum fromIndex(int index)
+    @NonNull public static SocialNetworkEnum fromIndex(int index)
     {
         if (index >= 0 && index < values().length)
         {
@@ -72,7 +72,7 @@ public enum SocialNetworkEnum
         throw new IllegalArgumentException("There is no value for index " + index);
     }
 
-    public static SocialNetworkEnum fromAuthHeader(String authHeader)
+    @NonNull public static SocialNetworkEnum fromAuthHeader(String authHeader)
     {
         for (SocialNetworkEnum socialNetworkEnum: values())
         {

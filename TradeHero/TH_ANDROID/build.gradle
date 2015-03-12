@@ -110,7 +110,7 @@ android {
   }
 
   // There may be further flavorGroups dimensions in the future
-  flavorDimensions "marketSegment"
+  flavorDimensions "marketSegment", "pushProvider"
 
   productFlavors {
     googleplay {
@@ -134,19 +134,18 @@ android {
       // https://github.com/TradeHero/TH_ANDROID/wiki/Amazon
       //compileSdkVersion = [ 20 , "Amazon.com:Amazon Fire Phone SDK Addon:17" ]
     }
+
+    airship {
+      flavorDimension "pushProvider"
+    }
+
+    noPush {
+      flavorDimension "pushProvider"
+    }
   }
 
   sourceSets {
     main {
-      manifest {
-        srcFile 'AndroidManifest.xml'
-      }
-      java {
-        srcDir 'src/main/java'
-      }
-      aidl {
-        srcDir 'src/main/java'
-      }
       res {
         srcDir 'res'
       }
@@ -157,59 +156,80 @@ android {
 
     //region Flavours
     googleplay {
-      manifest {
-        srcFile 'src/googleplay/AndroidManifest.xml'
-      }
       java {
         srcDir 'src/row/java'
-        srcDir 'src/googleplay/java'
       }
-      res {
-        srcDir 'src/googleplay/res'
+    }
+
+    googleplayAirshipDebug {
+      java {
+        srcDir 'src/googleplayDebug/java'
+      }
+    }
+
+    googleplayAirshipRelease {
+      java {
+        srcDir 'src/googleplayRelease/java'
+      }
+    }
+
+    googleplayNoPushDebug {
+      java {
+        srcDir 'src/googleplayDebug/java'
+      }
+    }
+
+    googleplayNoPushRelease {
+      java {
+        srcDir 'src/googleplayRelease/java'
       }
     }
 
     china {
-      manifest {
-        srcFile 'src/china/AndroidManifest.xml'
-      }
-      java {
-        srcDir 'src/china/java'
-      }
-      res {
-        srcDir 'src/china/res'
-      }
     }
 
     samsung {
-      manifest {
-        srcFile 'src/samsung/AndroidManifest.xml'
-      }
       java {
         srcDir 'src/row/java'
-        srcDir 'src/samsung/java'
       }
-      res {
-        srcDir 'src/samsung/res'
+    }
+
+    samsungAirshipDebug {
+      manifest {
+        srcFile 'src/googleplayAirship/java' // Reuse until there is something special for Samsung
+      }
+      java {
+        srcDir 'src/samsungDebug/java'
+      }
+    }
+
+    samsungAirshipRelease {
+      manifest {
+        srcFile 'src/googleplayAirship/java' // Reuse until there is something special for Samsung
+      }
+      java {
+        srcDir 'src/samsungRelease/java'
       }
     }
 
     amazon {
-      manifest {
-        srcFile 'src/amazon/AndroidManifest.xml'
-      }
       java {
         srcDir 'src/row/java'
-        srcDir 'src/amazon/java'
       }
-      res {
-        srcDir 'src/amazon/res'
+    }
+
+    amazonAirshipDebug {
+      java {
+        srcDir 'src/amazonDebug/java'
+      }
+    }
+
+    amazonAirshipRelease {
+      java {
+        srcDir 'src/amazonRelease/java'
       }
     }
     //endregion
-
-    // TODO make sure this is not breaking
-    //androidTest.setRoot('src/test')
   }
 
   lintOptions {
@@ -302,7 +322,7 @@ dependencies {
     exclude group: "com.squareup.okhttp", module: "okhttp"
     exclude group: "com.squareup.okhttp", module: "okhttp-urlconnection"
   }
-  compile 'com.squareup.okhttp:okhttp:2.1.0'
+  compile 'com.squareup.okhttp:okhttp:2.1.0' // 2.2.0 ?
   compile('com.squareup.okhttp:okhttp-urlconnection:2.1.0') {
     exclude group: "com.squareup.okhttp", module: "okhttp"
   }
@@ -315,6 +335,9 @@ dependencies {
     exclude group: 'com.squareup.retrofit', module: 'retrofit'
     exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
   }
+  compile ('com.viewpagerindicator:library:2.4.1') {
+    exclude group: 'com.google.android', module: 'support-v4'
+  }
 
   compile 'com.tradehero:metrics:2.0-SNAPSHOT'
   compile 'com.squareup.dagger:dagger:1.2.2'
@@ -322,8 +345,11 @@ dependencies {
   compile 'io.reactivex:rxandroid:0.24.0'
   //compile 'io.reactivex:rxjava-joins:0.21.0'
   compile 'com.jakewharton.timber:timber:2.5.1'
-  compile 'com.urbanairship:urbanairship-lib:3.2.1'
-  compile 'com.fasterxml.jackson.core:jackson-databind:2.4.0'
+
+  airshipCompile 'com.urbanairship:urbanairship-lib:5.1.2@aar'
+  amazonCompile 'com.amazon:amazon-device-messaging:1.0.1' // Should be amazonAirshipCompile, if Gradle was better
+
+  compile 'com.fasterxml.jackson.core:jackson-databind:2.4.0' // 2.5.0 ?
   compile 'com.tradehero.route:route:0.2-SNAPSHOT'
   compile 'com.android.support:support-annotations:20.0.0'
   compile 'com.crashlytics.android:crashlytics:1.+'

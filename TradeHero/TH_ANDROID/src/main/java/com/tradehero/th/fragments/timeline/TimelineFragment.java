@@ -167,7 +167,8 @@ public class TimelineFragment extends DashboardFragment
         mainTimelineAdapter = new MainTimelineAdapter(getActivity(),
                 R.layout.timeline_item_view,
                 R.layout.portfolio_list_item,
-                R.layout.user_profile_stat_view);
+                R.layout.user_profile_stat_view,
+                currentUserId.toUserBaseKey().equals(shownUserBaseKey));
         mainTimelineAdapter.setCurrentTabType(currentTab);
     }
 

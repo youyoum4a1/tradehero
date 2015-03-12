@@ -1,8 +1,10 @@
 package com.tradehero.th.fragments.authentication;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -12,10 +14,13 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.AuthenticationActivity;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -76,6 +81,8 @@ public class EmailSignInFragment extends Fragment
     @InjectView(R.id.btn_login) View loginButton;
     SubscriptionList onStopSubscriptions;
 
+    @Nullable Observer<SocialNetworkEnum> socialNetworkEnumObserver;
+
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
@@ -88,6 +95,12 @@ public class EmailSignInFragment extends Fragment
         HierarchyInjector.inject(this);
         analytics.tagScreen(AnalyticsConstants.Login_Form);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
+    }
+
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        socialNetworkEnumObserver = ((AuthenticationActivity) activity).getSelectedSocialNetworkObserver();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -108,6 +121,15 @@ public class EmailSignInFragment extends Fragment
         password.addTextChangedListener(passwordValidator);
 
         DeviceUtil.showKeyboardDelayed(email);
+
+        try
+        {
+            view.setBackgroundResource(R.drawable.login_bg_4);
+        } catch (Throwable e)
+        {
+            Timber.e(e, "Failed to set guide background");
+            view.setBackgroundColor(getResources().getColor(R.color.authentication_guide_bg_color));
+        }
     }
 
     @NonNull protected Observable<Pair<AuthData, UserProfileDTO>> handleClick(@NonNull OnClickEvent event)
@@ -204,6 +226,27 @@ public class EmailSignInFragment extends Fragment
         password.removeTextChangedListener(passwordValidator);
         ButterKnife.reset(this);
         super.onDestroyView();
+    }
+
+    @Override public void onDetach()
+    {
+        socialNetworkEnumObserver = null;
+        super.onDetach();
+    }
+
+    @SuppressWarnings({"unused"}) @OnClick({
+            R.id.btn_linkedin_signin,
+            R.id.btn_facebook_signin,
+            R.id.btn_twitter_signin,
+            R.id.btn_qq_signin,
+            R.id.btn_weibo_signin,
+    }) @Optional
+    protected void onSignInButtonClicked(View view)
+    {
+        if (socialNetworkEnumObserver != null)
+        {
+            socialNetworkEnumObserver.onNext(((AuthenticationImageButton) view).getType());
+        }
     }
 
     @NonNull protected Observer<ValidationMessage> createValidatorObserver(@NonNull final ValidatedText validatedText)
@@ -304,7 +347,7 @@ public class EmailSignInFragment extends Fragment
                     {
                         if (validationMessage.getValidStatus().equals(ValidatedView.Status.VALID))
                         {
-                            return  effectForgotPassword(email1);
+                            return effectForgotPassword(email1);
                         }
                         else
                         {

@@ -22,13 +22,16 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
 
     private List<Object> orderedItems;
     private final DisplayablePortfolioDTOWithinUserComparator ownDisplayablePortfolioDTOWithinUserComparator;
+    private final boolean isCurrentUser;
 
     //<editor-fold desc="Constructors">
     public SimpleOwnPortfolioListItemAdapter(
             @NonNull Context context,
-            @LayoutRes int portfolioLayoutResourceId)
+            @LayoutRes int portfolioLayoutResourceId,
+            boolean isCurrentUser)
     {
         super(context, portfolioLayoutResourceId);
+        this.isCurrentUser = isCurrentUser;
         this.ownDisplayablePortfolioDTOWithinUserComparator = new DisplayablePortfolioDTOWithinUserComparator();
         orderedItems = new ArrayList<>();
     }
@@ -58,10 +61,13 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
                 }
             }
 
-            Boolean containsFx = containsFx(items);
-            if (containsFx != null && !containsFx)
+            if (isCurrentUser)
             {
-                ownPortfolios.add(new DummyFxDisplayablePortfolioDTO());
+                Boolean containsFx = containsFx(items);
+                if (containsFx != null && !containsFx)
+                {
+                    ownPortfolios.add(new DummyFxDisplayablePortfolioDTO());
+                }
             }
 
             for (DisplayablePortfolioDTO displayablePortfolioDTO : ownPortfolios)

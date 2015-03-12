@@ -29,10 +29,10 @@ public class KChartBase extends View {
 	public static final int DEFAULT_AXIS_TITLE_SIZE = 40;
 
 	/** 默认上表纬线数 */
-	public static final int DEFAULT_UPER_LATITUDE_NUM = 10;
+	public static final int DEFAULT_UPER_LATITUDE_NUM = 6;
 
 	/** 默认经线数 */
-	public static final int DEFAULT_LOGITUDE_NUM = 3;
+	public static final int DEFAULT_LOGITUDE_NUM = 1;
 
 	/** 默认虚线效果 */
 	private static final PathEffect DEFAULT_DASH_EFFECT = new DashPathEffect(

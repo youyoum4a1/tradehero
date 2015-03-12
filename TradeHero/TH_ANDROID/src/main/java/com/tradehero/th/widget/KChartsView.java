@@ -258,7 +258,7 @@ public class KChartsView extends KChartBase {
 
 		// Titles in y-axis
         double pricePreLatitude = (mMaxPrice - mMinPrice) / DEFAULT_UPER_LATITUDE_NUM;
-        for (int i=1;i<DEFAULT_UPER_LATITUDE_NUM;i++)
+        for (int i=0;i<=DEFAULT_UPER_LATITUDE_NUM;i++)
         {
             if (i == DEFAULT_UPER_LATITUDE_NUM)
             {

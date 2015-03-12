@@ -2,14 +2,11 @@ package com.tradehero.th.fragments.authentication;
 
 import dagger.Module;
 
-/**
- * Created by tho on 9/10/2014.
- */
 @Module(
         injects = {
-                SignInOrUpFragment.class,
                 EmailSignInFragment.class,
-                EmailSignUpFragment.class
+                EmailSignUpFragment.class,
+                GuideAuthenticationFragment.class,
         },
         library = true,
         complete = false

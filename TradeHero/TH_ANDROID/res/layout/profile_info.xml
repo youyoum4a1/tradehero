@@ -33,9 +33,7 @@
         app:validatePattern="@string/regex_email_validator"
         app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
         app:delayValidationByMilliSec="500"
-        >
-      <requestFocus/>
-    </com.tradehero.th.widget.validation.ValidatedText>
+        />
 
     <com.tradehero.th.widget.validation.ValidatedText
         android:id="@+id/authentication_sign_up_password"

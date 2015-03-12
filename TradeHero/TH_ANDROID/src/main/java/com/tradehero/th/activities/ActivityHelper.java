@@ -1,7 +1,6 @@
 package com.tradehero.th.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import com.tradehero.th.R;
 
@@ -10,13 +9,6 @@ public class ActivityHelper
     public static void launchAuthentication(Activity activity)
     {
         presentFromActivity(activity, AuthenticationActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    }
-
-    public static void launchGuide(Context activity)
-    {
-        Intent localIntent = new Intent(activity, GuideActivity.class);
-        activity.startActivity(localIntent);
-        ((Activity) activity).finish();
     }
 
     public static void launchDashboard(Activity activity)

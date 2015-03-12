@@ -1,6 +1,8 @@
 package com.tradehero.th.activities;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.widget.TextView;
 import com.facebook.AppEventsLogger;
 import com.mobileapptracker.MobileAppTracker;
@@ -9,11 +11,15 @@ import com.tapstream.sdk.Event;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.network.share.SocialConstants;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.prefs.FirstLaunch;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -23,6 +29,10 @@ import com.tradehero.th.utils.metrics.events.AppLaunchEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.functions.Action1;
+import timber.log.Timber;
 
 public class SplashActivity extends BaseActivity
 {
@@ -34,6 +44,10 @@ public class SplashActivity extends BaseActivity
     @Inject THAppsFlyer thAppsFlyer;
     @Inject Analytics analytics;
     @Inject @AuthHeader String authToken;
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCacheRx userProfileCache;
+
+    @Nullable Subscription userProfileSubscription;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -45,6 +59,15 @@ public class SplashActivity extends BaseActivity
         if (appVersion != null)
         {
             appVersion.setText(VersionUtils.getAppVersion(this));
+        }
+        try
+        {
+            getWindow().getDecorView().findViewById(android.R.id.content).setBackgroundResource(R.drawable.login_bg_1);
+        } catch (Throwable e)
+        {
+            Timber.e(e, "Failed to set guide background");
+            getWindow().getDecorView().findViewById(android.R.id.content).setBackgroundColor(
+                    getResources().getColor(R.color.authentication_guide_bg_color));
         }
     }
 
@@ -70,42 +93,53 @@ public class SplashActivity extends BaseActivity
             VersionUtils.logScreenMeasurements(this);
         }
 
-        initialisation();
+        analytics.addEvent(new AppLaunchEvent())
+                .addEvent(new SimpleEvent(AnalyticsConstants.LoadingScreen));
+
+        if (firstLaunchPreference.get() || resetHelpScreens.get() || authToken == null)
+        {
+            ActivityHelper.launchAuthentication(this);
+            firstLaunchPreference.set(false);
+            resetHelpScreens.set(false);
+            finish();
+        }
+        else
+        {
+            userProfileSubscription = AppObservable.bindActivity(
+                    this,
+                    userProfileCache.get(currentUserId.toUserBaseKey()))
+                    .subscribe(
+                            new Action1<Pair<UserBaseKey, UserProfileDTO>>()
+                            {
+                                @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
+                                {
+                                    ActivityHelper.launchDashboard(SplashActivity.this);
+                                    finish();
+                                }
+                            },
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable throwable)
+                                {
+                                    ActivityHelper.launchAuthentication(SplashActivity.this);
+                                    finish();
+                                }
+                            });
+        }
     }
 
     @Override protected void onPause()
     {
         analytics.closeSession();
-
+        if (userProfileSubscription != null)
+        {
+            userProfileSubscription.unsubscribe();
+        }
         super.onPause();
     }
 
     @Override protected boolean requireLogin()
     {
         return false;
-    }
-
-    protected void initialisation()
-    {
-        analytics.addEvent(new AppLaunchEvent())
-                .addEvent(new SimpleEvent(AnalyticsConstants.LoadingScreen));
-
-        if (firstLaunchPreference.get() || resetHelpScreens.get())
-        {
-            ActivityHelper.launchGuide(this);
-            firstLaunchPreference.set(false);
-            resetHelpScreens.set(false);
-            finish();
-        }
-        else if (authToken == null)
-        {
-            ActivityHelper.launchAuthentication(this);
-            finish();
-        }
-        else
-        {
-            ActivityHelper.launchDashboard(this);
-            finish();
-        }
     }
 }

@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.position;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -28,15 +29,13 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 
-/**
- * Created by liangyx on 2/27/15.
- */
 public class TabbedPositionListFragment extends BasePurchaseManagerFragment
 {
     private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = TabbedPositionListFragment.class.getName() + ".showPositionDtoKey";
     private static final String BUNDLE_KEY_SHOWN_USER_ID_BUNDLE = TabbedPositionListFragment.class.getName() + ".userBaseKey";
     private static final String BUNDLE_KEY_IS_FX = TabbedPositionListFragment.class.getName() + "isFX";
     private static final String BUNDLE_KEY_PROVIDER_ID = TabbedPositionListFragment.class + ".providerId";
+    private static final boolean DEFAULT_IS_FX = false;
 
     @Inject THRouter thRouter;
     @InjectRoute UserBaseKey injectedUserBaseKey;
@@ -49,31 +48,35 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
     protected UserBaseKey shownUser;
     @Nullable protected UserProfileDTO userProfileDTO;
 
-    boolean mIsFX;
+    boolean isFX;
 
-    ProviderId mProviderID;
+    ProviderId providerId;
 
-    /* STOCK_TYPES and STOCK_TYPE_TITLE_IDS should have the same size and in same order */
-    private static int[] STOCK_TYPES = new int[]{
-            PositionItemAdapter.VIEW_TYPE_OPEN_LONG,
-            PositionItemAdapter.VIEW_TYPE_CLOSED,
+    public enum TabType
+    {
+        LONG(R.string.position_list_header_open_unsure, R.string.position_list_header_open_long_unsure),
+        SHORT(R.string.position_list_header_open_short_unsure, R.string.position_list_header_open_short_unsure),
+        CLOSED(R.string.position_list_header_closed_unsure, R.string.position_list_header_closed_unsure),;
+
+        @StringRes private final int stockTitle;
+        @StringRes private final int fxTitle;
+
+        TabType(@StringRes int stockTitle, @StringRes int fxTitle)
+        {
+            this.stockTitle = stockTitle;
+            this.fxTitle = fxTitle;
+        }
+    }
+
+    private static TabType[] STOCK_TYPES = new TabType[] {
+            TabType.LONG,
+            TabType.CLOSED,
     };
 
-    private static int[] STOCK_TYPE_TITLE_IDS = {
-            R.string.position_list_header_open_unsure,
-            R.string.position_list_header_closed_unsure,
-    };
-
-    /* FX_TYPES and FX_TYPE_TITLE_IDS should have the same size and in same order */
-    private static int[] FX_TYPES = new int[]{
-            PositionItemAdapter.VIEW_TYPE_OPEN_LONG,
-            PositionItemAdapter.VIEW_TYPE_OPEN_SHORT,
-            PositionItemAdapter.VIEW_TYPE_CLOSED,
-    };
-    private static int[] FX_TYPE_TITLE_IDS = {
-            R.string.position_list_header_open_long_unsure,
-            R.string.position_list_header_open_short_unsure,
-            R.string.position_list_header_closed_unsure,
+    private static TabType[] FX_TYPES = new TabType[] {
+            TabType.LONG,
+            TabType.SHORT,
+            TabType.CLOSED,
     };
 
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
@@ -86,17 +89,19 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
         args.putBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE, shownUser.getArgs());
     }
 
-    public static void putIsFX(@NonNull Bundle args, AssetClass assetClass) {
-        if (assetClass == null) {
-            args.putBoolean(BUNDLE_KEY_IS_FX, false);
+    public static void putIsFX(@NonNull Bundle args, @Nullable AssetClass assetClass)
+    {
+        if (assetClass == null)
+        {
+            args.putBoolean(BUNDLE_KEY_IS_FX, DEFAULT_IS_FX);
         }
         args.putBoolean(BUNDLE_KEY_IS_FX, assetClass == AssetClass.FX);
     }
 
-    private boolean isFX(@NonNull Bundle args) {
-        return args.getBoolean(BUNDLE_KEY_IS_FX, false);
+    private boolean isFX(@NonNull Bundle args)
+    {
+        return args.getBoolean(BUNDLE_KEY_IS_FX, DEFAULT_IS_FX);
     }
-
 
     @NonNull private UserBaseKey getUserBaseKey(@NonNull Bundle args)
     {
@@ -108,15 +113,16 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
         return GetPositionsDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE));
     }
 
-    public static void putProviderId(Bundle args, ProviderId providerId)
+    public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {
         args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
     }
 
-    private ProviderId getProviderId(Bundle args)
+    @Nullable private ProviderId getProviderId(@NonNull Bundle args)
     {
         Bundle bundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID);
-        if (bundle == null) {
+        if (bundle == null)
+        {
             return null;
         }
         return new ProviderId(bundle);
@@ -143,8 +149,8 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
         {
             getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey.key, injectedPortfolioId.key);
         }
-        mIsFX = isFX(args);
-        mProviderID = getProviderId(args);
+        isFX = isFX(args);
+        providerId = getProviderId(args);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -177,15 +183,19 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
             PositionListFragment.putApplicablePortfolioId(args, purchaseApplicableOwnedPortfolioId);
             PositionListFragment.putGetPositionsDTOKey(args, purchaseApplicableOwnedPortfolioId);
             PositionListFragment.putShownUser(args, purchaseApplicableOwnedPortfolioId.getUserBaseKey());
-            int positionType;
-            if (mIsFX) {
+            TabType positionType;
+            if (isFX)
+            {
                 positionType = FX_TYPES[position];
-            } else {
+            }
+            else
+            {
                 positionType = STOCK_TYPES[position];
             }
             PositionListFragment.putPositionType(args, positionType);
-            if (mProviderID != null) {
-                CompetitionLeaderboardPositionListFragment.putProviderId(args, mProviderID);
+            if (providerId != null)
+            {
+                CompetitionLeaderboardPositionListFragment.putProviderId(args, providerId);
                 return Fragment.instantiate(getActivity(), CompetitionLeaderboardPositionListFragment.class.getName(), args);
             }
             return Fragment.instantiate(getActivity(), PositionListFragment.class.getName(), args);
@@ -193,20 +203,25 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
 
         @Override public int getCount()
         {
-            if (mIsFX) {
+            if (isFX)
+            {
                 return FX_TYPES.length;
-            } else {
+            }
+            else
+            {
                 return STOCK_TYPES.length;
             }
-
         }
 
         @Override public CharSequence getPageTitle(int position)
         {
-            if (mIsFX) {
-                return getString(FX_TYPE_TITLE_IDS[position]);
-            } else {
-                return getString(STOCK_TYPE_TITLE_IDS[position]);
+            if (isFX)
+            {
+                return getString(FX_TYPES[position].fxTitle);
+            }
+            else
+            {
+                return getString(STOCK_TYPES[position].stockTitle);
             }
         }
     }

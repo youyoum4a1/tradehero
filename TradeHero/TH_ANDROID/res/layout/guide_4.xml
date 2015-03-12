@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/TH.GuideContainer"
+    tools:background="@drawable/login_bg_4"
+    tools:context=".AuthenticationActivity"
+    >
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/logo_tnw"
+      android:layout_gravity="center_horizontal"
+      android:layout_marginBottom="@dimen/size_1"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/TH.Body.Guide"
+      android:text="@string/guide_tnw_comment"
+      />
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/logo_techinasia"
+      android:layout_gravity="center_horizontal"
+      android:layout_marginBottom="@dimen/size_1"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/TH.Body.Guide"
+      android:text="@string/guide_tia_comment"
+      />
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="2"
+      />
+
+</LinearLayout>

@@ -1,10 +1,13 @@
 package com.tradehero.th.fragments.position.partial;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,40 +16,29 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.FxFlagContainer;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.position.PositionDTOUtils;
-import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
-import com.tradehero.th.persistence.security.SecurityIdCache;
 import javax.inject.Inject;
-import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import timber.log.Timber;
 
 public class PositionPartialTopView extends LinearLayout
+    implements DTOView<PositionPartialTopView.DTO>
 {
     @Inject protected Picasso picasso;
-    @Inject protected SecurityIdCache securityIdCache;
-    @Inject protected SecurityCompactCacheRx securityCompactCache;
-    @Inject protected DashboardNavigator navigator;
 
     @InjectView(R.id.gain_indicator) ImageView mGainIndicator;
     @InjectView(R.id.stock_logo) ImageView stockLogo;
@@ -61,10 +53,7 @@ public class PositionPartialTopView extends LinearLayout
     @InjectView(R.id.position_last_amount_header) TextView positionLastAmountHeader;
     @InjectView(R.id.position_last_amount) TextView positionLastAmount;
 
-    protected PositionDTO positionDTO;
-    protected SecurityId securityId;
-    private Subscription securityCompactCacheFetchSubscription;
-    protected SecurityCompactDTO securityCompactDTO;
+    @Nullable protected DTO viewDTO;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -105,15 +94,99 @@ public class PositionPartialTopView extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        unsubscribe(securityCompactCacheFetchSubscription);
-        securityCompactCacheFetchSubscription = null;
         if (stockLogo != null)
         {
             picasso.cancelRequest(stockLogo);
-            stockLogo.setImageDrawable(null);
         }
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
+    }
+
+    @Override public void display(@NonNull final DTO dto)
+    {
+        this.viewDTO = dto;
+
+        if (mGainIndicator != null)
+        {
+            mGainIndicator.setVisibility(dto.gainIndicatorVisibility);
+            mGainIndicator.setImageResource(dto.gainIndicator);
+        }
+
+        if (stockLogo != null)
+        {
+            stockLogo.setVisibility(dto.stockLogoVisibility);
+            RequestCreator request;
+            if (dto.stockLogoUrl != null)
+            {
+                request = picasso.load(dto.stockLogoUrl);
+            }
+            else
+            {
+                request = picasso.load(dto.stockLogoRes);
+            }
+            request.placeholder(R.drawable.default_image)
+                .transform(new WhiteToTransparentTransformation())
+                .into(stockLogo, new Callback()
+                {
+                    @Override public void onSuccess()
+                    {
+                    }
+
+                    @Override public void onError()
+                    {
+                        stockLogo.setImageResource(dto.stockLogoRes);
+                    }
+                });
+        }
+
+        if (flagsContainer != null)
+        {
+            flagsContainer.display(dto.fxPair);
+        }
+
+        if (stockSymbol != null)
+        {
+            stockSymbol.setText(dto.stockSymbol);
+        }
+
+        if (companyName != null)
+        {
+            companyName.setVisibility(dto.companyNameVisibility);
+            companyName.setText(dto.companyName);
+        }
+
+        if (shareCount != null)
+        {
+            shareCount.setVisibility(dto.shareCountVisibility);
+            shareCount.setText(dto.shareCount);
+        }
+
+        if (lastPriceContainer != null)
+        {
+            lastPriceContainer.setVisibility(dto.lastPriceContainerVisibility);
+        }
+
+        if (positionPercent != null)
+        {
+            positionPercent.setVisibility(dto.positionPercentVisibility);
+            positionPercent.setText(dto.positionPercent);
+        }
+
+        if (positionUnrealisedPL != null)
+        {
+            positionUnrealisedPL.setVisibility(dto.unrealisedPLVisibility);
+            positionUnrealisedPL.setText(dto.unrealisedPL);
+        }
+
+        if (positionLastAmountHeader != null)
+        {
+            positionLastAmountHeader.setVisibility(dto.lastAmountHeaderVisibility);
+        }
+
+        if (positionLastAmount != null)
+        {
+            positionLastAmount.setText(dto.lastAmount);
+        }
     }
 
     protected void unsubscribe(@Nullable Subscription subscription)
@@ -124,285 +197,164 @@ public class PositionPartialTopView extends LinearLayout
         }
     }
 
-    public void linkWith(PositionDTO positionDTO, final boolean andDisplay)
+    public static class DTO
     {
-        boolean isDifferentSecurity = positionDTO != null
-                && (this.positionDTO == null
-                || !this.positionDTO.getSecurityIntegerId().equals(positionDTO.getSecurityIntegerId()));
-        this.positionDTO = positionDTO;
-        if (andDisplay)
+        @NonNull public final PositionDTO positionDTO;
+        @NonNull public final SecurityCompactDTO securityCompactDTO;
+
+        @ViewVisibilityValue public final int stockLogoVisibility;
+        @Nullable public final String stockLogoUrl;
+        @DrawableRes public final int stockLogoRes;
+        @Nullable public final FxPairSecurityId fxPair;
+        @NonNull public final String stockSymbol;
+        @ViewVisibilityValue public final int flagsContainerVisibility;
+        @ViewVisibilityValue public final int companyNameVisibility;
+        @NonNull public final String companyName;
+        @ViewVisibilityValue public final int shareCountVisibility;
+        @NonNull public final Spanned shareCount;
+        @ViewVisibilityValue public final int lastPriceContainerVisibility;
+        @ViewVisibilityValue public final int positionPercentVisibility;
+        @NonNull public final Spanned positionPercent;
+        @ViewVisibilityValue public final int gainIndicatorVisibility;
+        @DrawableRes public final int gainIndicator;
+        @ViewVisibilityValue public final int unrealisedPLVisibility;
+        @NonNull public final Spanned unrealisedPL;
+        @ViewVisibilityValue public final int lastAmountHeaderVisibility;
+        @NonNull public final Spanned lastAmount;
+
+        public DTO(@NonNull Resources resources, @NonNull PositionDTO positionDTO, @NonNull SecurityCompactDTO securityCompactDTO)
         {
-            displayPositionPercent();
-            displayUnrealisedPL();
-            displayPositionLastAmountHeader();
-            displayPositionLastAmount();
-            displayCompanyName();
-            displayShareCount();
-        }
-        if (positionDTO == null)
-        {
-            unsubscribe(securityCompactCacheFetchSubscription);
-        }
-        else if (isDifferentSecurity)
-        {
-            unsubscribe(securityCompactCacheFetchSubscription);
-            //noinspection Convert2MethodRef
-            securityCompactCacheFetchSubscription = securityIdCache.get(positionDTO.getSecurityIntegerId())
-                    .map(new PairGetSecond<SecurityIntegerId, SecurityId>())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .flatMap(new Func1<SecurityId, Observable<? extends Pair<SecurityId, SecurityCompactDTO>>>()
-                    {
-                        @Override public Observable<? extends Pair<SecurityId, SecurityCompactDTO>> call(SecurityId securityId)
-                        {
-                            linkWith(securityId);
-                            return securityCompactCache.get(securityId);
-                        }
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            new Action1<Pair<SecurityId, SecurityCompactDTO>>()
-                            {
-                                @Override public void call(Pair<SecurityId, SecurityCompactDTO> pair)
-                                {
-                                    linkWith(pair.second);
-                                }
-                            },
-                            new Action1<Throwable>()
-                            {
-                                @Override public void call(Throwable er)
-                                {
-                                    PositionPartialTopView.this.handleSecurityError(er);
-                                }
-                            });
-        }
-    }
+            this.positionDTO = positionDTO;
+            this.securityCompactDTO = securityCompactDTO;
 
-    public void handleSecurityError(Throwable e)
-    {
-        THToast.show("There was an error when fetching the security information");
-        Timber.e(e, "Error fetching the security");
-    }
-
-    protected void linkWith(@NonNull SecurityId securityId)
-    {
-        this.securityId = securityId;
-        displayStockSymbol();
-    }
-
-    protected void linkWith(SecurityCompactDTO securityCompactDTO)
-    {
-        this.securityCompactDTO = securityCompactDTO;
-        displayStockSymbol();
-        displayStockLogo();
-        displayCompanyName();
-        displayShareCount();
-        displayLastPriceContainer();
-        displayPositionPercent();
-        displayUnrealisedPL();
-    }
-
-    //<editor-fold desc="Display Methods">
-    public void display()
-    {
-        displayStockLogo();
-        displayStockSymbol();
-        displayCompanyName();
-        displayShareCount();
-        displayLastPriceContainer();
-        displayPositionPercent();
-        displayUnrealisedPL();
-        displayPositionLastAmountHeader();
-        displayPositionLastAmount();
-    }
-
-    public void displayStockLogo()
-    {
-        if (stockLogo != null)
-        {
+            //<editor-fold desc="Stock Logo">
             if (securityCompactDTO != null && securityCompactDTO.imageBlobUrl != null)
             {
-                stockLogo.setVisibility(VISIBLE);
-                flagsContainer.setVisibility(GONE);
-                picasso.load(securityCompactDTO.imageBlobUrl)
-                        .placeholder(R.drawable.default_image)
-                        .transform(new WhiteToTransparentTransformation())
-                        .into(stockLogo, new Callback()
-                        {
-                            @Override public void onSuccess()
-                            {
-                            }
-
-                            @Override public void onError()
-                            {
-                                displayStockLogoExchange();
-                            }
-                        });
+                stockLogoVisibility = VISIBLE;
+                flagsContainerVisibility = GONE;
+                stockLogoUrl = securityCompactDTO.imageBlobUrl;
+                stockLogoRes = R.drawable.default_image;
             }
             else if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
-                stockLogo.setVisibility(GONE);
-                flagsContainer.setVisibility(VISIBLE);
-                flagsContainer.display(((FxSecurityCompactDTO) securityCompactDTO).getFxPair());
+                stockLogoVisibility = GONE;
+                flagsContainerVisibility = VISIBLE;
+                stockLogoUrl = null;
+                stockLogoRes = R.drawable.default_image;
             }
             else
             {
-                displayStockLogoExchange();
+                stockLogoVisibility = VISIBLE;
+                flagsContainerVisibility = GONE;
+                stockLogoUrl = null;
+                stockLogoRes = securityCompactDTO.getExchangeLogoId();
             }
-        }
-    }
+            //</editor-fold>
 
-    public void displayStockLogoExchange()
-    {
-        stockLogo.setVisibility(VISIBLE);
-        flagsContainer.setVisibility(GONE);
-        if (securityCompactDTO != null)
-        {
-            picasso.load(securityCompactDTO.getExchangeLogoId())
-                    .placeholder(R.drawable.default_image)
-                    .into(stockLogo);
-        }
-        else
-        {
-            stockLogo.setImageResource(R.drawable.default_image);
-        }
-    }
-
-    public void displayStockSymbol()
-    {
-        if (stockSymbol != null)
-        {
+            //<editor-fold desc="Symbol and FxPair">
             if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
-                FxPairSecurityId pair = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
-                stockSymbol.setText(String.format("%s/%s", pair.left, pair.right));
-            }
-            else if (securityId != null)
-            {
-                stockSymbol.setText(String.format("%s:%s", securityId.getExchange(), securityId.getSecuritySymbol()));
+                fxPair = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
+                stockSymbol = String.format("%s/%s", fxPair.left, fxPair.right);
             }
             else
             {
-                stockSymbol.setText("");
+                fxPair = null;
+                stockSymbol = String.format("%s:%s", securityCompactDTO.exchange, securityCompactDTO.symbol);
             }
-        }
-    }
+            //</editor-fold>
 
-    public void displayCompanyName()
-    {
-        if (companyName != null)
-        {
+
+            //<editor-fold desc="Company Name">
             if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
-                companyName.setVisibility(GONE);
-            }
-            else if (securityCompactDTO != null)
-            {
-                companyName.setVisibility(VISIBLE);
-                companyName.setText(securityCompactDTO.name);
+                companyNameVisibility = GONE;
+                companyName = "";
             }
             else
             {
-                companyName.setVisibility(VISIBLE);
-                companyName.setText("");
+                companyNameVisibility = VISIBLE;
+                companyName = securityCompactDTO.name;
             }
-        }
-    }
+            //</editor-fold>
 
-    public void displayShareCount()
-    {
-        if (shareCount != null)
-        {
+            //<editor-fold desc="Share Count">
             if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
-                if (positionDTO != null && (positionDTO.positionStatus == PositionStatus.CLOSED
+                if ((positionDTO.positionStatus == PositionStatus.CLOSED
                         || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED))
                 {
-                    shareCount.setVisibility(GONE);
-                    return;
-                }
-                shareCount.setVisibility(VISIBLE);
-                if (positionDTO == null || positionDTO.shares == null)
-                {
-                    shareCount.setText(R.string.na);
+                    shareCountVisibility = GONE;
                 }
                 else
                 {
-                    String unitFormat = getResources().getQuantityString(R.plurals.position_unit_count, positionDTO.shares);
-                    THSignedNumber.builder(Math.abs(positionDTO.shares))
+                    shareCountVisibility = VISIBLE;
+                }
+                if (positionDTO.shares == null)
+                {
+                    shareCount = new SpannableString(resources.getString(R.string.na));
+                }
+                else
+                {
+                    String unitFormat = resources.getQuantityString(R.plurals.position_unit_count, positionDTO.shares);
+                    shareCount = THSignedNumber.builder(Math.abs(positionDTO.shares))
                             .format(unitFormat)
                             .build()
-                            .into(shareCount);
+                            .createSpanned();
                 }
             }
             else
             {
-                shareCount.setVisibility(GONE);
+                shareCountVisibility = GONE;
+                shareCount = new SpannableString("");
             }
-        }
-    }
+            //</editor-fold>
 
-    public void displayLastPriceContainer()
-    {
-        if (lastPriceContainer != null)
-        {
+            lastPriceContainerVisibility = securityCompactDTO instanceof FxSecurityCompactDTO ? GONE : VISIBLE;
+
+            //<editor-fold desc="Percent and Gain">
+            final Double gain;
             if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
-                lastPriceContainer.setVisibility(GONE);
-            }
-            else
-            {
-                lastPriceContainer.setVisibility(VISIBLE);
-            }
-        }
-    }
-
-    public void displayPositionPercent()
-    {
-        if (positionPercent != null)
-        {
-            if (securityCompactDTO instanceof FxSecurityCompactDTO)
-            {
-                positionPercent.setVisibility(GONE);
+                positionPercentVisibility = GONE;
+                positionPercent = new SpannableString("");
+                gain = null;
             }
             else if (positionDTO instanceof PositionInPeriodDTO && ((PositionInPeriodDTO) positionDTO).isProperInPeriod())
             {
-                positionPercent.setVisibility(VISIBLE);
-                PositionDTOUtils.setROIInPeriod(positionPercent, (PositionInPeriodDTO) positionDTO);
-                displayGainIndicator(((PositionInPeriodDTO) positionDTO).getROIInPeriod());
+                positionPercentVisibility = VISIBLE;
+                positionPercent = PositionDTOUtils.getROISpanned(resources, ((PositionInPeriodDTO) positionDTO).getROIInPeriod());
+                gain = ((PositionInPeriodDTO) positionDTO).getROIInPeriod();
             }
             else
             {
-                positionPercent.setVisibility(VISIBLE);
-                PositionDTOUtils.setROISinceInception(positionPercent, positionDTO);
-                displayGainIndicator(positionDTO.getROISinceInception());
+                positionPercentVisibility = VISIBLE;
+                positionPercent = PositionDTOUtils.getROISpanned(resources, positionDTO.getROISinceInception());
+                gain = positionDTO.getROISinceInception();
             }
-        }
-    }
 
-    private void displayGainIndicator(Double percent) {
-        if (percent == null) {
-            mGainIndicator.setVisibility(View.INVISIBLE);
-            return;
-        }
-        if (percent > 0) {
-            mGainIndicator.setVisibility(View.VISIBLE);
-            mGainIndicator.setImageResource(R.drawable.indicator_green);
-        } else if (percent < 0) {
-            mGainIndicator.setVisibility(View.VISIBLE);
-            mGainIndicator.setImageResource(R.drawable.indicator_red);
-        } else {
-            mGainIndicator.setVisibility(View.INVISIBLE);
-        }
-    }
+            if (gain == null || gain == 0)
+            {
+                gainIndicatorVisibility = INVISIBLE;
+                gainIndicator = R.drawable.default_image;
+            }
+            else if (gain > 0)
+            {
+                gainIndicatorVisibility = VISIBLE;
+                gainIndicator = R.drawable.indicator_green;
+            }
+            else
+            {
+                gainIndicatorVisibility = VISIBLE;
+                gainIndicator = R.drawable.indicator_red;
+            }
+            //</editor-fold>
 
-    public void displayUnrealisedPL()
-    {
-        if (positionUnrealisedPL != null)
-        {
+            //<editor-fold desc="Unrealised">
             if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
-                positionUnrealisedPL.setVisibility(VISIBLE);
-                if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null)
+                unrealisedPLVisibility = VISIBLE;
+                if (positionDTO.unrealizedPLRefCcy != null)
                 {
                     Double PLR;
                     if (positionDTO.positionStatus == PositionStatus.CLOSED
@@ -414,79 +366,63 @@ public class PositionPartialTopView extends LinearLayout
                     {
                         PLR = positionDTO.unrealizedPLRefCcy;
                     }
-                    THSignedMoney.builder(PLR)
-                            .currency(positionDTO.getNiceCurrency())
-                            .signTypePlusMinusAlways()
-                            .withDefaultColor()
-                            .build()
-                            .into(positionUnrealisedPL);
+                    unrealisedPL =
+                            THSignedMoney.builder(PLR)
+                                    .currency(positionDTO.getNiceCurrency())
+                                    .signTypePlusMinusAlways()
+                                    .withDefaultColor()
+                                    .build()
+                                    .createSpanned();
                 }
                 else
                 {
-                    positionUnrealisedPL.setText(R.string.na);
+                    unrealisedPL = new SpannableString(resources.getString(R.string.na));
                 }
-
             }
             else
             {
-                positionUnrealisedPL.setVisibility(GONE);
+                unrealisedPLVisibility = GONE;
+                unrealisedPL = new SpannableString(resources.getString(R.string.na));
             }
-        }
-    }
+            //</editor-fold>
 
-    public void displayPositionLastAmountHeader()
-    {
-        if (positionLastAmountHeader != null)
-        {
-            Boolean isOpen = positionDTO == null
-                    ? null
-                    : positionDTO.isOpen();
+            //<editor-fold desc="Last Amount">
+            Boolean isOpen = positionDTO.isOpen();
             if (isOpen == null || isOpen)
             {
-                positionLastAmountHeader.setVisibility(GONE);
+                lastAmountHeaderVisibility = GONE;
             }
             else
             {
-                positionLastAmountHeader.setVisibility(VISIBLE);
+                lastAmountHeaderVisibility = VISIBLE;
             }
-        }
-    }
-
-    public void displayPositionLastAmount()
-    {
-        if (positionLastAmount != null)
-        {
             THSignedNumber number = null;
-            if (positionDTO != null)
+            Boolean closed = positionDTO.isClosed();
+            if (closed != null && closed && positionDTO.realizedPLRefCcy != null)
             {
-                Boolean closed = positionDTO.isClosed();
-                if (closed != null && closed && positionDTO.realizedPLRefCcy != null)
-                {
-                    number = THSignedMoney.builder(positionDTO.realizedPLRefCcy)
-                            .withSign()
-                            .signTypeMinusOnly()
-                            .currency(positionDTO.getNiceCurrency())
-                            .build();
-                }
-                else if (closed != null && !closed)
-                {
-                    number = THSignedMoney.builder(positionDTO.marketValueRefCcy)
-                            .withSign()
-                            .signTypeMinusOnly()
-                            .currency(positionDTO.getNiceCurrency())
-                            .build();
-                }
+                number = THSignedMoney.builder(positionDTO.realizedPLRefCcy)
+                        .withSign()
+                        .signTypeMinusOnly()
+                        .currency(positionDTO.getNiceCurrency())
+                        .build();
             }
-
+            else if (closed != null && !closed)
+            {
+                number = THSignedMoney.builder(positionDTO.marketValueRefCcy)
+                        .withSign()
+                        .signTypeMinusOnly()
+                        .currency(positionDTO.getNiceCurrency())
+                        .build();
+            }
             if (number == null)
             {
-                positionLastAmount.setText(R.string.na);
+                lastAmount = new SpannableString(resources.getString(R.string.na));
             }
             else
             {
-                positionLastAmount.setText(number.toString());
+                lastAmount = number.createSpanned();
             }
+            //</editor-fold>
         }
     }
-    //</editor-fold>
 }

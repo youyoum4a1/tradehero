@@ -3,14 +3,23 @@ package com.tradehero.th.models.position;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.util.Pair;
 import android.widget.TextView;
+import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.THColorUtils;
+import rx.Observable;
+import rx.functions.Func1;
 
 public class PositionDTOUtils
 {
@@ -77,35 +86,23 @@ public class PositionDTOUtils
         }
     }
 
+    //<editor-fold desc="Realised PL">
     public static void setRealizedPLLook(@NonNull TextView textView, @NonNull PositionDTO positionDTO)
     {
-        textView.setText(getRealizedPL(textView.getResources(), positionDTO));
-        if (positionDTO.realizedPLRefCcy != null)
-        {
-            textView.setTextColor(textView.getResources().getColor(THColorUtils.getColorResourceIdForNumber(positionDTO.realizedPLRefCcy)));
-        }
-        else
-        {
-            textView.setTextColor(textView.getResources().getColor(R.color.black));
-        }
+        textView.setText(getRealisedPLSpanned(textView.getResources(), positionDTO));
     }
 
-    @NonNull private static String getRealizedPL(
-            @NonNull Resources resources,
+    @NonNull public static Spanned getRealisedPLSpanned(@NonNull Resources resources,
             @Nullable PositionDTO position)
     {
         if (position != null)
         {
-            return getRealizedPL(resources, position, position.getNiceCurrency());
+            return getRealisedPLSpanned(resources, position, position.getNiceCurrency());
         }
-        else
-        {
-            return resources.getString(R.string.na);
-        }
+        return new SpannableString(resources.getString(R.string.na));
     }
 
-    @NonNull private static String getRealizedPL(
-            @NonNull Resources resources,
+    @NonNull public static Spanned getRealisedPLSpanned(@NonNull Resources resources,
             @Nullable PositionDTO position,
             @Nullable String refCurrency)
     {
@@ -113,15 +110,14 @@ public class PositionDTOUtils
         {
             THSignedNumber formattedNumber = THSignedMoney.builder(position.realizedPLRefCcy)
                     .withOutSign()
+                    .withValueColor(resources.getColor(THColorUtils.getColorResourceIdForNumber(position.realizedPLRefCcy)))
                     .currency(refCurrency)
                     .build();
-            return formattedNumber.toString();
+            return formattedNumber.createSpanned();
         }
-        else
-        {
-            return resources.getString(R.string.na);
-        }
+        return new SpannableString(resources.getString(R.string.na));
     }
+    //</editor-fold>
 
     @NonNull public static String getInPeriodRealizedPL(
             @NonNull Resources resources,
@@ -189,37 +185,25 @@ public class PositionDTOUtils
         }
     }
 
+    //<editor-fold desc="Unrealised">
     public static void setUnrealizedPLLook(
             @NonNull TextView textView,
             @NonNull PositionDTO positionDTO)
     {
-        textView.setText(getUnrealizedPL(textView.getResources(), positionDTO));
-        if (positionDTO.unrealizedPLRefCcy != null)
-        {
-            textView.setTextColor(textView.getResources().getColor(THColorUtils.getColorResourceIdForNumber(positionDTO.unrealizedPLRefCcy)));
-        }
-        else
-        {
-            textView.setTextColor(textView.getResources().getColor(R.color.black));
-        }
+        textView.setText(getUnrealisedPLSpanned(textView.getResources(), positionDTO));
     }
 
-    @NonNull private static String getUnrealizedPL(
-            @NonNull Resources resources,
+    @NonNull public static Spanned getUnrealisedPLSpanned(@NonNull Resources resources,
             @Nullable PositionDTO position)
     {
         if (position != null)
         {
-            return getUnrealizedPL(resources, position, position.getNiceCurrency());
+            return getUnrealisedPLSpanned(resources, position, position.getNiceCurrency());
         }
-        else
-        {
-            return resources.getString(R.string.na);
-        }
+        return new SpannableString(resources.getString(R.string.na));
     }
 
-    @NonNull private static String getUnrealizedPL(
-            @NonNull Resources resources,
+    @NonNull public static Spanned getUnrealisedPLSpanned(@NonNull Resources resources,
             @Nullable PositionDTO position,
             @Nullable String refCurrency)
     {
@@ -228,15 +212,15 @@ public class PositionDTOUtils
             THSignedNumber formattedNumber = THSignedMoney.builder(position.unrealizedPLRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
+                    .withValueColor(resources.getColor(THColorUtils.getColorResourceIdForNumber(position.unrealizedPLRefCcy)))
                     .build();
-            return formattedNumber.toString();
+            return formattedNumber.createSpanned();
         }
-        else
-        {
-            return resources.getString(R.string.na);
-        }
+        return new SpannableString(resources.getString(R.string.na));
     }
+    //</editor-fold>
 
+    //<editor-fold desc="ROI">
     public static void setROISinceInception(
             @NonNull TextView textView,
             @Nullable PositionDTO positionDTO)
@@ -259,21 +243,26 @@ public class PositionDTOUtils
 
     static void setROILook(@NonNull TextView textView, @Nullable Double roiValue)
     {
+        textView.setText(getROISpanned(textView.getResources(), roiValue));
+    }
+
+    public static Spanned getROISpanned(@NonNull Resources resources, @Nullable Double roiValue)
+    {
         if (roiValue == null)
         {
-            textView.setText(R.string.na);
-            textView.setTextColor(textView.getContext().getResources().getColor(R.color.black));
+            return new SpannableString(resources.getString(R.string.na));
         }
         else
         {
-            THSignedPercentage.builder(roiValue * 100.0)
+            return THSignedPercentage.builder(roiValue * 100.0)
                     .signTypePlusMinusAlways()
                     .withDefaultColor()
                     .relevantDigitCount(3)
                     .build()
-                    .into(textView);
+                    .createSpanned();
         }
     }
+    //</editor-fold>
 
     @NonNull public static String getAdditionalInvested(
             @NonNull Resources resources,
@@ -307,5 +296,69 @@ public class PositionDTOUtils
         {
             return resources.getString(R.string.na);
         }
+    }
+
+    @NonNull public static Observable<Pair<PositionDTO, SecurityCompactDTO>> getSecuritiesSoft(
+            @NonNull Observable<PositionDTO> positionDTOs,
+            @NonNull final BaseDTOCacheRx<SecurityIntegerId, SecurityId> securityIdCache,
+            @NonNull final BaseDTOCacheRx<SecurityId, SecurityCompactDTO> securityCompactCache)
+    {
+        return getSecuritiesSoft(
+                getSecurityIdsSoft(positionDTOs, securityIdCache),
+                securityCompactCache);
+    }
+
+    @NonNull public static Observable<Pair<PositionDTO, SecurityId>> getSecurityIdsSoft(
+            @NonNull Observable<PositionDTO> positionDTOs,
+            @NonNull final BaseDTOCacheRx<SecurityIntegerId, SecurityId> securityIdCache)
+    {
+        return positionDTOs.flatMap(
+                new Func1<PositionDTO, Observable<Pair<PositionDTO, SecurityId>>>()
+                {
+                    @Override public Observable<Pair<PositionDTO, SecurityId>> call(final PositionDTO positionDTO)
+                    {
+                        if (positionDTO.securityId <= 0)
+                        {
+                            return Observable.just(Pair.create(positionDTO, (SecurityId) null));
+                        }
+                        return securityIdCache.getOne(positionDTO.getSecurityIntegerId())
+                                .map(
+                                        new Func1<Pair<SecurityIntegerId, SecurityId>, Pair<PositionDTO, SecurityId>>()
+                                        {
+                                            @Override public Pair<PositionDTO, SecurityId> call(Pair<SecurityIntegerId, SecurityId> idPair)
+                                            {
+                                                return Pair.create(positionDTO, idPair.second);
+                                            }
+                                        });
+                    }
+                });
+    }
+
+    @NonNull public static Observable<Pair<PositionDTO, SecurityCompactDTO>> getSecuritiesSoft(
+            @NonNull Observable<Pair<PositionDTO, SecurityId>> securityIds,
+            @NonNull final BaseDTOCacheRx<SecurityId, SecurityCompactDTO> securityCompactCache)
+    {
+        return securityIds.flatMap(
+                new Func1<Pair<PositionDTO, SecurityId>, Observable<Pair<PositionDTO, SecurityCompactDTO>>>()
+                {
+                    @Override public Observable<Pair<PositionDTO, SecurityCompactDTO>> call(final Pair<PositionDTO, SecurityId> positionPair)
+                    {
+                        if (positionPair.second == null)
+                        {
+                            return Observable.just(Pair.create(positionPair.first, (SecurityCompactDTO) null));
+                        }
+                        return securityCompactCache.getOne(positionPair.second)
+                                .map(
+                                        new Func1<Pair<SecurityId, SecurityCompactDTO>, Pair<PositionDTO, SecurityCompactDTO>>()
+                                        {
+                                            @Override
+                                            public Pair<PositionDTO, SecurityCompactDTO> call(
+                                                    Pair<SecurityId, SecurityCompactDTO> securityCompactPair)
+                                            {
+                                                return Pair.create(positionPair.first, securityCompactPair.second);
+                                            }
+                                        });
+                    }
+                });
     }
 }

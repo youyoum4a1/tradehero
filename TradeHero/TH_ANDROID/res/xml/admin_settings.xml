@@ -23,6 +23,11 @@
       />
 
   <Preference
+    android:key="send_fake_push_action"
+    android:title="@string/send_fake_push_action"
+    android:icon="@drawable/icn_message"/>
+
+  <Preference
       android:key="show_review_dialog"
       android:title="Show Review Dialog"
       android:icon="@drawable/rate_star_small_on_th"

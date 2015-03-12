@@ -1,6 +1,7 @@
 package com.tradehero.th.persistence.position;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
@@ -54,7 +55,7 @@ import rx.Observable;
         throw new IllegalArgumentException("Unhandled key type " + key.getClass());
     }
 
-    @Override public void onNext(@NonNull GetPositionsDTOKey key, @NonNull GetPositionsDTO value)
+    @Nullable @Override protected GetPositionsDTO putValue(@NonNull GetPositionsDTOKey key, @NonNull GetPositionsDTO value)
     {
         if (value.securities != null)
         {
@@ -64,6 +65,6 @@ import rx.Observable;
         {
             positionCache.get().onNext(value.positions);
         }
-        super.onNext(key, value);
+        return super.putValue(key, value);
     }
 }

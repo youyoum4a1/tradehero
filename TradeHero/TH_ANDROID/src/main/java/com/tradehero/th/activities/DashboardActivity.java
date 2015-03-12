@@ -178,13 +178,13 @@ public class DashboardActivity extends BaseActivity
     @Inject @ForAnalytics Lazy<DashboardNavigator.DashboardFragmentWatcher> analyticsReporter;
     @Inject THAppsFlyer thAppsFlyer;
     @Inject ProviderUtil providerUtil;
+    @Inject MarketUtil marketUtil;
 
     @Inject Lazy<ProviderListCacheRx> providerListCache;
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
     private boolean enrollmentScreenIsOpened = false;
 
     @InjectView(R.id.xp_toast_box) XpToast xpToast;
-
     @InjectView(R.id.my_toolbar) Toolbar toolbar;
 
     private Subscription notificationFetchSubscription;
@@ -418,6 +418,7 @@ public class DashboardActivity extends BaseActivity
                             {
                                 fragment.show(DashboardActivity.this.getFragmentManager(), AbstractAchievementDialogFragment.TAG);
                             }
+
                             @Override public void onCompleted()
                             {
                                 broadcastUtilsLazy.get().nextPlease();
