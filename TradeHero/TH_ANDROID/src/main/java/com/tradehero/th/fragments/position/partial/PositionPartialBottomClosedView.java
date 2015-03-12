@@ -1,6 +1,9 @@
 package com.tradehero.th.fragments.position.partial;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.text.Spanned;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.InjectView;
@@ -43,127 +46,100 @@ public class PositionPartialBottomClosedView extends AbstractPartialBottomView
     {
         super.onFinishInflate();
         // in period
-        inPeriodViewHolder = new PositionPartialBottomInPeriodViewHolder(getContext(), this);
+        inPeriodViewHolder = new PositionPartialBottomInPeriodViewHolder(this);
     }
 
-    @Override public void linkWith(ExpandableListItem<PositionDTO> expandableListItem, boolean andDisplay)
+    @Override public void display(@NonNull AbstractPartialBottomView.DTO dto)
     {
-        super.linkWith(expandableListItem, andDisplay);
-        if (inPeriodViewHolder != null)
-        {
-            inPeriodViewHolder.linkWith(expandableListItem, andDisplay);
-        }
-    }
+        super.display(dto);
 
-    @Override public void linkWith(PositionDTO positionDTO, boolean andDisplay)
-    {
-        super.linkWith(positionDTO, andDisplay);
-        if (inPeriodViewHolder != null)
-        {
-            inPeriodViewHolder.linkWith(positionDTO, andDisplay);
-        }
-        if (andDisplay)
-        {
-            displayRealisedPLValueHeader();
-            displayRealisedPLValue();
-            displayRoiValue();
-            displayTotalInvested();
-            displayOpenedDate();
-            displayClosedDate();
-            displayPeriodHeld();
-        }
-    }
-
-    @Override public void displayExpandingPart()
-    {
-        super.displayExpandingPart();
-        if (inPeriodViewHolder != null)
-        {
-            inPeriodViewHolder.displayInPeriodModelPart();
-        }
-    }
-
-    @Override public void displayModelPart()
-    {
-        super.displayModelPart();
-        if (inPeriodViewHolder != null)
-        {
-            inPeriodViewHolder.displayModelPart();
-        }
-        displayRealisedPLValueHeader();
-        displayRealisedPLValue();
-        displayRoiValue();
-        displayTotalInvested();
-        displayOpenedDate();
-        displayClosedDate();
-        displayPeriodHeld();
-    }
-
-    public void displayRealisedPLValueHeader()
-    {
         if (realisedPLValueHeader != null)
         {
-            if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null && positionDTO.realizedPLRefCcy < 0)
+            realisedPLValueHeader.setText(((DTO) dto).realisedPLValueHeader);
+        }
+        if (realisedPLValue != null)
+        {
+            realisedPLValue.setText(((DTO) dto).realisedPLValue);
+        }
+        if (roiValue != null)
+        {
+            roiValue.setText(((DTO) dto).roiValue);
+        }
+        if (totalInvestedValue != null)
+        {
+            totalInvestedValue.setText(((DTO) dto).totalInvestedValue);
+        }
+        if (openedDate != null)
+        {
+            openedDate.setText(((DTO) dto).openedDate);
+        }
+        if (closedDate != null)
+        {
+            closedDate.setText(((DTO) dto).closedDate);
+        }
+        if (periodHeld != null)
+        {
+            periodHeld.setText(((DTO) dto).periodHeld);
+        }
+
+        if (inPeriodViewHolder != null)
+        {
+            inPeriodViewHolder.display(((DTO) dto).positionPartialBottomInPeriodDTO);
+        }
+    }
+
+    public static class DTO extends AbstractPartialBottomView.DTO
+    {
+        @NonNull public final String realisedPLValueHeader;
+        @NonNull public final Spanned realisedPLValue;
+        @NonNull public final Spanned roiValue;
+        @NonNull public final String totalInvestedValue;
+        @NonNull public final String openedDate;
+        @NonNull public final String closedDate;
+        @NonNull public final String periodHeld;
+
+        @NonNull public final PositionPartialBottomInPeriodViewHolder.DTO positionPartialBottomInPeriodDTO;
+
+        public DTO(@NonNull Resources resources, @NonNull ExpandableListItem<PositionDTO> expandablePositionDTO)
+        {
+            super(expandablePositionDTO);
+
+            PositionDTO positionDTO = expandablePositionDTO.getModel();
+
+            //<editor-fold desc="Realised PL Value Header">
+            if (positionDTO.unrealizedPLRefCcy != null && positionDTO.realizedPLRefCcy < 0)
             {
-                realisedPLValueHeader.setText(R.string.position_realised_loss_header);
+                realisedPLValueHeader = resources.getString(R.string.position_realised_loss_header);
             }
             else
             {
-                realisedPLValueHeader.setText(R.string.position_realised_profit_header);
+                realisedPLValueHeader = resources.getString(R.string.position_realised_profit_header);
             }
-        }
-    }
+            //</editor-fold>
 
-    public void displayRealisedPLValue()
-    {
-        if (realisedPLValue != null)
-        {
-            PositionDTOUtils.setRealizedPLLook(realisedPLValue, positionDTO);
-        }
-    }
+            realisedPLValue = PositionDTOUtils.getRealisedPLSpanned(resources, positionDTO);
 
-    public void displayRoiValue()
-    {
-        PositionDTOUtils.setROISinceInception(roiValue, positionDTO);
-    }
+            roiValue = PositionDTOUtils.getROISpanned(resources, positionDTO.getROISinceInception());
 
-    public void displayTotalInvested()
-    {
-        if (totalInvestedValue != null)
-        {
-            if (positionDTO != null)
-            {
-                totalInvestedValue.setText(PositionDTOUtils.getSumInvested(getResources(), positionDTO));
-            }
-        }
-    }
+            totalInvestedValue = PositionDTOUtils.getSumInvested(resources, positionDTO);
 
-    public void displayOpenedDate()
-    {
-        if (openedDate != null && positionDTO.earliestTradeUtc != null)
-        {
-            openedDate.setText(DateUtils.getDisplayableDate(getResources(), positionDTO.earliestTradeUtc));
-        }
-    }
+            openedDate = DateUtils.getDisplayableDate(resources, positionDTO.earliestTradeUtc);
 
-    public void displayClosedDate()
-    {
-        if (closedDate != null)
-        {
-            closedDate.setText(DateUtils.getDisplayableDate(getResources(), positionDTO.latestTradeUtc));
-        }
-    }
+            closedDate = DateUtils.getDisplayableDate(resources, positionDTO.latestTradeUtc);
 
-    public void displayPeriodHeld()
-    {
-        if (periodHeld != null)
-        {
-            if (positionDTO != null && positionDTO.earliestTradeUtc != null && positionDTO.latestTradeUtc != null)
+            //<editor-fold desc="Period Held">
+            if (positionDTO.earliestTradeUtc != null && positionDTO.latestTradeUtc != null)
             {
                 int nDays = DateUtils.getNumberOfDaysBetweenDates(positionDTO.earliestTradeUtc, positionDTO.latestTradeUtc);
-                String s = getResources().getQuantityString(R.plurals.position_period_held_day, nDays, nDays);
-                periodHeld.setText(s);
+                periodHeld = resources.getQuantityString(R.plurals.position_period_held_day, nDays, nDays);
             }
+            else
+            {
+                periodHeld = resources.getString(R.string.na);
+            }
+            //</editor-fold>
+
+            positionPartialBottomInPeriodDTO = new PositionPartialBottomInPeriodViewHolder.DTO(resources, positionDTO);
         }
     }
 }

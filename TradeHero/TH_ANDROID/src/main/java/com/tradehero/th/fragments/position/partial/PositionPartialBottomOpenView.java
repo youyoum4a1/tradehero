@@ -1,6 +1,9 @@
 package com.tradehero.th.fragments.position.partial;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.text.Spanned;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.InjectView;
@@ -45,166 +48,102 @@ public class PositionPartialBottomOpenView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        inPeriodViewHolder = new PositionPartialBottomInPeriodViewHolder(getContext(), this);
+        inPeriodViewHolder = new PositionPartialBottomInPeriodViewHolder(this);
     }
 
-    @Override public void linkWith(ExpandableListItem<PositionDTO> expandableListItem, boolean andDisplay)
+    @Override public void display(@NonNull AbstractPartialBottomView.DTO dto)
     {
-        super.linkWith(expandableListItem, andDisplay);
-        if (inPeriodViewHolder != null)
-        {
-            inPeriodViewHolder.linkWith(expandableListItem, andDisplay);
-        }
+        super.display(dto);
+
+        unrealisedPLValueHeader.setText(((DTO) dto).unrealisedPLValueHeader);
+        unrealisedPLValue.setText(((DTO) dto).unrealisedPLValue);
+        realisedPLValueHeader.setText(((DTO) dto).realisedPLValueHeader);
+        realisedPLValue.setText(((DTO) dto).realisedPLValue);
+        totalInvestedValue.setText(((DTO) dto).totalInvestedValue);
+        marketValueValue.setText(((DTO) dto).marketValue);
+        quantityValue.setText(((DTO) dto).quantityValue);
+        averagePriceValue.setText(((DTO) dto).averagePriceValue);
+
+        inPeriodViewHolder.display(((DTO) dto).positionPartialBottomInPeriodDTO);
     }
 
-    @Override public void linkWith(PositionDTO positionDTO, boolean andDisplay)
+    public static class DTO extends AbstractPartialBottomView.DTO
     {
-        super.linkWith(positionDTO, andDisplay);
-        if (inPeriodViewHolder != null)
-        {
-            inPeriodViewHolder.linkWith(positionDTO, andDisplay);
-        }
-        if (andDisplay)
-        {
-            displayUnrealisedPLValueHeader();
-            displayUnrealisedPLValue();
-            displayRealisedPLValueHeader();
-            displayRealisedPLValue();
-            displayTotalInvested();
-            displayMarketValue();
-            displayQuantityValue();
-            displayAveragePriceValue();
-        }
-    }
+        @NonNull public final String unrealisedPLValueHeader;
+        @NonNull public final Spanned unrealisedPLValue;
+        @NonNull public final String realisedPLValueHeader;
+        @NonNull public final Spanned realisedPLValue;
+        @NonNull public final String totalInvestedValue;
+        @NonNull public final String marketValue;
+        @NonNull public final String quantityValue;
+        @NonNull public final String averagePriceValue;
 
-    @Override public void displayExpandingPart()
-    {
-        super.displayExpandingPart();
-        if (inPeriodViewHolder != null)
-        {
-            inPeriodViewHolder.displayInPeriodModelPart();
-        }
-    }
+        @NonNull public final PositionPartialBottomInPeriodViewHolder.DTO positionPartialBottomInPeriodDTO;
 
-    @Override public void displayModelPart()
-    {
-        super.displayModelPart();
-        displayUnrealisedPLValueHeader();
-        displayUnrealisedPLValue();
-        displayRealisedPLValueHeader();
-        displayRealisedPLValue();
-        displayTotalInvested();
-        displayMarketValue();
-        displayQuantityValue();
-        displayAveragePriceValue();
-        if (inPeriodViewHolder != null)
+        public DTO(@NonNull Resources resources, @NonNull ExpandableListItem<PositionDTO> expandablePositionDTO)
         {
-            inPeriodViewHolder.displayModelPart();
-        }
-    }
+            super(expandablePositionDTO);
 
-    public void displayUnrealisedPLValueHeader()
-    {
-        if (unrealisedPLValueHeader != null)
-        {
-            if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null && positionDTO.unrealizedPLRefCcy < 0)
+            PositionDTO positionDTO = expandablePositionDTO.getModel();
+
+            //<editor-fold desc="Unrealised PL Value Header">
+            if (positionDTO.unrealizedPLRefCcy != null && positionDTO.unrealizedPLRefCcy < 0)
             {
-                unrealisedPLValueHeader.setText(R.string.position_unrealised_loss_header);
+                unrealisedPLValueHeader = resources.getString(R.string.position_unrealised_loss_header);
             }
             else
             {
-                unrealisedPLValueHeader.setText(R.string.position_unrealised_profit_header);
+                unrealisedPLValueHeader = resources.getString(R.string.position_unrealised_profit_header);
             }
-        }
-    }
+            //</editor-fold>
 
-    public void displayUnrealisedPLValue()
-    {
-        if (unrealisedPLValue != null)
-        {
-            PositionDTOUtils.setUnrealizedPLLook(unrealisedPLValue, positionDTO);
-        }
-    }
+            unrealisedPLValue = PositionDTOUtils.getUnrealisedPLSpanned(resources, positionDTO);
 
-    public void displayRealisedPLValueHeader()
-    {
-        if (realisedPLValueHeader != null)
-        {
-            if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null && positionDTO.realizedPLRefCcy < 0)
+            //<editor-fold desc="Realised PL Value Header">
+            if (positionDTO.unrealizedPLRefCcy != null && positionDTO.realizedPLRefCcy < 0)
             {
-                realisedPLValueHeader.setText(R.string.position_realised_loss_header);
+                realisedPLValueHeader = resources.getString(R.string.position_realised_loss_header);
             }
             else
             {
-                realisedPLValueHeader.setText(R.string.position_realised_profit_header);
+                realisedPLValueHeader = resources.getString(R.string.position_realised_profit_header);
             }
-        }
-    }
+            //</editor-fold>
 
-    public void displayRealisedPLValue()
-    {
-        if (realisedPLValue != null)
-        {
-            PositionDTOUtils.setRealizedPLLook(realisedPLValue, positionDTO);
-        }
-    }
+            realisedPLValue = PositionDTOUtils.getRealisedPLSpanned(resources, positionDTO);
 
-    public void displayTotalInvested()
-    {
-        if (totalInvestedValue != null)
-        {
-            if (positionDTO != null)
+            totalInvestedValue = PositionDTOUtils.getSumInvested(resources, positionDTO);
+
+            marketValue = PositionDTOUtils.getMarketValue(resources, positionDTO);
+
+            //<editor-fold desc="Quantity Value">
+            if (positionDTO.shares != null)
             {
-                totalInvestedValue.setText(PositionDTOUtils.getSumInvested(getResources(), positionDTO));
-            }
-        }
-    }
-
-    public void displayMarketValue()
-    {
-        if (marketValueValue != null)
-        {
-            if (positionDTO != null)
-            {
-                marketValueValue.setText(PositionDTOUtils.getMarketValue(getResources(), positionDTO));
-            }
-        }
-    }
-
-    public void displayQuantityValue()
-    {
-        if (quantityValue != null)
-        {
-            if (positionDTO != null && positionDTO.shares != null)
-            {
-                THSignedNumber.builder(positionDTO.shares)
+                quantityValue = THSignedNumber.builder(positionDTO.shares)
                         .withOutSign()
-                        .build()
-                        .into(quantityValue);
+                        .build().toString();
             }
             else
             {
-                quantityValue.setText(R.string.na);
+                quantityValue = resources.getString(R.string.na);
             }
-        }
-    }
+            //</editor-fold>
 
-    public void displayAveragePriceValue()
-    {
-        if (averagePriceValue != null)
-        {
-            if (positionDTO != null && positionDTO.averagePriceRefCcy != null)
+            //<editor-fold desc="Average Price Value">
+            if (positionDTO.averagePriceRefCcy != null)
             {
-                THSignedMoney.builder(positionDTO.averagePriceRefCcy)
+                averagePriceValue = THSignedMoney.builder(positionDTO.averagePriceRefCcy)
                         .withOutSign()
                         .currency(positionDTO.getNiceCurrency())
-                        .build()
-                        .into(averagePriceValue);
+                        .build().toString();
             }
             else
             {
-                averagePriceValue.setText(R.string.na);
+                averagePriceValue = resources.getString(R.string.na);
             }
+            //</editor-fold>
+
+            positionPartialBottomInPeriodDTO = new PositionPartialBottomInPeriodViewHolder.DTO(resources, positionDTO);
         }
     }
 }

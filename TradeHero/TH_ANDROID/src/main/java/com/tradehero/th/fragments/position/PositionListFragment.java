@@ -35,6 +35,7 @@ import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.GetPositionsDTOKeyFactory;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -43,6 +44,7 @@ import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
+import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.security.SecurityListRxFragment;
@@ -54,12 +56,15 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
+import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.position.GetPositionsCacheRx;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastAction;
@@ -73,7 +78,9 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Observable;
@@ -82,6 +89,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId")
@@ -102,6 +110,8 @@ public class PositionListFragment
     @Inject THRouter thRouter;
     @Inject GetPositionsCacheRx getPositionsCache;
     @Inject Analytics analytics;
+    @Inject SecurityIdCache securityIdCache;
+    @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject PortfolioCacheRx portfolioCache;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
@@ -120,7 +130,7 @@ public class PositionListFragment
     private PortfolioHeaderView portfolioHeaderView;
     @NonNull protected GetPositionsDTOKey getPositionsDTOKey;
     protected PortfolioDTO portfolioDTO;
-    protected GetPositionsDTO getPositionsDTO;
+    protected List<Object> viewDTOs;
     protected UserBaseKey shownUser;
     @Nullable protected UserProfileDTO userProfileDTO;
 
@@ -129,7 +139,7 @@ public class PositionListFragment
     private int firstPositionVisible = 0;
     @Inject protected THBillingInteractorRx userInteractorRx;
 
-    private TabbedPositionListFragment.TabType positionType;
+    @NonNull private TabbedPositionListFragment.TabType positionType;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
@@ -162,7 +172,7 @@ public class PositionListFragment
         args.putString(BUNDLE_KEY_POSITION_TYPE, positionType.name());
     }
 
-    @NonNull private TabbedPositionListFragment.TabType getPositionType (@NonNull Bundle args)
+    @NonNull private TabbedPositionListFragment.TabType getPositionType(@NonNull Bundle args)
     {
         return TabbedPositionListFragment.TabType.valueOf(args.getString(
                 BUNDLE_KEY_POSITION_TYPE,
@@ -251,7 +261,7 @@ public class PositionListFragment
         {
             Bundle args = new Bundle();
             // By default tries
-            TradeListFragment.putPositionDTOKey(args, ((PositionDTO) parent.getItemAtPosition(position)).getPositionDTOKey());
+            TradeListFragment.putPositionDTOKey(args, ((PositionPartialTopView.DTO) parent.getItemAtPosition(position)).positionDTO.getPositionDTOKey());
             OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
             if (ownedPortfolioId != null)
             {
@@ -341,8 +351,8 @@ public class PositionListFragment
         return new PositionItemAdapter(
                 getActivity(),
                 getLayoutResIds(),
-                currentUserId,
-                positionType);
+                currentUserId
+        );
     }
 
     @NonNull private Map<Integer, Integer> getLayoutResIds()
@@ -598,13 +608,47 @@ public class PositionListFragment
         {
             onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
-                    getPositionsCache.get(getPositionsDTOKey))
+                    getPositionsCache.get(getPositionsDTOKey)
+                            .subscribeOn(Schedulers.computation())
+                            .flatMap(
+                                    new Func1<Pair<GetPositionsDTOKey, GetPositionsDTO>, Observable<List<Object>>>()
+                                    {
+                                        @Override public Observable<List<Object>> call(
+                                                Pair<GetPositionsDTOKey, GetPositionsDTO> getPositionsPair)
+                                        {
+                                            Observable<Pair<PositionDTO, SecurityCompactDTO>> pairObservable;
+                                            if (getPositionsPair.second.positions != null)
+                                            {
+                                                pairObservable = PositionDTOUtils.getSecuritiesSoft(
+                                                        Observable.from(getPositionsPair.second.positions),
+                                                        securityIdCache,
+                                                        securityCompactCache);
+                                            }
+                                            else
+                                            {
+                                                pairObservable = Observable.empty();
+                                            }
+                                            return pairObservable.map(
+                                                    new Func1<Pair<PositionDTO, SecurityCompactDTO>, Object>()
+                                                    {
+                                                        @Override public Object call(Pair<PositionDTO, SecurityCompactDTO> pair)
+                                                        {
+                                                            if (pair.first.isLocked())
+                                                            {
+                                                                return new PositionLockedView.DTO(getResources(), pair.first);
+                                                            }
+                                                            return new PositionPartialTopView.DTO(getResources(), pair.first, pair.second);
+                                                        }
+                                                    })
+                                                    .toList();
+                                        }
+                                    }))
                     .subscribe(
-                            new Action1<Pair<GetPositionsDTOKey, GetPositionsDTO>>()
+                            new Action1<List<Object>>()
                             {
-                                @Override public void call(Pair<GetPositionsDTOKey, GetPositionsDTO> pair)
+                                @Override public void call(List<Object> dtoList)
                                 {
-                                    PositionListFragment.this.linkWith(pair.second);
+                                    PositionListFragment.this.linkWith(dtoList);
                                 }
                             },
                             new Action1<Throwable>()
@@ -619,7 +663,7 @@ public class PositionListFragment
 
     public void handleGetPositionsError(Throwable e)
     {
-        if (getPositionsDTO == null)
+        if (viewDTOs == null)
         {
             listViewFlipper.setDisplayedChild(FLIPPER_INDEX_ERROR);
 
@@ -628,18 +672,53 @@ public class PositionListFragment
         }
     }
 
-    public void linkWith(GetPositionsDTO getPositionsDTO)
+    public void linkWith(@NonNull List<Object> dtoList)
     {
-        this.getPositionsDTO = getPositionsDTO;
+        this.viewDTOs = dtoList;
         positionItemAdapter.setNotifyOnChange(false);
         positionItemAdapter.clear();
-        positionItemAdapter.addAll(getPositionsDTO.positions);
+        positionItemAdapter.addAll(filterViewDTOs(dtoList));
         positionItemAdapter.notifyDataSetChanged();
         positionItemAdapter.setNotifyOnChange(true);
         swipeToRefreshLayout.setRefreshing(false);
         listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
         positionListView.smoothScrollToPosition(0);
         display();
+    }
+
+    @NonNull protected List<Object> filterViewDTOs(@NonNull List<Object> dtoList)
+    {
+        List<Object> filtered = new ArrayList<>();
+        for (Object dto : dtoList)
+        {
+            if (dto instanceof PositionPartialTopView.DTO)
+            {
+                Boolean isClosed = ((PositionPartialTopView.DTO) dto).positionDTO.isClosed();
+                Integer shares = ((PositionPartialTopView.DTO) dto).positionDTO.shares;
+                boolean isShort = shares != null && shares < 0;
+
+                if (isClosed != null && isClosed)
+                {
+                    if (positionType.equals(TabbedPositionListFragment.TabType.CLOSED))
+                    {
+                        filtered.add(dto);
+                    }
+                }
+                else if (isShort)
+                {
+                    if (positionType.equals(TabbedPositionListFragment.TabType.SHORT))
+                    {
+                        filtered.add(dto);
+                    }
+                }
+                else if (positionType.equals(TabbedPositionListFragment.TabType.LONG))
+                {
+                    filtered.add(dto);
+                }
+            }
+        }
+
+        return filtered;
     }
 
     protected void refreshSimplePage()
@@ -668,7 +747,6 @@ public class PositionListFragment
             {
                 portfolioHeaderView.linkWith(portfolioDTO);
             }
-
         }
     }
 

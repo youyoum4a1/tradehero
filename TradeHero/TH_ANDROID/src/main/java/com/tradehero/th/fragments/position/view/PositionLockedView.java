@@ -1,6 +1,10 @@
 package com.tradehero.th.fragments.position.view;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.Spanned;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -8,12 +12,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
+import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.models.position.PositionDTOUtils;
-import com.tradehero.th.inject.HierarchyInjector;
-import javax.inject.Inject;
 
 public class PositionLockedView extends LinearLayout
+        implements DTOView<PositionLockedView.DTO>
 {
     @InjectView(R.id.color_indicator) protected ColorIndicator colorIndicator;
     @InjectView(R.id.position_percentage) protected TextView positionPercent;
@@ -22,8 +26,6 @@ public class PositionLockedView extends LinearLayout
     @InjectView(R.id.realised_pl_value_header) protected TextView realisedPLValueHeader;
     @InjectView(R.id.realised_pl_value) protected TextView realisedPLValue;
     @InjectView(R.id.total_invested_value) protected TextView totalInvestedValue;
-
-    private PositionDTO positionDTO;
 
     //<editor-fold desc="Constructors">
     public PositionLockedView(Context context)
@@ -45,93 +47,84 @@ public class PositionLockedView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        HierarchyInjector.inject(this);
         ButterKnife.inject(this);
     }
 
-    public void linkWith(PositionDTO positionDTO)
+    @Override public void display(DTO dto)
     {
-        this.positionDTO = positionDTO;
-        display();
-    }
-
-    public void display()
-    {
-        if (colorIndicator != null && positionDTO != null)
+        if (colorIndicator != null)
         {
-            Double roi = positionDTO.getROISinceInception();
-            colorIndicator.linkWith(roi);
+            colorIndicator.linkWith(dto.roi);
         }
-        displayUnrealisedPLValueHeader();
-        displayUnrealisedPLValue();
-        displayRealisedPLValueHeader();
-        displayRealisedPLValue();
-        displayPositionPercent();
-        displayTotalInvested();
-    }
-
-    public void displayUnrealisedPLValueHeader()
-    {
-        if (unrealisedPLValueHeader != null)
-        {
-            if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null && positionDTO.unrealizedPLRefCcy < 0)
-            {
-                unrealisedPLValueHeader.setText(R.string.position_unrealised_loss_header);
-            }
-            else
-            {
-                unrealisedPLValueHeader.setText(R.string.position_unrealised_profit_header);
-            }
-        }
-    }
-
-    public void displayUnrealisedPLValue()
-    {
-        if (unrealisedPLValue != null)
-        {
-            PositionDTOUtils.setUnrealizedPLLook(unrealisedPLValue, positionDTO);
-        }
-    }
-
-    public void displayRealisedPLValueHeader()
-    {
-        if (realisedPLValueHeader != null)
-        {
-            if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null && positionDTO.realizedPLRefCcy < 0)
-            {
-                realisedPLValueHeader.setText(R.string.position_realised_loss_header);
-            }
-            else
-            {
-                realisedPLValueHeader.setText(R.string.position_realised_profit_header);
-            }
-        }
-    }
-
-    public void displayRealisedPLValue()
-    {
-        if (realisedPLValue != null)
-        {
-            PositionDTOUtils.setRealizedPLLook(realisedPLValue, positionDTO);
-        }
-    }
-
-    public void displayTotalInvested()
-    {
-        if (totalInvestedValue != null)
-        {
-            if (positionDTO != null)
-            {
-                totalInvestedValue.setText(PositionDTOUtils.getSumInvested(getResources(), positionDTO));
-            }
-        }
-    }
-
-    public void displayPositionPercent()
-    {
         if (positionPercent != null)
         {
-            PositionDTOUtils.setROISinceInception(positionPercent, positionDTO);
+            positionPercent.setText(dto.positionPercent);
+        }
+        if (unrealisedPLValueHeader != null)
+        {
+            unrealisedPLValueHeader.setText(dto.unrealisedPLValueHeader);
+        }
+        if (unrealisedPLValue != null)
+        {
+            unrealisedPLValue.setText(dto.unrealisedPLValue);
+        }
+        if (realisedPLValueHeader != null)
+        {
+            realisedPLValueHeader.setText(dto.realisedPLValueHeader);
+        }
+        if (realisedPLValue != null)
+        {
+            realisedPLValue.setText(dto.realisedPLValue);
+        }
+        if (totalInvestedValue != null)
+        {
+            totalInvestedValue.setText(dto.totalInvestedValue);
+        }
+    }
+
+    public static class DTO
+    {
+        @Nullable public final Double roi;
+        @NonNull public final Spanned positionPercent;
+        @NonNull public final String unrealisedPLValueHeader;
+        @NonNull public final Spanned unrealisedPLValue;
+        @NonNull public final String realisedPLValueHeader;
+        @NonNull public final Spanned realisedPLValue;
+        @NonNull public final String totalInvestedValue;
+
+        public DTO(@NonNull Resources resources, @NonNull PositionDTO positionDTO)
+        {
+            roi = positionDTO.getROISinceInception();
+
+            positionPercent = PositionDTOUtils.getROISpanned(resources, positionDTO.getROISinceInception());
+
+            //<editor-fold desc="Unrealised PL Value Header">
+            if (positionDTO.unrealizedPLRefCcy != null && positionDTO.unrealizedPLRefCcy < 0)
+            {
+                unrealisedPLValueHeader = resources.getString(R.string.position_unrealised_loss_header);
+            }
+            else
+            {
+                unrealisedPLValueHeader = resources.getString(R.string.position_unrealised_profit_header);
+            }
+            //</editor-fold>
+
+            unrealisedPLValue = PositionDTOUtils.getUnrealisedPLSpanned(resources, positionDTO);
+
+            //<editor-fold desc="Realised PL Value Header">
+            if (positionDTO.unrealizedPLRefCcy != null && positionDTO.realizedPLRefCcy < 0)
+            {
+                realisedPLValueHeader = resources.getString(R.string.position_realised_loss_header);
+            }
+            else
+            {
+                realisedPLValueHeader = resources.getString(R.string.position_realised_profit_header);
+            }
+            //</editor-fold>
+
+            realisedPLValue = PositionDTOUtils.getRealisedPLSpanned(resources, positionDTO);
+
+            totalInvestedValue = PositionDTOUtils.getSumInvested(resources, positionDTO);
         }
     }
 }

@@ -1,27 +1,28 @@
 package com.tradehero.th.fragments.position.view;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
+import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.position.partial.AbstractPartialBottomView;
+import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView;
+import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import timber.log.Timber;
 
 public class PositionView extends LinearLayout
+        implements DTOView<PositionView.DTO>
 {
     @InjectView(R.id.position_partial_top) protected PositionPartialTopView topView;
     @InjectView(R.id.expanding_layout) protected AbstractPartialBottomView/*<PositionDTO, ExpandableListItem<PositionDTO>>*/ bottomView;
-
-    protected boolean hasHistoryButton = true;
-    protected ExpandableListItem<PositionDTO> expandableListItem;
-    protected PositionDTO positionDTO;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -49,72 +50,46 @@ public class PositionView extends LinearLayout
         ButterKnife.inject(this);
     }
 
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-        ButterKnife.inject(this);
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        ButterKnife.reset(this);
-        super.onDetachedFromWindow();
-    }
-
-    public void linkWith(ExpandableListItem<PositionDTO> expandableListItem, boolean andDisplay)
-    {
-        this.expandableListItem = expandableListItem;
-        linkWith(expandableListItem == null ? null : expandableListItem.getModel(), andDisplay);
-        if (bottomView != null)
-        {
-            this.bottomView.linkWith(expandableListItem, andDisplay);
-        }
-        if (andDisplay)
-        {
-        }
-    }
-
-    public void linkWith(PositionDTO positionDTO, boolean andDisplay)
-    {
-        this.positionDTO = positionDTO;
-
-        if (this.topView != null)
-        {
-            this.topView.linkWith(positionDTO, andDisplay);
-        }
-        if (this.bottomView != null)
-        {
-            this.bottomView.linkWith(positionDTO, andDisplay);
-        }
-    }
-
-    public PositionDTO getPositionDTO()
-    {
-        Timber.d("getPositionDTO %s", positionDTO);
-        Timber.d("getPositionDTO %s", positionDTO.getPositionDTOKey());
-        return positionDTO;
-    }
-
-    public void display()
-    {
-        displayTopView();
-        displayBottomView();
-    }
-
-    public void displayTopView()
+    @Override public void display(DTO dto)
     {
         if (topView != null)
         {
-            topView.display();
+            topView.display(dto.topViewDTO);
         }
-    }
-
-    public void displayBottomView()
-    {
         if (bottomView != null)
         {
-            bottomView.display();
+            bottomView.display(dto.bottomViewDTO);
         }
     }
 
+    public static class DTO
+    {
+        @NonNull public final PositionPartialTopView.DTO topViewDTO;
+        @NonNull public final AbstractPartialBottomView.DTO bottomViewDTO;
+
+        public DTO(@NonNull Resources resources,
+                @NonNull ExpandableListItem<PositionDTO> expandablePositionDTO,
+                @NonNull SecurityCompactDTO securityCompactDTO)
+        {
+            PositionDTO positionDTO = expandablePositionDTO.getModel();
+
+            topViewDTO = new PositionPartialTopView.DTO(resources, positionDTO, securityCompactDTO);
+
+            Boolean isClosed = positionDTO.isClosed();
+            Boolean isOpen = positionDTO.isOpen();
+            if (isClosed != null && isClosed)
+            {
+                bottomViewDTO = new PositionPartialBottomClosedView.DTO(resources, expandablePositionDTO);
+            }
+            else if (isOpen != null && isOpen)
+            {
+                bottomViewDTO = new PositionPartialBottomOpenView.DTO(resources, expandablePositionDTO);
+            }
+            else
+            {
+                Timber.e(new Exception(), "Position neither closed nor open %s", positionDTO);
+                bottomViewDTO = new AbstractPartialBottomView.DTO(expandablePositionDTO);
+            }
+        }
+    }
 }

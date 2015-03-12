@@ -68,13 +68,11 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
         }
     }
 
-    /* STOCK_TYPES and STOCK_TYPE_TITLE_IDS should have the same size and in same order */
     private static TabType[] STOCK_TYPES = new TabType[] {
             TabType.LONG,
             TabType.CLOSED,
     };
 
-    /* FX_TYPES and FX_TYPE_TITLE_IDS should have the same size and in same order */
     private static TabType[] FX_TYPES = new TabType[] {
             TabType.LONG,
             TabType.SHORT,

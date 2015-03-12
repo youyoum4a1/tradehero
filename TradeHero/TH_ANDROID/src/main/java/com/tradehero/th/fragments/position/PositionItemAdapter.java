@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.position;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +16,6 @@ import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.position.view.PositionView;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PositionItemAdapter extends ArrayAdapter<Object>
@@ -37,25 +33,15 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
 
     @NonNull protected final CurrentUserId currentUserId;
 
-    @NonNull private final TabbedPositionListFragment.TabType positionType;
-
-    @NonNull private final Map<TabbedPositionListFragment.TabType, Integer> viewTypeCorrespondance;
-
     //<editor-fold desc="Constructors">
     public PositionItemAdapter(
             @NonNull Context context,
             @NonNull Map<Integer, Integer> itemTypeToLayoutId,
-            @NonNull CurrentUserId currentUserId,
-            @NonNull TabbedPositionListFragment.TabType positionType)
+            @NonNull CurrentUserId currentUserId)
     {
         super(context, 0);
         this.itemTypeToLayoutId = itemTypeToLayoutId;
         this.currentUserId = currentUserId;
-        this.positionType = positionType;
-        this.viewTypeCorrespondance = new HashMap<>();
-        viewTypeCorrespondance.put(TabbedPositionListFragment.TabType.CLOSED, VIEW_TYPE_CLOSED);
-        viewTypeCorrespondance.put(TabbedPositionListFragment.TabType.LONG, VIEW_TYPE_OPEN_LONG);
-        viewTypeCorrespondance.put(TabbedPositionListFragment.TabType.SHORT, VIEW_TYPE_OPEN_SHORT);
     }
     //</editor-fold>
 
@@ -67,9 +53,13 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
     @Override public int getItemViewType(int position)
     {
         Object item = getItem(position);
-        if (item instanceof PositionDTO)
+        if (item instanceof PositionLockedView.DTO)
         {
-            return getItemViewType((PositionDTO) item);
+            return VIEW_TYPE_LOCKED;
+        }
+        else if (item instanceof PositionPartialTopView.DTO)
+        {
+            return VIEW_TYPE_OPEN_LONG;
         }
         else if (item == null)
         {
@@ -132,27 +122,6 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         return item == null ? 0 : item.hashCode();
     }
 
-    public void addAll(@Nullable List<PositionDTO> dtos)
-    {
-
-        if (dtos == null || dtos.size() == 0)
-        {
-            return;
-        }
-
-        ArrayList<Object> positions = new ArrayList<>();
-
-        for (PositionDTO positionDTO : dtos)
-        {
-            if (getItemViewType(positionDTO) == viewTypeCorrespondance.get(positionType))
-            {
-                positions.add(positionDTO);
-            }
-        }
-        addAll(positions);
-
-    }
-
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
         int itemViewType = getItemViewType(position);
@@ -168,44 +137,38 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         if (itemViewType == VIEW_TYPE_LOCKED)
         {
             PositionLockedView cell = (PositionLockedView) convertView;
-            cell.linkWith((PositionDTO) item);
-            cell.display();
+            cell.display((PositionLockedView.DTO) item);
         }
         else if (itemViewType == VIEW_TYPE_PLACEHOLDER)
         {
-            if(convertView instanceof PositionNothingView)
+            if (convertView instanceof PositionNothingView)
             {
                 ((PositionNothingView) convertView).display(isEnabled(position));
             }
         }
         else if (convertView instanceof PositionView)
         {
-            preparePositionView((PositionView) convertView, item, position);
+            ((PositionView) convertView).display((PositionView.DTO) item);
         }
         else if (convertView instanceof PositionPartialTopView)
         {
-            ((PositionPartialTopView) convertView).linkWith((PositionDTO) item, false);
-            ((PositionPartialTopView) convertView).display();
+            ((PositionPartialTopView) convertView).display((PositionPartialTopView.DTO) item);
         }
 
-        if ((position % 2) == 0) {
+        if ((position % 2) == 0)
+        {
             convertView.setBackgroundColor(Color.WHITE);
-        } else {
+        }
+        else
+        {
             convertView.setBackgroundResource(R.color.portfolio_header_background_color);
         }
 
         return convertView;
     }
 
-    protected void preparePositionView(PositionView cell, Object item, int position)
-    {
-        cell.linkWith((PositionDTO) item, false);
-        cell.display();
-    }
-
     public void linkWith(UserProfileDTO userProfileDTO)
     {
         this.userProfileDTO = userProfileDTO;
     }
-
 }

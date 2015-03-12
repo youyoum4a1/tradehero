@@ -1,22 +1,18 @@
 package com.tradehero.th.fragments.position.partial;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
 import com.tradehero.th.adapters.ExpandableListItem;
+import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.models.position.PositionDTOUtils;
-import com.tradehero.th.inject.HierarchyInjector;
-import javax.inject.Inject;
 
 public class AbstractPartialBottomView
         extends RelativeLayout
+    implements DTOView<AbstractPartialBottomView.DTO>
 {
-    protected ExpandableListItem<PositionDTO> expandableListItem;
-    protected PositionDTO positionDTO;
-
     //<editor-fold desc="Constructors">
     public AbstractPartialBottomView(Context context)
     {
@@ -37,50 +33,21 @@ public class AbstractPartialBottomView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        HierarchyInjector.inject(this);
         ButterKnife.inject(this);
     }
 
-    protected View getExpandingView()
+    @Override public void display(@NonNull DTO dto)
     {
-        return this;
+        setVisibility(dto.expandablePositionDTO.isExpanded() ? VISIBLE : GONE);
     }
 
-    public void linkWith(ExpandableListItem<PositionDTO> expandableListItem, boolean andDisplay)
+    public static class DTO
     {
-        this.expandableListItem = expandableListItem;
-        linkWith(expandableListItem == null ? null : expandableListItem.getModel(), andDisplay);
-        if (andDisplay)
+        @NonNull public final ExpandableListItem<PositionDTO> expandablePositionDTO;
+
+        public DTO(@NonNull ExpandableListItem<PositionDTO> expandablePositionDTO)
         {
-            displayExpandingPart();
+            this.expandablePositionDTO = expandablePositionDTO;
         }
-    }
-
-    public void linkWith(PositionDTO positionDTO, boolean andDisplay)
-    {
-        this.positionDTO = positionDTO;
-        if (andDisplay)
-        {
-            // Let children do it
-        }
-    }
-
-    public void display()
-    {
-        displayExpandingPart();
-        displayModelPart();
-    }
-
-    public void displayExpandingPart()
-    {
-        View expandableView = getExpandingView();
-        if (expandableView != null && expandableListItem != null)
-        {
-            expandableView.setVisibility(expandableListItem.isExpanded() ? VISIBLE : GONE);
-        }
-    }
-
-    public void displayModelPart()
-    {
     }
 }
