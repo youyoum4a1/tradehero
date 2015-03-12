@@ -1828,6 +1828,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         {
             Bundle bundle = new Bundle();
             bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, dto.getDiscussionKey().getArgs());
+            bundle.putInt(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_TYPE, TimeLineItemDetailFragment.DISCUSSION_DISCUSSION_TYPE);
             pushFragment(TimeLineItemDetailFragment.class, bundle);
         }
     }
