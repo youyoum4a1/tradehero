@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.level.LevelDefDTO;
@@ -115,6 +116,11 @@ public class XpToast extends RelativeLayout
     public void showWhenReady(@NonNull UserXPAchievementDTO userXPAchievementDTO)
     {
         cleanUp();
+        if (userLevelProgressBar != null)
+        {
+            userLevelProgressBar.setUserLevelProgressBarLevelUpListener(this);
+            userLevelProgressBar.setUserLevelProgressBarListener(this);
+        }
         populateAnimationLists(userXPAchievementDTO);
         if (userLevelProgressBar.getLevelDefDTOList() != null && !userLevelProgressBar.getLevelDefDTOList().isEmpty())
         {
@@ -211,6 +217,7 @@ public class XpToast extends RelativeLayout
         }
     }
 
+    @OnClick(R.id.user_level_progress_bar)
     public void hide()
     {
         cleanUp();
