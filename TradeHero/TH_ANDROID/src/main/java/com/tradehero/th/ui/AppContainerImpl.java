@@ -13,6 +13,7 @@ import com.tradehero.th.utils.DeviceUtil;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 import static butterknife.ButterKnife.findById;
 
@@ -33,7 +34,14 @@ public class AppContainerImpl implements AppContainer
         this.activity = activity;
         activity.setContentView(R.layout.dashboard_with_bottom_bar);
 
-        resideMenu.setBackground(R.drawable.parallax_bg);
+        try
+        {
+            resideMenu.setBackground(R.drawable.parallax_bg);
+        } catch (OutOfMemoryError e)
+        {
+            Timber.e(e, "Failed to load parallax_bg");
+            resideMenu.setBackgroundResource(R.color.tradehero_reside_menu_bg);
+        }
         resideMenu.attachTo((ViewGroup) activity.getWindow().getDecorView());
         LayoutInflater.from(activity).inflate(R.layout.residemenu_footer, resideMenu.getFooter(), true);
 

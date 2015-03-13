@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_gravity="center"
-    tools:background="@color/black"
+    tools:background="@color/tradehero_reside_menu_bg"
     >
 
   <TextView
@@ -38,18 +39,21 @@
           style="@style/TH.ContentPartnersLogo"
           android:src="@drawable/logo_tmf_white"
           />
+
       <ImageView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           style="@style/TH.ContentPartnersLogo"
           android:src="@drawable/logo_yahoo_white"
           />
+
       <ImageView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           style="@style/TH.ContentPartnersLogo"
           android:src="@drawable/logo_repustate_white"
           />
+
       <ImageView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -58,6 +62,7 @@
           />
 
     </LinearLayout>
+
   </HorizontalScrollView>
 
 </LinearLayout>
