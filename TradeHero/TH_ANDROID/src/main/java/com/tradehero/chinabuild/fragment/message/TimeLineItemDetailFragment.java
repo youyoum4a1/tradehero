@@ -172,6 +172,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     private TextView timeline_detail_tvTLComment;
 
     //If it is a time line, time line api is used to delete it. If it is a discussion, discussion api is for deleting.
+    //Default, it is a time line.
     public static final String BUNDLE_ARGUMENT_DISCUSSION_TYPE = "bundle_argument_discuss_type";
     public static final int DISCUSSION_TIME_LINE_TYPE = 1;
     public static final int DISCUSSION_DISCUSSION_TYPE = 2;
@@ -197,6 +198,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         if (bundle.containsKey(BUNDLE_ARGUMENT_TIMELINE_FROM)) {
             timelineFrom = bundle.getString(BUNDLE_ARGUMENT_TIMELINE_FROM);
         }
+
+        //If it is a time line, time line api is used to delete it. If it is a discussion, discussion api is for deleting.
+        //Default, it is a time line.
         if (bundle.containsKey(BUNDLE_ARGUMENT_DISCUSSION_TYPE)) {
             discussion_type = bundle.getInt(BUNDLE_ARGUMENT_DISCUSSION_TYPE, DISCUSSION_TIME_LINE_TYPE);
         }

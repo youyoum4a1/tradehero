@@ -13,6 +13,7 @@ import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
+import com.tradehero.chinabuild.cache.PortfolioCompactNewCache;
 import com.tradehero.chinabuild.data.PositionInterface;
 import com.tradehero.chinabuild.data.PositionLockedItem;
 import com.tradehero.chinabuild.data.SecurityPositionItem;
@@ -29,6 +30,7 @@ import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.PositionDTO;
@@ -129,6 +131,10 @@ public class PortfolioFragment extends DashboardFragment
     @InjectView(R.id.tvWatchListItemDynamicAmount) TextView tvItemDynamicAmount;
     @InjectView(R.id.tvWatchListItemCash) TextView tvItemCash;
 
+    //Download Portfolio
+    private DTOCacheNew.Listener<PortfolioId, PortfolioCompactDTO> portfolioCompactNewFetchListener;
+    @Inject protected PortfolioCompactNewCache portfolioCompactNewCache;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -136,6 +142,12 @@ public class PortfolioFragment extends DashboardFragment
         fetchGetPositionsDTOListener = createGetPositionsCacheListener();
         currentUserProfileCacheListener = createCurrentUserProfileFetchListener();
         initArgment();
+
+        //Download Portfolio
+        if(portfolio_type == PORTFOLIO_TYPE_MINE){
+            portfolioCompactNewFetchListener = new BasePurchaseManagementPortfolioCompactNewFetchListener();
+        }
+
         adapter = new MyTradePositionListAdapter(getActivity());
         isNeedShowMainPage = getIsNeedShowPortfolio();
     }
@@ -207,6 +219,14 @@ public class PortfolioFragment extends DashboardFragment
         fetchCurrentUserProfile();
         getDataFromNormalUser();
         return view;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(portfolio_type == PORTFOLIO_TYPE_MINE){
+            fetchPortfolioCompactNew();
+        }
     }
 
     public void showUserPortfolioHead()
@@ -328,6 +348,7 @@ public class PortfolioFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
+        portfolioCompactNewFetchListener = null;
         fetchGetPositionsDTOListener = null;
         super.onDestroy();
     }
@@ -746,5 +767,31 @@ public class PortfolioFragment extends DashboardFragment
 
         String vsCash = String.format("%s %,.0f", portfolio.getNiceCurrency(), portfolio.cashBalance);
         tvItemCash.setText(vsCash);
+    }
+
+
+    //Download user portfolio
+    protected class BasePurchaseManagementPortfolioCompactNewFetchListener implements DTOCacheNew.Listener<PortfolioId, PortfolioCompactDTO> {
+        protected BasePurchaseManagementPortfolioCompactNewFetchListener() { }
+
+        @Override public void onDTOReceived(@NotNull PortfolioId key, @NotNull PortfolioCompactDTO value) {
+            if(value!=null && getActivity()!=null){
+                portfolioCompactDTO = value;
+                displayPortfolio((PortfolioDTO) portfolioCompactDTO);
+            }
+        }
+
+        @Override public void onErrorThrown(@NotNull PortfolioId key, @NotNull Throwable error) { }
+    }
+
+    private void detachPortfolioCompactNewCache() {
+        portfolioCompactNewCache.unregister(portfolioCompactNewFetchListener);
+    }
+
+    private void fetchPortfolioCompactNew() {
+        detachPortfolioCompactNewCache();
+        PortfolioId key = new PortfolioId(competitionId);
+        portfolioCompactNewCache.register(key, portfolioCompactNewFetchListener);
+        portfolioCompactNewCache.getOrFetchAsync(key);
     }
 }
