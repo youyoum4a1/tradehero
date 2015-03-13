@@ -16,4 +16,5 @@
         layout="@layout/user_profile_detail_info"
         />
 
+    <include layout="@layout/user_statistic"/>
 </com.tradehero.th.fragments.timeline.UserProfileDetailView>

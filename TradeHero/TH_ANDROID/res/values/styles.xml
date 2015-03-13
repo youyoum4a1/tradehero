@@ -329,6 +329,7 @@
     <item name="showOuterShadow">false</item>
     <item name="showOuterRim">false</item>
     <item name="showNeedle">true</item>
+    <item name="gShowText">true</item>
     <item name="animationDuration">4000</item>
     <item name="drawCenterIndicator">false</item>
     <item name="android:layout_marginBottom">10dp</item>

@@ -6,20 +6,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <TableLayout
-      android:layout_width="match_parent"
+  <LinearLayout
+      android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       >
-
-    <TableRow>
-
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
       <TextView
           style="@style/TH.InfoKey"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="3"
-          android:gravity="right"
-          android:paddingRight="@dimen/trade_screen_info_title_padding_right"
+          android:textSize="@dimen/text_xxsmall"
           android:text="@string/user_profile_total_wealth"
           />
 
@@ -28,22 +29,22 @@
           style="@style/TH.InfoValue"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="4"
-          android:gravity="left"
           tools:text="US$ 66,400"
+          android:textSize="@dimen/abc_text_size_small_material"
           />
+    </LinearLayout>
 
-    </TableRow>
-
-    <TableRow>
-
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical">
       <TextView
           style="@style/TH.InfoKey"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="3"
-          android:gravity="right"
-          android:paddingRight="@dimen/trade_screen_info_title_padding_right"
+          android:textSize="@dimen/text_xxsmall"
           android:text="@string/user_profile_additional_cash"
           />
 
@@ -52,22 +53,22 @@
           style="@style/TH.InfoValue"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="4"
-          android:gravity="left"
           tools:text="US$ 20,000"
+          android:textSize="@dimen/abc_text_size_small_material"
           />
+    </LinearLayout>
 
-    </TableRow>
-
-    <TableRow>
-
+    <LinearLayout
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
       <TextView
           style="@style/TH.InfoKey"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="3"
-          android:gravity="right"
-          android:paddingRight="@dimen/trade_screen_info_title_padding_right"
+          android:textSize="@dimen/text_xxsmall"
           android:text="@string/user_profile_cash_on_hand"
           />
 
@@ -76,14 +77,10 @@
           style="@style/TH.InfoValue"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="4"
-          android:gravity="left"
-          android:text=""
+          android:textSize="@dimen/abc_text_size_small_material"
           tools:text="US$ 100,000"
           />
-
-    </TableRow>
-
-  </TableLayout>
+    </LinearLayout>
+  </LinearLayout>
 
 </merge>
