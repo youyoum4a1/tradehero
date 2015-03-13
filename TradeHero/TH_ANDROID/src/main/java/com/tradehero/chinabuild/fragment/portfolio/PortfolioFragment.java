@@ -70,8 +70,7 @@ import java.util.List;
 /**
  * Created by huhaiping on 14-9-14. 个人持仓页。比赛持仓页
  */
-public class PortfolioFragment extends DashboardFragment
-{
+public class PortfolioFragment extends DashboardFragment {
     public static final String BUNLDE_NEED_SHOW_MAINPAGE = "bundle_need_show_mainpage";
     public static final String BUNDLE_LEADERBOARD_USER_MARK_ID = "bundle_leaderboard_user_mark_id";
     public static final String BUNLDE_SHOW_PROFILE_USER_ID = "bundle_show_profile_user_id";
@@ -136,8 +135,7 @@ public class PortfolioFragment extends DashboardFragment
     @Inject protected PortfolioCompactNewCache portfolioCompactNewCache;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fetchGetPositionsDTOListener = createGetPositionsCacheListener();
         currentUserProfileCacheListener = createCurrentUserProfileFetchListener();
@@ -153,30 +151,23 @@ public class PortfolioFragment extends DashboardFragment
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        if (portfolioUserKey != 0)
-        {
-            if (isNeedShowMainPage)
-            {
+        if (portfolioUserKey != 0) {
+            if (isNeedShowMainPage) {
                 setHeadViewRight0("TA的主页");
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_PORTFOLIO_MAIN_PAGE));
             }
         }
 
-        if (portfolio_type == PORTFOLIO_TYPE_MINE)
-        {
+        if (portfolio_type == PORTFOLIO_TYPE_MINE) {
             setHeadViewMiddleMain("我的持仓");
-        }
-        else
-        {
+        } else {
             setHeadViewMiddleMain("TA的持仓");
         }
 
-        if (portfolio_type == PORTFOLIO_TYPE_MINE)
-        {
+        if (portfolio_type == PORTFOLIO_TYPE_MINE) {
             setHeadViewRight0("去比赛");
             analytics.addEventAuto(
                     new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_PORTFOLIO_GOTO_COMPETITION));
@@ -192,10 +183,8 @@ public class PortfolioFragment extends DashboardFragment
         listView.setAdapter(adapter);
         listView.setMode(PullToRefreshBase.Mode.DISABLED);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
-            {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position) {
                 PositionInterface item = adapter.getItem((int) position);
                 dealSecurityItem(item);
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.BUTTON_PORTFOLIO_POSITION_CLICKED, "" + position));
@@ -215,9 +204,10 @@ public class PortfolioFragment extends DashboardFragment
         });
 
         showUserPortfolioHead();
-
+        if(portfolio_type != PORTFOLIO_TYPE_MINE){
+            getDataFromNormalUser();
+        }
         fetchCurrentUserProfile();
-        getDataFromNormalUser();
         return view;
     }
 
@@ -226,48 +216,38 @@ public class PortfolioFragment extends DashboardFragment
         super.onResume();
         if(portfolio_type == PORTFOLIO_TYPE_MINE){
             fetchPortfolioCompactNew();
+            getDataFromNormalUser();
         }
     }
 
-    public void showUserPortfolioHead()
-    {
+    public void showUserPortfolioHead() {
         llUserAccountHead.setVisibility(portfolio_type == PORTFOLIO_TYPE_MINE ? View.VISIBLE : View.GONE);
-        if (portfolio_type == PORTFOLIO_TYPE_MINE)
-        {
-            if (portfolioCompactDTO instanceof PortfolioDTO)
-            {
+        if (portfolio_type == PORTFOLIO_TYPE_MINE) {
+            if (portfolioCompactDTO instanceof PortfolioDTO) {
                 displayPortfolio((PortfolioDTO) portfolioCompactDTO);
             }
         }
     }
 
-    public void startLoading()
-    {
-        if (getActivity() != null)
-        {
+    public void startLoading() {
+        if (getActivity() != null) {
             alertDialogUtilLazy.get().showProgressDialog(getActivity(), "加载中");
         }
     }
 
-    public void dealSecurityItem(PositionInterface item)
-    {
-        if (item instanceof SecurityPositionItem)
-        {
-            if (portfolio_type == PORTFOLIO_TYPE_MINE && ((SecurityPositionItem) item).type == SecurityPositionItem.TYPE_ACTIVE)
-            {//只有我的比赛持仓才需要直接跳转至股票详情页面
+    public void dealSecurityItem(PositionInterface item) {
+        if (item instanceof SecurityPositionItem) {
+            if (portfolio_type == PORTFOLIO_TYPE_MINE && ((SecurityPositionItem) item).type == SecurityPositionItem.TYPE_ACTIVE) {
+                //只有我的比赛持仓才需要直接跳转至股票详情页面
                 enterSecurityToSecurityDetail(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,
                         ((SecurityPositionItem) item).position);
-            }
-            else
-            {//其他只需要跳转到持仓详情页
+            } else {
+                //其他只需要跳转到持仓详情页
                 enterSecurityToPortfolio(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,
                         ((SecurityPositionItem) item).position);
             }
-        }
-        else if (item instanceof PositionLockedItem)
-        {
-            if (currentUserProfileDTO != null && currentUserProfileDTO.isVisitor && currentUserProfileDTO.getAllHeroCount() >= 5)
-            {
+        } else if (item instanceof PositionLockedItem) {
+            if (currentUserProfileDTO != null && currentUserProfileDTO.isVisitor && currentUserProfileDTO.getAllHeroCount() >= 5) {
                 dialogContent = getActivity().getResources().getString(R.string.guest_user_dialog_summary);
                 showSuggestLoginDialogFragment(dialogContent);
                 return;
@@ -278,38 +258,31 @@ public class PortfolioFragment extends DashboardFragment
         }
     }
 
-    @Override public void onClickHeadRight0()
-    {
+    @Override public void onClickHeadRight0() {
         super.onClickHeadRight0();
-        if (portfolio_type == PORTFOLIO_TYPE_MINE)
-        {
+        if (portfolio_type == PORTFOLIO_TYPE_MINE) {
             toPlayCompetition();
-        }
-        else
-        {
+        } else {
             enterUserMainPage();
         }
     }
 
-    public void toPlayCompetition()
-    {
+    public void toPlayCompetition() {
         Bundle bundle = new Bundle();
         bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, competitionId);
         pushFragment(CompetitionSecuritySearchFragment.class, bundle);
     }
 
-    public void enterUserMainPage()
-    {
+    public void enterUserMainPage() {
         Bundle bundle = new Bundle();
         bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, portfolioUserKey);
         bundle.putBoolean(UserMainPage.BUNDLE_NEED_SHOW_PROFILE, false);
         pushFragment(UserMainPage.class, bundle);
     }
 
-    public void setPortfolioInfo(int user_id, int porfolio_id)
-    {
+    public void setPortfolioInfo(int user_id, int portfolio_id) {
         this.user_id = user_id;
-        this.portfolio_id = porfolio_id;
+        this.portfolio_id = portfolio_id;
     }
 
     public void enterSecurityToSecurityDetail(SecurityId securityId, String securityName, PositionDTO positionDTO)
@@ -383,19 +356,14 @@ public class PortfolioFragment extends DashboardFragment
         }
     }
 
-    public void getDataFromNormalUser()
-    {
+    public void getDataFromNormalUser() {
         //来自股神持仓，股神的主账户持仓
         currentPage = 1;
-        if (portfolio_type == PORTFOLIO_TYPE_OTHER_USER)
-        {
+        if (portfolio_type == PORTFOLIO_TYPE_OTHER_USER) {
             getPositionDirectly(showUserBaseKey, currentPage);
         }
-        else
-        {
-            getPositionsDTOKey = new PerPagedLeaderboardMarkUserId((int) leaderboardUserMarkId, currentPage, perPage);
-            if (getPositionsDTOKey != null && getPositionsDTOKey.isValid())
-            {
+        else {
+            if (getPositionsDTOKey != null && getPositionsDTOKey.isValid()) {
                 detachGetPositionsTask();
                 getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
                 getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, true);
@@ -406,14 +374,10 @@ public class PortfolioFragment extends DashboardFragment
     public void getDataFromNormalUserMore(){
         //来自股神持仓，股神的主账户持仓
         currentPage++;
-        if (portfolio_type == PORTFOLIO_TYPE_OTHER_USER)
-        {
+        if (portfolio_type == PORTFOLIO_TYPE_OTHER_USER) {
             getPositionDirectly(showUserBaseKey, currentPage);
-        }
-        else
-        {
-            if (getPositionsDTOKey != null && getPositionsDTOKey.isValid())
-            {
+        } else {
+            if (getPositionsDTOKey != null && getPositionsDTOKey.isValid()) {
                 detachGetPositionsTask();
                 getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
                 getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, true);
@@ -421,63 +385,52 @@ public class PortfolioFragment extends DashboardFragment
         }
     }
 
-    private void getPositionsFromPortfolio(PortfolioCompactDTO portfolioCompactDTO)
-    {
+    private void getPositionsFromPortfolio(PortfolioCompactDTO portfolioCompactDTO) {
         getPositionsDTOKey = new OwnedPortfolioId(portfolioCompactDTO.userId, portfolioCompactDTO.id);
         fetchSimplePage(true);
     }
 
-    public boolean getIsNeedShowPortfolio()
-    {
+    public boolean getIsNeedShowPortfolio() {
         Bundle bundle = getArguments();
-        if (bundle != null)
-        {
+        if (bundle != null) {
             this.isNeedShowMainPage = getArguments().getBoolean(BUNLDE_NEED_SHOW_MAINPAGE, true);
         }
         return isNeedShowMainPage;
     }
 
-    @NotNull protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheListener()
-    {
+    @NotNull protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheListener() {
         return new GetPositionsListener();
     }
 
-    private void linkWith(GetPositionsDTO value)
-    {
-        try
-        {//来自比赛的profolio信息从GetPositionDTO里获取
+    private void linkWith(GetPositionsDTO value) {
+        try {//来自比赛的profolio信息从GetPositionDTO里获取
             user_id = value.positions.get(0).userId;
             portfolio_id = value.positions.get(0).portfolioId;
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         initPositionSecurity(value);
     }
 
     protected class GetPositionsListener
-            implements DTOCacheNew.HurriedListener<GetPositionsDTOKey, GetPositionsDTO>
-    {
+            implements DTOCacheNew.HurriedListener<GetPositionsDTOKey, GetPositionsDTO> {
         @Override public void onPreCachedDTOReceived(
                 @NotNull GetPositionsDTOKey key,
-                @NotNull GetPositionsDTO value)
-        {
+                @NotNull GetPositionsDTO value) {
             linkWith(value);
             finished();
         }
 
         @Override public void onDTOReceived(
                 @NotNull GetPositionsDTOKey key,
-                @NotNull GetPositionsDTO value)
-        {
+                @NotNull GetPositionsDTO value) {
             linkWith(value);
             finished();
         }
 
         @Override public void onErrorThrown(
                 @NotNull GetPositionsDTOKey key,
-                @NotNull Throwable error)
-        {
+                @NotNull Throwable error) {
             if(currentPage>1) {
                 currentPage--;
             }else{
@@ -486,8 +439,7 @@ public class PortfolioFragment extends DashboardFragment
             finished();
         }
 
-        public void finished()
-        {
+        public void finished() {
             if(listView == null){
                 return;
             }
@@ -497,103 +449,79 @@ public class PortfolioFragment extends DashboardFragment
         }
     }
 
-    protected void detachGetPositionsTask()
-    {
+    protected void detachGetPositionsTask() {
         getPositionsCache.get().unregister(fetchGetPositionsDTOListener);
     }
 
-    protected void fetchSimplePage(boolean force)
-    {
-        if (getPositionsDTOKey != null && getPositionsDTOKey.isValid())
-        {
+    protected void fetchSimplePage(boolean force) {
+        if (getPositionsDTOKey != null && getPositionsDTOKey.isValid()) {
             detachGetPositionsTask();
             getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
             getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, force);
         }
 
-        if (adapter != null && adapter.getCount() == 0)
-        {
+        if (adapter != null && adapter.getCount() == 0) {
             startLoading();
         }
     }
 
-    private void detachCurrentUserProfileCache()
-    {
+    private void detachCurrentUserProfileCache() {
         userProfileCache.get().unregister(currentUserProfileCacheListener);
     }
 
-    protected void fetchCurrentUserProfile()
-    {
+    protected void fetchCurrentUserProfile() {
         detachCurrentUserProfileCache();
         userProfileCache.get().register(currentUserId.toUserBaseKey(), currentUserProfileCacheListener);
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    private void initPositionSecurity(GetPositionsDTO value)
-    {
+    private void initPositionSecurity(GetPositionsDTO value) {
         initPositionSecurityOpened(value);
         initPositionSecurityClosed(value);
     }
 
-    public boolean isNeedShowLock()
-    {
+    public boolean isNeedShowLock() {
         return portfolio_type != PORTFOLIO_TYPE_MINE;
     }
 
-    private void initPositionSecurityOpened(GetPositionsDTO psList)
-    {
-        if (isNeedShowLock() && (!isFollowUserOrMe()))
-        {
-            if (adapter != null)
-            {
+    private void initPositionSecurityOpened(GetPositionsDTO psList) {
+        if (isNeedShowLock() && (!isFollowUserOrMe())) {
+            if (adapter != null) {
                 adapter.setSecurityPositionListLocked(true);
             }
-        }
-        else
-        {
-            if (adapter != null)
-            {
+        } else {
+            if (adapter != null) {
                 adapter.setSecurityPositionListLocked(false);
             }
-
-            if (psList != null && psList.openPositionsCount > 0)
-            {
-                ArrayList<SecurityPositionItem> list = new ArrayList<SecurityPositionItem>();
+            if (psList != null && psList.openPositionsCount >= 0) {
+                ArrayList<SecurityPositionItem> list = new ArrayList();
                 List<PositionDTO> listData = psList.getOpenPositions();
                 int sizePosition = listData.size();
-                for (int i = 0; i < sizePosition; i++)
-                {
+                for (int i = 0; i < sizePosition; i++) {
                     SecurityCompactDTO securityCompactDTO = psList.getSecurityCompactDTO(listData.get(i));
-                    if (securityCompactDTO != null && securityCompactDTO.id > 0)
-                    {
+                    if (securityCompactDTO != null && securityCompactDTO.id > 0) {
                         list.add(new SecurityPositionItem(securityCompactDTO, listData.get(i), SecurityPositionItem.TYPE_ACTIVE));
                     }
                 }
-                if (adapter != null)
-                {
+                if (adapter != null) {
                     adapter.setSecurityPositionList(list);
                 }
             }
         }
     }
 
-    private void initPositionSecurityClosed(GetPositionsDTO psList)
-    {
-        if (psList != null && psList.closedPositionsCount > 0)
-        {
-            ArrayList<SecurityPositionItem> list = new ArrayList<SecurityPositionItem>();
+    private void initPositionSecurityClosed(GetPositionsDTO psList) {
+        if (psList != null && psList.closedPositionsCount >= 0) {
+            ArrayList<SecurityPositionItem> list = new ArrayList();
             List<PositionDTO> listData = psList.getClosedPositions();
             int sizePosition = listData.size();
-            for (int i = 0; i < sizePosition; i++)
-            {
+            for (int i = 0; i < sizePosition; i++) {
                 SecurityCompactDTO securityCompactDTO = psList.getSecurityCompactDTO(listData.get(i));
-                if (securityCompactDTO != null)
-                {
+                if (securityCompactDTO != null) {
                     list.add(new SecurityPositionItem(securityCompactDTO, listData.get(i), SecurityPositionItem.TYPE_CLOSED));
                 }
             }
-            if (adapter != null)
-            {
+            if (adapter != null) {
                 if(currentPage == 1) {
                     adapter.setSecurityPositionListClosed(list);
                 }else{
@@ -609,53 +537,40 @@ public class PortfolioFragment extends DashboardFragment
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createCurrentUserProfileFetchListener()
-    {
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createCurrentUserProfileFetchListener() {
         return new CurrentUserProfileFetchListener();
     }
 
-    protected class CurrentUserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
-    {
+    protected class CurrentUserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> {
         @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
-        {
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value) {
             setCurrentUserDTO(value);
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error){}
-
     }
 
-    public void setCurrentUserDTO(UserProfileDTO userDTO)
-    {
+    public void setCurrentUserDTO(UserProfileDTO userDTO) {
         this.currentUserProfileDTO = userDTO;
         fetchSimplePage(false);
     }
 
-    public boolean isFollowUserOrMe()
-    {
-        if (showUserBaseKey != null && currentUserId != null)
-        {
-            if (showUserBaseKey.key.equals(currentUserId.toUserBaseKey().getUserId()))
-            {
+    public boolean isFollowUserOrMe() {
+        if (showUserBaseKey != null && currentUserId != null) {
+            if (showUserBaseKey.key.equals(currentUserId.toUserBaseKey().getUserId())) {
                 return true;
             }
         }
 
-        if (currentUserProfileDTO != null)
-        {
+        if (currentUserProfileDTO != null) {
             return currentUserProfileDTO.isFollowingUser(showUserBaseKey);
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
-    private void detachFreeFollowMiddleCallback()
-    {
-        if (freeFollowMiddleCallback != null)
-        {
+    private void detachFreeFollowMiddleCallback() {
+        if (freeFollowMiddleCallback != null) {
             freeFollowMiddleCallback.setPrimaryCallback(null);
         }
         freeFollowMiddleCallback = null;
@@ -671,10 +586,8 @@ public class PortfolioFragment extends DashboardFragment
                         .freeFollow(heroId, new FreeFollowCallback());
     }
 
-    public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO>
-    {
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
-        {
+    public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO> {
+        @Override public void success(UserProfileDTO userProfileDTO, Response response) {
             currentUserProfileDTO = userProfileDTO;
             alertDialogUtilLazy.get().dismissProgressDialog();
             userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
@@ -682,25 +595,21 @@ public class PortfolioFragment extends DashboardFragment
             getDataFromNormalUser();
         }
 
-        @Override public void failure(RetrofitError retrofitError)
-        {
+        @Override public void failure(RetrofitError retrofitError) {
             THToast.show(R.string.error_network_connection);
             alertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
 
-    public class GetPositionCallback implements Callback<GetPositionsDTO>
-    {
+    public class GetPositionCallback implements Callback<GetPositionsDTO> {
 
-        @Override public void success(GetPositionsDTO getPositionsDTO, Response response)
-        {
+        @Override public void success(GetPositionsDTO getPositionsDTO, Response response) {
             linkWith(getPositionsDTO);
             alertDialogUtilLazy.get().dismissProgressDialog();
             onFinish();
         }
 
-        @Override public void failure(RetrofitError retrofitError)
-        {
+        @Override public void failure(RetrofitError retrofitError) {
             alertDialogUtilLazy.get().dismissProgressDialog();
             if(currentPage>1) {
                 currentPage--;
@@ -717,30 +626,25 @@ public class PortfolioFragment extends DashboardFragment
 
     }
 
-    private void detachGetPositionMiddleCallback()
-    {
-        if (getPositionDTOCallback != null)
-        {
+    private void detachGetPositionMiddleCallback() {
+        if (getPositionDTOCallback != null) {
             getPositionDTOCallback.setPrimaryCallback(null);
         }
         getPositionDTOCallback = null;
     }
 
-    protected void getPositionDirectly(@NotNull UserBaseKey heroId, int currentPage)
-    {
+    protected void getPositionDirectly(@NotNull UserBaseKey heroId, int currentPage) {
         detachGetPositionMiddleCallback();
         getPositionDTOCallback =
                 positionServiceWrapper.get()
                         .getPositionsDirect(heroId.key, currentPage, perPage, new GetPositionCallback());
     }
 
-    private void displayPortfolio(PortfolioDTO portfolio)
-    {
-
-        if (portfolio == null) return;
-
-        if (portfolio.roiSinceInception != null)
-        {
+    private void displayPortfolio(PortfolioDTO portfolio) {
+        if (portfolio == null) {
+            return;
+        }
+        if (portfolio.roiSinceInception != null) {
             THSignedNumber roi = THSignedPercentage.builder(portfolio.roiSinceInception * 100)
                     .withSign()
                     .signTypeArrow()
@@ -753,8 +657,7 @@ public class PortfolioFragment extends DashboardFragment
         tvItemAllAmount.setText(valueString);
 
         Double pl = portfolio.plSinceInception;
-        if (pl == null)
-        {
+        if (pl == null) {
             pl = 0.0;
         }
         THSignedNumber thPlSinceInception = THSignedMoney.builder(pl)
