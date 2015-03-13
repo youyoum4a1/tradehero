@@ -22,7 +22,6 @@ public class AlertEditFragment extends BaseAlertEditFragment
 
     protected AlertId alertId;
     protected Subscription getAlertSubscription;
-    protected Subscription saveAlertSubscription;
     @Inject protected AlertCacheRx alertCache;
 
     public static void putAlertId(@NonNull Bundle args, @NonNull AlertId alertId)
@@ -45,8 +44,6 @@ public class AlertEditFragment extends BaseAlertEditFragment
     {
         unsubscribe(getAlertSubscription);
         getAlertSubscription = null;
-        unsubscribe(saveAlertSubscription);
-        saveAlertSubscription = null;
         super.onStop();
     }
 

@@ -70,21 +70,21 @@
 
   <com.tradehero.common.widget.BetterViewAnimator
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
       android:id="@+id/progress_animator"
       >
 
     <ProgressBar
         android:id="@android:id/progress"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         />
 
     <se.emilsjolander.stickylistheaders.StickyListHeadersListView
         android:id="@+id/alerts_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:paddingBottom="@dimen/clickable_element_min_dimen"
         android:clipToPadding="false"
         tools:background="@color/red"

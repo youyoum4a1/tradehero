@@ -7,6 +7,8 @@ import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
@@ -14,12 +16,15 @@ import rx.Observable;
 @Singleton public class AlertServiceWrapper
 {
     @NonNull private final AlertServiceRx alertServiceRx;
+    @NonNull private final Lazy<AlertCompactListCacheRx> alertCompactListCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public AlertServiceWrapper(@NonNull AlertServiceRx alertServiceRx)
+    @Inject public AlertServiceWrapper(@NonNull AlertServiceRx alertServiceRx,
+            @NonNull Lazy<AlertCompactListCacheRx> alertCompactListCache)
     {
         super();
         this.alertServiceRx = alertServiceRx;
+        this.alertCompactListCache = alertCompactListCache;
     }
     //</editor-fold>
 
@@ -61,6 +66,7 @@ import rx.Observable;
     @NonNull public Observable<AlertCompactDTO> updateAlertRx(@NonNull AlertId alertId, @NonNull AlertFormDTO alertFormDTO)
     {
         basicCheck(alertId);
+        alertCompactListCache.get().remove(alertId);
         return this.alertServiceRx.updateAlert(alertId.userId, alertId.alertId, alertFormDTO);
     }
     //</editor-fold>

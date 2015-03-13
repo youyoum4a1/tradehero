@@ -300,10 +300,12 @@ public class AlertManagerFragment extends DashboardFragment
     @OnItemClickSticky(R.id.alerts_list)
     protected void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        AlertItemView.DTO alertCompactDTO = (AlertItemView.DTO) parent.getItemAtPosition(position);
-        if (alertCompactDTO != null)
+        AlertItemView.DTO viewDTO = (AlertItemView.DTO) parent.getItemAtPosition(position);
+        if (viewDTO != null)
         {
-            handleAlertItemClicked(alertCompactDTO.alertCompactDTO);
+            handleAlertItemClicked(viewDTO.alertCompactDTO);
+            alertListItemAdapter.remove(viewDTO);
+            alertListItemAdapter.notifyDataSetChanged();
         }
     }
 

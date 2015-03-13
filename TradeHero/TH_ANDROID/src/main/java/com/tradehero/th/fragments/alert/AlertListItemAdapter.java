@@ -34,18 +34,11 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertItemView.DTO, A
                 {
                     @Override public int compare(AlertItemView.DTO lhs, AlertItemView.DTO rhs)
                     {
-                        if (lhs == rhs)
+                        if (lhs == rhs
+                                || lhs.alertCompactDTO == rhs.alertCompactDTO
+                                || lhs.alertCompactDTO.id == rhs.alertCompactDTO.id)
                         {
                             return 0;
-                        }
-
-                        if (lhs.alertCompactDTO.active && !rhs.alertCompactDTO.active)
-                        {
-                            return -1;
-                        }
-                        if (!lhs.alertCompactDTO.active && rhs.alertCompactDTO.active)
-                        {
-                            return 1;
                         }
 
                         if (lhs.alertCompactDTO.security == rhs.alertCompactDTO.security)
