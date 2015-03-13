@@ -37,6 +37,8 @@ public class MyTradePositionListAdapter extends BaseAdapter
     @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
+    private int totalClosedAccount = 0;
+
     public MyTradePositionListAdapter(Context context)
     {
         DaggerUtils.inject(this);
@@ -132,6 +134,9 @@ public class MyTradePositionListAdapter extends BaseAdapter
 
     public int getSecurityPositionClosedCount()
     {
+        if(totalClosedAccount > 0){
+            return totalClosedAccount;
+        }
         return securityPositionListClosed == null ? 0 : securityPositionListClosed.size();
     }
 
@@ -172,7 +177,7 @@ public class MyTradePositionListAdapter extends BaseAdapter
 
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-        PositionInterface item = (PositionInterface) getItem(position);
+        PositionInterface item = getItem(position);
         if (item instanceof PositionHeadItem)
         {
             convertView = inflater.inflate(R.layout.position_head_item, viewGroup, false);
@@ -267,5 +272,9 @@ public class MyTradePositionListAdapter extends BaseAdapter
         }
 
         return convertView;
+    }
+
+    public void setTotalClosedAccount(int totalClosedAccount){
+        this.totalClosedAccount = totalClosedAccount;
     }
 }

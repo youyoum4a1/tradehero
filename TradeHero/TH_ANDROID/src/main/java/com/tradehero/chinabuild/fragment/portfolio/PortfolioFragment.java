@@ -443,7 +443,9 @@ public class PortfolioFragment extends DashboardFragment {
             if(listView == null){
                 return;
             }
-            listView.setMode(PullToRefreshBase.Mode.PULL_FROM_END);
+            if(portfolio_type != PORTFOLIO_TYPE_MINE){
+                listView.setMode(PullToRefreshBase.Mode.PULL_FROM_END);
+            }
             listView.onRefreshComplete();
             alertDialogUtilLazy.get().dismissProgressDialog();
         }
@@ -512,6 +514,7 @@ public class PortfolioFragment extends DashboardFragment {
 
     private void initPositionSecurityClosed(GetPositionsDTO psList) {
         if (psList != null && psList.closedPositionsCount >= 0) {
+            adapter.setTotalClosedAccount(psList.closedPositionsCount);
             ArrayList<SecurityPositionItem> list = new ArrayList();
             List<PositionDTO> listData = psList.getClosedPositions();
             int sizePosition = listData.size();
