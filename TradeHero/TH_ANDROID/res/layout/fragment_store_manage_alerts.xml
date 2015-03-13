@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     >
 
   <RelativeLayout
       android:id="@+id/manage_alerts_header"
       android:layout_width="match_parent"
       android:layout_height="50dp"
-      android:layout_alignParentTop="true"
       android:background="@color/grey"
       >
 
@@ -20,7 +20,9 @@
         android:layout_width="125dp"
         android:layout_height="48dp"
         android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:scaleType="fitCenter"
         android:src="@drawable/upgrade_alerts"
@@ -34,6 +36,7 @@
         android:layout_height="wrap_content"
         android:text="@string/manage_alerts_plan"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:padding="@dimen/stock_alert_header_padding"
         android:layout_centerVertical="true"
         android:textStyle="bold"
@@ -45,6 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/manage_alerts_plan_title"
+        android:layout_toEndOf="@id/manage_alerts_plan_title"
         tools:text="Type of alert plan"
         tools:textColor="@color/red"
         android:textStyle="bold"
@@ -55,7 +59,9 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:layout_toRightOf="@id/manage_alerts_count"
+        android:layout_toEndOf="@id/manage_alerts_count"
         android:layout_centerVertical="true"
         tools:src="@drawable/buy_alerts_2"
         />
@@ -65,7 +71,6 @@
   <com.tradehero.common.widget.BetterViewAnimator
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@id/manage_alerts_header"
       android:id="@+id/progress_animator"
       >
 
@@ -87,4 +92,4 @@
 
   </com.tradehero.common.widget.BetterViewAnimator>
 
-</RelativeLayout>
+</LinearLayout>

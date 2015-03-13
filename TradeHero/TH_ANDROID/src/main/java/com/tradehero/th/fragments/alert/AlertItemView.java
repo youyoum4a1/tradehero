@@ -1,9 +1,12 @@
 package com.tradehero.th.fragments.alert;
 
 import android.content.Context;
-import android.os.Bundle;
+import android.content.res.Resources;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.Spanned;
 import android.util.AttributeSet;
 import android.widget.ImageView;
@@ -11,36 +14,31 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DateUtils;
-import dagger.Lazy;
-import java.util.Date;
+import com.tradehero.th.utils.SecurityUtils;
 import javax.inject.Inject;
 
 public class AlertItemView extends RelativeLayout
-        implements DTOView<AlertCompactDTO>
+        implements DTOView<AlertItemView.DTO>
 {
+    @Inject protected Picasso picasso;
+
     @InjectView(R.id.logo) ImageView stockLogo;
     @InjectView(R.id.stock_symbol) TextView stockSymbol;
+    @InjectView(R.id.alert_value) TextView alertValue;
+    @InjectView(R.id.company_name) TextView companyName;
     @InjectView(R.id.alert_description) TextView alertDescription;
     @InjectView(R.id.alert_status) TextView alertStatus;
-
-    @Inject protected Lazy<Picasso> picasso;
-    @Inject DashboardNavigator navigator;
-
-    private AlertCompactDTO alertCompactDTO;
 
     //<editor-fold desc="Constructors">
     public AlertItemView(Context context, AttributeSet attrs)
@@ -56,140 +54,156 @@ public class AlertItemView extends RelativeLayout
         ButterKnife.inject(this);
     }
 
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-        ButterKnife.inject(this);
-    }
-
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.reset(this);
+        picasso.cancelRequest(stockLogo);
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(AlertCompactDTO alertCompactDTO)
+    @Override public void display(@NonNull DTO dto)
     {
-        this.alertCompactDTO = alertCompactDTO;
-        if (alertCompactDTO != null)
+        if (stockLogo != null)
         {
-            displayStockSymbol();
-            displayStockLogo();
-            displayAlertDescription();
-            displayAlertStatus();
-            displayTrigger();
-        }
-    }
-
-    private void displayAlertDescription()
-    {
-        if (alertCompactDTO.priceMovement != null)
-        {
-            THSignedPercentage.builder(alertCompactDTO.priceMovement * 100)
-                    .boldValue()
-                    .format(getContext().getString(R.string.stock_alert_when_price_move))
-                    .build()
-                    .into(alertDescription);
-        }
-        else
-        {
-            THSignedNumber.Builder builder = THSignedMoney.builder(alertCompactDTO.targetPrice)
-                    .withOutSign()
-                    .boldCurrency()
-                    .boldValue();
-            if (alertCompactDTO.upOrDown) // up
+            RequestCreator request;
+            if (dto.logoUrl != null)
             {
-                builder.format(getContext().getString(R.string.stock_alert_when_price_raises));
+                request = picasso.load(dto.logoUrl);
             }
             else
             {
-                builder.format(getContext().getString(R.string.stock_alert_when_price_falls));
+                request = picasso.load(dto.logoRes);
             }
-            builder.build()
-                    .into(alertDescription);
+            request.transform(new WhiteToTransparentTransformation())
+                    .into(stockLogo);
+        }
+
+        if (stockSymbol != null)
+        {
+            stockSymbol.setText(dto.stockSymbol);
+        }
+
+        if (alertValue != null)
+        {
+            alertValue.setText(dto.alertValue);
+        }
+
+        if (companyName != null)
+        {
+            companyName.setText(dto.companyName);
+        }
+
+        if (alertDescription != null)
+        {
+            alertDescription.setText(dto.description);
+        }
+
+        if (alertStatus != null)
+        {
+            alertStatus.setText(dto.status);
         }
     }
 
-    private void displayTrigger()
+    public static class DTO
     {
-        if (alertCompactDTO.activeUntilDate != null)
-        {
-            //alertDescription.setText(getFormattedTriggerDescription(alertCompactDTO.activeUntilDate));
-        }
-    }
+        @NonNull public final AlertCompactDTO alertCompactDTO;
+        @Nullable public final String logoUrl;
+        @DrawableRes public final int logoRes;
+        @NonNull public final String stockSymbol;
+        @NonNull public final String alertValue;
+        @NonNull public final String companyName;
+        @NonNull public final String description;
+        @NonNull public final Spanned status;
 
-    private Spanned getFormattedTriggerDescription(Date activeUntilDate)
-    {
-        return null;
-    }
-
-    private void displayAlertStatus()
-    {
-        if (alertCompactDTO.active)
+        public DTO(@NonNull Resources resources, @NonNull AlertCompactDTO alertCompactDTO)
         {
-            if (alertCompactDTO.activeUntilDate != null)
+            this.alertCompactDTO = alertCompactDTO;
+            SecurityCompactDTO securityCompactDTO = alertCompactDTO.security;
+
+            //<editor-fold desc="Logo">
+            if (securityCompactDTO != null && securityCompactDTO.imageBlobUrl != null)
             {
-                alertStatus.setText(getFormattedActiveUntilString(alertCompactDTO.activeUntilDate));
+                logoUrl = securityCompactDTO.imageBlobUrl;
+                logoRes = R.drawable.default_image;
             }
-            alertStatus.setTextColor(getResources().getColor(R.color.black));
-        }
-        else
-        {
-            alertStatus.setText(R.string.stock_alert_inactive);
-            alertStatus.setTextColor(getResources().getColor(R.color.text_secondary));
-        }
-    }
+            else if (securityCompactDTO != null)
+            {
+                logoUrl = null;
+                logoRes = securityCompactDTO.getExchangeLogoId();
+            }
+            else
+            {
+                logoUrl = null;
+                logoRes = R.drawable.default_image;
+            }
+            //</editor-fold>
 
-    private Spanned getFormattedActiveUntilString(@NonNull Date activeUntilDate)
-    {
-        return Html.fromHtml(
-                getContext().getString(R.string.stock_alert_active_until_date, DateUtils.getFormattedDate(getResources(), activeUntilDate)));
-    }
+            //<editor-fold desc="Stock Symbol">
+            if (securityCompactDTO != null)
+            {
+                stockSymbol = securityCompactDTO.getExchangeSymbol();
+            }
+            else
+            {
+                stockSymbol = resources.getString(R.string.na);
+            }
+            //</editor-fold>
 
-    private void displayStockSymbol()
-    {
-        if (alertCompactDTO.security != null)
-        {
-            stockSymbol.setText(alertCompactDTO.security.getExchangeSymbol());
-        }
-    }
+            //<editor-fold desc="Alert Value">
+            if (alertCompactDTO.priceMovement != null)
+            {
+                alertValue = THSignedPercentage.builder(alertCompactDTO.priceMovement * 100)
+                        .signTypePlusMinusAlways()
+                        .build().toString();
+            }
+            else
+            {
+                alertValue = THSignedMoney.builder(alertCompactDTO.targetPrice)
+                        .currency(securityCompactDTO == null
+                                ? SecurityUtils.getDefaultCurrency()
+                                : securityCompactDTO.currencyDisplay)
+                        .build().toString();
+            }
+            //</editor-fold>
 
-    private void displayStockLogo()
-    {
-        SecurityCompactDTO securityCompactDTO = alertCompactDTO.security;
-        if (securityCompactDTO != null && securityCompactDTO.imageBlobUrl != null)
-        {
-            picasso.get()
-                    .load(securityCompactDTO.imageBlobUrl)
-                    .transform(new WhiteToTransparentTransformation())
-                    .into(stockLogo);
-        }
-        else if (securityCompactDTO != null)
-        {
-            picasso.get()
-                    .load(securityCompactDTO.getExchangeLogoId())
-                    .into(stockLogo);
-        }
-        else
-        {
-            stockLogo.setImageResource(R.drawable.default_image);
-        }
-    }
+            //<editor-fold desc="Company Name">
+            if (securityCompactDTO != null)
+            {
+                companyName = securityCompactDTO.name;
+            }
+            else
+            {
+                companyName = "";
+            }
+            //</editor-fold>
 
-    @OnClick({R.id.trade})
-    public void onTradeClick()
-    {
-        handleBuyAndSellButtonClick();
-    }
+            //<editor-fold desc="Description">
+            if (alertCompactDTO.priceMovement != null)
+            {
+                description = resources.getString(R.string.stock_alert_price_movement);
+            }
+            else
+            {
+                description = resources.getString(R.string.stock_alert_target_price);
+            }
+            //</editor-fold>
 
-    private void handleBuyAndSellButtonClick()
-    {
-        if (alertCompactDTO != null && alertCompactDTO.security != null &&
-                alertCompactDTO.security.getSecurityId() != null)
-        {
-            Bundle args = new Bundle();
-            BuySellStockFragment.putSecurityId(args, alertCompactDTO.security.getSecurityId());
-            navigator.pushFragment(BuySellStockFragment.class, args);
+            //<editor-fold desc="Status">
+            if (!alertCompactDTO.active)
+            {
+                status = new SpannableString(resources.getString(R.string.stock_alert_inactive));
+
+            }
+            else if (alertCompactDTO.activeUntilDate == null)
+            {
+                status = new SpannableString(resources.getString(R.string.stock_alert_active_one));
+            }
+            else
+            {
+                status = Html.fromHtml(
+                        resources.getString(R.string.stock_alert_active_until_date,
+                                DateUtils.getFormattedDate(resources, alertCompactDTO.activeUntilDate)));
+            }
+            //</editor-fold>
         }
     }
 }

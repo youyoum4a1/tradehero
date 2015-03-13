@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.alert;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +23,8 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertCompactDTOList;
+import com.tradehero.th.api.system.SystemStatusDTO;
+import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -30,19 +33,25 @@ import com.tradehero.th.billing.SecurityAlertKnowledge;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
+import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.widget.list.BaseListHeaderView;
-import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class AlertManagerFragment extends DashboardFragment
 {
     public static final String BUNDLE_KEY_USER_ID = AlertManagerFragment.class.getName() + ".userId";
 
+    @InjectView(R.id.manage_alerts_header) View planHeader;
     @InjectView(R.id.manage_alerts_count) TextView alertPlanCount;
     @InjectView(R.id.icn_manage_alert_count) ImageView alertPlanCountIcon;
     @InjectView(R.id.progress_animator) BetterViewAnimator progressAnimator;
@@ -50,14 +59,15 @@ public class AlertManagerFragment extends DashboardFragment
     @InjectView(R.id.alerts_list) StickyListHeadersListView alertListView;
     protected BaseListHeaderView footerView;
 
-    @Inject protected AlertCompactListCacheRx alertCompactListCache;
-    @Inject protected Lazy<UserProfileCacheRx> userProfileCache;
-    @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
+    @Inject CurrentUserId currentUserId;
+    @Inject THBillingInteractorRx userInteractorRx;
+    @Inject SystemStatusCache systemStatusCache;
+    @Inject AlertCompactListCacheRx alertCompactListCache;
+    @Inject UserProfileCacheRx userProfileCache;
+    @Inject SecurityAlertKnowledge securityAlertKnowledge;
 
     protected UserProfileDTO currentUserProfile;
     private AlertListItemAdapter alertListItemAdapter;
-    @Inject protected THBillingInteractorRx userInteractorRx;
-    @Inject CurrentUserId currentUserId;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -65,6 +75,7 @@ public class AlertManagerFragment extends DashboardFragment
         alertListItemAdapter = new AlertListItemAdapter(getActivity(), currentUserId, R.layout.alert_list_item);
     }
 
+    @SuppressLint("InflateParams")
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_store_manage_alerts, container, false);
@@ -87,7 +98,7 @@ public class AlertManagerFragment extends DashboardFragment
         {
             @Override public void onClick(View v)
             {
-                AlertManagerFragment.this.handleManageSubscriptionClicked(v);
+                handleManageSubscriptionClicked();
             }
         });
     }
@@ -96,6 +107,14 @@ public class AlertManagerFragment extends DashboardFragment
     {
         setActionBarTitle(getString(R.string.stock_alerts));
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        fetchSystemStatus();
+        fetchUserProfile();
+        fetchAlertCompactList();
     }
 
     @Override public void onResume()
@@ -110,8 +129,6 @@ public class AlertManagerFragment extends DashboardFragment
         {
             progressAnimator.setDisplayedChildByLayoutId(R.id.alerts_list);
         }
-        fetchUserProfile();
-        fetchAlertCompactList();
     }
 
     @Override public void onDestroyView()
@@ -137,11 +154,36 @@ public class AlertManagerFragment extends DashboardFragment
         super.onDestroy();
     }
 
+    protected void fetchSystemStatus()
+    {
+        onStopSubscriptions.add(AppObservable.bindFragment(
+                this,
+                systemStatusCache.getOne(new SystemStatusKey()))
+                .subscribe(
+                        new Action1<Pair<SystemStatusKey, SystemStatusDTO>>()
+                        {
+                            @Override public void call(Pair<SystemStatusKey, SystemStatusDTO> statusPair)
+                            {
+                                linkWith(statusPair.second);
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to fetch system status")));
+    }
+
+    protected void linkWith(@NonNull SystemStatusDTO status)
+    {
+        planHeader.setVisibility(status.alertsAreFree ? View.GONE : View.VISIBLE);
+        if (status.alertsAreFree)
+        {
+            alertListView.removeFooterView(footerView);
+        }
+    }
+
     protected void fetchUserProfile()
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                userProfileCache.get().get(currentUserId.toUserBaseKey()))
+                userProfileCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(
                         new Action1<Pair<UserBaseKey, UserProfileDTO>>()
                         {
@@ -165,20 +207,37 @@ public class AlertManagerFragment extends DashboardFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                alertCompactListCache.get(currentUserId.toUserBaseKey()))
-                .subscribe(
-                        new Action1<Pair<UserBaseKey, AlertCompactDTOList>>()
+                alertCompactListCache.get(currentUserId.toUserBaseKey())
+                        .subscribeOn(Schedulers.computation())
+                        .flatMap(new Func1<Pair<UserBaseKey, AlertCompactDTOList>, Observable<List<AlertItemView.DTO>>>()
                         {
-                            @Override public void call(Pair<UserBaseKey, AlertCompactDTOList> pair)
+                            @Override public Observable<List<AlertItemView.DTO>> call(
+                                    Pair<UserBaseKey, AlertCompactDTOList> alertCompactDTOListPair)
                             {
-                                linkWith(pair.second);
+                                return Observable.from(alertCompactDTOListPair.second)
+                                        .map(new Func1<AlertCompactDTO, AlertItemView.DTO>()
+                                        {
+                                            @Override public AlertItemView.DTO call(AlertCompactDTO alertCompactDTO)
+                                            {
+                                                return new AlertItemView.DTO(getResources(), alertCompactDTO);
+                                            }
+                                        })
+                                        .toList();
+                            }
+                        }))
+                .subscribe(
+                        new Action1<List<? extends AlertItemView.DTO>>()
+                        {
+                            @Override public void call(List<? extends AlertItemView.DTO> pair)
+                            {
+                                linkWith(pair);
                             }
                         },
                         new ToastOnErrorAction()
                 ));
     }
 
-    protected void linkWith(@NonNull AlertCompactDTOList alertCompactDTOs)
+    protected void linkWith(@NonNull List<? extends AlertItemView.DTO> alertCompactDTOs)
     {
         progressAnimator.setDisplayedChildByLayoutId(R.id.alerts_list);
         alertListItemAdapter.appendTail(alertCompactDTOs);
@@ -237,13 +296,14 @@ public class AlertManagerFragment extends DashboardFragment
         }
     }
 
+    @SuppressWarnings({"UnusedParameters", "unused"})
     @OnItemClickSticky(R.id.alerts_list)
     protected void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        AlertCompactDTO alertCompactDTO = (AlertCompactDTO) parent.getItemAtPosition(position);
+        AlertItemView.DTO alertCompactDTO = (AlertItemView.DTO) parent.getItemAtPosition(position);
         if (alertCompactDTO != null)
         {
-            handleAlertItemClicked(alertCompactDTO);
+            handleAlertItemClicked(alertCompactDTO.alertCompactDTO);
         }
     }
 
@@ -254,7 +314,7 @@ public class AlertManagerFragment extends DashboardFragment
         navigator.get().pushFragment(AlertViewFragment.class, bundle);
     }
 
-    private void handleManageSubscriptionClicked(View view)
+    private void handleManageSubscriptionClicked()
     {
         userInteractorRx.manageSubscriptions();
     }
