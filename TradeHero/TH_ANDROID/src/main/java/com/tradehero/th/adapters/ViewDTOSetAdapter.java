@@ -38,15 +38,24 @@ abstract public class ViewDTOSetAdapter<T, ViewType extends View & DTOView<T>>
 
     @Override public ViewType getView(int position, @Nullable View convertView, ViewGroup parent)
     {
+        ViewType dtoView;
         if (convertView == null)
         {
-            convertView = LayoutInflater.from(context).inflate(getViewResId(position), parent, false);
+            dtoView = inflate(position, parent);
         }
-
-        //noinspection unchecked
-        ViewType dtoView = (ViewType) convertView;
+        else
+        {
+            //noinspection unchecked
+            dtoView = (ViewType) convertView;
+        }
         dtoView.display(getItem(position));
         return dtoView;
+    }
+
+    protected ViewType inflate(int position, ViewGroup parent)
+    {
+        //noinspection unchecked
+        return (ViewType) LayoutInflater.from(context).inflate(getViewResId(position), parent, false);
     }
 
     @LayoutRes abstract protected int getViewResId(int position);
