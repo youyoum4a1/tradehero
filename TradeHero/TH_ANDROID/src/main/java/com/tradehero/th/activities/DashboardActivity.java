@@ -41,12 +41,10 @@ import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
 import com.tradehero.th.BottomTabsQuickReturnWebViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
-import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
-import com.tradehero.th.api.level.UserXPAchievementDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.system.SystemStatusKey;
@@ -83,9 +81,9 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trade.FXInfoFragment;
+import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
@@ -114,7 +112,6 @@ import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
 import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
 import com.tradehero.th.utils.route.THRouter;
-import com.tradehero.th.widget.XpToast;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
@@ -130,20 +127,15 @@ import rx.Notification;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_FILTER;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.ENROLLMENT_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_BROADCAST;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.ONBOARD_INTENT_FILTER;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.SEND_LOVE_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP_INTENT_FILTER;
 import static rx.android.app.AppObservable.bindActivity;
 import static rx.android.content.ContentObservable.fromLocalBroadcast;
 
@@ -184,7 +176,6 @@ public class DashboardActivity extends BaseActivity
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
     private boolean enrollmentScreenIsOpened = false;
 
-    @InjectView(R.id.xp_toast_box) XpToast xpToast;
     @InjectView(R.id.my_toolbar) Toolbar toolbar;
 
     private Subscription notificationFetchSubscription;
@@ -396,69 +387,6 @@ public class DashboardActivity extends BaseActivity
         analytics.openSession();
 
         subscriptions = new CompositeSubscription();
-        subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ACHIEVEMENT_INTENT_FILTER)
-                .flatMap(new Func1<Intent, Observable<? extends AbstractAchievementDialogFragment>>()
-                {
-                    @Override public Observable<? extends AbstractAchievementDialogFragment> call(Intent intent)
-                    {
-                        if (intent != null && intent.getBundleExtra(KEY_USER_ACHIEVEMENT_ID) != null)
-                        {
-                            Bundle extra = intent.getBundleExtra(KEY_USER_ACHIEVEMENT_ID);
-                            return achievementDialogCreator.newInstance(new UserAchievementId(extra));
-                        }
-                        return Observable.empty();
-                    }
-                }))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Observer<AbstractAchievementDialogFragment>()
-                        {
-                            @Override public void onNext(AbstractAchievementDialogFragment fragment)
-                            {
-                                fragment.show(DashboardActivity.this.getFragmentManager(), AbstractAchievementDialogFragment.TAG);
-                            }
-
-                            @Override public void onCompleted()
-                            {
-                                broadcastUtilsLazy.get().nextPlease();
-                            }
-
-                            @Override public void onError(Throwable e)
-                            {
-                            }
-                        }
-                ));
-
-        subscriptions.add(fromLocalBroadcast(this, XP_INTENT_FILTER)
-                .flatMap(new Func1<Intent, Observable<UserXPAchievementDTO>>()
-                {
-                    @Override public Observable<UserXPAchievementDTO> call(Intent intent)
-                    {
-                        if ((intent != null) && (intent.getBundleExtra(KEY_XP_BROADCAST) != null))
-                        {
-                            return Observable.just(new UserXPAchievementDTO(intent.getBundleExtra(KEY_XP_BROADCAST)));
-                        }
-                        return Observable.empty();
-                    }
-                })
-                .subscribe(
-                        new Observer<UserXPAchievementDTO>()
-                        {
-                            @Override public void onNext(UserXPAchievementDTO achievementDTO)
-                            {
-                                xpToast.showWhenReady(achievementDTO);
-                            }
-
-                            @Override public void onCompleted()
-                            {
-                                broadcastUtilsLazy.get().nextPlease();
-                            }
-
-                            @Override public void onError(Throwable e)
-                            {
-                            }
-                        }));
 
         subscriptions.add(fromLocalBroadcast(this, ONBOARD_INTENT_FILTER)
                 .subscribe(
@@ -470,7 +398,13 @@ public class DashboardActivity extends BaseActivity
                                 OnBoardDialogFragment.showOnBoardDialog(DashboardActivity.this.getFragmentManager());
                             }
                         },
-                        new EmptyAction1<Throwable>()));
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable throwable)
+                            {
+                                broadcastUtilsLazy.get().nextPlease();
+                            }
+                        }));
 
         // get providers for enrollment page
         subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
@@ -488,14 +422,13 @@ public class DashboardActivity extends BaseActivity
                                 for (ProviderDTO providerDTO : pair.second)
                                 {
                                     boolean r = !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerDTO.id);
-                                    if (!r)
+                                    if (r)
                                     {
-                                        broadcastUtilsLazy.get().nextPlease();
-                                        return Observable.empty();
+                                        return Observable.just(providerDTO);
                                     }
-                                    return Observable.just(providerDTO);
                                 }
-                                return null;
+                                broadcastUtilsLazy.get().nextPlease();
+                                return Observable.empty();
                             }
                         })
                         .subscribeOn(Schedulers.io()))
@@ -518,7 +451,6 @@ public class DashboardActivity extends BaseActivity
 
                                     @Override public void onCompleted()
                                     {
-                                        broadcastUtilsLazy.get().nextPlease();
                                     }
 
                                     @Override public void onError(Throwable e)
@@ -600,8 +532,6 @@ public class DashboardActivity extends BaseActivity
     @Override protected void onDestroy()
     {
         notificationFetchSubscription = null;
-
-        xpToast.destroy();
 
         networkIndicator = null;
 

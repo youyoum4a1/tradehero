@@ -12,6 +12,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.inject.BaseInjector;
 import com.tradehero.th.inject.ExInjector;
+import com.tradehero.th.models.level.UserXPAchievementHandler;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.dagger.AppModule;
@@ -26,6 +27,8 @@ public class THApp extends PApplication
     public static boolean timberPlanted = false;
 
     @Inject protected PushNotificationManager pushNotificationManager;
+    @Inject UserXPAchievementHandler userXPAchievementHandler;
+
     private ObjectGraph objectGraph;
 
     @Override protected void init()
@@ -38,6 +41,8 @@ public class THApp extends PApplication
         buildObjectGraphAndInject();
 
         DaggerUtils.setObjectGraph(objectGraph);
+
+        userXPAchievementHandler.register(this);
 
         pushNotificationManager.initialise()
                 .subscribe(
@@ -110,6 +115,12 @@ public class THApp extends PApplication
     @Override public void inject(Object o)
     {
         objectGraph.inject(o);
+    }
+
+    @Override public void onTerminate()
+    {
+        userXPAchievementHandler.unregister();
+        super.onTerminate();
     }
 
     public static THApp get(Context context)
