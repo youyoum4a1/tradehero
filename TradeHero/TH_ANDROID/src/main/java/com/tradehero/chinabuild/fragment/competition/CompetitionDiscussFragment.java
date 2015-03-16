@@ -1,10 +1,10 @@
 package com.tradehero.chinabuild.fragment.competition;
 
 import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.*;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +81,18 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
         DaggerUtils.inject(this);
     }
 
+    public final static String INTENT_REFRESH_COMPETITION_DISCUSSIONS = "intent_refresh_competition_discussions";
+    private IntentFilter intentFilter = new IntentFilter();
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(INTENT_REFRESH_COMPETITION_DISCUSSIONS)) {
+                discussionListKey.page = 1;
+                fetchSecurityDiscuss();
+            }
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +100,9 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
         userProfileCacheListener = new UserProfileFetchListener();
         discussionListKey = new PaginatedDiscussionListKey(DiscussionType.COMPETITION, getCompetitionId(), 1, 20);
         discussionListCache.invalidate(discussionListKey);
+
+        intentFilter.addAction(INTENT_REFRESH_COMPETITION_DISCUSSIONS);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(broadcastReceiver, intentFilter);
     }
 
     @Override
@@ -154,7 +169,6 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
         }
 
         fetchUserProfile();
-
         return view;
     }
 
@@ -169,6 +183,7 @@ public class CompetitionDiscussFragment extends Fragment implements View.OnClick
     public void onDestroy() {
         super.onDestroy();
         userProfileCacheListener=null;
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
     }
 
     @Override

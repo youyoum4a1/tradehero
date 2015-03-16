@@ -1,7 +1,9 @@
 package com.tradehero.chinabuild.fragment.message;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -16,6 +18,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.chinabuild.data.DiscoveryDiscussFormDTO;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
+import com.tradehero.chinabuild.fragment.competition.CompetitionDiscussFragment;
 import com.tradehero.chinabuild.fragment.search.SearchFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
 import com.tradehero.common.fragment.HasSelectedItem;
@@ -487,8 +490,16 @@ public class DiscussSendFragment extends DashboardFragment
         @Override public void success(DiscussionDTO discussionDTO, Response response)
         {
             onFinish();
+            if(getActivity()==null){
+                return;
+            }
+            if(getDiscussionType().value == DiscussionType.COMPETITION.value){
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(CompetitionDiscussFragment.INTENT_REFRESH_COMPETITION_DISCUSSIONS));
+            }
             DeviceUtil.dismissKeyboard(getActivity());
             getDashboardNavigator().popFragment();
+
+
         }
 
         @Override public void failure(RetrofitError error)
