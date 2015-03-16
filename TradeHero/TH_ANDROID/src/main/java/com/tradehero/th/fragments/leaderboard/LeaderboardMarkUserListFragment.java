@@ -219,7 +219,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
                 swipeContainer.setRefreshing(true);
                 requestDtos();
             }
-            getActivity().invalidateOptionsMenu();
         }
         else
         {

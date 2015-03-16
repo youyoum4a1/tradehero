@@ -636,4 +636,11 @@
     <item name="android:paddingLeft">@dimen/margin_small</item>
   </style>
 
+  <style name="TradeHero.ActionBar.Spinner" parent="TradeHero.ActionBar">
+    <item name="android:background">@drawable/action_bar_spinner_item</item>
+  </style>
+  
+  <style name="TH.Title.Inverse.DropDown" parent="TH.Title.Inverse">
+    <item name="android:textColor">@color/tradehero_blue</item>
+  </style>
 </resources>

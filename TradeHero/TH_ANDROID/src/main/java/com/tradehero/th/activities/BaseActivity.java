@@ -9,8 +9,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
@@ -24,6 +30,7 @@ import com.tradehero.th.utils.dagger.AppModule;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
@@ -42,6 +49,8 @@ public class BaseActivity extends ActionBarActivity
     @Inject @ForSocialToken IntentFilter socialTokenIntentFilter;
     BroadcastReceiver socialTokenBroadcastListener;
     @Inject Lazy<MarketUtil> marketUtil;
+
+    private WeakReference<Toolbar> toolbarRef;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -97,6 +106,18 @@ public class BaseActivity extends ActionBarActivity
         socialTokenBroadcastListener = null;
         upgradeRequiredBroadcastListener = null;
         super.onDestroy();
+    }
+
+    @Override public void setSupportActionBar(@Nullable Toolbar toolbar)
+    {
+        toolbarRef = new WeakReference<Toolbar>(toolbar);
+        super.setSupportActionBar(toolbar);
+    }
+
+    public @Nullable Toolbar getToolbar()
+    {
+        Toolbar toolbar = toolbarRef.get();
+        return toolbar;
     }
 
     protected boolean requireLogin()

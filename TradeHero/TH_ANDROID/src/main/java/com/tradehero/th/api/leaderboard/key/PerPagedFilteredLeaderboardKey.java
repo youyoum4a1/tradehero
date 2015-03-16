@@ -60,6 +60,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
             @Nullable Integer page)
     {
         this(other, overrideKey, page, other.perPage);
+        setAssetClass(other.getAssetClass());
     }
 
     public PerPagedFilteredLeaderboardKey(

@@ -308,11 +308,6 @@ public class DashboardActivity extends BaseActivity
         }
     }
 
-    public Toolbar getToolbar()
-    {
-        return toolbar;
-    }
-
     @Override public boolean onCreateOptionsMenu(Menu menu)
     {
         UserProfileDTO currentUserProfile =
