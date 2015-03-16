@@ -80,7 +80,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     protected void displayUserStatic()
     {
         initUserStaticView();
-        if (userStatisticsDto != null)
+        if (userStatisticView != null && userStatisticsDto != null)
         {
             userStatisticView.display(userStatisticsDto);
         }
