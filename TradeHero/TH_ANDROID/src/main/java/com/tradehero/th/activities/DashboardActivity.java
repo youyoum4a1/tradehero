@@ -54,12 +54,10 @@ import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.NavigationAnalyticsReporter;
-import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentBroadcastSignal;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
@@ -140,7 +138,7 @@ import static rx.android.app.AppObservable.bindActivity;
 import static rx.android.content.ContentObservable.fromLocalBroadcast;
 
 public class DashboardActivity extends BaseActivity
-        implements ResideMenu.OnMenuListener
+        implements ResideMenu.OnMenuListener, AchievementAcceptor
 {
     private DashboardNavigator navigator;
     @Inject Set<DashboardNavigator.DashboardFragmentWatcher> dashboardFragmentWatchers;
@@ -148,7 +146,6 @@ public class DashboardActivity extends BaseActivity
     // It is important to have Lazy here because we set the current Activity after the injection
     // and the LogicHolder creator needs the current Activity...
     @Inject Lazy<THBillingInteractorRx> billingInteractorRx;
-    @Inject Lazy<THBillingAlertDialogRxUtil> billingAlertDialogRxUtil;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
@@ -163,14 +160,12 @@ public class DashboardActivity extends BaseActivity
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
     @Inject Analytics analytics;
     @Inject Lazy<BroadcastUtils> broadcastUtilsLazy;
-    @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
     @Inject @IsOnBoardShown BooleanPreference isOnboardShown;
     @Inject @IsFxShown BooleanPreference isFxShown;
     @Inject Set<ActivityResultRequester> activityResultRequesters;
     @Inject @ForAnalytics Lazy<DashboardNavigator.DashboardFragmentWatcher> analyticsReporter;
     @Inject THAppsFlyer thAppsFlyer;
     @Inject ProviderUtil providerUtil;
-    @Inject MarketUtil marketUtil;
 
     @Inject Lazy<ProviderListCacheRx> providerListCache;
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();

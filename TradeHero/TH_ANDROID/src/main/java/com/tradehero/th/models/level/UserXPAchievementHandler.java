@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.rx.LifecycleEventWithActivity;
 import com.tradehero.common.rx.LifecycleObservableUtil;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.AchievementAcceptor;
 import com.tradehero.th.api.level.UserXPAchievementDTO;
 import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
@@ -20,6 +21,7 @@ public class UserXPAchievementHandler
 {
     @SuppressWarnings("FieldCanBeLocal")
     private final int TAG_XP_SUBSCRIPTION = R.color.tradehero_blue;
+    @SuppressWarnings("FieldCanBeLocal")
     private final int TAG_ACHIEVEMENT_SUBSCRIPTION = R.color.tradehero_blue_focused;
 
     @NonNull final AbstractAchievementDialogFragment.Creator achievementDialogCreator;
@@ -97,26 +99,29 @@ public class UserXPAchievementHandler
                                             }));
                 }
 
-                activityEvent.activity.getWindow().getDecorView().setTag(
-                        TAG_ACHIEVEMENT_SUBSCRIPTION,
-                        UserXPAchievementUtil.getLocalBroadcastAchievementDialog(activityEvent.activity, achievementDialogCreator)
-                                .subscribe(
-                                        new Observer<AbstractAchievementDialogFragment>()
-                                        {
-                                            @Override public void onNext(AbstractAchievementDialogFragment fragment)
+                if (activityEvent.activity instanceof AchievementAcceptor)
+                {
+                    activityEvent.activity.getWindow().getDecorView().setTag(
+                            TAG_ACHIEVEMENT_SUBSCRIPTION,
+                            UserXPAchievementUtil.getLocalBroadcastAchievementDialog(activityEvent.activity, achievementDialogCreator)
+                                    .subscribe(
+                                            new Observer<AbstractAchievementDialogFragment>()
                                             {
-                                                fragment.show(activityEvent.activity.getFragmentManager(), AbstractAchievementDialogFragment.TAG);
-                                            }
+                                                @Override public void onNext(AbstractAchievementDialogFragment fragment)
+                                                {
+                                                    fragment.show(activityEvent.activity.getFragmentManager(), AbstractAchievementDialogFragment.TAG);
+                                                }
 
-                                            @Override public void onCompleted()
-                                            {
-                                            }
+                                                @Override public void onCompleted()
+                                                {
+                                                }
 
-                                            @Override public void onError(Throwable e)
-                                            {
-                                                broadcastUtils.nextPlease();
-                                            }
-                                        }));
+                                                @Override public void onError(Throwable e)
+                                                {
+                                                    broadcastUtils.nextPlease();
+                                                }
+                                            }));
+                }
                 break;
 
             case STOP:
@@ -131,7 +136,9 @@ public class UserXPAchievementHandler
                     xpToast.setTag(TAG_XP_SUBSCRIPTION, null);
                 }
 
-                Subscription achievementSubscription = (Subscription) activityEvent.activity.getWindow().getDecorView().getTag(TAG_ACHIEVEMENT_SUBSCRIPTION);
+                Subscription achievementSubscription = (Subscription) activityEvent.activity.getWindow()
+                        .getDecorView()
+                        .getTag(TAG_ACHIEVEMENT_SUBSCRIPTION);
                 if (achievementSubscription != null)
                 {
                     achievementSubscription.unsubscribe();

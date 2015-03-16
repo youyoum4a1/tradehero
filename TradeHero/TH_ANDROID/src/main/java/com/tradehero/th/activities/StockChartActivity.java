@@ -15,7 +15,7 @@ import dagger.Module;
 import dagger.Provides;
 
 public class StockChartActivity extends FragmentActivity
-        implements Injector
+        implements Injector, AchievementAcceptor
 {
     private Injector newInjector;
 
