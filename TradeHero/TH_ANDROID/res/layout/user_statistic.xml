@@ -42,6 +42,7 @@
           android:text="@string/leaderboard_positions"
           android:gravity="center"
           style="@style/TH.Body"
+          android:textSize="@dimen/text_xxsmall"
           />
 
     </LinearLayout>
@@ -72,6 +73,7 @@
           android:text="@string/leaderboard_monthly_trade_count"
           android:gravity="center"
           style="@style/TH.Body"
+          android:textSize="@dimen/text_xxsmall"
           />
 
     </LinearLayout>
@@ -102,6 +104,7 @@
           android:text="@string/leaderboard_avg_days_held"
           android:gravity="center"
           style="@style/TH.Body"
+          android:textSize="@dimen/text_xxsmall"
           />
 
     </LinearLayout>

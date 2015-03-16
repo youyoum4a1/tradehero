@@ -141,6 +141,23 @@
         format="dimension" />
   </declare-styleable>
 
+  <declare-styleable name="MarketRegionView">
+    <attr name="region" format="string" />
+  </declare-styleable>
+
+  <declare-styleable name="MapHitBoxView">
+    <attr name="hitBoxRegion" format="string"/>
+    <attr name="hitBoxImage" format="reference"/>
+  </declare-styleable>
+
+  <declare-styleable name="OnBoardSelectableViewLinear">
+    <attr name="alphaUnSelected" format="float"/>
+  </declare-styleable>
+
+  <declare-styleable name="TopStockListView">
+    <attr name="topStock" format="reference" />
+  </declare-styleable>
+
   <declare-styleable name="CircleProgressBar">
     <attr name="progress_complete_color" format="color"></attr>
     <attr name="progress_uncomplete_color" format="color"></attr>

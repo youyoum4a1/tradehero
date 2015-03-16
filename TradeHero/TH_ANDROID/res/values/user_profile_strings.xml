@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="user_profile_count_followers">Followers</string>
+  <string name="user_profile_count_followers">Fans</string>
   <string name="user_profile_count_heroes">Heroes</string>
   <string name="user_profile_count_trades">Trades</string>
   <string name="user_profile_count_exchanges">Exchanges</string>

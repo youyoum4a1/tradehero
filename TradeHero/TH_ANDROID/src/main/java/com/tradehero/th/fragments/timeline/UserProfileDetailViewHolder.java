@@ -7,9 +7,11 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.THApp;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.widget.UserLevelProgressBar;
@@ -17,6 +19,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
@@ -27,10 +30,13 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @InjectView(R.id.user_profile_achievement_count) @Optional protected TextView achievementCount;
     @InjectView(R.id.user_level_progress_bar) @Optional protected UserLevelProgressBar userLevelProgressBar;
 
+    @InjectView(R.id.user_statistic_view) @Optional protected UserStatisticView userStatisticView;
+
     @Inject LevelDefListCacheRx levelDefListCache;
 
     protected Runnable displayTopViewBackgroundRunnable;
     private Subscription levelDefDTOListSubscription;
+    private UserStatisticView.DTO userStatisticsDto;
 
     public UserProfileDetailViewHolder(View view)
     {
@@ -68,6 +74,16 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         displayCashOnHand();
         displayAchievementCount();
         displayLevelProgress();
+        displayUserStatic();
+    }
+
+    protected void displayUserStatic()
+    {
+        initUserStaticView();
+        if (userStatisticsDto != null)
+        {
+            userStatisticView.display(userStatisticsDto);
+        }
     }
 
     protected void displayTotalWealth()
@@ -191,5 +207,26 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @Override protected void notifyDefaultPortfolioClicked()
     {
         super.notifyDefaultPortfolioClicked();
+    }
+
+    public void initUserStaticView()
+    {
+        if (userStatisticsDto != null) return;
+        if (userProfileDTO != null)
+        {
+            LeaderboardUserDTO leaderboardUserDTO;
+            try
+            {
+                leaderboardUserDTO = userProfileDTO.mostSkilledLbmu.getList().get(0);
+                if (leaderboardUserDTO != null)
+                {
+                    userStatisticsDto = new UserStatisticView.DTO(THApp.context().getResources(), leaderboardUserDTO, userProfileDTO.mostSkilledLbmu);
+                }
+            }
+            catch (Exception e)
+            {
+                Timber.e("initUserStaticView error:" + e.toString());
+            }
+        }
     }
 }

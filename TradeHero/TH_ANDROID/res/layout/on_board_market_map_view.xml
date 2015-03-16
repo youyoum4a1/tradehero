@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tradehero.th.fragments.onboarding.exchange.MarketRegionMapView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/market_map_selector"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    tools:background="@color/light_blue_focused"
+    >
+
+  <ImageView
+      android:id="@+id/back_image"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      tools:src="@drawable/map"
+      />
+
+  <ImageView
+      android:id="@+id/front_image"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:alpha="0"
+      tools:src="@drawable/map_hitboxes"
+      tools:alpha="0"
+      />
+
+  <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:alpha="0"
+      app:hitBoxRegion="NORTH_AMERICA"
+      app:hitBoxImage="@drawable/hitbox_us_full"
+      tools:alpha="0.5"
+      />
+
+  <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:alpha="0"
+      app:hitBoxRegion="EUROPE"
+      app:hitBoxImage="@drawable/hitbox_europe_full"
+      tools:alpha="0.5"
+      />
+
+  <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:alpha="0"
+      app:hitBoxRegion="INDIA"
+      app:hitBoxImage="@drawable/hitbox_india_full"
+      tools:alpha="0.5"
+      />
+
+  <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:alpha="0"
+      app:hitBoxRegion="SOUTH_EAST_ASIA"
+      app:hitBoxImage="@drawable/hitbox_sea_full"
+      tools:alpha="0.5"
+      />
+
+  <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:alpha="0"
+      app:hitBoxRegion="EAST_ASIA"
+      app:hitBoxImage="@drawable/hitbox_eastasia_full"
+      tools:alpha="0.5"
+      />
+
+  <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:alpha="0"
+      app:hitBoxRegion="AUSTRALIA"
+      app:hitBoxImage="@drawable/hitbox_australia_full"
+      tools:alpha="0.5"
+      />
+
+</com.tradehero.th.fragments.onboarding.exchange.MarketRegionMapView>

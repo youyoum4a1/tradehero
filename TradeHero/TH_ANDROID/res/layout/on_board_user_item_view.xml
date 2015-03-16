@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tradehero.th.fragments.onboarding.hero.OnBoardUserItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/size_1"
+    android:background="@drawable/basic_white_selector"
+    app:alphaUnSelected="0.9"
+    >
+
+  <com.squareup.widgets.AspectRatioImageView
+      android:id="@android:id/icon1"
+      android:layout_width="@dimen/size_5"
+      android:layout_height="@dimen/size_5"
+      android:maxHeight="@dimen/size_6"
+      app:dominantMeasurement="width"
+      app:aspectRatioEnabled="true"
+      android:layout_gravity="center"
+      android:layout_marginBottom="@dimen/size_1"
+      android:layout_marginRight="@dimen/size_1"
+      android:layout_marginEnd="@dimen/size_1"
+      tools:src="@drawable/superman_facebook"
+      />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:layout_gravity="center_vertical"
+      >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+      <TextView
+          android:id="@android:id/text1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentStart="true"
+          style="@style/TH.Subhead"
+          tools:text="Keith Sanders"
+          />
+
+      <ImageView
+          android:id="@android:id/icon2"
+          android:layout_width="@dimen/size_3"
+          android:layout_height="@dimen/size_3"
+          android:src="@drawable/tick_green"
+          android:layout_alignParentRight="true"
+          android:layout_alignParentEnd="true"
+          />
+
+      <TextView
+          android:id="@android:id/text2"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_toRightOf="@android:id/text1"
+          android:layout_toEndOf="@android:id/text1"
+          android:layout_toLeftOf="@android:id/icon2"
+          android:layout_toStartOf="@android:id/icon2"
+          android:ellipsize="end"
+          android:gravity="end"
+          android:lines="1"
+          style="@style/TH.Caption"
+          tools:text="#a in Most Skilled"
+          />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/lbmu_roi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TH.UserROI"
+        tools:text="+87%"
+        />
+
+    <include layout="@layout/user_statistic_small"/>
+
+  </LinearLayout>
+
+</com.tradehero.th.fragments.onboarding.hero.OnBoardUserItemView>

@@ -460,7 +460,7 @@ public class LeaderboardMarkUserItemView
         {
             this.currentUserId = currentUserId;
             this.leaderboardUserDTO = leaderboardItem;
-            this.userStatisticsDto = new UserStatisticView.DTO(resources, leaderboardUserDTO, currentUserProfileDTO);
+            this.userStatisticsDto = new UserStatisticView.DTO(resources, leaderboardUserDTO, currentUserProfileDTO.mostSkilledLbmu);
             this.lbmuDisplayName = leaderboardItem.displayName;
             this.lbmuRoi = THSignedPercentage
                     .builder(leaderboardItem.roiInPeriod * 100)

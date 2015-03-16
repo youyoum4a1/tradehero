@@ -4,7 +4,9 @@ import android.support.annotation.NonNull;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeIntegerId;
-import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
+import com.tradehero.th.api.market.ExchangeListType;
+import com.tradehero.th.api.market.ExchangeSectorListDTO;
+import com.tradehero.th.api.market.SectorCompactDTOList;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
@@ -20,22 +22,31 @@ import rx.Observable;
     }
     //</editor-fold>
 
-    //<editor-fold desc="Get Exchanges">
-    @NonNull public Observable<ExchangeCompactDTOList> getExchangesRx()
+    //<editor-fold desc="Get Exchanges with Top Securities">
+    @NonNull public Observable<ExchangeCompactDTOList> getExchangesRx(@NonNull ExchangeListType exchangeListType)
     {
-        return marketServiceRx.getExchanges();
+        return marketServiceRx.getExchanges(exchangeListType.topNStocks);
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Exchange">
+    @Deprecated // If never used
     @NonNull public Observable<ExchangeDTO> getExchangeRx(@NonNull ExchangeIntegerId exchangeId)
     {
         return marketServiceRx.getExchange(exchangeId.key);
     }
     //</editor-fold>
 
+    //<editor-fold desc="Get Sectors">
+    @NonNull public Observable<SectorCompactDTOList> getSectors()
+    {
+        return marketServiceRx.getSectors();
+    }
+    //</editor-fold>
+
     //<editor-fold desc="Get All Exchange And Sectors Compact">
-    @NonNull public Observable<ExchangeSectorCompactListDTO> getAllExchangeSectorCompactRx()
+    @Deprecated
+    @NonNull public Observable<ExchangeSectorListDTO> getAllExchangeSectorCompactRx()
     {
         return marketServiceRx.getAllExchangeSectorCompact();
     }

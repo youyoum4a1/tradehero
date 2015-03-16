@@ -16,6 +16,7 @@ import com.tradehero.th.misc.exception.THException;
 
 @Routable("facebookshare/")
 public class FacebookShareActivity extends Activity
+        implements AchievementAcceptor
 {
     private static final String BUNDLE_KEY_NAME = "name";
     private static final String BUNDLE_KEY_DESCRIPTION = "caption";

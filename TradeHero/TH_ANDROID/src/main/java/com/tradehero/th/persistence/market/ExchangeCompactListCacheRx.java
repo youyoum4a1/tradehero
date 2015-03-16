@@ -15,7 +15,7 @@ import rx.Observable;
 @Singleton @UserCache
 public class ExchangeCompactListCacheRx extends BaseFetchDTOCacheRx<ExchangeListType, ExchangeCompactDTOList>
 {
-    public static final int DEFAULT_MAX_VALUE_SIZE = 1; // Be careful to increase when necessary
+    public static final int DEFAULT_MAX_VALUE_SIZE = 2; // Be careful to increase when necessary
 
     @NonNull private final Lazy<MarketServiceWrapper> marketServiceWrapper;
     @NonNull private final Lazy<ExchangeIdCacheRx> exchangeIdCache;
@@ -34,7 +34,7 @@ public class ExchangeCompactListCacheRx extends BaseFetchDTOCacheRx<ExchangeList
 
     @Override @NonNull protected Observable<ExchangeCompactDTOList> fetch(@NonNull ExchangeListType key)
     {
-        return marketServiceWrapper.get().getExchangesRx();
+        return marketServiceWrapper.get().getExchangesRx(key);
     }
 
     @Override public void onNext(@NonNull ExchangeListType key, @NonNull ExchangeCompactDTOList value)

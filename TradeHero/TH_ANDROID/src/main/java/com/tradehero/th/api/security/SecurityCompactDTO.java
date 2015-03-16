@@ -59,7 +59,7 @@ public class SecurityCompactDTO implements DTO
     public String yahooSymbol;
     public String currencyDisplay;
     public String currencyISO;
-    public Double marketCap;
+    @Nullable public Double marketCap;
     public Double lastPrice;
     public String imageBlobUrl;
 

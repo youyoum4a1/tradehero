@@ -4,16 +4,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeIntegerId;
-import com.tradehero.th.api.market.SectorCompactDTO;
+import com.tradehero.th.api.market.SectorDTO;
 import com.tradehero.th.api.market.SectorId;
 
+@Deprecated
 public class ExchangeSectorSecurityListType extends SecurityListType
 {
     @Nullable public final ExchangeIntegerId exchangeId;
     @Nullable public final SectorId sectorId;
 
     //<editor-fold desc="Constructors">
-    protected ExchangeSectorSecurityListType(
+    public ExchangeSectorSecurityListType(
             @Nullable ExchangeIntegerId exchangeId,
             @Nullable SectorId sectorId,
             @Nullable Integer page,
@@ -26,7 +27,7 @@ public class ExchangeSectorSecurityListType extends SecurityListType
 
     public ExchangeSectorSecurityListType(
             @Nullable ExchangeCompactDTO exchange,
-            @Nullable SectorCompactDTO sector,
+            @Nullable SectorDTO sector,
             @Nullable Integer page,
             @Nullable Integer perPage)
     {

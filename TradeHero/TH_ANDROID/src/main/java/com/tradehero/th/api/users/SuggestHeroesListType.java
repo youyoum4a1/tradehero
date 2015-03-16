@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.SectorId;
 
+@Deprecated
 public class SuggestHeroesListType extends UserListType
 {
     //<editor-fold desc="Fields">

@@ -1,8 +1,11 @@
 package com.tradehero.th.api.market;
 
 import android.support.annotation.NonNull;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 public class ExchangeCompactDTOUtil
@@ -20,5 +23,20 @@ public class ExchangeCompactDTOUtil
             }
         }
         return new ExchangeCompactDTOList(filtered);
+    }
+
+    @NonNull public static Map<MarketRegion, List<ExchangeIntegerId>> filePerRegion(
+            @NonNull List<? extends ExchangeCompactDTO> list)
+    {
+        Map<MarketRegion, List<ExchangeIntegerId>> filed = new HashMap<>();
+        for (ExchangeCompactDTO item : list)
+        {
+            if (filed.get(item.region) == null)
+            {
+                filed.put(item.region, new ArrayList<ExchangeIntegerId>());
+            }
+            filed.get(item.region).add(item.getExchangeIntegerId());
+        }
+        return filed;
     }
 }

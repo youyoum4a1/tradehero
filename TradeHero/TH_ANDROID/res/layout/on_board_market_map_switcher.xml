@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tradehero.th.fragments.onboarding.exchange.MarketRegionSwitcherView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <include layout="@layout/on_board_market_map_view" />
+
+  <include layout="@layout/on_board_market_button_view" />
+
+</com.tradehero.th.fragments.onboarding.exchange.MarketRegionSwitcherView>
