@@ -53,7 +53,7 @@
     <item name="android:background">@color/white</item>
   </style>
 
-  <style name="TH" />
+  <style name="TH"/>
 
   <style name="TH.Btn_Bar_Base"
       parent="TH.Button">
@@ -335,6 +335,11 @@
     <item name="android:layout_marginBottom">10dp</item>
   </style>
 
+  <style name="TH.GaugeView.Small">
+    <item name="android:layout_height">30dp</item>
+    <item name="android:layout_marginBottom">8dp</item>
+  </style>
+
   <style name="TH.DiscussionActionButtons">
     <item name="android:paddingLeft">@dimen/discussion_action_buttons_horizontal_padding</item>
     <item name="android:paddingRight">@dimen/discussion_action_buttons_horizontal_padding</item>
@@ -559,7 +564,6 @@
       parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
     <item name="android:background">@drawable/tab_indicator_ab_th</item>
   </style>
-
 
 
   <style name="TH.ContentPartnersLogo">

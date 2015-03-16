@@ -72,6 +72,13 @@ public interface SecurityServiceRx
             @Query("sector") Integer sectorId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
+
+    @GET("/securities/bySectorsAndExchanges")
+    Observable<SecurityCompactDTOList> getBySectorsAndExchanges(
+            @Query("exchanges") String commaSeparatedExchangeIds,
+            @Query("sectors") String commaSeparatedSectorIds,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
     //</editor-fold>
 
     //<editor-fold desc="Get Security">

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    android:id="@+id/security_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+  <TextView
+      android:id="@+id/stock_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerHorizontal="true"
+      android:ellipsize="marquee"
+      android:marqueeRepeatLimit="marquee_forever"
+      android:lines="1"
+      style="@style/TH.Subhead"
+      android:singleLine="true"
+      tools:text="Company Name"
+      />
+
+  <ImageView
+      android:id="@+id/stock_logo"
+      android:layout_width="@dimen/security_logo_width"
+      android:layout_height="@dimen/security_logo_height"
+      android:layout_below="@id/stock_name"
+      android:layout_centerHorizontal="true"
+      android:contentDescription="@null"
+      android:adjustViewBounds="false"
+      android:scaleType="fitCenter"
+      android:layout_margin="@dimen/margin_xsmall"
+      tools:src="@drawable/square_us"/>
+
+  <TextView
+      android:id="@+id/exchange_symbol"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/stock_logo"
+      android:layout_centerHorizontal="true"
+      android:ellipsize="end"
+      android:lines="1"
+      style="@style/TH.Body"
+      tools:text="GOOG"/>
+
+  <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/exchange_symbol"
+      android:layout_centerHorizontal="true"
+      android:orientation="horizontal"
+      android:gravity="center"
+      >
+
+    <TextView
+        android:id="@+id/last_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        tools:text="1,014"
+        style="@style/TH.Body"
+        />
+
+  </LinearLayout>
+
+</merge>

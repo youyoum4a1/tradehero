@@ -12,10 +12,12 @@ import butterknife.ButterKnife;
 import com.tradehero.th.R;
 import com.tradehero.th.inject.HierarchyInjector;
 import rx.Subscription;
+import rx.internal.util.SubscriptionList;
 
 public abstract class BaseDialogSupportFragment extends DialogFragment
 {
     private OnDismissedListener dismissedListener;
+    @NonNull protected SubscriptionList onStopSubscriptions;
 
     @Override @NonNull public Dialog onCreateDialog(@NonNull Bundle savedInstanceState)
     {
@@ -40,6 +42,18 @@ public abstract class BaseDialogSupportFragment extends DialogFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        onStopSubscriptions = new SubscriptionList();
+    }
+
+    @Override public void onStop()
+    {
+        onStopSubscriptions.unsubscribe();
+        super.onStop();
     }
 
     @Override public void onDestroyView()

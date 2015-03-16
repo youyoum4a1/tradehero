@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:layout_gravity="center"
+      android:gravity="center">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/on_board_last_title_1"
+        style="@style/TH.Subhead.Inverse"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/size_1"
+        android:gravity="center_horizontal"
+        android:text="@string/on_board_last_title_2"
+        style="@style/TH.Caption.Inverse"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/size_1"
+        android:gravity="center_horizontal"
+        android:text="@string/on_board_last_title_3"
+        style="@style/TH.Body1.Inverse"
+        android:textColor="@color/light_green_normal"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0"
+        />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_3"
+        >
+
+      <com.tradehero.th.fragments.security.SecurityItemView
+          android:id="@+id/stock_3"
+          android:layout_width="@dimen/on_board_last_stock_width"
+          android:layout_height="@dimen/on_board_last_stock_height"
+          android:padding="@dimen/margin_xsmall"
+          android:background="@drawable/grid_item_bg"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentStart="true"
+          android:alpha="0.5"
+          android:visibility="invisible"
+          tools:visibility="visible"
+          >
+
+        <include layout="@layout/trending_security_item_inner"/>
+
+      </com.tradehero.th.fragments.security.SecurityItemView>
+
+      <com.tradehero.th.fragments.security.SecurityItemView
+          android:id="@+id/stock_2"
+          android:layout_width="@dimen/on_board_last_stock_width"
+          android:layout_height="@dimen/on_board_last_stock_height"
+          android:padding="@dimen/margin_xsmall"
+          android:background="@drawable/grid_item_bg"
+          android:layout_alignParentRight="true"
+          android:layout_alignParentEnd="true"
+          android:alpha="0.5"
+          android:visibility="invisible"
+          tools:visibility="visible"
+          >
+
+        <include layout="@layout/trending_security_item_inner"/>
+
+      </com.tradehero.th.fragments.security.SecurityItemView>
+
+      <com.tradehero.th.fragments.security.SecurityItemView
+          android:id="@+id/stock_1"
+          android:layout_width="@dimen/on_board_last_stock_width"
+          android:layout_height="@dimen/on_board_last_stock_height"
+          android:padding="@dimen/margin_xsmall"
+          android:background="@drawable/grid_item_bg"
+          android:layout_centerInParent="true"
+          >
+
+        <include layout="@layout/trending_security_item_inner"/>
+
+      </com.tradehero.th.fragments.security.SecurityItemView>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_3"
+        android:gravity="center_horizontal"
+        android:text="@string/on_board_last_hint"
+        style="@style/TH.Caption.Inverse"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0"
+        />
+
+    <TextView
+        android:id="@android:id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_3"
+        android:paddingRight="@dimen/size_3"
+        android:paddingLeft="@dimen/size_3"
+        android:gravity="center"
+        style="@style/TH.Btn_Invite_Action"
+        android:text="@string/on_board_last_button_buy"
+        />
+
+    <TextView
+        android:id="@android:id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_1"
+        android:padding="@dimen/size_1"
+        android:gravity="center"
+        android:text="@string/on_board_last_button_later"
+        style="@style/TH.Caption"
+        android:textColor="@color/light_green_normal"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0"
+        />
+
+  </LinearLayout>
+
+</ScrollView>

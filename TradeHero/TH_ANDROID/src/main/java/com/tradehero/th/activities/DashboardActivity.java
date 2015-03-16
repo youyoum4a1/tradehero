@@ -71,7 +71,7 @@ import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.games.GameWebViewFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
-import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
+import com.tradehero.th.fragments.onboarding.OnBoardNewDialogFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardingBroadcastSignal;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
@@ -395,7 +395,7 @@ public class DashboardActivity extends BaseActivity
                             @Override public void call(Intent intent)
                             {
                                 isOnboardShown.set(true);
-                                OnBoardDialogFragment.showOnBoardDialog(DashboardActivity.this.getFragmentManager());
+                                OnBoardNewDialogFragment.showOnBoardDialog(DashboardActivity.this.getSupportFragmentManager());
                             }
                         },
                         new Action1<Throwable>()

@@ -20,4 +20,22 @@ public class RetrofitStubProtectedModule
     {
         return adapter.create(AchievementMockServiceRx.class);
     }
+
+    @Deprecated // TODO remove when server ready
+    @Provides @Singleton MarketServiceWrapper provideMarketServiceWrapper(MarketServiceWrapperStub marketServiceWrapper)
+    {
+        return marketServiceWrapper;
+    }
+
+    @Deprecated // TODO remove when server ready
+    @Provides @Singleton SecurityServiceWrapper provideSecurityServiceWrapper(SecurityServiceWrapperStub securityServiceWrapper)
+    {
+        return securityServiceWrapper;
+    }
+
+    @Deprecated // TODO remove when server ready
+    @Provides @Singleton UserServiceWrapper provideUserServiceWrapper(UserServiceWrapperStub userServiceWrapper)
+    {
+        return userServiceWrapper;
+    }
 }

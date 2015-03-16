@@ -29,5 +29,4 @@ public class ChartImageView extends AspectRatioImageView
         includeVolume = a.getBoolean(R.styleable.ChartImageView_includeVolume, false);
         a.recycle();
     }
-
 }

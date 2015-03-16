@@ -11,5 +11,10 @@ public class SelectableUserDTO extends SelectableDTO<LeaderboardUserDTO>
     {
         super(user);
     }
+
+    public SelectableUserDTO(@NonNull LeaderboardUserDTO value, boolean selected)
+    {
+        super(value, selected);
+    }
     //</editor-fold>
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <color name="market_region_unknown">@color/light_blue_normal</color>
+  <color name="market_region_north_america">#113E7B</color>
+  <color name="market_region_europe">#71EB0B</color>
+  <color name="market_region_india">#F18F14</color>
+  <color name="market_region_south_east_asia">#8C28E6</color>
+  <color name="market_region_east_asia">#E61B34</color>
+  <color name="market_region_australia">#FFF501</color>
+
+</resources>

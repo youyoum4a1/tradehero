@@ -15,6 +15,7 @@ import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.SecurityIntegerIdList;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
+import com.tradehero.th.api.security.key.ExchangeSectorSecurityListTypeNew;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
@@ -141,6 +142,15 @@ import rx.functions.Func1;
                     exchangeKey.sectorId == null ? null : exchangeKey.sectorId.key,
                     key.page,
                     key.perPage);
+        }
+        else if (key instanceof ExchangeSectorSecurityListTypeNew)
+        {
+            ExchangeSectorSecurityListTypeNew exchangeKey = (ExchangeSectorSecurityListTypeNew) key;
+            received = this.securityServiceRx.getBySectorsAndExchanges(
+                    exchangeKey.getCommaSeparatedExchangeIds(),
+                    exchangeKey.getCommaSeparatedSectorIds(),
+                    exchangeKey.getPage(),
+                    exchangeKey.perPage);
         }
         else
         {

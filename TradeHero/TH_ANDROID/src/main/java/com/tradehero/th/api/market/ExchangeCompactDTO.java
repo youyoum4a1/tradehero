@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import timber.log.Timber;
 
-public class ExchangeCompactDTO implements DTO
+public class ExchangeCompactDTO implements DTO, WithMarketCap, WithTopSecurities
 {
     private static final String BUNDLE_KEY_ID = ExchangeDTO.class.getName() + ".id";
     public static final String BUNDLE_KEY_NAME = ExchangeDTO.class.getName() + ".name";
@@ -18,11 +18,14 @@ public class ExchangeCompactDTO implements DTO
     public int id;
     @NonNull public String name;
     @NonNull public String countryCode;
+    @Nullable public String imageUrl;
     public double sumMarketCap;
     @Nullable public String desc;
+    @NonNull public MarketRegion region;
     public boolean isInternal;
     public boolean isIncludedInTrending;
     public boolean chartDataSource;
+    @Nullable public SecuritySuperCompactDTOList topSecurities;
 
     //<editor-fold desc="Constructors">
     protected ExchangeCompactDTO()
@@ -31,10 +34,10 @@ public class ExchangeCompactDTO implements DTO
 
     public ExchangeCompactDTO(
             int id,
-            String name,
-            String countryCode,
+            @NonNull String name,
+            @NonNull String countryCode,
             double sumMarketCap,
-            String desc,
+            @Nullable String desc,
             boolean isInternal,
             boolean isIncludedInTrending,
             boolean chartDataSource)
@@ -168,5 +171,19 @@ public class ExchangeCompactDTO implements DTO
     {
         assert false: "hashCode not designed";
         return 42;
+    }
+
+    @Override public double getSumMarketCap()
+    {
+        return sumMarketCap;
+    }
+
+    @NonNull @Override public SecuritySuperCompactDTOList getTopSecurities()
+    {
+        if (topSecurities != null)
+        {
+            return topSecurities;
+        }
+        return new SecuritySuperCompactDTOList();
     }
 }
