@@ -80,6 +80,7 @@ public class UserXPAchievementHandler
                     xpToast.setTag(
                             TAG_XP_SUBSCRIPTION,
                             UserXPAchievementUtil.getLocalBroadcastXp(context)
+                                    .retry()
                                     .subscribe(
                                             new Observer<UserXPAchievementDTO>()
                                             {
@@ -104,6 +105,7 @@ public class UserXPAchievementHandler
                     activityEvent.activity.getWindow().getDecorView().setTag(
                             TAG_ACHIEVEMENT_SUBSCRIPTION,
                             UserXPAchievementUtil.getLocalBroadcastAchievementDialog(activityEvent.activity, achievementDialogCreator)
+                                    .retry()
                                     .subscribe(
                                             new Observer<AbstractAchievementDialogFragment>()
                                             {
