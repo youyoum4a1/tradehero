@@ -1,13 +1,13 @@
 package com.tradehero.th.fragments.alert;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,7 +31,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.SecurityAlertKnowledge;
 import com.tradehero.th.billing.THBillingInteractorRx;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -44,10 +44,11 @@ import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.internal.util.SubscriptionList;
 import rx.schedulers.Schedulers;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-public class AlertManagerFragment extends DashboardFragment
+public class AlertManagerFragment extends Fragment
 {
     public static final String BUNDLE_KEY_USER_ID = AlertManagerFragment.class.getName() + ".userId";
 
@@ -66,8 +67,15 @@ public class AlertManagerFragment extends DashboardFragment
     @Inject UserProfileCacheRx userProfileCache;
     @Inject SecurityAlertKnowledge securityAlertKnowledge;
 
+    protected SubscriptionList onStopSubscriptions;
     protected UserProfileDTO currentUserProfile;
     private AlertListItemAdapter alertListItemAdapter;
+
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        HierarchyInjector.inject(this);
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -89,7 +97,6 @@ public class AlertManagerFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         alertListView.addFooterView(footerView);
         alertListView.setAdapter(alertListItemAdapter);
-        alertListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
 
         displayAlertCount();
         displayAlertCountIcon();
@@ -103,15 +110,10 @@ public class AlertManagerFragment extends DashboardFragment
         });
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        setActionBarTitle(getString(R.string.stock_alerts));
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
     @Override public void onStart()
     {
         super.onStart();
+        onStopSubscriptions = new SubscriptionList();
         fetchSystemStatus();
         fetchUserProfile();
         fetchAlertCompactList();
@@ -129,6 +131,12 @@ public class AlertManagerFragment extends DashboardFragment
         {
             progressAnimator.setDisplayedChildByLayoutId(R.id.alerts_list);
         }
+    }
+
+    @Override public void onStop()
+    {
+        onStopSubscriptions.unsubscribe();
+        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -304,7 +312,6 @@ public class AlertManagerFragment extends DashboardFragment
         if (viewDTO != null)
         {
             handleAlertItemClicked(viewDTO.alertCompactDTO);
-            alertListItemAdapter.remove(viewDTO);
             alertListItemAdapter.notifyDataSetChanged();
         }
     }
@@ -313,7 +320,7 @@ public class AlertManagerFragment extends DashboardFragment
     {
         Bundle bundle = new Bundle();
         AlertViewFragment.putAlertId(bundle, alertCompactDTO.getAlertId(currentUserId.toUserBaseKey()));
-        navigator.get().pushFragment(AlertViewFragment.class, bundle);
+        //navigator.pushFragment(AlertViewFragment.class, bundle);
     }
 
     private void handleManageSubscriptionClicked()

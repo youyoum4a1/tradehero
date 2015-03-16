@@ -99,6 +99,13 @@
         android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
     <activity
+        android:name=".activities.AlertManagerActivity"
+        android:label="@string/stock_alerts"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
+        />
+
+    <activity
         android:name=".wxapi.WXEntryActivity"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Translucent"

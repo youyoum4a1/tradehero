@@ -45,6 +45,16 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertItemView.DTO, A
                         {
                             return 0;
                         }
+
+                        if (lhs.alertCompactDTO.active && !rhs.alertCompactDTO.active)
+                        {
+                            return -1;
+                        }
+                        else if (!lhs.alertCompactDTO.active && rhs.alertCompactDTO.active)
+                        {
+                            return 1;
+                        }
+
                         if (lhs.alertCompactDTO.security != null && rhs.alertCompactDTO.security != null)
                         {
                             return lhs.alertCompactDTO.security.symbol.compareTo(rhs.alertCompactDTO.security.symbol);
