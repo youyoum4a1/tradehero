@@ -49,7 +49,7 @@ public class AlertSliderView extends RelativeLayout
         super(context, attrs);
         this.type = getType(context, attrs);
         status = new Status(false, SLIDER_INITIAL_VALUE);
-        statusSubject = BehaviorSubject.create(status);
+        statusSubject = BehaviorSubject.create();
     }
 
     public AlertSliderView(Context context, AttributeSet attrs, int defStyleAttr)
@@ -57,7 +57,7 @@ public class AlertSliderView extends RelativeLayout
         super(context, attrs, defStyleAttr);
         this.type = getType(context, attrs);
         status = new Status(false, SLIDER_INITIAL_VALUE);
-        statusSubject = BehaviorSubject.create(status);
+        statusSubject = BehaviorSubject.create();
     }
     //</editor-fold>
 

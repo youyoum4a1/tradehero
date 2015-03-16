@@ -28,7 +28,6 @@ public class AlertSliderViewHolder
         alertSliderTarget.setRequisite(
                 new AlertSliderView.Requisite(alertDTO.security.currencyDisplay, 0, alertDTO.security.lastPrice * 2));
         alertSliderPercentage.setRequisite(new AlertSliderView.Requisite("", -50f, 50f));
-        alertSliderPercentage.display(new AlertSliderView.Status(true, 50f));
 
         if (alertDTO.priceMovement != null)
         {
