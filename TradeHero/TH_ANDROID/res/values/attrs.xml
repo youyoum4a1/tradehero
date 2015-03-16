@@ -142,7 +142,7 @@
   </declare-styleable>
 
   <declare-styleable name="MarketRegionView">
-    <attr name="region" format="string" />
+    <attr name="region" format="string"/>
   </declare-styleable>
 
   <declare-styleable name="MapHitBoxView">
@@ -155,7 +155,14 @@
   </declare-styleable>
 
   <declare-styleable name="TopStockListView">
-    <attr name="topStock" format="reference" />
+    <attr name="topStock" format="reference"/>
+  </declare-styleable>
+
+  <declare-styleable name="AlertSliderView">
+    <attr name="alertSliderType">
+      <enum name="price" value="0"/>
+      <enum name="percentage" value="1"/>
+    </attr>
   </declare-styleable>
 
   <declare-styleable name="CircleProgressBar">

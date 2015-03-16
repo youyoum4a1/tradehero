@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<com.tradehero.th.fragments.alert.AlertSecurityProfile
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/alert_security_profile"
     android:padding="5dp"
     android:background="@color/white"
     >
@@ -148,4 +149,4 @@
 
   </RelativeLayout>
 
-</RelativeLayout>
+</com.tradehero.th.fragments.alert.AlertSecurityProfile>

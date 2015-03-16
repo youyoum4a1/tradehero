@@ -11,7 +11,15 @@
       android:layout_width="match_parent"
       android:layout_height="?attr/actionBarSize"
       style="@style/TradeHero.ActionBar"
-      />
+      >
+      <Spinner
+          android:id="@+id/action_bar_spinner"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:visibility="gone"
+        />
+
+      </android.support.v7.widget.Toolbar>
 
   <FrameLayout
       android:id="@+id/realtabcontent"

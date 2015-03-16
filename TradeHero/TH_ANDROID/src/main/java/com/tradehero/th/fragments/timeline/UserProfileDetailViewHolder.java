@@ -220,12 +220,14 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                 leaderboardUserDTO = userProfileDTO.mostSkilledLbmu.getList().get(0);
                 if (leaderboardUserDTO != null)
                 {
+                    userStatisticView.setVisibility(View.VISIBLE);
                     userStatisticsDto = new UserStatisticView.DTO(THApp.context().getResources(), leaderboardUserDTO, userProfileDTO.mostSkilledLbmu);
                 }
             }
             catch (Exception e)
             {
                 Timber.e("initUserStaticView error:" + e.toString());
+                userStatisticView.setVisibility(View.GONE);
             }
         }
     }

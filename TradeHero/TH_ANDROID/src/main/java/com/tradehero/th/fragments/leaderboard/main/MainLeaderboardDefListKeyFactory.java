@@ -21,6 +21,8 @@ class MainLeaderboardDefListKeyFactory
                 return new TimePeriodLeaderboardDefListKey(1);
             case Exchange:
                 return new ExchangeLeaderboardDefListKey(1);
+            case Connected:
+                return new ConnectedLeaderboardDefListKey(1);
 
             default:
                 throw new IllegalArgumentException("Unhandled LeaderboardCommunityType." + leaderboardCommunityType);
