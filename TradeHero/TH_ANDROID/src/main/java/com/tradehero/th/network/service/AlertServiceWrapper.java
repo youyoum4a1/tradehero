@@ -7,19 +7,26 @@ import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.persistence.alert.AlertCacheRx;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Action1;
 
 @Singleton public class AlertServiceWrapper
 {
     @NonNull private final AlertServiceRx alertServiceRx;
+    @NonNull private final Lazy<AlertCacheRx> alertCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public AlertServiceWrapper(@NonNull AlertServiceRx alertServiceRx)
+    @Inject public AlertServiceWrapper(
+            @NonNull AlertServiceRx alertServiceRx,
+            @NonNull Lazy<AlertCacheRx> alertCache)
     {
         super();
         this.alertServiceRx = alertServiceRx;
+        this.alertCache = alertCache;
     }
     //</editor-fold>
 
@@ -58,10 +65,17 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Update Alert">
-    @NonNull public Observable<AlertCompactDTO> updateAlertRx(@NonNull AlertId alertId, @NonNull AlertFormDTO alertFormDTO)
+    @NonNull public Observable<AlertCompactDTO> updateAlertRx(@NonNull final AlertId alertId, @NonNull AlertFormDTO alertFormDTO)
     {
         basicCheck(alertId);
-        return this.alertServiceRx.updateAlert(alertId.userId, alertId.alertId, alertFormDTO);
+        return this.alertServiceRx.updateAlert(alertId.userId, alertId.alertId, alertFormDTO)
+                .doOnNext(new Action1<AlertCompactDTO>()
+                {
+                    @Override public void call(AlertCompactDTO alertCompactDTO)
+                    {
+                        alertCache.get().invalidate(alertId);
+                    }
+                });
     }
     //</editor-fold>
 }

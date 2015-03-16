@@ -20,6 +20,7 @@
   <string name="stock_alert_edit_note">请注意：股市预警会在每15分钟执行一次价格检查，某些信息源可能会延迟超过15分钟以上</string>
   <string name="stock_alert_target_price_change_format">目标价 %1$s</string>
   <string name="stock_alert_percentage_change_format">价格变动 %1$s</string>
+  <string name="stock_alert_percentage_change">价格变动</string>
   <string name="stock_alert_percentage_change_target_value_format">(预警价 %1$s)</string>
   <string name="stock_alert_edit_alert">编辑预警</string>
   <string name="stock_alert_add_alert">添加预警</string>

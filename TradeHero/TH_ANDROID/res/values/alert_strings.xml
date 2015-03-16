@@ -14,12 +14,13 @@
   <string name="stock_alert_notification_received">Notifications Received</string>
   <string name="stock_alert_edit">Edit</string>
   <string name="stock_alert_edit_menu_save">Save</string>
-  <string name="stock_alert_trigger_conditions">Trigger Conditions</string>
+  <string name="stock_alert_trigger_conditions">Alert Conditions</string>
   <string name="stock_alert_target_price_help_text">You will receive an alert whenever the price of the security rises/falls to the set price.</string>
   <string name="stock_alert_price_change_help_text">You will receive an alert when the price of the given security moves by more than the given percentage.</string>
   <string name="stock_alert_edit_note">Please note: price checks for stock alerts are done every 15 minutes and some price sources are delayed by up to 15 minutes</string>
   <string name="stock_alert_target_price_change_format">Target Price %1$s</string>
   <string name="stock_alert_percentage_change_format">Price Change %1$s</string>
+  <string name="stock_alert_percentage_change">Price Change</string>
   <string name="stock_alert_percentage_change_target_value_format">(Alert Price %1$s)</string>
   <string name="stock_alert_edit_alert">Edit Alert</string>
   <string name="stock_alert_add_alert">Add Alert</string>

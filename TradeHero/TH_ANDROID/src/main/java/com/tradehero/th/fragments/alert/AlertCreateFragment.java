@@ -1,24 +1,28 @@
 package com.tradehero.th.fragments.alert;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Pair;
+import android.view.Menu;
+import android.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Subscription;
+import rx.functions.Func1;
 
 public class AlertCreateFragment extends BaseAlertEditFragment
 {
     private static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".securityId";
 
-    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
+    @Inject protected SecurityCompactCacheRx securityCompactCache;
 
-    protected Subscription saveAlertSubscription;
+    SecurityId securityId;
 
     public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
     {
@@ -30,32 +34,38 @@ public class AlertCreateFragment extends BaseAlertEditFragment
         return new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE));
     }
 
-    @Override public void onResume()
+    @Override public void onCreate(Bundle savedInstanceState)
     {
-        super.onResume();
-        linkWith(getSecurityId(getArguments()));
-        linkWith(getDummyInitialAlertDTO());
+        super.onCreate(savedInstanceState);
+        securityId = getSecurityId(getArguments());
     }
 
-    @Override public void onStop()
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        unsubscribe(saveAlertSubscription);
-        saveAlertSubscription = null;
-        super.onStop();
+        super.onCreateOptionsMenu(menu, inflater);
+        setActionBarTitle(R.string.stock_alert_add_alert);
     }
 
-    protected AlertDTO getDummyInitialAlertDTO()
+    @NonNull @Override protected Observable<AlertDTO> getAlertObservable()
+    {
+        return securityCompactCache.getOne(securityId)
+                .map(new Func1<Pair<SecurityId, SecurityCompactDTO>, AlertDTO>()
+                {
+                    @Override public AlertDTO call(Pair<SecurityId, SecurityCompactDTO> pair)
+                    {
+                        return createDummyInitialAlertDTO(pair.second);
+                    }
+                });
+    }
+
+    protected AlertDTO createDummyInitialAlertDTO(@NonNull SecurityCompactDTO securityCompactDTO)
     {
         AlertDTO dummy = new AlertDTO();
         dummy.active = true;
         dummy.priceMovement = 0.1d;
         dummy.upOrDown = true;
+        dummy.security = securityCompactDTO;
         return dummy;
-    }
-
-    protected void displayActionBarTitle()
-    {
-        setActionBarTitle(R.string.stock_alert_add_alert);
     }
 
     @NonNull protected Observable<AlertCompactDTO> saveAlertProperRx(AlertFormDTO alertFormDTO)
