@@ -14,10 +14,8 @@ public class Constants {
     // may be needed later, for Api endpoint, refer to retrofit module, we want to make it
     // generic and easy to switch between endpoint (prod, dev, test server) as much as possible.
 
-    public static final String BASE_STATIC_CONTENT_URL = "https://www.tradehero.mobi/";
     public static final String PRIVACY_TERMS_OF_SERVICE = "http://cn.tradehero.mobi/privacy";
 
-    public static final String APP_HOME = BASE_STATIC_CONTENT_URL + "AppHome";
 
     // Request Header
     public static final String TH_CLIENT_VERSION = "TH-Client-Version";
@@ -28,8 +26,6 @@ public class Constants {
     // Response Header
     public static final String TH_ERROR_CODE = "TH-Error-Code";
 
-    // Google PlayStore
-    public static final String PLAYSTORE_APP_ID = "com.tradehero.th";
     public static final String WECHAT_SHARE_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th&g_f=991653";
 
     // Localytics
