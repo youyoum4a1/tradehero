@@ -49,7 +49,7 @@ public class AlertSliderView extends RelativeLayout
         super(context, attrs);
         this.type = getType(context, attrs);
         status = new Status(false, SLIDER_INITIAL_VALUE);
-        statusSubject = BehaviorSubject.create();
+        statusSubject = BehaviorSubject.create(status);
     }
 
     public AlertSliderView(Context context, AttributeSet attrs, int defStyleAttr)
@@ -57,7 +57,7 @@ public class AlertSliderView extends RelativeLayout
         super(context, attrs, defStyleAttr);
         this.type = getType(context, attrs);
         status = new Status(false, SLIDER_INITIAL_VALUE);
-        statusSubject = BehaviorSubject.create();
+        statusSubject = BehaviorSubject.create(status);
     }
     //</editor-fold>
 
@@ -159,7 +159,7 @@ public class AlertSliderView extends RelativeLayout
                 break;
 
             case PERCENTAGE:
-                valueDisplay = THSignedPercentage.builder(value)
+                valueDisplay = THSignedPercentage.builder(100 * value)
                         .withSign()
                         .format(getResources().getString(R.string.stock_alert_percentage_change_format));
                 break;
