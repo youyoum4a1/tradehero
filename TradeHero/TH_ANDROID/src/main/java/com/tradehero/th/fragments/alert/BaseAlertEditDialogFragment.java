@@ -13,14 +13,14 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.base.BaseDialogFragment;
+import com.tradehero.th.fragments.base.BaseDialogSupportFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
 
-abstract public class BaseAlertEditDialogFragment extends BaseDialogFragment
+abstract public class BaseAlertEditDialogFragment extends BaseDialogSupportFragment
 {
     @Inject protected CurrentUserId currentUserId;
     @Inject protected SecurityAlertCountingHelper securityAlertCountingHelper;

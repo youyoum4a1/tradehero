@@ -15,6 +15,7 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.rx.PairGetSecond;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -34,8 +35,9 @@ import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.alert.AlertCreateFragment;
-import com.tradehero.th.fragments.alert.AlertEditFragment;
+import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
+import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
+import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.security.SecurityActionDialogFactory;
@@ -434,26 +436,30 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     protected void handleAddAlertRequested(@NonNull SecurityCompactDTO securityCompactDTO)
     {
-        Bundle args = new Bundle();
         if (mappedAlerts != null)
         {
             AlertId alertId = mappedAlerts.get(securityCompactDTO.getSecurityId());
+            BaseAlertEditDialogFragment dialog = null;
             if (alertId != null)
             {
-                AlertEditFragment.putAlertId(args, alertId);
-                if (navigator != null)
-                {
-                    navigator.get().pushFragment(AlertEditFragment.class, args);
-                }
+                dialog = AlertEditDialogFragment.newInstance(alertId);
+            }
+            else if (securityId != null)
+            {
+                dialog = AlertCreateDialogFragment.newInstance(securityId);
+            }
+            if (dialog != null)
+            {
+                dialog.show(getFragmentManager(), BaseAlertEditDialogFragment.class.getName());
             }
             else
             {
-                AlertCreateFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-                if (navigator != null)
-                {
-                    navigator.get().pushFragment(AlertCreateFragment.class, args);
-                }
+                THToast.show(R.string.error_incomplete_info_message);
             }
+        }
+        else
+        {
+            THToast.show(R.string.error_incomplete_info_message);
         }
     }
 

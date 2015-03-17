@@ -1,7 +1,7 @@
 package com.tradehero.th.activities;
 
-import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,7 +28,7 @@ public class AlertManagerActivity extends BaseActivity
 
         setSupportActionBar(toolbar);
 
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.realtabcontent, new AlertManagerFragment());
         transaction.commit();
     }
