@@ -1,9 +1,12 @@
 package com.tradehero.th.fragments.position;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -14,7 +17,9 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -27,6 +32,8 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.HelpActivity;
+import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
@@ -123,6 +130,7 @@ public class PositionListFragment
     @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
     @InjectView(R.id.position_list) ListView positionListView;
+    @InjectView(R.id.btn_help) ImageView btnHelp;
 
     @InjectRoute UserBaseKey injectedUserBaseKey;
     @InjectRoute PortfolioId injectedPortfolioId;
@@ -221,7 +229,16 @@ public class PositionListFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-
+        btnHelp.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                Intent intent = new Intent(getActivity(), HelpActivity.class);
+                ActivityOptionsCompat optionsCompat =
+                        ActivityOptionsCompat.makeCustomAnimation(getActivity(), R.anim.slide_right_in, R.anim.slide_left_out);
+                ActivityCompat.startActivity(getActivity(), intent, optionsCompat.toBundle());
+            }
+        });
         positionListView.setAdapter(positionItemAdapter);
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
@@ -533,6 +550,11 @@ public class PositionListFragment
 
         preparePortfolioHeaderView(portfolioDTO);
         portfolioHeaderView.linkWith(portfolioDTO);
+        if (portfolioDTO != null && portfolioDTO.assetClass == AssetClass.FX) {
+            btnHelp.setVisibility(View.VISIBLE);
+        } else {
+            btnHelp.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void showPrettyReviewAndInvite(@NonNull PortfolioCompactDTO compactDTO)
