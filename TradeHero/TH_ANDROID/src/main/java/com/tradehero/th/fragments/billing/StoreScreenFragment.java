@@ -35,6 +35,7 @@ import com.tradehero.th.fragments.billing.store.StoreItemDTOList;
 import com.tradehero.th.fragments.billing.store.StoreItemFactory;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.social.follower.FollowerRevenueReportFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -283,7 +284,7 @@ public class StoreScreenFragment extends DashboardFragment
     {
         Bundle bundle = new Bundle();
         bundle.putInt(AlertManagerFragment.BUNDLE_KEY_USER_ID, currentUserId.get());
-        pushFragment(AlertManagerFragment.class, bundle);
+        navigator.get().launchTabActivity(RootFragmentType.ALERTS);
     }
 
     protected void pushHeroFragment()

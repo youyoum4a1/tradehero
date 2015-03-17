@@ -79,7 +79,6 @@ public class AlertSliderView extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        resideMenu.addIgnoredView(alertSlider);
         alertSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
         {
             @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
@@ -100,7 +99,6 @@ public class AlertSliderView extends RelativeLayout
     @Override protected void onDetachedFromWindow()
     {
         alertSlider.setOnSeekBarChangeListener(null);
-        resideMenu.removeIgnoredView(alertSlider);
         super.onDetachedFromWindow();
     }
 
