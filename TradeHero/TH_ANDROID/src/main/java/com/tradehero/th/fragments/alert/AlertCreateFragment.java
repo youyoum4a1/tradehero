@@ -11,7 +11,9 @@ import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
@@ -21,6 +23,7 @@ public class AlertCreateFragment extends BaseAlertEditFragment
     private static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".securityId";
 
     @Inject protected SecurityCompactCacheRx securityCompactCache;
+    @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
 
     SecurityId securityId;
 

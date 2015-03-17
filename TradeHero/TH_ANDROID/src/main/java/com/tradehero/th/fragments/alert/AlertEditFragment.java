@@ -10,7 +10,9 @@ import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
+import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCacheRx;
+import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 
@@ -19,6 +21,7 @@ public class AlertEditFragment extends BaseAlertEditFragment
     private static final String BUNDLE_KEY_ALERT_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".alertId";
 
     @Inject protected AlertCacheRx alertCache;
+    @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
 
     protected AlertId alertId;
 
