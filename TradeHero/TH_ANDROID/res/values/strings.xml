@@ -308,8 +308,8 @@
   <string name="error_fetch_fx_list_price">Error when fetching FX prices</string>
 
   <string name="position_title_info">Info</string>
-  <string name="position_short_info">Profit goes up when open asset value drops.</string>
-  <string name="position_long_info">Profit goes up when open asset value rises.</string>
+  <string name="position_short_info">The selling of a security such as a stock, commodity or currency, with the expectation that the asset will dip in value, opposite of \"Long\"</string>
+  <string name="position_long_info">The buying of a security such as a stock, commodity or currency, with the expectation that the asset will rise in value, opposite of \"Short\"</string>
   <string name="position_close_info">Action of selling the entire long asset or buying the entire short asset to generate cash back to your portfolio.</string>
 
   <string name="facebook_app_id">431745923529834</string>

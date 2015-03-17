@@ -20,23 +20,39 @@
         android:layout_gravity="center"
         />
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_to_refresh_layout"
+    <com.tradehero.common.widget.DragFrameLayout
+        android:id="@+id/drag_view_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-
-      <ListView
-          android:id="@+id/position_list"
+      <android.support.v4.widget.SwipeRefreshLayout
+          android:id="@+id/swipe_to_refresh_layout"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:fadingEdge="none"
-          android:paddingTop="80dp"
-          android:paddingBottom="@dimen/dashboard_tabhost_height"
-          android:clipToPadding="false"
-          />
+          >
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+        <ListView
+            android:id="@+id/position_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fadingEdge="none"
+            android:paddingTop="80dp"
+            android:paddingBottom="@dimen/dashboard_tabhost_height"
+            android:clipToPadding="false"
+            />
+
+      </android.support.v4.widget.SwipeRefreshLayout>
+      <ImageView
+          android:id="@+id/btn_help"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="bottom|right"
+          android:layout_marginRight="@dimen/size_2"
+          android:layout_marginBottom="@dimen/size_7"
+          android:background="@drawable/ic_help_bg"
+          android:visibility="invisible"
+          />
+    </com.tradehero.common.widget.DragFrameLayout>
 
     <TextView
         android:layout_width="match_parent"
