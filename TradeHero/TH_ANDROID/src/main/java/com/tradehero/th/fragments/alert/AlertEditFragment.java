@@ -4,17 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuInflater;
-import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
-import com.tradehero.th.api.alert.AlertCompactDTO;
-import com.tradehero.th.api.alert.AlertDTO;
-import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
-import rx.Observable;
 
 public class AlertEditFragment extends BaseAlertEditFragment
 {
@@ -39,24 +34,19 @@ public class AlertEditFragment extends BaseAlertEditFragment
     {
         super.onCreate(savedInstanceState);
         alertId = getAlertId(getArguments());
+        viewHolder = new AlertEditFragmentHolder(
+                getActivity(),
+                getResources(),
+                currentUserId,
+                securityAlertCountingHelper,
+                alertCache,
+                alertServiceWrapper,
+                alertId);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
         setActionBarTitle(R.string.stock_alert_edit_alert);
-    }
-
-    @NonNull @Override protected Observable<AlertDTO> getAlertObservable()
-    {
-        return alertCache.getOne(alertId)
-            .map(new PairGetSecond<AlertId, AlertDTO>());
-    }
-
-    @NonNull @Override protected Observable<AlertCompactDTO> saveAlertProperRx(AlertFormDTO alertFormDTO)
-    {
-        return alertServiceWrapper.get().updateAlertRx(
-                alertId,
-                alertFormDTO);
     }
 }
