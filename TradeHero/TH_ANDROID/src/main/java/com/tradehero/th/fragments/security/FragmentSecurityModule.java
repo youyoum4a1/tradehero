@@ -9,6 +9,7 @@ import dagger.Module;
                 SecuritySearchProviderFragment.class,
                 SecurityItemViewAdapter.class,
                 SecurityItemView.class,
+                SecurityCircleProgressBar.class,
                 FXItemView.class,
                 WarrantSecurityItemView.class,
                 ChartFragment.class,

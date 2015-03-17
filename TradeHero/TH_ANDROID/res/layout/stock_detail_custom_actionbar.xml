@@ -24,7 +24,7 @@
       android:layout_toLeftOf="@id/btnWatched"
       android:background="@drawable/icn_alert"/>
 
-  <com.tradehero.common.widget.CircleProgressBar
+  <com.tradehero.th.fragments.security.SecurityCircleProgressBar
       android:id="@+id/circleProgressbar"
       android:layout_centerVertical="true"
       android:layout_width="48dp"

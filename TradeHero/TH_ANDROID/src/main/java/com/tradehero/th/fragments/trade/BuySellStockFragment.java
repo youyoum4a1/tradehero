@@ -1,8 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,15 +12,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
-import com.squareup.picasso.Picasso;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.CircleProgressBar;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -38,12 +33,14 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
+import com.tradehero.th.fragments.security.SecurityCircleProgressBar;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
@@ -52,6 +49,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 @Routable("security/:securityRawInfo")
@@ -79,7 +77,7 @@ public class BuySellStockFragment extends BuySellFragment
 
     protected TextView mTvStockTitle;
     protected TextView mTvStockSubTitle;
-    protected CircleProgressBar circleProgressBar;
+    protected SecurityCircleProgressBar circleProgressBar;
     protected Button btnWatched;
     protected Button btnAlerted;
 
@@ -118,12 +116,6 @@ public class BuySellStockFragment extends BuySellFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setCustomActionBar();
-        initStockProgressbar();
-    }
-
-    public void setCustomActionBar()
-    {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowCustomEnabled(true);
@@ -133,7 +125,7 @@ public class BuySellStockFragment extends BuySellFragment
         View v = inflator.inflate(R.layout.stock_detail_custom_actionbar, null);
         mTvStockTitle = (TextView) v.findViewById(R.id.tvStockTitle);
         mTvStockSubTitle = (TextView) v.findViewById(R.id.tvStockSubTitle);
-        circleProgressBar = (CircleProgressBar) v.findViewById(R.id.circleProgressbar);
+        circleProgressBar = (SecurityCircleProgressBar) v.findViewById(R.id.circleProgressbar);
         btnWatched = (Button) v.findViewById(R.id.btnWatched);
         btnAlerted = (Button) v.findViewById(R.id.btnAlerted);
 
@@ -154,21 +146,6 @@ public class BuySellStockFragment extends BuySellFragment
         });
 
         actionBar.setCustomView(v);
-    }
-
-    private void initStockProgressbar()
-    {
-        progressAnimation = new Animation()
-        {
-            @Override protected void applyTransformation(float interpolatedTime, android.view.animation.Transformation t)
-            {
-                super.applyTransformation(interpolatedTime, t);
-                circleProgressBar.setProgress((int) (getMillisecondQuoteRefresh() * (/*1 -*/ interpolatedTime)));
-            }
-        };
-        progressAnimation.setDuration(getMillisecondQuoteRefresh());
-        circleProgressBar.setMaxProgress((int) getMillisecondQuoteRefresh());
-        circleProgressBar.setProgress((int) getMillisecondQuoteRefresh());
     }
 
     @Override public void onDestroyView()
@@ -280,14 +257,24 @@ public class BuySellStockFragment extends BuySellFragment
                 mTvStockSubTitle.setText(null);
             }
 
-            Picasso.with(getActivity()).load(securityCompactDTO.imageBlobUrl).resize((int) (circleProgressBar.getWidth() * 0.60),
-                    (int) (circleProgressBar.getHeight() * 0.60)).centerInside().into(mTarget);
+            circleProgressBar.display(securityCompactDTO);
         }
     }
 
     @Override protected void linkWith(QuoteDTO quoteDTO)
     {
         super.linkWith(quoteDTO);
+        onStopSubscriptions.add(
+                circleProgressBar.start(getMillisecondQuoteRefresh())
+                        .subscribe(
+                                new Action1<Boolean>()
+                                {
+                                    @Override public void call(Boolean aBoolean)
+                                    {
+                                        // Nothing to do, but we want to then request a new quote
+                                    }
+                                },
+                                new TimberOnErrorAction("Failed to listen to end of animation")));
         displayAsOf();
     }
 
@@ -459,29 +446,6 @@ public class BuySellStockFragment extends BuySellFragment
     {
         analytics.fireEvent(new BuySellEvent(isTransactionTypeBuy, securityId));
     }
-
-    private com.squareup.picasso.Target mTarget = new com.squareup.picasso.Target()
-    {
-        @Override
-        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from)
-        {
-            // Do whatever you want with the Bitmap
-            if (circleProgressBar != null)
-            {
-                circleProgressBar.setBitmapBg(bitmap);
-            }
-        }
-
-        @Override
-        public void onBitmapFailed(Drawable errorDrawable)
-        {
-        }
-
-        @Override
-        public void onPrepareLoad(Drawable placeHolderDrawable)
-        {
-        }
-    };
 
     private void displayStockRoi()
     {
