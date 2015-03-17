@@ -7,16 +7,19 @@ import android.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.service.AlertServiceWrapper;
+import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 
+@Deprecated
 public class AlertCreateFragment extends BaseAlertEditFragment
 {
     private static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".securityId";
 
     @Inject protected SecurityCompactCacheRx securityCompactCache;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
+    @Inject protected QuoteServiceWrapper quoteServiceWrapper;
 
     SecurityId securityId;
 
@@ -39,6 +42,7 @@ public class AlertCreateFragment extends BaseAlertEditFragment
                 getResources(),
                 currentUserId,
                 securityAlertCountingHelper,
+                quoteServiceWrapper,
                 securityCompactCache,
                 alertServiceWrapper,
                 securityId);

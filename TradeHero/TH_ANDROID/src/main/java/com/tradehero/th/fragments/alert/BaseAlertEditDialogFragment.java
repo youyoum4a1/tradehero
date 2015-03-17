@@ -5,12 +5,10 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -32,7 +30,8 @@ abstract public class BaseAlertEditDialogFragment extends BaseDialogFragment
     @NonNull @Override public Dialog onCreateDialog(@NonNull Bundle savedInstanceState)
     {
         Dialog d = super.onCreateDialog(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.TH_Achievement_Dialog);
+        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.TH_StockAlert_Dialog);
+        d.setCanceledOnTouchOutside(true);
         return d;
     }
 
@@ -44,32 +43,15 @@ abstract public class BaseAlertEditDialogFragment extends BaseDialogFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
         ButterKnife.inject(viewHolder, view);
         ButterKnife.inject(viewHolder.alertSliderViewHolder, view);
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.alert_edit_menu, menu);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.alert_menu_save:
-                conditionalSaveAlert();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onStart()
     {
         super.onStart();
         viewHolder.onStart();
-        viewHolder.fetchAlert();
     }
 
     @Override public void onStop()
@@ -80,7 +62,7 @@ abstract public class BaseAlertEditDialogFragment extends BaseDialogFragment
 
     @Override public void onDestroyView()
     {
-        viewHolder.scrollView.setOnScrollChangedListener(null);
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -90,7 +72,15 @@ abstract public class BaseAlertEditDialogFragment extends BaseDialogFragment
         super.onDetach();
     }
 
-    protected void conditionalSaveAlert()
+    @OnClick(R.id.close)
+    @Override public void dismiss()
+    {
+        super.dismiss();
+    }
+
+    @SuppressWarnings("unused")
+    @OnClick(R.id.alert_menu_save)
+    protected void conditionalSaveAlert(View view)
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,

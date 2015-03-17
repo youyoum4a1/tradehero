@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
 
+@Deprecated
 abstract public class BaseAlertEditFragment extends DashboardFragment
 {
     @Inject protected CurrentUserId currentUserId;
@@ -37,7 +38,6 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(viewHolder, view);
         ButterKnife.inject(viewHolder.alertSliderViewHolder, view);
-        viewHolder.scrollView.setOnScrollChangedListener(dashboardBottomTabScrollViewScrollListener.get());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -61,19 +61,12 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
     {
         super.onStart();
         viewHolder.onStart();
-        viewHolder.fetchAlert();
     }
 
     @Override public void onStop()
     {
         viewHolder.onStop();
         super.onStop();
-    }
-
-    @Override public void onDestroyView()
-    {
-        viewHolder.scrollView.setOnScrollChangedListener(null);
-        super.onDestroyView();
     }
 
     @Override public void onDetach()

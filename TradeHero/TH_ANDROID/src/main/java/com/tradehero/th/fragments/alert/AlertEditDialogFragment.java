@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.network.service.AlertServiceWrapper;
+import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -14,6 +15,7 @@ public class AlertEditDialogFragment extends BaseAlertEditDialogFragment
 
     @Inject protected AlertCacheRx alertCache;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
+    @Inject protected QuoteServiceWrapper quoteServiceWrapper;
 
     protected AlertId alertId;
 
@@ -45,6 +47,7 @@ public class AlertEditDialogFragment extends BaseAlertEditDialogFragment
                 getResources(),
                 currentUserId,
                 securityAlertCountingHelper,
+                quoteServiceWrapper,
                 alertCache,
                 alertServiceWrapper,
                 alertId);

@@ -13,7 +13,6 @@ import dagger.Module;
                 AlertItemView.class,
                 AlertSecurityProfile.class,
                 AlertSliderView.class,
-                AlertViewFragment.class,
         },
         library = true,
         complete = false

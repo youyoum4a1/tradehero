@@ -4,6 +4,7 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
@@ -34,8 +35,19 @@ public class AlertManagerActivity extends BaseActivity
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
     {
-        getMenuInflater();
+        getMenuInflater().inflate(R.menu.alert_manager_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.close:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override protected List<Object> getModules()

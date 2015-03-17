@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.common.widget.NotifyingStickyScrollView
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/alert_scroll_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:paddingBottom="@dimen/dashboard_tabhost_height">
+    >
 
   <LinearLayout
       android:layout_width="match_parent"
@@ -21,10 +21,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/stock_alert_trigger_conditions"
-        android:padding="5dp"
         style="@style/TH.Subhead"
         android:tag="sticky"
-        android:background="@color/tradehero_divider_grey"
+        android:textStyle="bold"
+        android:gravity="center"
         />
 
     <include layout="@layout/price_changer_target"/>
@@ -41,9 +41,21 @@
         android:text="@string/stock_alert_edit_note"
         style="@style/TH.Caption"
         android:gravity="center_horizontal"
-        android:padding="15dp"
+        android:padding="@dimen/margin_small"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/alert_menu_save"
+        android:text="@string/stock_alert_edit_menu_save"
+        style="@style/TH.Headline.Inverse"
+        android:gravity="center"
+        android:minHeight="@dimen/clickable_element_min_dimen"
+        android:background="@drawable/basic_blue_selector"
+        android:textStyle="bold"
         />
 
   </LinearLayout>
 
-</com.tradehero.common.widget.NotifyingStickyScrollView>
+</ScrollView>
