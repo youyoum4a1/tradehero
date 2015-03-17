@@ -30,7 +30,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -42,15 +41,12 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.social.SocialLinkHelper;
 import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -76,7 +72,6 @@ import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 import javax.inject.Inject;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -161,11 +156,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.onCreate(savedInstanceState);
         chartImageButtonClickReceiver = createImageButtonClickBroadcastReceiver();
         userWatchlistPositionCacheFetchListener = createUserWatchlistCacheListener();
-    }
-
-    @Override protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
-    {
-        return new BuySellPortfolioCompactListFetchListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -426,25 +416,9 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    @Override protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId,
+    protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId,
             boolean andDisplay)
     {
-        super.linkWithApplicable(purchaseApplicablePortfolioId, andDisplay);
-        if (purchaseApplicablePortfolioId != null)
-        {
-            linkWith(portfolioCompactCache.get(purchaseApplicablePortfolioId.getPortfolioIdKey()),
-                    andDisplay);
-            purchaseApplicableOwnedPortfolioId = purchaseApplicablePortfolioId;
-        }
-        else
-        {
-            linkWith((PortfolioCompactDTO) null, andDisplay);
-        }
-        if (andDisplay)
-        {
-            displayBuySellSwitch();
-            displaySelectedPortfolio();
-        }
     }
 
     @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
@@ -555,34 +529,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void displaySelectedPortfolio()
     {
-        TextView selectedPortfolio = mSelectedPortfolio;
-        if (selectedPortfolio != null)
-        {
-            if (usedMenuOwnedPortfolioIds != null
-                    && usedMenuOwnedPortfolioIds.size() > 0
-                    && purchaseApplicableOwnedPortfolioId != null)
-            {
-                MenuOwnedPortfolioId chosen = null;
-
-                final Iterator<MenuOwnedPortfolioId> iterator =
-                        usedMenuOwnedPortfolioIds.iterator();
-                MenuOwnedPortfolioId lastElement = null;
-                while (iterator.hasNext())
-                {
-                    lastElement = iterator.next();
-                    if (purchaseApplicableOwnedPortfolioId.equals(lastElement))
-                    {
-                        chosen = lastElement;
-                    }
-                }
-                if (chosen == null)
-                {
-                    chosen = lastElement;
-                }
-
-                selectedPortfolio.setText(chosen);
-            }
-        }
     }
 
     public void displayBottomViewPager()
@@ -707,22 +653,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void displayBuySellSwitch()
     {
-        boolean supportSell;
-        if (positionDTOCompactList == null
-                || positionDTOCompactList.size() == 0
-                || purchaseApplicableOwnedPortfolioId == null)
-        {
-            supportSell = false;
-        }
-        else
-        {
-            Integer maxSellableShares = getMaxSellableShares();
-            supportSell = maxSellableShares != null && maxSellableShares.intValue() > 0;
-        }
-        if (mSellBtn != null)
-        {
-            mSellBtn.setVisibility(supportSell ? View.VISIBLE : View.GONE);
-        }
     }
 
     public void displayTriggerButton()
@@ -1085,59 +1015,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void showBuySellDialog()
     {
-        if (quoteDTO != null)
-        {
-            pushPortfolioFragmentRunnable = null;
-            pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
-            {
-                @Override
-                public void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
-                {
-                    BuySellFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
-                }
-            };
-
-            abstractTransactionDialogFragment = BuyDialogFragment.newInstance(
-                    securityId,
-                    purchaseApplicableOwnedPortfolioId.getPortfolioIdKey(),
-                    quoteDTO,
-                    isTransactionTypeBuy);
-            abstractTransactionDialogFragment.show(getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
-            abstractTransactionDialogFragment.setBuySellTransactionListener(new AbstractTransactionDialogFragment.BuySellTransactionListener()
-            {
-                @Override public void onTransactionSuccessful(boolean isBuy)
-                {
-                    if (pushPortfolioFragmentRunnable == null)
-                    {
-                        pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
-                        {
-                            @Override
-                            public void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
-                            {
-                                BuySellFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
-                            }
-                        };
-                    }
-                    if (pushPortfolioFragmentRunnable != null)
-                    {
-                        pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
-                    }
-                }
-
-                @Override public void onTransactionFailed(boolean isBuy, THException error)
-                {
-
-                }
-            });
-        }
-        else
-        {
-            alertDialogUtil.popWithNegativeButton(
-                    getActivity(),
-                    R.string.buy_sell_no_quote_title,
-                    R.string.buy_sell_no_quote_message,
-                    R.string.buy_sell_no_quote_cancel);
-        }
     }
 
     public void shareToWeChat()
@@ -1193,7 +1070,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void pushPortfolioFragment()
     {
-        pushPortfolioFragment(getApplicablePortfolioId());
     }
 
     protected interface PushPortfolioFragmentRunnable
@@ -1203,23 +1079,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId)
     {
-        shareToWeChat();
-        if (isResumed())
-        {
-            DashboardNavigator navigator = getDashboardNavigator();
-            // TODO find a better way to remove this fragment from the stack
-            navigator.popFragment();
-
-            Bundle args = new Bundle();
-            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-            if (applicablePortfolioId != null)
-            {
-                PositionListFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-            }
-            PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
-            PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
-            navigator.pushFragment(PositionListFragment.class, args);
-        }
     }
 
     private void trackBuyClickEvent()
@@ -1297,16 +1156,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                 mQuoteRefreshProgressBar.setProgress(
                         (int) (milliSecToRefresh / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
             }
-        }
-    }
-
-    protected class BuySellPortfolioCompactListFetchListener extends BasePurchaseManagementPortfolioCompactListFetchListener
-    {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
-        {
-            super.onDTOReceived(key, value);
-            buildUsedMenuPortfolios();
-            setInitialSellQuantityIfCan();
         }
     }
 

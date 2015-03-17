@@ -15,7 +15,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOKey;
@@ -27,7 +26,7 @@ import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.SecurityActionListLinear;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
@@ -47,7 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
-public class TradeListFragment extends BasePurchaseManagerFragment
+public class TradeListFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE = TradeListFragment.class.getName() + ".positionDTOKey";
 
@@ -110,7 +109,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         return view;
     }
 
-    @Override protected void initViews(View view)
+    protected void initViews(View view)
     {
         ButterKnife.inject(this, view);
 
@@ -390,19 +389,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
         @Override public void onBuySellRequested(@NotNull SecurityId securityId)
         {
-            dismissShareDialog();
-            Bundle args = new Bundle();
-            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-            if (applicablePortfolioId != null)
-            {
-                BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-            }
-            BuySellFragment.putSecurityId(args, securityId);
-            DashboardNavigator navigator = getDashboardNavigator();
-            if (navigator != null)
-            {
-                navigator.pushFragment(BuySellFragment.class, args);
-            }
         }
     }
 

@@ -14,6 +14,7 @@ import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PositionDetailFragment;
 import com.tradehero.chinabuild.fragment.search.SearchFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUniteFragment;
+import com.tradehero.chinabuild.fragment.security.BasePurchaseManagerFragment;
 import com.tradehero.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDiscussOrNewsFragment;
@@ -21,16 +22,12 @@ import com.tradehero.chinabuild.fragment.trade.*;
 import com.tradehero.chinabuild.fragment.userCenter.*;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
-import com.tradehero.common.billing.googleplay.IABBillingAvailableTester;
-import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
-import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.adapters.*;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.authentication.PasswordResetFragment;
@@ -83,7 +80,6 @@ import com.tradehero.th.models.push.PushModule;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.models.user.SimplePremiumFollowUserAssistant;
 import com.tradehero.th.network.NetworkModule;
-import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
@@ -114,7 +110,6 @@ import java.util.Locale;
                 UserModule.class,
                 PreferenceModule.class,
                 ChartModule.class,
-                BillingModule.class,
                 PushModule.class,
         },
         injects =
@@ -196,10 +191,6 @@ import java.util.Locale;
 
                         CompetitionWebViewFragment.class,
 
-                        IABServiceConnector.class,
-                        IABBillingAvailableTester.class,
-                        IABBillingInventoryFetcher.class,
-                        IABSKUListRetrievedAsyncMilestone.class,
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,
                         HeroesTabContentFragment.class,
@@ -297,6 +288,7 @@ import java.util.Locale;
                         PositionTradeListAdapter.class,
 
                         SecurityDetailFragment.class,
+                        BasePurchaseManagerFragment.class,
                         DiscussSendFragment.class,
                         BuySaleSecurityFragment.class,
 

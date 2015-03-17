@@ -16,11 +16,6 @@ import javax.inject.Singleton;
 )
 public class RetrofitProtectedModule
 {
-    //<editor-fold desc="API Services">
-    @Provides @Singleton AlertPlanServiceAsync provideAlertPlanServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(AlertPlanServiceAsync.class);
-    }
 
     @Provides @Singleton CompetitionServiceAsync provideCompetitionService(RestAdapter adapter)
     {
@@ -55,11 +50,6 @@ public class RetrofitProtectedModule
     @Provides @Singleton NotificationServiceAsync provideNotificationServiceAsync(RestAdapter adapter)
     {
         return adapter.create(NotificationServiceAsync.class);
-    }
-
-    @Provides @Singleton PortfolioServiceAsync providePortfolioServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(PortfolioServiceAsync.class);
     }
 
     @Provides @Singleton PositionServiceAsync providePositionServiceAsync(RestAdapter adapter)

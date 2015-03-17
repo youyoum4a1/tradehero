@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.position;
 import android.os.Bundle;
 import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
 
 public class CompetitionLeaderboardPositionListFragment extends LeaderboardPositionListFragment
 {
@@ -25,14 +24,6 @@ public class CompetitionLeaderboardPositionListFragment extends LeaderboardPosit
     {
         super.onCreate(savedInstanceState);
         this.providerId = getProviderId(getArguments());
-    }
-
-    @Override protected void pushSecurityFragment()
-    {
-        Bundle args = new Bundle();
-        ProviderSecurityListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-        ProviderSecurityListFragment.putProviderId(args, providerId);
-        getDashboardNavigator().pushFragment(ProviderSecurityListFragment.class, args);
     }
 
     @VisibleForTesting public ProviderId getProviderId()

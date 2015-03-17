@@ -19,7 +19,6 @@ import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeListType;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
@@ -28,13 +27,10 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
-import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
@@ -369,23 +365,6 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleCompetitionItemClicked(ProviderDTO providerDTO)
     {
-        if (providerDTO != null && providerDTO.isUserEnrolled)
-        {
-            Bundle args = new Bundle();
-            MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
-            MainCompetitionFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId());
-            getDashboardNavigator().pushFragment(MainCompetitionFragment.class, args);
-        }
-        else if (providerDTO != null)
-        {
-            Bundle args = new Bundle();
-            CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
-                    providerDTO.getProviderId(),
-                    currentUserId.toUserBaseKey()));
-            CompetitionWebViewFragment.putIsOptionMenuVisible(args, true);
-            webFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
-            webFragment.setThIntentPassedListener(thIntentPassedListener);
-        }
     }
 
     private void handleSurveyItemOnClick()
@@ -401,16 +380,10 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleResetPortfolioItemOnClick()
     {
-        createPurchaseActionInteractorBuilder()
-                .build()
-                .resetPortfolio();
     }
 
     private void handleExtraCashItemOnClick()
     {
-        createPurchaseActionInteractorBuilder()
-                .build()
-                .buyVirtualDollar();
     }
 
     private void handleEarnCreditItemOnClick()
@@ -420,17 +393,6 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)
     {
-        Bundle args = new Bundle();
-        BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-
-        if (ownedPortfolioId != null)
-        {
-            BuySellFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        }
-
-        getDashboardNavigator().pushFragment(BuySellFragment.class, args);
     }
 
     protected TrendingFilterSelectorView.OnFilterTypeChangedListener createTrendingFilterChangedListener()

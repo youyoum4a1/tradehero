@@ -46,11 +46,6 @@ import javax.inject.Singleton;
 )
 public class RetrofitModule
 {
-    //<editor-fold desc="API Services">
-    @Provides @Singleton AlertPlanService provideAlertPlanService(RestAdapter adapter)
-    {
-        return adapter.create(AlertPlanService.class);
-    }
 
     @Provides @Singleton AlertService provideAlertService(RestAdapter adapter)
     {

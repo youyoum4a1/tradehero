@@ -72,7 +72,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.security.ChartImageView;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
 import com.tradehero.th.misc.callback.THCallback;

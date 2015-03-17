@@ -60,7 +60,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
         return view;
     }
 
-    @Override protected void initViews(View view)
+    protected void initViews(View view)
     {
         ButterKnife.inject(this, view);
         helpVideoListCacheListener = new ProviderVideoListFragmentVideoListCacheListener();

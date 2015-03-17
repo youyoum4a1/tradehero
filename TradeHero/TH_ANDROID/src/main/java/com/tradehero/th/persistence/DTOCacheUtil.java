@@ -4,7 +4,6 @@ import android.content.Context;
 import com.tradehero.chinabuild.cache.CompetitionNewCache;
 import com.tradehero.chinabuild.cache.PortfolioCompactNewCache;
 import com.tradehero.chinabuild.cache.PositionCompactNewCache;
-import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
@@ -89,7 +88,6 @@ import javax.inject.Singleton;
     protected final Lazy<PositionCache> positionCache;
     protected final Lazy<PositionCompactCache> positionCompactCache;
     protected final Lazy<PositionCompactIdCache> positionCompactIdCache;
-    protected final Lazy<ProductPurchaseCache> productPurchaseCache;
     protected final Lazy<ProviderCache> providerCache;
     protected final Lazy<ProviderListCache> providerListCache;
     protected final Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
@@ -145,7 +143,6 @@ import javax.inject.Singleton;
             Lazy<PositionCache> positionCache,
             Lazy<PositionCompactCache> positionCompactCache,
             Lazy<PositionCompactIdCache> positionCompactIdCache,
-            Lazy<ProductPurchaseCache> productPurchaseCache,
             Lazy<ProviderCache> providerCache,
             Lazy<ProviderListCache> providerListCache,
             Lazy<SecurityPositionDetailCache> securityPositionDetailCache,
@@ -195,7 +192,6 @@ import javax.inject.Singleton;
         this.positionCache = positionCache;
         this.positionCompactCache = positionCompactCache;
         this.positionCompactIdCache = positionCompactIdCache;
-        this.productPurchaseCache = productPurchaseCache;
         this.providerCache = providerCache;
         this.providerListCache = providerListCache;
         this.securityPositionDetailCache = securityPositionDetailCache;
@@ -245,7 +241,6 @@ import javax.inject.Singleton;
         positionCompactIdCache.get().invalidateAll();
         portfolioCompactNewCache.get().invalidateAll();
         positionCompactNewCache.get().invalidateAll();
-        productPurchaseCache.get().invalidateAll();
         providerCache.get().invalidateAll();
         providerListCache.get().invalidateAll();
         securityPositionDetailCache.get().invalidateAll();

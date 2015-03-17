@@ -4,7 +4,6 @@ import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.FollowStockForm;
 import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.chinabuild.data.RecommendItems;
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.HeroDTOList;
@@ -379,14 +378,6 @@ import java.util.List;
     }
     //</editor-fold>
 
-    public MiddleCallback<UserProfileDTO> addCredit(UserBaseKey userKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
-    {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
-        userServiceAsync.addCredit(userKey.key, purchaseDTO, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Follow Hero">
     @NotNull protected DTOProcessor<UserProfileDTO> createFollowPremiumUserProcessor(@NotNull UserBaseKey userToFollow)
     {
@@ -410,22 +401,6 @@ import java.util.List;
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowPremiumUserProcessor(userBaseKey));
         userServiceAsync.follow(userBaseKey.key, middleCallback);
-        return middleCallback;
-    }
-
-    public UserProfileDTO follow(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull GooglePlayPurchaseDTO purchaseDTO)
-    {
-        return createFollowPremiumUserProcessor(userBaseKey).process(userService.follow(userBaseKey.key, purchaseDTO));
-    }
-
-    @NotNull public MiddleCallback<UserProfileDTO> follow(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull GooglePlayPurchaseDTO purchaseDTO, @Nullable Callback<UserProfileDTO> callback)
-    {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowPremiumUserProcessor(userBaseKey));
-        userServiceAsync.follow(userBaseKey.key, purchaseDTO, middleCallback);
         return middleCallback;
     }
 

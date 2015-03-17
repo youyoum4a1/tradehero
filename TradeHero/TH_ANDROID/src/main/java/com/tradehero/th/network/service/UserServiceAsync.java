@@ -4,7 +4,6 @@ import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.FollowStockForm;
 import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.chinabuild.data.RecommendItems;
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -141,14 +140,6 @@ interface UserServiceAsync
             Callback<Response> callback);
     //</editor-fold>
 
-    //<editor-fold desc="Add Follow Credit">
-    @POST("/users/{userId}/addCredit")
-    void addCredit(
-            @Path("userId") int userId,
-            @Body GooglePlayPurchaseDTO purchaseDTO,
-            Callback<UserProfileDTO> callback);
-    //</editor-fold>
-
     //<editor-fold desc="Follow Hero">
     @POST("/users/{userId}/follow")
     void follow(
@@ -160,12 +151,6 @@ interface UserServiceAsync
             @Path("userId") int userId,
             Callback<UserProfileDTO> callback);
 
-    @POST("/users/{userId}/follow")
-    void follow(
-            @Path("userId") int userId,
-            @Body GooglePlayPurchaseDTO purchaseDTO,
-            Callback<UserProfileDTO> callback);
-    //</editor-fold>
 
     //<editor-fold desc="Unfollow Hero">
     @POST("/users/{userId}/unfollow")

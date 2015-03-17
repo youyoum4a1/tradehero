@@ -9,12 +9,7 @@ import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ListAdapter;
-import android.widget.ProgressBar;
-import android.widget.WrapperListAdapter;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -24,20 +19,20 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.loaders.PagedDTOCacheLoaderNew;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-abstract public class SecurityListFragment extends BasePurchaseManagerFragment
+import javax.inject.Inject;
+
+abstract public class SecurityListFragment extends DashboardFragment
 {
-    public static final String BUNDLE_KEY_PAGE = SecurityListFragment.class.getName() + ".page";
 
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 20;
@@ -68,7 +63,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         filterTextWatcher = new SecurityListOnFilterTextWatcher();
     }
 
-    @Override protected void initViews(View view)
+    protected void initViews(View view)
     {
         ButterKnife.inject(this, view);
 

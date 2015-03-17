@@ -14,13 +14,8 @@ import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.AllowableRecipientDTO;
-import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
-import com.tradehero.th.api.users.SearchAllowableRecipientListType;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.api.users.*;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
@@ -31,12 +26,13 @@ import com.tradehero.th.persistence.user.UserProfileCompactCache;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-public class AllRelationsFragment extends BasePurchaseManagerFragment
+import javax.inject.Inject;
+import java.util.List;
+
+public class AllRelationsFragment extends DashboardFragment
         implements AdapterView.OnItemClickListener
 {
     List<AllowableRecipientDTO> mRelationsList;
@@ -59,11 +55,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         allowableRecipientCacheListener = createAllowableRecipientListener();
     }
 
-    @Override
-    protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
-    {
-        return new AllRelationsPremiumUserFollowedListener();
-    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -74,7 +65,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         return view;
     }
 
-    @Override protected void initViews(View view)
+    protected void initViews(View view)
     {
         mRelationsListItemAdapter = new RelationsListItemAdapter(
                 getActivity(),
@@ -149,11 +140,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         getDashboardNavigator().pushFragment(NewPrivateMessageFragment.class, args);
     }
 
-    protected void handleFollowRequested(UserBaseKey userBaseKey)
-    {
-        premiumFollowUser(userBaseKey);
-    }
-
     protected DTOCacheNew.Listener<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO>
         createAllowableRecipientListener()
     {
@@ -191,7 +177,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     {
         @Override public void premiumFollowRequested(@NotNull UserBaseKey userBaseKey)
         {
-            handleFollowRequested(userBaseKey);
         }
     }
 

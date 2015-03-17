@@ -13,13 +13,11 @@ import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
-import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
@@ -30,7 +28,7 @@ import timber.log.Timber;
 
 import javax.inject.Inject;
 
-abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
+abstract public class FollowerManagerTabFragment extends DashboardFragment
         implements PullToRefreshBase.OnRefreshListener2<ListView>
 {
     public static final int ITEM_ID_REFRESH_MENU = 0;
@@ -66,7 +64,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         return view;
     }
 
-    @Override protected void initViews(View view)
+    protected void initViews(View view)
     {
         viewContainer = new FollowerManagerViewContainer(view);
 
@@ -304,14 +302,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     private void pushPayoutFragment(UserFollowerDTO followerDTO)
     {
-        FollowerHeroRelationId followerHeroRelationId =
-                new FollowerHeroRelationId(getApplicablePortfolioId().userId,
-                        followerDTO.id, followerDTO.displayName);
-        Bundle args = new Bundle();
-        args.putBundle(FollowerPayoutManagerFragment.BUNDLE_KEY_FOLLOWER_ID_BUNDLE,
-                followerHeroRelationId.getArgs());
-        ((DashboardActivity) getActivity()).getDashboardNavigator()
-                .pushFragment(FollowerPayoutManagerFragment.class, args);
     }
 
     private void handleFollowerItemClicked(View view, int position, long id)

@@ -1,13 +1,11 @@
 package com.tradehero.th.fragments.security;
 
-import android.os.Bundle;
 import android.view.View;
 import com.actionbarsherlock.view.Menu;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
@@ -15,14 +13,14 @@ import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.BaseSearchFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class SecuritySearchFragment extends BaseSearchFragment<
         SecurityListType,
@@ -97,14 +95,6 @@ public class SecuritySearchFragment extends BaseSearchFragment<
 
     protected void pushTradeFragmentIn(SecurityId securityId)
     {
-        Bundle args = new Bundle();
-        BuySellFragment.putSecurityId(args, securityId);
-        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-        if (applicablePortfolioId != null)
-        {
-            BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-        }
-        getDashboardNavigator().pushFragment(BuySellFragment.class, args);
     }
 
     private DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityIdListCacheListener()

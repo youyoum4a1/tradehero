@@ -19,22 +19,23 @@ import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedArrayDTOAdapterNew;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.route.THRouter;
+import org.jetbrains.annotations.NotNull;
+import timber.log.Timber;
+
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 abstract public class BasePagedListFragment<
         PagedDTOKeyType extends DTOKey, // But it also needs to be a PagedDTOKey
         DTOType extends DTO,
         DTOListType extends DTO & List<DTOType>,
         ViewType extends View & DTOView<DTOType>>
-        extends BasePurchaseManagerFragment
+        extends DashboardFragment
 {
     private final static String BUNDLE_KEY_PER_PAGE = BasePagedListFragment.class.getName() + ".perPage";
 

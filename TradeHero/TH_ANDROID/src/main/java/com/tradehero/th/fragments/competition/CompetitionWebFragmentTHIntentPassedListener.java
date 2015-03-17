@@ -1,11 +1,8 @@
 package com.tradehero.th.fragments.competition;
 
-import android.os.Bundle;
-import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -57,20 +54,5 @@ abstract public class CompetitionWebFragmentTHIntentPassedListener implements TH
 
     protected void handleSecurityPushBuyIntent(SecurityPushBuyIntent thIntent)
     {
-        // We are probably coming back from the wizard
-        getNavigator().popFragment(getClassToPop().getName());
-        // Now moving on
-        Bundle argsBundle = thIntent.getBundle();
-        if (thIntent.getActionFragment().equals(BuySellFragment.class))
-        {
-            BuySellFragment.putApplicablePortfolioId(argsBundle, getApplicablePortfolioId());
-            argsBundle.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, getProviderId().getArgs());
-        }
-        getNavigator().pushFragment(thIntent.getActionFragment(), argsBundle,
-                new int[] {
-                        R.anim.slide_right_in, R.anim.alpha_out,
-                        R.anim.slide_left_in, R.anim.slide_right_out
-                }, null);
-        Timber.d("onIntentPassed %s", thIntent);
     }
 }

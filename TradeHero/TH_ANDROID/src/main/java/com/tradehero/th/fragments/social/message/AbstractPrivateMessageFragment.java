@@ -99,9 +99,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         initViews(view);
     }
 
-    @Override protected void initViews(View view)
+    protected void initViews(View view)
     {
-        super.initViews(view);
 
         messageToSend.setHint(R.string.private_message_message_hint);
         buttonSend.setText(R.string.private_message_btn_send);

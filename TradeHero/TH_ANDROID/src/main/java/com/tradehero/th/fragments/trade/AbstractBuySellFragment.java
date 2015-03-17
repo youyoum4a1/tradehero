@@ -9,7 +9,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.position.PositionDTOCompactList;
@@ -21,7 +20,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -34,7 +33,7 @@ import timber.log.Timber;
 
 import javax.inject.Inject;
 
-abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragment
+abstract public class AbstractBuySellFragment extends DashboardFragment
 {
     private final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".securityId";
     public final static String BUNDLE_KEY_IS_BUY = AbstractBuySellFragment.class.getName() + ".isBuy";
@@ -128,7 +127,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    @Override protected void initViews(View view)
+    protected void initViews(View view)
     {
         // Prevent reuse of previous values when changing securities
         securityCompactDTO = null;
@@ -237,8 +236,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     public Integer getMaxSellableShares()
     {
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if (ownedPortfolioId != null && positionDTOCompactList != null)
+        if (positionDTOCompactList != null)
         {
             return positionDTOCompactList.getMaxSellableShares(
                     this.quoteDTO,

@@ -1,6 +1,5 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
@@ -70,10 +69,6 @@ public interface UserService
     @POST("/users/{userId}/follow") UserProfileDTO follow(
             @Path("userId") int userId);
 
-    @POST("/users/{userId}/follow") UserProfileDTO follow(
-            @Path("userId") int userId,
-            @Body GooglePlayPurchaseDTO purchaseDTO);
-    //</editor-fold>
 
     //<editor-fold desc="Get Heroes">
     @GET("/users/{userId}/heroes") HeroDTOList getHeroes(

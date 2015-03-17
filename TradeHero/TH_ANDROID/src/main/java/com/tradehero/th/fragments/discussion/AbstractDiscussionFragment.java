@@ -8,12 +8,13 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import javax.inject.Inject;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFragment
+import javax.inject.Inject;
+
+abstract public class AbstractDiscussionFragment extends DashboardFragment
 {
     private static final String DISCUSSION_KEY_BUNDLE_KEY = AbstractDiscussionFragment.class.getName() + ".discussionKey";
 
@@ -47,14 +48,6 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
     {
         ButterKnife.inject(this, view);
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override protected void initViews(View view)
-    {
-        if (discussionView != null)
-        {
-            discussionView.setCommentPostedListener(createCommentPostedListener());
-        }
     }
 
     @Override public void onDestroyView()

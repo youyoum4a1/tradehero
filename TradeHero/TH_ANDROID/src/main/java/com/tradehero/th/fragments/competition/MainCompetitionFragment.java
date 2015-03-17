@@ -32,8 +32,6 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
 import com.tradehero.th.fragments.competition.zone.dto.*;
-import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
-import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
@@ -95,7 +93,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         return view;
     }
 
-    @Override protected void initViews(View view)
+    protected void initViews(View view)
     {
         ButterKnife.inject(this, view);
         if (this.progressBar != null)
@@ -363,53 +361,14 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void pushTradeNowElement()
     {
-        Bundle args = new Bundle();
-        ProviderSecurityListFragment.putProviderId(args, providerId);
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if (ownedPortfolioId != null)
-        {
-            ProviderSecurityListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        }
-        DashboardNavigator navigator = getDashboardNavigator();
-        if (navigator != null)
-        {
-            navigator.pushFragment(ProviderSecurityListFragment.class, args);
-        }
     }
 
     private void pushPortfolioElement(@NotNull CompetitionZonePortfolioDTO competitionZoneDTO)
     {
-        // TODO We need to be able to launch async when the portfolio Id is finally not null
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if (ownedPortfolioId != null)
-        {
-            Bundle args = new Bundle();
-            PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
-            PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
-            PositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-            CompetitionLeaderboardPositionListFragment.putProviderId(args, providerId);
-            DashboardNavigator navigator = getDashboardNavigator();
-            if (navigator != null)
-            {
-                navigator.pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
-            }
-        }
     }
 
     private void pushVideoElement(@NotNull CompetitionZoneVideoDTO competitionZoneDTO)
     {
-        Bundle args = new Bundle();
-        ProviderVideoListFragment.putProviderId(args, providerId);
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if (ownedPortfolioId != null)
-        {
-            ProviderVideoListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        }
-        DashboardNavigator navigator = getDashboardNavigator();
-        if (navigator != null)
-        {
-            navigator.pushFragment(ProviderVideoListFragment.class, args);
-        }
     }
 
     private void pushWizardElement(@NotNull CompetitionZoneWizardDTO competitionZoneDTO)
@@ -556,7 +515,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
         @Override protected OwnedPortfolioId getApplicablePortfolioId()
         {
-            return MainCompetitionFragment.this.getApplicablePortfolioId();
+            return null;
         }
 
         @Override protected ProviderId getProviderId()

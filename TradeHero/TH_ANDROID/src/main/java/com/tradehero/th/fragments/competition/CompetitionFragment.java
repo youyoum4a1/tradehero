@@ -8,15 +8,16 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.utils.route.THRouter;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-abstract public class CompetitionFragment extends BasePurchaseManagerFragment
+import javax.inject.Inject;
+
+abstract public class CompetitionFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionFragment.class.getName() + ".providerId";
 
@@ -85,9 +86,6 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         this.providerDTO = providerDTO;
 
         OwnedPortfolioId associatedPortfolioId = providerDTO.associatedPortfolio.getOwnedPortfolioId();
-        putApplicablePortfolioId(getArguments(), associatedPortfolioId);
-
-        prepareApplicableOwnedPortolioId(null);
 
         if (andDisplay)
         {

@@ -16,12 +16,9 @@ import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
-import com.tradehero.th.fragments.security.SecuritySearchProviderFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -185,24 +182,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         return new BasicProviderSecurityListType(providerId, page, perPage);
     }
 
-    private void pushWizardElement()
-    {
-        Bundle args = new Bundle();
-        CompetitionWebViewFragment.putUrl(args, providerUtil.getWizardPage(providerId) + "&previous=whatever");
-        CompetitionWebViewFragment.putIsOptionMenuVisible(args, false);
-        this.webViewFragment = getDashboardNavigator().pushFragment(
-                CompetitionWebViewFragment.class, args);
-        this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
-    }
-
-    private void pushSearchFragment()
-    {
-        Bundle args = new Bundle();
-        SecuritySearchProviderFragment.putProviderId(args, providerId);
-        SecuritySearchProviderFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-        getDashboardNavigator().pushFragment(SecuritySearchProviderFragment.class, args);
-    }
-
     protected DTOCacheNew.Listener<ProviderId, ProviderDTO> createProviderCacheListener()
     {
         return new ProviderSecurityListFragmentProviderCacheListener();
@@ -244,13 +223,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
-            SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
-            Bundle args = new Bundle();
-            BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-            BuySellFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-            args.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
-            // TODO use other positions
-            getDashboardNavigator().pushFragment(BuySellFragment.class, args);
         }
     }
 
@@ -268,7 +240,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
         @Override protected OwnedPortfolioId getApplicablePortfolioId()
         {
-            return ProviderSecurityListFragment.this.getApplicablePortfolioId();
+            return null;
         }
 
         @Override protected ProviderId getProviderId()

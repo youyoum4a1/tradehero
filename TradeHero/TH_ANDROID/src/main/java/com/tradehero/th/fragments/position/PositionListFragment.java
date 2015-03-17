@@ -23,17 +23,11 @@ import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.GetPositionsDTOKeyFactory;
-import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.position.view.PositionLockedView;
-import com.tradehero.th.fragments.position.view.PositionNothingView;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
-import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
@@ -53,7 +47,7 @@ import java.util.Map;
 
 @Routable("user/:userId/portfolio/:portfolioId")
 public class PositionListFragment
-        extends BasePurchaseManagerFragment
+        extends DashboardFragment
         implements  WithTutorial
 {
     private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = PositionListFragment.class.getName() + ".showPositionDtoKey";
@@ -143,10 +137,6 @@ public class PositionListFragment
         portfolioFetchListener = createPortfolioCacheListener();
     }
 
-    @NotNull @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
-    {
-        return new AbstractPositionListPremiumUserFollowedListener();
-    }
 
     @Override public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState)
     {
@@ -158,13 +148,7 @@ public class PositionListFragment
         View view = inflater.inflate(R.layout.fragment_positions_list, container, false);
 
         ButterKnife.inject(this, view);
-        initViews(view);
         return view;
-    }
-
-    @Override protected void initViews(@Nullable View view)
-    {
-        showLoadingView(true);
     }
 
     protected boolean checkLoadingSuccess()
@@ -264,44 +248,6 @@ public class PositionListFragment
 
     protected void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        if (view instanceof PositionNothingView)
-        {
-            pushSecurityFragment();
-        }
-        else if (view instanceof PositionLockedView)
-        {
-            popFollowUser(shownUser);
-        }
-        else
-        {
-            Bundle args = new Bundle();
-            // By default tries
-            TradeListFragment.putPositionDTOKey(args, ((PositionDTO) parent.getItemAtPosition(position)).getPositionDTOKey());
-            OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-            if (ownedPortfolioId != null)
-            {
-                TradeListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-            }
-            DashboardNavigator navigator = getDashboardNavigator();
-            if (navigator != null)
-            {
-                navigator.pushFragment(TradeListFragment.class, args);
-            }
-        }
-    }
-
-    protected void pushSecurityFragment()
-    {
-        Bundle args = new Bundle();
-
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-
-        if (ownedPortfolioId != null)
-        {
-            TrendingFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        }
-
-        getDashboardNavigator().pushFragment(TrendingFragment.class, args);
     }
 
     @Override public void onResume()

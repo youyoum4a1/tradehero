@@ -14,7 +14,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.social.UserFollowerCache;
 import com.tradehero.th.utils.SecurityUtils;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 
-public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
+public class FollowerPayoutManagerFragment extends DashboardFragment
 {
     public static final String BUNDLE_KEY_FOLLOWER_ID_BUNDLE =
             FollowerPayoutManagerFragment.class.getName() + ".followerId";
@@ -61,7 +61,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         return view;
     }
 
-    @Override protected void initViews(View view)
+    protected void initViews(View view)
     {
         followerPicture = (ImageView) view.findViewById(R.id.follower_profile_picture);
         if (followerPicture != null)

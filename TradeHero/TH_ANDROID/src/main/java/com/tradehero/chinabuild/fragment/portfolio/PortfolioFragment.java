@@ -514,7 +514,6 @@ public class PortfolioFragment extends DashboardFragment {
 
     private void initPositionSecurityClosed(GetPositionsDTO psList) {
         if (psList != null && psList.closedPositionsCount >= 0) {
-            adapter.setTotalClosedAccount(psList.closedPositionsCount);
             ArrayList<SecurityPositionItem> list = new ArrayList();
             List<PositionDTO> listData = psList.getClosedPositions();
             int sizePosition = listData.size();
@@ -525,6 +524,7 @@ public class PortfolioFragment extends DashboardFragment {
                 }
             }
             if (adapter != null) {
+                adapter.setTotalClosedAccount(psList.closedPositionsCount);
                 if(currentPage == 1) {
                     adapter.setSecurityPositionListClosed(list);
                 }else{
