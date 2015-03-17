@@ -159,7 +159,7 @@ public class AlertSliderView extends RelativeLayout
                 break;
 
             case PERCENTAGE:
-                valueDisplay = THSignedPercentage.builder(value)
+                valueDisplay = THSignedPercentage.builder(100 * value)
                         .withSign()
                         .format(getResources().getString(R.string.stock_alert_percentage_change_format));
                 break;
