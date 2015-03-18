@@ -329,7 +329,7 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
             CompetitionLeaderboardMarkUserItemView.Requisite thisRequisite = (CompetitionLeaderboardMarkUserItemView.Requisite) requisite;
             if (requisite.currentLeaderboardUserDTO == null)
             {
-                leaderboardMarkUserItemView.displayUserIsNotRanked(requisite.currentUserProfileDTO, thisRequisite.providerDTO);
+                leaderboardMarkUserItemView.displayUserIsNotRanked(requisite.currentUserProfileDTO);
                 leaderboardMarkUserItemView.setOnClickListener(null);
             }
             else if (leaderboardMarkUserItemView instanceof CompetitionLeaderboardMarkUserOwnRankingView)

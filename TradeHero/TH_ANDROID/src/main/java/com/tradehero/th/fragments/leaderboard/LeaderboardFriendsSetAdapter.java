@@ -11,7 +11,6 @@ import com.tradehero.th.adapters.PagedDTOAdapterImpl;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +34,7 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
     protected UserProfileDTO currentUserProfileDTO;
 
     @NonNull private final Map<Object, Boolean> expandedStatuses;
-    @NonNull private final BehaviorSubject<UserBaseDTO> followRequestedBehavior;
+    @NonNull private final BehaviorSubject<LeaderboardMarkUserItemView.UserAction> followRequestedBehavior;
 
     //<editor-fold desc="Constructors">
     public LeaderboardFriendsSetAdapter(
@@ -85,7 +84,7 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
         throw new IllegalStateException("Unhandled item view type " + getItemViewType(position));
     }
 
-    @NonNull public Observable<UserBaseDTO> getFollowRequestObservable()
+    @NonNull public Observable<LeaderboardMarkUserItemView.UserAction> getFollowRequestObservable()
     {
         return followRequestedBehavior.asObservable();
     }

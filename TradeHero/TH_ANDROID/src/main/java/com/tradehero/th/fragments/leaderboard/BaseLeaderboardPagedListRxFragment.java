@@ -133,6 +133,10 @@ abstract public class BaseLeaderboardPagedListRxFragment<
     {
     }
 
+    protected void updateListViewRow(@NonNull final UserBaseKey heroId)
+    {
+    }
+
     @MenuRes protected int getMenuResource()
     {
         return R.menu.empty_menu;

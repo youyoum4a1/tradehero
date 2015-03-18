@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Spanned;
@@ -13,18 +12,14 @@ import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.Optional;
 import com.tradehero.common.annotation.ViewVisibilityValue;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -112,28 +107,6 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
                 lbmuNumberTradesInPeriod.setText(viewDTO.lbmuNumberTradesInPeriod);
             }
         }
-    }
-
-    @Override protected void pushLeaderboardPositionListFragment(@NonNull GetPositionsDTOKey getPositionsDTOKey, @Nullable LeaderboardDefDTO leaderboardDefDTO)
-    {
-        if (viewDTO == null)
-        {
-            THToast.show(R.string.error_incomplete_info_message);
-            return;
-        }
-        // leaderboard mark user id, to get marking user information
-        Bundle bundle = new Bundle();
-
-        CompetitionLeaderboardPositionListFragment.putGetPositionsDTOKey(bundle, viewDTO.leaderboardUserDTO.getLeaderboardMarkUserId());
-        CompetitionLeaderboardPositionListFragment.putShownUser(bundle, viewDTO.leaderboardUserDTO.getBaseKey());
-        CompetitionLeaderboardPositionListFragment.putProviderId(bundle, ((DTO) viewDTO).providerDTO.getProviderId());
-
-        if (applicablePortfolioId != null)
-        {
-            CompetitionLeaderboardPositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
-        }
-
-        navigator.pushFragment(CompetitionLeaderboardPositionListFragment.class, bundle);
     }
 
     public static class DTO extends LeaderboardMarkUserItemView.DTO

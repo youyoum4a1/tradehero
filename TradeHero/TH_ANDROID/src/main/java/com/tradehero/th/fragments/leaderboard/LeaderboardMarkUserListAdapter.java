@@ -11,7 +11,6 @@ import com.tradehero.th.adapters.PagedViewDTOAdapterImpl;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseDTO;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -22,7 +21,7 @@ public class LeaderboardMarkUserListAdapter extends PagedViewDTOAdapterImpl<
     @NonNull protected final LeaderboardKey leaderboardKey;
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
 
-    @NonNull protected final PublishSubject<UserBaseDTO> followRequestedPublish;
+    @NonNull protected final PublishSubject<LeaderboardMarkUserItemView.UserAction> followRequestedPublish;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserListAdapter(
@@ -41,7 +40,7 @@ public class LeaderboardMarkUserListAdapter extends PagedViewDTOAdapterImpl<
         this.applicablePortfolioId = ownedPortfolioId;
     }
 
-    @NonNull public Observable<UserBaseDTO> getFollowRequestedObservable()
+    @NonNull public Observable<LeaderboardMarkUserItemView.UserAction> getFollowRequestedObservable()
     {
         return followRequestedPublish.asObservable();
     }

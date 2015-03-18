@@ -33,19 +33,14 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
-import com.tradehero.th.models.social.FollowRequest;
-import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
@@ -73,6 +68,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     @Inject @ForUser SharedPreferences preferences;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardCacheRx leaderboardCache;
+    @Inject LeaderboardMarkUserListFragmentUtil fragmentUtil;
 
     @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
 
@@ -98,6 +94,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         {
             currentLeaderboardKey.setAssetClass(currentLeaderboardType.getAssetClass());
         }
+        fragmentUtil.linkWith(this);
     }
 
     protected PerPagedLeaderboardKey getInitialLeaderboardKey()
@@ -163,15 +160,10 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     @Override public void onStart()
     {
         super.onStart();
+        fragmentUtil.onStart();
         onStopSubscriptions.add(((LeaderboardMarkUserListAdapter) itemViewAdapter).getFollowRequestedObservable()
                 .subscribe(
-                        new Action1<UserBaseDTO>()
-                        {
-                            @Override public void call(UserBaseDTO userBaseDTO)
-                            {
-                                LeaderboardMarkUserListFragment.this.handleFollowRequested(userBaseDTO);
-                            }
-                        },
+                        fragmentUtil,
                         new TimberOnErrorAction("Error when receiving user follow requested")));
         requestDtos();
         fetchOwnRanking();
@@ -224,6 +216,12 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         {
             Timber.d("onResume filterFragment is null");
         }
+    }
+
+    @Override public void onStop()
+    {
+        fragmentUtil.onStop();
+        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -446,7 +444,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         }
     }
 
-    private void updateListViewRow(@NonNull final UserBaseKey heroId)
+    @Override protected void updateListViewRow(@NonNull final UserBaseKey heroId)
     {
         AdapterViewUtils.updateSingleRowWhere(
                 listView,
@@ -487,37 +485,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
                 filterIcon.setIcon(R.drawable.ic_action_icn_actionbar_filteroff);
             }
         }
-    }
-
-    protected void handleFollowRequested(@NonNull final UserBaseDTO userBaseDTO)
-    {
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
-                new ChoiceFollowUserAssistantWithDialog(
-                        getActivity(),
-                        userBaseDTO
-                        // ,getApplicablePortfolioId()
-                ).launchChoiceRx())
-                .subscribe(
-                        new Action1<Pair<FollowRequest, UserProfileDTO>>()
-                        {
-                            @Override public void call(Pair<FollowRequest, UserProfileDTO> pair)
-                            {
-                                LeaderboardMarkUserListFragment.this.setCurrentUserProfileDTO(pair.second);
-                                int followType = pair.second.getFollowType(userBaseDTO);
-                                if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
-                                {
-                                    analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
-                                }
-                                else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
-                                {
-                                    analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
-                                }
-                                LeaderboardMarkUserListFragment.this.updateListViewRow(userBaseDTO.getBaseKey());
-                            }
-                        },
-                        new ToastOnErrorAction()
-                ));
     }
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)

@@ -1,9 +1,7 @@
 package com.tradehero.th.fragments.leaderboard;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Spanned;
@@ -23,42 +21,29 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.ContainerDTO;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableItem;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.position.TabbedPositionListFragment;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
-import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.internal.util.SubscriptionList;
-import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 import static com.tradehero.th.utils.Constants.MAX_OWN_LEADER_RANKING;
@@ -67,11 +52,8 @@ public class LeaderboardMarkUserItemView
         extends RelativeLayout
         implements DTOView<LeaderboardMarkUserItemView.DTO>
 {
-    @Inject Lazy<LeaderboardDefCacheRx> leaderboardDefCache;
     @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
-    @Inject THRouter thRouter;
-    @Inject DashboardNavigator navigator;
 
     protected OwnedPortfolioId applicablePortfolioId;
     // data
@@ -95,7 +77,7 @@ public class LeaderboardMarkUserItemView
     @InjectView(R.id.lbmu_inner_view_container) @Optional @Nullable ViewGroup innerViewContainer;
 
     @NonNull protected SubscriptionList subscriptions;
-    @NonNull protected BehaviorSubject<UserBaseDTO> followRequestedBehavior;
+    @NonNull protected PublishSubject<UserAction> userActionSubject;
 
     protected UserProfileDTO currentUserProfileDTO;
 
@@ -121,7 +103,7 @@ public class LeaderboardMarkUserItemView
     private void init()
     {
         subscriptions = new SubscriptionList();
-        followRequestedBehavior = BehaviorSubject.create();
+        userActionSubject = PublishSubject.create();
     }
     //</editor-fold>
 
@@ -173,9 +155,9 @@ public class LeaderboardMarkUserItemView
         this.applicablePortfolioId = applicablePortfolioId;
     }
 
-    @NonNull public Observable<UserBaseDTO> getFollowRequestedObservable()
+    @NonNull public Observable<UserAction> getFollowRequestedObservable()
     {
-        return followRequestedBehavior.asObservable();
+        return userActionSubject.asObservable();
     }
 
     @Override public void display(@NonNull DTO viewDTO)
@@ -229,7 +211,7 @@ public class LeaderboardMarkUserItemView
         }
     }
 
-    private String getPosition(DTO viewDTO)
+    @NonNull private String getPosition(DTO viewDTO)
     {
         LeaderboardUserDTO leaderboardItem = viewDTO.leaderboardUserDTO;
         Integer currentRank = leaderboardItem.ordinalPosition + 1;
@@ -252,18 +234,11 @@ public class LeaderboardMarkUserItemView
     @OnClick({R.id.leaderboard_user_item_open_profile, R.id.leaderboard_user_item_profile_picture})
     protected void handleProfileClicked(View view)
     {
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Profile));
-        handleOpenProfileButtonClicked();
-    }
-
-    protected void handleOpenProfileButtonClicked()
-    {
-        if (viewDTO == null)
+        if (viewDTO != null)
         {
-            // TODO nicer
-            return;
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Profile));
+            userActionSubject.onNext(new UserAction(viewDTO, UserActionType.PROFILE));
         }
-        openTimeline(viewDTO.leaderboardUserDTO.id);
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -273,31 +248,7 @@ public class LeaderboardMarkUserItemView
         if (viewDTO != null)
         {
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Positions));
-            GetPositionsDTOKey getPositionsDTOKey = viewDTO.leaderboardUserDTO.getGetPositionsDTOKey();
-            if (getPositionsDTOKey == null)
-            {
-                Timber.e(new NullPointerException(), "Unable to get positions %s", viewDTO.leaderboardUserDTO);
-                THToast.show(R.string.leaderboard_friends_position_failed);
-                return;
-            }
-
-            // get leaderboard definition from cache, supposedly it exists coz this view appears after leaderboard definition list
-            LeaderboardDefDTO leaderboardDef = null;
-            Integer leaderboardId = viewDTO.leaderboardUserDTO.getLeaderboardId();
-            if (leaderboardId != null)
-            {
-                leaderboardDef = leaderboardDefCache.get()
-                        .getCachedValue(new LeaderboardDefKey(viewDTO.leaderboardUserDTO.getLeaderboardId()));
-            }
-
-            if (viewDTO.leaderboardUserDTO.lbmuId != -1)
-            {
-                pushLeaderboardPositionListFragment(getPositionsDTOKey, leaderboardDef);
-            }
-            else
-            {
-                pushPositionListFragment(getPositionsDTOKey);
-            }
+            userActionSubject.onNext(new UserAction(viewDTO, UserActionType.POSITIONS));
         }
     }
 
@@ -308,77 +259,7 @@ public class LeaderboardMarkUserItemView
         if (viewDTO != null)
         {
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
-            followRequestedBehavior.onNext(viewDTO.leaderboardUserDTO);
-        }
-    }
-
-    protected void pushLeaderboardPositionListFragment(@NonNull GetPositionsDTOKey getPositionsDTOKey, @Nullable LeaderboardDefDTO leaderboardDefDTO)
-    {
-        if (viewDTO == null)
-        {
-            Timber.e(new Exception(), "Had null View dto when push position");
-        }
-        else
-        {
-            // leaderboard mark user id, to get marking user information
-            Bundle bundle = new Bundle();
-            TabbedPositionListFragment.putGetPositionsDTOKey(bundle, getPositionsDTOKey);
-            TabbedPositionListFragment.putShownUser(bundle, viewDTO.leaderboardUserDTO.getBaseKey());
-            if (leaderboardDefDTO != null)
-            {
-                TabbedPositionListFragment.putLeaderboardTimeRestricted(bundle, leaderboardDefDTO.isTimeRestrictedLeaderboard());
-            }
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf =
-                    new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
-            String formattedStartPeriodUtc = sdf.format(viewDTO.leaderboardUserDTO.periodStartUtc);
-            TabbedPositionListFragment.putLeaderboardPeriodStartString(bundle, formattedStartPeriodUtc);
-
-            if (applicablePortfolioId != null)
-            {
-                TabbedPositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
-            }
-
-            navigator.pushFragment(TabbedPositionListFragment.class, bundle);
-        }
-    }
-
-    protected void pushPositionListFragment(@NonNull GetPositionsDTOKey getPositionsDTOKey)
-    {
-        if (viewDTO == null)
-        {
-            Timber.e(new Exception(), "Had null View dto when push position");
-        }
-        else
-        {
-            Bundle bundle = new Bundle();
-            PositionListFragment.putGetPositionsDTOKey(bundle, getPositionsDTOKey);
-            PositionListFragment.putShownUser(bundle, viewDTO.leaderboardUserDTO.getBaseKey());
-
-            if (applicablePortfolioId != null)
-            {
-                PositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
-            }
-
-            navigator.pushFragment(PositionListFragment.class, bundle);
-        }
-    }
-
-    protected void openTimeline(int userId)
-    {
-        Bundle bundle = new Bundle();
-        UserBaseKey userToSee = new UserBaseKey(userId);
-        thRouter.save(bundle, userToSee);
-        if (viewDTO == null)
-        {
-            Timber.e(new Exception(), "No View DTO when trying to open timeline");
-        }
-        else if (viewDTO.currentUserId.toUserBaseKey().equals(userToSee))
-        {
-            navigator.pushFragment(MeTimelineFragment.class, bundle);
-        }
-        else
-        {
-            navigator.pushFragment(PushableTimelineFragment.class, bundle);
+            userActionSubject.onNext(new UserAction(viewDTO, UserActionType.FOLLOW));
         }
     }
 
@@ -576,6 +457,25 @@ public class LeaderboardMarkUserItemView
         {
             this.currentLeaderboardUserDTO = currentLeaderboardUserDTO;
             this.currentUserProfileDTO = currentUserProfileDTO;
+        }
+    }
+
+    public enum UserActionType
+    {
+        PROFILE, POSITIONS, FOLLOW, RULES
+    }
+
+    public static class UserAction
+    {
+        @NonNull public final DTO dto;
+        @NonNull public final UserActionType actionType;
+
+        public UserAction(
+                @NonNull DTO dto,
+                @NonNull UserActionType actionType)
+        {
+            this.dto = dto;
+            this.actionType = actionType;
         }
     }
 }

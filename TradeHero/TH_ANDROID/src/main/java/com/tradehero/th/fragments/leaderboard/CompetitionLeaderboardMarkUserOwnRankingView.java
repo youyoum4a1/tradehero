@@ -2,8 +2,8 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -20,23 +20,15 @@ import butterknife.OnClick;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.models.number.THSignedNumber;
-import javax.inject.Inject;
-import timber.log.Timber;
 
 public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLeaderboardMarkUserItemView
 {
     @InjectView(R.id.competition_own_ranking_info_container) ViewGroup infoButtonContainer;
     @InjectView(R.id.competition_own_ranking_info_text) TextView infoText;
-
-    @Inject ProviderUtil providerUtil;
-    protected ProviderDTO providerDTO;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -64,7 +56,6 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         if (parentViewDTO instanceof DTO)
         {
             DTO viewDTO = (DTO) parentViewDTO;
-            this.providerDTO = viewDTO.providerDTO;
 
             if (infoButtonContainer != null)
             {
@@ -77,10 +68,9 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         }
     }
 
-    public void displayUserIsNotRanked(UserProfileDTO currentUserProfileDTO, ProviderDTO providerDTO)
+    @Override public void displayUserIsNotRanked(@Nullable UserProfileDTO currentUserProfileDTO)
     {
         super.displayUserIsNotRanked(currentUserProfileDTO);
-        this.providerDTO = providerDTO;
 
         String rule = getContext().getString(R.string.leaderboard_see_competition_rules);
 
@@ -108,33 +98,12 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         {
             @Override public void onClick(View view)
             {
-                handleRulesClicked();
+                if (viewDTO != null)
+                {
+                    userActionSubject.onNext(new UserAction(viewDTO, UserActionType.RULES));
+                }
             }
         };
-    }
-
-    public void handleRulesClicked()
-    {
-        Bundle args = new Bundle();
-        CompetitionWebViewFragment.putUrl(args, getRules());
-        navigator.pushFragment(CompetitionWebViewFragment.class, args);
-    }
-
-    public String getRules()
-    {
-        return providerUtil.getRulesPage(providerDTO.getProviderId());
-    }
-
-    @Override protected void handleOpenProfileButtonClicked()
-    {
-        if (viewDTO != null)
-        {
-            openTimeline(viewDTO.currentUserId.get());
-        }
-        else
-        {
-            Timber.e(new Exception(), "No view DTO when opening profile");
-        }
     }
 
     @SuppressWarnings("UnusedDeclaration")

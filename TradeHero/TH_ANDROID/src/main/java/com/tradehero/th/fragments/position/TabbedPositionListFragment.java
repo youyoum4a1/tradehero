@@ -217,12 +217,8 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
                 positionType = STOCK_TYPES[position];
             }
             PositionListFragment.putPositionType(args, positionType);
-            if (providerId != null)
-            {
-                CompetitionLeaderboardPositionListFragment.putProviderId(args, providerId);
-                return Fragment.instantiate(getActivity(), CompetitionLeaderboardPositionListFragment.class.getName(), args);
-            }
-            else if (getPositionsDTOKey instanceof LeaderboardMarkUserId)
+
+            if (getPositionsDTOKey instanceof LeaderboardMarkUserId)
             {
                 LeaderboardPositionListFragment.putLeaderboardTimeRestricted(args, getLeaderBoardTimeRestricted(getArguments()));
                 String periodStart = getLeaderboardPeriodStartString(getArguments());
@@ -230,6 +226,15 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
                 {
                     LeaderboardPositionListFragment.putLeaderboardPeriodStartString(args, periodStart);
                 }
+            }
+
+            if (providerId != null)
+            {
+                CompetitionLeaderboardPositionListFragment.putProviderId(args, providerId);
+                return Fragment.instantiate(getActivity(), CompetitionLeaderboardPositionListFragment.class.getName(), args);
+            }
+            else if (getPositionsDTOKey instanceof LeaderboardMarkUserId)
+            {
                 return Fragment.instantiate(getActivity(), LeaderboardPositionListFragment.class.getName(), args);
             }
             return Fragment.instantiate(getActivity(), PositionListFragment.class.getName(), args);
