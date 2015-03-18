@@ -58,8 +58,8 @@
   </LinearLayout>
 
   <ImageView
-      android:layout_width="@dimen/medium_image_w_h"
-      android:layout_height="@dimen/medium_image_w_h"
+      android:layout_width="@dimen/small_image_w_h"
+      android:layout_height="@dimen/small_image_w_h"
       android:id="@+id/close"
       android:layout_alignParentTop="true"
       android:layout_alignParentRight="true"
