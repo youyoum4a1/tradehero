@@ -141,6 +141,7 @@ public class PositionPartialTopView extends LinearLayout
 
         if (flagsContainer != null)
         {
+            flagsContainer.setVisibility(dto.flagsContainerVisibility);
             flagsContainer.display(dto.fxPair);
         }
 

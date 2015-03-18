@@ -46,7 +46,7 @@
       android:layout_alignBaseline="@id/header_text"
       android:layout_centerVertical="true"
       style="@style/TH.Caption"
-      android:gravity="right"
+      android:gravity="end"
       tools:text="2 OCT 2013 - 7 NOV 2013"
       />
 
