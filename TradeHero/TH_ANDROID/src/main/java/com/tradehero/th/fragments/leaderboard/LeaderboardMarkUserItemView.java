@@ -40,8 +40,8 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
@@ -322,23 +322,23 @@ public class LeaderboardMarkUserItemView
         {
             // leaderboard mark user id, to get marking user information
             Bundle bundle = new Bundle();
-            LeaderboardPositionListFragment.putGetPositionsDTOKey(bundle, getPositionsDTOKey);
-            LeaderboardPositionListFragment.putShownUser(bundle, viewDTO.leaderboardUserDTO.getBaseKey());
+            TabbedPositionListFragment.putGetPositionsDTOKey(bundle, getPositionsDTOKey);
+            TabbedPositionListFragment.putShownUser(bundle, viewDTO.leaderboardUserDTO.getBaseKey());
             if (leaderboardDefDTO != null)
             {
-                LeaderboardPositionListFragment.putLeaderboardTimeRestricted(bundle, leaderboardDefDTO.isTimeRestrictedLeaderboard());
+                TabbedPositionListFragment.putLeaderboardTimeRestricted(bundle, leaderboardDefDTO.isTimeRestrictedLeaderboard());
             }
             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf =
                     new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
             String formattedStartPeriodUtc = sdf.format(viewDTO.leaderboardUserDTO.periodStartUtc);
-            LeaderboardPositionListFragment.putLeaderboardPeriodStartString(bundle, formattedStartPeriodUtc);
+            TabbedPositionListFragment.putLeaderboardPeriodStartString(bundle, formattedStartPeriodUtc);
 
             if (applicablePortfolioId != null)
             {
-                LeaderboardPositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
+                TabbedPositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
             }
 
-            navigator.pushFragment(LeaderboardPositionListFragment.class, bundle);
+            navigator.pushFragment(TabbedPositionListFragment.class, bundle);
         }
     }
 

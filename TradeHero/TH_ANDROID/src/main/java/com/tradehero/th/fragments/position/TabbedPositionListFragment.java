@@ -17,6 +17,7 @@ import com.android.common.SlidingTabLayout;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
@@ -36,6 +37,9 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
     private static final String BUNDLE_KEY_IS_FX = TabbedPositionListFragment.class.getName() + "isFX";
     private static final String BUNDLE_KEY_PROVIDER_ID = TabbedPositionListFragment.class + ".providerId";
     private static final boolean DEFAULT_IS_FX = false;
+    private static final String LEADERBOARD_DEF_TIME_RESTRICTED = "LEADERBOARD_DEF_TIME_RESTRICTED";
+    private static final boolean DEFAULT_IS_TIME_RESTRICTED = false;
+    private static final String LEADERBOARD_PERIOD_START_STRING = "LEADERBOARD_PERIOD_START_STRING";
 
     @Inject THRouter thRouter;
     @InjectRoute UserBaseKey injectedUserBaseKey;
@@ -103,7 +107,7 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
         return args.getBoolean(BUNDLE_KEY_IS_FX, DEFAULT_IS_FX);
     }
 
-    @NonNull private UserBaseKey getUserBaseKey(@NonNull Bundle args)
+    @NonNull private UserBaseKey getShownUser(@NonNull Bundle args)
     {
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE));
     }
@@ -128,6 +132,26 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
         return new ProviderId(bundle);
     }
 
+    public static void putLeaderboardTimeRestricted(@NonNull Bundle args, boolean isTimeRestricted)
+    {
+        args.putBoolean(LEADERBOARD_DEF_TIME_RESTRICTED, isTimeRestricted);
+    }
+
+    public static boolean getLeaderBoardTimeRestricted(@NonNull Bundle args)
+    {
+        return args.getBoolean(LEADERBOARD_DEF_TIME_RESTRICTED, DEFAULT_IS_TIME_RESTRICTED);
+    }
+
+    public static void putLeaderboardPeriodStartString(@NonNull Bundle args,@NonNull String periodStartString)
+    {
+        args.putString(LEADERBOARD_PERIOD_START_STRING, periodStartString);
+    }
+
+    @Nullable public static String getLeaderboardPeriodStartString(@NonNull Bundle args)
+    {
+        return args.getString(LEADERBOARD_PERIOD_START_STRING);
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -135,7 +159,7 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
         Bundle args = getArguments();
         if (args.containsKey(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE))
         {
-            shownUser = getUserBaseKey(args);
+            shownUser = getShownUser(args);
         }
         else
         {
@@ -181,7 +205,7 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
             Bundle args = new Bundle();
 
             PositionListFragment.putApplicablePortfolioId(args, purchaseApplicableOwnedPortfolioId);
-            PositionListFragment.putGetPositionsDTOKey(args, purchaseApplicableOwnedPortfolioId);
+            PositionListFragment.putGetPositionsDTOKey(args, getPositionsDTOKey);
             PositionListFragment.putShownUser(args, purchaseApplicableOwnedPortfolioId.getUserBaseKey());
             TabType positionType;
             if (isFX)
@@ -197,6 +221,16 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
             {
                 CompetitionLeaderboardPositionListFragment.putProviderId(args, providerId);
                 return Fragment.instantiate(getActivity(), CompetitionLeaderboardPositionListFragment.class.getName(), args);
+            }
+            else if (getPositionsDTOKey instanceof LeaderboardMarkUserId)
+            {
+                LeaderboardPositionListFragment.putLeaderboardTimeRestricted(args, getLeaderBoardTimeRestricted(getArguments()));
+                String periodStart = getLeaderboardPeriodStartString(getArguments());
+                if (periodStart != null)
+                {
+                    LeaderboardPositionListFragment.putLeaderboardPeriodStartString(args, periodStart);
+                }
+                return Fragment.instantiate(getActivity(), LeaderboardPositionListFragment.class.getName(), args);
             }
             return Fragment.instantiate(getActivity(), PositionListFragment.class.getName(), args);
         }
