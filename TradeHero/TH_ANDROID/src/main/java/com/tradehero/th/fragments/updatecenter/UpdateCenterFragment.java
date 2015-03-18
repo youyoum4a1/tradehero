@@ -18,14 +18,10 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.discussion.RunnableInvalidateMessageList;
 import com.tradehero.th.models.notification.RunnableInvalidateNotificationList;
@@ -147,16 +143,6 @@ public class UpdateCenterFragment extends DashboardFragment
         Timber.d("onDestroyOptionsMenu");
 
         super.onDestroyOptionsMenu();
-    }
-
-    private void jumpToSendBroadcastMessage()
-    {
-        Bundle args = new Bundle();
-        args.putInt(SendMessageFragment.KEY_DISCUSSION_TYPE,
-                DiscussionType.BROADCAST_MESSAGE.value);
-        args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE,
-                MessageType.BROADCAST_ALL_FOLLOWERS.typeId);
-        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(SendMessageFragment.class, args);
     }
 
     @Override public void onStop()

@@ -46,14 +46,10 @@ import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.security.*;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
-import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
-import com.tradehero.th.fragments.social.RelationsListItemView;
-import com.tradehero.th.fragments.social.follower.*;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentLinkedIn;
 import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentWeibo;
-import com.tradehero.th.fragments.social.hero.*;
 import com.tradehero.th.fragments.social.message.*;
 import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
 import com.tradehero.th.fragments.trade.*;
@@ -80,12 +76,10 @@ import com.tradehero.th.models.push.PushModule;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.models.user.SimplePremiumFollowUserAssistant;
 import com.tradehero.th.network.NetworkModule;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
-import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.ui.UIModule;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -163,16 +157,6 @@ import java.util.Locale;
                         TradeListFragment.class,
                         TradeListItemView.class,
 
-                        HeroManagerFragment.class,
-                        HeroListItemView.class,
-                        FollowerManagerFragment.class,
-                        AllFollowerFragment.class,
-                        PremiumFollowerFragment.class,
-                        FreeFollowerFragment.class,
-                        FollowerManagerInfoFetcher.class,
-                        FollowerPayoutManagerFragment.class,
-                        FollowerListItemView.class,
-
                         SearchStockPageListLoader.class,
                         TimelineListLoader.class,
 
@@ -190,15 +174,6 @@ import java.util.Locale;
                         WebViewFragment.class,
 
                         CompetitionWebViewFragment.class,
-
-                        PortfolioCompactListRetrievedMilestone.class,
-                        UserProfileRetrievedMilestone.class,
-                        HeroesTabContentFragment.class,
-                        PremiumHeroFragment.class,
-                        FreeHeroFragment.class,
-                        AllHeroFragment.class,
-                        AllRelationsFragment.class,
-                        RelationsListItemView.class,
 
                         WatchlistEditFragment.class,
                         UserWatchlistPositionCache.class,

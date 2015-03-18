@@ -27,7 +27,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
@@ -56,7 +55,6 @@ public class PositionListFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject GetPositionsDTOKeyFactory getPositionsDTOKeyFactory;
-    @Inject HeroAlertDialogUtil heroAlertDialogUtil;
     @Inject Lazy<GetPositionsCache> getPositionsCache;
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
