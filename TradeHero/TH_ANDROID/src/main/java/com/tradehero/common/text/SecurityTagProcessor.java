@@ -1,6 +1,7 @@
 package com.tradehero.common.text;
 
 import android.support.annotation.NonNull;
+import com.tradehero.th.utils.SecurityUtils;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
@@ -19,7 +20,7 @@ public class SecurityTagProcessor extends ClickableTagProcessor
 
     @NonNull @Override public String getExtractionPattern(@NonNull MatchResult matchResult)
     {
-        if (matchResult.group(1).equals("FXRATE"))
+        if (matchResult.group(1).equals(SecurityUtils.FX_EXCHANGE))
         {
             return matchResult.group(2).replace('_', '/');
         }

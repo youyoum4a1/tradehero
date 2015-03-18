@@ -14,6 +14,8 @@ public class SecurityUtils
     public static final String DEFAULT_TRANSACTION_CURRENCY_ISO = "USD";
     public static final String DEFAULT_TRANSACTION_CURRENCY_DISPLAY = "US$";
 
+    public static final String FX_EXCHANGE = "FXRATE";
+
     @NonNull public static String getDefaultCurrency()
     {
         return DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;

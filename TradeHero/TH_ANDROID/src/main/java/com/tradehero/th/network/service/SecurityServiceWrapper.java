@@ -29,6 +29,7 @@ import com.tradehero.th.models.security.DTOProcessorMultiSecurities;
 import com.tradehero.th.models.security.DTOProcessorSecurityPositionTransactionUpdated;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import java.util.List;
 import java.util.Map;
@@ -209,7 +210,7 @@ import rx.functions.Func1;
             @NonNull TransactionFormDTO transactionFormDTO)
     {
         Observable<SecurityPositionTransactionDTO> buyResult;
-        if (securityId.getExchange().equals("FXRATE")) // TODO proper when server is fixed
+        if (securityId.getExchange().equals(SecurityUtils.FX_EXCHANGE))
         {
             buyResult = this.securityServiceRx.buyFx(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO);
         }
@@ -231,7 +232,7 @@ import rx.functions.Func1;
             @NonNull TransactionFormDTO transactionFormDTO)
     {
         Observable<SecurityPositionTransactionDTO> sellResult;
-        if (securityId.getExchange().equals("FXRATE")) // TODO proper when server is fixed
+        if (securityId.getExchange().equals(SecurityUtils.FX_EXCHANGE))
         {
             sellResult = this.securityServiceRx.sellFx(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO);
         }

@@ -14,8 +14,10 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
+import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.intent.THIntentFactory;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 
@@ -105,8 +107,16 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     {
         SecurityId securityId = new SecurityId(exchange, symbol);
         Bundle args = new Bundle();
-        BuySellStockFragment.putSecurityId(args, securityId);
+        if (exchange.equals(SecurityUtils.FX_EXCHANGE))
+        {
+            FXMainFragment.putSecurityId(args, securityId);
+            navigator.pushFragment(FXMainFragment.class, args);
+        }
+        else
+        {
+            BuySellStockFragment.putSecurityId(args, securityId);
             navigator.pushFragment(BuySellStockFragment.class, args);
+        }
     }
 
     private void openUserProfile(int userId)
