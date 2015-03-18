@@ -1,24 +1,26 @@
 package com.tradehero.common.text;
 
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.text.style.ForegroundColorSpan;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 public class ColorTagProcessor extends RichSpanTextProcessor
 {
     private static final String THMarkdownURegexColor = "\\{(.+?)\\|(.+?)\\}"; /* "{color|text}" = text in specified color */
 
-    @Override public String key()
+    @NonNull @Override public String key()
     {
         return "color";
     }
 
-    @Override public String getExtractionPattern()
+    @NonNull @Override public String getExtractionPattern(@NonNull MatchResult matchResult)
     {
         return "$1";
     }
 
-    @Override protected Span getSpanElement(String replacement, String[] matchStrings)
+    @NonNull @Override protected Span getSpanElement(String replacement, String[] matchStrings)
     {
         if (matchStrings.length >= 3)
         {
@@ -30,7 +32,7 @@ public class ColorTagProcessor extends RichSpanTextProcessor
         }
     }
 
-    @Override protected Pattern getPattern()
+    @NonNull @Override protected Pattern getPattern()
     {
         return Pattern.compile(THMarkdownURegexColor);
     }

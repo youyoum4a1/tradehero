@@ -7,7 +7,7 @@ import android.view.View;
 
 public abstract class ClickableTagProcessor extends RichSpanTextProcessor
 {
-    @Override protected Span getSpanElement(String replacement, String[] matchStrings)
+    @NonNull @Override protected Span getSpanElement(String replacement, String[] matchStrings)
     {
         return new RichClickableSpan(replacement, matchStrings);
     }
@@ -28,7 +28,8 @@ public abstract class ClickableTagProcessor extends RichSpanTextProcessor
 
         @Override public void onClick(View view)
         {
-            if (view instanceof OnElementClickListener) {
+            if (view instanceof OnElementClickListener)
+            {
                 ((OnElementClickListener) view).onClick(view, replacement, key(), matchStrings);
             }
         }

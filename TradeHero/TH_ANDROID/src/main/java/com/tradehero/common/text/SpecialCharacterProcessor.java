@@ -1,9 +1,11 @@
 package com.tradehero.common.text;
 
+import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.MatchResult;
 
 public class SpecialCharacterProcessor implements RichTextProcessor
 {
@@ -16,7 +18,7 @@ public class SpecialCharacterProcessor implements RichTextProcessor
         characterMap = Collections.unmodifiableMap(map);
     }
 
-    @Override public SpannableStringBuilder process(SpannableStringBuilder source)
+    @NonNull @Override public SpannableStringBuilder process(@NonNull SpannableStringBuilder source)
     {
         if (characterMap == null)
         {
@@ -36,12 +38,12 @@ public class SpecialCharacterProcessor implements RichTextProcessor
         return source;
     }
 
-    @Override public String getExtractionPattern()
+    @NonNull @Override public String getExtractionPattern(@NonNull MatchResult matchResult)
     {
         return null;
     }
 
-    @Override public String key()
+    @NonNull @Override public String key()
     {
         return "specialCharacter";
     }

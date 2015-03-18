@@ -1,5 +1,7 @@
 package com.tradehero.common.text;
 
+import android.support.annotation.NonNull;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 public class UserTagProcessor extends ClickableTagProcessor
@@ -7,17 +9,17 @@ public class UserTagProcessor extends ClickableTagProcessor
     private static final String THMarkdownURegexUser = "<@(.+?),(\\d+)@>";
 
     //  <@dom,123@> = user link for userId 123*/
-    @Override protected Pattern getPattern()
+    @NonNull @Override protected Pattern getPattern()
     {
         return Pattern.compile(THMarkdownURegexUser);
     }
 
-    @Override public String getExtractionPattern()
+    @NonNull @Override public String getExtractionPattern(@NonNull MatchResult matchResult)
     {
         return "$1";
     }
 
-    @Override public String key()
+    @NonNull @Override public String key()
     {
         return "user";
     }

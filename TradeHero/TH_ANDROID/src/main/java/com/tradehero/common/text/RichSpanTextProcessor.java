@@ -1,5 +1,6 @@
 package com.tradehero.common.text;
 
+import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.util.Pair;
@@ -10,7 +11,7 @@ import java.util.regex.Pattern;
 
 public abstract class RichSpanTextProcessor implements RichTextProcessor
 {
-    @Override public SpannableStringBuilder process(SpannableStringBuilder source)
+    @NonNull @Override public SpannableStringBuilder process(@NonNull SpannableStringBuilder source)
     {
         Map<Object, Pair<Integer, Integer>> markers = new HashMap<>();
         Pattern pattern = getPattern();
@@ -28,7 +29,7 @@ public abstract class RichSpanTextProcessor implements RichTextProcessor
             int correctedMatchingEnd = match.end() - removedCharacters;
 
             // extract text element
-            match.appendReplacement(sb, getExtractionPattern());
+            match.appendReplacement(sb, getExtractionPattern(match.toMatchResult()));
             String textElement = sb.substring(correctedMatchingStart);
 
             // update span text
@@ -57,9 +58,7 @@ public abstract class RichSpanTextProcessor implements RichTextProcessor
         return getSpanElement(textElement, matchStrings);
     }
 
-    @Override public abstract String getExtractionPattern();
+    @NonNull protected abstract Span getSpanElement(String replacement, String[] matchStrings);
 
-    protected abstract Span getSpanElement(String replacement, String[] matchStrings);
-
-    protected abstract Pattern getPattern();
+    @NonNull protected abstract Pattern getPattern();
 }

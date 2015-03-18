@@ -1,12 +1,19 @@
 package com.tradehero.common.text;
 
+import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
+import java.util.regex.MatchResult;
 
 public interface RichTextProcessor
 {
-    SpannableStringBuilder process(SpannableStringBuilder source);
+    @NonNull SpannableStringBuilder process(@NonNull SpannableStringBuilder source);
 
-    String getExtractionPattern();
+    /**
+     * The replacement may or may not contain elements like $1 to identify groups from the main pattern.
+     * @param matchResult
+     * @return the replacement
+     */
+    @NonNull String getExtractionPattern(@NonNull MatchResult matchResult);
 
-    String key();
+    @NonNull String key();
 }

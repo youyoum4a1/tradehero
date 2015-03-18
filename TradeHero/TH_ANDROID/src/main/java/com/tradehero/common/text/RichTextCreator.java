@@ -1,5 +1,6 @@
 package com.tradehero.common.text;
 
+import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.widget.TextView;
@@ -30,7 +31,7 @@ public class RichTextCreator
         if (useBuiltInTextProcessors)
         {
             RichTextProcessor[] builtInProcessors = getBuildInProcessors();
-            for (RichTextProcessor processor: builtInProcessors)
+            for (RichTextProcessor processor : builtInProcessors)
             {
                 register(processor);
             }
@@ -38,7 +39,7 @@ public class RichTextCreator
     }
     //</editor-fold>
 
-    private RichTextProcessor[] getBuildInProcessors()
+    @NonNull private RichTextProcessor[] getBuildInProcessors()
     {
         return new RichTextProcessor[] {
                 new UserTagProcessor(),
@@ -47,7 +48,8 @@ public class RichTextCreator
                 new SecurityTagProcessor(),
                 new LinkTagProcessor(),
                 new ColorTagProcessor(),
-                new SpecialCharacterProcessor()
+                new SpecialCharacterProcessor(),
+                new BackTickTagProcessor(),
         };
     }
 
@@ -58,7 +60,7 @@ public class RichTextCreator
             throw new IllegalArgumentException("processor cannot be null");
         }
 
-        if (processors  == null)
+        if (processors == null)
         {
             processors = new LinkedList<>();
         }
@@ -97,7 +99,7 @@ public class RichTextCreator
             return cachedText;
         }
 
-        for (RichTextProcessor processor: processors)
+        for (RichTextProcessor processor : processors)
         {
             richText = processor.process(richText);
         }
@@ -115,7 +117,7 @@ public class RichTextCreator
     {
         StringBuilder cachedKey = new StringBuilder();
         cachedKey.append(richText);
-        for (RichTextProcessor processor: processors)
+        for (RichTextProcessor processor : processors)
         {
             cachedKey.append('_').append(processor.key());
         }
