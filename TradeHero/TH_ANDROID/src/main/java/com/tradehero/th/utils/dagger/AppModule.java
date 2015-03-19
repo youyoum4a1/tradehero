@@ -7,9 +7,8 @@ import com.tradehero.chinabuild.dialog.*;
 import com.tradehero.chinabuild.fragment.*;
 import com.tradehero.chinabuild.fragment.competition.*;
 import com.tradehero.chinabuild.fragment.discovery.*;
+import com.tradehero.chinabuild.fragment.leaderboard.StockGodListBaseFragment;
 import com.tradehero.chinabuild.fragment.message.*;
-import com.tradehero.chinabuild.fragment.moreLeaderboard.StockGodListBaseFragment;
-import com.tradehero.chinabuild.fragment.moreLeaderboard.StockGodListMoreFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PositionDetailFragment;
 import com.tradehero.chinabuild.fragment.search.SearchFragment;
@@ -226,7 +225,6 @@ import java.util.Locale;
                         MainTabFragmentStockGod.class,
                         MainTabFragmentCompetition.class,
 
-                        StockGodListMoreFragment.class,
                         StockGodListBaseFragment.class,
 
                         TradeOfMineFragment.class,

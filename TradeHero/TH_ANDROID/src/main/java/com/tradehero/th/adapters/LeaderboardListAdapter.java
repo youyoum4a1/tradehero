@@ -36,7 +36,7 @@ public class LeaderboardListAdapter extends BaseAdapter
     private LeaderboardUserDTOList leaderboardUserDTOs;
     public boolean hasLeaderboard;
 
-    public int leaderboardType = LeaderboardDefKeyKnowledge.DAYS_30;
+    public int leaderboardType = -1;
 
     public static final int RANK_RES[] = {
             R.drawable.icon_rank_first_place,

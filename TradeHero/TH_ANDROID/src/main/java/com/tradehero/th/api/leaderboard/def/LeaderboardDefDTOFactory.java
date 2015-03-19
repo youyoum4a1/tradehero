@@ -2,16 +2,11 @@ package com.tradehero.th.api.leaderboard.def;
 
 import android.content.Context;
 import com.tradehero.th.api.leaderboard.SectorContainerLeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.key.ConnectedLeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.DrillDownLeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.TimePeriodLeaderboardDefListKey;
-import java.util.HashMap;
-import javax.inject.Inject;
+import com.tradehero.th.api.leaderboard.key.*;
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
+import java.util.HashMap;
 
 public class LeaderboardDefDTOFactory
 {
@@ -44,7 +39,6 @@ public class LeaderboardDefDTOFactory
         filed.put(new SectorLeaderboardDefListKey(), new LeaderboardDefDTOList());
         filed.put(new ExchangeLeaderboardDefListKey(), new LeaderboardDefDTOList());
         filed.put(new TimePeriodLeaderboardDefListKey(), new LeaderboardDefDTOList());
-        filed.put(new MostSkilledLeaderboardDefListKey(), new LeaderboardDefDTOList());
 
         for (@NotNull LeaderboardDefDTO leaderboardDefDTO: leaderboardDefDTOs)
         {

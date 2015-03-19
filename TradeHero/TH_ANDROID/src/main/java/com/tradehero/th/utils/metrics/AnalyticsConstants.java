@@ -109,14 +109,10 @@ public class AnalyticsConstants
     //股神中每个榜单内每个用户的点击量
     public static final String LEADERBOARD_USER_CLICKED_POSITION = "LEADERBOARD_USER_CLICKED_POSITION";
 
-    //股神中推荐榜，人气榜，土豪榜，更多榜，总盈利榜，季度榜，半年榜
+    //股神中推荐榜，人气榜，土豪榜
     public static final String BUTTON_STOCK_ROI = "BUTTON_STOCK_ROI";
     public static final String BUTTON_STOCK_HOT = "BUTTON_STOCK_HOT";
     public static final String BUTTON_STOCK_WEALTH = "BUTTON_STOCK_WEALTH";
-    public static final String BUTTON_STOCK_MORE = "BUTTON_STOCK_MORE";
-    public static final String BUTTON_STOCK_MOST_SKILL = "BUTTON_STOCK_MOST_SKILL";
-    public static final String BUTTON_STOCK_90DAY = "BUTTON_STOCK_90DAY";
-    public static final String BUTTON_STOCK_180DAY = "BUTTON_STOCK_180DAY";
 
     //竞赛中所有比赛和我的比赛及这两个栏目的banner条的点击量，及右上角的搜索量
     public static final String BUTTON_COMPETITION_DETAIL_BANNER = "BUTTON_COMPETITION_DETAIL_BANNER";

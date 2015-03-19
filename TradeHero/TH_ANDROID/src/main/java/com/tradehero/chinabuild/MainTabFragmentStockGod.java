@@ -11,14 +11,14 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.chinabuild.fragment.AbsBaseFragment;
-import com.tradehero.chinabuild.fragment.moreLeaderboard.StockGodListBaseFragment;
-import com.tradehero.chinabuild.fragment.moreLeaderboard.StockGodListMoreFragment;
+import com.tradehero.chinabuild.fragment.leaderboard.StockGodListBaseFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
+
 import javax.inject.Inject;
 
 public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPager.OnPageChangeListener
@@ -52,7 +52,7 @@ public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPage
         super.onDestroyView();
     }
 
-    private static final String[] CONTENT = new String[] {" 推荐榜 ", " 人气榜 ", " 土豪榜 ", " 更多榜 "};
+    private static final String[] CONTENT = new String[] {" 推荐榜 ", " 人气榜 ", " 土豪榜 "};
 
     class CustomAdapter extends FragmentPagerAdapter
     {
@@ -86,9 +86,6 @@ public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPage
                     fragment.setArguments(args);
 
                     return fragment;
-                case 3:
-
-                    return new StockGodListMoreFragment();
             }
             return null;
         }
@@ -124,10 +121,6 @@ public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPage
         else if (i == 2)
         {
             analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_WEALTH));
-        }
-        else if (i == 3)
-        {
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_MORE));
         }
     }
 

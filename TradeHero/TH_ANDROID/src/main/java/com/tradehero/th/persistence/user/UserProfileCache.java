@@ -10,9 +10,10 @@ import com.tradehero.th.persistence.notification.NotificationListCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
 
 @Singleton public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfileDTO>
 {
@@ -53,10 +54,6 @@ import org.jetbrains.annotations.NotNull;
     @Override public UserProfileDTO put(@NotNull UserBaseKey userBaseKey, @NotNull UserProfileDTO userProfileDTO)
     {
         heroListCache.get().invalidate(userBaseKey);
-        if (userProfileDTO.mostSkilledLbmu != null)
-        {
-            leaderboardCache.get().put(userProfileDTO.getMostSkilledLbmuKey(), userProfileDTO.mostSkilledLbmu);
-        }
         userProfileCompactCache.get().put(userBaseKey, userProfileDTO);
         UserProfileDTO previous = super.put(userBaseKey, userProfileDTO);
         if (previous != null)

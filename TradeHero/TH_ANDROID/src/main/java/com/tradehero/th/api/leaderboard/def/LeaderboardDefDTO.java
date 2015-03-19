@@ -3,7 +3,6 @@ package com.tradehero.th.api.leaderboard.def;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.leaderboard.CountryCodeList;
 import com.tradehero.th.api.leaderboard.key.*;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
@@ -49,10 +48,6 @@ public class LeaderboardDefDTO extends ExtendedDTO
         if (isTimeRestrictedLeaderboard())
         {
             return new TimePeriodLeaderboardDefListKey();
-        }
-        if (id == LeaderboardDefKeyKnowledge.MOST_SKILLED_ID)
-        {
-            return new MostSkilledLeaderboardDefListKey();
         }
         throw new IllegalStateException("Unhandled situation " + this);
     }

@@ -1,4 +1,4 @@
-package com.tradehero.chinabuild.fragment.moreLeaderboard;
+package com.tradehero.chinabuild.fragment.leaderboard;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,7 +15,6 @@ import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
-import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -36,7 +35,6 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 
@@ -140,41 +138,11 @@ public class StockGodListBaseFragment extends DashboardFragment
         {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long position)
             {
-
                 analytics.addEvent(new MethodEvent(AnalyticsConstants.LEADERBOARD_USER_CLICKED_POSITION, ""+position));
-
                 LeaderboardUserDTO dto = (LeaderboardUserDTO) adapter.getItem((int) position);
-                if(leaderboard_key == LeaderboardDefKeyKnowledge.WEALTH)
-                {
-                    enterPortfolio(dto);
-                }
-                else if(leaderboard_key == LeaderboardDefKeyKnowledge.MOST_SKILLED_ID
-                        ||leaderboard_key == LeaderboardDefKeyKnowledge.DAYS_90
-                        ||leaderboard_key == LeaderboardDefKeyKnowledge.MONTHS_6)
-                {
-                    enterPortfolio2(dto);
-                }
-                else if(leaderboard_key == LeaderboardDefKeyKnowledge.MOST_SKILLED_ID
-                        ||leaderboard_key == LeaderboardDefKeyKnowledge.DAYS_90
-                        ||leaderboard_key == LeaderboardDefKeyKnowledge.MONTHS_6)
-                {
-                    enterPortfolio2(dto);
-                }
-                else
-                {
-                    enterPortfolio(dto);
-                }
+                enterPortfolio(dto);
             }
         });
-    }
-    /*
-进入个人主页
-*/
-    private void enterMainPage(LeaderboardUserDTO userDTO)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userDTO.id);
-        gotoDashboard(UserMainPage.class, bundle);
     }
 
 
@@ -188,16 +156,6 @@ public class StockGodListBaseFragment extends DashboardFragment
         gotoDashboard(PortfolioFragment.class, bundle);
     }
 
-    /*
-进入持仓页面2 打开二级页面
-*/
-    private void enterPortfolio2(LeaderboardUserDTO userDTO)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userDTO.id);
-        pushFragment(PortfolioFragment.class, bundle);
-    }
-
     @Override public void onPause()
     {
         super.onPause();
@@ -205,11 +163,6 @@ public class StockGodListBaseFragment extends DashboardFragment
         {
             listBang.onRefreshComplete();
         }
-    }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
     }
 
     @Override public void onResume()
@@ -257,44 +210,35 @@ public class StockGodListBaseFragment extends DashboardFragment
 
     protected class BaseLeaderboardFragmentLeaderboardCacheListener implements DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO>
     {
-        @Override public void onDTOReceived(@NotNull LeaderboardKey key, @NotNull LeaderboardDTO value)
-        {
+        @Override public void onDTOReceived(@NotNull LeaderboardKey key, @NotNull LeaderboardDTO value) {
             setListData(key, value.users);
             onFinish();
         }
 
-        @Override public void onErrorThrown(@NotNull LeaderboardKey key, @NotNull Throwable error)
-        {
-            Timber.e("Failed to leaderboard", error);
+        @Override public void onErrorThrown(@NotNull LeaderboardKey key, @NotNull Throwable error) {
             onFinish();
         }
 
-        public void onFinish()
-        {
+        public void onFinish() {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.listBang);
             listBang.onRefreshComplete();
             progressBar.stopLoading();
         }
     }
 
-    private void setListData(LeaderboardKey key, LeaderboardUserDTOList listData)
-    {
-        if (((PagedLeaderboardKey) key).page == PagedLeaderboardKey.FIRST_PAGE)
-        {
+    private void setListData(LeaderboardKey key, LeaderboardUserDTOList listData) {
+        if (((PagedLeaderboardKey) key).page == PagedLeaderboardKey.FIRST_PAGE) {
             currentPage = 0;
             adapter.setListData(listData);
             adapter.setLeaderboardType(getLeaderboardDTO().key);
 
-        }
-        else
-        {
+        } else {
             adapter.addItems(listData);
         }
 
 
         //如果返回数据已经为空了，说明没有了下一页。
-        if (listData.size() > 0)
-        {
+        if (listData.size() > 0) {
             currentPage += 1;
         }
         adapter.notifyDataSetChanged();

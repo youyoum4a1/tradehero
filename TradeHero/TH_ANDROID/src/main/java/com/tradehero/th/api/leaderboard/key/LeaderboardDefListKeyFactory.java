@@ -1,8 +1,9 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 
 public class LeaderboardDefListKeyFactory
 {
@@ -25,9 +26,6 @@ public class LeaderboardDefListKeyFactory
 
             case ExchangeLeaderboardDefListKey.EXCHANGE:
                 return new ExchangeLeaderboardDefListKey(args);
-
-            case MostSkilledLeaderboardDefListKey.MOST_SKILLED:
-                return new MostSkilledLeaderboardDefListKey(args);
 
             case SectorLeaderboardDefListKey.SECTOR:
                 return new SectorLeaderboardDefListKey(args);
