@@ -19,7 +19,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;

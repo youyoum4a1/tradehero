@@ -55,11 +55,14 @@ public class ShareDialogLayout extends LinearLayout
     {
         super.onAttachedToWindow();
         ButterKnife.inject(this);
-        listViewSharingOptions.setAdapter(new ShareDestinationSetAdapter(
-                getContext(),
-                shareDestinationIndexResComparator,
-                shareDestinationFactory.getAllShareDestinations()));
-        listViewSharingOptions.setDividerHeight(1);
+        if (!isInEditMode())
+        {
+            listViewSharingOptions.setAdapter(new ShareDestinationSetAdapter(
+                    getContext(),
+                    shareDestinationIndexResComparator,
+                    shareDestinationFactory.getAllShareDestinations()));
+            listViewSharingOptions.setDividerHeight(1);
+        }
     }
 
     @Override protected void onDetachedFromWindow()
