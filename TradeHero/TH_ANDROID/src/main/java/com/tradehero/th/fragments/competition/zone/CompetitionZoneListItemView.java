@@ -1,18 +1,16 @@
 package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDisplayCellDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePreSeasonDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 
@@ -55,100 +53,40 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
     }
 
     //<editor-fold desc="Display Methods">
-    @Override public void display(CompetitionZoneDTO competitionZoneDTO)
+
+    @Override public void display(@NonNull CompetitionZoneDTO competitionZoneDTO)
     {
         super.display(competitionZoneDTO);
-        displayIcon();
-        displayTitle();
-        displayDescription();
-    }
-
-    public void display()
-    {
-        displayIcon();
-        displayTitle();
-        displayDescription();
-    }
-
-    public void displayIcon()
-    {
         if (zoneIcon != null)
         {
-            if (competitionZoneDTO instanceof CompetitionZoneWizardDTO)
+            picasso.cancelRequest(zoneIcon);
+            RequestCreator request;
+            if (competitionZoneDTO.zoneIconUrl != null)
             {
-                CompetitionZoneWizardDTO competitionZoneWizardDTO = ((CompetitionZoneWizardDTO) competitionZoneDTO);
-                if (competitionZoneWizardDTO.getIconUrl() != null)
-                {
-                    picasso.cancelRequest(zoneIcon);
-                    picasso.load(competitionZoneWizardDTO.getIconUrl())
-                            .fit()
-                            .centerInside()
-                            .into(zoneIcon);
-                }
-                else
-                {
-                    zoneIcon.setImageResource(R.drawable.wizard);
-                }
+                request = picasso.load(competitionZoneDTO.zoneIconUrl);
+
             }
-            else if (competitionZoneDTO instanceof CompetitionZoneVideoDTO)
+            else
             {
-                zoneIcon.setImageResource(R.drawable.ic_action_action_about);
+                request = picasso.load(competitionZoneDTO.zoneIconResId);
             }
-            else if (competitionZoneDTO instanceof CompetitionZoneDisplayCellDTO)
-            {
-                CompetitionZoneDisplayCellDTO displayCellDTO = (CompetitionZoneDisplayCellDTO) competitionZoneDTO;
-                String iconUrl = displayCellDTO.getIconUrl();
-                if (iconUrl != null && !iconUrl.isEmpty())
-                {
-                    picasso.cancelRequest(zoneIcon);
-                    picasso.load(iconUrl)
-                            .fit()
-                            .centerInside()
-                            .into(zoneIcon);
-                }
-            }
-            else if (competitionZoneDTO instanceof CompetitionZonePreSeasonDTO)
-            {
-                CompetitionZonePreSeasonDTO preSeasonDTO = (CompetitionZonePreSeasonDTO) competitionZoneDTO;
-                String iconUrl = preSeasonDTO.iconUrl;
-                if (iconUrl != null && !iconUrl.isEmpty())
-                {
-                    picasso.cancelRequest(zoneIcon);
-                    picasso.load(iconUrl)
-                            .fit()
-                            .centerInside()
-                            .into(zoneIcon);
-                }
-            }
-            else if (competitionZoneDTO != null)
-            {
-                // TODO
-            }
+            prepareZoneIcon(request).into(zoneIcon);
+        }
+        if (title != null)
+        {
+            title.setText(competitionZoneDTO.title);
+        }
+        if (description != null)
+        {
+            description.setVisibility(competitionZoneDTO.descriptionVisibility);
+            description.setText(competitionZoneDTO.description);
         }
     }
 
-    public void displayTitle()
+    @NonNull protected RequestCreator prepareZoneIcon(@NonNull RequestCreator request)
     {
-        TextView titleCopy = this.title;
-        if (titleCopy != null)
-        {
-            titleCopy.setText(competitionZoneDTO.title);
-        }
+        return request.fit().centerInside();
     }
 
-    public void displayDescription()
-    {
-        TextView descriptionCopy = this.description;
-        if (descriptionCopy != null)
-        {
-            if (competitionZoneDTO != null)
-            {
-                descriptionCopy.setText(competitionZoneDTO.description);
-            }
-            descriptionCopy.setVisibility(competitionZoneDTO == null ||
-                    competitionZoneDTO.description == null ||
-                    competitionZoneDTO.description.length() == 0 ? GONE : VISIBLE);
-        }
-    }
     //</editor-fold>
 }

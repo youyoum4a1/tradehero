@@ -1,5 +1,6 @@
 package com.tradehero.th.api.competition;
 
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
 
 public class CompetitionPreSeasonDTO implements DTO
@@ -15,5 +16,10 @@ public class CompetitionPreSeasonDTO implements DTO
     public CompetitionPreSeasonDTO()
     {
         super();
+    }
+
+    @Nullable public String getNonEmptyPrizeImageUrl()
+    {
+        return prizeImageUrl == null || prizeImageUrl.isEmpty() ? null : prizeImageUrl;
     }
 }

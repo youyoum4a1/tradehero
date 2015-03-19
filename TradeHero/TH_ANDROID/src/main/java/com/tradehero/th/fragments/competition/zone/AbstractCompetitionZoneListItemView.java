@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import com.tradehero.th.api.DTOView;
@@ -13,7 +14,7 @@ import timber.log.Timber;
 abstract public class AbstractCompetitionZoneListItemView extends RelativeLayout
         implements DTOView<CompetitionZoneDTO>
 {
-    protected CompetitionZoneDTO competitionZoneDTO;
+    @Nullable protected CompetitionZoneDTO competitionZoneDTO;
 
     @NonNull protected final PublishSubject<UserAction> userActionSubject;
 
@@ -42,7 +43,7 @@ abstract public class AbstractCompetitionZoneListItemView extends RelativeLayout
         return userActionSubject.asObservable();
     }
 
-    public void display(CompetitionZoneDTO competitionZoneDTO)
+    public void display(@NonNull CompetitionZoneDTO competitionZoneDTO)
     {
         Timber.d("display %s", competitionZoneDTO);
         this.competitionZoneDTO = competitionZoneDTO;

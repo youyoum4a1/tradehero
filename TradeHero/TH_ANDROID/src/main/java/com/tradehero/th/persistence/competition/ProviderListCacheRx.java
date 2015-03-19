@@ -1,6 +1,7 @@
 package com.tradehero.th.persistence.competition;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
@@ -41,9 +42,9 @@ public class ProviderListCacheRx extends BaseFetchDTOCacheRx<ProviderListKey, Pr
         throw new IllegalArgumentException("Unknown ProviderListKey " + key);
     }
 
-    @Override public void onNext(@NonNull ProviderListKey key, @NonNull ProviderDTOList value)
+    @Nullable @Override protected ProviderDTOList putValue(@NonNull ProviderListKey key, @NonNull ProviderDTOList value)
     {
-        super.onNext(key, value);
         providerCache.onNext(value);
+        return super.putValue(key, value);
     }
 }

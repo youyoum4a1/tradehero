@@ -9,7 +9,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLegalDTO;
 import timber.log.Timber;
 
 public class CompetitionZoneLegalMentionsView extends AbstractCompetitionZoneListItemView
@@ -55,48 +54,18 @@ public class CompetitionZoneLegalMentionsView extends AbstractCompetitionZoneLis
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(CompetitionZoneDTO competitionZoneDTO)
+    @Override public void display(@NonNull CompetitionZoneDTO competitionZoneDTO)
     {
-        if (!(competitionZoneDTO instanceof CompetitionZoneLegalDTO))
-        {
-            throw new IllegalArgumentException("Only accepts CompetitionZoneLegalDTO");
-        }
         super.display(competitionZoneDTO);
-        displayRules();
-        displayTerms();
-    }
-
-    //<editor-fold desc="Display Methods">
-    public void display()
-    {
-        displayRules();
-        displayTerms();
-    }
-
-    public void displayRules()
-    {
-        TextView rulesCopy = this.rules;
-        if (rulesCopy != null)
+        if (rules != null)
         {
-            if (competitionZoneDTO != null)
-            {
-                rulesCopy.setText(competitionZoneDTO.title);
-            }
+            rules.setText(competitionZoneDTO.title);
+        }
+        if (terms != null)
+        {
+            terms.setText(competitionZoneDTO.description);
         }
     }
-
-    public void displayTerms()
-    {
-        TextView termsCopy = this.terms;
-        if (termsCopy != null)
-        {
-            if (competitionZoneDTO != null)
-            {
-                termsCopy.setText(competitionZoneDTO.description);
-            }
-        }
-    }
-    //</editor-fold>
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.competition_legal_rules)
@@ -117,10 +86,13 @@ public class CompetitionZoneLegalMentionsView extends AbstractCompetitionZoneLis
 
     private void notifyElementClicked(@NonNull LinkType linkType)
     {
-        userActionSubject.onNext(new UserAction(competitionZoneDTO, linkType));
+        if (competitionZoneDTO != null)
+        {
+            userActionSubject.onNext(new UserAction(competitionZoneDTO, linkType));
+        }
     }
 
-    public static enum LinkType
+    public enum LinkType
     {
         RULES,
         TERMS

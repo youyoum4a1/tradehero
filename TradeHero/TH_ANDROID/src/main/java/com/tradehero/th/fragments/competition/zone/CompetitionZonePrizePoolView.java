@@ -12,11 +12,9 @@ import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePrizePoolDTO;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
 public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListItemView
@@ -26,7 +24,6 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
     @InjectView(R.id.prize_pool_next_prize) TextView nextPrizePool;
     @InjectView(R.id.prize_pool_player_needed) TextView playersNeeded;
     @Inject Picasso picasso;
-    private ProviderPrizePoolDTO providerPrizePoolDTO;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -63,51 +60,57 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
 
     @Override protected void onDetachedFromWindow()
     {
+        picasso.cancelRequest(background);
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(CompetitionZoneDTO competitionZoneDTO)
+    @Override public void display(@NonNull CompetitionZoneDTO competitionZoneDTO)
     {
-        if (!(competitionZoneDTO instanceof CompetitionZonePrizePoolDTO))
-        {
-            throw new IllegalArgumentException("Only accepts CompetitionZonePrizePoolDTO");
-        }
         super.display(competitionZoneDTO);
-        providerPrizePoolDTO = ((CompetitionZonePrizePoolDTO) competitionZoneDTO).providerPrizePoolDTO;
-        displayText();
-    }
-
-    private void displayText()
-    {
-        picasso.load(providerPrizePoolDTO.background)
-                .fit()
-                .into(background, new Callback()
-                {
-                    @Override
-                    public void onSuccess()
+        CompetitionZonePrizePoolDTO dto = (CompetitionZonePrizePoolDTO) competitionZoneDTO;
+        if (currentPrizePool != null)
+        {
+            currentPrizePool.setText(dto.currentPrizePool);
+        }
+        if (nextPrizePool != null)
+        {
+            nextPrizePool.setText(dto.nextPrizePool);
+        }
+        if (playersNeeded != null)
+        {
+            playersNeeded.setText(dto.playersNeeded);
+        }
+        if (background != null)
+        {
+            picasso.cancelRequest(background);
+            picasso.load(dto.backgroundUrl)
+                    .fit()
+                    .into(background, new Callback()
                     {
-                        setBackgroundColor(getResources().getColor(android.R.color.transparent));
-                    }
+                        @Override
+                        public void onSuccess()
+                        {
+                            setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                        }
 
-                    @Override
-                    public void onError()
-                    {
-                        setBackgroundColor(getResources().getColor(R.color.white));
-                    }
-                });
-        currentPrizePool.setText(providerPrizePoolDTO.current);
-        nextPrizePool.setText(getContext().getString(R.string.provider_prize_pool_new_players_need, providerPrizePoolDTO.extra));
-        THSignedNumber.builder(providerPrizePoolDTO.newPlayerNeeded)
-                .build()
-                .into(playersNeeded);
+                        @Override
+                        public void onError()
+                        {
+                            setBackgroundColor(getResources().getColor(R.color.white));
+                        }
+                    });
+        }
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.invite_friend)
     public void inviteFriendClicked(View view)
     {
-        userActionSubject.onNext(new UserAction(competitionZoneDTO));
+        if (competitionZoneDTO != null)
+        {
+            userActionSubject.onNext(new UserAction(competitionZoneDTO));
+        }
     }
 
     public static class UserAction extends AbstractCompetitionZoneListItemView.UserAction

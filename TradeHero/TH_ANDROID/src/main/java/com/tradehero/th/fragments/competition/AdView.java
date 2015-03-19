@@ -1,11 +1,9 @@
 package com.tradehero.th.fragments.competition;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
@@ -17,11 +15,11 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.analytics.AnalyticsEventForm;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.competition.AdDTO;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.competition.zone.AbstractCompetitionZoneListItemView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.rx.ToastOnErrorAction;
@@ -30,31 +28,18 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.functions.Actions;
-import timber.log.Timber;
+import rx.subjects.PublishSubject;
 
 public class AdView extends RelativeLayout
-        implements DTOView<CompetitionZoneDTO>
+        implements DTOView<CompetitionZoneAdvertisementDTO>
 {
     @InjectView(R.id.banner) ImageView banner;
     @Inject UserServiceWrapper userServiceWrapper;
-    @Inject Context context;
-    private AdDTO adDTO;
-    private int providerId;
-    @Inject DashboardNavigator navigator;
+    @Nullable protected CompetitionZoneAdvertisementDTO viewDTO;
 
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.banner) void onBannerClicked(ImageView banner)
-    {
-        if (adDTO != null)
-        {
-            Bundle bundle = new Bundle();
-            String url = adDTO.redirectUrl + String.format("&userId=%d", currentUserId.get());
-            WebViewFragment.putUrl(bundle, url);
-            navigator.pushFragment(WebViewFragment.class, bundle);
-            sendAnalytics(adDTO, "proceed");
-        }
-    }
+    @NonNull private PublishSubject<AbstractCompetitionZoneListItemView.UserAction> userActionSubject;
 
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
@@ -64,6 +49,7 @@ public class AdView extends RelativeLayout
     {
         super(context, attrs);
         HierarchyInjector.inject(this);
+        userActionSubject = PublishSubject.create();
     }
     //</editor-fold>
 
@@ -73,91 +59,69 @@ public class AdView extends RelativeLayout
         ButterKnife.inject(this);
     }
 
-    @Override public void display(CompetitionZoneDTO competitionZoneDTO)
-    {
-        display((CompetitionZoneAdvertisementDTO) competitionZoneDTO);
-    }
-
-    public void display(CompetitionZoneAdvertisementDTO competitionZoneAdvertisementDTO)
-    {
-        if (competitionZoneAdvertisementDTO != null)
-        {
-            linkWith(competitionZoneAdvertisementDTO.getAdDTO());
-        }
-    }
-
     @Override protected void onDetachedFromWindow()
     {
+        picasso.get().cancelRequest(banner);
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
-    private void linkWith(AdDTO adDTO)
+    @NonNull public Observable<AbstractCompetitionZoneListItemView.UserAction> getUserActionObservable()
     {
-        if (adDTO != null)
-        {
-            this.adDTO = adDTO;
-        }
-        else
-        {
-            this.adDTO = null;
-        }
+        return userActionSubject.asObservable();
+    }
 
-        if (adDTO != null)
+    @Override public void display(@NonNull CompetitionZoneAdvertisementDTO dto)
+    {
+        this.viewDTO = dto;
+        if (banner != null)
         {
-            // Ok, this is the only way I found to workaround this problem, converting url to a filename, and manually put 9-patch image
-            // with that name to android resource folder.
-            String bannerResourceFileName = null;
-            try
+            picasso.get().cancelRequest(banner);
+            if (dto.bannerResourceId != null)
             {
-                bannerResourceFileName = getResourceFileName(adDTO.bannerImageUrl);
-            } catch (StringIndexOutOfBoundsException e)
-            {
-                Timber.e(e, "When getting %s", adDTO.bannerImageUrl);
+                banner.setBackgroundResource(dto.bannerResourceId);
             }
-            int bannerResourceId;
-            if (bannerResourceFileName != null &&
-                    (bannerResourceId = getResources().getIdentifier(bannerResourceFileName, "drawable", getContext().getPackageName())) != 0)
+            else if (dto.bannerImageUrl != null)
             {
-                banner.setBackgroundResource(bannerResourceId);
-            }
-            else
-            {
-                picasso.get().cancelRequest(banner);
-                picasso.get().load(adDTO.bannerImageUrl)
+                picasso.get().load(dto.bannerImageUrl)
                         .into(banner);
             }
-
-            sendAnalytics(adDTO, "served");
-        }
-        else
-        {
-            banner.setImageDrawable(null);
+            AdDTO adDTO = dto.getAdDTO();
+            if (adDTO != null)
+            {
+                sendAnalytics(adDTO, "served", dto.providerId);
+            }
         }
     }
 
-    private void sendAnalytics(@NonNull final AdDTO adDTO, @Nullable final String event)
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.banner) void onBannerClicked(ImageView banner)
     {
-        userServiceWrapper.sendAnalyticsRx(createBatchForm(Pair.create(adDTO, event)))
+        if (viewDTO != null && viewDTO.getAdDTO() != null)
+        {
+            userActionSubject.onNext(new UserAction(viewDTO, viewDTO.getAdDTO()));
+            sendAnalytics(viewDTO.getAdDTO(), "proceed", viewDTO.providerId);
+        }
+    }
+
+    private void sendAnalytics(@NonNull final AdDTO adDTO, @NonNull final String event, @NonNull ProviderId providerId)
+    {
+        userServiceWrapper.sendAnalyticsRx(createBatchForm(adDTO, event, providerId))
                 .subscribe(
                         Actions.empty(),
                         new ToastOnErrorAction());
     }
 
-    @NonNull private BatchAnalyticsEventForm createBatchForm(@NonNull Pair<AdDTO, String> pair)
-    {
-        return createBatchForm(pair.first, pair.second);
-    }
 
-    @NonNull private BatchAnalyticsEventForm createBatchForm(@NonNull AdDTO adDTO, @Nullable String event)
+    @NonNull private BatchAnalyticsEventForm createBatchForm(@NonNull AdDTO adDTO, @NonNull String event, @NonNull ProviderId providerId)
     {
         AnalyticsEventForm analyticsEventForm = new AnalyticsEventForm(
                 event,
                 DateUtils.getFormattedUtcDateFromDate(
-                        context.getResources(),
+                        getResources(),
                         new Date(System.currentTimeMillis())),
                 adDTO.id,
-                providerId,
+                providerId.key,
                 currentUserId.toUserBaseKey().getUserId());
         BatchAnalyticsEventForm batchAnalyticsEventForm = new BatchAnalyticsEventForm();
         batchAnalyticsEventForm.events = new ArrayList<>();
@@ -165,24 +129,15 @@ public class AdView extends RelativeLayout
         return batchAnalyticsEventForm;
     }
 
-    @Nullable private String getResourceFileName(@Nullable String url)
+    public static class UserAction extends AbstractCompetitionZoneListItemView.UserAction
     {
-        if (url != null)
+        @NonNull public final AdDTO adDTO;
+
+        public UserAction(@NonNull CompetitionZoneDTO competitionZoneDTO,
+                @NonNull AdDTO adDTO)
         {
-            String fileName = url.substring(url.lastIndexOf('/') + 1, url.length());
-
-            fileName = fileName.substring(0, fileName.lastIndexOf('.'));
-            if (fileName.contains("@"))
-            {
-                fileName = fileName.substring(0, fileName.lastIndexOf('@'));
-            }
-            return fileName.replace('-', '_').toLowerCase();
+            super(competitionZoneDTO);
+            this.adDTO = adDTO;
         }
-        return null;
-    }
-
-    public void setProviderId(int providerId)
-    {
-        this.providerId = providerId;
     }
 }

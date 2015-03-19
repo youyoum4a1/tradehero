@@ -56,6 +56,11 @@ public class ProviderDisplayCellDTO implements DTO
         return false;
     }
 
+    @Nullable public String getNonEmptyImageUrl()
+    {
+        return imageUrl == null || imageUrl.isEmpty() ? null : imageUrl;
+    }
+
     @Override public String toString()
     {
         return "ProviderDisplayCellDTO{" +

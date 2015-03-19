@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.competition.zone.dto;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
 
 public class CompetitionZoneDisplayCellDTO extends CompetitionZoneDTO
@@ -11,19 +12,17 @@ public class CompetitionZoneDisplayCellDTO extends CompetitionZoneDTO
     //<editor-fold desc="Constructors">
     public CompetitionZoneDisplayCellDTO(@NonNull ProviderDisplayCellDTO providerDisplayCellDTO)
     {
-        super(providerDisplayCellDTO.title, providerDisplayCellDTO.subtitle);
+        super(providerDisplayCellDTO.title,
+                providerDisplayCellDTO.subtitle,
+                providerDisplayCellDTO.getNonEmptyImageUrl(),
+                R.drawable.default_image);
         this.providerDisplayCellDTO = providerDisplayCellDTO;
     }
     //</editor-fold>
 
-    public ProviderDisplayCellDTO getProviderDisplayCellDTO()
+    @NonNull public ProviderDisplayCellDTO getProviderDisplayCellDTO()
     {
         return providerDisplayCellDTO;
-    }
-
-    public String getIconUrl()
-    {
-        return providerDisplayCellDTO.imageUrl;
     }
 
     public String getRedirectUrl()

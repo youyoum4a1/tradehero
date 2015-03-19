@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.competition.zone.dto;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTO;
@@ -14,6 +15,7 @@ import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
@@ -36,69 +38,77 @@ public class CompetitionZoneDTOUtil
         randomAd = Math.random();
     }
 
-    public void populateLists(
+    @NonNull public List<Pair<Integer, CompetitionZoneDTO>> makeList(
             @NonNull Context context,
             @Nullable UserProfileCompactDTO portfolioUserProfileCompact,
             @Nullable ProviderDTO providerDTO,
             @Nullable List<CompetitionDTO> competitionDTOs,
             @Nullable List<ProviderDisplayCellDTO> providerDisplayCellDTOs,
             @Nullable List<CompetitionPreSeasonDTO> preSeasonDTOs,
-            @Nullable List<ProviderPrizePoolDTO> providerPrizePoolDTOs,
-            @NonNull List<Integer> preparedOrderedTypes,
-            @NonNull List<CompetitionZoneDTO> preparedOrderedItems)
+            @Nullable List<ProviderPrizePoolDTO> providerPrizePoolDTOs)
     {
+        List<Pair<Integer, CompetitionZoneDTO>> list = new ArrayList<>();
+
         if (providerDTO != null)
         {
             if (providerDTO.hasAdvertisement())
             {
-                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ADS);
                 int randomAds = (int) (randomAd * providerDTO.advertisements.size());
                 AdDTO pickedAdDTO = providerDTO.advertisements.get(randomAds);
-                preparedOrderedItems.add(new CompetitionZoneAdvertisementDTO(pickedAdDTO));
+                list.add(Pair.create(
+                        CompetitionZoneListItemAdapter.ITEM_TYPE_ADS,
+                        (CompetitionZoneDTO) new CompetitionZoneAdvertisementDTO(context, pickedAdDTO, providerDTO.getProviderId())));
             }
 
-            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
-            preparedOrderedItems.add(new CompetitionZoneDTO(providerDTO.ruleText, null));
+            list.add(Pair.create(
+                    CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER,
+                    new CompetitionZoneDTO(providerDTO.ruleText, null, null, R.drawable.default_image)));
 
             //prize pool
             if (providerPrizePoolDTOs == null)
             {
-                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING);
-                preparedOrderedItems.add(new DummyLoadingCompetitionDTO());
+                list.add(Pair.create(
+                        CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING,
+                        (CompetitionZoneDTO) new DummyLoadingCompetitionDTO()));
             }
             else if (!providerPrizePoolDTOs.isEmpty())
             {
                 for (ProviderPrizePoolDTO poolDTO : providerPrizePoolDTOs)
                 {
-                    preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_PRIZE_POOL);
-                    preparedOrderedItems.add(new CompetitionZonePrizePoolDTO(poolDTO));
+                    list.add(Pair.create(
+                            CompetitionZoneListItemAdapter.ITEM_TYPE_PRIZE_POOL,
+                            (CompetitionZoneDTO) new CompetitionZonePrizePoolDTO(context.getResources(), poolDTO)));
                 }
 
-                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
-                preparedOrderedItems.add(new CompetitionZoneDTO(null, null));
+                list.add(Pair.create(
+                        CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER,
+                        new CompetitionZoneDTO(null, null, null, R.drawable.default_image)));
             }
 
             if (providerDTO.associatedPortfolio != null && portfolioUserProfileCompact != null)
             {
                 String subtitle = PortfolioCompactDTOUtil.getPortfolioSubtitle(context, providerDTO.associatedPortfolio, null);
-                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_PORTFOLIO);
-                preparedOrderedItems.add(new CompetitionZonePortfolioDTO(
-                        context.getString(R.string.provider_competition_portfolio_title),
-                        subtitle,
-                        portfolioUserProfileCompact));
+                list.add(Pair.create(
+                        CompetitionZoneListItemAdapter.ITEM_TYPE_PORTFOLIO,
+                        (CompetitionZoneDTO) new CompetitionZonePortfolioDTO(
+                                context.getString(R.string.provider_competition_portfolio_title),
+                                subtitle,
+                                portfolioUserProfileCompact)));
             }
 
             if (preSeasonDTOs == null)
             {
-                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING);
-                preparedOrderedItems.add(new DummyLoadingCompetitionDTO());
+                list.add(Pair.create(
+                        CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING,
+                        (CompetitionZoneDTO) new DummyLoadingCompetitionDTO()));
             }
             else
             {
                 for (CompetitionPreSeasonDTO preSeasonDTO : preSeasonDTOs)
                 {
-                    preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM);
-                    preparedOrderedItems.add(new CompetitionZonePreSeasonDTO(preSeasonDTO));
+                    list.add(Pair.create(
+                            CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM,
+                            (CompetitionZoneDTO) new CompetitionZonePreSeasonDTO(preSeasonDTO)));
                 }
             }
 
@@ -108,19 +118,22 @@ public class CompetitionZoneDTOUtil
                 {
                     if (providerDisplayCellDTO != null)
                     {
-                        preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM);
-                        preparedOrderedItems.add(new CompetitionZoneDisplayCellDTO(providerDisplayCellDTO));
+                        list.add(Pair.create(
+                                CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM,
+                                (CompetitionZoneDTO) new CompetitionZoneDisplayCellDTO(providerDisplayCellDTO)));
                     }
                 }
             }
             else
             {
-                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING);
-                preparedOrderedItems.add(new DummyLoadingCompetitionDTO());
+                list.add(Pair.create(
+                        CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING,
+                        (CompetitionZoneDTO) new DummyLoadingCompetitionDTO()));
             }
 
-            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
-            preparedOrderedItems.add(new CompetitionZoneDTO(null, null));
+            list.add(Pair.create(
+                    CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER,
+                    new CompetitionZoneDTO(null, null, null, R.drawable.default_image)));
 
             if (competitionDTOs != null)
             {
@@ -129,31 +142,39 @@ public class CompetitionZoneDTOUtil
                 {
                     if (competitionDTO != null)
                     {
-                        preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LEADERBOARD);
-                        preparedOrderedItems.add(new CompetitionZoneLeaderboardDTO(
-                                competitionDTO.name,
-                                competitionDTO.leaderboard != null ? competitionDTO.leaderboard.desc : "",
-                                competitionDTO));
+                        list.add(Pair.create(
+                                CompetitionZoneListItemAdapter.ITEM_TYPE_LEADERBOARD,
+                                (CompetitionZoneDTO) new CompetitionZoneLeaderboardDTO(
+                                        context.getResources(),
+                                        competitionDTO.name,
+                                        competitionDTO.leaderboard != null ? competitionDTO.leaderboard.desc : "",
+                                        competitionDTO)));
                     }
                 }
             }
             else
             {
-                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING);
-                preparedOrderedItems.add(new DummyLoadingCompetitionDTO());
+                list.add(Pair.create(
+                        CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING,
+                        (CompetitionZoneDTO) new DummyLoadingCompetitionDTO()));
             }
 
-            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
-            preparedOrderedItems.add(new CompetitionZoneDTO(null, null));
+            list.add(Pair.create(
+                    CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER,
+                    new CompetitionZoneDTO(null, null, null, R.drawable.default_image)));
 
-            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LEGAL_MENTIONS);
             Timber.d("rules title " + context.getString(R.string.provider_competition_rules_title));
-            preparedOrderedItems.add(new CompetitionZoneLegalDTO(
-                    context.getString(R.string.provider_competition_rules_title),
-                    context.getString(R.string.provider_competition_terms_title)));
+            list.add(Pair.create(
+                    CompetitionZoneListItemAdapter.ITEM_TYPE_LEGAL_MENTIONS,
+                    (CompetitionZoneDTO) new CompetitionZoneLegalDTO(
+                            context.getString(R.string.provider_competition_rules_title),
+                            context.getString(R.string.provider_competition_terms_title))));
 
-            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
-            preparedOrderedItems.add(new CompetitionZoneDTO(null, null));
+            list.add(Pair.create(
+                    CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER,
+                    new CompetitionZoneDTO(null, null, null, R.drawable.default_image)));
         }
+
+        return list;
     }
 }

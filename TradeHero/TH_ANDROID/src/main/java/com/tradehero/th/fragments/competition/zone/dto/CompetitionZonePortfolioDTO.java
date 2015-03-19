@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.competition.zone.dto;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 
 public class CompetitionZonePortfolioDTO extends CompetitionZoneDTO
@@ -14,7 +15,10 @@ public class CompetitionZonePortfolioDTO extends CompetitionZoneDTO
             @Nullable String description,
             @NonNull UserProfileCompactDTO userProfileCompactDTO)
     {
-        super(title, description);
+        super(title,
+                description,
+                userProfileCompactDTO.picture,
+                R.drawable.superman_facebook);
         this.userProfileCompactDTO = userProfileCompactDTO;
     }
     //</editor-fold>

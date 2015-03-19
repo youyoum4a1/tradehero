@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,7 +40,6 @@ import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
@@ -70,18 +70,22 @@ import com.tradehero.th.persistence.competition.CompetitionListCacheRx;
 import com.tradehero.th.persistence.competition.CompetitionPreseasonCacheRx;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.functions.Func6;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 @Routable({
@@ -115,7 +119,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @RouteProperty("providerId") Integer routedProviderId;
 
-    protected UserProfileCompactDTO userProfileCompactDTO;
+    protected UserProfileDTO userProfileCompactDTO;
     protected CompetitionDTOList competitionDTOs;
     private ProviderDisplayCellDTOList providerDisplayCellDTOList;
     protected List<ProviderPrizePoolDTO> providerPrizePoolDTOs;
@@ -183,11 +187,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Override public void onStart()
     {
         super.onStart();
-        fetchCurrentUserProfile();
-        fetchCompetitionList();
-        fetchDisplayCells();
-        fetchPreSeason();
-        fetchPrizePool();
+        fetchAdapterRequisite();
         registerAdapterUserActions();
     }
 
@@ -234,7 +234,6 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         return new CompetitionZoneListItemAdapter(
                 getActivity(),
-                competitionZoneDTOUtil,
                 R.layout.competition_zone_item,
                 R.layout.competition_zone_ads,
                 R.layout.competition_zone_header,
@@ -244,221 +243,175 @@ public class MainCompetitionFragment extends CompetitionFragment
                 R.layout.competition_zone_legal_mentions);
     }
 
-    private void fetchCurrentUserProfile()
+    private void fetchAdapterRequisite()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
-                userProfileCache.get(currentUserId.toUserBaseKey())
-                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
-                .subscribe(
-                        new Action1<UserProfileDTO>()
+        onStopSubscriptions.add(AppObservable.bindFragment(this,
+                Observable.combineLatest(
+                        userProfileCache.get(currentUserId.toUserBaseKey())
+                                .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
+                                .startWith(Observable.just((UserProfileDTO) null))
+                                .onErrorReturn(new Func1<Throwable, UserProfileDTO>()
+                                {
+                                    @Override public UserProfileDTO call(Throwable throwable)
+                                    {
+                                        if (userProfileCompactDTO == null)
+                                        {
+                                            THToast.show(R.string.error_fetch_your_user_profile);
+                                        }
+                                        Timber.e("Error fetching the profile info", throwable);
+                                        return userProfileCompactDTO;
+                                    }
+                                }),
+                        providerCache.get(this.providerId)
+                                .map(new PairGetSecond<ProviderId, ProviderDTO>())
+                                .startWith(Observable.just((ProviderDTO) null))
+                                .onErrorReturn(new Func1<Throwable, ProviderDTO>()
+                                {
+                                    @Override public ProviderDTO call(Throwable throwable)
+                                    {
+                                        if (providerDTO == null)
+                                        {
+                                            THToast.show(R.string.error_fetch_provider_info);
+                                        }
+                                        Timber.e("Error fetching the provider info", throwable);
+                                        return providerDTO;
+                                    }
+                                }),
+                        competitionListCache.get(providerId)
+                                .map(new PairGetSecond<ProviderId, CompetitionDTOList>())
+                                .startWith(Observable.just((CompetitionDTOList) null))
+                                .onErrorReturn(new Func1<Throwable, CompetitionDTOList>()
+                                {
+                                    @Override public CompetitionDTOList call(Throwable throwable)
+                                    {
+                                        if (competitionDTOs == null)
+                                        {
+                                            THToast.show(getString(R.string.error_fetch_provider_competition_list));
+                                        }
+                                        Timber.e("Error fetching the list of competition info", throwable);
+                                        return competitionDTOs;
+                                    }
+                                }),
+                        providerDisplayListCellCache.get(new ProviderDisplayCellListKey(providerId))
+                                .map(new PairGetSecond<ProviderDisplayCellListKey, ProviderDisplayCellDTOList>())
+                                .startWith(Observable.just((ProviderDisplayCellDTOList) null))
+                                .onErrorReturn(new Func1<Throwable, ProviderDisplayCellDTOList>()
+                                {
+                                    @Override public ProviderDisplayCellDTOList call(Throwable throwable)
+                                    {
+                                        if (providerDisplayCellDTOList == null)
+                                        {
+                                            THToast.show(getString(R.string.error_fetch_provider_competition_display_cell_list));
+                                        }
+                                        Timber.e("Error fetching the list of competition info cell", throwable);
+                                        return providerDisplayCellDTOList;
+                                    }
+                                }),
+                        competitionPreSeasonCacheRx.get(providerId)
+                                .map(new PairGetSecond<ProviderId, CompetitionPreSeasonDTO>())
+                                .map(new Func1<CompetitionPreSeasonDTO, List<CompetitionPreSeasonDTO>>()
+                                {
+                                    @Override public List<CompetitionPreSeasonDTO> call(CompetitionPreSeasonDTO competitionPreSeasonDTO)
+                                    {
+                                        return Collections.singletonList(competitionPreSeasonDTO);
+                                    }
+                                })
+                                .startWith(Observable.just((List<CompetitionPreSeasonDTO>) null))
+                                .onErrorReturn(new Func1<Throwable, List<CompetitionPreSeasonDTO>>()
+                                {
+                                    @Override public List<CompetitionPreSeasonDTO> call(Throwable throwable)
+                                    {
+                                        Timber.e(throwable, "Failed fetching preseason for %s", providerId);
+                                        return Collections.emptyList();
+                                    }
+                                }),
+                        providerServiceWrapper.getProviderPrizePoolRx(providerId)
+                                .map(new Func1<ProviderPrizePoolDTO, List<ProviderPrizePoolDTO>>()
+                                {
+                                    @Override public List<ProviderPrizePoolDTO> call(ProviderPrizePoolDTO providerPrizePoolDTO)
+                                    {
+                                        return Collections.singletonList(providerPrizePoolDTO);
+                                    }
+                                })
+                                .startWith(Observable.just((List<ProviderPrizePoolDTO>) null))
+                                .onErrorReturn(new Func1<Throwable, List<ProviderPrizePoolDTO>>()
+                                {
+                                    @Override public List<ProviderPrizePoolDTO> call(Throwable throwable)
+                                    {
+                                        if (providerPrizePoolDTOs == null)
+                                        {
+                                            // When there is no prize pool, server returns HTTP404, which is a valid response
+                                            boolean is404 = false;
+                                            if (throwable instanceof RetrofitError)
+                                            {
+                                                Response response = ((RetrofitError) throwable).getResponse();
+                                                is404 = response != null && response.getStatus() == 404;
+                                            }
+                                            if (!is404)
+                                            {
+                                                THToast.show(getString(R.string.error_fetch_provider_prize_pool_info));
+                                            }
+                                        }
+                                        Timber.e(throwable, "Error fetching the provider info");
+                                        return Collections.emptyList();
+                                    }
+                                }),
+                        new Func6<UserProfileDTO,
+                                ProviderDTO,
+                                CompetitionDTOList,
+                                ProviderDisplayCellDTOList,
+                                List<CompetitionPreSeasonDTO>,
+                                List<ProviderPrizePoolDTO>,
+                                List<Pair<Integer, CompetitionZoneDTO>>>()
                         {
-                            @Override public void call(UserProfileDTO t1)
+                            @Override public List<Pair<Integer, CompetitionZoneDTO>> call(
+                                    UserProfileDTO userProfileDTO,
+                                    ProviderDTO providerDTO,
+                                    CompetitionDTOList competitionDTOs,
+                                    ProviderDisplayCellDTOList providerDisplayCellDTOs,
+                                    List<CompetitionPreSeasonDTO> competitionPreSeasonDTOs,
+                                    List<ProviderPrizePoolDTO> providerPrizePoolDTOs)
                             {
-                                linkWith(t1);
+                                MainCompetitionFragment.this.userProfileCompactDTO = userProfileDTO;
+                                MainCompetitionFragment.this.providerDTO = providerDTO;
+                                MainCompetitionFragment.this.competitionDTOs = competitionDTOs;
+                                MainCompetitionFragment.this.providerDisplayCellDTOList = providerDisplayCellDTOs;
+                                MainCompetitionFragment.this.competitionPreSeasonDTOs = competitionPreSeasonDTOs;
+                                MainCompetitionFragment.this.providerPrizePoolDTOs = providerPrizePoolDTOs;
+                                return competitionZoneDTOUtil.makeList(
+                                        getActivity(),
+                                        userProfileDTO,
+                                        providerDTO,
+                                        competitionDTOs,
+                                        providerDisplayCellDTOs,
+                                        competitionPreSeasonDTOs,
+                                        providerPrizePoolDTOs);
+                            }
+                        })
+                        .subscribeOn(Schedulers.computation()))
+                .subscribe(
+                        new Action1<List<Pair<Integer, CompetitionZoneDTO>>>()
+                        {
+                            @Override public void call(List<Pair<Integer, CompetitionZoneDTO>> elements)
+                            {
+                                competitionZoneListItemAdapter.setNotifyOnChange(false);
+                                competitionZoneListItemAdapter.setElements(elements);
+                                competitionZoneListItemAdapter.setNotifyOnChange(true);
+                                competitionZoneListItemAdapter.notifyDataSetChanged();
+                                displayListView();
                             }
                         },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable t1)
-                            {
-                                MainCompetitionFragment.this.handleFetchCurrentUserProfileFailed(t1);
-                            }
-                        }));
-    }
-
-    protected void linkWith(@NonNull UserProfileCompactDTO userProfileCompactDTO)
-    {
-        this.userProfileCompactDTO = userProfileCompactDTO;
-        competitionZoneListItemAdapter.setPortfolioUserProfileCompactDTO(userProfileCompactDTO);
-        displayListView();
-    }
-
-    protected void handleFetchCurrentUserProfileFailed(@NonNull Throwable e)
-    {
-        if (userProfileCompactDTO == null)
-        {
-            THToast.show(R.string.error_fetch_your_user_profile);
-        }
-        Timber.e("Error fetching the profile info", e);
-    }
-
-    private void fetchCompetitionList()
-    {
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
-                competitionListCache.get(providerId)
-                        .map(new PairGetSecond<ProviderId, CompetitionDTOList>()))
-                .subscribe(
-                        new Action1<CompetitionDTOList>()
-                        {
-                            @Override public void call(CompetitionDTOList competitionDTOList)
-                            {
-                                linkWith(competitionDTOList);
-                            }
-                        },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable t1)
-                            {
-                                MainCompetitionFragment.this.handleFetchCompetitionListFailed(t1);
-                            }
-                        }));
-    }
-
-    protected void linkWith(@NonNull CompetitionDTOList competitionDTOs1)
-    {
-        this.competitionDTOs = competitionDTOs1;
-        competitionZoneListItemAdapter.setCompetitionDTOs(competitionDTOs1);
-        displayListView();
-    }
-
-    protected void handleFetchCompetitionListFailed(@NonNull Throwable e)
-    {
-        if (competitionDTOs == null)
-        {
-            THToast.show(getString(R.string.error_fetch_provider_competition_list));
-        }
-        Timber.e("Error fetching the list of competition info", e);
-    }
-
-    private void fetchDisplayCells()
-    {
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
-                providerDisplayListCellCache.get(new ProviderDisplayCellListKey(providerId))
-                        .map(new PairGetSecond<ProviderDisplayCellListKey, ProviderDisplayCellDTOList>()))
-                .subscribe(
-                        new Action1<ProviderDisplayCellDTOList>()
-                        {
-                            @Override public void call(ProviderDisplayCellDTOList cellDTOList)
-                            {
-                                linkWith(cellDTOList);
-                            }
-                        },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable error)
-                            {
-                                MainCompetitionFragment.this.handleFetchDisplayCellListFailed(error);
-                            }
-                        }));
-    }
-
-    protected void linkWith(@NonNull ProviderDisplayCellDTOList providerDisplayCellDTOList)
-    {
-        this.providerDisplayCellDTOList = providerDisplayCellDTOList;
-        competitionZoneListItemAdapter.setDisplayCellDTOS(providerDisplayCellDTOList);
-        displayListView();
-    }
-
-    protected void handleFetchDisplayCellListFailed(@NonNull Throwable e)
-    {
-        if (providerDisplayCellDTOList == null)
-        {
-            THToast.show(getString(R.string.error_fetch_provider_competition_display_cell_list));
-        }
-        Timber.e("Error fetching the list of competition info cell", e);
-    }
-
-    private void fetchPreSeason()
-    {
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
-                competitionPreSeasonCacheRx.get(providerId)
-                        .map(new PairGetSecond<ProviderId, CompetitionPreSeasonDTO>()))
-                .subscribe(
-                        new Action1<CompetitionPreSeasonDTO>()
-                        {
-                            @Override public void call(CompetitionPreSeasonDTO preSeasonDTO)
-                            {
-                                linkWith(preSeasonDTO);
-                            }
-                        },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable error)
-                            {
-                                MainCompetitionFragment.this.handleFetchPreSeasonFailed(error);
-                            }
-                        }));
-    }
-
-    protected void linkWith(@NonNull CompetitionPreSeasonDTO preSeasonDTO)
-    {
-        this.competitionPreSeasonDTOs = Collections.singletonList(preSeasonDTO);
-        competitionZoneListItemAdapter.setPreseasonDTO(competitionPreSeasonDTOs);
-        displayListView();
-    }
-
-    protected void handleFetchPreSeasonFailed(@NonNull Throwable e)
-    {
-        if (this.competitionPreSeasonDTOs == null)
-        {
-            this.competitionPreSeasonDTOs = new ArrayList<>();
-            competitionZoneListItemAdapter.setPreseasonDTO(competitionPreSeasonDTOs);
-            displayListView();
-        }
-        Timber.e(e, "Failed fetching preseason for %s", providerId);
-    }
-
-    private void fetchPrizePool()
-    {
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this, providerServiceWrapper.getProviderPrizePoolRx(providerId))
-                .subscribe(
-                        new Action1<ProviderPrizePoolDTO>()
-                        {
-                            @Override public void call(ProviderPrizePoolDTO prizePoolDTO)
-                            {
-                                linkWith(prizePoolDTO);
-                            }
-                        },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable error)
-                            {
-                                MainCompetitionFragment.this.handleFetchPrizePoolFailed(error);
-                            }
-                        }));
-    }
-
-    protected void linkWith(@NonNull ProviderPrizePoolDTO prizePoolDTO)
-    {
-        providerPrizePoolDTOs = Collections.singletonList(prizePoolDTO);
-        competitionZoneListItemAdapter.setPrizePoolDTO(providerPrizePoolDTOs);
-        displayListView();
-    }
-
-    protected void handleFetchPrizePoolFailed(@NonNull Throwable e)
-    {
-        if (providerPrizePoolDTOs == null)
-        {
-            // When there is no prize pool, server returns HTTP404, which is a valid response
-            boolean is404 = false;
-            if (e instanceof RetrofitError)
-            {
-                Response response = ((RetrofitError) e).getResponse();
-                is404 = response != null && response.getStatus() == 404;
-            }
-            if (!is404)
-            {
-                THToast.show(getString(R.string.error_fetch_provider_prize_pool_info));
-            }
-            competitionZoneListItemAdapter.setPrizePoolDTO(new ArrayList<ProviderPrizePoolDTO>());
-        }
-        Timber.e(e, "Error fetching the provider info");
+                        new ToastAndLogOnErrorAction("Failed to get requisite")
+                ));
     }
 
     @Override protected void linkWith(@NonNull ProviderDTO providerDTO, boolean andDisplay)
     {
         super.linkWith(providerDTO, andDisplay);
-        competitionZoneListItemAdapter.setProvider(providerDTO);
         if (andDisplay)
         {
             displayActionBarTitle();
             displayTradeNowButton();
-            displayListView();
         }
     }
 
@@ -471,7 +424,6 @@ public class MainCompetitionFragment extends CompetitionFragment
             {
                 progressBar.setVisibility(View.GONE);
             }
-            competitionZoneListItemAdapter.notifyDataSetChanged();
         }
     }
 
@@ -634,8 +586,7 @@ public class MainCompetitionFragment extends CompetitionFragment
                     try
                     {
                         thIntentFactory.create(getPassedIntent(redirectUrl));
-                    }
-                    catch (IndexOutOfBoundsException e)
+                    } catch (IndexOutOfBoundsException e)
                     {
                         Timber.e(e, "Failed to create intent with string %s", redirectUrl);
                     }
@@ -701,6 +652,13 @@ public class MainCompetitionFragment extends CompetitionFragment
             {
                 navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
             }
+        }
+        else if (userAction instanceof AdView.UserAction)
+        {
+            Bundle bundle = new Bundle();
+            String url = ((AdView.UserAction) userAction).adDTO.redirectUrl + String.format("&userId=%d", currentUserId.get());
+            WebViewFragment.putUrl(bundle, url);
+            navigator.get().pushFragment(WebViewFragment.class, bundle);
         }
     }
     //</editor-fold>
