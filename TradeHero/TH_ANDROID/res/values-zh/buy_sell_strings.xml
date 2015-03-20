@@ -2,13 +2,10 @@
 <resources>
 
   <string name="buy_sell_price_as_of">自</string>
-  <string name="buy_sell_cash_available">可用现金</string>
   <string name="buy_sell_cash_left">剩余现金</string>
-  <string name="buy_sell_share_available">可用股票</string>
   <string name="buy_sell_share_left">剩余股票</string>
   <string name="buy_sell_quantity">数量</string>
   <string name="buy_sell_trade_value">价值</string>
-  <string name="buy_sell_projected_p_and_l_value">预计盈亏</string>
   <string name="buy_sell_bid_price_not_available">无 买入</string>
   <string name="buy_sell_ask_price_not_available">无 卖出</string>
   <string name="buy_sell_button_buy">买入 @ %1$s %2$s</string>

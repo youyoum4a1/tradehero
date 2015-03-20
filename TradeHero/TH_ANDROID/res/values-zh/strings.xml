@@ -210,4 +210,7 @@
   <!-- App Update -->
 
   <string name="goto_choose_stock">去选股</string>
+
+  <string name="error_fetch_hero">获取英雄信息发生了点错误</string>
+  <string name="error_fetch_exchange_list_info">获取交易所列表时发生了点错误</string>
 </resources>

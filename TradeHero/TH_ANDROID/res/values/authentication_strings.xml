@@ -3,8 +3,6 @@
 
   <string name="authentication_register">Register</string>
   <string name="authentication_login">Login</string>
-  <string name="authentication_sign_in_with_email">or sign in with an\u0020</string>
-  <string name="authentication_existing_user">existing user</string>
   <string name="authentication_thank_you_message_email">Thank You ! Please follow your mail box</string>
   <string name="authentication_confirm">Confirm</string>
   <string name="authentication_cancel">@string/cancel</string>
@@ -15,22 +13,9 @@
   <string name="authentication_connecting_tradehero">Authenticated with %s, connecting to TradeHero</string>
   <string name="authentication_connecting_tradehero_only">Processing</string>
 
-  <string name="authentication_setting_is_current_login">This is your current login</string>
-  <string name="authentication_unlink_confirm_dialog_title">Unlink %s</string>
-  <string name="authentication_unlink_confirm_dialog_message">Are you sure you want to unlink %s?</string>
-  <string name="authentication_unlink_confirm_dialog_button_ok">Unlink</string>
-  <string name="authentication_unlink_fail_message">Sorry, you can\'t unlink the login account</string>
-
-  <string name="facebook">Facebook</string>
-  <string name="facebook_login_in">Login with Facebook</string>
-  <string name="authentication_connecting_to_facebook">Connecting to Facebook</string>
   <string name="linkedin">LinkedIn</string>
-  <string name="linkedin_login_in">LinkedIn Account</string>
   <string name="authentication_connecting_to_linkedin">Connecting to LinkedIn</string>
   <string name="twitter">Twitter</string>
-  <string name="twitter_login_in">Login with Twitter</string>
-  <string name="authentication_twitter_email">Email</string>
-  <string name="authentication_twitter_connecting">Connecting to Twitter</string>
   <string name="sina_weibo">Weibo</string>
   <string name="weibo_login_in">Weibo Account</string>
   <string name="authentication_connecting_to_weibo">Connecting to Weibo</string>
@@ -41,7 +26,6 @@
   <string name="authentication_connecting_to_wechat">Connecting to WeChat</string>
   <string name="wechat_login_in">WeChat Account</string>
   <string name="email">Email</string>
-  <string name="email_login_in">Login with Email</string>
 
   <string name="authentication_error_creating_signup_form">There was an error creating the sign-up form</string>
 
