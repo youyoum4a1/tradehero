@@ -43,6 +43,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.competition.zone.AbstractCompetitionZoneListItemView;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
 import com.tradehero.th.fragments.competition.zone.CompetitionZonePrizePoolView;
@@ -68,12 +69,14 @@ import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
 import com.tradehero.th.network.service.ProviderServiceWrapper;
 import com.tradehero.th.persistence.competition.CompetitionListCacheRx;
 import com.tradehero.th.persistence.competition.CompetitionPreseasonCacheRx;
+import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.Collections;
 import java.util.List;
@@ -91,8 +94,9 @@ import timber.log.Timber;
 @Routable({
         "providers/:providerId"
 })
-public class MainCompetitionFragment extends CompetitionFragment
+public class MainCompetitionFragment extends DashboardFragment
 {
+    private static final String BUNDLE_KEY_PROVIDER_ID = MainCompetitionFragment.class.getName() + ".providerId";
     private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
             MainCompetitionFragment.class.getName() + ".purchaseApplicablePortfolioId";
 
@@ -105,6 +109,8 @@ public class MainCompetitionFragment extends CompetitionFragment
     private THIntentPassedListener webViewTHIntentPassedListener;
     private BaseWebViewFragment webViewFragment;
 
+    @Inject ProviderCacheRx providerCache;
+    @Inject THRouter thRouter;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CompetitionListCacheRx competitionListCache;
     @Inject ProviderDisplayCellListCacheRx providerDisplayListCellCache;
@@ -115,18 +121,29 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
     @Inject ProviderServiceWrapper providerServiceWrapper;
     @Inject Lazy<ProviderTradableSecuritiesHelper> providerTradableSecuritiesHelperLazy;
+    @Inject protected CurrentUserId currentUserId;
     @Inject Analytics analytics;
 
     @RouteProperty("providerId") Integer routedProviderId;
 
+    protected ProviderId providerId;
+    protected ProviderDTO providerDTO;
     protected UserProfileDTO userProfileCompactDTO;
     protected CompetitionDTOList competitionDTOs;
     private ProviderDisplayCellDTOList providerDisplayCellDTOList;
     protected List<ProviderPrizePoolDTO> providerPrizePoolDTOs;
     private List<CompetitionPreSeasonDTO> competitionPreSeasonDTOs;
+    private OwnedPortfolioId applicablePortfolioId;
 
-    @Inject protected CurrentUserId currentUserId;
-    private OwnedPortfolioId mApplicablePortfolioId;
+    public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
+    {
+        args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+    }
+
+    @NonNull public static ProviderId getProviderId(@NonNull Bundle args)
+    {
+        return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
+    }
 
     public static void putApplicablePortfolioId(@NonNull Bundle args, @NonNull OwnedPortfolioId ownedPortfolioId)
     {
@@ -153,12 +170,13 @@ public class MainCompetitionFragment extends CompetitionFragment
             putProviderId(getArguments(), new ProviderId(routedProviderId));
         }
         super.onCreate(savedInstanceState);
+        this.providerId = getProviderId(getArguments());
         this.webViewTHIntentPassedListener = new MainCompetitionWebViewTHIntentPassedListener();
         competitionZoneListItemAdapter = createAdapter();
         analytics.fireEvent(
                 new SingleAttributeEvent(AnalyticsConstants.Competition_Home, AnalyticsConstants.ProviderId, String.valueOf(providerId.key)));
 
-        mApplicablePortfolioId = getApplicablePortfolioId(getArguments());
+        applicablePortfolioId = getApplicablePortfolioId(getArguments());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -399,20 +417,12 @@ public class MainCompetitionFragment extends CompetitionFragment
                                 competitionZoneListItemAdapter.setNotifyOnChange(true);
                                 competitionZoneListItemAdapter.notifyDataSetChanged();
                                 displayListView();
+                                displayActionBarTitle();
+                                displayTradeNowButton();
                             }
                         },
                         new ToastAndLogOnErrorAction("Failed to get requisite")
                 ));
-    }
-
-    @Override protected void linkWith(@NonNull ProviderDTO providerDTO, boolean andDisplay)
-    {
-        super.linkWith(providerDTO, andDisplay);
-        if (andDisplay)
-        {
-            displayActionBarTitle();
-            displayTradeNowButton();
-        }
     }
 
     protected void displayListView()
@@ -450,7 +460,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void displayTradeNowButton()
     {
-        if (providerDTO != null)
+        if (providerDTO != null && btnTradeNow.getVisibility() != View.VISIBLE)
         {
             btnTradeNow.setVisibility(View.VISIBLE);
 
@@ -602,11 +612,11 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Nullable public OwnedPortfolioId getApplicablePortfolioId()
     {
-        if ((mApplicablePortfolioId == null) && (providerDTO != null))
+        if ((applicablePortfolioId == null) && (providerDTO != null))
         {
-            mApplicablePortfolioId = providerDTO.getAssociatedOwnedPortfolioId();
+            applicablePortfolioId = providerDTO.getAssociatedOwnedPortfolioId();
         }
-        return mApplicablePortfolioId;
+        return applicablePortfolioId;
     }
 
     protected void registerAdapterUserActions()
