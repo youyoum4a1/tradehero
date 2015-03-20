@@ -20,14 +20,18 @@ public class ResideMenuItemClickListener implements View.OnClickListener
 
     @Override public void onClick(View view)
     {
-        resideMenu.closeMenu();
         Object tag = view.getTag();
         if (tag instanceof RootFragmentType)
         {
             RootFragmentType tabType = (RootFragmentType) tag;
-            if (tabType != RootFragmentType.DIVIDER)
+            if (tabType.fragmentClass != null)
             {
                 navigator.get().goToTab(tabType);
+                resideMenu.closeMenu();
+            }
+            else if (tabType.activityClass != null)
+            {
+                navigator.get().launchTabActivity(tabType);
             }
         }
     }

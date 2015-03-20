@@ -5,13 +5,13 @@ import dagger.Module;
 @Module(
         injects = {
                 AlertManagerFragment.class,
-                AlertEditFragment.class,
+                AlertCreateDialogFragment.class,
                 AlertCreateFragment.class,
+                AlertEditDialogFragment.class,
                 AlertListItemAdapter.class,
                 AlertItemView.class,
                 AlertSecurityProfile.class,
                 AlertSliderView.class,
-                AlertViewFragment.class,
         },
         library = true,
         complete = false

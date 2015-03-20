@@ -9,4 +9,5 @@
     style="@style/TH.Subhead"
     tools:text="Active/Inactive stock alerts"
     android:padding="@dimen/size_2"
+    android:background="@color/portfolio_header_background_color"
     />

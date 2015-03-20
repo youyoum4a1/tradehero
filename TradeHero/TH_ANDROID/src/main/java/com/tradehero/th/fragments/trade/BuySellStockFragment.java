@@ -30,8 +30,9 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.fragments.alert.AlertCreateFragment;
-import com.tradehero.th.fragments.alert.AlertEditFragment;
+import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
+import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
+import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.SecurityCircleProgressBar;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
@@ -403,18 +404,17 @@ public class BuySellStockFragment extends BuySellFragment
     {
         if (mappedAlerts != null)
         {
-            Bundle args = new Bundle();
             AlertId alertId = mappedAlerts.get(securityId);
+            BaseAlertEditDialogFragment dialog;
             if (alertId != null)
             {
-                AlertEditFragment.putAlertId(args, alertId);
-                navigator.get().pushFragment(AlertEditFragment.class, args);
+                dialog = AlertEditDialogFragment.newInstance(alertId);
             }
             else
             {
-                AlertCreateFragment.putSecurityId(args, securityId);
-                navigator.get().pushFragment(AlertCreateFragment.class, args);
+                dialog = AlertCreateDialogFragment.newInstance(securityId);
             }
+            dialog.show(getFragmentManager(), BaseAlertEditDialogFragment.class.getName());
         }
         else
         {

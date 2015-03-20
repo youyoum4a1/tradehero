@@ -12,6 +12,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
 import com.tradehero.th.network.service.AlertServiceWrapper;
+import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
 import rx.Observable;
@@ -29,11 +30,12 @@ public class AlertCreateFragmentHolder extends BaseAlertEditFragmentHolder
             @NonNull Resources resources,
             @NonNull CurrentUserId currentUserId,
             @NonNull SecurityAlertCountingHelper securityAlertCountingHelper,
+            @NonNull QuoteServiceWrapper quoteServiceWrapper,
             @NonNull SecurityCompactCacheRx securityCompactCache,
             @NonNull Lazy<AlertServiceWrapper> alertServiceWrapper,
             @NonNull SecurityId securityId)
     {
-        super(activity, resources, currentUserId, securityAlertCountingHelper);
+        super(activity, resources, currentUserId, securityAlertCountingHelper, quoteServiceWrapper);
         this.securityCompactCache = securityCompactCache;
         this.alertServiceWrapper = alertServiceWrapper;
         this.securityId = securityId;

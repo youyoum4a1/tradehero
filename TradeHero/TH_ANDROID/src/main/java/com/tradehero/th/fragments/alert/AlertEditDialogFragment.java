@@ -2,9 +2,6 @@ package com.tradehero.th.fragments.alert;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.Menu;
-import android.view.MenuInflater;
-import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
@@ -12,8 +9,7 @@ import com.tradehero.th.persistence.alert.AlertCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-@Deprecated
-public class AlertEditFragment extends BaseAlertEditFragment
+public class AlertEditDialogFragment extends BaseAlertEditDialogFragment
 {
     private static final String BUNDLE_KEY_ALERT_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".alertId";
 
@@ -22,6 +18,15 @@ public class AlertEditFragment extends BaseAlertEditFragment
     @Inject protected QuoteServiceWrapper quoteServiceWrapper;
 
     protected AlertId alertId;
+
+    @NonNull public static AlertEditDialogFragment newInstance(@NonNull AlertId alertId)
+    {
+        AlertEditDialogFragment fragment = new AlertEditDialogFragment();
+        Bundle args = new Bundle();
+        putAlertId(args, alertId);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     public static void putAlertId(@NonNull Bundle args, @NonNull AlertId alertId)
     {
@@ -46,11 +51,5 @@ public class AlertEditFragment extends BaseAlertEditFragment
                 alertCache,
                 alertServiceWrapper,
                 alertId);
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle(R.string.stock_alert_edit_alert);
     }
 }

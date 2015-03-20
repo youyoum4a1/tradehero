@@ -5,8 +5,10 @@
   <string name="stock_alert_active">Active stock alerts</string>
   <string name="stock_alert_inactive_title">Inactive stock alerts</string>
   <string name="stock_alert_active_until_date">Active Until %1$s</string>
+  <string name="stock_alert_active_one">Active</string>
   <string name="stock_alert_inactive">Inactive</string>
   <string name="stock_alert_target_price">Target Price</string>
+  <string name="stock_alert_price_movement">Price Movement</string>
   <string name="stock_alert_active_until">Active Until</string>
   <string name="stock_alert_current_price">Current Price</string>
   <string name="stock_alert_price_info_as_of_date">as of %s</string>
@@ -15,8 +17,8 @@
   <string name="stock_alert_edit">Edit</string>
   <string name="stock_alert_edit_menu_save">Save</string>
   <string name="stock_alert_trigger_conditions">Alert Conditions</string>
-  <string name="stock_alert_target_price_help_text">You will receive an alert whenever the price of the security rises/falls to the set price.</string>
-  <string name="stock_alert_price_change_help_text">You will receive an alert when the price of the given security moves by more than the given percentage.</string>
+  <string name="stock_alert_target_price_help_text">Alert me when the price rises/falls to the set price.</string>
+  <string name="stock_alert_price_change_help_text">Alert me when the price moves by more than the set %.</string>
   <string name="stock_alert_edit_note">Please note: price checks for stock alerts are done every 15 minutes and some price sources are delayed by up to 15 minutes</string>
   <string name="stock_alert_target_price_change_format">Target Price %1$s</string>
   <string name="stock_alert_percentage_change_format">Price Change %1$s</string>

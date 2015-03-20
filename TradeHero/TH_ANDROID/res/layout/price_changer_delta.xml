@@ -8,10 +8,6 @@
     android:layout_height="wrap_content"
     android:id="@+id/alert_slider_percentage"
     android:padding="@dimen/margin_xsmall"
-    android:paddingLeft="@dimen/margin_xsmall"
-    android:paddingRight="@dimen/margin_xsmall"
-    android:paddingTop="15dp"
-    android:background="@color/white"
     app:alertSliderType="percentage"
     >
 
@@ -46,7 +42,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TH.Subhead"
+        style="@style/TH.Subhead.Accented"
         tools:text="Price Change -5.0%"
         android:id="@+id/alert_value"
         android:ellipsize="end"
@@ -57,7 +53,7 @@
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      style="@style/TH.Body"
+      style="@style/TH.Caption"
       android:text="@string/stock_alert_price_change_help_text"
       android:id="@+id/alert_edit_price_change_help_text"
       android:layout_below="@id/value_switcher"

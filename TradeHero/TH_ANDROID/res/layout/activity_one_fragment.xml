@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/tradehero_dashboard_bg_color"
+    android:animateLayoutChanges="true"
+    >
+
+  <android.support.v7.widget.Toolbar
+      android:id="@+id/my_toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize"
+      style="@style/TradeHero.ActionBar"
+      />
+
+  <FrameLayout
+      android:id="@+id/realtabcontent"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:clipChildren="false"
+      android:clipToPadding="false"
+      android:layout_below="@id/my_toolbar"
+      android:paddingLeft="0dp"
+      android:paddingRight="0dp"
+      />
+
+  <include
+      android:id="@+id/xp_toast_box"
+      layout="@layout/layout_xp_toast"
+      android:layout_alignParentBottom="true"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:layout_marginBottom="@dimen/xp_level_toast_margin_bottom"
+      android:layout_marginLeft="@dimen/xp_level_toast_horizontal_margin"
+      android:layout_marginRight="@dimen/xp_level_toast_horizontal_margin"
+      />
+
+</RelativeLayout>

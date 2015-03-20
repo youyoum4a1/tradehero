@@ -8,14 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
-import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.widget.TextHolder;
 import java.util.Comparator;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
-public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, AlertItemView>
+public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertItemView.DTO, AlertItemView>
         implements StickyListHeadersAdapter
 {
     private static final long HEADER_ID_INACTIVE = 0;
@@ -31,34 +30,37 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, Ale
             @LayoutRes int alertResId)
     {
         super(context,
-                new Comparator<AlertCompactDTO>()
+                new Comparator<AlertItemView.DTO>()
                 {
-                    @Override public int compare(AlertCompactDTO lhs, AlertCompactDTO rhs)
+                    @Override public int compare(AlertItemView.DTO lhs, AlertItemView.DTO rhs)
                     {
-                        if (lhs == rhs)
+                        if (lhs == rhs
+                                || lhs.alertCompactDTO == rhs.alertCompactDTO
+                                || lhs.alertCompactDTO.id == rhs.alertCompactDTO.id)
                         {
                             return 0;
                         }
 
-                        if (lhs.active && !rhs.active)
+                        if (lhs.alertCompactDTO.security == rhs.alertCompactDTO.security)
+                        {
+                            return 0;
+                        }
+
+                        if (lhs.alertCompactDTO.active && !rhs.alertCompactDTO.active)
                         {
                             return -1;
                         }
-                        if (!lhs.active && rhs.active)
+                        else if (!lhs.alertCompactDTO.active && rhs.alertCompactDTO.active)
                         {
                             return 1;
                         }
 
-                        if (lhs.security == rhs.security)
+                        if (lhs.alertCompactDTO.security != null && rhs.alertCompactDTO.security != null)
                         {
-                            return 0;
-                        }
-                        if (lhs.security != null && rhs.security != null)
-                        {
-                            return lhs.security.symbol.compareTo(rhs.security.symbol);
+                            return lhs.alertCompactDTO.security.symbol.compareTo(rhs.alertCompactDTO.security.symbol);
                         }
 
-                        if (lhs.security == null)
+                        if (lhs.alertCompactDTO.security == null)
                         {
                             return -1;
                         }
@@ -84,7 +86,7 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, Ale
 
     @Override public View getHeaderView(int position, View convertView, ViewGroup parent)
     {
-        TextHolder holder = null;
+        TextHolder holder;
         if (convertView == null)
         {
             convertView = LayoutInflater.from(context).inflate(R.layout.alert_management_title, parent, false);
@@ -105,6 +107,6 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, Ale
 
     @Override public long getHeaderId(int position)
     {
-        return getItem(position).active ? HEADER_ID_ACTIVE : HEADER_ID_INACTIVE;
+        return getItem(position).alertCompactDTO.active ? HEADER_ID_ACTIVE : HEADER_ID_INACTIVE;
     }
 }

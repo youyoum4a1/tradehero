@@ -6,70 +6,106 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     style="@style/TH.ListItem"
-    android:background="@color/white"
+    android:background="@drawable/basic_white_selector"
     android:gravity="center"
     >
 
-  <Button
-      android:id="@+id/trade"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
-      android:layout_alignParentEnd="true"
-      android:layout_centerVertical="true"
-      android:background="@drawable/basic_white_selector"
-      android:text="@string/timeline_trade"
-      style="@style/TH.Button.Inverse.Small"
-      />
-
   <ImageView
-      android:layout_width="@dimen/big_image_w_h"
-      android:layout_height="@dimen/big_image_w_h"
       android:id="@+id/logo"
-      android:contentDescription="@null"
-      tools:background="@color/red"
+      android:layout_width="@dimen/medium_image_w_h"
+      android:layout_height="@dimen/medium_image_w_h"
       android:layout_centerVertical="true"
       android:layout_marginRight="@dimen/margin_small"
       android:layout_marginEnd="@dimen/margin_small"
+      tools:background="@color/red"
       />
 
-  <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:id="@+id/stock_symbol"
-      android:layout_toRightOf="@id/logo"
-      android:layout_toEndOf="@id/logo"
-      android:layout_toStartOf="@id/trade"
-      android:layout_toLeftOf="@id/trade"
-      style="@style/TH.UserNameTitle"
-      tools:text="stock name"
-      />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/logo"
+        android:layout_toEndOf="@+id/logo"
+        android:orientation="vertical"
+        >
 
-  <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:id="@+id/alert_description"
-      android:layout_toRightOf="@id/logo"
-      android:layout_toEndOf="@id/logo"
-      android:layout_toStartOf="@id/trade"
-      android:layout_toLeftOf="@id/trade"
-      android:layout_below="@id/stock_symbol"
-      android:singleLine="false"
-      style="@style/TH.Body"
-      tools:text="alert description"
-      />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
 
-  <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:id="@+id/alert_status"
-      android:layout_toRightOf="@id/logo"
-      android:layout_toEndOf="@id/logo"
-      android:layout_toStartOf="@id/trade"
-      android:layout_toLeftOf="@id/trade"
-      android:layout_below="@id/alert_description"
-      style="@style/TH.Caption"
-      tools:text="alert status"
-      />
+            <TextView
+                android:id="@+id/stock_symbol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TH.UserNameTitle"
+                android:textStyle="bold"
+                tools:text="NASDAQ:APPL"
+                />
+
+            <TextView
+                android:id="@+id/alert_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/TH.UserNameTitle"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textStyle="bold"
+                android:gravity="end"
+                tools:text="+2%"
+                />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/company_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:lines="1"
+                style="@style/TH.Caption"
+                tools:text="Apple Inc."
+                />
+
+            <TextView
+                android:id="@+id/alert_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="false"
+                style="@style/TH.Caption"
+                android:gravity="end"
+                tools:text="Price Movement"
+                />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/alert_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TH.Caption"
+            android:ellipsize="end"
+            android:lines="1"
+            tools:text="Active until ..."
+            />
+
+    </LinearLayout>
 
 </com.tradehero.th.fragments.alert.AlertItemView>

@@ -12,6 +12,7 @@ import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.AlertServiceWrapper;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -52,7 +53,22 @@ public class AlertCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, Al
         super.onNext(key, value);
     }
 
-    public Observable<Map<SecurityId, AlertId>> getSecurityMappedAlerts(@NonNull UserBaseKey userBaseKey)
+    public void remove(@NonNull AlertId alertId)
+    {
+        AlertCompactDTOList list = getCachedValue(alertId.getUserBaseKey());
+        if (list != null)
+        {
+            for (AlertCompactDTO dto : new ArrayList<>(list))
+            {
+                if (dto.id == alertId.alertId)
+                {
+                    list.remove(dto);
+                }
+            }
+        }
+    }
+
+    @NonNull public Observable<Map<SecurityId, AlertId>> getSecurityMappedAlerts(@NonNull UserBaseKey userBaseKey)
     {
         return get(userBaseKey)
                 .map(new Func1<Pair<UserBaseKey, AlertCompactDTOList>, Map<SecurityId, AlertId>>()
@@ -78,5 +94,4 @@ public class AlertCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, Al
                     }
                 });
     }
-
 }

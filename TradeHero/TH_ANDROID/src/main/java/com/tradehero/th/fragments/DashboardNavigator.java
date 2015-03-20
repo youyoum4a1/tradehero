@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -55,6 +56,11 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
 
     public <T extends Fragment> T goToTab(@NonNull RootFragmentType tabType, boolean showHomeKeyAsUp)
     {
+        if (tabType.fragmentClass == null)
+        {
+            throw new IllegalArgumentException("You should not call this with RootFragmentType." + tabType);
+        }
+
         if (tabType.fragmentClass.isInstance(getCurrentFragment()))
         {
             @SuppressWarnings("unchecked")
@@ -68,10 +74,9 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         try
         {
             manager.executePendingTransactions();
-        }
-        catch (java.lang.IllegalStateException e)
+        } catch (java.lang.IllegalStateException e)
         {
-            Timber.d("goToTab after popBackStack :"+e.toString());
+            Timber.d("goToTab after popBackStack :" + e.toString());
         }
 
         @SuppressWarnings("unchecked")
@@ -107,10 +112,9 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         try
         {
             manager.executePendingTransactions();
-        }
-        catch (java.lang.IllegalStateException e)
+        } catch (java.lang.IllegalStateException e)
         {
-            Timber.d("executePending "+e.toString());
+            Timber.d("executePending " + e.toString());
         }
     }
 
@@ -129,7 +133,7 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
     //<editor-fold desc="DashboardFragmentWatcher">
     private <T extends Fragment> void onFragmentChanged(FragmentActivity activity, Class<T> fragmentClass, Bundle args)
     {
-        for (DashboardFragmentWatcher dashboardFragmentWatcher: dashboardFragmentWatchers)
+        for (DashboardFragmentWatcher dashboardFragmentWatcher : dashboardFragmentWatchers)
         {
             dashboardFragmentWatcher.onFragmentChanged(activity, fragmentClass, args);
         }
@@ -155,4 +159,13 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         <T extends Fragment> void onFragmentChanged(FragmentActivity fragmentActivity, Class<T> fragmentClass, Bundle bundle);
     }
     //</editor-fold>
+
+    public void launchTabActivity(@NonNull RootFragmentType tabType)
+    {
+        if (tabType.activityClass == null)
+        {
+            throw new IllegalArgumentException("You should not call this with RootFragmentType." + tabType);
+        }
+        activity.startActivity(new Intent(activity, tabType.activityClass));
+    }
 }
