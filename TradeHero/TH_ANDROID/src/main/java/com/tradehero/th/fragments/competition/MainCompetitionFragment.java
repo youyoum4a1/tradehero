@@ -128,7 +128,7 @@ public class MainCompetitionFragment extends DashboardFragment
 
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
-    protected UserProfileDTO userProfileCompactDTO;
+    protected UserProfileDTO userProfileDTO;
     protected CompetitionDTOList competitionDTOs;
     private ProviderDisplayCellDTOList providerDisplayCellDTOList;
     protected List<ProviderPrizePoolDTO> providerPrizePoolDTOs;
@@ -267,22 +267,22 @@ public class MainCompetitionFragment extends DashboardFragment
                 Observable.combineLatest(
                         userProfileCache.get(currentUserId.toUserBaseKey())
                                 .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
-                                .startWith(Observable.just((UserProfileDTO) null))
+                                .startWith(Observable.just(userProfileDTO))
                                 .onErrorReturn(new Func1<Throwable, UserProfileDTO>()
                                 {
                                     @Override public UserProfileDTO call(Throwable throwable)
                                     {
-                                        if (userProfileCompactDTO == null)
+                                        if (userProfileDTO == null)
                                         {
                                             THToast.show(R.string.error_fetch_your_user_profile);
                                         }
                                         Timber.e("Error fetching the profile info", throwable);
-                                        return userProfileCompactDTO;
+                                        return userProfileDTO;
                                     }
                                 }),
                         providerCache.get(this.providerId)
                                 .map(new PairGetSecond<ProviderId, ProviderDTO>())
-                                .startWith(Observable.just((ProviderDTO) null))
+                                .startWith(Observable.just(providerDTO))
                                 .onErrorReturn(new Func1<Throwable, ProviderDTO>()
                                 {
                                     @Override public ProviderDTO call(Throwable throwable)
@@ -297,7 +297,7 @@ public class MainCompetitionFragment extends DashboardFragment
                                 }),
                         competitionListCache.get(providerId)
                                 .map(new PairGetSecond<ProviderId, CompetitionDTOList>())
-                                .startWith(Observable.just((CompetitionDTOList) null))
+                                .startWith(Observable.just(competitionDTOs))
                                 .onErrorReturn(new Func1<Throwable, CompetitionDTOList>()
                                 {
                                     @Override public CompetitionDTOList call(Throwable throwable)
@@ -312,7 +312,7 @@ public class MainCompetitionFragment extends DashboardFragment
                                 }),
                         providerDisplayListCellCache.get(new ProviderDisplayCellListKey(providerId))
                                 .map(new PairGetSecond<ProviderDisplayCellListKey, ProviderDisplayCellDTOList>())
-                                .startWith(Observable.just((ProviderDisplayCellDTOList) null))
+                                .startWith(Observable.just(providerDisplayCellDTOList))
                                 .onErrorReturn(new Func1<Throwable, ProviderDisplayCellDTOList>()
                                 {
                                     @Override public ProviderDisplayCellDTOList call(Throwable throwable)
@@ -334,7 +334,7 @@ public class MainCompetitionFragment extends DashboardFragment
                                         return Collections.singletonList(competitionPreSeasonDTO);
                                     }
                                 })
-                                .startWith(Observable.just((List<CompetitionPreSeasonDTO>) null))
+                                .startWith(Observable.just(competitionPreSeasonDTOs))
                                 .onErrorReturn(new Func1<Throwable, List<CompetitionPreSeasonDTO>>()
                                 {
                                     @Override public List<CompetitionPreSeasonDTO> call(Throwable throwable)
@@ -351,7 +351,7 @@ public class MainCompetitionFragment extends DashboardFragment
                                         return Collections.singletonList(providerPrizePoolDTO);
                                     }
                                 })
-                                .startWith(Observable.just((List<ProviderPrizePoolDTO>) null))
+                                .startWith(Observable.just(providerPrizePoolDTOs))
                                 .onErrorReturn(new Func1<Throwable, List<ProviderPrizePoolDTO>>()
                                 {
                                     @Override public List<ProviderPrizePoolDTO> call(Throwable throwable)
@@ -390,7 +390,7 @@ public class MainCompetitionFragment extends DashboardFragment
                                     List<CompetitionPreSeasonDTO> competitionPreSeasonDTOs,
                                     List<ProviderPrizePoolDTO> providerPrizePoolDTOs)
                             {
-                                MainCompetitionFragment.this.userProfileCompactDTO = userProfileDTO;
+                                MainCompetitionFragment.this.userProfileDTO = userProfileDTO;
                                 MainCompetitionFragment.this.providerDTO = providerDTO;
                                 MainCompetitionFragment.this.competitionDTOs = competitionDTOs;
                                 MainCompetitionFragment.this.providerDisplayCellDTOList = providerDisplayCellDTOs;
@@ -427,7 +427,7 @@ public class MainCompetitionFragment extends DashboardFragment
 
     protected void displayListView()
     {
-        Timber.d("displayListView %s %s %s %s", userProfileCompactDTO, providerDTO, competitionDTOs, providerDisplayCellDTOList);
+        Timber.d("displayListView %s %s %s %s", userProfileDTO, providerDTO, competitionDTOs, providerDisplayCellDTOList);
         if (providerDTO != null)
         {
             if (progressBar != null)

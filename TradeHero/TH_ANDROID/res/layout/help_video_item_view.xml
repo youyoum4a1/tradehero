@@ -1,43 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tradehero.th.fragments.competition.ProviderVideoListItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@null"
-    android:padding="8dp">
+    android:background="@drawable/basic_white_selector"
+    android:padding="@dimen/margin_xsmall"
+    >
 
   <ImageView
       android:id="@+id/help_video_thumbnail"
-      android:layout_width="125dp"
-      android:layout_height="125dp"
+      android:layout_width="@dimen/xxtra_big_image_w_h"
+      android:layout_height="@dimen/xxtra_big_image_w_h"
       android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
       android:scaleType="fitCenter"
       android:contentDescription="@null"
-    />
+      tools:src="@drawable/superman_facebook"
+      />
 
   <LinearLayout
       android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginLeft="8dp"
+      android:layout_marginLeft="@dimen/margin_xsmall"
+      android:layout_marginStart="@dimen/margin_xsmall"
       android:layout_toRightOf="@id/help_video_thumbnail"
+      android:layout_toEndOf="@id/help_video_thumbnail"
       android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
       android:layout_centerVertical="true"
-    >
+      >
 
     <TextView
         android:id="@+id/help_video_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-      />
+        style="@style/TH.Title"
+        tools:text="Intro to TradeHero Academy"
+        />
 
     <TextView
         android:id="@+id/help_video_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-      />
+        android:layout_marginTop="@dimen/margin_xsmall"
+        style="@style/TH.Subhead"
+        tools:text="Education videos"
+        />
+
+    <TextView
+        android:id="@+id/help_video_url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_xsmall"
+        style="@style/TH.Caption"
+        tools:text="www.youtube.com"
+        />
 
   </LinearLayout>
 

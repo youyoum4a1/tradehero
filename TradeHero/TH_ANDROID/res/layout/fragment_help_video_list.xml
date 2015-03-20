@@ -30,4 +30,5 @@
       style="@style/TH.Loading_Empty_Text"
       android:visibility="invisible"
       />
+
 </com.tradehero.common.widget.BetterViewAnimator>

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.competition;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -12,17 +13,19 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.inject.HierarchyInjector;
+import java.net.MalformedURLException;
+import java.net.URL;
 import javax.inject.Inject;
 
 public class ProviderVideoListItemView extends RelativeLayout
         implements DTOView<HelpVideoDTO>
 {
-    private HelpVideoDTO videoDTO;
     @Inject Picasso picasso;
 
     @InjectView(R.id.help_video_thumbnail) protected ImageView thumbnail;
     @InjectView(R.id.help_video_title) protected TextView title;
     @InjectView(R.id.help_video_description) protected TextView description;
+    @InjectView(R.id.help_video_url) protected TextView url;
 
     //<editor-fold desc="Constructors">
     public ProviderVideoListItemView(Context context, AttributeSet attrs)
@@ -36,57 +39,44 @@ public class ProviderVideoListItemView extends RelativeLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
         thumbnail.setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        thumbnail.setImageDrawable(null);
+        picasso.cancelRequest(thumbnail);
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(HelpVideoDTO helpVideoDTO)
-    {
-        this.videoDTO = helpVideoDTO;
-        this.displayThumbnail();
-        displayTitle();
-        displayDescription();
-    }
-
-    public void displayThumbnail()
+    @Override public void display(@NonNull HelpVideoDTO videoDTO)
     {
         if (this.thumbnail != null)
         {
-            if (this.videoDTO != null && this.videoDTO.thumbnailUrl != null)
+            if (videoDTO.thumbnailUrl != null)
             {
-                this.picasso.load(this.videoDTO.thumbnailUrl).into(this.thumbnail);
+                this.picasso.load(videoDTO.thumbnailUrl).into(this.thumbnail);
+            }
+            else
+            {
+                thumbnail.setImageDrawable(null);
             }
         }
-    }
-
-    public void displayTitle()
-    {
         if (this.title != null)
         {
-            if (this.videoDTO != null)
-            {
-                this.title.setText(this.videoDTO.title);
-            }
+            this.title.setText(videoDTO.title);
         }
-    }
-
-    public void displayDescription()
-    {
         if (this.description != null)
         {
-            if (this.videoDTO != null)
+            this.description.setText(videoDTO.subtitle);
+        }
+        if (this.url != null)
+        {
+            try
             {
-                this.description.setText(this.videoDTO.subtitle);
+                this.url.setText(new URL(videoDTO.videoUrl).getHost());
+            } catch (MalformedURLException ignored)
+            {
+                this.url.setText("");
             }
         }
     }

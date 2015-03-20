@@ -148,6 +148,7 @@
   <dimen name="medium_image_w_h">@dimen/size_6</dimen>
   <dimen name="big_image_w_h">@dimen/size_9</dimen>
   <dimen name="extra_big_image_w_h">@dimen/size_12</dimen>
+  <dimen name="xxtra_big_image_w_h">@dimen/size_16</dimen>
 
   <dimen name="stock_item_width">200dp</dimen>
   <dimen name="guide_close_margin">@dimen/size_2</dimen>

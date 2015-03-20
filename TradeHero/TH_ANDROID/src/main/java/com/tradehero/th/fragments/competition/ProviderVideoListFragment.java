@@ -1,5 +1,9 @@
 package com.tradehero.th.fragments.competition;
 
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -15,10 +19,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import butterknife.OnItemLongClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
@@ -29,11 +33,11 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.persistence.competition.HelpVideoListCacheRx;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.android.app.AppObservable;
-import timber.log.Timber;
+import rx.functions.Action1;
 
 @Routable(
         "providers/:providerId/helpVideos"
@@ -42,14 +46,20 @@ public class ProviderVideoListFragment extends CompetitionFragment
 {
     @Inject HelpVideoListCacheRx helpVideoListCache;
 
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(android.R.id.empty) View emptyView;
     @InjectView(R.id.help_videos_list) AbsListView videoListView;
     @InjectView(R.id.help_video_list_screen) BetterViewAnimator helpVideoListScreen;
 
-    private HelpVideoDTOList helpVideoDTOs;
     private ProviderVideoAdapter providerVideoAdapter;
     private int currentDisplayedChild;
+    private ClipboardManager clipboardManager;
+
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        providerVideoAdapter = new ProviderVideoAdapter(activity, R.layout.help_video_item_view);
+        clipboardManager = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -60,9 +70,15 @@ public class ProviderVideoListFragment extends CompetitionFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        providerVideoAdapter = new ProviderVideoAdapter(getActivity(), R.layout.help_video_item_view);
+        helpVideoListScreen.setDisplayedChildByLayoutId(android.R.id.progress);
         videoListView.setAdapter(providerVideoAdapter);
         videoListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        fetchVideoList();
     }
 
     //<editor-fold desc="ActionBar">
@@ -76,15 +92,10 @@ public class ProviderVideoListFragment extends CompetitionFragment
     @Override public void onResume()
     {
         super.onResume();
-
         if (currentDisplayedChild != 0)
         {
             helpVideoListScreen.setDisplayedChildByLayoutId(currentDisplayedChild);
         }
-
-        HelpVideoListKey key = new HelpVideoListKey(providerId);
-        onStopSubscriptions.add(AppObservable.bindFragment(this, helpVideoListCache.get(key))
-                .subscribe(createVideoListCacheObserver()));
     }
 
     @Override public void onPause()
@@ -111,27 +122,42 @@ public class ProviderVideoListFragment extends CompetitionFragment
         }
     }
 
-    private void linkWith(HelpVideoDTOList videoDTOs)
+    protected void fetchVideoList()
     {
-        this.helpVideoDTOs = videoDTOs;
-        updateAdapter();
+        onStopSubscriptions.add(AppObservable.bindFragment(
+                this,
+                helpVideoListCache.get(new HelpVideoListKey(providerId)))
+                .subscribe(
+                        new Action1<Pair<HelpVideoListKey, HelpVideoDTOList>>()
+                        {
+                            @Override public void call(Pair<HelpVideoListKey, HelpVideoDTOList> pair)
+                            {
+                                linkWith(pair.second);
+                            }
+                        },
+                        new ToastAndLogOnErrorAction(getString(R.string.error_fetch_help_video_list_info),
+                                "Error fetching the list of help videos")));
     }
 
-    private void updateAdapter()
+    private void linkWith(HelpVideoDTOList videoDTOs)
     {
+        providerVideoAdapter.setNotifyOnChange(false);
         providerVideoAdapter.clear();
-        if (helpVideoDTOs != null)
+        if (videoDTOs != null)
         {
-            providerVideoAdapter.addAll(helpVideoDTOs);
+            providerVideoAdapter.addAll(videoDTOs);
         }
+        providerVideoAdapter.setNotifyOnChange(true);
         providerVideoAdapter.notifyDataSetChanged();
+        helpVideoListScreen.setDisplayedChildByLayoutId(R.id.help_videos_list);
+        videoListView.setEmptyView(emptyView);
     }
 
     private void displayActionBarTitle()
     {
         if (providerDTO == null || providerDTO.name == null)
         {
-            setActionBarTitle("");
+            setActionBarTitle(getString(R.string.competition_help_video_title, ""));
         }
         else
         {
@@ -139,13 +165,12 @@ public class ProviderVideoListFragment extends CompetitionFragment
         }
     }
 
-    private void launchVideo(@NonNull HelpVideoDTO videoDTO)
+    @SuppressWarnings("unused")
+    @OnItemClick(R.id.help_videos_list)
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
     {
-        openWithDefaultApp(videoDTO);
-    }
+        HelpVideoDTO helpVideoDTO = (HelpVideoDTO) adapterView.getItemAtPosition(position);
 
-    private void openWithDefaultApp(HelpVideoDTO helpVideoDTO)
-    {
         Uri url = Uri.parse(helpVideoDTO.videoUrl);
         Intent videoIntent = new Intent(Intent.ACTION_VIEW, url);
         PackageManager packageManager = getActivity().getPackageManager();
@@ -162,45 +187,14 @@ public class ProviderVideoListFragment extends CompetitionFragment
         }
     }
 
-    protected Observer<Pair<HelpVideoListKey, HelpVideoDTOList>> createVideoListCacheObserver()
+    @SuppressWarnings("unused")
+    @OnItemLongClick(R.id.help_videos_list)
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
     {
-        return new ProviderVideoListFragmentVideoListCacheObserver();
-    }
-
-    protected class ProviderVideoListFragmentVideoListCacheObserver implements Observer<Pair<HelpVideoListKey, HelpVideoDTOList>>
-    {
-        @Override public void onNext(Pair<HelpVideoListKey, HelpVideoDTOList> pair)
-        {
-            onFinished();
-            if (videoListView != null)
-            {
-                videoListView.setEmptyView(emptyView);
-            }
-
-            linkWith(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            onFinished();
-            THToast.show(getString(R.string.error_fetch_help_video_list_info));
-            Timber.d("Error fetching the list of help videos", e);
-        }
-
-        private void onFinished()
-        {
-            helpVideoListScreen.setDisplayedChildByLayoutId(R.id.help_videos_list);
-        }
-    }
-
-    @OnItemClick(R.id.help_videos_list)
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
-    {
-        // It is not testing for availability on purpose
-        launchVideo((HelpVideoDTO) adapterView.getItemAtPosition(position));
+        String videoUrl = ((HelpVideoDTO) parent.getItemAtPosition(position)).videoUrl;
+        ClipData clip = ClipData.newPlainText(getString(R.string.settings_primary_referral_code), videoUrl);
+        clipboardManager.setPrimaryClip(clip);
+        THToast.show(getString(R.string.referral_code_copied_clipboard, videoUrl));
+        return true;
     }
 }

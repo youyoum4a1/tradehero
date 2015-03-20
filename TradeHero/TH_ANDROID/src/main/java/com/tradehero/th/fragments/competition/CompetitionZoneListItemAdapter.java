@@ -124,6 +124,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
     {
         int viewType = getItemViewType(position);
         return viewType != ITEM_TYPE_HEADER &&
-                viewType != ITEM_TYPE_LEGAL_MENTIONS;
+                viewType != ITEM_TYPE_LEGAL_MENTIONS &&
+                viewType != ITEM_TYPE_LOADING;
     }
 }
