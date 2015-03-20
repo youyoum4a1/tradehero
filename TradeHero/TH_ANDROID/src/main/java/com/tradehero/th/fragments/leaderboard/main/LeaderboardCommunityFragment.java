@@ -196,7 +196,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
                 } else {
                     leaderboardType = LeaderboardType.FX;
                 }
-                Timber.e("onItemSelected: " + parent.getItemAtPosition(position));
+                Timber.d("onItemSelected: " + parent.getItemAtPosition(position));
                 if (oldType != leaderboardType)
                 {
                     setUpViewPager();

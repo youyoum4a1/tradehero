@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
@@ -29,14 +30,12 @@ import com.tradehero.th.fragments.games.ViralGamePopupDialogFragment;
 import com.tradehero.th.persistence.games.ViralMiniGameDefListCache;
 import com.tradehero.th.persistence.prefs.ShowViralGameDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
-import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.utils.Constants;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
-import rx.functions.Action1;
 import timber.log.Timber;
 
 public class TrendingMainFragment extends DashboardFragment
@@ -119,11 +118,11 @@ public class TrendingMainFragment extends DashboardFragment
             tabViewPager.setOffscreenPageLimit(0);
         }
 
-        pagerSlidingTabStrip.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
+        pagerSlidingTabStrip.setCustomTabView(lastType == 0 ? R.layout.th_page_indicator : R.layout.th_tab_indicator, android.R.id.title);
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
 
-        tabViewPager.setCurrentItem(lastType, true);
+        tabViewPager.setCurrentItem(0, true);
     }
 
     @Override public void onResume()
@@ -158,18 +157,50 @@ public class TrendingMainFragment extends DashboardFragment
                         }
                     });
         }
-    }
-
-    @Override public void onPause()
-    {
-        unsubscribe(viralSubscription);
-        super.onPause();
+        showToolbarSpinner();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle(R.string.trending_header);
+        setActionBarTitle("");
+        setUpToolbarSpinner();
+    }
+
+    private void setUpToolbarSpinner() {
+        AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener()
+        {
+            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                int oldType = lastType;
+                if (position == 0) {
+                    lastType = 0;
+                } else {
+                    lastType = 1;
+                }
+                Timber.e("onItemSelected: " + parent.getItemAtPosition(position));
+                if (oldType != lastType)
+                {
+                    initViews();
+                }
+            }
+
+            @Override public void onNothingSelected(AdapterView<?> parent)
+            {
+                //do nothing
+            }
+        };
+        configureDefaultSpinner(new String[] {
+                        getString(R.string.leaderboard_type_stocks),
+                        getString(R.string.leaderboard_type_fx)},
+                listener, lastType);
+    }
+
+    @Override public void onPause()
+    {
+        unsubscribe(viralSubscription);
+        hideToolbarSpinner();
+        super.onPause();
     }
 
     @Override public void onDestroyView()
@@ -195,43 +226,46 @@ public class TrendingMainFragment extends DashboardFragment
 
         @Override public Fragment getItem(int position)
         {
-            TrendingTabType tabType = TrendingTabType.values()[position];
+            Timber.d("lyl getItem position="+position+" lastType="+lastType);
             Bundle args = new Bundle();
             ActionBarOwnerMixin.putKeyShowHomeAsUp(args, false);
-            if (tabType.fragmentClass.equals(TrendingStockFragment.class) && exchangeIdFromArguments != null)
+            Class fragmentClass = TrendingStockTabType.values()[position].fragmentClass;
+            if (lastType == 1)
+            {
+                fragmentClass = TrendingFXTabType.values()[position].fragmentClass;
+            }
+            if (fragmentClass.equals(TrendingStockFragment.class) && exchangeIdFromArguments != null)
             {
                 TrendingStockFragment.putExchangeId(args, exchangeIdFromArguments);
                 exchangeIdFromArguments = null;
             }
-            TrendingBaseFragment subFragment = (TrendingBaseFragment) Fragment.instantiate(getActivity(), tabType.fragmentClass.getName(), args);
-            subFragment
-                    .getRequestedTrendingTabTypeObservable()
-                    .subscribe(
-                            new Action1<TrendingTabType>()
-                            {
-                                @Override public void call(TrendingTabType trendingTabType)
-                                {
-                                    TrendingMainFragment.this.handleRequestedTabType(trendingTabType);
-                                }
-                            },
-                            new TimberOnErrorAction("")
-                    );
+            args.putInt(TrendingStockFragment.KEY_TYPE_ID, position);
+            TrendingBaseFragment subFragment = (TrendingBaseFragment) Fragment.instantiate(getActivity(), fragmentClass.getName(), args);
             return subFragment;
         }
 
         @Override public CharSequence getPageTitle(int position)
         {
-            return getString(TrendingTabType.values()[position].titleStringResId);
+            if (lastType == 0)
+            {
+                return getString(TrendingStockTabType.values()[position].titleStringResId);
+            }
+            return getString(TrendingFXTabType.values()[position].titleStringResId);
         }
 
         @Override public int getCount()
         {
-            return TrendingTabType.values().length;
+            if (lastType == 0)
+            {
+                return TrendingStockTabType.values().length;
+            }
+            return TrendingFXTabType.values().length;
+        }
+
+        @Override public long getItemId(int position)
+        {
+            return super.getItemId(position) + lastType*10;
         }
     }
 
-    public void handleRequestedTabType(@NonNull TrendingTabType tabType)
-    {
-        tabViewPager.setCurrentItem(tabType.ordinal(), true);
-    }
 }

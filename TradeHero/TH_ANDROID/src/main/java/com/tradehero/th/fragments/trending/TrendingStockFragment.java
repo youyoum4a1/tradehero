@@ -40,6 +40,7 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
@@ -48,6 +49,9 @@ import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerIconAdapterNew;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeGenericDTO;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterTypePriceDTO;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeVolumeDTO;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
@@ -74,6 +78,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
         implements WithTutorial
 {
     private static final String KEY_EXCHANGE_ID = TrendingMainFragment.class.getName() + ".exchangeId";
+    public static final String KEY_TYPE_ID = "typeId";
 
     @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
     @Inject ProviderListCacheRx providerListCache;
@@ -92,6 +97,9 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private ExtraTileAdapterNew wrapperAdapter;
     @Inject protected THBillingInteractorRx userInteractorRx;
+    private int type;
+    private MenuItem exchangeMenu;
+    private ExchangeSpinner mExchangeSelection;
 
     public static void putExchangeId(@NonNull Bundle args, @NonNull ExchangeIntegerId exchangeId)
     {
@@ -112,13 +120,33 @@ public class TrendingStockFragment extends TrendingBaseFragment
         super.onCreate(savedInstanceState);
         exchangeIdFromArguments = getExchangeId(getArguments());
         getArguments().remove(KEY_EXCHANGE_ID);
-        trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getResources());
+        type = getArguments().getInt(KEY_TYPE_ID, 0);
+        initFilterTypeDTO();
         wrapperAdapter = createSecurityItemViewAdapter();
 
         exchangeAdapter = new TrendingFilterSpinnerIconAdapterNew(
                 getActivity(),
-                R.layout.trending_filter_spinner_item);
+                R.layout.trending_filter_spinner_item_short);
         exchangeAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
+    }
+
+    private void initFilterTypeDTO()
+    {
+        switch (type)
+        {
+            case 0:
+                trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getResources());
+                break;
+            case 1:
+                trendingFilterTypeDTO = new TrendingFilterTypePriceDTO(getResources());
+                break;
+            case 2:
+                trendingFilterTypeDTO = new TrendingFilterTypeVolumeDTO(getResources());
+                break;
+            case 3:
+                trendingFilterTypeDTO = new TrendingFilterTypeGenericDTO(getResources());
+                break;
+        }
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -147,15 +175,24 @@ public class TrendingStockFragment extends TrendingBaseFragment
     @Override public void onResume()
     {
         super.onResume();
-
+        updateExchangeMenu();
         analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Trade));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        inflater.inflate(R.menu.exchange_menu, menu);
         inflater.inflate(R.menu.search_menu, menu);
 
         super.onCreateOptionsMenu(menu, inflater);
+
+        exchangeMenu = menu.findItem(R.id.btn_exchange);
+        View updateCenterIcon = exchangeMenu.getActionView();
+        if (updateCenterIcon != null)
+        {
+            mExchangeSelection = (ExchangeSpinner) updateCenterIcon.findViewById(R.id.exchange_selection);
+            mExchangeSelection.setAdapter(exchangeAdapter);
+        }
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -358,6 +395,15 @@ public class TrendingStockFragment extends TrendingBaseFragment
             exchangeAdapter.notifyDataSetChanged();
         }
         filterSelectorView.apply(trendingFilterTypeDTO);
+        updateExchangeMenu();
+    }
+
+    private void updateExchangeMenu()
+    {
+        if (exchangeMenu != null)
+        {
+            mExchangeSelection.setSelection(trendingFilterTypeDTO.exchange);
+        }
     }
 
     private void setDefaultExchange()

@@ -8,25 +8,26 @@
     android:minHeight="@dimen/grid_item_height"
     tools:context=".activities.DashboardActivity"
     android:gravity="center_vertical"
-    android:padding="@dimen/margin_xsmall"
     android:background="@drawable/grid_item_bg"
     >
 
-  <include layout="@layout/trending_security_item_inner"/>
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="@dimen/margin_xsmall">
+
+    <include layout="@layout/trending_security_item_inner"/>
+  </RelativeLayout>
 
   <ImageView
       android:id="@+id/ic_market_close"
       android:layout_width="@dimen/small_image_w_h"
       android:layout_height="@dimen/small_image_w_h"
-      android:layout_alignParentBottom="true"
       android:layout_alignParentRight="true"
-      android:layout_alignParentEnd="true"
-      android:paddingBottom="8dp"
-      android:paddingRight="8dp"
-      android:paddingEnd="8dp"
+      android:layout_marginTop="-8dp"
       android:contentDescription="@null"
       android:scaleType="centerInside"
-      android:src="@drawable/buyscreen_stock_inactive"
+      android:src="@drawable/buyscreen_stock_inactive_pressed"
       />
 
 </com.tradehero.th.fragments.security.SecurityItemView>

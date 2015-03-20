@@ -81,6 +81,15 @@ public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements Cha
         return resources.getString(R.string.trending_filter_exchange_drop_down, usableName, desc);
     }
 
+    public String getFullName()
+    {
+        if (desc == null)
+        {
+            return getUsableDisplayName();
+        }
+        return desc;
+    }
+
     //<editor-fold desc="CharSequence">
     @Override public CharSequence subSequence(int start, int end)
     {

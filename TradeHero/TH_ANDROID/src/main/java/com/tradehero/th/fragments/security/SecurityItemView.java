@@ -22,6 +22,7 @@ import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DateUtils;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -36,6 +37,7 @@ public class SecurityItemView extends RelativeLayout
     @InjectView(R.id.stock_name) TextView stockName;
     @InjectView(R.id.exchange_symbol) TextView exchangeSymbol;
     @InjectView(R.id.last_price) TextView lastPrice;
+    @InjectView(R.id.tv_stock_roi) TextView stockRoi;
     @InjectView(R.id.country_logo) @Optional ImageView countryLogo;
     @InjectView(R.id.date) @Optional TextView date;
     @InjectView(R.id.sec_type) @Optional TextView securityType;
@@ -144,10 +146,10 @@ public class SecurityItemView extends RelativeLayout
             displayExchangeSymbol();
             displayDate();
             displayLastPrice();
+            displayStockRoi();
             displayMarketClose();
             displaySecurityType();
             displayCountryLogo();
-            Timber.d("onLinkWith");
             loadImage();
         }
     }
@@ -159,10 +161,10 @@ public class SecurityItemView extends RelativeLayout
         displayExchangeSymbol();
         displayDate();
         displayLastPrice();
+        displayStockRoi();
         displayMarketClose();
         displaySecurityType();
         displayCountryLogo();
-        Timber.d("onDisplay");
         loadImage();
     }
 
@@ -304,6 +306,30 @@ public class SecurityItemView extends RelativeLayout
             } catch (OutOfMemoryError e)
             {
                 Timber.e(e, "");
+            }
+        }
+    }
+
+    private void displayStockRoi()
+    {
+        if (stockRoi != null)
+        {
+            if (securityCompactDTO != null && securityCompactDTO.risePercent != null)
+            {
+                double roi = securityCompactDTO.risePercent;
+                THSignedPercentage
+                        .builder(roi * 100)
+                        .withSign()
+                        .relevantDigitCount(3)
+                        .withDefaultColor()
+                        .defaultColorForBackground()
+                        .signTypePlusMinusAlways()
+                        .build()
+                        .into(stockRoi);
+            }
+            else
+            {
+                stockRoi.setVisibility(View.GONE);
             }
         }
     }

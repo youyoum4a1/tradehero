@@ -6,10 +6,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
+  <ImageView
+      android:id="@+id/stock_logo"
+      android:layout_width="@dimen/security_logo_width"
+      android:layout_height="@dimen/security_logo_height"
+      android:layout_centerHorizontal="true"
+      android:contentDescription="@null"
+      android:adjustViewBounds="false"
+      android:scaleType="fitCenter"
+      android:layout_margin="@dimen/margin_xsmall"
+      tools:src="@drawable/square_us"/>
+
   <TextView
       android:id="@+id/stock_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_below="@id/stock_logo"
       android:layout_centerHorizontal="true"
       android:ellipsize="marquee"
       android:marqueeRepeatLimit="marquee_forever"
@@ -19,27 +31,15 @@
       tools:text="Company Name"
       />
 
-  <ImageView
-      android:id="@+id/stock_logo"
-      android:layout_width="@dimen/security_logo_width"
-      android:layout_height="@dimen/security_logo_height"
-      android:layout_below="@id/stock_name"
-      android:layout_centerHorizontal="true"
-      android:contentDescription="@null"
-      android:adjustViewBounds="false"
-      android:scaleType="fitCenter"
-      android:layout_margin="@dimen/margin_xsmall"
-      tools:src="@drawable/square_us"/>
-
   <TextView
       android:id="@+id/exchange_symbol"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_below="@id/stock_logo"
+      android:layout_below="@id/stock_name"
       android:layout_centerHorizontal="true"
       android:ellipsize="end"
       android:lines="1"
-      style="@style/TH.Body"
+      style="@style/TH.Caption"
       tools:text="GOOG"/>
 
   <LinearLayout
@@ -58,7 +58,17 @@
         android:lines="1"
         tools:text="1,014"
         style="@style/TH.Body"
+        android:textStyle="bold"
         />
+
+    <TextView
+        android:id="@+id/tv_stock_roi"
+        style="@style/TH.Subhead.Inverse"
+        android:layout_marginLeft="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="+408%"
+        tools:background="@color/number_up"/>
 
   </LinearLayout>
 
