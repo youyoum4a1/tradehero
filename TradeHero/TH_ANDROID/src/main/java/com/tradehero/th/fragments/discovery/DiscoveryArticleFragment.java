@@ -95,7 +95,23 @@ public class DiscoveryArticleFragment extends Fragment
     protected void initView(View view)
     {
         ButterKnife.inject(this, view);
-        final ArrayDTOAdapter<ArticleInfoDTO, ArticleItemView> mArticleAdapter = new ArrayDTOAdapter<>(getActivity(), R.layout.article_item_view);
+        final ArrayDTOAdapter<ArticleInfoDTO, ArticleItemView> mArticleAdapter =
+                new ArrayDTOAdapter<ArticleInfoDTO, ArticleItemView>(getActivity(), R.layout.article_item_view)
+                {
+                    @Override public View getView(int position, View convertView, ViewGroup viewGroup)
+                    {
+                        View view = super.getView(position, convertView, viewGroup);
+                        if (position % 2 == 0)
+                        {
+                            view.setBackgroundResource(R.color.lb_item_even);
+                        }
+                        else
+                        {
+                            view.setBackgroundResource(R.color.lb_item_odd);
+                        }
+                        return view;
+                    }
+                };
 
         mBottomLoadingView = new ProgressBar(getActivity());
         mBottomLoadingView.setVisibility(View.GONE);

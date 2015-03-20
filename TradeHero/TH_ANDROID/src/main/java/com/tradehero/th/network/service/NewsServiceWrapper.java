@@ -12,6 +12,7 @@ import com.tradehero.th.api.news.key.NewsItemListInterestKey;
 import com.tradehero.th.api.news.key.NewsItemListKey;
 import com.tradehero.th.api.news.key.NewsItemListRegionalKey;
 import com.tradehero.th.api.news.key.NewsItemListSecurityKey;
+import com.tradehero.th.api.news.key.NewsItemListSeekingAlphaKey;
 import com.tradehero.th.api.news.key.NewsItemListSocialKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.models.discussion.NewsDTOProcessor;
@@ -85,6 +86,10 @@ import rx.Observable;
             paginatedNewsItemCompactDTO = newsServiceRx.getFeaturedNewsList(
                     key.page,
                     key.perPage);
+        }
+        else if (key instanceof NewsItemListSeekingAlphaKey)
+        {
+            paginatedNewsItemCompactDTO = newsServiceRx.getSeekingAlpha(key.page, key.perPage);
         }
         else
         {

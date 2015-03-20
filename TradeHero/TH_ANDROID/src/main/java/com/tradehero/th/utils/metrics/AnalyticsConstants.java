@@ -141,6 +141,7 @@ public class AnalyticsConstants
     public static final String AchievementNotificationScreen = "AchievementNotificationScreen";//
     public static final String GamePlaySummary = "GamePlaySummary";
     public static final String NewsMotleyFool = "NewsMotleyFool";
+    public static final String NewsSeekingAlpha = "NewsSeekingAlpha";
     public static final String NewsSecurityScreen = "SecurityScreen";
     public static final String NewsRegional = "NewsRegional";
     public static final String NewsGlobal = "NewsGlobal";

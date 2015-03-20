@@ -1,54 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+  <RelativeLayout
+      android:id="@+id/spinner_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+  <Spinner
+      android:id="@+id/spinner_news"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="@dimen/clickable_element_min_dimen"
+      android:background="@android:color/transparent"
+      />
 
+  </RelativeLayout>
   <com.tradehero.common.widget.NonSwipeableViewPager
       android:id="@+id/news_pager"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:layout_below="@id/spinner_container"
       tools:background="@android:color/holo_red_dark"
       />
 
-  <RelativeLayout
-      android:id="@+id/news_carousel_wrapper"
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/discovery_news_carousel_height"
-      android:background="@color/tradehero_dashboard_bg_color"
-      >
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/news_carousel"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:background="@color/white"
-        tools:background="@android:color/holo_green_dark"
-        />
-
-    <ImageButton
-        android:id="@+id/previous_filter"
-        android:src="@drawable/trending_filter_back"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:contentDescription="@null"
-        style="@style/TradeHero.CarouselNavigationButton"
-        />
-
-    <ImageButton
-        android:id="@+id/next_filter"
-        android:src="@drawable/trending_filter_forward"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:contentDescription="@null"
-        style="@style/TradeHero.CarouselNavigationButton"
-        />
-
-  </RelativeLayout>
-
-</FrameLayout>
+</RelativeLayout>

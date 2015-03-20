@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<merge>
+<merge xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <com.tradehero.th.widget.VotePair
       android:id="@+id/vote_pair"
@@ -11,6 +11,7 @@
       android:orientation="horizontal"
       android:layout_gravity="center_vertical"
       android:layout_centerVertical="true"
+      app:downVote="false"
       >
 
     <com.tradehero.th.widget.VoteUpView
@@ -25,7 +26,6 @@
         android:id="@+id/timeline_action_button_vote_down"
         android:drawableLeft="@drawable/icn_actions_downvote"
         android:text="@integer/messages_initial_vote_count"
-        android:visibility="gone"
         tools:visibility="visible"
         />
 

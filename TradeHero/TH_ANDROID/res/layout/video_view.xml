@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/video_thumbnail_width"
     android:layout_height="@dimen/video_thumbnail_height"
-    tools:background="@color/black">
+    >
 
   <ImageView
       android:id="@+id/video_thumbnail"
@@ -20,18 +20,37 @@
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
       android:padding="2dp"
-      style="@style/TH.Body"
-      android:background="@color/video_title_background"/>
-
-  <ImageView
+      android:singleLine="true"
+      style="@style/TH.Caption.Inverse"
+      android:background="@color/black"
+      tools:text="What is Technical Analytics?"/>
+  <LinearLayout
       android:id="@+id/video_padlock"
-      android:layout_width="@dimen/video_thumbnail_width"
-      android:layout_height="@dimen/video_thumbnail_height"
-      android:scaleType="centerInside"
-      android:background="@color/grey_transparent"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
       android:layout_above="@id/video_title"
-      android:src="@drawable/icn_padlock"
-      android:layout_centerInParent="true"
-      android:visibility="gone"/>
+      android:background="@color/grey_transparent">
+
+    <ImageView
+        android:layout_width="@dimen/size_3"
+        android:layout_height="@dimen/size_3"
+        android:layout_marginTop="@dimen/size_1"
+        android:layout_marginBottom="@dimen/size_1"
+        android:scaleType="centerInside"
+        android:layout_above="@id/video_title"
+        android:src="@drawable/icn_padlock"
+        android:layout_gravity="center_horizontal"
+        tools:visibility="visible"/>
+    <TextView
+        android:id="@+id/lock_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        style="@style/TH.Caption.Inverse"
+        android:textSize="9sp"
+        android:text="Watch Episode 1 to unlock"/>
+  </LinearLayout>
+
 
 </com.tradehero.th.fragments.education.VideoView>

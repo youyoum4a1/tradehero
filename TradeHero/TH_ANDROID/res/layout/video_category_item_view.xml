@@ -11,23 +11,21 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:padding="5dp"
-      style="@style/TH.Title"
+      style="@style/TH.Subhead"
       android:singleLine="false"
       tools:text="Basic of Trading and Investing"
       />
 
   <Gallery
       android:id="@+id/video_gallery"
-      android:background="@color/video_thumbnail_strip_background"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:minHeight="@dimen/video_thumbnail_container_height"
       android:layout_below="@id/video_category_name"
       android:animationDuration="@android:integer/config_mediumAnimTime"
       android:spacing="@dimen/video_thumbnail_spacing"
-      android:paddingTop="10dp"
       android:paddingBottom="10dp"
-      android:unselectedAlpha="0.2">
+      >
   </Gallery>
 
   <TextView

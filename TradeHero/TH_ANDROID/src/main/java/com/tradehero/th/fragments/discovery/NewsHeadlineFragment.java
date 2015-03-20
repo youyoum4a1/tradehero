@@ -1,8 +1,6 @@
 package com.tradehero.th.fragments.discovery;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,18 +14,16 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
-import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
-import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
-import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemListFeaturedKey;
 import com.tradehero.th.api.news.key.NewsItemListGlobalKey;
 import com.tradehero.th.api.news.key.NewsItemListKey;
 import com.tradehero.th.api.news.key.NewsItemListKeyHelper;
 import com.tradehero.th.api.news.key.NewsItemListRegionalKey;
+import com.tradehero.th.api.news.key.NewsItemListSeekingAlphaKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.PaginationDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
@@ -39,7 +35,6 @@ import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.List;
@@ -49,8 +44,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.app.AppObservable;
-import rx.android.content.ContentObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func0;
@@ -59,7 +52,6 @@ import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
-import static butterknife.ButterKnife.findById;
 import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
 
 public class NewsHeadlineFragment extends Fragment
@@ -68,7 +60,6 @@ public class NewsHeadlineFragment extends Fragment
     public static final String REGION_CHANGED = NewsHeadlineFragment.class + ".regionChanged";
 
     @Inject Locale locale;
-    @Inject @RegionalNews CountryLanguagePreference countryLanguagePreference;
 
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.discovery_news_list) ListView mNewsListView;
@@ -78,7 +69,6 @@ public class NewsHeadlineFragment extends Fragment
     private PaginationInfoDTO lastPaginationInfoDTO;
     private ProgressBar mBottomLoadingView;
     private PublishSubject<List<NewsItemCompactDTO>> newsSubject;
-    private AbsListView.OnScrollListener scrollListener;
     private Observable<PaginationDTO> paginationObservable;
     protected CompositeSubscription subscriptions;
     protected NewsType newsType;
@@ -116,6 +106,10 @@ public class NewsHeadlineFragment extends Fragment
                 return new NewsItemListFeaturedKey(null, null);
             case Global:
                 return new NewsItemListGlobalKey(null, null);
+            case SeekingAlpha:
+                return new NewsItemListSeekingAlphaKey(null, null);
+            case Region:
+                return new NewsItemListRegionalKey(locale.getCountry(), locale.getLanguage(), null, null);
             default:
                 return null;
         }
@@ -144,17 +138,6 @@ public class NewsHeadlineFragment extends Fragment
                 newsItemListKey = newsItemListKeyFromNewsType(newsType);
             }
         }
-        if (newsType == NewsType.Region)
-        {
-            if (countryLanguagePreference.isSet())
-            {
-                newsItemListKey = newsItemListKeyFromPref();
-            }
-            else
-            {
-                newsItemListKey = new NewsItemListRegionalKey(locale.getCountry(), locale.getLanguage(), null, null);
-            }
-        }
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -168,11 +151,23 @@ public class NewsHeadlineFragment extends Fragment
     {
         ButterKnife.inject(this, view);
         int headerHeight = getResources().getDimensionPixelSize(R.dimen.discovery_news_carousel_height);
-        scrollListener = new QuickReturnListViewOnScrollListener(
-                QuickReturnType.HEADER, findById(getActivity(), R.id.news_carousel_wrapper), -headerHeight, null, 0);
-
         final ArrayDTOAdapter<NewsItemCompactDTO, NewsHeadlineViewLinear> mNewsAdapter =
-                new ArrayDTOAdapter<>(getActivity(), R.layout.news_headline_item_view);
+                new ArrayDTOAdapter<NewsItemCompactDTO, NewsHeadlineViewLinear>(getActivity(), R.layout.news_headline_item_view)
+                {
+                    @Override public View getView(int position, View convertView, ViewGroup viewGroup)
+                    {
+                        View view = super.getView(position, convertView, viewGroup);
+                        if (position % 2 == 0)
+                        {
+                            view.setBackgroundResource(R.color.lb_item_even);
+                        }
+                        else
+                        {
+                            view.setBackgroundResource(R.color.lb_item_odd);
+                        }
+                        return view;
+                    }
+                };
 
         mBottomLoadingView = new ProgressBar(getActivity());
         mBottomLoadingView.setVisibility(View.GONE);
@@ -209,30 +204,6 @@ public class NewsHeadlineFragment extends Fragment
         subscriptions.add(newsSubject.subscribe(new UpdateUIObserver()));
 
         activateNewsItemListView();
-
-        if (newsType == NewsType.Region)
-        {
-            subscriptions.add(
-                    AppObservable.bindFragment(
-                            this,
-                            ContentObservable.fromLocalBroadcast(getActivity(), new IntentFilter(REGION_CHANGED))
-                                    .map(new Func1<Intent, NewsItemListKey>()
-                                    {
-                                        @Override public NewsItemListKey call(Intent intent)
-                                        {
-                                            return NewsHeadlineFragment.this.newsItemListKeyFromPref();
-                                        }
-                                    })
-                                    .subscribeOn(Schedulers.io()))
-                            .onErrorResumeNext(Observable.<NewsItemListKey>empty())
-                            .subscribe(new Action1<NewsItemListKey>()
-                            {
-                                @Override public void call(NewsItemListKey itemListKey)
-                                {
-                                    NewsHeadlineFragment.this.replaceNewsItemListView(itemListKey);
-                                }
-                            }, new ToastOnErrorAction()));
-        }
     }
 
     private Observable<PaginationDTO> createPaginationObservable()
@@ -260,7 +231,6 @@ public class NewsHeadlineFragment extends Fragment
                     @Override public void call(Subscriber<? super PaginationDTO> subscriber)
                     {
                         mNewsListView.setOnScrollListener(new MultiScrollListener(
-                                scrollListener,
                                 dashboardBottomTabsScrollListener,
                                 createNearEndScrollOperator(
                                         subscriber,
@@ -378,11 +348,5 @@ public class NewsHeadlineFragment extends Fragment
         {
             updateUI();
         }
-    }
-
-    private NewsItemListRegionalKey newsItemListKeyFromPref()
-    {
-        CountryLanguagePairDTO countryLanguagePairDTO = countryLanguagePreference.get();
-        return new NewsItemListRegionalKey(countryLanguagePairDTO.countryCode, countryLanguagePairDTO.languageCode, null, null);
     }
 }

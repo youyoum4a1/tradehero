@@ -34,7 +34,6 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
     @Override public void display(NewsItemCompactDTO discussionKey)
     {
         super.display(discussionKey);
-        viewHolder.discussionActionButtonsView.setCommentCountVisible(View.GONE);
     }
 
     public void setNewsBackgroundResource(@DrawableRes int resId)

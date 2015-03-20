@@ -17,6 +17,8 @@ public class NewsItemCompactDTO extends AbstractDiscussionCompactDTO<NewsItemCom
     public NewsItemCategoryDTO category;
     public SecurityCompactDTO topReferencedSecurity;
 
+    public String thumbnail;
+
     //<editor-fold desc="Constructors">
     public NewsItemCompactDTO()
     {

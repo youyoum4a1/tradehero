@@ -1,29 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.discovery.RegionalNewsSelectorView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     >
 
   <TextView
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/size_6"
+      android:gravity="center"
+      android:layout_gravity="center"
+      style="@style/TH.Title.Inverse"
+      android:maxLines="1"
+      android:text="@string/regional_news"
+      android:background="@color/news_regional"
+      />
+
+  <ImageView
+      android:id="@+id/spinner_arrow"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_gravity="center_horizontal"
-      android:gravity="center_horizontal"
-      style="@style/TH.Title"
-      android:maxLines="1"
-      android:layout_marginTop="8dp"
-      android:text="@string/regional_news"
-      />
+      android:layout_marginRight="@dimen/size_1"
+      android:layout_gravity="center_vertical|right"
+      android:background="@drawable/spinner_arrow_bg"/>
 
-  <Spinner
-      android:id="@+id/discovery_news_carousel_spinner_wrapper"
-      android:layout_width="@dimen/discovery_news_carousel_spinner_width"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center_horizontal"
-      style="@style/TH.Spinner"
-      />
-
-</com.tradehero.th.fragments.discovery.RegionalNewsSelectorView>
+</FrameLayout>

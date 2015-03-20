@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.discovery;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,6 +9,10 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -16,21 +21,7 @@ import com.tradehero.th.R;
 public final class NewsPagerFragment extends Fragment
 {
     @InjectView(R.id.news_pager) ViewPager mViewPager;
-    @InjectView(R.id.news_carousel) ViewPager mNewsCarousel;
-
-    @OnClick(R.id.previous_filter) void handlePreviousFilterClick()
-    {
-        int currentItem = mNewsCarousel.getCurrentItem();
-        int size = mNewsCarousel.getAdapter().getCount();
-        mNewsCarousel.setCurrentItem((currentItem + size - 1) % size, currentItem != 0);
-    }
-
-    @OnClick(R.id.next_filter) void handleNextFilterClick()
-    {
-        int currentItem = mNewsCarousel.getCurrentItem();
-        int size = mNewsCarousel.getAdapter().getCount();
-        mNewsCarousel.setCurrentItem((currentItem + 1) % size, currentItem + 1 != size);
-    }
+    @InjectView(R.id.spinner_news) Spinner newsSpinner;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -44,19 +35,65 @@ public final class NewsPagerFragment extends Fragment
         ButterKnife.inject(this, view);
 
         mViewPager.setAdapter(new DiscoveryNewsFragmentAdapter(this.getChildFragmentManager()));
-        mNewsCarousel.setAdapter(new DiscoveryNewsCarouselFragmentAdapter(this.getChildFragmentManager()));
-        mNewsCarousel.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
+        newsSpinner.setAdapter(new NewsSpinnerAdapter(getActivity(),
+                new NewsType[] { NewsType.SeekingAlpha, NewsType.MotleyFool, NewsType.Region, NewsType.Global}));
+        newsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
-            @Override public void onPageSelected(int position)
+            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
                 mViewPager.setCurrentItem(position);
+            }
+
+            @Override public void onNothingSelected(AdapterView<?> parent)
+            {
+                //
             }
         });
     }
 
-    private class DiscoveryNewsFragmentAdapter extends DiscoveryNewsAdapter
-    {
+    class NewsSpinnerAdapter extends ArrayAdapter<NewsType> {
+        public NewsSpinnerAdapter(Context context, NewsType[] objects)
+        {
+            super(context, 0, objects);
+        }
 
+        @Override public View getView(int position, View convertView, ViewGroup parent)
+        {
+            NewsType type = getItem(position);
+            if (convertView == null) {
+                convertView = getActivity().getLayoutInflater().inflate(type.titleViewResourceId, parent, false);
+            }
+
+            return convertView;
+        }
+
+        @Override public View getDropDownView(int position, View convertView, ViewGroup parent)
+        {
+            NewsType type = getItem(position);
+            convertView = getActivity().getLayoutInflater().inflate(type.titleViewResourceId, parent, false);
+            View view = convertView.findViewById(R.id.spinner_arrow);
+            if (view != null) {
+                view.setVisibility(View.GONE);
+            }
+
+            return convertView;
+        }
+
+        @Override public int getItemViewType(int position)
+        {
+            NewsType type = getItem(position);
+            return type.ordinal();
+        }
+
+        @Override public int getViewTypeCount()
+        {
+            return getCount();
+        }
+    }
+
+
+    private class DiscoveryNewsFragmentAdapter extends FragmentPagerAdapter
+    {
         public DiscoveryNewsFragmentAdapter(FragmentManager fm)
         {
             super(fm);
@@ -65,27 +102,6 @@ public final class NewsPagerFragment extends Fragment
         @Override public Fragment getItem(int i)
         {
             return NewsHeadlineFragment.newInstance(NewsType.values()[i]);
-        }
-    }
-
-    private class DiscoveryNewsCarouselFragmentAdapter extends DiscoveryNewsAdapter
-    {
-        public DiscoveryNewsCarouselFragmentAdapter(FragmentManager fm)
-        {
-            super(fm);
-        }
-
-        @Override public Fragment getItem(int i)
-        {
-            return NewsCarouselFragment.newInstance(NewsType.values()[i]);
-        }
-    }
-
-    private abstract class DiscoveryNewsAdapter extends FragmentPagerAdapter
-    {
-        public DiscoveryNewsAdapter(FragmentManager fm)
-        {
-            super(fm);
         }
 
         @Override public int getCount()

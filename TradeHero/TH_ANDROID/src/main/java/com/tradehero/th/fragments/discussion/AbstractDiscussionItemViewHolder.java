@@ -26,7 +26,6 @@ public class AbstractDiscussionItemViewHolder<DiscussionDTOType extends Abstract
     @InjectView(R.id.user_profile_name) @Optional TextView userProfileName;
 
     @Inject Picasso picasso;
-    @Inject @ForUserPhoto Transformation userProfilePictureTransformation;
 
     //<editor-fold desc="Constructors">
 
@@ -137,7 +136,6 @@ public class AbstractDiscussionItemViewHolder<DiscussionDTOType extends Abstract
         {
             cancelProfilePictureRequest();
             createUserPicassoRequest()
-                    .transform(userProfilePictureTransformation)
                     .into(discussionUserPicture);
         }
     }

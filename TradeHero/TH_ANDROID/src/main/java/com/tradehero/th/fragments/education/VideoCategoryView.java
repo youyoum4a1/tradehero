@@ -4,8 +4,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Pair;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.RelativeLayout;
@@ -71,11 +73,28 @@ public class VideoCategoryView extends RelativeLayout
     }
     //</editor-fold>
 
+    private void adjustFirstItemOfGallery() {
+        try
+        {
+            DisplayMetrics metrics = new DisplayMetrics();
+            WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+            wm.getDefaultDisplay().getMetrics(metrics);
+            MarginLayoutParams mlp = (MarginLayoutParams) gallery.getLayoutParams();
+            mlp.setMargins(-((metrics.widthPixels/2)+100),
+                    mlp.topMargin,
+                    mlp.rightMargin,
+                    mlp.bottomMargin
+            );
+        } catch (Exception e) {
+            Timber.d("Error",e);
+        }
+    }
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
         gallery.setAdapter(galleryAdapter);
+        adjustFirstItemOfGallery();
     }
 
     @SuppressWarnings("UnusedDeclaration")

@@ -26,7 +26,6 @@
         android:smoothScrollbar="true"
         android:clipToPadding="false"
         tools:background="@android:color/holo_red_light"
-        android:paddingTop="@dimen/discovery_news_carousel_height"
         />
   </android.support.v4.widget.SwipeRefreshLayout>
 

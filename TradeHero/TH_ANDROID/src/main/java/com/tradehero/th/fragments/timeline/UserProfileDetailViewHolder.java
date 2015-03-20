@@ -226,7 +226,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
             }
             catch (Exception e)
             {
-                Timber.e("initUserStaticView error:" + e.toString());
+                Timber.d("initUserStaticView error:" + e.toString());
                 userStatisticView.setVisibility(View.GONE);
             }
         }

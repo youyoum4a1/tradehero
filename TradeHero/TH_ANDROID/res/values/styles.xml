@@ -243,6 +243,10 @@
     <item name="android:background">@drawable/basic_white_selector</item>
   </style>
 
+  <style name="TH.ListItem.Clickable.LB" parent="TH.ListItem.LB">
+    <item name="android:background">@drawable/basic_white_selector</item>
+  </style>
+
   <style name="TH.VoteView"
       parent="TH.DiscussionActionButtons.Text">
     <item name="android:layout_width">wrap_content</item>
@@ -637,7 +641,7 @@
   </style>
 
   <style name="TradeHero.ActionBar.Spinner" parent="TradeHero.ActionBar">
-    <item name="android:background">@drawable/action_bar_spinner_item</item>
+    <item name="android:background">@color/tradehero_blue</item>
   </style>
   
   <style name="TH.Title.Inverse.DropDown" parent="TH.Title.Inverse">

@@ -20,7 +20,7 @@ public class VideoView extends RelativeLayout implements DTOView<VideoDTO>
 {
     @InjectView(R.id.video_thumbnail) ImageView thumbnail;
     @InjectView(R.id.video_title) TextView title;
-    @InjectView(R.id.video_padlock) ImageView padlock;
+    @InjectView(R.id.video_padlock) View padlock;
 
     @Inject Picasso picasso;
 

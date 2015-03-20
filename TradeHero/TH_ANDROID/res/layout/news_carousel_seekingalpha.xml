@@ -3,18 +3,16 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
 
-  <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+  <ImageView
       android:layout_width="match_parent"
       android:layout_height="@dimen/size_6"
-      android:gravity="center"
+      android:src="@drawable/logo_seeking_alpha"
       android:layout_gravity="center"
-      android:text="@string/global_news"
-      style="@style/TH.Title.Inverse"
-      android:background="@color/news_global"
+      android:contentDescription="@string/seeking_alpha"
+      android:background="@color/news_seeking_alpha"
       />
-
   <ImageView
       android:id="@+id/spinner_arrow"
       android:layout_width="wrap_content"

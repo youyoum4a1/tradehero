@@ -3,24 +3,29 @@ package com.tradehero.th.fragments.news;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.Optional;
+import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.utils.StringUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
+import javax.inject.Inject;
 
 public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO>
         extends AbstractDiscussionCompactItemViewHolder<DiscussionType>
 {
-    @InjectView(R.id.news_title_description) @Optional protected TextView newsDescription;
     @InjectView(R.id.news_title_title) @Optional protected TextView newsTitle;
-    @InjectView(R.id.news_source) @Optional protected TextView newsSource;
-    @InjectView(R.id.news_item_placeholder) @Optional ImageView newsItemPlaceholder;
+    @InjectView(R.id.news_icon) ImageView newsIcon;
+    @Inject Picasso picasso;
+
+    private static final int SEEKING_ALPHA_ID = 9;
+    private static final int MOTLEY_FOOL_ID = 6;
 
     //<editor-fold desc="Constructors">
     public NewsItemCompactViewHolder(@NonNull Context context)
@@ -29,47 +34,40 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
     }
     //</editor-fold>
 
+    @Override public void onDetachedFromWindow()
+    {
+        picasso.cancelRequest(newsIcon);
+        super.onDetachedFromWindow();
+    }
+
     //<editor-fold desc="Display Methods">
     @Override public void display()
     {
         super.display();
-        displaySource();
         displayTitle();
-        displayDescription();
-    }
+        String url = discussionDTO.thumbnail;
 
-    protected void displaySource()
-    {
-        if (newsSource != null)
-        {
-            if (discussionDTO != null)
+        int placeHolderResId = R.drawable.card_item_top_bg;
+        if (TextUtils.isEmpty(url)) {
+            if (discussionDTO.source.id == SEEKING_ALPHA_ID) {
+                placeHolderResId = R.drawable.seeking_alpha;
+            } else if (discussionDTO.source.id == MOTLEY_FOOL_ID) {
+                placeHolderResId = R.drawable.motley_fool;
+            } else
             {
-                newsSource.setText(parseHost(discussionDTO.url));
-            }
-            else
-            {
-                newsSource.setText(R.string.na);
+                url = discussionDTO.source.imageUrl;
+                placeHolderResId = R.drawable.card_item_top_bg;
             }
         }
-    }
-
-    @Nullable public String parseHost(String url)
-    {
-        try
-        {
-            return new URL(url).getHost();
-        }
-        catch (MalformedURLException ignored)
-        {
-            return null;
-        }
+        picasso.load(url)
+                .placeholder(placeHolderResId)
+                .into(newsIcon);
     }
 
     @Override public void displayTranslatableTexts()
     {
         super.displayTranslatableTexts();
         displayTitle();
-        displayDescription();
     }
 
     protected void displayTitle()
@@ -101,49 +99,6 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
                 return null;
         }
         throw new IllegalStateException("Unhandled state " + currentTranslationStatus);
-    }
-
-    protected void displayDescription()
-    {
-        if (newsDescription != null)
-        {
-            String descriptionText = getDescriptionText();
-            if (descriptionText != null)
-            {
-                newsDescription.setText(StringUtils.removeImageSpanObjects(descriptionText));
-            }
-        }
-    }
-
-    public String getDescriptionText()
-    {
-        switch (currentTranslationStatus)
-        {
-            case ORIGINAL:
-            case TRANSLATING:
-            case FAILED:
-                if (discussionDTO != null)
-                {
-                    return discussionDTO.description;
-                }
-                return null;
-
-            case TRANSLATED:
-                if (translatedDiscussionDTO != null)
-                {
-                    return translatedDiscussionDTO.description;
-                }
-                return null;
-        }
-        throw new IllegalStateException("Unhandled state " + currentTranslationStatus);
-    }
-
-    @Override public void setBackgroundResource(int resId)
-    {
-        if (this.newsItemPlaceholder != null)
-        {
-            this.newsItemPlaceholder.setBackgroundResource(resId);
-        }
     }
     //</editor-fold>
 }

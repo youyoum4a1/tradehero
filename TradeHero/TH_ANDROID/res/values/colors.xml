@@ -35,7 +35,7 @@
   <color name="white">@android:color/white</color>
   <color name="darker_grey">@android:color/darker_gray</color>
   <color name="grey">#D0D0D0</color>
-  <color name="grey_transparent">#68d0d0d0</color>
+  <color name="grey_transparent">#90000000</color>
   <color name="lighter_grey">#F2F2F2</color>
   <color name="pale_yellow">#F0E68C</color>
   <color name="light_yellow">#FFD000</color>
@@ -98,6 +98,11 @@
   <color name="lb_header_bg">#C9F1FF</color>
   <color name="lb_item_even">@android:color/white</color>
   <color name="lb_item_odd">#EFEFEF</color>
+
+  <color name="news_seeking_alpha">#4E0A00</color>
+  <color name="news_motley_fool">#89C8FF</color>
+  <color name="news_regional">#1FBFAF</color>
+  <color name="news_global">#047ACD</color>
   
   <string-array name="gauge_color_range" translatable="false">
     <item>#FF0C2B</item>
