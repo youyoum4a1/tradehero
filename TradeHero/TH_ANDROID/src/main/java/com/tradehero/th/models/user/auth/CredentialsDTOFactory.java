@@ -4,11 +4,12 @@ import android.text.TextUtils;
 import android.util.Base64;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.form.UserFormFactory;
-import java.text.ParseException;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.inject.Inject;
+import java.text.ParseException;
 
 public class CredentialsDTOFactory
 {
@@ -39,17 +40,6 @@ public class CredentialsDTOFactory
                 }
                 break;
 
-            //case FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE:
-            //    created = new FacebookCredentialsDTO(object);
-            //    break;
-
-            case LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE:
-                created = new LinkedinCredentialsDTO(object);
-                break;
-
-            case TwitterCredentialsDTO.TWITTER_AUTH_TYPE:
-                created = new TwitterCredentialsDTO(object);
-                break;
 
             // TODO WeChat
 

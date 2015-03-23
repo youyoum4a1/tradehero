@@ -71,9 +71,6 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     private void initSocialBtnStatus()
     {
         socialSharePreferenceHelperNew.load();
-        //initSocialButton(mFacebookShareButton, SocialNetworkEnum.FB);
-        //initSocialButton(mTwitterShareButton, SocialNetworkEnum.TW);
-        initSocialButton(mLinkedInShareButton, SocialNetworkEnum.LN);
         initSocialButton(mWechatShareButton, SocialNetworkEnum.WECHAT, createCheckedChangeListenerForWechat());
         initSocialButton(mWeiboShareButton, SocialNetworkEnum.WB);
     }
@@ -103,12 +100,6 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         {
             switch (socialNetworkEnum)
             {
-                //case FB:
-                //    return userProfileDTO.fbLinked;
-                //case TW:
-                //    return userProfileDTO.twLinked;
-                case LN:
-                    return userProfileDTO.liLinked;
                 case WB:
                     return userProfileDTO.wbLinked;
                 default:

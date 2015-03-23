@@ -313,56 +313,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         return mQuantityEditText.getText().toString();
     }
 
-    public QuickPriceButtonSet getQuickPriceButtonSet()
-    {
-        return mQuickPriceButtonSet;
-    }
-
-    public SeekBar getSeekBar()
-    {
-        return mSeekBar;
-    }
-
-    public Button getConfirmButton()
-    {
-        return mConfirm;
-    }
-
-    public CompoundButton getFacebookShareButton()
-    {
-        return mBtnShareFb;
-    }
-
-    public CompoundButton getTwitterShareButton()
-    {
-        return mBtnShareTw;
-    }
-
-    public CompoundButton getLinkedInShareButton()
-    {
-        return mBtnShareLn;
-    }
-
-    public CompoundButton getWeiboShareButton()
-    {
-        return mBtnShareWb;
-    }
-
-    public CompoundButton getWeChatShareButton()
-    {
-        return mBtnShareWeChat;
-    }
-
-    public EditText getQuantityEditText()
-    {
-        return mQuantityEditText;
-    }
-
-    public AlertDialog getSocialLinkingDialog()
-    {
-        return mSocialLinkingDialog;
-    }
-
     @OnClick(R.id.vquantity)
     public void onQuantityClicked()
     {
@@ -389,11 +339,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         transactionCommentFragment = getDashboardNavigator().pushFragment(TransactionEditCommentFragment.class, bundle);
 
         getDialog().hide();
-    }
-
-    public void setBuySellTransactionListener(BuySellTransactionListener buySellTransactionListener)
-    {
-        this.buySellTransactionListener = buySellTransactionListener;
     }
 
     public void displayQuickPriceButtonSet()
@@ -529,7 +474,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         return new TransactionFormDTO(
                 null,
                 null,
-                shareForTransaction(SocialNetworkEnum.LN),
+                null,
                 shareForTransaction(SocialNetworkEnum.WB),
                 //shareLocation ? null : null, // TODO implement location
                 //shareLocation ? null : null,
@@ -576,15 +521,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetwork, true);
         switch (socialNetwork)
         {
-            //case FB:
-            //    mBtnShareFb.setChecked(true);
-            //    break;
-            //case TW:
-            //    mBtnShareTw.setChecked(true);
-            //    break;
-            case LN:
-                mBtnShareLn.setChecked(true);
-                break;
             case WB:
                 mBtnShareWb.setChecked(true);
                 break;
@@ -598,12 +534,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         {
             switch (socialNetwork)
             {
-                //case FB:
-                //    return userProfileCopy.fbLinked;
-                //case TW:
-                //    return userProfileCopy.twLinked;
-                case LN:
-                    return userProfileCopy.liLinked;
                 case WB:
                     return userProfileCopy.wbLinked;
                 case WECHAT:
@@ -624,9 +554,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     private void initSocialButtons()
     {
-        //initSocialButton(mBtnShareFb, SocialNetworkEnum.FB);
-        //initSocialButton(mBtnShareTw, SocialNetworkEnum.TW);
-        initSocialButton(mBtnShareLn, SocialNetworkEnum.LN);
         initSocialButton(mBtnShareWeChat, SocialNetworkEnum.WECHAT, createCheckedChangeListenerForWechat());
         initSocialButton(mBtnShareWb, SocialNetworkEnum.WB);
     }

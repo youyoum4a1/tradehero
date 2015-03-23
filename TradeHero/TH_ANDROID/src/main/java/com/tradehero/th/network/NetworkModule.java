@@ -4,20 +4,14 @@ import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.users.LoginFormDTO;
-import com.tradehero.th.api.users.signup.LoginSignUpFormDeviceDTO;
-import com.tradehero.th.api.users.signup.LoginSignUpFormEmailDTO;
-import com.tradehero.th.api.users.signup.LoginSignUpFormFacebookDTO;
-import com.tradehero.th.api.users.signup.LoginSignUpFormLinkedinDTO;
-import com.tradehero.th.api.users.signup.LoginSignUpFormQQDTO;
-import com.tradehero.th.api.users.signup.LoginSignUpFormTwitterDTO;
-import com.tradehero.th.api.users.signup.LoginSignUpFormWeChatDTO;
-import com.tradehero.th.api.users.signup.LoginSignUpFormWeiboDTO;
+import com.tradehero.th.api.users.signup.*;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.network.retrofit.RetrofitModule;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Module;
 import dagger.Provides;
+
 import javax.inject.Singleton;
 
 @Module(
@@ -55,24 +49,6 @@ public class NetworkModule
                 deviceTokenHelper.getIMEI());
     }
 
-    @Provides LoginSignUpFormFacebookDTO provideLoginSignUpFormFacebookDTO(DeviceTokenHelper deviceTokenHelper)
-    {
-        return new LoginSignUpFormFacebookDTO(
-                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
-                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()),
-                deviceTokenHelper.getIMEI());
-    }
-
-    @Provides LoginSignUpFormLinkedinDTO provideLoginSignUpFormLinkedinDTO(DeviceTokenHelper deviceTokenHelper)
-    {
-        return new LoginSignUpFormLinkedinDTO(
-                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
-                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()),
-                deviceTokenHelper.getIMEI());
-    }
-
     @Provides LoginSignUpFormQQDTO provideLoginSignUpFormQQDTO(DeviceTokenHelper deviceTokenHelper)
     {
         return new LoginSignUpFormQQDTO(
@@ -85,15 +61,6 @@ public class NetworkModule
     @Provides LoginSignUpFormWeChatDTO provideLoginSignUpFormWechatDTO(DeviceTokenHelper deviceTokenHelper)
     {
         return new LoginSignUpFormWeChatDTO(
-                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
-                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                VersionUtils.getVersionId(Application.context()),
-                deviceTokenHelper.getIMEI());
-    }
-
-    @Provides LoginSignUpFormTwitterDTO provideLoginSignUpFormTwitterDTO(DeviceTokenHelper deviceTokenHelper)
-    {
-        return new LoginSignUpFormTwitterDTO(
                 deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
                 deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
                 VersionUtils.getVersionId(Application.context()),

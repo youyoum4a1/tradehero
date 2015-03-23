@@ -1,10 +1,11 @@
 package com.tradehero.th.models.share.preference;
 
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.inject.Inject;
 
 public class SocialSharePreferenceDTOFactory
 {
@@ -34,15 +35,6 @@ public class SocialSharePreferenceDTOFactory
 
         switch (socialNetworkEnum)
         {
-            //case FB:
-            //    socialSharePreferenceDTO = new FacebookSharePreferenceDTO(isShareEnabled);
-            //    break;
-            case LN:
-                socialSharePreferenceDTO = new LinkedInSharePreferenceDTO(isShareEnabled);
-                break;
-            //case TW:
-            //    socialSharePreferenceDTO = new TwitterSharePreferenceDTO(isShareEnabled);
-            //    break;
             case WB:
                 socialSharePreferenceDTO = new WeiBoSharePreferenceDTO(isShareEnabled);
                 break;

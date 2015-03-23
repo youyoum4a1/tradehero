@@ -47,7 +47,6 @@ import com.tradehero.th.fragments.security.*;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentLinkedIn;
 import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentWeibo;
 import com.tradehero.th.fragments.social.message.*;
 import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
@@ -214,7 +213,6 @@ import java.util.Locale;
                         SecurityDiscussionFragment.class,
                         AlertDialogUtil.class,
                         FriendsInvitationFragment.class,
-                        SocialFriendsFragmentLinkedIn.class,
                         SocialFriendsFragmentWeibo.class,
                         GuideActivity.class,
 

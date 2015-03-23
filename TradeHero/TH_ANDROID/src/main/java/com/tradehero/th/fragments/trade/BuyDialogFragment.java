@@ -6,14 +6,13 @@ import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class BuyDialogFragment extends AbstractTransactionDialogFragment
 {
     private static final boolean IS_BUY = true;
 
-    protected BuyDialogFragment()
+    public BuyDialogFragment()
     {
         super();
     }

@@ -8,7 +8,9 @@ import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.activities.RecommendStocksActivity;
-import com.tradehero.th.auth.operator.*;
+import com.tradehero.th.auth.operator.ConsumerKey;
+import com.tradehero.th.auth.operator.ConsumerSecret;
+import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
 import com.tradehero.th.auth.weibo.WeiboAppAuthData;
 import com.tradehero.th.models.share.*;
 import com.tradehero.th.network.share.SocialSharer;
@@ -18,7 +20,6 @@ import dagger.Provides;
 import timber.log.Timber;
 
 import javax.inject.Singleton;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -40,14 +41,11 @@ public class SocialNetworkModule
     private static final String TWITTER_CONSUMER_SECRET = "gRLhwCd3YgdaKKEH7Gwq9FI75TJuqHfi2TiDRwUHo";
     private static final String LINKEDIN_CONSUMER_KEY = "afed437khxve";
     private static final String LINKEDIN_CONSUMER_SECRET = "hO7VeSyL4y1W2ZiK";
-    private static final String FACEBOOK_APP_ID = "431745923529834";
 
     public static final String WECHAT_APP_SECRET = "a6afcadca7d218c9b2c44632fc8f884d";
     public static final String WECHAT_APP_ID = "wxe795a0ba8fa23cf7";//release
-    //public static final String WECHAT_APP_ID = "wxbd1f7f377d636b55";//test
 
     private static final String WEIBO_APP_ID = "280704663";//release
-    //private static final String WEIBO_APP_ID = "551229853";//test
     private static final String WEIBO_REDIRECT_URL = "http://www.tradehero.mobi";
     private static final String WEIBO_SCOPE =
             "email,direct_messages_read,direct_messages_write,"
@@ -76,11 +74,6 @@ public class SocialNetworkModule
         return LINKEDIN_CONSUMER_SECRET;
     }
 
-    @Provides @Singleton @FacebookAppId String provideFacebookAppId()
-    {
-        return FACEBOOK_APP_ID;
-    }
-
     @Provides @Singleton @ForWeiboAppAuthData
     WeiboAppAuthData provideWeiboAppId()
     {
@@ -91,10 +84,6 @@ public class SocialNetworkModule
         return data;
     }
 
-    @Provides @Singleton @FacebookPermissions Collection<String> provideFacebookPermissions()
-    {
-        return null;
-    }
 
     @Provides @Singleton IWXAPI createWXAPI(Context context)
     {

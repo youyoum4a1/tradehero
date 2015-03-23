@@ -2,11 +2,12 @@ package com.tradehero.th.models.share;
 
 import android.content.Context;
 import android.content.res.Resources;
+import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
 
 public class ShareDestinationFactoryByResources implements ShareDestinationFactory
 {
@@ -27,9 +28,6 @@ public class ShareDestinationFactoryByResources implements ShareDestinationFacto
     @Override @NotNull public ArrayList<ShareDestination> getAllShareDestinations()
     {
         ArrayList<ShareDestination> allDestinations = new ArrayList<>();
-        //addIfListed(allDestinations, new FacebookShareDestination(), destinationIds);
-        addIfListed(allDestinations, new LinkedInShareDestination(), destinationIds);
-        //addIfListed(allDestinations, new TwitterShareDestination(), destinationIds);
         addIfListed(allDestinations, new WeChatShareDestination(), destinationIds);
         addIfListed(allDestinations, new WeiboShareDestination(), destinationIds);
         return allDestinations;

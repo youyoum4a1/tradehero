@@ -30,7 +30,6 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.persistence.prefs.BindGuestUser;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.QQUtils;
 import com.tradehero.th.utils.WeiboUtils;
@@ -47,7 +46,6 @@ public class BindGuestUserFragment extends DashboardFragment implements View.OnC
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     @Inject ProgressDialogUtil progressDialogUtil;
-    @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<QQUtils> QQUtilsLazy;
     @Inject Lazy<WeiboUtils> WeiboUtilsLazy;
     @Inject SocialServiceWrapper socialServiceWrapper;

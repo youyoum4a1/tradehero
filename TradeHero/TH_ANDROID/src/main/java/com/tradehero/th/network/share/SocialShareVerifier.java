@@ -4,6 +4,7 @@ import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
+
 import javax.inject.Inject;
 
 public class SocialShareVerifier
@@ -45,15 +46,6 @@ public class SocialShareVerifier
             }
             switch (tiShareDTO.timelineItemShareRequestDTO.socialNetwork)
             {
-                //case FB:
-                //    return currentUserProfile.fbLinked ? CanShareType.YES : CanShareType.NEED_AUTH;
-
-                case LN:
-                    return currentUserProfile.liLinked ? CanShareType.YES : CanShareType.NEED_AUTH;
-
-                //case TW:
-                //    return currentUserProfile.twLinked ? CanShareType.YES : CanShareType.NEED_AUTH;
-
                 case WECHAT:
                     throw new IllegalStateException("WeChat is not shared like this");
 

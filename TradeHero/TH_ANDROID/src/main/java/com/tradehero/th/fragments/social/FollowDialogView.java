@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.social;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,13 +14,13 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
 
 /**
  * Refactor the code inside AlertDialogUtil
@@ -114,15 +113,6 @@ public class FollowDialogView extends LinearLayout
         }
     }
 
-    private void initFreeFollowDialog()
-    {
-        mNotFollowArea.setVisibility(View.GONE);
-    }
-
-    private void initNotFollowDialog()
-    {
-        mFreeFollowArea.setVisibility(View.GONE);
-    }
 
     private void displayUserName()
     {
@@ -152,34 +142,4 @@ public class FollowDialogView extends LinearLayout
     }
 
 
-    public void setFollowType(int followType)
-    {
-        switch (followType)
-        {
-            case UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG:
-                mUserTitle.setText(getContext().getString(R.string.not_follow_msg_title, mUsername.getText()));
-                mUsername.setVisibility(View.GONE);
-                break;
-            case UserProfileDTOUtil.IS_NOT_FOLLOWER:
-                mUserTitle.setText(R.string.not_follow_title);
-                break;
-            case UserProfileDTOUtil.IS_FREE_FOLLOWER:
-                mUserTitle.setText(R.string.free_follow_title);
-                break;
-        }
-
-        if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
-        {
-            initFreeFollowDialog();
-        }
-        else if (followType == UserProfileDTOUtil.IS_NOT_FOLLOWER || followType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
-        {
-            initNotFollowDialog();
-        }
-    }
-
-    public void setFollowRequestedListener(@Nullable OnFollowRequestedListener followRequestedListener)
-    {
-        this.followRequestedListener = followRequestedListener;
-    }
 }

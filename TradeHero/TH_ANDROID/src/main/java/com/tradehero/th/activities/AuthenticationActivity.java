@@ -33,7 +33,6 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
-import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.*;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -58,9 +57,6 @@ public class AuthenticationActivity extends DashboardActivity
     private Fragment currentFragment;
 
     private ProgressDialog progressDialog;
-    private TwitterCredentialsDTO twitterJson;
-
-    @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject Lazy<QQUtils> qqUtils;
     @Inject Lazy<WeChatUtils> wechatUtils;
@@ -277,8 +273,6 @@ public class AuthenticationActivity extends DashboardActivity
         };
     }
 
-    //<editor-fold desc="Authenticate with Facebook/Twitter/LinkedIn">
-
     /**
      * Chinese
      */
@@ -311,14 +305,6 @@ public class AuthenticationActivity extends DashboardActivity
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_wechat);
         wechatUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.BUTTON_LOGIN_WECHAT), code);
     }
-
-    public void authenticateWithLinkedIn()
-    {
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_LINKEDIN));
-        progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_linkedin);
-        linkedInUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.BUTTON_LOGIN_LINKEDIN));
-    }
-
 
     private void launchDashboard(UserLoginDTO userLoginDTO)
     {

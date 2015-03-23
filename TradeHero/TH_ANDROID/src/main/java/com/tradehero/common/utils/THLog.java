@@ -15,7 +15,6 @@ import java.security.NoSuchAlgorithmException;
 
 public class THLog
 {
-    /** Display KeyHash which is required by Facebook Application */
     public static void showDeveloperKeyHash()
     {
         if (!Constants.RELEASE)

@@ -17,7 +17,6 @@ import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
-import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
@@ -45,7 +44,6 @@ public class SplashActivity extends SherlockActivity
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject RequestHeaders requestHeaders;
     @Inject Provider<LoginFormDTO> loginFormDTOProvider;
-    @Inject @FacebookAppId String facebookAppId;
     @Inject @FirstLaunch BooleanPreference firstLaunchPreference;
 
     @Inject MainCredentialsPreference mainCredentialsPreference;

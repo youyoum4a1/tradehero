@@ -16,7 +16,9 @@ import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
-import com.tradehero.th.api.social.*;
+import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -55,10 +57,8 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
     SocialFriendHandler socialFriendHandler;
-    //SocialFriendHandlerFacebook socialFriendHandlerFacebook;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
-    //@Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
     @Inject Lazy<SocialSharer> socialSharerLazy;
 
     private UserFriendsDTOList userFriendsDTOs;
@@ -337,12 +337,6 @@ public class FriendsInvitationFragment extends DashboardFragment
         {
             switch (socialNetwork)
             {
-                //case FB:
-                //    return updatedUserProfileDTO.fbLinked;
-                case LN:
-                    return updatedUserProfileDTO.liLinked;
-                //case TW:
-                //    return updatedUserProfileDTO.twLinked;
                 case WB:
                     return updatedUserProfileDTO.wbLinked;
                 case QQ:
@@ -363,7 +357,6 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Override
     public void onInviteButtonClick(@NotNull UserFriendsDTO userFriendsDTO)
     {
-        handleInviteUsers(userFriendsDTO);
     }
 
     public void onCheckBoxClick(@NotNull UserFriendsDTO userFriendsDTO)
@@ -375,25 +368,6 @@ public class FriendsInvitationFragment extends DashboardFragment
     {
         List<UserFriendsDTO> usersToFollow = Arrays.asList(userToFollow);
         socialFriendHandler.followFriends(usersToFollow, new FollowFriendCallback(usersToFollow));
-    }
-
-    // TODO via which social network to invite user?
-    protected void handleInviteUsers(UserFriendsDTO userToInvite)
-    {
-        List<UserFriendsDTO> usersToInvite = Arrays.asList(userToInvite);
-        if (userToInvite instanceof UserFriendsLinkedinDTO || userToInvite instanceof UserFriendsTwitterDTO)
-        {
-            socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
-        }
-        //else if (userToInvite instanceof UserFriendsFacebookDTO)
-        //{
-        //    //TODO do invite on the client side.
-        //    socialFriendHandlerFacebook.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
-        //}
-        else
-        {
-            //if all ids are empty or only wbId is not empty, how to do?
-        }
     }
 
     private void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)
@@ -450,47 +424,6 @@ public class FriendsInvitationFragment extends DashboardFragment
         {
             super.failure(retrofitError);
             THToast.show(R.string.follow_friend_request_error);
-        }
-    }
-
-    class InviteFriendCallback extends SocialFriendHandler.RequestCallback<Response>
-    {
-        final List<UserFriendsDTO> usersToInvite;
-
-        //<editor-fold desc="Constructors">
-        private InviteFriendCallback(List<UserFriendsDTO> usersToInvite)
-        {
-            super(getActivity());
-            this.usersToInvite = usersToInvite;
-        }
-        //</editor-fold>
-
-        @Override
-        public void success(Response data, Response response)
-        {
-            super.success(data, response);
-            if (response.getStatus() == 200 || response.getStatus() == 204)
-            {
-                handleInviteSuccess(usersToInvite);
-            }
-            else
-            {
-                THToast.show(R.string.invite_friend_request_error);
-            }
-        }
-
-        @Override
-        public void success()
-        {
-            handleInviteSuccess(usersToInvite);
-        }
-
-        @Override
-        public void failure(RetrofitError retrofitError)
-        {
-            super.failure(retrofitError);
-            // TODO
-            THToast.show(R.string.invite_friend_request_error);
         }
     }
 
