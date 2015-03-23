@@ -26,7 +26,7 @@
       android:numColumns="@integer/trending_list_column_count"
       android:paddingRight="@dimen/trending_horizontal_spacing"
       android:paddingLeft="@dimen/trending_horizontal_spacing"
-      android:paddingTop="@dimen/trending_padding_top"
+      android:paddingTop="@dimen/trending_horizontal_spacing"
       android:paddingBottom="@dimen/trending_grid_padding_bottom"
       android:clipToPadding="false"
       android:scrollbarStyle="outsideOverlay"
@@ -34,13 +34,13 @@
       android:cacheColorHint="@android:color/transparent"
       />
 
-  <include
-      layout="@layout/fragment_trending_filter"
-      android:id="@+id/trending_filter_selector_view"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentTop="true"
-      />
+  <!--<include-->
+      <!--layout="@layout/fragment_trending_filter"-->
+      <!--android:id="@+id/trending_filter_selector_view"-->
+      <!--android:layout_width="match_parent"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:layout_alignParentTop="true"-->
+      <!--/>-->
 
   <ProgressBar
       android:id="@+id/progress"

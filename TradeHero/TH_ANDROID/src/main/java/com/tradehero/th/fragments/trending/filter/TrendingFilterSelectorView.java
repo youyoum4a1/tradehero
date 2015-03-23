@@ -121,7 +121,6 @@ public class TrendingFilterSelectorView extends RelativeLayout
 
     private void notifyObserver()
     {
-        trackChangeEvent(trendingFilterTypeDTO);
         trendingTypeBehavior.onNext(trendingFilterTypeDTO);
     }
 
@@ -132,9 +131,9 @@ public class TrendingFilterSelectorView extends RelativeLayout
 
     private void reportAnalytics()
     {
+        trackChangeEvent(trendingFilterTypeDTO);
         if (Constants.RELEASE)
         {
-//            analytics.fireProfileEvent(new ProfileEvent(
             analytics.localytics().setProfileAttribute(new ProfileEvent(
                     AnalyticsConstants.InterestedExchange,
                     Collections.singletonList(trendingFilterTypeDTO.exchange.name)));

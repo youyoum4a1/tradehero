@@ -13,6 +13,7 @@
       android:paddingTop="4dp"
       android:background="@drawable/trending_filter_header_background"
       >
+      <!--android:visibility="gone"-->
 
     <ImageButton
         android:id="@+id/previous_filter"

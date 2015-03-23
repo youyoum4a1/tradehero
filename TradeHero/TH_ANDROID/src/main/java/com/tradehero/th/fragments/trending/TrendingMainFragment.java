@@ -107,6 +107,23 @@ public class TrendingMainFragment extends DashboardFragment
         View view = inflater.inflate(R.layout.trending_main_fragment, container, false);
         ButterKnife.inject(this, view);
         initViews();
+        pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        {
+            @Override public void onPageScrolled(int i, float v, int i2)
+            {
+
+            }
+
+            @Override public void onPageSelected(int i)
+            {
+                TrendingStockFragment.setCancelFirstInit(true);
+            }
+
+            @Override public void onPageScrollStateChanged(int i)
+            {
+
+            }
+        });
         return view;
     }
 
@@ -178,7 +195,7 @@ public class TrendingMainFragment extends DashboardFragment
                 } else {
                     lastType = 1;
                 }
-                Timber.e("onItemSelected: " + parent.getItemAtPosition(position));
+                Timber.d("onItemSelected: " + parent.getItemAtPosition(position));
                 if (oldType != lastType)
                 {
                     initViews();
@@ -191,8 +208,8 @@ public class TrendingMainFragment extends DashboardFragment
             }
         };
         configureDefaultSpinner(new String[] {
-                        getString(R.string.leaderboard_type_stocks),
-                        getString(R.string.leaderboard_type_fx)},
+                        getString(R.string.stocks),
+                        getString(R.string.fx)},
                 listener, lastType);
     }
 
@@ -234,11 +251,11 @@ public class TrendingMainFragment extends DashboardFragment
             {
                 fragmentClass = TrendingFXTabType.values()[position].fragmentClass;
             }
-            if (fragmentClass.equals(TrendingStockFragment.class) && exchangeIdFromArguments != null)
-            {
-                TrendingStockFragment.putExchangeId(args, exchangeIdFromArguments);
-                exchangeIdFromArguments = null;
-            }
+            //if (fragmentClass.equals(TrendingStockFragment.class) && exchangeIdFromArguments != null)
+            //{
+            //    TrendingStockFragment.putExchangeId(args, exchangeIdFromArguments);
+            //    exchangeIdFromArguments = null;
+            //}
             args.putInt(TrendingStockFragment.KEY_TYPE_ID, position);
             TrendingBaseFragment subFragment = (TrendingBaseFragment) Fragment.instantiate(getActivity(), fragmentClass.getName(), args);
             return subFragment;
