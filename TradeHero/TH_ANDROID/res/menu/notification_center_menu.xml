@@ -16,7 +16,7 @@
       <item android:id="@+id/menu_broadcast"
           android:title="@string/message_center_broadcast_message_menu"/>
     </menu>
-      </item>
+  </item>
 
 
 </menu>

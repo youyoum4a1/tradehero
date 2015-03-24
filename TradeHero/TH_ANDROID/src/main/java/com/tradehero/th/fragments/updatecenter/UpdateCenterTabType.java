@@ -2,12 +2,12 @@ package com.tradehero.th.fragments.updatecenter;
 
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
+import com.tradehero.th.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 
 public enum UpdateCenterTabType
 {
-    Messages(R.string.message_center_tab_message, MessagesCenterFragment.class),
+    Messages(R.string.message_center_tab_message, MessagesCenterNewFragment.class),
     Notifications(R.string.message_center_tab_notification, NotificationsCenterFragment.class);
 
     public final int titleRes;

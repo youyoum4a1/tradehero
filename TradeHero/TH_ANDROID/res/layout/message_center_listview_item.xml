@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tradehero.common.widget.swipe.SwipeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent" android:layout_height="match_parent">
+  <LinearLayout
+      android:tag="Bottom2"
+      android:background="@color/tradehero_blue"
+      android:layout_width="60dp"
+      android:gravity="center"
+      android:layout_height="fill_parent">
+    <TextView
+        android:id="@+id/delete"
+        android:text="@string/watchlist_delete"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+  </LinearLayout>
+
+  <LinearLayout
+      android:padding="@dimen/timeline_item_padding"
+      android:background="@color/white"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+      <ImageView
+          android:id="@+id/message_item_icon"
+          android:layout_width="@dimen/big_image_w_h"
+          android:layout_height="@dimen/big_image_w_h"
+          android:background="@drawable/layout_oval_gray"
+          android:src="@drawable/avatar"
+          android:contentDescription="@null"
+          />
+
+      <ImageView
+          android:id="@+id/message_unread_flag"
+          android:layout_width="10dp"
+          android:layout_height="10dp"
+          android:background="@drawable/blue_circle"
+          android:contentDescription="@null"
+          android:layout_marginTop="8dp"
+          />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/main_content_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/timeline_side_spacing"
+        android:layout_toRightOf="@id/message_item_icon"
+        tools:background="@color/red"
+        >
+
+      <TextView
+          android:id="@+id/message_item_date"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/TH.Caption"
+          android:layout_alignParentRight="true"
+          tools:text="A moment ago"
+          android:layout_marginTop="0dip"
+          android:maxLines="1"
+          />
+
+      <com.tradehero.th.widget.MarkdownTextView
+          android:id="@+id/message_item_title"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textColorLink="@color/tradehero_blue"
+          style="@style/TH.UserNameTitle"
+          android:layout_toLeftOf="@id/message_item_date"
+          tools:text="From me!"
+          android:ellipsize="end"
+          android:maxLines="1"
+          />
+
+      <com.tradehero.th.widget.MarkdownTextView
+          android:id="@+id/message_item_sub_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textColorLink="@color/tradehero_blue"
+          style="@style/TH.Caption"
+          android:layout_below="@id/message_item_title"
+          tools:text="Subtitle"
+          android:maxLines="1"
+          />
+
+      <com.tradehero.th.widget.MarkdownTextView
+          android:id="@+id/message_item_content"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="6dip"
+          android:textColorLink="@color/tradehero_blue"
+          style="@style/TH.Body"
+          android:layout_below="@id/message_item_sub_title"
+          tools:text="Hello world!"
+          android:maxLines="1"
+          />
+
+
+
+    </RelativeLayout>
+  </LinearLayout>
+</com.tradehero.common.widget.swipe.SwipeLayout>

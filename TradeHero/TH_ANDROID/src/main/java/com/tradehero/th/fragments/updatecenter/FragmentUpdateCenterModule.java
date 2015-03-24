@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.updatecenter;
 
+import com.tradehero.th.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessageItemView;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesView;
@@ -16,6 +17,7 @@ import dagger.Module;
                 NotificationItemView.class,
 
                 MessagesCenterFragment.class,
+                MessagesCenterNewFragment.class,
                 NotificationsCenterFragment.class,
 
                 MessagesView.class,

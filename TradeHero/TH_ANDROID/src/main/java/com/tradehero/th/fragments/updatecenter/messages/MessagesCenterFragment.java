@@ -19,7 +19,6 @@ import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
-import com.tradehero.route.Routable;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
@@ -56,7 +55,7 @@ import rx.android.app.AppObservable;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-@Routable("messages")
+//@Routable("messages")
 public class MessagesCenterFragment extends DashboardFragment
         implements
         ResideMenu.OnMenuListener
