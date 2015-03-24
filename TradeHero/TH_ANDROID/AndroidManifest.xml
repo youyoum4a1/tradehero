@@ -63,11 +63,6 @@
     </activity>
 
     <activity
-        android:name="com.tradehero.th.activities.WebViewActivity"
-        android:screenOrientation="portrait"
-        android:theme="@style/AppBaseTheme.NoActionBar"/>
-
-    <activity
         android:name="com.tradehero.th.activities.AuthenticationActivity"
         android:launchMode="singleTask"
         android:windowSoftInputMode="adjustPan"

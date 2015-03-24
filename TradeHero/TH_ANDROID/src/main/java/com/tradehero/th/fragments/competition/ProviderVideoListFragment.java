@@ -19,7 +19,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.WebViewActivity;
 import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -190,9 +189,6 @@ public class ProviderVideoListFragment extends CompetitionFragment
      */
     private void openVideoWithInApp(HelpVideoDTO cachedHelpVideo)
     {
-        Intent intent = new Intent(getActivity(), WebViewActivity.class);
-        intent.putExtra(WebViewActivity.HTML_DATA, cachedHelpVideo.embedCode);
-        startActivity(intent);
     }
 
     private void openVideoInChromeBrowser(HelpVideoDTO cachedHelpVideo) throws ActivityNotFoundException
