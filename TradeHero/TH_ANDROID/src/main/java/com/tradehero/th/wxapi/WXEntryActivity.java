@@ -47,16 +47,12 @@ import javax.inject.Inject;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler //created by alex
 {
-
-    public static final String APP_ID = "";
-    public static final int WECHAT_MESSAGE_TYPE_NONE = -1;
     private static final int TIMELINE_SUPPORTED_VERSION = 0x21020001;
     private static final String WECHAT_DTO_INTENT_KEY = WXEntryActivity.class.getName() + ".weChatDTOKey";
     private static final String WECHAT_SHARE_NEWS_KEY = "news:";
     private static final String WECHAT_SHARE_TYPE_VALUE = "WeChat";
 
     private WeChatDTO weChatDTO;
-    private Bitmap mBitmap;
     private MiddleCallback<Response> trackShareMiddleCallback;
 
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
@@ -100,7 +96,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         if (weChatDTO == null) {
             finish();
         }
-        //loadImage();
 
         boolean isWXInstalled = mWeChatApi.isWXAppInstalled();
         if (weChatDTO == null) {
@@ -147,8 +142,17 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
             content = contents[0];
             url = contents[1];
         }
+        if(weChatMessageType == WeChatMessageType.Advertisement){
+            WXWebpageObject sellWebPage = new WXWebpageObject();
+            sellWebPage.webpageUrl = url;
+            WXMediaMessage msg = new WXMediaMessage(sellWebPage);
+            msg.title = content;
+            msg.description = content;
+            msg.setThumbImage(thumbBmp);
+            return msg;
+        }
         if (weChatMessageType == WeChatMessageType.ShareSell || weChatMessageType == WeChatMessageType.ShareSellToTimeline) {
-            if (TextUtils.isEmpty(url) || !NetworkUtils.isCNTradeHeroURL(url)) {
+            if ((TextUtils.isEmpty(url) || !NetworkUtils.isCNTradeHeroURL(url))) {
 //                WXTextObject textObject = new WXTextObject();
 //                textObject.text = totalShare;
 //                WXMediaMessage msg = new WXMediaMessage();
@@ -270,7 +274,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         }
 
         String[] contents = parseContent(shareContent);
-        String content = contents[0];
         String url = contents[1];
         if(TextUtils.isEmpty(url)||!NetworkUtils.isCNTradeHeroURL(url)){
             return;

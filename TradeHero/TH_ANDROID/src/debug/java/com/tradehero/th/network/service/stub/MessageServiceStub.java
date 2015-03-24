@@ -6,8 +6,6 @@ import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.network.service.MessageService;
-import retrofit.client.Response;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -24,7 +22,6 @@ public class MessageServiceStub implements MessageService
     @Override
     public ReadablePaginatedMessageHeaderDTO getMessageHeaders(Integer page, Integer perPage)
     {
-        Timber.d("Returning stub messages");
         ReadablePaginatedMessageHeaderDTO paginatedDTO = new ReadablePaginatedMessageHeaderDTO();
         List<MessageHeaderDTO> messageDTOList = new ArrayList<>();
         Date date = new Date();
@@ -72,7 +69,6 @@ public class MessageServiceStub implements MessageService
         messageHeader.message = "doom";
         messageHeader.senderUserId = 239284;
         messageHeader.recipientUserId = 106711;
-        //messageHeader.createdAtUtc = new Date("2014-04-11T12:33:50");
         return messageHeader;
     }
 
@@ -85,10 +81,5 @@ public class MessageServiceStub implements MessageService
     {
         UserMessagingRelationshipDTO statusDTO = new UserMessagingRelationshipDTO();
         return statusDTO;
-    }
-
-    @Override public Response readAllMessage()
-    {
-        throw new RuntimeException("Not implemented");
     }
 }

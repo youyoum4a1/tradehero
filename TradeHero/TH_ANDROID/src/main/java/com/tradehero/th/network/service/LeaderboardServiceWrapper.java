@@ -24,18 +24,15 @@ import javax.inject.Singleton;
 @Singleton public class LeaderboardServiceWrapper
 {
     @NotNull private final LeaderboardService leaderboardService;
-    @NotNull private final LeaderboardServiceAsync leaderboardServiceAsync;
     @NotNull private final LeaderboardDefDTOFactory leaderboardDefDTOFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardServiceWrapper(
             @NotNull LeaderboardService leaderboardService,
-            @NotNull LeaderboardServiceAsync leaderboardServiceAsync,
             @NotNull LeaderboardDefDTOFactory leaderboardDefDTOFactory)
     {
         super();
         this.leaderboardService = leaderboardService;
-        this.leaderboardServiceAsync = leaderboardServiceAsync;
         this.leaderboardDefDTOFactory = leaderboardDefDTOFactory;
     }
     //</editor-fold>

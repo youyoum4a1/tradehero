@@ -361,7 +361,7 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
             jumpTimeLine(adsDTO.timeLineItemId);
             return;
         }
-        if(!adsDTO.redirectUrl.equals("")){
+        if(adsDTO.redirectUrl!=null && !adsDTO.redirectUrl.equals("")){
             jumpWeb(adsDTO.redirectUrl);
             return;
         }

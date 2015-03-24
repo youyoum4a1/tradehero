@@ -12,7 +12,8 @@ public enum WeChatMessageType
     Invite(6, R.string.share_to_wechat_invite_friends),
     ShareSell(7, R.string.share_to_wechat_invite_friends),
     ShareSellToTimeline(8, R.string.share_to_wechat_invite_friends),
-    Auth(9,R.string.auth_wechat);
+    Auth(9,R.string.auth_wechat),
+    Advertisement(10, R.string.advertisment_wechat);
 
 
     private final int value;

@@ -5,9 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
@@ -18,10 +15,11 @@ public class WebViewFragment extends DashboardFragment
     public static final String BUNDLE_WEBVIEW_URL = "bundle_webview_url";
     public static final String BUNDLE_WEBVIEW_TITLE = "bundle_webview_title";
 
-    @InjectView(R.id.webViewSimple) WebView webViewSimple;
+    private WebView webViewSimple;
 
     public String strUrl;
     public String strTitle;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -42,28 +40,11 @@ public class WebViewFragment extends DashboardFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.webview_simple_fragment, container, false);
-        ButterKnife.inject(this, view);
-        initView();
+        webViewSimple = (WebView)view.findViewById(R.id.webViewSimple);
+        webViewSimple.getSettings().setJavaScriptEnabled(true);
+        webViewSimple.addJavascriptInterface(new CallNativeFromJS(), "CallNativeFromJS");
         webViewSimple.loadUrl(strUrl);
         return view;
-    }
-
-    public void initView()
-    {
-        webViewSimple.setWebViewClient(new WebViewClient()
-        {
-            public boolean shouldOverrideUrlLoading(WebView view, String url)
-            {
-                view.loadUrl(url);
-                return true;
-            }
-        });
-    }
-
-    @Override public void onDestroyView()
-    {
-        ButterKnife.reset(this);
-        super.onDestroyView();
     }
 
 }

@@ -267,13 +267,6 @@ public class MessageServiceWrapper
         return new DTOProcessorAllMessagesRead(messageHeaderCache.get(), userProfileCache.get(), readerId);
     }
 
-    @NotNull public Response readAllMessage(
-            @NotNull final UserBaseKey readerId)
-    {
-        return createMessageHeaderReadAllProcessor(readerId).process(
-                messageService.readAllMessage());
-    }
-
     @NotNull public MiddleCallback<Response> readAllMessage(
             @NotNull final UserBaseKey readerId,
             @Nullable Callback<Response> callback)

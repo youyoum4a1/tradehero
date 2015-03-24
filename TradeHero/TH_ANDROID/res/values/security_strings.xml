@@ -53,4 +53,6 @@
 
   <string name="auth_wechat">wechat auth</string>
   <string name="share_fail">Share failed</string>
+
+  <string name="advertisment_wechat">wechat advertisement</string>
 </resources>

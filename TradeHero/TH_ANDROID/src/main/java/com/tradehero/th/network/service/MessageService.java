@@ -3,9 +3,7 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
-import retrofit.client.Response;
 import retrofit.http.GET;
-import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
@@ -40,8 +38,4 @@ public interface MessageService
             @Path("recipientUserId") int recipientUserId);
     //</editor-fold>
 
-    //<editor-fold desc="Read All Message">
-    @POST("/messages/read/-1")
-    Response readAllMessage();
-    //</editor-fold>
 }
