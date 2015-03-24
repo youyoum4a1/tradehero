@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLeaderboardUserDTO>
 {
@@ -34,7 +34,7 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
     protected UserProfileDTO currentUserProfileDTO;
 
     @NonNull private final Map<Object, Boolean> expandedStatuses;
-    @NonNull private final BehaviorSubject<LeaderboardMarkUserItemView.UserAction> followRequestedBehavior;
+    @NonNull private final PublishSubject<LeaderboardMarkUserItemView.UserAction> followRequestedBehavior;
 
     //<editor-fold desc="Constructors">
     public LeaderboardFriendsSetAdapter(
@@ -48,7 +48,7 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
         this.markedLayoutResId = markedLayoutResId;
         this.socialLayoutResId = socialLayoutResId;
         this.expandedStatuses = new HashMap<>();
-        this.followRequestedBehavior = BehaviorSubject.create();
+        this.followRequestedBehavior = PublishSubject.create();
     }
     //</editor-fold>
 

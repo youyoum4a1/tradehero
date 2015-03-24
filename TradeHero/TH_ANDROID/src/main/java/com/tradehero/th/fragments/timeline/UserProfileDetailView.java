@@ -64,28 +64,25 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
 
     protected void notifyHeroClicked()
     {
-        UserProfileCompactViewHolder.OnProfileClickedListener listener = profileClickedListener;
-        if (listener != null)
+        if (profileClickedListener != null)
         {
-            listener.onHeroClicked();
+            profileClickedListener.onHeroClicked();
         }
     }
 
     protected void notifyFollowerClicked()
     {
-        UserProfileCompactViewHolder.OnProfileClickedListener listener = profileClickedListener;
-        if (listener != null)
+        if (profileClickedListener != null)
         {
-            listener.onFollowerClicked();
+            profileClickedListener.onFollowerClicked();
         }
     }
 
     private void notifyDefaultAchievementClicked()
     {
-        UserProfileCompactViewHolder.OnProfileClickedListener  listener = profileClickedListener;
-        if (listener != null)
+        if (profileClickedListener != null)
         {
-            listener.onAchievementClicked();
+            profileClickedListener.onAchievementClicked();
         }
     }
 
