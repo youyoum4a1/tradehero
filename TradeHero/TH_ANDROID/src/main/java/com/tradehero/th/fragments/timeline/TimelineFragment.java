@@ -48,8 +48,6 @@ import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.achievement.AchievementListFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
-import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
-import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogRxUtil;

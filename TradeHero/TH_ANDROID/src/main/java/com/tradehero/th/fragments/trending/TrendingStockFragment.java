@@ -145,6 +145,9 @@ public class TrendingStockFragment extends TrendingBaseFragment
             case 3:
                 trendingFilterTypeDTO = new TrendingFilterTypeGenericDTO(getResources());
                 break;
+            case 4:
+                trendingFilterTypeDTO = new TrendingFilterTypeGenericDTO(getResources());
+                break;
         }
     }
 

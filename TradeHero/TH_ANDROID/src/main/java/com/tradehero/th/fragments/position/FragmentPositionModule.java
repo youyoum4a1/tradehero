@@ -11,6 +11,7 @@ import dagger.Module;
                 CompetitionLeaderboardPositionListFragment.class,
                 PositionPartialTopView.class,
                 TabbedPositionListFragment.class,
+                StocksMainPositionListFragment.class,
         },
         library = true,
         complete = false

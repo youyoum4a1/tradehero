@@ -179,6 +179,11 @@ public class PositionListFragment
         args.putString(BUNDLE_KEY_POSITION_TYPE, positionType.name());
     }
 
+    public static void putPositionType(@NonNull Bundle args, StocksMainPositionListFragment.TabType positionType)
+    {
+        args.putString(BUNDLE_KEY_POSITION_TYPE, positionType.name());
+    }
+
     @NonNull private TabbedPositionListFragment.TabType getPositionType(@NonNull Bundle args)
     {
         return TabbedPositionListFragment.TabType.valueOf(args.getString(

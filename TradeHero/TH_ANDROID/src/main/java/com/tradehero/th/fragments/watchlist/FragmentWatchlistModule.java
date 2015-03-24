@@ -10,6 +10,7 @@ import dagger.Module;
                 WatchlistPositionFragment.class,
                 WatchlistItemView.class,
                 WatchlistPortfolioHeaderView.class,
+                MainWatchlistPositionFragment.class,
         },
         library = true,
         complete = false

@@ -285,11 +285,14 @@
   <string name="retry">Retry</string>
 
   <string name="stocks">Stocks</string>
-  <string name="fx">FX</string>
+  <string name="stocks_main">Stocks-Main</string>
   <string name="trending">Trending</string>
   <string name="price">Price</string>
   <string name="volume">Volume</string>
   <string name="all">All</string>
+  <string name="favorites">Favorites</string>
+  <string name="portfolio">Portfolio</string>
+  <string name="fx">FX</string>
 
   <string name="warrants_all">All Warrants</string>
   <string name="fx_onboard_header_title">Virtual Forex On TradeHero</string>
