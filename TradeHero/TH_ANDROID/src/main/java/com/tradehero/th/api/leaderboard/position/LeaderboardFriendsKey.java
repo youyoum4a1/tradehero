@@ -26,7 +26,14 @@ public class LeaderboardFriendsKey implements PagedDTOKey
 
     @Override public int hashCode()
     {
-        return 0;
+        if (page == null)
+        {
+            return "null".hashCode();
+        }
+        else
+        {
+            return page.hashCode();
+        }
     }
 
     @NonNull @Override public Integer getPage()

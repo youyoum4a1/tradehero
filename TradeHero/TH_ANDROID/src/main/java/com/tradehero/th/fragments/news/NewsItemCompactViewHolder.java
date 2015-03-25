@@ -16,6 +16,7 @@ import com.tradehero.th.utils.StringUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO>
         extends AbstractDiscussionCompactItemViewHolder<DiscussionType>
@@ -49,14 +50,24 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
 
         int placeHolderResId = R.drawable.card_item_top_bg;
         if (TextUtils.isEmpty(url)) {
-            if (discussionDTO.source.id == SEEKING_ALPHA_ID) {
-                placeHolderResId = R.drawable.seeking_alpha;
-            } else if (discussionDTO.source.id == MOTLEY_FOOL_ID) {
-                placeHolderResId = R.drawable.motley_fool;
-            } else
+            try
             {
-                url = discussionDTO.source.imageUrl;
+                if (discussionDTO.source.id == SEEKING_ALPHA_ID)
+                {
+                    placeHolderResId = R.drawable.seeking_alpha;
+                }
+                else if (discussionDTO.source.id == MOTLEY_FOOL_ID)
+                {
+                    placeHolderResId = R.drawable.motley_fool;
+                }
+                else
+                {
+                    url = discussionDTO.source.imageUrl;
+                    placeHolderResId = R.drawable.card_item_top_bg;
+                }
+            } catch (Exception e) {
                 placeHolderResId = R.drawable.card_item_top_bg;
+                Timber.d("Known Error", e);
             }
         }
         picasso.load(url)
