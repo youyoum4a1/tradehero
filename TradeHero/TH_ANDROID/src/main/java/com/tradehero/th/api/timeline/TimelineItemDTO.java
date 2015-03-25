@@ -43,7 +43,7 @@ public class TimelineItemDTO extends AbstractDiscussionDTO<TimelineItemDTO>
     }
 
     @JsonIgnore
-    public SecurityMediaDTO getFlavorSecurityForDisplay()
+    @Nullable public SecurityMediaDTO getFlavorSecurityForDisplay()
     {
         if (medias == null)
         {

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
@@ -76,7 +75,6 @@ import timber.log.Timber;
                         final String channelId = uAirship.getPushManager().getChannelId();
                         UrbanAirshipPushNotificationManager.uAirship = uAirship;
                         uAirship.getPushManager().setDeviceTagsEnabled(false);
-                        THToast.show("My UrbanAirship Application Channel ID: " + channelId);
                         Timber.i("My UrbanAirship Application Channel ID below");
                         Timber.i("My UrbanAirship Application Channel ID: %s", channelId);
                         if (BuildConfig.DEBUG)

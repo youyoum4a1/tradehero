@@ -1,6 +1,8 @@
 package com.tradehero.th.api.pagination;
 
-public interface PaginatedKey
+import com.tradehero.common.api.PagedDTOKey;
+
+public interface PaginatedKey extends PagedDTOKey
 {
     static final String BUNDLE_PAGE = ".page";
     static final String BUNDLE_PERPAGE = ".perPage";
@@ -8,7 +10,6 @@ public interface PaginatedKey
     static final String JSON_PAGE = "page";
     static final String JSON_PERPAGE = "perPage";
 
-    Integer getPage();
     PaginatedKey next();
     PaginatedKey next(int pages);
     PaginatedKey prev();

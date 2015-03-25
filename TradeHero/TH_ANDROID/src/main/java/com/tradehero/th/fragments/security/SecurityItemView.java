@@ -37,7 +37,7 @@ public class SecurityItemView extends RelativeLayout
     @InjectView(R.id.stock_name) TextView stockName;
     @InjectView(R.id.exchange_symbol) TextView exchangeSymbol;
     @InjectView(R.id.last_price) TextView lastPrice;
-    @InjectView(R.id.tv_stock_roi) TextView stockRoi;
+    @InjectView(R.id.tv_stock_roi) @Optional TextView stockRoi;
     @InjectView(R.id.country_logo) @Optional ImageView countryLogo;
     @InjectView(R.id.date) @Optional TextView date;
     @InjectView(R.id.sec_type) @Optional TextView securityType;
