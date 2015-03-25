@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swipe"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent" android:layout_height="match_parent">
   <LinearLayout
       android:tag="Bottom2"
@@ -22,7 +21,7 @@
 
   <LinearLayout
       android:padding="@dimen/timeline_item_padding"
-      android:background="@color/white"
+      android:background="@drawable/basic_white_selector"
       android:layout_width="match_parent"
       android:layout_height="match_parent">
     <LinearLayout
