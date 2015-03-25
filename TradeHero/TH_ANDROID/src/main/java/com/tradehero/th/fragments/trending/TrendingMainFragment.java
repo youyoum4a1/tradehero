@@ -27,7 +27,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.games.ViralGamePopupDialogFragment;
-import com.tradehero.th.fragments.position.StocksMainPositionListFragment;
 import com.tradehero.th.persistence.games.ViralMiniGameDefListCache;
 import com.tradehero.th.persistence.prefs.ShowViralGameDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
@@ -251,10 +250,6 @@ public class TrendingMainFragment extends DashboardFragment
             if (lastType == 1)
             {
                 fragmentClass = TrendingFXTabType.values()[position].fragmentClass;
-            }
-            if (position == 0 && lastType == 1)
-            {
-                StocksMainPositionListFragment.putIsFX(args, AssetClass.FX);
             }
             args.putInt(TrendingStockFragment.KEY_TYPE_ID, position);
             DashboardFragment subFragment = (DashboardFragment) Fragment.instantiate(getActivity(), fragmentClass.getName(), args);

@@ -107,6 +107,8 @@ public class PositionListFragment
     private static final String BUNDLE_KEY_SHOWN_USER_ID_BUNDLE = PositionListFragment.class.getName() + ".userBaseKey";
     public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = PositionListFragment.class.getName() + ".firstPositionVisible";
     public static final String BUNDLE_KEY_POSITION_TYPE = PositionListFragment.class.getName() + ".postion.type";
+    public static final String BUNDLE_KEY_SHOW_TITLE = PositionListFragment.class.getName() + ".showTitle";
+    public static final String BUNDLE_KEY_IS_TRENDING_FX_PORTFOLIO = PositionListFragment.class.getName() + ".trendingFXPortfolio";
 
     private static final int FLIPPER_INDEX_LOADING = 0;
     private static final int FLIPPER_INDEX_LIST = 1;
@@ -180,6 +182,11 @@ public class PositionListFragment
     }
 
     public static void putPositionType(@NonNull Bundle args, StocksMainPositionListFragment.TabType positionType)
+    {
+        args.putString(BUNDLE_KEY_POSITION_TYPE, positionType.name());
+    }
+
+    public static void putPositionType(@NonNull Bundle args, FXMainPositionListFragment.TabType positionType)
     {
         args.putString(BUNDLE_KEY_POSITION_TYPE, positionType.name());
     }
@@ -739,7 +746,7 @@ public class PositionListFragment
                 }
                 else if (isShort)
                 {
-                    if (positionType.equals(TabbedPositionListFragment.TabType.SHORT))
+                    if (getArguments().getBoolean(BUNDLE_KEY_IS_TRENDING_FX_PORTFOLIO, false) || positionType.equals(TabbedPositionListFragment.TabType.SHORT))
                     {
                         filtered.add(dto);
                     }
@@ -802,7 +809,10 @@ public class PositionListFragment
             title = getString(R.string.position_list_action_bar_header_unknown);
         }
 
-        setActionBarTitle(title);
+        if (getArguments().getBoolean(BUNDLE_KEY_SHOW_TITLE, true))
+        {
+            setActionBarTitle(title);
+        }
     }
 
     @Override public int getTutorialLayout()

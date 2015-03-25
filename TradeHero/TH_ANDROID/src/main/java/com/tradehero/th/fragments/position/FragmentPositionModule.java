@@ -12,6 +12,7 @@ import dagger.Module;
                 PositionPartialTopView.class,
                 TabbedPositionListFragment.class,
                 StocksMainPositionListFragment.class,
+                FXMainPositionListFragment.class,
         },
         library = true,
         complete = false

@@ -4,11 +4,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.position.StocksMainPositionListFragment;
+import com.tradehero.th.fragments.position.FXMainPositionListFragment;
 
 enum TrendingFXTabType
 {
-    Portfolio(R.string.portfolio, StocksMainPositionListFragment.class),
+    Portfolio(R.string.portfolio, FXMainPositionListFragment.class),
     FX(R.string.fx, TrendingFXFragment.class)
     ;
 

@@ -18,10 +18,8 @@ import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -29,15 +27,13 @@ import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-public class StocksMainPositionListFragment extends BasePurchaseManagerFragment
+public class FXMainPositionListFragment extends BasePurchaseManagerFragment
 {
     @Inject THRouter thRouter;
     @InjectView(R.id.pager) ViewPager tabViewPager;
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
     @NonNull protected GetPositionsDTOKey getPositionsDTOKey;
-    protected PortfolioDTO portfolioDTO;
-    @Nullable protected UserProfileDTO userProfileDTO;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
 
@@ -57,7 +53,7 @@ public class StocksMainPositionListFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private static TabType[] STOCK_TYPES = new TabType[] {
+    private static TabType[] FX_TYPES = new TabType[] {
             TabType.LONG,
     };
 
@@ -65,7 +61,7 @@ public class StocksMainPositionListFragment extends BasePurchaseManagerFragment
     {
         super.onCreate(savedInstanceState);
         thRouter.inject(this);
-        getPositionsDTOKey = new OwnedPortfolioId(currentUserId.get(), userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey()).portfolio.id);
+        getPositionsDTOKey = new OwnedPortfolioId(currentUserId.get(), userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey()).fxPortfolio.id);
     }
 
 
@@ -110,20 +106,22 @@ public class StocksMainPositionListFragment extends BasePurchaseManagerFragment
             PositionListFragment.putGetPositionsDTOKey(args, getPositionsDTOKey);
             PositionListFragment.putShownUser(args, currentUserId.toUserBaseKey());
             TabType positionType;
-            positionType = STOCK_TYPES[position];
+            positionType = FX_TYPES[position];
             PositionListFragment.putPositionType(args, positionType);
             args.putBoolean(PositionListFragment.BUNDLE_KEY_SHOW_TITLE, false);
+            args.putBoolean(PositionListFragment.BUNDLE_KEY_IS_TRENDING_FX_PORTFOLIO, true);
+
             return Fragment.instantiate(getActivity(), PositionListFragment.class.getName(), args);
         }
 
         @Override public int getCount()
         {
-            return STOCK_TYPES.length;
+            return FX_TYPES.length;
         }
 
         @Override public CharSequence getPageTitle(int position)
         {
-            return getString(STOCK_TYPES[position].stockTitle);
+            return getString(FX_TYPES[position].fxTitle);
         }
     }
 }
