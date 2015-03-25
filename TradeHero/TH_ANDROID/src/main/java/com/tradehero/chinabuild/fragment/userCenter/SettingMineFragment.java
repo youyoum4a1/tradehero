@@ -1,4 +1,4 @@
-package com.tradehero.chinabuild;
+package com.tradehero.chinabuild.fragment.userCenter;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,10 +17,6 @@ import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.*;
 import com.tradehero.chinabuild.fragment.message.NotificationFragment;
-import com.tradehero.chinabuild.fragment.userCenter.MyMainPage;
-import com.tradehero.chinabuild.fragment.userCenter.UserAccountPage;
-import com.tradehero.chinabuild.fragment.userCenter.UserFansListFragment;
-import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -42,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 
-public class MainTabFragmentMe extends AbsBaseFragment
+public class SettingMineFragment extends AbsBaseFragment
 {
     @Inject protected Picasso picasso;
     @Inject CurrentUserId currentUserId;

@@ -94,7 +94,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @InjectView(R.id.llTabStockGod) LinearLayout llTabStockGod;
     @InjectView(R.id.llTabDiscovery) LinearLayout llTabDiscovery;
     @InjectView(R.id.llTabCompetition) LinearLayout llTabCompetition;
-    @InjectView(R.id.llTabMe) LinearLayout llTabMe;
+    @InjectView(R.id.llTabLearning) LinearLayout llTabMe;
     @InjectView(R.id.linearlayout_guide) LinearLayout guideView;
 
     @InjectView(R.id.imgTabMenu0) ImageView imgTabMenu0;
@@ -123,8 +123,8 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     private static final int TAB_TRADE = 0;
     private static final int TAB_STOCKGOD = 1;
     private static final int TAB_DISCOVERY = 2;
-    private static final int TAB_COMPETITION = 3;
-    private static final int TAB_ME = 4;
+    private static final int TAB_LEARNING = 3;
+    private static final int TAB_COMPETITION = 4;
 
     public long TIME_PRESSED_BACK = -1;
     public static final long TIME_TO_EXIT_APP = 1000;
@@ -136,8 +136,8 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
             MainTabFragmentTrade.class,
             MainTabFragmentStockGod.class,
             MainTabFragmentDiscovery.class,
-            MainTabFragmentCompetition.class,
-            MainTabFragmentMe.class,
+            MainTabFragmentLearning.class,
+            MainTabFragmentCompetition.class
     };
 
     /**
@@ -147,8 +147,8 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
             R.string.tab_main_trade,
             R.string.tab_main_stock_god,
             R.string.tab_main_descovery,
-            R.string.tab_main_competition,
-            R.string.tab_main_me
+            R.string.tab_main_learning,
+            R.string.tab_main_competition
     };
 
     //Guide View
@@ -213,7 +213,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey(), force);
     }
 
-    @OnClick({R.id.llTabTrade, R.id.llTabStockGod, R.id.llTabDiscovery, R.id.llTabCompetition, R.id.llTabMe})
+    @OnClick({R.id.llTabTrade, R.id.llTabStockGod, R.id.llTabDiscovery, R.id.llTabCompetition, R.id.llTabLearning})
     public void OnClickTabMenu(View view)
     {
         int id = view.getId();
@@ -233,49 +233,45 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
                 setTabCurrent(TAB_DISCOVERY);
                 recordShowedGuideOfMainTab(2);
                 break;
+            case R.id.llTabLearning:
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_LEARNING));
+                setTabCurrent(TAB_LEARNING);
+                recordShowedGuideOfMainTab(3);
+                break;
             case R.id.llTabCompetition:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_COMPETITION));
                 setTabCurrent(TAB_COMPETITION);
-                recordShowedGuideOfMainTab(3);
-                break;
-            case R.id.llTabMe:
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_MINE));
-                setTabCurrent(TAB_ME);
+                recordShowedGuideOfMainTab(4);
                 break;
         }
     }
 
-    public void setTabCurrent(int index)
-    {
-        if (index != currentTab)
-        {
+    public void setTabCurrent(int index) {
+        if (index != currentTab) {
             currentTab = index;
             frg_tabHost.setCurrentTab(currentTab);
             setTabViewAsChecked();
         }
     }
 
-    public void setTabViewAsChecked()
-    {
-        imgTabMenu0.setBackgroundResource(
-                currentTab == TAB_TRADE ? R.drawable.tab_menu0_active : R.drawable.tab_menu0_normal);
-        imgTabMenu1.setBackgroundResource(currentTab == TAB_STOCKGOD ? R.drawable.tab_menu1_active
-                : R.drawable.tab_menu1_normal);
+    public void setTabViewAsChecked() {
+
+        imgTabMenu0.setBackgroundResource(currentTab == TAB_TRADE ? R.drawable.tab_menu0_active : R.drawable.tab_menu0_normal);
+        imgTabMenu1.setBackgroundResource(currentTab == TAB_STOCKGOD ? R.drawable.tab_menu1_active : R.drawable.tab_menu1_normal);
         imgTabMenu2.setBackgroundResource(currentTab == TAB_DISCOVERY ? R.drawable.tab_menu2_active : R.drawable.tab_menu2_normal);
-        imgTabMenu3.setBackgroundResource(currentTab == TAB_COMPETITION ? R.drawable.tab_menu3_active : R.drawable.tab_menu3_normal);
-        imgTabMenu4.setBackgroundResource(
-                currentTab == TAB_ME ? R.drawable.tab_menu4_active : R.drawable.tab_menu4_normal);
+        imgTabMenu3.setBackgroundResource(currentTab == TAB_LEARNING ? R.drawable.tab_menu3_active : R.drawable.tab_menu3_normal);
+        imgTabMenu4.setBackgroundResource(currentTab == TAB_COMPETITION ? R.drawable.tab_menu5_active : R.drawable.tab_menu5_normal);
+
         tvTabMenu0.setTextColor(currentTab == TAB_TRADE ? getResources().getColor(R.color.main_tab_text_color_active)
                 : getResources().getColor(R.color.main_tab_text_color_default));
         tvTabMenu1.setTextColor(currentTab == TAB_STOCKGOD ? getResources().getColor(R.color.main_tab_text_color_active)
                 : getResources().getColor(R.color.main_tab_text_color_default));
         tvTabMenu2.setTextColor(currentTab == TAB_DISCOVERY ? getResources().getColor(R.color.main_tab_text_color_active)
                 : getResources().getColor(R.color.main_tab_text_color_default));
-        tvTabMenu3.setTextColor(currentTab == TAB_COMPETITION ? getResources().getColor(R.color.main_tab_text_color_active)
+        tvTabMenu3.setTextColor(currentTab == TAB_LEARNING ? getResources().getColor(R.color.main_tab_text_color_active)
                 : getResources().getColor(R.color.main_tab_text_color_default));
-        tvTabMenu4.setTextColor(
-                currentTab == TAB_ME ? getResources().getColor(R.color.main_tab_text_color_active)
-                        : getResources().getColor(R.color.main_tab_text_color_default));
+        tvTabMenu4.setTextColor(currentTab == TAB_COMPETITION ? getResources().getColor(R.color.main_tab_text_color_active)
+                : getResources().getColor(R.color.main_tab_text_color_default));
     }
 
     private void tabInit()
@@ -310,7 +306,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     {
         super.onResume();
         analytics.openSession();
-        showNewVersionOrUnreadNotificationsRecord();
     }
 
     @Override protected void onPause()
@@ -530,54 +525,50 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         });
     }
 
-    private void displayGuideOfMainTab()
-    {
-        if (THSharePreferenceManager.isGuideAvailable(this, THSharePreferenceManager.GUIDE_MAIN_TAB_ZERO))
-        {
+    private void displayGuideOfMainTab() {
+        if (THSharePreferenceManager.isGuideAvailable(this, THSharePreferenceManager.GUIDE_MAIN_TAB_ZERO)) {
             guideTab0IV.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        }  else  {
             guideTab0IV.setVisibility(View.GONE);
         }
 
-        if (THSharePreferenceManager.isGuideAvailable(this, THSharePreferenceManager.GUIDE_MAIN_TAB_TWO))
-        {
+        if (THSharePreferenceManager.isGuideAvailable(this, THSharePreferenceManager.GUIDE_MAIN_TAB_TWO)) {
             guideTab2IV.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        } else {
             guideTab2IV.setVisibility(View.GONE);
         }
 
-        if (THSharePreferenceManager.isGuideAvailable(this, THSharePreferenceManager.GUIDE_MAIN_TAB_THREE))
-        {
+        if (THSharePreferenceManager.isGuideAvailable(this, THSharePreferenceManager.GUIDE_MAIN_TAB_THREE)) {
             guideTab3IV.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        } else {
             guideTab3IV.setVisibility(View.GONE);
+        }
+        if (THSharePreferenceManager.isGuideAvailable(this, THSharePreferenceManager.GUIDE_MAIN_TAB_FOUR)) {
+            guideTab4IV.setVisibility(View.VISIBLE);
+        } else {
+            guideTab4IV.setVisibility(View.GONE);
         }
     }
 
-    private void recordShowedGuideOfMainTab(int index)
-    {
-        if (index == 0)
-        {
+    private void recordShowedGuideOfMainTab(int index) {
+        if (index == 0) {
             THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_MAIN_TAB_ZERO);
             guideTab0IV.setVisibility(View.GONE);
             return;
         }
-        if (index == 2)
-        {
+        if (index == 2) {
             THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_MAIN_TAB_TWO);
             guideTab2IV.setVisibility(View.GONE);
             return;
         }
-        if (index == 3)
-        {
+        if (index == 3)  {
             THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_MAIN_TAB_THREE);
             guideTab3IV.setVisibility(View.GONE);
+            return;
+        }
+        if (index == 4)  {
+            THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_MAIN_TAB_FOUR);
+            guideTab4IV.setVisibility(View.GONE);
             return;
         }
     }
@@ -706,19 +697,14 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
                     } else {
                         ShareDialogFragment.isDialogShowing = false;
                     }
-                    onFinish();
                 }
             }
 
             @Override
             protected void failure(THException ex) {
                 ShareDialogFragment.isDialogShowing = false;
-                onFinish();
             }
 
-            private void onFinish() {
-                showNewVersionOrUnreadNotificationsRecord();
-            }
         });
     }
 
@@ -775,19 +761,5 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
             updateAppDialog.dismiss();
         }
         finish();
-    }
-
-    private void showNewVersionOrUnreadNotificationsRecord(){
-        myProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-        AppInfoDTO appInfoDTO = THSharePreferenceManager.getAppVersionInfo(this);
-        if(appInfoDTO.isForceUpgrade() || appInfoDTO.isSuggestUpgrade()){
-            guideTab4IV.setVisibility(View.VISIBLE);
-        }else{
-            if(myProfileDTO!=null && myProfileDTO.unreadNotificationsCount > 0){
-                guideTab4IV.setVisibility(View.VISIBLE);
-            }else {
-                guideTab4IV.setVisibility(View.INVISIBLE);
-            }
-        }
     }
 }

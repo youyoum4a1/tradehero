@@ -242,6 +242,7 @@ public class THSharePreferenceManager {
     public final static String GUIDE_MAIN_TAB_ZERO= "guide_main_tab_zero";
     public final static String GUIDE_MAIN_TAB_TWO = "guide_main_tab_two";
     public final static String GUIDE_MAIN_TAB_THREE = "guide_main_tab_three";
+    public final static String GUIDE_MAIN_TAB_FOUR = "guide_main_tab_four";
 
     public static boolean isGuideAvailable(Context context, String key){
         SharedPreferences sp = context.getSharedPreferences(TH_SP_GUIDE_NAME, Context.MODE_PRIVATE);

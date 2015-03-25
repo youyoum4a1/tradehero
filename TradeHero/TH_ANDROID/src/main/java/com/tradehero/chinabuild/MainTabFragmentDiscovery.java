@@ -13,7 +13,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.chinabuild.fragment.AbsBaseFragment;
-import com.tradehero.chinabuild.fragment.discovery.DiscoveryNewsFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoverySquareFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoveryStockGodNewsFragment;
 import com.tradehero.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
@@ -50,7 +49,7 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
     {
         adapter = new CustomAdapter(getChildFragmentManager());
         pager.setAdapter(adapter);
-        pager.setOffscreenPageLimit(5);
+        pager.setOffscreenPageLimit(2);
         indicator.setViewPager(pager);
     }
 
@@ -61,7 +60,7 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
     }
 
     private static final String[] CONTENT = new String[] {"广场"
-              , "资讯", "股神动态"
+              , "股神动态"
     };
 
     @Override
@@ -71,10 +70,6 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
             return;
         }
         if(i == 1){
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_NEWS));
-            return;
-        }
-        if(i == 2){
             analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_GOD));
             return;
         }
@@ -105,8 +100,6 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
                 case 0:
                     return new DiscoverySquareFragment();
                 case 1:
-                    return new DiscoveryNewsFragment();
-                case 2:
                     return new DiscoveryStockGodNewsFragment();
             }
             return null;

@@ -31,7 +31,6 @@
       android:paddingLeft="@dimen/margin_small"
       android:paddingRight="@dimen/margin_small"
       android:visibility="gone"
-      android:text="按钮0"
       android:background="@drawable/basic_transparent_selector">
   </TextView>
 
@@ -43,8 +42,7 @@
       android:textColor="@color/white"
       android:layout_marginRight="@dimen/margin_xsmall"
       android:layout_toLeftOf="@id/tvHeadRight0"
-      android:visibility="gone"
-      android:text="按钮1">
+      android:visibility="gone">
   </TextView>
 
   <LinearLayout
@@ -61,8 +59,7 @@
         android:textColor="@color/white"
         android:textSize="18sp"
         android:visibility="gone"
-        android:maxLength="15"
-        android:text="中间Main">
+        android:maxLength="15">
     </TextView>
 
     <TextView
@@ -71,8 +68,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textColor="@color/white"
-        android:visibility="gone"
-        android:text="中间Sub">
+        android:visibility="gone">
     </TextView>
 
   </LinearLayout>

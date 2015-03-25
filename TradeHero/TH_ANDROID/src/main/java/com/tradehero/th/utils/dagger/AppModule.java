@@ -218,7 +218,8 @@ import java.util.Locale;
 
                         //China Build Start
                         MainTabFragmentTrade.class,
-                        MainTabFragmentMe.class,
+                        MainTabFragmentLearning.class,
+                        SettingMineFragment.class,
                         MainTabFragmentDiscovery.class,
                         MainTabFragmentStockGod.class,
                         MainTabFragmentCompetition.class,

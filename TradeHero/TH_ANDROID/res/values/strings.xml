@@ -264,6 +264,7 @@
   <string name="tab_main_stock_god">股神</string>
   <string name="tab_main_descovery">发现</string>
   <string name="tab_main_competition">竞赛</string>
+  <string name="tab_main_learning">学堂</string>
   <string name="tab_main_me">我的</string>
 
   <string name="stockgod_leaderboard_all">总盈利榜</string>
@@ -490,6 +491,8 @@
   <string name="discovery_square_favorite_description">股神切磋投资技巧</string>
   <string name="discovery_square_novice">新手学堂</string>
   <string name="discovery_square_novice_description">不会用软件？不懂股市？进来瞧瞧！</string>
+  <string name="discovery_square_news">股市咨询</string>
+  <string name="discovery_square_news_description">最新股市咨询实时更新</string>
   <string name="discovery_number_timelines">主贴</string>
 
   <string name="timeline_top">置顶</string>
@@ -523,4 +526,8 @@
 
   <string name="error_fetch_hero">There was an error when fetching the hero information</string>
   <string name="error_fetch_exchange_list_info">There was an error when fetching the list of exchanges</string>
+
+ <!-- Learning -->
+ <string name="stock_learning">股市学堂</string>
+ <!-- Learning -->
 </resources>

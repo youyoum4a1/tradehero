@@ -1,175 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/bg_timeline">
-
-    <RelativeLayout
-            android:id="@+id/rlTopBanner"
-            android:layout_width="fill_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/ScrollView" android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+    <LinearLayout
             android:orientation="vertical"
-            android:layout_height="60dp"
-            android:visibility="gone">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_timeline">
 
-        <android.support.v4.view.ViewPager
-                android:id="@+id/pager"
+        <RelativeLayout
+                android:id="@+id/rlTopBanner"
                 android:layout_width="fill_parent"
-                android:layout_height="match_parent"/>
+                android:orientation="vertical"
+                android:layout_height="60dp"
+                android:visibility="gone">
 
-        <com.viewpagerindicator.CirclePageIndicator
-                android:id="@+id/indicator"
-                android:layout_height="wrap_content"
-                android:layout_width="120dp"
-                android:padding="1dp"
-                android:layout_marginBottom="2dp"
-                android:background="@color/transparent"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentBottom="true"/>
+            <android.support.v4.view.ViewPager
+                    android:id="@+id/pager"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"/>
 
-        <Button
-                android:id="@+id/btnBannerClose"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="15dp"
-                android:background="@drawable/btn_x"/>
-    </RelativeLayout>
+            <com.viewpagerindicator.CirclePageIndicator
+                    android:id="@+id/indicator"
+                    android:layout_height="wrap_content"
+                    android:layout_width="120dp"
+                    android:padding="1dp"
+                    android:layout_marginBottom="2dp"
+                    android:background="@color/transparent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentBottom="true"/>
 
-    <LinearLayout
-            android:layout_marginTop="5dp" android:orientation="horizontal"
-            android:id="@+id/linearlayout_square_learning"
-            android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/listview_item_selector">
+            <Button
+                    android:id="@+id/btnBannerClose"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/btn_x"/>
+        </RelativeLayout>
 
-        <ImageView android:layout_width="43dp" android:layout_height="43dp"
-                   android:background="@drawable/square_novice"
-                   android:layout_margin="15dp"/>
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:layout_marginBottom="15dp" android:layout_marginRight="15dp"
-                      android:layout_marginTop="15dp"
-                      android:orientation="vertical">
-            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-                          android:orientation="horizontal" android:layout_marginTop="3dp">
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                          android:textSize="15sp" android:textColor="#000000"
-                          android:text="@string/discovery_square_novice"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                          android:id="@+id/textview_timelines_head_total_learning" android:layout_marginLeft="5dp"
-                          android:layout_gravity="center_vertical" android:textSize="11sp" android:textColor="#afafaf"
-                        />
-            </LinearLayout>
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:layout_marginTop="8dp" android:textSize="12sp" android:textColor="#8d8d8d"
-                      android:singleLine="true"
-                      android:text="@string/discovery_square_novice_description"/>
+        <LinearLayout
+                android:layout_marginTop="5dp" android:orientation="horizontal"
+                android:id="@+id/linearlayout_square_learning"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:background="@drawable/listview_item_selector">
 
-        </LinearLayout>
-    </LinearLayout>
-    <RelativeLayout android:layout_width="match_parent" android:layout_height="1px"
-                    android:background="#ffffff">
-        <View android:layout_width="match_parent" android:layout_height="match_parent"
-              android:background="@color/gray_normal"
-              android:layout_marginLeft="73dp"/>
-    </RelativeLayout>
-    <LinearLayout
-            android:orientation="horizontal" android:id="@+id/linearlayout_square_favorite"
-            android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/listview_item_selector">
-
-        <ImageView android:layout_width="43dp" android:layout_height="43dp"
-                   android:background="@drawable/square_favorite"
-                   android:layout_margin="15dp"/>
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:layout_marginBottom="15dp" android:layout_marginRight="15dp"
-                      android:layout_marginTop="15dp"
-                      android:orientation="vertical">
-            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-                          android:orientation="horizontal" android:layout_marginTop="3dp">
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                          android:textSize="15sp" android:textColor="#000000"
-                          android:text="@string/discovery_square_favorite"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                          android:id="@+id/textview_timelines_head_total_favorite" android:layout_marginLeft="5dp"
-                          android:layout_gravity="center_vertical" android:textSize="11sp" android:textColor="#afafaf"
-                        />
-            </LinearLayout>
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:layout_marginTop="8dp" android:textSize="12sp" android:textColor="#8d8d8d"
-                      android:singleLine="true"
-                      android:text="@string/discovery_square_favorite_description"/>
-
-        </LinearLayout>
-    </LinearLayout>
-    <RelativeLayout android:layout_width="match_parent" android:layout_height="1px"
-                    android:background="#ffffff">
-        <View android:layout_width="match_parent" android:layout_height="match_parent"
-              android:background="@color/gray_normal"
-              android:layout_marginLeft="73dp"/>
-    </RelativeLayout>
-    <LinearLayout
-            android:orientation="horizontal" android:id="@+id/linearlayout_square_reward"
-            android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/listview_item_selector">
-
-        <ImageView android:layout_width="43dp" android:layout_height="43dp"
-                   android:background="@drawable/square_reward"
-                   android:layout_margin="15dp"/>
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:layout_marginBottom="15dp" android:layout_marginRight="15dp"
-                      android:layout_marginTop="15dp"
-                      android:orientation="vertical">
-            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-                          android:orientation="horizontal" android:layout_marginTop="3dp">
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                          android:textSize="15sp" android:textColor="#000000"
-                          android:text="@string/discovery_discuss_send_reward"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                          android:id="@+id/textview_timelines_head_total_reward" android:layout_marginLeft="5dp"
-                          android:layout_gravity="center_vertical" android:textSize="11sp" android:textColor="#afafaf"
-                        />
-            </LinearLayout>
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:layout_marginTop="8dp" android:textSize="12sp" android:textColor="#8d8d8d"
-                      android:singleLine="true"
-                      android:text="@string/discovery_reward_description"/>
-
-        </LinearLayout>
-    </LinearLayout>
-    <RelativeLayout android:layout_width="match_parent" android:layout_height="1px"
-                    android:background="#ffffff">
-        <View android:layout_width="match_parent" android:layout_height="match_parent"
-              android:background="@color/gray_normal"
-              android:layout_marginLeft="73dp"/>
-    </RelativeLayout>
-    <LinearLayout android:orientation="horizontal" android:id="@+id/linearlayout_square_recent"
-                  android:layout_width="match_parent" android:layout_height="wrap_content"
-                  android:background="@drawable/listview_item_selector">
-        <ImageView android:layout_width="43dp" android:layout_height="43dp"
-                   android:background="@drawable/square_discuss"
-                   android:layout_margin="15dp"/>
-
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:layout_marginBottom="15dp" android:layout_marginRight="15dp"
-                      android:layout_marginTop="15dp"
-                      android:orientation="vertical">
-            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-                          android:orientation="horizontal" android:layout_marginTop="3dp">
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                          android:textSize="15sp" android:textColor="#000000"
-                          android:text="@string/discovery_square_discuss"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                          android:id="@+id/textview_timelines_head_total_discuss" android:layout_marginLeft="5dp"
-                          android:layout_gravity="center_vertical" android:textSize="11sp" android:textColor="#afafaf"
-                        />
-            </LinearLayout>
+            <ImageView android:layout_width="43dp" android:layout_height="43dp"
+                       android:background="@drawable/square_novice"
+                       android:layout_margin="15dp"/>
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                          android:layout_marginTop="8dp"
-                          android:orientation="horizontal">
+                          android:layout_marginBottom="15dp" android:layout_marginRight="15dp"
+                          android:layout_marginTop="15dp"
+                          android:orientation="vertical">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:orientation="horizontal" android:layout_marginTop="3dp">
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:textSize="15sp" android:textColor="#000000"
+                              android:text="@string/discovery_square_novice"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:id="@+id/textview_timelines_head_total_learning" android:layout_marginLeft="5dp"
+                              android:layout_gravity="center_vertical" android:textSize="11sp"
+                              android:textColor="#afafaf"
+                            />
+                </LinearLayout>
                 <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                          android:textSize="12sp" android:textColor="#8d8d8d"
+                          android:layout_marginTop="8dp" android:textSize="12sp" android:textColor="#8d8d8d"
                           android:singleLine="true"
-                          android:text="@string/discovery_square_discuss_description"/>
+                          android:text="@string/discovery_square_novice_description"/>
+
+            </LinearLayout>
+        </LinearLayout>
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="1px"
+                        android:background="#ffffff">
+            <View android:layout_width="match_parent" android:layout_height="match_parent"
+                  android:background="@color/gray_normal"
+                  android:layout_marginLeft="73dp"/>
+        </RelativeLayout>
+        <LinearLayout
+                android:orientation="horizontal" android:id="@+id/linearlayout_square_favorite"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:background="@drawable/listview_item_selector">
+
+            <ImageView android:layout_width="43dp" android:layout_height="43dp"
+                       android:background="@drawable/square_favorite"
+                       android:layout_margin="15dp"/>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                          android:layout_marginBottom="15dp" android:layout_marginRight="15dp"
+                          android:layout_marginTop="15dp"
+                          android:orientation="vertical">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:orientation="horizontal" android:layout_marginTop="3dp">
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:textSize="15sp" android:textColor="#000000"
+                              android:text="@string/discovery_square_favorite"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:id="@+id/textview_timelines_head_total_favorite" android:layout_marginLeft="5dp"
+                              android:layout_gravity="center_vertical" android:textSize="11sp"
+                              android:textColor="#afafaf"
+                            />
+                </LinearLayout>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                          android:layout_marginTop="8dp" android:textSize="12sp" android:textColor="#8d8d8d"
+                          android:singleLine="true"
+                          android:text="@string/discovery_square_favorite_description"/>
+
+            </LinearLayout>
+        </LinearLayout>
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="1px"
+                        android:background="#ffffff">
+            <View android:layout_width="match_parent" android:layout_height="match_parent"
+                  android:background="@color/gray_normal"
+                  android:layout_marginLeft="73dp"/>
+        </RelativeLayout>
+        <LinearLayout
+                android:orientation="horizontal" android:id="@+id/linearlayout_square_reward"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:background="@drawable/listview_item_selector">
+
+            <ImageView android:layout_width="43dp" android:layout_height="43dp"
+                       android:background="@drawable/square_reward"
+                       android:layout_margin="15dp"/>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                          android:layout_marginBottom="15dp" android:layout_marginRight="15dp"
+                          android:layout_marginTop="15dp"
+                          android:orientation="vertical">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:orientation="horizontal" android:layout_marginTop="3dp">
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:textSize="15sp" android:textColor="#000000"
+                              android:text="@string/discovery_discuss_send_reward"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:id="@+id/textview_timelines_head_total_reward" android:layout_marginLeft="5dp"
+                              android:layout_gravity="center_vertical" android:textSize="11sp"
+                              android:textColor="#afafaf"
+                            />
+                </LinearLayout>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                          android:layout_marginTop="8dp" android:textSize="12sp" android:textColor="#8d8d8d"
+                          android:singleLine="true"
+                          android:text="@string/discovery_reward_description"/>
+
+            </LinearLayout>
+        </LinearLayout>
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="1px"
+                        android:background="#ffffff">
+            <View android:layout_width="match_parent" android:layout_height="match_parent"
+                  android:background="@color/gray_normal"
+                  android:layout_marginLeft="73dp"/>
+        </RelativeLayout>
+        <LinearLayout android:orientation="horizontal" android:id="@+id/linearlayout_square_recent"
+                      android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:background="@drawable/listview_item_selector">
+            <ImageView android:layout_width="43dp" android:layout_height="43dp"
+                       android:background="@drawable/square_discuss"
+                       android:layout_margin="15dp"/>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                          android:layout_marginBottom="15dp" android:layout_marginRight="15dp"
+                          android:layout_marginTop="15dp"
+                          android:orientation="vertical">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:orientation="horizontal" android:layout_marginTop="3dp">
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:textSize="15sp" android:textColor="#000000"
+                              android:text="@string/discovery_square_discuss"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:id="@+id/textview_timelines_head_total_discuss" android:layout_marginLeft="5dp"
+                              android:layout_gravity="center_vertical" android:textSize="11sp"
+                              android:textColor="#afafaf"
+                            />
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:layout_marginTop="8dp"
+                              android:orientation="horizontal">
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:textSize="12sp" android:textColor="#8d8d8d"
+                              android:singleLine="true"
+                              android:text="@string/discovery_square_discuss_description"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="1px"
+                        android:background="#ffffff">
+            <View android:layout_width="match_parent" android:layout_height="match_parent"
+                  android:background="@color/gray_normal"
+                  android:layout_marginLeft="73dp"/>
+        </RelativeLayout>
+        <LinearLayout android:orientation="horizontal" android:id="@+id/linearlayout_square_news"
+                      android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:background="@drawable/listview_item_selector">
+            <ImageView android:layout_width="43dp" android:layout_height="43dp"
+                       android:background="@drawable/square_news"
+                       android:layout_margin="15dp"/>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                          android:layout_marginBottom="15dp" android:layout_marginRight="15dp"
+                          android:layout_marginTop="15dp"
+                          android:orientation="vertical">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:orientation="horizontal" android:layout_marginTop="3dp">
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:textSize="15sp" android:textColor="#000000"
+                              android:text="@string/discovery_square_news"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:layout_marginTop="8dp"
+                              android:orientation="horizontal">
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:textSize="12sp" android:textColor="#8d8d8d"
+                              android:singleLine="true"
+                              android:text="@string/discovery_square_news_description"/>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>

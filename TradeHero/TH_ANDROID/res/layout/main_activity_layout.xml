@@ -43,7 +43,7 @@
             <ImageView
                 android:id="@+id/imgTabMenu0"
                 style="@style/navigation_icon"
-                android:background="@drawable/tab_menu0"
+                android:background="@drawable/tab_menu0_normal"
                 android:layout_centerHorizontal="true"
                 android:focusable="false"/>
             <ImageView android:layout_width="8dp" android:layout_height="8dp"
@@ -68,7 +68,7 @@
             <ImageView
                 android:id="@+id/imgTabMenu1"
                 style="@style/navigation_icon"
-                android:background="@drawable/tab_menu0"
+                android:background="@drawable/tab_menu1_normal"
                 android:layout_centerHorizontal="true"
                 android:focusable="false"/>
             <ImageView android:layout_width="8dp" android:layout_height="8dp"
@@ -93,7 +93,7 @@
             <ImageView
                 android:id="@+id/imgTabMenu2"
                 style="@style/navigation_icon"
-                android:background="@drawable/tab_menu0"
+                android:background="@drawable/tab_menu2_normal"
                 />
             <ImageView android:layout_width="8dp" android:layout_height="8dp"
                 android:id="@+id/imageview_main_tab2_record"
@@ -106,32 +106,9 @@
               style="@style/navigation_text"
               android:text="@string/tab_main_descovery"/>
         </LinearLayout>
+
         <LinearLayout
-            android:id="@+id/llTabCompetition"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_weight="1.0"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-          <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/imgTabMenu3"
-                style="@style/navigation_icon"
-                android:background="@drawable/tab_menu0"
-                />
-            <ImageView android:layout_width="8dp" android:layout_height="8dp"
-                android:id="@+id/imageview_main_tab3_record"
-                android:background="@drawable/icon_bg_count"
-                android:layout_alignTop="@id/imgTabMenu3"
-                android:layout_alignRight="@id/imgTabMenu3"/>
-          </RelativeLayout>
-          <TextView
-              android:id="@+id/tvTabMenu3"
-              style="@style/navigation_text"
-              android:text="@string/tab_main_competition"/>
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/llTabMe"
+            android:id="@+id/llTabLearning"
             android:orientation="vertical"
             android:layout_weight="1.0"
             android:gravity="center"
@@ -139,23 +116,47 @@
             android:layout_height="fill_parent">
           <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
             <ImageView
-                android:id="@+id/imgTabMenu4"
+                android:id="@+id/imgTabMenu3"
                 style="@style/navigation_icon"
-                android:background="@drawable/tab_menu0"
+                android:background="@drawable/tab_menu3_normal"
                 android:layout_centerHorizontal="true"
                 android:focusable="false"/>
             <ImageView android:layout_width="8dp" android:layout_height="8dp"
-                android:id="@+id/imageview_main_tab4_record"
+                android:id="@+id/imageview_main_tab3_record"
                 android:background="@drawable/icon_bg_count"
                 android:visibility="invisible"
-                android:layout_alignTop="@id/imgTabMenu4"
-                android:layout_alignRight="@id/imgTabMenu4"/>
+                android:layout_alignTop="@id/imgTabMenu3"
+                android:layout_alignRight="@id/imgTabMenu3"/>
           </RelativeLayout>
           <TextView
-              android:id="@+id/tvTabMenu4"
+              android:id="@+id/tvTabMenu3"
               style="@style/navigation_text"
-              android:text="@string/tab_main_me"/>
+              android:text="@string/tab_main_learning"/>
         </LinearLayout>
+          <LinearLayout
+                  android:id="@+id/llTabCompetition"
+                  android:orientation="vertical"
+                  android:gravity="center"
+                  android:layout_weight="1.0"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent">
+              <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                  <ImageView
+                          android:id="@+id/imgTabMenu4"
+                          style="@style/navigation_icon"
+                          android:background="@drawable/tab_menu5_normal"
+                          />
+                  <ImageView android:layout_width="8dp" android:layout_height="8dp"
+                             android:id="@+id/imageview_main_tab4_record"
+                             android:background="@drawable/icon_bg_count"
+                             android:layout_alignTop="@id/imgTabMenu4"
+                             android:layout_alignRight="@id/imgTabMenu4"/>
+              </RelativeLayout>
+              <TextView
+                      android:id="@+id/tvTabMenu4"
+                      style="@style/navigation_text"
+                      android:text="@string/tab_main_competition"/>
+          </LinearLayout>
       </LinearLayout>
     </android.support.v4.app.FragmentTabHost>
   </LinearLayout>
