@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -561,6 +560,11 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
 
     public void showBuySellDialog(int closeUnits)
     {
+        if (abstractTransactionDialogFragment != null
+                && abstractTransactionDialogFragment.isVisible())
+        {
+            return;//buy/sell dialog already shows
+        }
         if (quoteDTO != null
                 && BuyStockDialogFragment.canShowDialog(quoteDTO, isTransactionTypeBuy))
         {
