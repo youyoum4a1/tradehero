@@ -50,10 +50,10 @@ public class TrendingMainFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
 
     private static int lastType = 0;
+    private static int lastPosition = 0;
 
     private TradingPagerAdapter tradingPagerAdapter;
     private Subscription viralSubscription;
-    @Nullable private ExchangeIntegerId exchangeIdFromArguments;
 
     public static void putAssetClass(@NonNull Bundle args, @NonNull AssetClass assetClass)
     {
@@ -86,7 +86,6 @@ public class TrendingMainFragment extends DashboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        exchangeIdFromArguments = getExchangeId(getArguments());
         getArguments().remove(KEY_EXCHANGE_ID);
         tradingPagerAdapter = new TradingPagerAdapter(this.getChildFragmentManager());
         AssetClass askedAssetClass = getAssetClass(getArguments());
@@ -117,6 +116,7 @@ public class TrendingMainFragment extends DashboardFragment
             @Override public void onPageSelected(int i)
             {
                 TrendingStockFragment.setCancelFirstInit(true);
+                lastPosition = i;
             }
 
             @Override public void onPageScrollStateChanged(int i)
@@ -139,7 +139,7 @@ public class TrendingMainFragment extends DashboardFragment
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
 
-        tabViewPager.setCurrentItem(0, true);
+        tabViewPager.setCurrentItem(lastPosition, true);
     }
 
     @Override public void onResume()
@@ -195,9 +195,9 @@ public class TrendingMainFragment extends DashboardFragment
                 } else {
                     lastType = 1;
                 }
-                Timber.d("onItemSelected: " + parent.getItemAtPosition(position));
                 if (oldType != lastType)
                 {
+                    lastPosition = 0;
                     initViews();
                 }
             }
@@ -222,7 +222,7 @@ public class TrendingMainFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        lastType = tabViewPager.getCurrentItem();
+        lastPosition = tabViewPager.getCurrentItem();
         tabViewPager.setAdapter(null);
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -243,7 +243,6 @@ public class TrendingMainFragment extends DashboardFragment
 
         @Override public Fragment getItem(int position)
         {
-            Timber.d("lyl getItem position="+position+" lastType="+lastType);
             Bundle args = new Bundle();
             ActionBarOwnerMixin.putKeyShowHomeAsUp(args, false);
             Class fragmentClass = TrendingStockTabType.values()[position].fragmentClass;
