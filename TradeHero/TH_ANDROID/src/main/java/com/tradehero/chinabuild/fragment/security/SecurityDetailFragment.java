@@ -1919,8 +1919,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 tvUserTLName.setText(((DiscussionDTO) dto).user.getDisplayName());
                 tvUserTLContent.setText(((DiscussionDTO) dto).text);
                 picasso.load(((DiscussionDTO) dto).user.picture)
-                        .placeholder(R.drawable.superman_facebook)
-                        .error(R.drawable.superman_facebook)
+                        .placeholder(R.drawable.avatar_default)
+                        .error(R.drawable.avatar_default)
                         .into(imgSecurityTLUserHeader);
             }
 

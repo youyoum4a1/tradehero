@@ -135,7 +135,7 @@ public class FollowDialogView extends LinearLayout
     {
         if (imageView != null)
         {
-            picasso.get().load(R.drawable.superman_facebook)
+            picasso.get().load(R.drawable.avatar_default)
                     .transform(peopleIconTransformation.get())
                     .into(imageView);
         }

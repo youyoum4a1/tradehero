@@ -19,10 +19,11 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-8-21.
@@ -31,7 +32,6 @@ public abstract class AbsBaseFragment extends Fragment
 {
 
     private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = AbsBaseFragment.class.getName() + ".purchaseApplicablePortfolioId";
-    public static final String BUNDLE_KEY_THINTENT_BUNDLE = AbsBaseFragment.class.getName() + ".thIntent";
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
@@ -120,7 +120,6 @@ public abstract class AbsBaseFragment extends Fragment
     @Override public void onStop()
     {
         detachPortfolioCompactListCache();
-        //detachPurchaseActionInteractor();
         super.onStop();
     }
 
@@ -206,7 +205,6 @@ public abstract class AbsBaseFragment extends Fragment
         @Override
         public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
-            //linkWithUserProfileDTO(value);
             userProfileDTO = value;
         }
 

@@ -84,8 +84,8 @@ public class SearchUserListAdapter extends BaseAdapter
 
             picasso.get()
                     .load(item.userPicture)
-                    .placeholder(R.drawable.superman_facebook)
-                    .error(R.drawable.superman_facebook)
+                    .placeholder(R.drawable.avatar_default)
+                    .error(R.drawable.avatar_default)
                     .into(holder.imgUserHead);
 
             holder.imgUserName.setText(item.userthDisplayName);

@@ -527,16 +527,16 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                 tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(((DiscussionDTO) dto).createdAtUtc));
                 tvUserTLContent.setText(((DiscussionDTO) dto).text);
                 picasso.load(((DiscussionDTO) dto).user.picture)
-                        .placeholder(R.drawable.superman_facebook)
-                        .error(R.drawable.superman_facebook)
+                        .placeholder(R.drawable.avatar_default)
+                        .error(R.drawable.avatar_default)
                         .into(imgSecurityTLUserHeader);
             } else if (dto instanceof TimelineItemDTO) {
                 tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(((TimelineItemDTO) dto).createdAtUtc));
                 tvUserTLName.setText(((TimelineItemDTO) dto).user.getDisplayName());
                 tvUserTLContent.setText(((TimelineItemDTO) dto).text);
                 picasso.load(((TimelineItemDTO) dto).user.picture)
-                        .placeholder(R.drawable.superman_facebook)
-                        .error(R.drawable.superman_facebook)
+                        .placeholder(R.drawable.avatar_default)
+                        .error(R.drawable.avatar_default)
                         .into(imgSecurityTLUserHeader);
             }
 

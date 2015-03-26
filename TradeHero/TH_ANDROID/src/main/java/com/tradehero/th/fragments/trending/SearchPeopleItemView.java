@@ -17,9 +17,10 @@ import com.tradehero.th.models.graphics.ForSearchPeopleItemBackground;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
 
 public class SearchPeopleItemView extends FrameLayout implements DTOView<UserSearchResultDTO>
 {
@@ -33,7 +34,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserSea
     private TextView date;
     private ImageView userPhoto;
     private ImageView peopleBgImage;
-    private final int defaultDrawable = R.drawable.superman_facebook;
+    private final int defaultDrawable = R.drawable.avatar_default;
 
     @Nullable private UserSearchResultDTO userDTO;
 

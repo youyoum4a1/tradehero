@@ -595,7 +595,7 @@ public class UserMainPage extends DashboardFragment
         {
             if (user.picture != null && imgMeHead != null)
             {
-                picasso.load(user.picture).placeholder(R.drawable.superman_facebook).fit().error(R.drawable.superman_facebook)
+                picasso.load(user.picture).placeholder(R.drawable.avatar_default).fit().error(R.drawable.avatar_default)
                         .centerInside().into(imgMeHead);
             }
             tvMeName.setText(user.getDisplayName());

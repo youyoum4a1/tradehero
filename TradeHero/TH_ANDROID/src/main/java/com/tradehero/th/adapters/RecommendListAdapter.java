@@ -183,11 +183,11 @@ public class RecommendListAdapter extends BaseAdapter
             if (!TextUtils.isEmpty(hero.picUrl))
             {
                 Picasso.with(activity).load(hero.picUrl).
-                        placeholder(R.drawable.superman_facebook).error(R.drawable.superman_facebook).into(avatarIV);
+                        placeholder(R.drawable.avatar_default).error(R.drawable.avatar_default).into(avatarIV);
             }
             else
             {
-                avatarIV.setImageResource(R.drawable.superman_facebook);
+                avatarIV.setImageResource(R.drawable.avatar_default);
             }
             nameHeroTV.setText(hero.name.trim());
             if (i == 0)

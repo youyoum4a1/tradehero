@@ -42,8 +42,9 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
-import java.io.File;
+
 import javax.inject.Inject;
+import java.io.File;
 
 public class MyProfileFragment extends DashboardFragment implements View.OnClickListener {
 
@@ -94,7 +95,7 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
         mPhotoLayout.setOnClickListener(this);
         userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
         picasso.load(userProfileDTO.picture)
-                .placeholder(R.drawable.superman_facebook)
+                .placeholder(R.drawable.avatar_default)
                 .into(mPhoto);
         mNameLayout.setOnClickListener(this);
         mName.setText(userProfileDTO.displayName);

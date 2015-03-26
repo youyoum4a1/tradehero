@@ -27,7 +27,7 @@
         android:layout_height="50dp"
         android:contentDescription="@null"
         tools:src="@drawable/superman_facebook"
-        android:src="@drawable/superman_facebook"
+        android:src="@drawable/avatar_default"
         />
 
     <TextView

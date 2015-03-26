@@ -7,6 +7,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePortfolioDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+
 import javax.inject.Inject;
 
 public class CompetitionZonePortfolioView extends CompetitionZoneListItemView
@@ -57,7 +58,7 @@ public class CompetitionZonePortfolioView extends CompetitionZoneListItemView
 
             if (!loaded)
             {
-                picasso.load(R.drawable.superman_facebook)
+                picasso.load(R.drawable.avatar_default)
                         .transform(zoneIconTransformation)
                         .centerInside()
                         .fit()

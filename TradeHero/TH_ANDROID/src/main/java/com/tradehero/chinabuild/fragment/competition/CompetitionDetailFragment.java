@@ -687,8 +687,8 @@ public class CompetitionDetailFragment extends Fragment
         tvUserName.setText(value.getDisplayName());
         picasso.get()
                 .load(value.picture)
-                .placeholder(R.drawable.superman_facebook)
-                .error(R.drawable.superman_facebook)
+                .placeholder(R.drawable.avatar_default)
+                .error(R.drawable.avatar_default)
                 .into(imgUserHead);
         //设置是否显示 高校选择按钮
         setScrollView();

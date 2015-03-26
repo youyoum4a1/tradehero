@@ -428,8 +428,8 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 {
                     holder.tvUserTLName.setText(item.getUser().getDisplayName());
                     picasso.load(item.getUser().picture)
-                            .placeholder(R.drawable.superman_facebook)
-                            .error(R.drawable.superman_facebook)
+                            .placeholder(R.drawable.avatar_default)
+                            .error(R.drawable.avatar_default)
                             .into(holder.imgUserTLUserHeader);
 
                     holder.tvUserTLName.setOnClickListener(new View.OnClickListener()

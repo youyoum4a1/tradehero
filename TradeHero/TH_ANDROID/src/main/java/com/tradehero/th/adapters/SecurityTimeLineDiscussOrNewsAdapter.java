@@ -174,8 +174,8 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
             holder.imgSecurityTLUserHeader.setVisibility(View.VISIBLE);
             picasso.get()
                     .load(((DiscussionDTO) item).user.picture)
-                    .placeholder(R.drawable.superman_facebook)
-                    .error(R.drawable.superman_facebook)
+                    .placeholder(R.drawable.avatar_default)
+                    .error(R.drawable.avatar_default)
                     .into(holder.imgSecurityTLUserHeader);
             holder.imgSecurityTLUserHeader.setOnClickListener(new View.OnClickListener()
             {

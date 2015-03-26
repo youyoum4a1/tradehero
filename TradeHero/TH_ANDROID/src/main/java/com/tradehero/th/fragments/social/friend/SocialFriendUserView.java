@@ -17,9 +17,10 @@ import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsWeiboDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
 
 public class SocialFriendUserView extends SocialFriendItemView
 {
@@ -129,8 +130,8 @@ public class SocialFriendUserView extends SocialFriendItemView
     private void displayUserIcon()
     {
         picasso.load(socialFriendListItemUserDTO.userFriendsDTO.getProfilePictureURL())
-                .placeholder(R.drawable.superman_facebook)
-                .error(R.drawable.superman_facebook)
+                .placeholder(R.drawable.avatar_default)
+                .error(R.drawable.avatar_default)
                 .into(friendLogo, new Callback()
                 {
                     @Override public void onSuccess()
@@ -146,7 +147,7 @@ public class SocialFriendUserView extends SocialFriendItemView
 
     private void displayDefaultUserIcon()
     {
-        picasso.load(R.drawable.superman_facebook)
+        picasso.load(R.drawable.avatar_default)
                 .into(friendLogo);
     }
 

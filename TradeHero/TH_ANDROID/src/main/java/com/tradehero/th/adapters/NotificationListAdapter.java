@@ -127,8 +127,8 @@ public class NotificationListAdapter extends BaseAdapter
             }else {
                 picasso.get()
                         .load(item.imageUrl)
-                        .placeholder(R.drawable.superman_facebook)
-                        .error(R.drawable.superman_facebook)
+                        .placeholder(R.drawable.avatar_default)
+                        .error(R.drawable.avatar_default)
                         .into(holder.imgNotificationHeader);
             }
             String text = item.text;

@@ -12,6 +12,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+
 import javax.inject.Inject;
 
 public class AbstractDiscussionItemViewHolder<DiscussionDTOType extends AbstractDiscussionDTO>
@@ -147,7 +148,7 @@ public class AbstractDiscussionItemViewHolder<DiscussionDTOType extends Abstract
 
     protected RequestCreator createUserPicassoRequest()
     {
-        return picasso.load(R.drawable.superman_facebook);
+        return picasso.load(R.drawable.avatar_default);
     }
 
     protected void cancelProfilePictureRequest()

@@ -257,8 +257,8 @@ public class CompetitionListAdapter extends BaseAdapter
                 holder.tvCompetitionPeriod.setText(((CompetitionDataItem) data).userCompetitionDTO.getDisplayDatePeriod());
                 picasso.get()
                         .load(((CompetitionDataItem) data).userCompetitionDTO.iconUrl)
-                        .placeholder(R.drawable.superman_facebook)
-                        .error(R.drawable.superman_facebook)
+                        .placeholder(R.drawable.avatar_default)
+                        .error(R.drawable.avatar_default)
                         .into(holder.imgCompetitionHead);
 
                 if (competitionPageType == CompetitionUtils.COMPETITION_PAGE_ALL

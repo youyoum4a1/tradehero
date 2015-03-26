@@ -6,8 +6,6 @@
         android:layout_height="fill_parent"
         >
 
-    <include layout="@layout/custom_head_layout"/>
-
     <ScrollView
             android:layout_height="fill_parent"
             android:layout_width="fill_parent">

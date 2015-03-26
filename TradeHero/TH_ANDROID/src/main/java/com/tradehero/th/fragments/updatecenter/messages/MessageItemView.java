@@ -17,8 +17,9 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
-import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
+
+import javax.inject.Inject;
 
 public class MessageItemView extends LinearLayout
         implements DTOView<MessageHeaderDTO>
@@ -116,7 +117,7 @@ public class MessageItemView extends LinearLayout
         if (iconViewCopy != null)
         {
             picasso.cancelRequest(iconViewCopy);
-            picasso.load(R.drawable.superman_facebook)
+            picasso.load(R.drawable.avatar_default)
                     .transform(userPhotoTransformation)
                     .into(iconViewCopy);
         }

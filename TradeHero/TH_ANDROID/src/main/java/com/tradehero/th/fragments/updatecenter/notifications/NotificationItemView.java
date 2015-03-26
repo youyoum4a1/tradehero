@@ -126,7 +126,7 @@ public class NotificationItemView
     private void resetNotificationProfilePicture()
     {
         picasso.cancelRequest(notificationPicture);
-        picasso.load(R.drawable.superman_facebook)
+        picasso.load(R.drawable.avatar_default)
                 .transform(userPhotoTransformation)
                 .into(notificationPicture);
     }

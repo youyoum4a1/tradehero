@@ -24,7 +24,7 @@
         android:id="@+id/photo"
         android:layout_width="@dimen/photo_medium"
         android:layout_height="@dimen/photo_medium"
-        android:src="@drawable/superman_facebook"
+        android:src="@drawable/avatar_default"
         android:layout_alignParentRight="true"
         android:scaleType="fitXY"
         android:layout_margin="@dimen/right_arrow_margin"/>

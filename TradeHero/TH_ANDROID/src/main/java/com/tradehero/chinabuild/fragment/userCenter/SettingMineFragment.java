@@ -2,6 +2,7 @@ package com.tradehero.chinabuild.fragment.userCenter;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,47 +13,62 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.squareup.picasso.Picasso;
 import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.*;
 import com.tradehero.chinabuild.fragment.message.NotificationFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 
-public class SettingMineFragment extends AbsBaseFragment
+public class SettingMineFragment extends DashboardFragment
 {
     @Inject protected Picasso picasso;
-    @Inject CurrentUserId currentUserId;
-    @Inject Lazy<UserProfileCache> userProfileCache;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject PortfolioCache portfolioCache;
 
-    @InjectView(R.id.rlCustomHeadView) RelativeLayout rlCustomHeadLayout;
-    @InjectView(R.id.tvHeadLeft) TextView tvHeadLeft;
-    @InjectView(R.id.tvHeadMiddleMain) TextView tvHeadTitle;
-    @InjectView(R.id.tvHeadRight0) TextView tvHeadRight;
+    private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = AbsBaseFragment.class.getName() + ".purchaseApplicablePortfolioId";
+
+    @Inject protected CurrentUserId currentUserId;
+    @Inject protected PortfolioCompactListCache portfolioCompactListCache;
+    private DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListFetchListener;
+
+    protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+
+    public UserProfileDTO userProfileDTO;
+
+    //Show dialogfragment
+    private LoginSuggestDialogFragment dialogFragment;
+    private FragmentManager fm;
 
     @InjectView(R.id.rlMeDynamic) RelativeLayout rlMeDynamic;
     @InjectView(R.id.rlMeMessageCenter) RelativeLayout rlMeMessageCenter;
@@ -75,19 +91,54 @@ public class SettingMineFragment extends AbsBaseFragment
 
     @Inject Analytics analytics;
 
+    @Override public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        userProfileCacheListener = createUserProfileFetchListener();
+        portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
+        fetchUserProfile();
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_tab_fragment_me_layout, container, false);
         ButterKnife.inject(this, view);
-        InitView();
 
         userProfileCacheListener = createUserProfileFetchListener();
         portfolioFetchListener = createPortfolioCacheListener();
-
         return view;
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        setHeadViewMiddleMain(R.string.tab_main_me);
+    }
+
+
+    @Override public void onResume() {
+        super.onResume();
+        fetchPortfolioCompactList();
+        tvMeNotificationCount.setVisibility(View.GONE);
+        fetchUserProfile();
+        fetchPortfolio();
+
+        AppInfoDTO appInfoDTO = THSharePreferenceManager.getAppVersionInfo(getActivity());
+        if(appInfoDTO.isForceUpgrade() || appInfoDTO.isSuggestUpgrade()){
+            ivNewVersion.setVisibility(View.VISIBLE);
+        }else{
+            ivNewVersion.setVisibility(View.GONE);
+        }
+    }
+
+    @Override public void onDestroyView() {
+        ButterKnife.reset(this);
+        detachUserProfileCache();
+        userProfileCacheListener = null;
+        portfolioFetchListener = null;
+        super.onDestroyView();
+    }
+
 
     private void detachUserProfileCache()
     {
@@ -150,7 +201,7 @@ public class SettingMineFragment extends AbsBaseFragment
         {
             if (user.picture != null && imgMeHead != null)
             {
-                picasso.load(user.picture).placeholder(R.drawable.superman_facebook).fit().error(R.drawable.superman_facebook)
+                picasso.load(user.picture).placeholder(R.drawable.avatar_default).fit().error(R.drawable.avatar_default)
                         .centerInside().into(imgMeHead);
             }
             if (user.isVisitor)
@@ -186,7 +237,7 @@ public class SettingMineFragment extends AbsBaseFragment
         {
             case R.id.me_layout:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MINE_PERSONAL_PAGE));
-                gotoDashboard(MyProfileFragment.class.getName());
+                pushFragment(MyProfileFragment.class, new Bundle());
                 break;
             case R.id.rlMeDynamic:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MINE_MY_MOMENT));
@@ -194,15 +245,15 @@ public class SettingMineFragment extends AbsBaseFragment
                 break;
             case R.id.rlMeMessageCenter:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_MESSAGE_CENTER));
-                gotoDashboard(NotificationFragment.class.getName());
+                pushFragment(NotificationFragment.class, new Bundle());
                 break;
             case R.id.rlMeInviteFriends:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MINE_INVITE_FRIENDS));
-                gotoDashboard(InviteFriendsFragment.class.getName());
+                pushFragment(InviteFriendsFragment.class, new Bundle());
                 break;
             case R.id.rlMeSetting:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MINE_SETTING));
-                gotoDashboard(SettingFragment.class.getName());
+                pushFragment(SettingFragment.class, new Bundle());
                 break;
             case R.id.llItemAllAmount:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ME_TOTAL_PROPERTY));
@@ -219,67 +270,27 @@ public class SettingMineFragment extends AbsBaseFragment
         }
     }
 
-    public void enterUserAllAmount()
-    {
+    public void enterUserAllAmount() {
         Bundle bundle = new Bundle();
         bundle.putInt(UserHeroesListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
-        gotoDashboard(UserAccountPage.class.getName(), bundle);
+        pushFragment(UserAccountPage.class, bundle);
     }
 
-    private void enterHeroesListFragment()
-    {
+    private void enterHeroesListFragment() {
         Bundle bundle = new Bundle();
         bundle.putInt(UserHeroesListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
-        gotoDashboard(UserHeroesListFragment.class.getName(), bundle);
+        pushFragment(UserHeroesListFragment.class, bundle);
     }
 
     private void enterFollowersListFragment(){
         Bundle bundle = new Bundle();
         bundle.putInt(UserHeroesListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
-        gotoDashboard(UserFansListFragment.class.getName(), bundle);
-    }
-
-    @Override public void onDestroyView()
-    {
-        ButterKnife.reset(this);
-        detachUserProfileCache();
-        userProfileCacheListener = null;
-        portfolioFetchListener = null;
-        super.onDestroyView();
+        pushFragment(UserFansListFragment.class, bundle);
     }
 
     public void enterMyMainPager()
     {
-        gotoDashboard(MyMainPage.class.getName());
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        tvMeNotificationCount.setVisibility(View.GONE);
-        fetchUserProfile();
-        fetchPortfolio();
-
-        AppInfoDTO appInfoDTO = THSharePreferenceManager.getAppVersionInfo(getActivity());
-        if(appInfoDTO.isForceUpgrade() || appInfoDTO.isSuggestUpgrade()){
-            ivNewVersion.setVisibility(View.VISIBLE);
-        }else{
-            ivNewVersion.setVisibility(View.GONE);
-        }
-    }
-
-    @OnClick(R.id.tvHeadRight0)
-    public void settingClicked()
-    {
-        gotoDashboard(SettingFragment.class.getName());
-    }
-
-    private void InitView()
-    {
-        rlCustomHeadLayout.setVisibility(View.VISIBLE);
-        tvHeadLeft.setVisibility(View.GONE);
-        tvHeadTitle.setVisibility(View.VISIBLE);
-        tvHeadTitle.setText(R.string.tab_main_me);
+        pushFragment(MyMainPage.class, new Bundle());
     }
 
     protected void fetchUserProfile()
@@ -323,7 +334,6 @@ public class SettingMineFragment extends AbsBaseFragment
         }
     }
 
-    @Override
     protected void linkWithApplicable()
     {
         fetchPortfolio();
@@ -361,5 +371,94 @@ public class SettingMineFragment extends AbsBaseFragment
         }
         tvMeNotificationCount.setText(String.valueOf(count));
         tvMeNotificationCount.setVisibility(View.VISIBLE);
+    }
+
+
+    private void detachPortfolioCompactListCache()
+    {
+        portfolioCompactListCache.unregister(portfolioCompactListFetchListener);
+    }
+
+    protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
+    {
+        this.purchaseApplicableOwnedPortfolioId = purchaseApplicablePortfolioId;
+        if(purchaseApplicableOwnedPortfolioId!=null)
+        {
+            linkWithApplicable();
+        }
+    }
+
+    @Nullable public OwnedPortfolioId getApplicablePortfolioId()
+    {
+        return purchaseApplicableOwnedPortfolioId;
+    }
+
+    public static OwnedPortfolioId getApplicablePortfolioId(@Nullable Bundle args)
+    {
+        if (args != null)
+        {
+            if (args.containsKey(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE))
+            {
+                return new OwnedPortfolioId(args.getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE));
+            }
+        }
+        return null;
+    }
+
+    protected void showSuggestLoginDialogFragment(String dialogContent){
+        if(dialogFragment==null){
+            dialogFragment =new LoginSuggestDialogFragment();
+        }
+        if(fm==null){
+            fm = getActivity().getSupportFragmentManager();
+        }
+        dialogFragment.setContent(dialogContent);
+        dialogFragment.show(fm, LoginSuggestDialogFragment.class.getName());
+    }
+
+    protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
+    {
+        return new BasePurchaseManagementPortfolioCompactListFetchListener();
+    }
+
+    protected class BasePurchaseManagementPortfolioCompactListFetchListener implements DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList>
+    {
+        protected BasePurchaseManagementPortfolioCompactListFetchListener()
+        {
+            // no unexpected creation
+        }
+
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
+        {
+            prepareApplicableOwnedPortolioId(value.getDefaultPortfolio());
+        }
+
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        {
+            THToast.show(R.string.error_fetch_portfolio_list_info);
+        }
+    }
+
+    protected void prepareApplicableOwnedPortolioId(@Nullable PortfolioCompactDTO defaultIfNotInArgs)
+    {
+        Bundle args = getArguments();
+        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId(args);
+
+        if (applicablePortfolioId == null && defaultIfNotInArgs != null)
+        {
+            applicablePortfolioId = defaultIfNotInArgs.getOwnedPortfolioId();
+        }
+
+        if (applicablePortfolioId != null)
+        {
+            linkWithApplicable(applicablePortfolioId, true);
+        }
+    }
+
+    private void fetchPortfolioCompactList()
+    {
+        detachPortfolioCompactListCache();
+        portfolioCompactListCache.register(currentUserId.toUserBaseKey(), portfolioCompactListFetchListener);
+        portfolioCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 }
