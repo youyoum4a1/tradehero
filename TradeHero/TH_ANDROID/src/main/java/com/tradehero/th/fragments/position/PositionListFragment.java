@@ -316,6 +316,16 @@ public class PositionListFragment
         if (portfolioDTO != null && portfolioDTO.assetClass != null)
         {
             TrendingMainFragment.putAssetClass(args, portfolioDTO.assetClass);
+            if (portfolioDTO.assetClass == AssetClass.STOCKS)
+            {
+                TrendingMainFragment.setLastType(0);
+                TrendingMainFragment.setLastPosition(1);
+            }
+            else if (portfolioDTO.assetClass == AssetClass.FX)
+            {
+                TrendingMainFragment.setLastType(1);
+                TrendingMainFragment.setLastPosition(1);
+            }
         }
         navigator.get().pushFragment(TrendingMainFragment.class, args);
     }

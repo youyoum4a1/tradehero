@@ -222,7 +222,6 @@ public class TrendingMainFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        lastPosition = tabViewPager.getCurrentItem();
         tabViewPager.setAdapter(null);
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -279,4 +278,13 @@ public class TrendingMainFragment extends DashboardFragment
         }
     }
 
+    public static void setLastType(int lastType)
+    {
+        TrendingMainFragment.lastType = lastType;
+    }
+
+    public static void setLastPosition(int lastPosition)
+    {
+        TrendingMainFragment.lastPosition = lastPosition;
+    }
 }
