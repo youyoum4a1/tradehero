@@ -1,11 +1,14 @@
 package com.tradehero.th.fragments.discovery;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +33,7 @@ public final class NewsPagerFragment extends Fragment
         return view;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void initView(View view)
     {
         ButterKnife.inject(this, view);
@@ -49,6 +53,13 @@ public final class NewsPagerFragment extends Fragment
                 //
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            int offset = (int) getResources().getDimension(R.dimen.size_6);
+            newsSpinner.setDropDownVerticalOffset(offset);
+        }
+
     }
 
     class NewsSpinnerAdapter extends ArrayAdapter<NewsType> {
@@ -60,34 +71,19 @@ public final class NewsPagerFragment extends Fragment
         @Override public View getView(int position, View convertView, ViewGroup parent)
         {
             NewsType type = getItem(position);
-            if (convertView == null) {
-                convertView = getActivity().getLayoutInflater().inflate(type.titleViewResourceId, parent, false);
-            }
-
-            return convertView;
+            View view = getActivity().getLayoutInflater().inflate(type.titleViewResourceId, parent, false);
+            return view;
         }
 
         @Override public View getDropDownView(int position, View convertView, ViewGroup parent)
         {
             NewsType type = getItem(position);
-            convertView = getActivity().getLayoutInflater().inflate(type.titleViewResourceId, parent, false);
-            View view = convertView.findViewById(R.id.spinner_arrow);
+            View rootView = getActivity().getLayoutInflater().inflate(type.titleViewResourceId, parent, false);
+            View view = rootView.findViewById(R.id.spinner_arrow);
             if (view != null) {
                 view.setVisibility(View.GONE);
             }
-
-            return convertView;
-        }
-
-        @Override public int getItemViewType(int position)
-        {
-            NewsType type = getItem(position);
-            return type.ordinal();
-        }
-
-        @Override public int getViewTypeCount()
-        {
-            return getCount();
+            return rootView;
         }
     }
 
