@@ -5,16 +5,21 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.TabHost;
@@ -265,6 +270,13 @@ public class DashboardActivity extends BaseActivity
         });
         navigator.addDashboardFragmentWatcher(analyticsReporter.get());
         navigator.addDashboardFragmentWatcher(dashboardTabHost);
+
+        //Temp Fix: tabHost is not visible on Android 5
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) dashboardTabHost.getLayoutParams();
+            int bottomMargin = (int) getResources().getDimension(R.dimen.dashboard_tabhost_height);
+            mlp.setMargins(mlp.leftMargin, mlp.topMargin, mlp.rightMargin, bottomMargin);
+        }
     }
 
     private void initBroadcastReceivers()
