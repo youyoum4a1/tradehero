@@ -41,10 +41,11 @@ import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastOnErrorAction;
-import com.tradehero.th.rx.view.DismissDialogAction0;
+import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
+import rx.Notification;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -210,7 +211,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
             discussionEditSubscription = AppObservable.bindFragment(
                     this,
                     discussionServiceWrapper.createDiscussionRx(discussionFormDTO))
-                    .finallyDo(new DismissDialogAction0(progressDialog))
+                    .doOnEach(new DismissDialogAction1<Notification<? super DiscussionDTO>>(progressDialog))
                     .subscribe(
                             new Action1<DiscussionDTO>()
                             {
