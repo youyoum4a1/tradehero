@@ -12,7 +12,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
-import com.squareup.picasso.Picasso;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.cache.CompetitionListType;
 import com.tradehero.chinabuild.cache.CompetitionListTypeVip;
 import com.tradehero.chinabuild.cache.CompetitionNewCache;
@@ -20,6 +20,7 @@ import com.tradehero.chinabuild.data.CompetitionDataItem;
 import com.tradehero.chinabuild.data.CompetitionInterface;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.chinabuild.data.UserCompetitionDTOList;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -58,7 +59,6 @@ public class CompetitionMineFragment extends DashboardFragment {
 
     @Inject Lazy<CompetitionNewCache> competitionNewCacheLazy;
 
-    @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
 
     private CompetitionListAdapter adapterList;
@@ -251,11 +251,7 @@ public class CompetitionMineFragment extends DashboardFragment {
         {
             View view = layoutInflater.inflate(R.layout.competition_adv_item, null);
             ImageView imgCompetitionAdv = (ImageView) view.findViewById(R.id.imgCompetitionAdv);
-            picasso.get()
-                    .load(userCompetitionVipDTOs.get(i).bannerUrl)
-                    .placeholder(R.drawable.default_image)
-                    .error(R.drawable.default_image)
-                    .into(imgCompetitionAdv);
+            ImageLoader.getInstance().displayImage(userCompetitionVipDTOs.get(i).bannerUrl, imgCompetitionAdv, UniversalImageLoader.getAdvertisementImageLoaderOptions());
             views.add(view);
             view.setOnClickListener(new View.OnClickListener()
             {

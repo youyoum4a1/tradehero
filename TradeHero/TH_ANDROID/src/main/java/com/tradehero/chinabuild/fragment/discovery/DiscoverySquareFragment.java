@@ -13,7 +13,7 @@ import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.squareup.picasso.Picasso;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.cache.NoticeNewsCache;
 import com.tradehero.chinabuild.data.AdsDTO;
 import com.tradehero.chinabuild.data.TimeLineTotalInfo;
@@ -21,6 +21,7 @@ import com.tradehero.chinabuild.fragment.competition.CompetitionDetailFragment;
 import com.tradehero.chinabuild.fragment.competition.CompetitionMainFragment;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.timeline.TimelineDTO;
@@ -67,7 +68,6 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
     //Square News
     private LinearLayout newsLL;
 
-    @Inject Lazy<Picasso> picasso;
     @InjectView(R.id.rlTopBanner) RelativeLayout rlTopBanner;
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) CirclePageIndicator indicator;
@@ -191,9 +191,7 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
             final AdsDTO adsDTO = adsDTOs.get(num);
             View view = layoutInflater.inflate(R.layout.search_square_top_banner_item, null);
             ImageView imageView = (ImageView) view.findViewById(R.id.imgTopBannerItem);
-            picasso.get()
-                    .load(adsDTO.bannerImageUrl)
-                    .into(imageView);
+            ImageLoader.getInstance().displayImage(adsDTO.bannerImageUrl, imageView, UniversalImageLoader.getAdvertisementImageLoaderOptions());
             views.add(view);
             view.setOnClickListener(new View.OnClickListener()
             {

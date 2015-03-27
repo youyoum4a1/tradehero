@@ -17,7 +17,7 @@ import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
-import com.squareup.picasso.Picasso;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.cache.*;
 import com.tradehero.chinabuild.data.CompetitionDataItem;
 import com.tradehero.chinabuild.data.CompetitionInterface;
@@ -25,6 +25,7 @@ import com.tradehero.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.chinabuild.data.UserCompetitionDTOList;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.listview.SecurityListView;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -47,9 +48,8 @@ import java.util.List;
 /**
  * Created by huhaiping on 14-9-9. 显示所有比赛和我参加的比赛
  */
-public class CompetitionsFragment extends DashboardFragment
-{
-    @Inject Lazy<Picasso> picasso;
+public class CompetitionsFragment extends DashboardFragment {
+
     @Inject Lazy<CompetitionNewCache> competitionNewCacheLazy;
     private DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> competitionListCacheListenerOffical;
     private DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> competitionListCacheListenerUser;
@@ -160,11 +160,7 @@ public class CompetitionsFragment extends DashboardFragment
         {
             View view = layoutInflater.inflate(R.layout.competition_adv_item, null);
             ImageView imgCompetitionAdv = (ImageView) view.findViewById(R.id.imgCompetitionAdv);
-            picasso.get()
-                    .load(userCompetitionVipDTOs.get(i).bannerUrl)
-                    .placeholder(R.drawable.default_image)
-                    .error(R.drawable.default_image)
-                    .into(imgCompetitionAdv);
+            ImageLoader.getInstance().displayImage(userCompetitionVipDTOs.get(i).bannerUrl, imgCompetitionAdv, UniversalImageLoader.getAdvertisementImageLoaderOptions());
             views.add(view);
             view.setOnClickListener(new View.OnClickListener()
             {

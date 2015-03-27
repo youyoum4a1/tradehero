@@ -58,7 +58,7 @@ public class StockGodListBaseFragment extends DashboardFragment
     private LeaderboardListAdapter adapter;
 
     private int currentPage = 0;
-    private int ITEMS_PER_PAGE = 50;
+    private int ITEMS_PER_PAGE = 20;
 
     private int leaderboard_key = 0;//所有榜单根据key来判断 30day，60day，6months 。。。
 

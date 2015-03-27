@@ -33,10 +33,12 @@
                               android:orientation="horizontal">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                               android:textColor="#e63636"
+                              android:text="--"
                               android:id="@+id/textview_trade_rateofreturn"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                               android:textColor="#e63636"
                               android:layout_marginLeft="20dp"
+                              android:text="--"
                               android:id="@+id/textview_trade_return"/>
                 </LinearLayout>
         </LinearLayout>

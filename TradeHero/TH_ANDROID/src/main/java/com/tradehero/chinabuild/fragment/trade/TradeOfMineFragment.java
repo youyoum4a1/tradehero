@@ -12,7 +12,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView;
-import com.squareup.picasso.Picasso;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.PositionInterface;
 import com.tradehero.chinabuild.data.SecurityPositionItem;
 import com.tradehero.chinabuild.data.WatchPositionItem;
@@ -20,6 +20,7 @@ import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.userCenter.SettingMineFragment;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
@@ -107,7 +108,6 @@ public class TradeOfMineFragment extends DashboardFragment
 
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Inject Lazy<UserProfileCache> userProfileCache;
-    @Inject protected Picasso picasso;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -571,7 +571,7 @@ public class TradeOfMineFragment extends DashboardFragment
          }
         if (user != null) {
             if (user.picture != null) {
-                picasso.load(user.picture).fit().centerInside().into(avatarIV);
+                ImageLoader.getInstance().displayImage(user.picture, avatarIV, UniversalImageLoader.getAvatarImageLoaderOptions());
             }
             if (user.isVisitor) {
                 nicknameTV.setText(R.string.guest_user);

@@ -5,25 +5,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import com.squareup.picasso.Picasso;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.CompetitionDataItem;
 import com.tradehero.chinabuild.data.CompetitionHeadItem;
 import com.tradehero.chinabuild.data.CompetitionInterface;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.chinabuild.fragment.competition.CompetitionUtils;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 
 //比赛列表Adapter 包括 所有比赛，我的比赛
-public class CompetitionListAdapter extends BaseAdapter
-{
-    @Inject Lazy<Picasso> picasso;
+public class CompetitionListAdapter extends BaseAdapter {
 
     private int competitionPageType = 0;
     private Context context;
@@ -255,12 +252,7 @@ public class CompetitionListAdapter extends BaseAdapter
                 holder.tvCompetitionName.setText(((CompetitionDataItem) data).userCompetitionDTO.name);
                 holder.tvCompetitionJoinCount.setText(((CompetitionDataItem) data).userCompetitionDTO.getUserCounter());
                 holder.tvCompetitionPeriod.setText(((CompetitionDataItem) data).userCompetitionDTO.getDisplayDatePeriod());
-                picasso.get()
-                        .load(((CompetitionDataItem) data).userCompetitionDTO.iconUrl)
-                        .placeholder(R.drawable.avatar_default)
-                        .error(R.drawable.avatar_default)
-                        .into(holder.imgCompetitionHead);
-
+                ImageLoader.getInstance().displayImage(((CompetitionDataItem) data).userCompetitionDTO.iconUrl, holder.imgCompetitionHead, UniversalImageLoader.getAvatarImageLoaderOptions());
                 if (competitionPageType == CompetitionUtils.COMPETITION_PAGE_ALL
                         || competitionPageType == CompetitionUtils.COMPETITION_PAGE_SEARCH)
                 {

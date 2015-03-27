@@ -16,12 +16,13 @@ import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
-import com.squareup.picasso.Picasso;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
@@ -85,7 +86,6 @@ public class UserMainPage extends DashboardFragment
     private MiddleCallback<UserProfileDTO> freeUnFollowMiddleCallback;
     private MiddleCallback<TimelineDTO> timeLineMiddleCallback;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject protected Picasso picasso;
 
     @Inject Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
 
@@ -589,14 +589,10 @@ public class UserMainPage extends DashboardFragment
         displayFollow();
     }
 
-    private void linkWith(UserProfileDTO user)
-    {
-        if (user != null)
-        {
-            if (user.picture != null && imgMeHead != null)
-            {
-                picasso.load(user.picture).placeholder(R.drawable.avatar_default).fit().error(R.drawable.avatar_default)
-                        .centerInside().into(imgMeHead);
+    private void linkWith(UserProfileDTO user) {
+        if (user != null) {
+            if (user.picture != null && imgMeHead != null) {
+                ImageLoader.getInstance().displayImage(user.picture, imgMeHead, UniversalImageLoader.getAvatarImageLoaderOptions());
             }
             tvMeName.setText(user.getDisplayName());
             tvAllFans.setText(String.valueOf(user.allFollowerCount));

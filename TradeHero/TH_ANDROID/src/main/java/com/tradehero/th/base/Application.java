@@ -1,5 +1,6 @@
 package com.tradehero.th.base;
 
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.application.PApplication;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.timber.CrashReportingTree;
@@ -49,6 +50,9 @@ public class Application extends PApplication
             Timber.plant(createTimberTree());
             timberPlanted = true;
         }
+
+        //init universal image loader
+        UniversalImageLoader.initImageLoader(this);
 
         // Supposedly get the count of cores
         KnownExecutorServices.setCpuThreadCount(Runtime.getRuntime().availableProcessors());

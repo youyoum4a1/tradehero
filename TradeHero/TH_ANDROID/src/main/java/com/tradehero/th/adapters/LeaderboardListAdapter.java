@@ -8,28 +8,20 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.EmptyLeaderboardUserDTO;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
-import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.StringUtils;
-import dagger.Lazy;
 
-import javax.inject.Inject;
-
-public class LeaderboardListAdapter extends BaseAdapter
-{
-
-    @Inject Lazy<Picasso> picasso;
-    @Inject @ForUserPhoto Transformation peopleIconTransformation;
+public class LeaderboardListAdapter extends BaseAdapter {
 
     private Context context;
     private LayoutInflater inflater;
@@ -158,11 +150,7 @@ public class LeaderboardListAdapter extends BaseAdapter
                 holder.tvUserRank.setText(String.valueOf(position + 1));
             }
 
-            picasso.get()
-                    .load(item.picture)
-                    .placeholder(R.drawable.avatar_default)
-                    .error(R.drawable.avatar_default)
-                    .into(holder.imgUserHead);
+            ImageLoader.getInstance().displayImage(item.picture, holder.imgUserHead, UniversalImageLoader.getAvatarImageLoaderOptions());
 
             holder.imgUserName.setText(item.getDisplayName());
 

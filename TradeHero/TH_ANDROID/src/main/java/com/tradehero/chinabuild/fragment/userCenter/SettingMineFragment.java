@@ -15,11 +15,12 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.squareup.picasso.Picasso;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.*;
 import com.tradehero.chinabuild.fragment.message.NotificationFragment;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -46,9 +47,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 
-public class SettingMineFragment extends DashboardFragment
-{
-    @Inject protected Picasso picasso;
+public class SettingMineFragment extends DashboardFragment {
 
     DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
     @Inject PortfolioCompactCache portfolioCompactCache;
@@ -191,32 +190,24 @@ public class SettingMineFragment extends DashboardFragment
         }
     }
 
-    private void initUserProfile(UserProfileDTO user)
-    {
+    private void initUserProfile(UserProfileDTO user) {
         if(tvMeName==null||tvAllFans==null||tvAllHero==null){
             return;
         }
 
-        if (user != null)
-        {
-            if (user.picture != null && imgMeHead != null)
-            {
-                picasso.load(user.picture).placeholder(R.drawable.avatar_default).fit().error(R.drawable.avatar_default)
-                        .centerInside().into(imgMeHead);
+        if (user != null) {
+            if (user.picture != null && imgMeHead != null) {
+                ImageLoader.getInstance().displayImage(user.picture, imgMeHead, UniversalImageLoader.getAvatarImageLoaderOptions());
             }
-            if (user.isVisitor)
-            {
+            if (user.isVisitor) {
                 tvMeName.setText(R.string.guest_user);
-            }
-            else
-            {
+            } else {
                 tvMeName.setText(user.getDisplayName());
             }
             tvAllFans.setText(String.valueOf(user.allFollowerCount));
             tvAllHero.setText(String.valueOf(user.getAllHeroCount()));
             //粉丝数达到10人
-            if (user.allFollowerCount > 9)
-            {
+            if (user.allFollowerCount > 9) {
                 int userId = currentUserId.toUserBaseKey().getUserId();
                 if (THSharePreferenceManager.isShareDialogFANSMoreThanNineAvailable(userId, getActivity())) {
                     String moreThanNineFans = getActivity().getResources().getString(R.string.share_amount_fans_num_summary);

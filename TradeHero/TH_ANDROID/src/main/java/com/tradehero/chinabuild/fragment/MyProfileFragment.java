@@ -19,7 +19,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.squareup.picasso.Picasso;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -63,7 +64,6 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
     @Inject BitmapForProfileFactory bitmapForProfileFactory;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
-    @Inject Picasso picasso;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
     @Inject MainCredentialsPreference mainCredentialsPreference;
@@ -94,9 +94,9 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
         ButterKnife.inject(this, view);
         mPhotoLayout.setOnClickListener(this);
         userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        picasso.load(userProfileDTO.picture)
-                .placeholder(R.drawable.avatar_default)
-                .into(mPhoto);
+
+        ImageLoader.getInstance().displayImage(userProfileDTO.picture, mPhoto, UniversalImageLoader.getAvatarImageLoaderOptions());
+
         mNameLayout.setOnClickListener(this);
         mName.setText(userProfileDTO.displayName);
         mAccountLayout.setOnClickListener(this);
@@ -108,11 +108,6 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
             mAccountLayout.setVisibility(View.GONE);
         }
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -137,21 +132,12 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
         }
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
 
     @Override
     public void onDestroyView() {
         ButterKnife.reset(this);
         detachMiddleCallbackUpdateUserProfile();
         super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
     @Override
