@@ -17,6 +17,8 @@ import com.tradehero.chinabuild.fragment.security.BasePurchaseManagerFragment;
 import com.tradehero.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDiscussOrNewsFragment;
+import com.tradehero.chinabuild.fragment.stocklearning.PublicClassFragment;
+import com.tradehero.chinabuild.fragment.stocklearning.QuestionsFragment;
 import com.tradehero.chinabuild.fragment.trade.*;
 import com.tradehero.chinabuild.fragment.userCenter.*;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
@@ -136,7 +138,6 @@ import java.util.Locale;
                         MarkdownTextView.class,
 
                         NewsHeadlineFragment.class,
-                        ChartFragment.class,
                         StockInfoValueFragment.class,
                         WarrantInfoValueFragment.class,
                         StockInfoFragment.class,
@@ -318,6 +319,11 @@ import java.util.Locale;
                         NewsItemAdapter.class,
 
                         LoginSuggestDialogFragment.class,
+
+                        //Stock Learning
+                        PublicClassFragment.class,
+                        QuestionsFragment.class,
+
                         //China Build End
                 },
         staticInjections =

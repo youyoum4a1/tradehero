@@ -5,16 +5,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.view.View;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.compact.WarrantDTO;
-import com.tradehero.th.models.chart.ChartTimeSpan;
 import timber.log.Timber;
 
 public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
 {
-    private final Context context;
 
     private SecurityCompactDTO securityCompactDTO;
     private ProviderId providerId;
@@ -23,7 +20,6 @@ public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
     public InfoTopStockPagerAdapter(Context context, FragmentManager fragmentManager)
     {
         super(fragmentManager);
-        this.context = context;
     }
     //</editor-fold>
 
@@ -84,9 +80,6 @@ public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
             switch(position)
             {
                 case 0:
-                    fragment = new ChartFragment();
-                    populateForChartFragment(args);
-                    break;
                 case 1:
                     fragment = new StockInfoValueFragment();
                     populateForStockInfoFragment(args);
@@ -113,16 +106,6 @@ public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
         {
             args.putBundle(WarrantInfoValueFragment.BUNDLE_KEY_PROVIDER_ID_KEY, providerId.getArgs());
         }
-    }
-
-    private void populateForChartFragment(Bundle args)
-    {
-        if (securityCompactDTO != null)
-        {
-            ChartFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-        }
-        args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.VISIBLE);
-        args.putLong(ChartFragment.BUNDLE_KEY_TIME_SPAN_SECONDS_LONG, ChartTimeSpan.MONTH_3);
     }
 
     private void populateForStockInfoFragment(Bundle args)

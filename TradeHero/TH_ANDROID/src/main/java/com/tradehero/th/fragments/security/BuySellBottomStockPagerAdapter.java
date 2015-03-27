@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.view.View;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineFragment;
@@ -13,7 +12,6 @@ import timber.log.Timber;
 
 public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
 {
-    public static final int FRAGMENT_ID_CHART = 0;
     public static final int FRAGMENT_ID_DISCUSS = 1;
     public static final int FRAGMENT_ID_NEWS = 2;
     private SecurityId securityId;
@@ -54,10 +52,6 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
 
         switch (position)
         {
-            case FRAGMENT_ID_CHART:
-                fragment = new ChartFragment();
-                populateForChartFragment(args);
-                break;
             case FRAGMENT_ID_DISCUSS:
                 fragment = new SecurityDiscussionFragment();
                 populateForSecurityDiscussionFragment(args);
@@ -75,13 +69,6 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
         fragment.setArguments(args);
         fragment.setRetainInstance(false);
         return fragment;
-    }
-
-    private void populateForChartFragment(Bundle args)
-    {
-        ChartFragment.putSecurityId(args, securityId);
-        args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.VISIBLE);
-        args.putLong(ChartFragment.BUNDLE_KEY_TIME_SPAN_SECONDS_LONG, getDefaultChartTimeSpan().duration);
     }
 
     private void populateForSecurityDiscussionFragment(Bundle args)

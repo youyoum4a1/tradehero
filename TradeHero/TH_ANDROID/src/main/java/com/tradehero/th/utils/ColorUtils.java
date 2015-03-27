@@ -5,8 +5,6 @@ import com.tradehero.th.R;
 
 public class ColorUtils
 {
-    public static final int MAX_RED_VALUE = 255;
-    public static final int MAX_GREEN_VALUE = 200;
 
     public static int getProperColorForNumber(float percentage)
     {

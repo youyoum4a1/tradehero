@@ -6,11 +6,8 @@
 
   <LinearLayout
       android:orientation="vertical"
-
       android:layout_width="fill_parent"
       android:layout_height="fill_parent">
-
-    <!--<include layout="@layout/custom_head_layout"/>-->
 
     <RelativeLayout android:layout_width="fill_parent"
         android:layout_height="@dimen/tab_main_indicator_height"
