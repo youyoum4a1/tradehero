@@ -1,9 +1,9 @@
 package com.tradehero.th.fragments.news;
 
-import android.content.Context;
+import android.content.res.Resources;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
@@ -11,27 +11,22 @@ import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.tradehero.th.api.news.NewsItemKnowledge;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
-import com.tradehero.th.utils.StringUtils;
-import java.net.MalformedURLException;
-import java.net.URL;
 import javax.inject.Inject;
-import timber.log.Timber;
+import org.ocpsoft.prettytime.PrettyTime;
 
-public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO>
-        extends AbstractDiscussionCompactItemViewHolder<DiscussionType>
+public class NewsItemCompactViewHolder
+        extends AbstractDiscussionCompactItemViewHolder
 {
     @InjectView(R.id.news_title_title) @Optional protected TextView newsTitle;
     @InjectView(R.id.news_icon) ImageView newsIcon;
     @Inject Picasso picasso;
 
-    private static final int SEEKING_ALPHA_ID = 9;
-    private static final int MOTLEY_FOOL_ID = 6;
-
     //<editor-fold desc="Constructors">
-    public NewsItemCompactViewHolder(@NonNull Context context)
+    public NewsItemCompactViewHolder()
     {
-        super(context);
+        super();
     }
     //</editor-fold>
 
@@ -42,74 +37,116 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
     }
 
     //<editor-fold desc="Display Methods">
-    @Override public void display()
+    @Override public void display(@NonNull AbstractDiscussionCompactItemViewHolder.DTO parentViewDto)
     {
-        super.display();
-        displayTitle();
-        String url = discussionDTO.thumbnail;
+        super.display(parentViewDto);
+        DTO dto = (DTO) parentViewDto;
+        if (newsTitle != null)
+        {
+            newsTitle.setText(dto.getTitle());
+        }
+        if (dto.thumbnailUrl != null)
+        {
+            picasso.load(dto.thumbnailUrl)
+                    .placeholder(dto.thumbnailPlaceHolderResId)
+                    .into(newsIcon);
+        }
+        else
+        {
+            newsIcon.setImageResource(dto.thumbnailPlaceHolderResId);
+        }
+    }
+    //</editor-fold>
 
-        int placeHolderResId = R.drawable.card_item_top_bg;
-        if (TextUtils.isEmpty(url)) {
-            try
+    public static class Requisite extends AbstractDiscussionCompactItemViewHolder.Requisite
+    {
+        public Requisite(
+                @NonNull Resources resources,
+                @NonNull PrettyTime prettyTime,
+                @NonNull NewsItemCompactDTO discussionDTO,
+                boolean canTranslate,
+                boolean isAutoTranslate)
+        {
+            super(resources, prettyTime, discussionDTO, canTranslate, isAutoTranslate);
+        }
+    }
+
+    public static class DTO extends AbstractDiscussionCompactItemViewHolder.DTO
+    {
+        @Nullable private String title;
+        @Nullable public final String thumbnailUrl;
+        @DrawableRes public final int thumbnailPlaceHolderResId;
+
+        public DTO(@NonNull Requisite requisite)
+        {
+            super(requisite);
+
+            NewsItemCompactDTO newsItem = (NewsItemCompactDTO) requisite.discussionDTO;
+            this.title = newsItem.title;
+
+            //<editor-fold desc="Thumbnail Url & PlaceHolder">
+            if (newsItem.source != null
+                    && newsItem.source.id != null
+                    && newsItem.source.id.equals(NewsItemKnowledge.SEEKING_ALPHA_SOURCE_ID))
             {
-                if (discussionDTO.source.id == SEEKING_ALPHA_ID)
+                thumbnailUrl = null;
+                thumbnailPlaceHolderResId = R.drawable.seeking_alpha;
+            }
+            else if (newsItem.source != null
+                    && newsItem.source.id != null
+                    && newsItem.source.id.equals(NewsItemKnowledge.MOTLEY_FOOL_SOURCE_ID))
+            {
+                thumbnailUrl = null;
+                thumbnailPlaceHolderResId = R.drawable.motley_fool;
+            }
+            else
+            {
+                if (newsItem.thumbnail != null)
                 {
-                    placeHolderResId = R.drawable.seeking_alpha;
+                    thumbnailUrl = newsItem.thumbnail;
                 }
-                else if (discussionDTO.source.id == MOTLEY_FOOL_ID)
+                else if (newsItem.source != null && newsItem.source.imageUrl != null)
                 {
-                    placeHolderResId = R.drawable.motley_fool;
+                    thumbnailUrl = newsItem.source.imageUrl;
                 }
                 else
                 {
-                    url = discussionDTO.source.imageUrl;
-                    placeHolderResId = R.drawable.card_item_top_bg;
+                    thumbnailUrl = null;
                 }
-            } catch (Exception e) {
-                placeHolderResId = R.drawable.card_item_top_bg;
-                Timber.d("Known Error", e);
+                thumbnailPlaceHolderResId = R.drawable.card_item_top_bg;
             }
+            //</editor-fold>
         }
-        picasso.load(url)
-                .placeholder(placeHolderResId)
-                .into(newsIcon);
-    }
 
-    @Override public void displayTranslatableTexts()
-    {
-        super.displayTranslatableTexts();
-        displayTitle();
-    }
-
-    protected void displayTitle()
-    {
-        if (newsTitle != null)
+        @Override public void setCurrentTranslationStatus(@NonNull TranslationStatus currentTranslationStatus)
         {
-            newsTitle.setText(getTitleText());
+            super.setCurrentTranslationStatus(currentTranslationStatus);
+            this.title = createTitleText();
         }
-    }
+        //</editor-fold>
 
-    @Nullable public String getTitleText()
-    {
-        switch (currentTranslationStatus)
+        @Nullable protected String createTitleText()
         {
-            case ORIGINAL:
-            case TRANSLATING:
-            case FAILED:
-                if (discussionDTO != null)
-                {
-                    return discussionDTO.title;
-                }
-                return null;
+            switch (getCurrentTranslationStatus())
+            {
+                case ORIGINAL:
+                case TRANSLATING:
+                case FAILED:
+                    return ((NewsItemCompactDTO) discussionDTO).title;
 
-            case TRANSLATED:
-                if (translatedDiscussionDTO != null)
-                {
-                    return translatedDiscussionDTO.title;
-                }
-                return null;
+                case TRANSLATED:
+                    if (translatedDiscussionDTO != null)
+                    {
+                        return ((NewsItemCompactDTO) translatedDiscussionDTO).title;
+                    }
+                    return null;
+            }
+            throw new IllegalStateException("Unhandled state " + getCurrentTranslationStatus());
         }
-        throw new IllegalStateException("Unhandled state " + currentTranslationStatus);
+
+        @Nullable public String getTitle()
+        {
+            return title;
+        }
     }
-    //</editor-fold>
 }

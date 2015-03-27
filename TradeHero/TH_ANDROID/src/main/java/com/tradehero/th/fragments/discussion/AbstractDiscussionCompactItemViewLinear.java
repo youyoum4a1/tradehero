@@ -1,48 +1,36 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.network.share.dto.SocialDialogResult;
-import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction;
 import javax.inject.Inject;
+import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Actions;
 import rx.functions.Func1;
-import rx.internal.util.SubscriptionList;
 
-abstract public class AbstractDiscussionCompactItemViewLinear<T>
+abstract public class AbstractDiscussionCompactItemViewLinear
         extends LinearLayout
-        implements DTOView<T>
+        implements DTOView<AbstractDiscussionCompactItemViewLinear.DTO>
 {
-    @Inject protected DiscussionCacheRx discussionCache;
     @Inject protected SocialShareTranslationHelper socialShareHelper;
-    @Inject DashboardNavigator dashboardNavigator;
 
-    protected AbstractDiscussionCompactItemViewHolder viewHolder;
-    protected T discussionKey;
-    protected AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
-
-    @NonNull protected SubscriptionList subscriptions;
+    @NonNull protected final AbstractDiscussionCompactItemViewHolder viewHolder;
+    protected DTO viewDTO;
 
     //<editor-fold desc="Constructors">
     public AbstractDiscussionCompactItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         HierarchyInjector.inject(this);
-        subscriptions = new SubscriptionList();
+        viewHolder = createViewHolder();
     }
     //</editor-fold>
 
@@ -51,7 +39,6 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
         super.onFinishInflate();
         if (!isInEditMode())
         {
-            viewHolder = createViewHolder();
             viewHolder.onFinishInflate(this);
         }
     }
@@ -62,105 +49,101 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
         if (!isInEditMode())
         {
             viewHolder.onAttachedToWindow(this);
-            //noinspection unchecked
-            viewHolder.linkWith(abstractDiscussionCompactDTO);
-            //noinspection unchecked
-            subscriptions.add(viewHolder.getUserActionObservable()
-                    .flatMap(new Func1<DiscussionActionButtonsView.UserAction,
-                            Observable<DiscussionActionButtonsView.UserAction>>()
-                    {
-                        @Override public Observable<DiscussionActionButtonsView.UserAction> call(
-                                DiscussionActionButtonsView.UserAction userAction)
-                        {
-                            return handleUserAction(userAction);
-                        }
-                    })
-                    .subscribe(Actions.empty(), Actions.empty()));
         }
     }
 
     @Override protected void onDetachedFromWindow()
     {
         viewHolder.onDetachedFromWindow();
-        subscriptions.unsubscribe();
-        subscriptions = new SubscriptionList();
         super.onDetachedFromWindow();
     }
 
     @NonNull protected AbstractDiscussionCompactItemViewHolder createViewHolder()
     {
-        return new AbstractDiscussionCompactItemViewHolder<>(getContext());
+        return new AbstractDiscussionCompactItemViewHolder();
     }
 
-    @NonNull protected Observable<DiscussionActionButtonsView.UserAction> handleUserAction(
-            DiscussionActionButtonsView.UserAction userAction)
+    @NonNull public Observable<UserDiscussionAction> getUserActionObservable()
     {
-        if (userAction instanceof DiscussionActionButtonsView.MoreUserAction)
-        {
-            return socialShareHelper.show(abstractDiscussionCompactDTO, false)
-                    .flatMap(new Func1<SocialDialogResult, Observable<? extends DiscussionActionButtonsView.UserAction>>()
+        return viewHolder.getUserActionObservable()
+                .flatMap(new Func1<UserDiscussionAction, Observable<UserDiscussionAction>>()
+                {
+                    @Override public Observable<UserDiscussionAction> call(
+                            UserDiscussionAction userAction)
                     {
-                        @Override public Observable<? extends DiscussionActionButtonsView.UserAction> call(SocialDialogResult result)
+                        return handleUserAction(userAction);
+                    }
+                });
+    }
+
+    @NonNull protected Observable<UserDiscussionAction> handleUserAction(
+            UserDiscussionAction userAction)
+    {
+        if (viewDTO != null)
+        {
+            if (userAction instanceof DiscussionActionButtonsView.MoreUserAction)
+            {
+                return socialShareHelper.show(viewDTO.viewHolderDTO.discussionDTO, false)
+                        .flatMap(new Func1<SocialDialogResult, Observable<? extends UserDiscussionAction>>()
                         {
-                            return Observable.empty();
-                        }
-                    });
+                            @Override public Observable<? extends UserDiscussionAction> call(SocialDialogResult result)
+                            {
+                                return Observable.empty();
+                            }
+                        });
+            }
         }
         return Observable.just(userAction);
     }
 
-    @Override public void display(T discussionKey)
+    @Override public void display(@NonNull DTO dto)
     {
-        this.discussionKey = discussionKey;
-        fetchDiscussionDetail();
+        this.viewDTO = dto;
+        viewHolder.display(dto.viewHolderDTO);
     }
 
-    protected void fetchDiscussionDetail()
+    public static class Requisite
     {
-        if (discussionKey instanceof DTOKey)
+        @NonNull public final Resources resources;
+        @NonNull public final PrettyTime prettyTime;
+        @NonNull public final AbstractDiscussionCompactDTO discussionDTO;
+        public final boolean canTranslate;
+        public final boolean isAutoTranslate;
+
+        public Requisite(
+                @NonNull Resources resources,
+                @NonNull PrettyTime prettyTime,
+                @NonNull AbstractDiscussionCompactDTO discussionDTO,
+                boolean canTranslate,
+                boolean isAutoTranslate)
         {
-            AbstractDiscussionCompactDTO value = discussionCache.getCachedValue(((DiscussionKey) discussionKey));
-            if (value != null)
-            {
-                linkWith(value);
-            }
-            else
-            {
-                refresh();
-            }
+            this.resources = resources;
+            this.prettyTime = prettyTime;
+            this.discussionDTO = discussionDTO;
+            this.canTranslate = canTranslate;
+            this.isAutoTranslate = isAutoTranslate;
         }
-        else if (discussionKey instanceof AbstractDiscussionCompactDTO)
+    }
+
+    public static class DTO
+    {
+        @NonNull public final AbstractDiscussionCompactItemViewHolder.DTO viewHolderDTO;
+
+        public DTO(@NonNull Requisite requisite)
         {
-            linkWith((AbstractDiscussionCompactDTO) discussionKey);
+            this.viewHolderDTO = createViewHolderDTO(requisite);
         }
-    }
 
-    public void refresh()
-    {
-        subscriptions.add(discussionCache.get((DiscussionKey) discussionKey)
-                .map(new PairGetSecond<DiscussionKey, AbstractDiscussionCompactDTO>())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<AbstractDiscussionCompactDTO>()
-                        {
-                            @Override public void call(AbstractDiscussionCompactDTO discussionCompactDTO)
-                            {
-                                AbstractDiscussionCompactItemViewLinear.this.linkWith(discussionCompactDTO);
-                            }
-                        },
-                        new ToastOnErrorAction()
-                ));
-    }
-
-    protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO)
-    {
-        this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
-        //noinspection unchecked
-        viewHolder.linkWith(abstractDiscussionDTO);
-    }
-
-    protected DashboardNavigator getNavigator()
-    {
-        return dashboardNavigator;
+        @NonNull protected AbstractDiscussionCompactItemViewHolder.DTO createViewHolderDTO(
+                @NonNull Requisite requisite)
+        {
+            return new AbstractDiscussionCompactItemViewHolder.DTO(
+                    new AbstractDiscussionCompactItemViewHolder.Requisite(
+                            requisite.resources,
+                            requisite.prettyTime,
+                            requisite.discussionDTO,
+                            requisite.canTranslate,
+                            requisite.isAutoTranslate));
+        }
     }
 }

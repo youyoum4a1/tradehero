@@ -49,13 +49,18 @@ public class GenericArrayAdapter<T> extends BaseAdapter
         return items.get(i);
     }
 
-    protected View conditionalInflate(int position, View convertView, ViewGroup viewGroup)
+    @NonNull protected View conditionalInflate(int position, View convertView, ViewGroup viewGroup)
     {
         if (convertView == null)
         {
-            convertView = inflater.inflate(layoutResourceId, viewGroup, false);
+            convertView = inflate(position, viewGroup);
         }
         return convertView;
+    }
+
+    @NonNull protected View inflate(int position, ViewGroup viewGroup)
+    {
+        return inflater.inflate(layoutResourceId, viewGroup, false);
     }
 
     @Override public long getItemId(int position)

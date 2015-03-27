@@ -1,5 +1,6 @@
 package com.tradehero.th.api.news;
 
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
@@ -11,7 +12,7 @@ public class NewsItemCompactDTO extends AbstractDiscussionCompactDTO<NewsItemCom
     public String caption;
     public String description;
 
-    public NewsItemSourceDTO source;
+    @Nullable public NewsItemSourceDTO source;
     public String url;
 
     public NewsItemCategoryDTO category;

@@ -12,10 +12,12 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.pagination.RangeDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
+import com.tradehero.th.models.discussion.UserDiscussionAction;
 import java.util.List;
+import rx.Observable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class MainTimelineAdapter extends ArrayAdapter
@@ -107,14 +109,19 @@ public class MainTimelineAdapter extends ArrayAdapter
     // Timeline elements
     //////////////////////
 
-    public void appendHeadTimeline(@Nullable List<? extends TimelineItemDTO> newOnes)
+    @NonNull public Observable<UserDiscussionAction> getUserActionObservable()
+    {
+        return subTimelineAdapter.getUserActionObservable();
+    }
+
+    public void appendHeadTimeline(@Nullable List<? extends AbstractDiscussionCompactItemViewLinear.DTO> newOnes)
     {
         subTimelineAdapter.appendHead(newOnes);
         subTimelineAdapter.notifyDataSetChanged();
         notifyDataSetChanged();
     }
 
-    public void appendTailTimeline(@Nullable List<? extends TimelineItemDTO> newOnes)
+    public void appendTailTimeline(@Nullable List<? extends AbstractDiscussionCompactItemViewLinear.DTO> newOnes)
     {
         subTimelineAdapter.appendTail(newOnes);
         subTimelineAdapter.notifyDataSetChanged();

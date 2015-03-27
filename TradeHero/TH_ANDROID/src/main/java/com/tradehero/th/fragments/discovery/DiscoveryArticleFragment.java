@@ -16,12 +16,13 @@ import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.article.ArticleInfoDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.PaginationDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinearDTOFactory;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.ArticleServiceWrapper;
@@ -62,12 +63,15 @@ public class DiscoveryArticleFragment extends Fragment
     private Observable<PaginationDTO> paginationObservable;
     protected CompositeSubscription subscriptions;
     private PaginationDTO currentPagination = new PaginationDTO(1, Constants.COMMON_ITEM_PER_PAGE);
+    private ArticleAdapter articleAdapter;
 
-    @OnItemClick(R.id.discovery_article_list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
+    @SuppressWarnings("unused")
+    @OnItemClick(R.id.discovery_article_list)
+    void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        ArticleInfoDTO articleInfoDTO = (ArticleInfoDTO) parent.getItemAtPosition(position);
+        ArticleInfoDTO articleInfoDTO = (ArticleInfoDTO) ((ArticleItemView.DTO) parent.getItemAtPosition(position)).viewHolderDTO.discussionDTO;
 
-        if (articleInfoDTO != null && articleInfoDTO.url != null)
+        if (articleInfoDTO.url != null)
         {
             Bundle bundle = new Bundle();
             WebViewFragment.putUrl(bundle, articleInfoDTO.url);
@@ -79,10 +83,18 @@ public class DiscoveryArticleFragment extends Fragment
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject RxLoaderManager rxLoaderManager;
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
+    @Inject AbstractDiscussionCompactItemViewLinearDTOFactory discussionViewDTOFactory;
 
     public DiscoveryArticleFragment()
     {
         super();
+    }
+
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        HierarchyInjector.inject(this);
+        articleAdapter = new ArticleAdapter(activity, R.layout.article_item_view);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -95,28 +107,11 @@ public class DiscoveryArticleFragment extends Fragment
     protected void initView(View view)
     {
         ButterKnife.inject(this, view);
-        final ArrayDTOAdapter<ArticleInfoDTO, ArticleItemView> mArticleAdapter =
-                new ArrayDTOAdapter<ArticleInfoDTO, ArticleItemView>(getActivity(), R.layout.article_item_view)
-                {
-                    @Override public View getView(int position, View convertView, ViewGroup viewGroup)
-                    {
-                        View view = super.getView(position, convertView, viewGroup);
-                        if (position % 2 == 0)
-                        {
-                            view.setBackgroundResource(R.color.lb_item_even);
-                        }
-                        else
-                        {
-                            view.setBackgroundResource(R.color.lb_item_odd);
-                        }
-                        return view;
-                    }
-                };
 
         mBottomLoadingView = new ProgressBar(getActivity());
         mBottomLoadingView.setVisibility(View.GONE);
         mArticleListView.addFooterView(mBottomLoadingView);
-        mArticleListView.setAdapter(mArticleAdapter);
+        mArticleListView.setAdapter(articleAdapter);
 
         final Random random = new Random();
         paginationObservable = createPaginationObservable()
@@ -133,15 +128,31 @@ public class DiscoveryArticleFragment extends Fragment
 
         articlesSubject = PublishSubject.create();
         subscriptions = new CompositeSubscription();
-        subscriptions.add(articlesSubject.subscribe(
-                new Action1<List<ArticleInfoDTO>>()
+        subscriptions.add(articlesSubject
+                .flatMap(new Func1<List<ArticleInfoDTO>, Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>>>()
                 {
-                    @Override public void call(List<ArticleInfoDTO> articleInfoDTOs)
+                    @Override public Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> call(List<ArticleInfoDTO> articleInfoDTOs)
                     {
-                        mArticleAdapter.setItems(articleInfoDTOs);
+                        return Observable.from(articleInfoDTOs)
+                                .flatMap(new Func1<ArticleInfoDTO, Observable<AbstractDiscussionCompactItemViewLinear.DTO>>()
+                                {
+                                    @Override public Observable<AbstractDiscussionCompactItemViewLinear.DTO> call(ArticleInfoDTO articleInfoDTO)
+                                    {
+                                        return discussionViewDTOFactory.createArticleItemViewDTO(articleInfoDTO);
+                                    }
+                                })
+                                .toList();
                     }
-                },
-                new TimberOnErrorAction("Gotcha")));
+                })
+                .subscribe(
+                        new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>()
+                        {
+                            @Override public void call(List<AbstractDiscussionCompactItemViewLinear.DTO> articleInfoDTOs)
+                            {
+                                articleAdapter.setItems(articleInfoDTOs);
+                            }
+                        },
+                        new TimberOnErrorAction("Gotcha")));
         subscriptions.add(articlesSubject.subscribe(new UpdateUIObserver()));
 
         activateArticleItemListView();
@@ -233,12 +244,6 @@ public class DiscoveryArticleFragment extends Fragment
                 .observeOn(AndroidSchedulers.mainThread())
                 .onErrorResumeNext(Observable.<List<ArticleInfoDTO>>empty())
                 .subscribe(articlesSubject);
-    }
-
-    @Override public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-        HierarchyInjector.inject(this);
     }
 
     @Override public void onDestroyView()

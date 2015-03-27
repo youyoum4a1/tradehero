@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.social.message.PrivateDiscussionView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/discussion_view"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:listItemLayout="@layout/private_message_bubble_mine"
-    app:topicLayout="@null"
     >
 
   <TextView
@@ -35,4 +33,4 @@
 
   <include layout="@layout/private_post_comment_widget" />
 
-</com.tradehero.th.fragments.social.message.PrivateDiscussionView>
+</FrameLayout>

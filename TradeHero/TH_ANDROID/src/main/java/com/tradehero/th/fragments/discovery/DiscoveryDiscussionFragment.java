@@ -18,20 +18,23 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.pagination.RangeDTO;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineSection;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinearDTOFactory;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
-import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
+import com.tradehero.th.fragments.discussion.DiscussionFragmentUtil;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
@@ -45,6 +48,7 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
+import rx.internal.util.SubscriptionList;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
@@ -64,19 +68,28 @@ public class DiscoveryDiscussionFragment extends Fragment
     @Inject CurrentUserId currentUserId;
     @Inject UserTimelineServiceWrapper userTimelineServiceWrapper;
     @Inject Lazy<DashboardNavigator> navigator;
+    @Inject DiscussionFragmentUtil discussionFragmentUtil;
+    @Inject AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
 
     private ProgressBar mBottomLoadingView;
 
-    private ArrayDTOAdapter<TimelineItemDTO, TimelineItemViewLinear> discoveryDiscussionAdapter;
+    private DiscussionArrayAdapter discoveryDiscussionAdapter;
     @NonNull private CompositeSubscription timelineSubscriptions;
+    protected SubscriptionList onStopSubscriptions;
 
     private RangeDTO currentRangeDTO = new RangeDTO(TIMELINE_ITEM_PER_PAGE, null, null);
+
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        HierarchyInjector.inject(this);
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        discoveryDiscussionAdapter = new ArrayDTOAdapter<>(getActivity(), R.layout.timeline_item_view);
+        discoveryDiscussionAdapter = new DiscussionArrayAdapter(getActivity(), R.layout.timeline_item_view);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -84,6 +97,13 @@ public class DiscoveryDiscussionFragment extends Fragment
         View view = inflater.inflate(R.layout.discovery_discussion, container, false);
         initView(view);
         return view;
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        onStopSubscriptions = new SubscriptionList();
+        registerUserActions();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -112,6 +132,35 @@ public class DiscoveryDiscussionFragment extends Fragment
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override public void onStop()
+    {
+        onStopSubscriptions.unsubscribe();
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
+        timelineSubscriptions.unsubscribe();
+        rxLoaderManager.remove(DISCOVERY_LIST_LOADER_ID);
+        timelineSubscriptions = null;
+        super.onDestroyView();
+    }
+
+    protected void registerUserActions()
+    {
+        onStopSubscriptions.add(
+                discoveryDiscussionAdapter.getUserActionObservable()
+                        .subscribe(
+                                new Action1<UserDiscussionAction>()
+                                {
+                                    @Override public void call(UserDiscussionAction userDiscussionAction)
+                                    {
+                                        discussionFragmentUtil.handleUserAction(getActivity(), userDiscussionAction);
+                                    }
+                                },
+                                new ToastAndLogOnErrorAction("Failed to listen to user actions")));
     }
 
     private void refresh()
@@ -187,15 +236,28 @@ public class DiscoveryDiscussionFragment extends Fragment
 
         PublishSubject<List<TimelineItemDTO>> timelineSubject = PublishSubject.create();
         timelineSubscriptions.add(timelineSubject.subscribe(new RefreshCompleteObserver()));
-        timelineSubscriptions.add(timelineSubject.subscribe(
-                new Action1<List<TimelineItemDTO>>()
+        timelineSubscriptions.add(timelineSubject
+                .flatMap(new Func1<List<TimelineItemDTO>, Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>>>()
                 {
-                    @Override public void call(List<TimelineItemDTO> list)
+                    @Override public Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> call(final List<TimelineItemDTO> timelineItemDTOs)
                     {
-                        discoveryDiscussionAdapter.setItems(list);
+                        return viewDTOFactory.createTimelineItemViewLinearDTOs(timelineItemDTOs);
                     }
-                },
-                new TimberOnErrorAction("Gotcha")));
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>()
+                        {
+                            @Override public void call(List<AbstractDiscussionCompactItemViewLinear.DTO> list)
+                            {
+                                discoveryDiscussionAdapter.setNotifyOnChange(false);
+                                discoveryDiscussionAdapter.clear();
+                                discoveryDiscussionAdapter.addAll(list);
+                                discoveryDiscussionAdapter.setNotifyOnChange(true);
+                                discoveryDiscussionAdapter.notifyDataSetChanged();
+                            }
+                        },
+                        new TimberOnErrorAction("Gotcha")));
         timelineSubscriptions.add(timelineSubject.subscribe(new UpdateRangeObserver()));
 
         Observable<RangeDTO> timelineRefreshRangeObservable = createPaginationObservable();
@@ -232,20 +294,6 @@ public class DiscoveryDiscussionFragment extends Fragment
                     }
                 })
                 .subscribe(timelineSubject));
-    }
-
-    @Override public void onDestroyView()
-    {
-        timelineSubscriptions.unsubscribe();
-        rxLoaderManager.remove(DISCOVERY_LIST_LOADER_ID);
-        timelineSubscriptions = null;
-        super.onDestroyView();
-    }
-
-    @Override public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-        HierarchyInjector.inject(this);
     }
 
     private class RefreshCompleteObserver implements Observer<List<TimelineItemDTO>>

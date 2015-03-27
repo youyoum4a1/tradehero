@@ -40,7 +40,7 @@ public class WatchlistPositionDTOList extends PositionDTOList<WatchlistPositionD
         return total;
     }
 
-    public boolean contains(SecurityId other)
+    public boolean contains(@Nullable SecurityId other)
     {
         for (WatchlistPositionDTO watchlistPositionDTO : this)
         {

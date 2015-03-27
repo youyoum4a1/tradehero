@@ -23,6 +23,7 @@ import javax.inject.Singleton;
 
                 DiscoveryArticleFragment.class,
                 ArticleItemView.class,
+                ArticleItemViewHolder.class,
 
                 DiscoveryFaqWebFragment.class,
         },

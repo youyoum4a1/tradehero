@@ -51,7 +51,8 @@ public class SocialShareTranslationHelperTest
     @Test public void cannotTranslateNullDiscussion()
     {
         translationHelper = translationHelperProvider.get();
-        assertThat(translationHelper.canTranslate(null).toBlocking().first()).isFalse();
+        //noinspection ConstantConditions
+        assertThat(translationHelper.canTranslate((AbstractDiscussionCompactDTO) null).toBlocking().first()).isFalse();
     }
 
     @Test public void cannotTranslateWhenLangNull()

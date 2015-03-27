@@ -1,24 +1,15 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
-import android.os.Bundle;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.utils.route.THRouter;
-import javax.inject.Inject;
-import rx.Observable;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import org.ocpsoft.prettytime.PrettyTime;
 
-public class DiscussionItemViewLinear<T extends DiscussionKey>
-        extends AbstractDiscussionCompactItemViewLinear<T>
+public class DiscussionItemViewLinear
+        extends AbstractDiscussionCompactItemViewLinear
 {
-    @Inject THRouter thRouter;
-    @Inject CurrentUserId currentUserId;
-
     //<editor-fold desc="Constructors">
     public DiscussionItemViewLinear(Context context, AttributeSet attrs)
     {
@@ -28,31 +19,39 @@ public class DiscussionItemViewLinear<T extends DiscussionKey>
 
     @NonNull @Override protected DiscussionItemViewHolder createViewHolder()
     {
-        return new DiscussionItemViewHolder<>(getContext());
+        return new DiscussionItemViewHolder();
     }
 
-    protected void handleUserClicked(UserBaseKey userClicked)
+    public static class Requisite extends AbstractDiscussionCompactItemViewLinear.Requisite
     {
-        Bundle bundle = new Bundle();
-        thRouter.save(bundle, userClicked);
-        if (currentUserId.toUserBaseKey().equals(userClicked))
+        public Requisite(
+                @NonNull Resources resources,
+                @NonNull PrettyTime prettyTime,
+                @NonNull DiscussionDTO discussionDTO,
+                boolean canTranslate,
+                boolean isAutoTranslate)
         {
-            getNavigator().pushFragment(MeTimelineFragment.class, bundle);
-        }
-        else
-        {
-            getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+            super(resources, prettyTime, discussionDTO, canTranslate, isAutoTranslate);
         }
     }
 
-    @NonNull @Override protected Observable<DiscussionActionButtonsView.UserAction> handleUserAction(
-            DiscussionActionButtonsView.UserAction userAction)
+    public static class DTO extends AbstractDiscussionCompactItemViewLinear.DTO
     {
-        if (userAction instanceof AbstractDiscussionItemViewHolder.PlayerUserAction)
+        public DTO(@NonNull Requisite requisite)
         {
-            handleUserClicked(((AbstractDiscussionItemViewHolder.PlayerUserAction) userAction).userClicked);
-            return Observable.empty();
+            super(requisite);
         }
-        return super.handleUserAction(userAction);
+
+        @NonNull @Override protected AbstractDiscussionCompactItemViewHolder.DTO createViewHolderDTO(
+                @NonNull AbstractDiscussionCompactItemViewLinear.Requisite requisite)
+        {
+            return new DiscussionItemViewHolder.DTO(
+                    new DiscussionItemViewHolder.Requisite(
+                            requisite.resources,
+                            requisite.prettyTime,
+                            (DiscussionDTO) requisite.discussionDTO,
+                            requisite.canTranslate,
+                            requisite.isAutoTranslate));
+        }
     }
 }

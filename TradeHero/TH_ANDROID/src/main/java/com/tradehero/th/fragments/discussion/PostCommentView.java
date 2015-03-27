@@ -39,7 +39,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
 
 /**
- * A layout that often will be included in {@link com.tradehero.th.fragments.discussion.DiscussionView}, consists of a TextView for input discussion
+ * A layout that often will be included in a discussion, consists of a TextView for input discussion
  * comment and a submit button.
  */
 public class PostCommentView extends RelativeLayout
@@ -339,7 +339,7 @@ public class PostCommentView extends RelativeLayout
         }
     }
 
-    public static interface CommentPostedListener
+    public interface CommentPostedListener
     {
         void success(DiscussionDTO discussionDTO);
 

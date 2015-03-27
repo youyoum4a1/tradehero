@@ -13,23 +13,30 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
+import com.tradehero.th.api.discussion.key.MessageDiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
+import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
+import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
@@ -37,8 +44,10 @@ import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -97,10 +106,10 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         super.onViewCreated(view, savedInstanceState);
         messageToSend.setHint(R.string.private_message_message_hint);
         buttonSend.setText(R.string.private_message_btn_send);
-        if (discussionView != null)
+        if (postWidget != null)
         {
-            ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
-            ((PrivateDiscussionView) discussionView).setRecipient(correspondentId);
+            postWidget.linkWith(MessageType.PRIVATE);
+            postWidget.setRecipient(correspondentId);
         }
     }
 
@@ -157,7 +166,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         unsubscribe(messageHeaderFetchSubscription);
         messageHeaderFetchSubscription = null;
-        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -165,6 +173,76 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         messageHeaderFetchSubscription = null;
         super.onDestroy();
+    }
+
+    @NonNull @Override protected DiscussionSetAdapter createDiscussionListAdapter()
+    {
+        return new PrivateDiscussionSetAdapter(
+                getActivity(),
+                discussionCache,
+                currentUserId,
+                R.layout.private_message_bubble_mine,
+                R.layout.private_message_bubble_other);
+    }
+
+    @Nullable @Override protected DiscussionListKey getNextKey(@NonNull DiscussionListKey latestKey,
+            @NonNull List<AbstractDiscussionCompactItemViewLinear.DTO> latestDtos)
+    {
+        DiscussionKeyList discussionKeys = new DiscussionKeyList();
+        for (AbstractDiscussionCompactItemViewLinear.DTO dto : latestDtos)
+        {
+            discussionKeys.add(dto.viewHolderDTO.discussionDTO.getDiscussionKey());
+        }
+        DiscussionListKey next = MessageDiscussionListKeyFactory.next((MessageDiscussionListKey) latestKey, discussionKeys);
+        if (next != null && next.equals(latestKey))
+        {
+            // This situation where next is equal to currentNext may happen
+            // when the server is still returning the same values
+            next = null;
+        }
+        return next;
+    }
+
+    @Nullable @Override protected DiscussionListKey getMostRecentKey(@NonNull DiscussionListKey latestKey,
+            @NonNull List<AbstractDiscussionCompactItemViewLinear.DTO> newestDtos)
+    {
+        DiscussionListKey prev;
+        DiscussionKeyList discussionKeys = new DiscussionKeyList();
+        for (AbstractDiscussionCompactItemViewLinear.DTO dto : newestDtos)
+        {
+            discussionKeys.add(dto.viewHolderDTO.discussionDTO.getDiscussionKey());
+        }
+        prev = MessageDiscussionListKeyFactory.prev((MessageDiscussionListKey) latestKey, discussionKeys);
+        if (prev != null && prev.equals(latestKey))
+        {
+            // This situation where next is equal to currentNext may happen
+            // when the server is still returning the same values
+            prev = null;
+        }
+        return prev;
+    }
+
+    @NonNull @Override protected Observable<AbstractDiscussionCompactItemViewLinear.DTO> createViewDTO(
+            @NonNull AbstractDiscussionCompactDTO discussion)
+    {
+        return viewDTOFactory.createDiscussionItemViewLinearDTO((DiscussionDTO) discussion);
+    }
+
+    @Override protected void displayTopic(@NonNull AbstractDiscussionCompactDTO discussionDTO)
+    {
+        super.displayTopic(discussionDTO);
+        if (topicView == null)
+        {
+            topicView = inflateTopicView();
+            try
+            {
+                discussionList.addHeaderView(topicView, null, false);
+            } catch (Exception e)
+            {
+                // Can happen on older APIs.
+                Timber.e(e, "Failed adding topic view");
+            }
+        }
     }
 
     @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
@@ -186,19 +264,19 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     protected void refresh()
     {
-        if (getDiscussionKey() != null && discussionView != null)
-        {
-            discussionView.refresh();
-
-            if (messageHeaderId != null)
-            {
-                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.getCachedValue(messageHeaderId);
-                if (messageHeaderDTO != null)
-                {
-                    reportMessageRead(messageHeaderDTO);
-                }
-            }
-        }
+        //if (getDiscussionKey() != null && discussionView != null)
+        //{
+        //    discussionView.refresh();
+        //
+        //    if (messageHeaderId != null)
+        //    {
+        //        MessageHeaderDTO messageHeaderDTO = messageHeaderCache.getCachedValue(messageHeaderId);
+        //        if (messageHeaderDTO != null)
+        //        {
+        //            reportMessageRead(messageHeaderDTO);
+        //        }
+        //    }
+        //}
     }
 
     private void fetchCorrespondentProfile()
@@ -228,6 +306,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)
     {
+        addComment(discussionDTO);
         // TODO Move into DTOProcessor?
         messageHeaderListCache.invalidateWithRecipient(correspondentId);
     }

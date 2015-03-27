@@ -6,7 +6,6 @@ import dagger.Module;
         includes = {
         },
         injects = {
-                AlertViewFragmentTest.class,
         },
         complete = false,
         library = true

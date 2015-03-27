@@ -141,6 +141,63 @@ public class SocialShareTranslationHelper extends SocialShareHelper
                 });
     }
 
+    @NonNull public Observable<TranslateFlags> getTranslateFlags(@NonNull final AbstractDiscussionCompactDTO discussionToTranslate)
+    {
+        return translationTokenCache.getOne(new TranslationTokenKey())
+                .map(new Func1<Pair<TranslationTokenKey, TranslationToken>, TranslateFlags>()
+                {
+                    @Override public TranslateFlags call(Pair<TranslationTokenKey, TranslationToken> tokenPair)
+                    {
+                        UserTranslationSettingDTO setting = null;
+                        try
+                        {
+                            setting = userTranslationSettingPreference.getOfSameTypeOrDefault(tokenPair.second);
+                        } catch (IOException e)
+                        {
+                            e.printStackTrace();
+                        }
+
+                        String targetLanguage;
+                        if (setting != null)
+                        {
+                            targetLanguage = setting.languageCode;
+                        }
+                        else
+                        {
+                            targetLanguage = applicationContext.getResources().getConfiguration().locale.getLanguage();
+                        }
+
+                        boolean canTranslate = tokenPair.second != null &&
+                                TranslationKeyFactory.isValidLangCode(discussionToTranslate.langCode) &&
+                                discussionToTranslate.langCode != null &&
+                                !discussionToTranslate.langCode.equals(targetLanguage);
+                        boolean autoTranslate = setting != null && setting.autoTranslate;
+                        return new TranslateFlags(
+                                discussionToTranslate,
+                                canTranslate,
+                                autoTranslate);
+                    }
+                });
+    }
+
+    @NonNull public <T extends AbstractDiscussionCompactDTO> Observable<Pair<T, Boolean>> canTranslate(@NonNull Observable<T> discussionsToTranslate)
+    {
+        return discussionsToTranslate.flatMap(new Func1<T, Observable<Pair<T, Boolean>>>()
+        {
+            @Override public Observable<Pair<T, Boolean>> call(final T discussionCompactDTO)
+            {
+                return canTranslate(discussionCompactDTO)
+                        .map(new Func1<Boolean, Pair<T, Boolean>>()
+                        {
+                            @Override public Pair<T, Boolean> call(Boolean canTranslate)
+                            {
+                                return Pair.create(discussionCompactDTO, canTranslate);
+                            }
+                        });
+            }
+        });
+    }
+
     @NonNull @Override protected Observable<Pair<Dialog, ShareDialogLayout>> createDialog(@NonNull final DTO whatToShare)
     {
         return Observable.just(whatToShare)
@@ -209,7 +266,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
                             ;
                         }
                     })
-                    //.onErrorResumeNext(Observable.empty())
+                            //.onErrorResumeNext(Observable.empty())
                     .toList()
                     .map(new Func1<List<? extends Pair<TranslationKey, TranslationResult>>, TranslateResult>()
                     {
@@ -220,5 +277,21 @@ public class SocialShareTranslationHelper extends SocialShareHelper
                     });
         }
         return Observable.empty();
+    }
+
+    public static class TranslateFlags
+    {
+        @NonNull public final AbstractDiscussionCompactDTO discussion;
+        public final boolean canTranslate;
+        public final boolean autoTranslate;
+
+        public TranslateFlags(@NonNull AbstractDiscussionCompactDTO discussion,
+                boolean canTranslate,
+                boolean autoTranslate)
+        {
+            this.discussion = discussion;
+            this.canTranslate = canTranslate;
+            this.autoTranslate = autoTranslate;
+        }
     }
 }

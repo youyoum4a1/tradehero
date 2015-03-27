@@ -1,68 +1,67 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
-import android.os.Bundle;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.PopupMenu;
 import com.tradehero.common.rx.PopupMenuItemClickOperator;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.fragments.alert.AlertCreateFragment;
-import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
 import com.tradehero.th.fragments.discussion.DiscussionActionButtonsView;
-import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
-import com.tradehero.th.fragments.news.NewsItemViewHolder;
-import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
-import javax.inject.Inject;
+import com.tradehero.th.models.discussion.UserDiscussionAction;
+import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.subjects.PublishSubject;
 
-public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLinear<TimelineItemDTO>
+public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLinear
 {
-    @Inject CurrentUserId currentUserId;
-    @Inject Lazy<WatchlistPositionCacheRx> watchlistPositionCache;
-    @Inject Analytics analytics;
+    @NonNull private final PublishSubject<UserDiscussionAction> userActionSubject;
 
+    //<editor-fold desc="Constructors">
     public TimelineItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        userActionSubject = PublishSubject.create();
     }
+    //</editor-fold>
 
     @NonNull @Override protected TimelineItemViewHolder createViewHolder()
     {
-        return new TimelineItemViewHolder<>(getContext());
+        return new TimelineItemViewHolder();
     }
 
-    private void translate()
+    @NonNull @Override public Observable<UserDiscussionAction> getUserActionObservable()
     {
-        socialShareHelper.translate(abstractDiscussionCompactDTO);
+        return super.getUserActionObservable().mergeWith(userActionSubject);
     }
 
     //<editor-fold desc="Popup dialog">
-    @NonNull @Override protected Observable<DiscussionActionButtonsView.UserAction> handleUserAction(
-            DiscussionActionButtonsView.UserAction userAction)
+    @NonNull @Override protected Observable<UserDiscussionAction> handleUserAction(
+            final UserDiscussionAction userAction)
     {
         if (userAction instanceof DiscussionActionButtonsView.MoreUserAction)
         {
-            return createActionPopupMenu()
+            final SecurityId securityId;
+            if (userAction.discussionDTO instanceof TimelineItemDTO)
+            {
+                securityId = ((TimelineItemDTO) userAction.discussionDTO).createFlavorSecurityIdForDisplay();
+            }
+            else
+            {
+                securityId = null;
+            }
+            return createActionPopupMenu(userAction.discussionDTO, securityId)
                     .flatMap(new Func1<PopupMenu, Observable<? extends MenuItem>>()
                     {
                         @Override public Observable<? extends MenuItem> call(PopupMenu popupMenu)
@@ -70,44 +69,53 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
                             return Observable.create(new PopupMenuItemClickOperator(popupMenu, true));
                         }
                     })
-                    .flatMap(new Func1<MenuItem, Observable<? extends DiscussionActionButtonsView.UserAction>>()
+                    .flatMap(new Func1<MenuItem, Observable<? extends UserDiscussionAction>>()
                     {
-                        @Override public Observable<? extends DiscussionActionButtonsView.UserAction> call(MenuItem menuItem)
+                        @Override public Observable<? extends UserDiscussionAction> call(MenuItem menuItem)
                         {
-                            Boolean ignored = TimelineItemViewLinear.this.handleMenuItemClicked(menuItem);
+                            switch (menuItem.getItemId())
+                            {
+                                case R.id.timeline_action_add_to_watchlist:
+                                    if (securityId != null)
+                                    {
+                                        return Observable.just(new OpenWatchlistUserAction(userAction.discussionDTO, securityId));
+                                    }
+                                    return Observable.just(userAction);
+
+                                case R.id.timeline_action_add_alert:
+                                    if (securityId != null)
+                                    {
+                                        return Observable.just(new OpenStockAlertUserAction(userAction.discussionDTO, securityId));
+                                    }
+                                    return Observable.just(userAction);
+
+                                case R.id.timeline_popup_menu_buy_sell:
+                                    if (securityId != null)
+                                    {
+                                        return Observable.just(new TimelineItemViewHolder.SecurityUserAction(userAction.discussionDTO, securityId));
+                                    }
+                                    return Observable.just(userAction);
+                            }
                             return Observable.empty();
                         }
                     });
         }
-        if (userAction instanceof DiscussionActionButtonsView.CommentUserAction)
-        {
-            openTimelineDiscussion();
-            return Observable.empty();
-        }
-        if (userAction instanceof AbstractDiscussionItemViewHolder.PlayerUserAction)
-        {
-            openOtherTimeline();
-            return Observable.empty();
-        }
-        if (userAction instanceof NewsItemViewHolder.SecurityUserAction)
-        {
-            openSecurityProfile();
-            return Observable.empty();
-        }
         return super.handleUserAction(userAction);
     }
 
-    @NonNull private Observable<PopupMenu> createActionPopupMenu()
+    @NonNull private Observable<PopupMenu> createActionPopupMenu(
+            @NonNull AbstractDiscussionCompactDTO discussionCompactDTO,
+            @Nullable SecurityId securityId)
     {
         final PopupMenu popupMenu = new PopupMenu(getContext(), findViewById(R.id.discussion_action_button_more));
         final MenuInflater menuInflater = popupMenu.getMenuInflater();
 
-        if (((TimelineItemViewHolder) viewHolder).canShowStockMenu())
+        if (securityId != null)
         {
             menuInflater.inflate(R.menu.timeline_stock_popup_menu, popupMenu.getMenu());
         }
 
-        return socialShareHelper.canTranslate(abstractDiscussionCompactDTO)
+        return socialShareHelper.canTranslate(discussionCompactDTO)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<Boolean, PopupMenu>()
                 {
@@ -122,123 +130,68 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
                 });
     }
 
-    public boolean handleMenuItemClicked(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.timeline_action_add_to_watchlist:
-            {
-                openWatchlistEditor();
-                return true;
-            }
-
-            case R.id.timeline_action_add_alert:
-                openStockAlertEditor();
-                return true;
-
-            case R.id.timeline_popup_menu_buy_sell:
-            {
-                openSecurityProfile();
-                return true;
-            }
-
-            case R.id.timeline_action_translate:
-                translate();
-                break;
-        }
-        return false;
-    }
-
-    protected SecurityId getSecurityId()
-    {
-        if (abstractDiscussionCompactDTO instanceof TimelineItemDTO)
-        {
-            return ((TimelineItemDTO) abstractDiscussionCompactDTO).createFlavorSecurityIdForDisplay();
-        }
-        return null;
-    }
     //</editor-fold>
 
-    protected void openTimelineDiscussion()
+    public static class Requisite extends AbstractDiscussionCompactItemViewLinear.Requisite
     {
-        try
-        {
-            if (discussionKey != null)
-            {
-                Bundle args = new Bundle();
-                TimelineDiscussionFragment.putDiscussionKey(args, discussionKey.getDiscussionKey());
-                getNavigator().pushFragment(TimelineDiscussionFragment.class, args);
-            }
-        }
-        catch (java.lang.ClassCastException e)
-        {
+        public final boolean onWatchlist;
 
-        }
-    }
-
-    protected void openOtherTimeline()
-    {
-        if (abstractDiscussionCompactDTO instanceof TimelineItemDTO)
+        public Requisite(
+                @NonNull Resources resources,
+                @NonNull PrettyTime prettyTime,
+                @NonNull TimelineItemDTO discussionDTO,
+                boolean canTranslate,
+                boolean isAutoTranslate,
+                boolean onWatchlist)
         {
-            UserProfileCompactDTO user = ((TimelineItemDTO) abstractDiscussionCompactDTO).getUser();
-            if (user != null)
-            {
-                if (currentUserId.get() != user.id)
-                {
-                    Bundle bundle = new Bundle();
-                    TimelineFragment.putUserBaseKey(bundle, new UserBaseKey(user.id));
-                    getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
-                }
-            }
+            super(resources, prettyTime, discussionDTO, canTranslate, isAutoTranslate);
+            this.onWatchlist = onWatchlist;
         }
     }
 
-    protected void openSecurityProfile()
+    public static class DTO extends AbstractDiscussionCompactItemViewLinear.DTO
     {
-        if (abstractDiscussionCompactDTO instanceof TimelineItemDTO)
+        public DTO(@NonNull Requisite requisite)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_BuySell));
+            super(requisite);
+        }
 
-            SecurityMediaDTO flavorSecurityForDisplay = ((TimelineItemDTO) abstractDiscussionCompactDTO).getFlavorSecurityForDisplay();
-            if (flavorSecurityForDisplay != null && flavorSecurityForDisplay.securityId != 0)
-            {
-                SecurityId securityId = new SecurityId(flavorSecurityForDisplay.exchange, flavorSecurityForDisplay.symbol);
-                Bundle args = new Bundle();
-                BuySellStockFragment.putSecurityId(args, securityId);
-
-                getNavigator().pushFragment(BuySellStockFragment.class, args);
-            }
+        @NonNull @Override protected AbstractDiscussionCompactItemViewHolder.DTO createViewHolderDTO(
+                @NonNull AbstractDiscussionCompactItemViewLinear.Requisite requisite)
+        {
+            return new TimelineItemViewHolder.DTO(
+                    new TimelineItemViewHolder.Requisite(
+                            requisite.resources,
+                            requisite.prettyTime,
+                            (TimelineItemDTO) requisite.discussionDTO,
+                            requisite.canTranslate,
+                            requisite.isAutoTranslate,
+                            ((Requisite) requisite).onWatchlist));
         }
     }
 
-    private void openStockAlertEditor()
+    public static class OpenWatchlistUserAction extends UserDiscussionAction
     {
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_Alert));
+        @NonNull public final SecurityId securityId;
 
-        Bundle args = new Bundle();
-        AlertCreateFragment.putSecurityId(args, getSecurityId());
-        getNavigator().pushFragment(AlertCreateFragment.class, args);
+        public OpenWatchlistUserAction(@NonNull AbstractDiscussionCompactDTO discussionDTO,
+                @NonNull SecurityId securityId)
+        {
+            super(discussionDTO);
+            this.securityId = securityId;
+        }
     }
 
-    private void openWatchlistEditor()
+    public static class OpenStockAlertUserAction extends UserDiscussionAction
     {
-        // TODO make it so that it needs SecurityId
-        Bundle args = new Bundle();
-        SecurityId securityId = getSecurityId();
-        if (securityId != null)
+        @NonNull public final SecurityId securityId;
+
+        public OpenStockAlertUserAction(
+                @NonNull AbstractDiscussionCompactDTO discussionDTO,
+                @NonNull SecurityId securityId)
         {
-            WatchlistEditFragment.putSecurityId(args, securityId);
-            if (watchlistPositionCache.get().getCachedValue(securityId) != null)
-            {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
-                ActionBarOwnerMixin.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
-            }
-            else
-            {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
-                ActionBarOwnerMixin.putActionBarTitle(args, getContext().getString(R.string.watchlist_add_title));
-            }
+            super(discussionDTO);
+            this.securityId = securityId;
         }
-        getNavigator().pushFragment(WatchlistEditFragment.class, args, null);
     }
 }

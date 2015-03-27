@@ -3,8 +3,10 @@ package com.tradehero.th.fragments.social.message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
+import android.view.View;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
@@ -35,6 +37,17 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         unsubscribe(messageThreadHeaderFetchSubscription);
         messageThreadHeaderFetchSubscription = null;
         super.onDestroyView();
+    }
+
+    @Nullable @Override protected View inflateTopicView()
+    {
+        return null; // TODO better?
+    }
+
+    @Override protected void displayTopic(@NonNull AbstractDiscussionCompactDTO discussionDTO)
+    {
+        super.displayTopic(discussionDTO);
+        // TODO Nothing else to do?
     }
 
     protected void fetchMessageThreadHeader()

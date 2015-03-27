@@ -22,10 +22,9 @@
         android:layout_height="@dimen/big_image_w_h"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/superman_facebook"
         android:padding="1dp"
-        android:src="@drawable/avatar"
         android:contentDescription="@null"
+        tools:src="@drawable/superman_facebook"
         />
 
     <RelativeLayout

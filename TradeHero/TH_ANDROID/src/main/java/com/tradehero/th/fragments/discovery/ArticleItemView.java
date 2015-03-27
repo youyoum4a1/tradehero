@@ -1,81 +1,57 @@
 package com.tradehero.th.fragments.discovery;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.article.ArticleInfoDTO;
-import com.tradehero.th.inject.HierarchyInjector;
-import javax.inject.Inject;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import org.ocpsoft.prettytime.PrettyTime;
 
-/**
- * Created by Tho Nguyen on 11/21/2014.
- */
-public class ArticleItemView extends LinearLayout
-        implements DTOView<ArticleInfoDTO>
+public class ArticleItemView extends AbstractDiscussionCompactItemViewLinear
 {
-    @InjectView(R.id.article_title) TextView mArticleTitle;
-    @InjectView(R.id.article_description) TextView mArticleDescription;
-    @InjectView(R.id.article_image) ImageView imageView;
-    @Inject Picasso picasso;
-
-    private ArticleInfoDTO articleInfoDTO;
-
     public ArticleItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    @Override protected void onFinishInflate()
+    @NonNull @Override protected ArticleItemViewHolder createViewHolder()
     {
-        super.onFinishInflate();
-
-        HierarchyInjector.inject(this);
-        ButterKnife.inject(this);
+        return new ArticleItemViewHolder();
     }
 
-    @Override protected void onDetachedFromWindow()
+    public static class Requisite extends AbstractDiscussionCompactItemViewLinear.Requisite
     {
-        super.onDetachedFromWindow();
-        picasso.cancelRequest(imageView);
-    }
-
-    @Override public void display(ArticleInfoDTO articleInfoDTO)
-    {
-        this.articleInfoDTO = articleInfoDTO;
-
-        displayArticleImage();
-        displayArticleTitle();
-        displayArticlePreview();
-    }
-
-    private void displayArticleImage()
-    {
-        picasso.load(articleInfoDTO.image)
-                // TODO better placeholder images showing that image is still being loaded
-                .placeholder(R.drawable.card_item_top_bg)
-                .into(imageView);
-    }
-
-    private void displayArticlePreview()
-    {
-        if (mArticleDescription != null)
+        public Requisite(
+                @NonNull Resources resources,
+                @NonNull PrettyTime prettyTime,
+                @NonNull ArticleInfoDTO discussionDTO,
+                boolean canTranslate,
+                boolean isAutoTranslate)
         {
-            mArticleDescription.setText(articleInfoDTO.previewText);
+            super(resources, prettyTime, discussionDTO, canTranslate, isAutoTranslate);
         }
     }
 
-    private void displayArticleTitle()
+    public static class DTO extends AbstractDiscussionCompactItemViewLinear.DTO
     {
-        if (mArticleTitle != null)
+        public DTO(@NonNull Requisite requisite)
         {
-            mArticleTitle.setText(articleInfoDTO.headline);
+            super(requisite);
+        }
+
+        @NonNull @Override
+        protected AbstractDiscussionCompactItemViewHolder.DTO createViewHolderDTO(
+                @NonNull AbstractDiscussionCompactItemViewLinear.Requisite requisite)
+        {
+            return new ArticleItemViewHolder.DTO(
+                    new ArticleItemViewHolder.Requisite(
+                            requisite.resources,
+                            requisite.prettyTime,
+                            (ArticleInfoDTO) requisite.discussionDTO,
+                            requisite.canTranslate,
+                            requisite.isAutoTranslate));
         }
     }
 }

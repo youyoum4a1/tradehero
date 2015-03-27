@@ -4,33 +4,39 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.tradehero.th.models.discussion.UserDiscussionAction;
 import java.util.ArrayList;
 import java.util.List;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemCompactDTO, NewsHeadlineViewLinear>
+public class NewsHeadlineAdapter extends ArrayDTOAdapter<AbstractDiscussionCompactItemViewLinear.DTO, NewsHeadlineViewLinear>
 {
-
     public Integer[] backgrounds = null;
     private Integer[] backgroundsArr = null;
 
-    @Nullable private SecurityId securityId = null;
+    @NonNull private final PublishSubject<UserDiscussionAction> userActionSubject;
 
     //<editor-fold desc="Constructors">
     public NewsHeadlineAdapter(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
-        setItems(new ArrayList<NewsItemCompactDTO>());
+        this.userActionSubject = PublishSubject.create();
+        setItems(new ArrayList<AbstractDiscussionCompactItemViewLinear.DTO>());
         loadBackground();
     }
     //</editor-fold>
+
+    @NonNull public Observable<UserDiscussionAction> getUserActionObservable()
+    {
+        return userActionSubject.asObservable();
+    }
 
     private void loadBackground()
     {
@@ -72,21 +78,15 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemCompactDTO, New
     }
 
     @Override
-    public void setItems(@NonNull List<NewsItemCompactDTO> items)
+    public void setItems(@NonNull List<AbstractDiscussionCompactItemViewLinear.DTO> items)
     {
         super.setItems(items);
         setBackgroundsArray();
     }
 
-    public void setSecurityId(SecurityId securityId)
-    {
-        this.securityId = securityId;
-    }
-
     @Override
-    protected void fineTune(final int position, NewsItemCompactDTO dto, final NewsHeadlineViewLinear dtoView)
+    protected void fineTune(final int position, AbstractDiscussionCompactItemViewLinear.DTO dto, final NewsHeadlineViewLinear dtoView)
     {
-        dtoView.linkWithSecurityId(securityId);
         try
         {
             if (backgroundsArr[position] != null)
@@ -95,7 +95,7 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemCompactDTO, New
             }
             else
             {
-                int index = dto.id % backgrounds.length;
+                int index = dto.viewHolderDTO.discussionDTO.id % backgrounds.length;
                 backgroundsArr[position] = backgrounds[index];
                 dtoView.setNewsBackgroundResource(backgrounds[index]);
             }
@@ -117,6 +117,13 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemCompactDTO, New
         {
             view.setBackgroundResource(R.color.lb_item_odd);
         }
+        return view;
+    }
+
+    @Override protected View inflate(int position, ViewGroup viewGroup)
+    {
+        View view = super.inflate(position, viewGroup);
+        ((NewsHeadlineViewLinear) view).getUserActionObservable().subscribe(userActionSubject);
         return view;
     }
 }

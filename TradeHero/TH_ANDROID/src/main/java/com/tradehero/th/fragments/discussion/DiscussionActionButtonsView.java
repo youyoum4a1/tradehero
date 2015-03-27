@@ -13,9 +13,10 @@ import butterknife.Optional;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.widget.VotePair;
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 public class DiscussionActionButtonsView extends LinearLayout
 {
@@ -30,28 +31,28 @@ public class DiscussionActionButtonsView extends LinearLayout
     protected boolean downVote = HAS_DOWN_VOTE;
     private boolean showMore = DEFAULT_SHOW_MORE;
     protected AbstractDiscussionCompactDTO discussionDTO;
-    @NonNull protected BehaviorSubject<UserAction> userActionBehavior;
+    @NonNull protected PublishSubject<UserDiscussionAction> userActionBehavior;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
     public DiscussionActionButtonsView(Context context)
     {
         super(context);
-        this.userActionBehavior = BehaviorSubject.create();
+        this.userActionBehavior = PublishSubject.create();
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public DiscussionActionButtonsView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        this.userActionBehavior = BehaviorSubject.create();
+        this.userActionBehavior = PublishSubject.create();
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public DiscussionActionButtonsView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        this.userActionBehavior = BehaviorSubject.create();
+        this.userActionBehavior = PublishSubject.create();
     }
     //</editor-fold>
 
@@ -70,15 +71,22 @@ public class DiscussionActionButtonsView extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        this.userActionBehavior.onCompleted();
-        this.userActionBehavior = BehaviorSubject.create();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
-    @NonNull public Observable<UserAction> getUserActionObservable()
+    @NonNull public Observable<UserDiscussionAction> getUserActionObservable()
     {
-        return userActionBehavior.asObservable();
+        Observable<UserDiscussionAction> voteObservable;
+        if (votePair != null)
+        {
+            voteObservable = votePair.getUserActionObservable();
+        }
+        else
+        {
+            voteObservable = Observable.empty();
+        }
+        return userActionBehavior.mergeWith(voteObservable);
     }
 
     public void setDownVote(boolean downVote)
@@ -148,36 +156,44 @@ public class DiscussionActionButtonsView extends LinearLayout
     @OnClick(R.id.discussion_action_button_comment_count) @Optional
     protected void handleCommentButtonClicked(View view)
     {
-        userActionBehavior.onNext(new CommentUserAction());
+        userActionBehavior.onNext(new CommentUserAction(discussionDTO));
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.discussion_action_button_share) @Optional
     protected void handleShareButtonClicked(View view)
     {
-        userActionBehavior.onNext(new ShareUserAction());
+        userActionBehavior.onNext(new ShareUserAction(discussionDTO));
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.discussion_action_button_more) @Optional
     protected void handleMoreButtonClicked(View view)
     {
-        userActionBehavior.onNext(new MoreUserAction());
+        userActionBehavior.onNext(new MoreUserAction(discussionDTO));
     }
 
-    public interface UserAction
+    public static class CommentUserAction extends UserDiscussionAction
     {
+        public CommentUserAction(@NonNull AbstractDiscussionCompactDTO discussionDTO)
+        {
+            super(discussionDTO);
+        }
     }
 
-    public static class CommentUserAction implements UserAction
+    public static class ShareUserAction extends UserDiscussionAction
     {
+        public ShareUserAction(@NonNull AbstractDiscussionCompactDTO discussionDTO)
+        {
+            super(discussionDTO);
+        }
     }
 
-    public static class ShareUserAction implements UserAction
+    public static class MoreUserAction extends UserDiscussionAction
     {
-    }
-
-    public static class MoreUserAction implements UserAction
-    {
+        public MoreUserAction(@NonNull AbstractDiscussionCompactDTO discussionDTO)
+        {
+            super(discussionDTO);
+        }
     }
 }

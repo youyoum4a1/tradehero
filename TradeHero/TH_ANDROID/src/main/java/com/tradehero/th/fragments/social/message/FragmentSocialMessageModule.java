@@ -6,8 +6,6 @@ import dagger.Module;
         injects = {
                 NewPrivateMessageFragment.class,
                 ReplyPrivateMessageFragment.class,
-                PrivateDiscussionView.class,
-                PrivateMessageBubbleViewLinear.class,
                 AbstractPrivateMessageFragment.class,
                 PrivatePostCommentView.class,
         },

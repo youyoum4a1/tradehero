@@ -1,11 +1,12 @@
 package com.tradehero.th.api.news;
 
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
 
 public class NewsItemSourceDTO
     implements DTO
 {
-    public Integer id;
+    @Nullable public Integer id;
     public String rssSource;
     public String rootName;
     public String url;

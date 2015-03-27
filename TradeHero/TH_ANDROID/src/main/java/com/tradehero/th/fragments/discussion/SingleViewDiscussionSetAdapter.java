@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
 import java.util.Collection;
 
 public class SingleViewDiscussionSetAdapter extends DiscussionSetAdapter
@@ -22,7 +21,7 @@ public class SingleViewDiscussionSetAdapter extends DiscussionSetAdapter
 
     public SingleViewDiscussionSetAdapter(
             @NonNull Context context,
-            @Nullable Collection<DiscussionKey> objects,
+            @Nullable Collection<AbstractDiscussionCompactItemViewLinear.DTO> objects,
             @LayoutRes int layoutResId)
     {
         super(context, objects);

@@ -1,16 +1,17 @@
 package com.tradehero.th.fragments.discussion.stock;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.fragments.discussion.DiscussionActionButtonsView;
 import com.tradehero.th.fragments.discussion.DiscussionItemViewLinear;
+import com.tradehero.th.models.discussion.UserDiscussionAction;
 import rx.Observable;
+import rx.functions.Func1;
 
 public class SecurityDiscussionItemViewLinear
-        extends DiscussionItemViewLinear<DiscussionKey>
+        extends DiscussionItemViewLinear
 {
     //<editor-fold desc="Constructors">
     public SecurityDiscussionItemViewLinear(Context context, AttributeSet attrs)
@@ -31,25 +32,27 @@ public class SecurityDiscussionItemViewLinear
         viewHolder.setDownVote(false);
     }
 
-    @NonNull @Override protected Observable<DiscussionActionButtonsView.UserAction> handleUserAction(
-            DiscussionActionButtonsView.UserAction userAction)
+    @NonNull @Override public Observable<UserDiscussionAction> getUserActionObservable()
     {
-        if (userAction instanceof DiscussionActionButtonsView.CommentUserAction)
-        {
-            handleActionButtonCommentCountClicked();
-            return Observable.empty();
-        }
-        return super.handleUserAction(userAction);
+        return super.getUserActionObservable()
+                .map(new Func1<UserDiscussionAction, UserDiscussionAction>()
+                {
+                    @Override public UserDiscussionAction call(UserDiscussionAction userDiscussionAction)
+                    {
+                        if (userDiscussionAction instanceof DiscussionActionButtonsView.CommentUserAction)
+                        {
+                            return new CommentUserAction(userDiscussionAction.discussionDTO);
+                        }
+                        return userDiscussionAction;
+                    }
+                });
     }
 
-    void handleActionButtonCommentCountClicked()
+    public static class CommentUserAction extends UserDiscussionAction
     {
-        Bundle args = new Bundle();
-        SecurityDiscussionCommentFragment.putDiscussionKey(args, discussionKey);
-        if (getNavigator().getCurrentFragment() != null && getNavigator().getCurrentFragment() instanceof SecurityDiscussionCommentFragment)
+        public CommentUserAction(@NonNull AbstractDiscussionCompactDTO discussionDTO)
         {
-            return;
+            super(discussionDTO);
         }
-        getNavigator().pushFragment(SecurityDiscussionCommentFragment.class, args);
     }
 }

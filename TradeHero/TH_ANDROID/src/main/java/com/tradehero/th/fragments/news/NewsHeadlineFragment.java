@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.news;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,31 +19,35 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.news.key.NewsItemListKey;
 import com.tradehero.th.api.news.key.NewsItemListSecurityKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinearDTOFactory;
+import com.tradehero.th.fragments.discussion.DiscussionFragmentUtil;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
+import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 /**
@@ -54,8 +59,9 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
 {
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject NewsItemCompactListCacheRx newsTitleCache;
-    @Inject protected DiscussionCacheRx discussionCache;
     @Inject Lazy<DashboardNavigator> navigator;
+    @Inject AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
+    @Inject DiscussionFragmentUtil discussionFragmentUtil;
     @InjectView(R.id.list_news_headline_wrapper) BetterViewAnimator listViewWrapper;
     @InjectView(R.id.list_news_headline) ListView listView;
     @InjectView(R.id.list_news_headline_progressbar) ProgressBar progressBar;
@@ -64,21 +70,25 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     @Inject Analytics analytics;
 
     private NewsHeadlineAdapter adapter;
-    private PaginatedDTO<NewsItemCompactDTO> paginatedNews;
 
     @Nullable Subscription securitySubscription;
     @Nullable Subscription securityNewsSubscription;
+    protected SubscriptionList onStopSubscriptions;
 
     public static final String TEST_KEY = "News-Test";
     public static long start = 0;
+
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        adapter = new NewsHeadlineAdapter(activity, R.layout.news_headline_item_view);
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         HierarchyInjector.inject(this);
         start = System.currentTimeMillis();
-        adapter = new NewsHeadlineAdapter(getActivity(),
-                R.layout.news_headline_item_view);
     }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -96,8 +106,16 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         listView.setOnScrollListener(dashboardTabListViewScrollListener);
     }
 
+    @Override public void onStart()
+    {
+        super.onStart();
+        onStopSubscriptions = new SubscriptionList();
+        registerUserActions();
+    }
+
     @Override public void onStop()
     {
+        onStopSubscriptions.unsubscribe();
         unsubscribe(securitySubscription);
         securitySubscription = null;
         unsubscribe(securityNewsSubscription);
@@ -183,71 +201,79 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
                 this,
                 newsTitleCache.get(listKey))
                 .map(new PairGetSecond<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>())
-                .subscribe(
-                        new Action1<PaginatedDTO<NewsItemCompactDTO>>()
+                .flatMap(new Func1<PaginatedDTO<NewsItemCompactDTO>, Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>>>()
+                {
+                    @Override public Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> call(
+                            PaginatedDTO<NewsItemCompactDTO> newsItemCompactDTOPaginatedDTO)
+                    {
+                        List<NewsItemCompactDTO> newsItems = newsItemCompactDTOPaginatedDTO.getData();
+                        if (newsItems == null)
                         {
-                            @Override public void call(PaginatedDTO<NewsItemCompactDTO> paginatedDTO)
+                            return Observable.empty();
+                        }
+                        return viewDTOFactory.createNewsHeadlineViewLinearDTOs(newsItems);
+                    }
+                })
+                .subscribe(
+                        new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>()
+                        {
+                            @Override public void call(List<AbstractDiscussionCompactItemViewLinear.DTO> dtos)
                             {
-                                linkWith(paginatedDTO);
+                                adapter.setItems(dtos);
+                                listViewWrapper.setDisplayedChildByLayoutId(listView.getId());
                             }
                         },
                         new ToastAction<Throwable>(getString(R.string.error_fetch_security_info)));
     }
 
-    public void linkWith(PaginatedDTO<NewsItemCompactDTO> news)
+    protected void registerUserActions()
     {
-        paginatedNews = news;
-        displayNewsListView();
-        showNewsList();
+        onStopSubscriptions.add(AppObservable.bindFragment(
+                this,
+                adapter.getUserActionObservable())
+                .flatMap(new Func1<UserDiscussionAction, Observable<UserDiscussionAction>>()
+                {
+                    @Override public Observable<UserDiscussionAction> call(UserDiscussionAction userDiscussionAction)
+                    {
+                        return discussionFragmentUtil.handleUserAction(getActivity(), userDiscussionAction);
+                    }
+                })
+                .subscribe(
+                        new Action1<UserDiscussionAction>()
+                        {
+                            @Override public void call(UserDiscussionAction userDiscussionAction)
+                            {
+                                Timber.e(new Exception(), "Unhandled " + userDiscussionAction);
+                            }
+                        },
+                        new TimberOnErrorAction("When registering actions")));
     }
 
     @Override public void display()
     {
         Timber.d("%s display consume: %s", TEST_KEY, (System.currentTimeMillis() - start));
-        displayNewsListView();
-
         showNewsList();
-    }
-
-    public void displayNewsListView()
-    {
-        if (!isDetached() && adapter != null && paginatedNews != null)
-        {
-            List<NewsItemCompactDTO> data = paginatedNews.getData();
-            List<NewsItemDTOKey> newsItemDTOKeyList = new ArrayList<>();
-
-            if (data != null)
-            {
-                for (NewsItemCompactDTO newsItemDTO : data)
-                {
-                    newsItemDTOKeyList.add(newsItemDTO.getDiscussionKey());
-                }
-            }
-            adapter.setSecurityId(securityId);
-            adapter.setItems(data);
-            adapter.notifyDataSetChanged();
-        }
     }
 
     @SuppressWarnings({"UnusedDeclaration", "UnusedParameters"})
     @OnItemClick(R.id.list_news_headline)
     protected void listItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        Object o = parent.getItemAtPosition(position);
+        NewsItemCompactDTO news = (NewsItemCompactDTO) ((NewsHeadlineViewLinear.DTO) parent.getItemAtPosition(position)).viewHolderDTO.discussionDTO;
         Bundle bundle = new Bundle();
-        if (o instanceof NewsItemCompactDTO && ((NewsItemCompactDTO) o).url != null)
+        if (news.url != null)
         {
-            NewsWebFragment.putUrl(bundle, ((NewsItemCompactDTO) o).url);
+            NewsWebFragment.putUrl(bundle, news.url);
             NewsWebFragment.putPreviousScreen(bundle, AnalyticsConstants.NewsSecurityScreen);
             navigator.get().pushFragment(NewsWebFragment.class, bundle);
         }
-        else if (o instanceof NewsItemCompactDTO)
+        else
         {
-            if (((NewsItemCompactDTO) o).topReferencedSecurity != null)
+            if (news.topReferencedSecurity != null)
             {
-                NewsDiscussionFragment.putSecuritySymbol(bundle, ((NewsItemCompactDTO) o).topReferencedSecurity.getExchangeSymbol());
+                NewsDiscussionFragment.putSecuritySymbol(bundle, news.topReferencedSecurity.getExchangeSymbol());
             }
-            NewsDiscussionFragment.putDiscussionKey(bundle, ((AbstractDiscussionCompactDTO) o).getDiscussionKey());
+            NewsDiscussionFragment.putDiscussionKey(bundle, news.getDiscussionKey());
             navigator.get().pushFragment(NewsDiscussionFragment.class, bundle);
         }
     }

@@ -1,24 +1,17 @@
 package com.tradehero.th.fragments.news;
 
 import android.content.Context;
-import android.os.Bundle;
+import android.content.res.Resources;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.View;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
-import com.tradehero.th.fragments.discussion.DiscussionActionButtonsView;
-import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
-import rx.Observable;
+import org.ocpsoft.prettytime.PrettyTime;
 
-public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLinear<NewsItemCompactDTO>
+public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLinear
 {
-    @Nullable private SecurityId securityId;
-    @DrawableRes private int backgroundResourceId = -1;
-
     //<editor-fold desc="Constructors">
     public NewsHeadlineViewLinear(Context context, AttributeSet attrs)
     {
@@ -28,58 +21,44 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
 
     @NonNull @Override protected NewsItemCompactViewHolder createViewHolder()
     {
-        return new NewsItemCompactViewHolder<>(getContext());
-    }
-
-    @Override public void display(NewsItemCompactDTO discussionKey)
-    {
-        super.display(discussionKey);
+        return new NewsItemCompactViewHolder();
     }
 
     public void setNewsBackgroundResource(@DrawableRes int resId)
     {
-        this.backgroundResourceId = resId;
+        viewHolder.setBackgroundResource(resId);
+    }
 
-        if (viewHolder != null)
+    public static class Requisite extends AbstractDiscussionCompactItemViewLinear.Requisite
+    {
+        public Requisite(
+                @NonNull Resources resources,
+                @NonNull PrettyTime prettyTime,
+                @NonNull NewsItemCompactDTO discussionDTO,
+                boolean canTranslate,
+                boolean isAutoTranslate)
         {
-            viewHolder.setBackgroundResource(resId);
+            super(resources, prettyTime, discussionDTO, canTranslate, isAutoTranslate);
         }
     }
 
-    public void linkWithSecurityId(SecurityId securityId)
+    public static class DTO extends AbstractDiscussionCompactItemViewLinear.DTO
     {
-        this.securityId = securityId;
-    }
-
-    @NonNull @Override protected Observable<DiscussionActionButtonsView.UserAction> handleUserAction(
-            DiscussionActionButtonsView.UserAction userAction)
-    {
-        if (userAction instanceof DiscussionActionButtonsView.CommentUserAction)
+        public DTO(@NonNull Requisite requisite)
         {
-            pushDiscussionFragment();
-            return Observable.empty();
+            super(requisite);
         }
-        return super.handleUserAction(userAction);
-    }
 
-    protected void pushDiscussionFragment()
-    {
-        if (discussionKey != null)
+        @NonNull @Override protected AbstractDiscussionCompactItemViewHolder.DTO createViewHolderDTO(
+                @NonNull AbstractDiscussionCompactItemViewLinear.Requisite requisite)
         {
-
-            Bundle args = new Bundle();
-            //NewsDiscussionFragment.putDiscussionKey(args, discussionKey);
-            if(backgroundResourceId > 0)
-            {
-                NewsDiscussionFragment.putBackgroundResId(args, backgroundResourceId);
-            }
-
-            if(securityId != null)
-            {
-                NewsDiscussionFragment.putSecuritySymbol(args, securityId.getSecuritySymbol());
-            }
-
-            getNavigator().pushFragment(NewsDiscussionFragment.class, args);
+            return new NewsItemCompactViewHolder.DTO(
+                    new NewsItemCompactViewHolder.Requisite(
+                            requisite.resources,
+                            requisite.prettyTime,
+                            (NewsItemCompactDTO) requisite.discussionDTO,
+                            requisite.canTranslate,
+                            requisite.isAutoTranslate));
         }
     }
 }

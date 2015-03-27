@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.discussion;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemViewLinear;
-import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionView;
 import dagger.Module;
 
 @Module(
@@ -17,14 +16,11 @@ import dagger.Module;
                 AbstractDiscussionFragment.class,
 
                 SecurityDiscussionFragment.class,
-                SecurityDiscussionView.class,
                 SecurityDiscussionFragment.class,
                 SecurityDiscussionItemViewLinear.class,
                 SecurityDiscussionCommentFragment.class,
 
-                DiscussionView.class,
                 PostCommentView.class,
-                NewsDiscussionView.class,
 
                 DiscussionEditPostFragment.class,
                 SecurityDiscussionEditPostFragment.class,
@@ -34,7 +30,6 @@ import dagger.Module;
 
                 TimelineDiscussionFragment.class,
                 NewsDiscussionFragment.class,
-                CommentItemViewLinear.class
         },
         library = true,
         complete = false

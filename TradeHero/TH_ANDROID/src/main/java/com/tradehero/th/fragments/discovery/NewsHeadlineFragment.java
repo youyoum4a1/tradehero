@@ -16,7 +16,6 @@ import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemListFeaturedKey;
 import com.tradehero.th.api.news.key.NewsItemListGlobalKey;
@@ -28,9 +27,13 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.PaginationDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinearDTOFactory;
+import com.tradehero.th.fragments.discussion.DiscussionFragmentUtil;
 import com.tradehero.th.fragments.news.NewsHeadlineViewLinear;
 import com.tradehero.th.fragments.news.NewsWebFragment;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
@@ -44,13 +47,16 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
+import rx.internal.util.SubscriptionList;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
 
@@ -60,6 +66,8 @@ public class NewsHeadlineFragment extends Fragment
     public static final String REGION_CHANGED = NewsHeadlineFragment.class + ".regionChanged";
 
     @Inject Locale locale;
+    @Inject AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
+    @Inject DiscussionFragmentUtil discussionFragmentUtil;
 
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.discovery_news_list) ListView mNewsListView;
@@ -72,12 +80,16 @@ public class NewsHeadlineFragment extends Fragment
     private Observable<PaginationDTO> paginationObservable;
     protected CompositeSubscription subscriptions;
     protected NewsType newsType;
+    protected DiscussionArrayAdapter newsAdapter;
+    protected SubscriptionList onStopSubscriptions;
 
+    @SuppressWarnings("unused")
     @OnItemClick(R.id.discovery_news_list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        NewsItemCompactDTO newsItemDTO = (NewsItemCompactDTO) parent.getItemAtPosition(position);
+        NewsItemCompactDTO newsItemDTO =
+                (NewsItemCompactDTO) ((NewsHeadlineViewLinear.DTO) parent.getItemAtPosition(position)).viewHolderDTO.discussionDTO;
 
-        if (newsItemDTO != null && newsItemDTO.url != null)
+        if (newsItemDTO.url != null)
         {
             Bundle bundle = new Bundle();
             NewsWebFragment.putPreviousScreen(bundle, newsType.analyticsName);
@@ -124,6 +136,29 @@ public class NewsHeadlineFragment extends Fragment
         return newsHeadlineFragment;
     }
 
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        HierarchyInjector.inject(this);
+        newsAdapter =
+                new DiscussionArrayAdapter(activity, R.layout.news_headline_item_view)
+                {
+                    @Override public AbstractDiscussionCompactItemViewLinear getView(int position, View convertView, ViewGroup viewGroup)
+                    {
+                        AbstractDiscussionCompactItemViewLinear view = super.getView(position, convertView, viewGroup);
+                        if (position % 2 == 0)
+                        {
+                            view.setBackgroundResource(R.color.lb_item_even);
+                        }
+                        else
+                        {
+                            view.setBackgroundResource(R.color.lb_item_odd);
+                        }
+                        return view;
+                    }
+                };
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -151,28 +186,11 @@ public class NewsHeadlineFragment extends Fragment
     {
         ButterKnife.inject(this, view);
         int headerHeight = getResources().getDimensionPixelSize(R.dimen.discovery_news_carousel_height);
-        final ArrayDTOAdapter<NewsItemCompactDTO, NewsHeadlineViewLinear> mNewsAdapter =
-                new ArrayDTOAdapter<NewsItemCompactDTO, NewsHeadlineViewLinear>(getActivity(), R.layout.news_headline_item_view)
-                {
-                    @Override public View getView(int position, View convertView, ViewGroup viewGroup)
-                    {
-                        View view = super.getView(position, convertView, viewGroup);
-                        if (position % 2 == 0)
-                        {
-                            view.setBackgroundResource(R.color.lb_item_even);
-                        }
-                        else
-                        {
-                            view.setBackgroundResource(R.color.lb_item_odd);
-                        }
-                        return view;
-                    }
-                };
 
         mBottomLoadingView = new ProgressBar(getActivity());
         mBottomLoadingView.setVisibility(View.GONE);
         mNewsListView.addFooterView(mBottomLoadingView);
-        mNewsListView.setAdapter(mNewsAdapter);
+        mNewsListView.setAdapter(newsAdapter);
         swipeRefreshLayout.setProgressViewOffset(false,
                 headerHeight,
                 headerHeight + (int) getResources().getDimension(R.dimen.discovery_news_swipe_indicator_height));
@@ -192,15 +210,30 @@ public class NewsHeadlineFragment extends Fragment
 
         newsSubject = PublishSubject.create();
         subscriptions = new CompositeSubscription();
-        subscriptions.add(newsSubject.subscribe(
-                new Action1<List<NewsItemCompactDTO>>()
+        subscriptions.add(newsSubject
+                .observeOn(Schedulers.computation())
+                .flatMap(new Func1<List<NewsItemCompactDTO>, Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>>>()
                 {
-                    @Override public void call(List<NewsItemCompactDTO> newsItemCompactDTOs)
+                    @Override public Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> call(
+                            List<NewsItemCompactDTO> newsItemCompactDTOs)
                     {
-                        mNewsAdapter.setItems(newsItemCompactDTOs);
+                        return viewDTOFactory.createNewsHeadlineViewLinearDTOs(newsItemCompactDTOs);
                     }
-                },
-                new TimberOnErrorAction("Gotcha")));
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>()
+                        {
+                            @Override public void call(List<AbstractDiscussionCompactItemViewLinear.DTO> dtos)
+                            {
+                                newsAdapter.setNotifyOnChange(false);
+                                newsAdapter.clear();
+                                newsAdapter.addAll(dtos);
+                                newsAdapter.setNotifyOnChange(true);
+                                newsAdapter.notifyDataSetChanged();
+                            }
+                        },
+                        new TimberOnErrorAction("Gotcha")));
         subscriptions.add(newsSubject.subscribe(new UpdateUIObserver()));
 
         activateNewsItemListView();
@@ -309,10 +342,11 @@ public class NewsHeadlineFragment extends Fragment
         }
     }
 
-    @Override public void onAttach(Activity activity)
+    @Override public void onStart()
     {
-        super.onAttach(activity);
-        HierarchyInjector.inject(this);
+        super.onStart();
+        onStopSubscriptions = new SubscriptionList();
+        registerUserActions();
     }
 
     @Override public void onDestroyView()
@@ -323,6 +357,29 @@ public class NewsHeadlineFragment extends Fragment
         subscriptions = null;
         rxLoaderManager.remove(newsItemListKey);
         super.onDestroyView();
+    }
+
+    protected void registerUserActions()
+    {
+        onStopSubscriptions.add(AppObservable.bindFragment(
+                this,
+                newsAdapter.getUserActionObservable())
+                .flatMap(new Func1<UserDiscussionAction, Observable<UserDiscussionAction>>()
+                {
+                    @Override public Observable<UserDiscussionAction> call(UserDiscussionAction userDiscussionAction)
+                    {
+                        return discussionFragmentUtil.handleUserAction(getActivity(), userDiscussionAction);
+                    }
+                })
+                .subscribe(
+                        new Action1<UserDiscussionAction>()
+                        {
+                            @Override public void call(UserDiscussionAction userDiscussionAction)
+                            {
+                                Timber.e(new Exception(), "Unhandled " + userDiscussionAction);
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to register user actions")));
     }
 
     private class UpdateUIObserver implements rx.Observer<List<NewsItemCompactDTO>>

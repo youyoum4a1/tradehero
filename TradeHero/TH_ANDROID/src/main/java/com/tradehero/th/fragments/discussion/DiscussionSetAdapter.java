@@ -3,52 +3,99 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.view.ViewGroup;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.DiscussionKeyComparatorIdAsc;
+import com.tradehero.th.models.discussion.UserDiscussionAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 abstract public class DiscussionSetAdapter
-        extends ViewDTOSetAdapter<DiscussionKey, AbstractDiscussionCompactItemViewLinear<DiscussionKey>>
+        extends ViewDTOSetAdapter<
+        AbstractDiscussionCompactItemViewLinear.DTO,
+        AbstractDiscussionCompactItemViewLinear>
 {
+    @NonNull private final PublishSubject<UserDiscussionAction> userDiscussionActionSubject;
+
     //<editor-fold desc="Constructors">
     public DiscussionSetAdapter(@NonNull Context context)
     {
-        super(context, new DiscussionKeyComparatorIdAsc());
+        super(context, new DiscussionDTOComparatorIdAsc());
+        userDiscussionActionSubject = PublishSubject.create();
     }
 
-    public DiscussionSetAdapter(@NonNull Context context, @Nullable Comparator<DiscussionKey> comparator)
+    public DiscussionSetAdapter(@NonNull Context context,
+            @Nullable Comparator<AbstractDiscussionCompactItemViewLinear.DTO> comparator)
     {
         super(context, comparator);
+        userDiscussionActionSubject = PublishSubject.create();
     }
 
     public DiscussionSetAdapter(
             @NonNull Context context,
-            @Nullable Collection<DiscussionKey> objects)
+            @Nullable Collection<AbstractDiscussionCompactItemViewLinear.DTO> objects)
     {
-        super(context, new DiscussionKeyComparatorIdAsc(), objects);
+        super(context, new DiscussionDTOComparatorIdAsc(), objects);
+        userDiscussionActionSubject = PublishSubject.create();
     }
 
-    public DiscussionSetAdapter(@NonNull Context context, @Nullable Comparator<DiscussionKey> comparator, @Nullable Collection<DiscussionKey> objects)
+    public DiscussionSetAdapter(@NonNull Context context,
+            @Nullable Comparator<AbstractDiscussionCompactItemViewLinear.DTO> comparator,
+            @Nullable Collection<AbstractDiscussionCompactItemViewLinear.DTO> objects)
     {
         super(context, comparator, objects);
+        userDiscussionActionSubject = PublishSubject.create();
     }
     //</editor-fold>
 
-    public void appendTail(@Nullable DiscussionDTO newElement)
+    @NonNull public Observable<UserDiscussionAction> getUserActionObservable()
+    {
+        return userDiscussionActionSubject.asObservable();
+    }
+
+    @Override
+    public AbstractDiscussionCompactItemViewLinear getView(int position, @Nullable View convertView, ViewGroup parent)
+    {
+        return super.getView(position, convertView, parent);
+    }
+
+    @Override protected AbstractDiscussionCompactItemViewLinear inflate(int position, ViewGroup parent)
+    {
+        AbstractDiscussionCompactItemViewLinear view = super.inflate(position, parent);
+        view.getUserActionObservable().retry().subscribe(userDiscussionActionSubject);
+        return view;
+    }
+
+    public void appendTail(@Nullable AbstractDiscussionCompactItemViewLinear.DTO newElement)
     {
         if (newElement != null)
         {
-            if (newElement.stubKey != null)
+            if (newElement.viewHolderDTO.discussionDTO instanceof DiscussionDTO)
             {
-                set.remove(newElement.stubKey);
+                DiscussionDTO discussionDTO = (DiscussionDTO) newElement.viewHolderDTO.discussionDTO;
+                if (discussionDTO.stubKey != null)
+                {
+                    AbstractDiscussionCompactItemViewLinear.DTO toRemove = null;
+                    for (AbstractDiscussionCompactItemViewLinear.DTO item : set)
+                    {
+                        if (item.viewHolderDTO.discussionDTO.id == discussionDTO.stubKey.id)
+                        {
+                            toRemove = item;
+                        }
+                    }
+                    if (toRemove != null)
+                    {
+                        set.remove(toRemove);
+                    }
+                }
             }
-            List<DiscussionKey> toAdd = new ArrayList<>();
-            toAdd.add(newElement.getDiscussionKey());
+            List<AbstractDiscussionCompactItemViewLinear.DTO> toAdd = new ArrayList<>();
+            toAdd.add(newElement);
             appendTail(toAdd);
         }
     }

@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -22,6 +21,8 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinearDTOFactory;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
@@ -34,6 +35,7 @@ import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 public class StockInfoFragment extends DashboardFragment
@@ -46,6 +48,7 @@ public class StockInfoFragment extends DashboardFragment
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
     @Inject Lazy<SecurityCompactCacheRx> securityCompactCache;
+    @Inject AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
 
     protected PaginatedDTO<NewsItemDTO> newsHeadlineList;
 
@@ -84,7 +87,7 @@ public class StockInfoFragment extends DashboardFragment
         topPager = (ViewPager) view.findViewById(R.id.top_pager);
         if (topViewPagerAdapter == null)
         {
-            topViewPagerAdapter = new InfoTopStockPagerAdapter(((Fragment) this).getChildFragmentManager());
+            topViewPagerAdapter = new InfoTopStockPagerAdapter(this.getChildFragmentManager());
         }
         if (topPager != null)
         {
@@ -271,16 +274,22 @@ public class StockInfoFragment extends DashboardFragment
 
     private void displayYahooNewsList()
     {
-        if (newsHeadlineAdapter != null && newsHeadlineList !=null)
+        if (newsHeadlineAdapter != null && newsHeadlineList != null)
         {
-            newsHeadlineAdapter.setSecurityId(securityId);
             Observable.from(newsHeadlineList.getData())
                     .cast(NewsItemCompactDTO.class)
+                    .flatMap(new Func1<NewsItemCompactDTO, Observable<AbstractDiscussionCompactItemViewLinear.DTO>>()
+                    {
+                        @Override public Observable<AbstractDiscussionCompactItemViewLinear.DTO> call(final NewsItemCompactDTO newsItemCompactDTO)
+                        {
+                            return viewDTOFactory.createNewsHeadlineViewLinearDTO(newsItemCompactDTO);
+                        }
+                    })
                     .toList()
                     .subscribe(
-                            new Action1<List<NewsItemCompactDTO>>()
+                            new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>()
                             {
-                                @Override public void call(List<NewsItemCompactDTO> newsItemCompactDTOs)
+                                @Override public void call(List<AbstractDiscussionCompactItemViewLinear.DTO> newsItemCompactDTOs)
                                 {
                                     newsHeadlineAdapter.setItems(newsItemCompactDTOs);
                                 }

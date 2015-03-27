@@ -47,6 +47,9 @@ import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.achievement.AchievementListFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinearDTOFactory;
+import com.tradehero.th.fragments.discussion.DiscussionFragmentUtil;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
@@ -55,6 +58,7 @@ import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
+import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
@@ -74,6 +78,7 @@ import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import retrofit.RetrofitError;
@@ -84,6 +89,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
@@ -120,6 +126,8 @@ public class TimelineFragment extends DashboardFragment
     @Inject protected THRouter thRouter;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
     @Inject protected TimelineCacheRx timelineCache;
+    @Inject DiscussionFragmentUtil discussionFragmentUtil;
+    @Inject AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
 
     @InjectView(R.id.timeline_list_view) StickyListHeadersListView timelineListView;
     @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshContainer;
@@ -248,6 +256,8 @@ public class TimelineFragment extends DashboardFragment
 
         onStopSubscriptions.add(AppObservable.bindFragment(this, followerSummaryCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(new FollowerSummaryObserver()));
+
+        registerUserDiscussionActions();
     }
 
     @Override public void onResume()
@@ -314,17 +324,15 @@ public class TimelineFragment extends DashboardFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                timelineCache.get(
-                        new TimelineKey(TimelineSection.Timeline,
-                                shownUserBaseKey,
-                                mainTimelineAdapter.getLatestTimelineRange()))
-                        .take(1))
+                getTimelineObservable(new TimelineKey(TimelineSection.Timeline,
+                        shownUserBaseKey,
+                        mainTimelineAdapter.getLatestTimelineRange())))
                 .subscribe(
-                        new Action1<Pair<TimelineKey, TimelineDTO>>()
+                        new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>()
                         {
-                            @Override public void call(Pair<TimelineKey, TimelineDTO> pair)
+                            @Override public void call(List<AbstractDiscussionCompactItemViewLinear.DTO> processed)
                             {
-                                mainTimelineAdapter.appendHeadTimeline(pair.second.getEnhancedItems());
+                                mainTimelineAdapter.appendHeadTimeline(processed);
                                 swipeRefreshContainer.setRefreshing(false);
                             }
                         },
@@ -335,21 +343,35 @@ public class TimelineFragment extends DashboardFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                timelineCache.get(
-                        new TimelineKey(TimelineSection.Timeline,
-                                shownUserBaseKey,
-                                mainTimelineAdapter.getOlderTimelineRange()))
-                        .take(1))
+                getTimelineObservable(new TimelineKey(TimelineSection.Timeline,
+                        shownUserBaseKey,
+                        mainTimelineAdapter.getOlderTimelineRange())))
                 .subscribe(
-                        new Action1<Pair<TimelineKey, TimelineDTO>>()
+                        new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>()
                         {
-                            @Override public void call(Pair<TimelineKey, TimelineDTO> pair)
+                            @Override public void call(List<AbstractDiscussionCompactItemViewLinear.DTO> processed)
                             {
-                                mainTimelineAdapter.appendTailTimeline(pair.second.getEnhancedItems());
+                                mainTimelineAdapter.appendTailTimeline(processed);
                                 loadingView.setVisibility(View.GONE);
                             }
                         },
                         new ToastOnErrorAction()));
+    }
+
+    @NonNull protected Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> getTimelineObservable(
+            @NonNull TimelineKey key)
+    {
+        return timelineCache.get(key)
+                .subscribeOn(Schedulers.computation())
+                .take(1)
+                .flatMap(new Func1<Pair<TimelineKey, TimelineDTO>, Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>>>()
+                {
+                    @Override public Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> call(
+                            Pair<TimelineKey, TimelineDTO> pair)
+                    {
+                        return viewDTOFactory.createTimelineItemViewLinearDTOs(pair.second.getEnhancedItems());
+                    }
+                });
     }
 
     private FlagNearEdgeScrollListener createNearEndScrollListener()
@@ -815,6 +837,36 @@ public class TimelineFragment extends DashboardFragment
                 Timber.e(e, "Error while getting message thread");
             }
         }
+    }
+
+    protected void registerUserDiscussionActions()
+    {
+        onStopSubscriptions.add(AppObservable.bindFragment(
+                this,
+                mainTimelineAdapter.getUserActionObservable())
+                .flatMap(new Func1<UserDiscussionAction, Observable<UserDiscussionAction>>()
+                {
+                    @Override public Observable<UserDiscussionAction> call(UserDiscussionAction userDiscussionAction)
+                    {
+                        return discussionFragmentUtil.handleUserAction(getActivity(), userDiscussionAction);
+                    }
+                })
+                .retry()
+                .subscribe(
+                        new Action1<UserDiscussionAction>()
+                        {
+                            @Override public void call(UserDiscussionAction userDiscussionAction)
+                            {
+                                Timber.e(new Exception("Not handled " + userDiscussionAction), "");
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable throwable)
+                            {
+                                Timber.e(throwable, "When registering user actions");
+                            }
+                        }));
     }
 
     //<editor-fold desc="UserProfileCompactViewHolder">

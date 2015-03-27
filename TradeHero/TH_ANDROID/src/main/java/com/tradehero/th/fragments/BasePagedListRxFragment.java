@@ -30,6 +30,7 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 abstract public class BasePagedListRxFragment<
@@ -218,6 +219,7 @@ abstract public class BasePagedListRxFragment<
             subscription = AppObservable.bindFragment(
                     this,
                     getCache().get(pagedKey)
+                            .subscribeOn(Schedulers.computation())
                             .doOnNext(new Action1<Pair<PagedDTOKeyType, ContainerDTOType>>()
                             {
                                 @Override public void call(Pair<PagedDTOKeyType, ContainerDTOType> pair)

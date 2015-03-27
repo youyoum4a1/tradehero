@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
