@@ -8,7 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.squareup.picasso.Picasso;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
@@ -16,17 +17,13 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.StringUtils;
-import dagger.Lazy;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class UserFriendsListAdapter extends BaseAdapter
-{
-    @Inject Lazy<Picasso> picasso;
+public class UserFriendsListAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
     private List<UserProfileCompactDTO> userProfileCompactDTOs = new ArrayList<>() ;
@@ -146,12 +143,7 @@ public class UserFriendsListAdapter extends BaseAdapter
                 holder.footView.setVisibility(View.VISIBLE);
                 holder.headView.setVisibility(View.GONE);
             }
-            picasso.get()
-                    .load(item.picture)
-                    .placeholder(R.drawable.avatar_default)
-                    .error(R.drawable.avatar_default)
-                    .into(holder.imgUserHead);
-
+            ImageLoader.getInstance().displayImage(item.picture, holder.imgUserHead, UniversalImageLoader.getAvatarImageLoaderOptions());
             holder.imgUserName.setText(item.getDisplayName());
 
             double roi = 0;
