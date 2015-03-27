@@ -41,6 +41,7 @@ import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
@@ -49,6 +50,8 @@ import rx.Notification;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -208,10 +211,13 @@ public class DiscussionEditPostFragment extends DashboardFragment
                     getString(R.string.processing),
                     true);
             unsubscribe(discussionEditSubscription);
+            Action0 dismissDialogAction0 = new DismissDialogAction0(progressDialog);
             discussionEditSubscription = AppObservable.bindFragment(
                     this,
                     discussionServiceWrapper.createDiscussionRx(discussionFormDTO))
-                    .doOnEach(new DismissDialogAction1<Notification<? super DiscussionDTO>>(progressDialog))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .finallyDo(dismissDialogAction0)
+                    .doOnUnsubscribe(dismissDialogAction0)
                     .subscribe(
                             new Action1<DiscussionDTO>()
                             {
