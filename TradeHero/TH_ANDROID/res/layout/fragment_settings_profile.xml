@@ -22,36 +22,18 @@
       android:orientation="vertical"
       >
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        />
-
     <include
         layout="@layout/profile_info"/>
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        />
 
     <Button
         android:id="@+id/authentication_sign_up_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_medium"
-        android:background="@drawable/basic_white_selector"
+        android:background="@drawable/basic_green_selector"
         android:text="@string/authentication_register"
         style="@style/TH.Button.Inverse"
         android:layout_marginBottom="@dimen/dashboard_tabhost_height"
-        />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
         />
 
   </LinearLayout>
