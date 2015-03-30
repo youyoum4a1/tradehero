@@ -65,7 +65,7 @@ public class TrendingMainFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
 
-    private static int lastType = 0;
+    @NonNull private static TrendingTabType lastType = TrendingTabType.STOCK;
     private static int lastPosition = 0;
 
     private TradingStockPagerAdapter tradingStockPagerAdapter;
@@ -113,7 +113,7 @@ public class TrendingMainFragment extends DashboardFragment
         {
             try
             {
-                lastType = TrendingTabType.getForAssetClass(askedAssetClass).ordinal();
+                lastType = TrendingTabType.getForAssetClass(askedAssetClass);
             } catch (IllegalArgumentException e)
             {
                 Timber.e(e, "Unhandled assetClass for user " + currentUserId.get());
@@ -156,12 +156,12 @@ public class TrendingMainFragment extends DashboardFragment
         {
             fragments.clear();
         }
-        tabViewPager.setAdapter(lastType == 0 ? tradingStockPagerAdapter : tradingFXPagerAdapter);
+        tabViewPager.setAdapter(lastType.equals(TrendingTabType.STOCK) ? tradingStockPagerAdapter : tradingFXPagerAdapter);
         if (!Constants.RELEASE)
         {
             tabViewPager.setOffscreenPageLimit(0);
         }
-        pagerSlidingTabStrip.setCustomTabView(lastType == 0 ? R.layout.th_page_indicator : R.layout.th_tab_indicator, android.R.id.title);
+        pagerSlidingTabStrip.setCustomTabView(lastType.equals(TrendingTabType.STOCK) ? R.layout.th_page_indicator : R.layout.th_tab_indicator, android.R.id.title);
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
         tabViewPager.setCurrentItem(lastPosition, true);
@@ -211,7 +211,7 @@ public class TrendingMainFragment extends DashboardFragment
         {
             @Override public void onItemSelected(AdapterView<?> parent, View view, final int position, long id)
             {
-                final int oldType = lastType;
+                final TrendingTabType oldType = lastType;
                 final Action1<UserProfileDTO> effectTabChangeAction = new Action1<UserProfileDTO>()
                 {
                     @Override public void call(UserProfileDTO userProfileDTO)
@@ -237,13 +237,13 @@ public class TrendingMainFragment extends DashboardFragment
                         {
                             if (position == 0)
                             {
-                                lastType = 0;
+                                lastType = TrendingTabType.STOCK;
                             }
                             else
                             {
-                                lastType = 1;
+                                lastType = TrendingTabType.FX;
                             }
-                            if (oldType != lastType)
+                            if (!oldType.equals(lastType))
                             {
                                 lastPosition = 0;
                                 initViews();
@@ -303,7 +303,7 @@ public class TrendingMainFragment extends DashboardFragment
         configureDefaultSpinner(new String[] {
                         getString(R.string.stocks),
                         getString(R.string.fx)},
-                listener, lastType);
+                listener, lastType.ordinal());
     }
 
     @Override public void onPause()
@@ -389,19 +389,26 @@ public class TrendingMainFragment extends DashboardFragment
         {
             //noinspection ConstantConditions
             fxPortfolioId = userAction.created.getOwnedPortfolioId();
-            lastType = 1;
+            lastType = TrendingTabType.FX;
         }
         else
         {
-            lastType = 0;
+            lastType = TrendingTabType.STOCK;
         }
         lastPosition = 0;
         initViews();
     }
 
-    public static void setLastType(int lastType)
+    public static void setLastType(@NonNull AssetClass assetClass)
     {
-        TrendingMainFragment.lastType = lastType;
+        if (assetClass.equals(AssetClass.STOCKS))
+        {
+            lastType = TrendingTabType.STOCK;
+        }
+        else if (assetClass.equals(AssetClass.FX))
+        {
+            lastType = TrendingTabType.FX;
+        }
     }
 
     public static void setLastPosition(int lastPosition)

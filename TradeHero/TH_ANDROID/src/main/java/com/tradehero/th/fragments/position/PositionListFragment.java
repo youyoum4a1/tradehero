@@ -266,7 +266,7 @@ public class PositionListFragment
     {
         if (view instanceof PositionNothingView)
         {
-            pushSecurityFragment();
+            pushTrendingFragment();
         }
         else if (view instanceof PositionLockedView && userProfileDTO != null)
         {
@@ -303,7 +303,7 @@ public class PositionListFragment
         }
     }
 
-    protected void pushSecurityFragment()
+    protected void pushTrendingFragment()
     {
         Bundle args = new Bundle();
 
@@ -317,16 +317,11 @@ public class PositionListFragment
         if (portfolioDTO != null && portfolioDTO.assetClass != null)
         {
             TrendingMainFragment.putAssetClass(args, portfolioDTO.assetClass);
-            if (portfolioDTO.assetClass == AssetClass.STOCKS)
+            if (portfolioDTO.assetClass != null)
             {
-                TrendingMainFragment.setLastType(0);
-                TrendingMainFragment.setLastPosition(1);
+                TrendingMainFragment.setLastType(portfolioDTO.assetClass);
             }
-            else if (portfolioDTO.assetClass == AssetClass.FX)
-            {
-                TrendingMainFragment.setLastType(1);
-                TrendingMainFragment.setLastPosition(1);
-            }
+            TrendingMainFragment.setLastPosition(1);
         }
         navigator.get().pushFragment(TrendingMainFragment.class, args);
     }

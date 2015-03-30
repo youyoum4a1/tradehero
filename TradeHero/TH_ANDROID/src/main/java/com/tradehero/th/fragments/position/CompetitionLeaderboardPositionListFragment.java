@@ -38,7 +38,7 @@ public class CompetitionLeaderboardPositionListFragment extends PositionListFrag
         this.providerId = getProviderId(getArguments());
     }
 
-    @Override protected void pushSecurityFragment()
+    @Override protected void pushTrendingFragment()
     {
         Bundle args = new Bundle();
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
