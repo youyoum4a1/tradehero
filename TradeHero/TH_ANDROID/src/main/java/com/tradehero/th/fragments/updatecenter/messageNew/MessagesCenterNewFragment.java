@@ -55,6 +55,7 @@ import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -186,7 +187,6 @@ public class MessagesCenterNewFragment extends DashboardFragment
         setReadAllLayoutClickListener();
     }
 
-
     private void pushUserProfileFragment(@Nullable MessageHeaderDTO messageHeaderDTO)
     {
         if (messageHeaderDTO != null)
@@ -255,6 +255,7 @@ public class MessagesCenterNewFragment extends DashboardFragment
                 AppObservable.bindFragment(
                         this,
                         messageListCache.get().get(messageListKey))
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(createMessageHeaderIdListCacheObserver()));
     }
 
@@ -362,6 +363,7 @@ public class MessagesCenterNewFragment extends DashboardFragment
                     AppObservable.bindFragment(
                             this,
                             messageListCache.get().get(nextMoreRecentMessageListKey))
+                            .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(createMessageHeaderIdListCacheObserver()));
         }
     }
@@ -471,6 +473,7 @@ public class MessagesCenterNewFragment extends DashboardFragment
                         messageHeaderDTO.getSenderId(),
                         messageHeaderDTO.getRecipientId(),
                         currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<BaseResponseDTO>()
                         {
@@ -567,6 +570,7 @@ public class MessagesCenterNewFragment extends DashboardFragment
                         this,
                         messageServiceWrapper.get().readAllMessageRx(
                                 currentUserId.toUserBaseKey()))
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 new Action1<BaseResponseDTO>()
                                 {

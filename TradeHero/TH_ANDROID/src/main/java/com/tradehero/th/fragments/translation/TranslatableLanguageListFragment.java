@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class TranslatableLanguageListFragment extends DashboardFragment
@@ -96,6 +97,7 @@ public class TranslatableLanguageListFragment extends DashboardFragment
         tokenFetchSubscription = AppObservable.bindFragment(
                 this,
                 translationTokenCache.get(new TranslationTokenKey()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createTokenFetchObserver());
     }
 

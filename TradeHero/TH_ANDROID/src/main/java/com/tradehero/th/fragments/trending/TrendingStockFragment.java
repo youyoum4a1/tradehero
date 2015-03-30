@@ -67,6 +67,7 @@ import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
 import java.util.Collections;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.subjects.BehaviorSubject;
@@ -222,6 +223,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 BehaviorSubject.create(trendingFilterTypeDTO))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<TrendingFilterTypeDTO>()
                         {
@@ -276,6 +278,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 exchangeCompactListCache.get(key)
                         .map(new PairGetSecond<ExchangeListType, ExchangeCompactDTOList>()))
                 .take(1)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<ExchangeCompactDTOList>()
                         {
@@ -316,6 +319,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
                 .take(1)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<UserProfileDTO>()
                         {
@@ -324,7 +328,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                                 linkWith(profileDTO);
                             }
                         },
-                        new ToastAction<Throwable>(getString(R.string.error_fetch_user_profile))));
+                        new ToastAndLogOnErrorAction(getString(R.string.error_fetch_user_profile), "Failed to fetch user profile")));
     }
 
     private void linkWith(UserProfileDTO userProfileDTO)
@@ -340,6 +344,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 this,
                 providerListCache.get(new ProviderListKey())
                         .map(new PairGetSecond<ProviderListKey, ProviderDTOList>()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<ProviderDTOList>()
                         {
@@ -390,7 +395,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
             }
             else
             {
-                if (userProfileDTO != null && preferredExchangeMarket.getExchangeIntegerId() == null)
+                if (userProfileDTO != null)
                 {
                     preferredExchangeMarket.setDefaultIfUnset(exchangeCompactSpinnerDTOs, userProfileDTO);
                 }
@@ -528,6 +533,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
                         .first())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<UserProfileDTO>()
                         {
@@ -550,6 +556,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         Actions.empty(),
                         new ToastOnErrorAction()));
@@ -561,6 +568,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         Actions.empty(),
                         new ToastOnErrorAction()));

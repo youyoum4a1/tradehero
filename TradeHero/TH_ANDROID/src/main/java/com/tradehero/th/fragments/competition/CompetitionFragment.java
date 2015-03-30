@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 //TODO this class only load providerDTO, should be deleted
@@ -73,6 +74,7 @@ abstract public class CompetitionFragment extends DashboardFragment
         providerCacheSubscription = AppObservable.bindFragment(
                 this,
                 providerCache.get(this.providerId))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createProviderCacheObserver());
     }
 

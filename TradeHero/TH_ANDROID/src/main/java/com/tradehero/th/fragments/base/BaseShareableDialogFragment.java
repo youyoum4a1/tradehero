@@ -34,6 +34,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
 import rx.functions.Action0;
@@ -93,6 +94,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createUserProfileCacheObserver()));
     }
 
@@ -146,6 +148,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
         mBtnShareWeChat.setChecked(initialShareButtonState(SocialNetworkEnum.WB));
         unsubscribeWeChatButton();
         weChatLinkingSubscription = AppObservable.bindFragment(this, ViewObservable.clicks(mBtnShareWeChat, false))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<OnClickEvent>()
                         {
@@ -197,6 +200,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                                 return BaseShareableDialogFragment.this.createSocialAuthObservable(socialLinkToggleButton, socialNetwork);
                             }
                         }))
+                .observeOn(AndroidSchedulers.mainThread())
                 .finallyDo(new Action0()
                 {
                     @Override public void call()

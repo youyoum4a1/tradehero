@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -45,6 +46,7 @@ public class ProviderFxListFragment extends ProviderSecurityListRxFragment
                                 return observable.delay(TrendingFXFragment.MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS);
                             }
                         }))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<List<QuoteDTO>>()
                         {

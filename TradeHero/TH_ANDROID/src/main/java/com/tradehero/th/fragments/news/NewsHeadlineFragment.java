@@ -45,6 +45,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.internal.util.SubscriptionList;
@@ -170,6 +171,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
                 this,
                 securityCompactCache.get(securityId))
                 .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<SecurityCompactDTO>()
                         {
@@ -214,6 +216,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
                         return viewDTOFactory.createNewsHeadlineViewLinearDTOs(newsItems);
                     }
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>()
                         {
@@ -231,6 +234,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 adapter.getUserActionObservable())
+                .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<UserDiscussionAction, Observable<UserDiscussionAction>>()
                 {
                     @Override public Observable<UserDiscussionAction> call(UserDiscussionAction userDiscussionAction)

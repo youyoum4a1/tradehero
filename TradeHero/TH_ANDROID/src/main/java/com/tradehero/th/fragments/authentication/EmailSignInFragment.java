@@ -185,10 +185,13 @@ public class EmailSignInFragment extends Fragment
         super.onStart();
         onStopSubscriptions = new SubscriptionList();
         onStopSubscriptions.add(AppObservable.bindFragment(this, emailValidator.getValidationMessageObservable())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createValidatorObserver(email)));
         onStopSubscriptions.add(AppObservable.bindFragment(this, passwordValidator.getValidationMessageObservable())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createValidatorObserver(password)));
         onStopSubscriptions.add(AppObservable.bindFragment(this, getFieldsValidationObservable())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Boolean>()
                         {
@@ -209,6 +212,7 @@ public class EmailSignInFragment extends Fragment
                             }
                         })
                         .retry())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new EmptyAction1<Pair<AuthData, UserProfileDTO>>(),
                         new EmptyAction1<Throwable>()));
@@ -330,6 +334,7 @@ public class EmailSignInFragment extends Fragment
                                 }
                             }
                         }))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new EmptyAction1<OnDialogClickEvent>(),
                         new TimberOnErrorAction("Failed to ask for forgotten password")));

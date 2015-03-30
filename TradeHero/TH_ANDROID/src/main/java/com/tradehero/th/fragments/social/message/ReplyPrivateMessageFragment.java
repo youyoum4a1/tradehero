@@ -19,6 +19,7 @@ import com.tradehero.th.rx.ToastOnErrorAction;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -58,6 +59,7 @@ public class ReplyPrivateMessageFragment extends AbstractPrivateMessageFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 createViewDTO(discussionDTO))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<AbstractDiscussionCompactItemViewLinear.DTO>()
                         {

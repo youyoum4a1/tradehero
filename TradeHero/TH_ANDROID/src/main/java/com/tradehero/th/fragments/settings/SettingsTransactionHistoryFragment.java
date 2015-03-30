@@ -19,13 +19,13 @@ import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
 import com.tradehero.th.api.users.UserTransactionHistoryListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.user.UserTransactionHistoryListCacheRx;
-import com.tradehero.th.rx.view.DismissDialogAction1;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import rx.Notification;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class SettingsTransactionHistoryFragment extends DashboardFragment
 {
@@ -100,7 +100,9 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userTransactionHistoryListCache.get(key))
-                .doOnEach(new DismissDialogAction1<Notification<? super Pair<UserTransactionHistoryListType, UserTransactionHistoryDTOList>>>(progressDialog))
+                .observeOn(AndroidSchedulers.mainThread())
+                .finallyDo(new DismissDialogAction0(progressDialog))
+                .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
                 .subscribe(new SettingsTransactionHistoryListObserver()));
     }
 

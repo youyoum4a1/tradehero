@@ -37,6 +37,7 @@ import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 @Routable(
@@ -127,6 +128,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 helpVideoListCache.get(new HelpVideoListKey(providerId)))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<HelpVideoListKey, HelpVideoDTOList>>()
                         {

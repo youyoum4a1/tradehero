@@ -32,6 +32,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.validation.ValidatedText;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -90,6 +91,7 @@ public class SettingsPayPalFragment extends DashboardFragment
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<UserProfileDTO>()
                         {
@@ -135,7 +137,9 @@ public class SettingsPayPalFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userServiceWrapper.updatePayPalEmailRx(currentUserId.toUserBaseKey(), emailDTO))
+                .observeOn(AndroidSchedulers.mainThread())
                 .finallyDo(new DismissDialogAction0(progressDialog))
+                .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
                 .subscribe(
                         new Action1<UpdatePayPalEmailDTO>()
                         {

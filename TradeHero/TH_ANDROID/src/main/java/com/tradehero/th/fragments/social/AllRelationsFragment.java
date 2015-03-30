@@ -38,6 +38,7 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -136,6 +137,7 @@ public class AllRelationsFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 allowableRecipientPaginatedCache.get(new SearchAllowableRecipientListType(null, null, null)))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO>>()
                         {
@@ -193,6 +195,7 @@ public class AllRelationsFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.purchaseAndPremiumFollowAndClear(userBaseKey))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1()
                         {
@@ -210,6 +213,7 @@ public class AllRelationsFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userMessagingRelationshipCache.get(userFollowed))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Pair<UserBaseKey, UserMessagingRelationshipDTO>>()
                 {
                     private boolean isEmpty = true;

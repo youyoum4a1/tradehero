@@ -211,6 +211,7 @@ public final class HomeFragment extends BaseWebViewFragment
                     this,
                     userServiceWrapperLazy.get()
                             .inviteFriendsRx(currentUserId.toUserBaseKey(), inviteFriendForm))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .finallyDo(new DismissDialogAction0(progressDialog))
                     .subscribe(
                             new Action1<BaseResponseDTO>()
@@ -272,6 +273,7 @@ public final class HomeFragment extends BaseWebViewFragment
                 this,
                 userServiceWrapperLazy.get()
                         .inviteFriendsRx(currentUserId.toUserBaseKey(), inviteFriendForm))
+                .observeOn(AndroidSchedulers.mainThread())
                 .finallyDo(new DismissDialogAction0(progressDialog))
                 .subscribe(
                         new Action1<BaseResponseDTO>()

@@ -16,6 +16,7 @@ import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -89,6 +90,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 currentUserPortfolioCompactListObservable)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<PortfolioCompactDTOList>()
                         {

@@ -19,6 +19,7 @@ import com.tradehero.th.widget.QuestIndicatorGroupView;
 import java.util.List;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class QuestDialogFragment extends AbstractAchievementDialogFragment
@@ -54,6 +55,7 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 questBonusListCache.getOne(questBonusListId))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<QuestBonusListId, QuestBonusDTOList>>()
                         {

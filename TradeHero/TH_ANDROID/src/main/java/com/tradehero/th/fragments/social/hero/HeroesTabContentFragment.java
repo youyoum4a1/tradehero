@@ -48,6 +48,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
@@ -232,6 +233,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 heroListCache.get(followerId))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new HeroManagerHeroListCacheObserver()));
     }
 
@@ -247,6 +249,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
                         this,
                         new SimpleFollowUserAssistant(getActivity(), userBaseKey)
                                 .launchUnFollowRx())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 new Action1<UserProfileDTO>()
                                 {
@@ -312,6 +315,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
             onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
                     HeroAlertDialogRxUtil.popAlertFollowHero(getActivity()))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .flatMap(new Func1<OnDialogClickEvent, Observable<PurchaseResult>>()
                     {
                         @Override public Observable<PurchaseResult> call(OnDialogClickEvent event)

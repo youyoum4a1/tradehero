@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class HowToPlayDialogFragment extends BaseDialogSupportFragment
 {
@@ -127,6 +128,7 @@ public class HowToPlayDialogFragment extends BaseDialogSupportFragment
         miniGameDefSubscription = AppObservable.bindFragment(
                 this,
                 miniGameDefCache.get(gameId))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createMiniGameDefObserver());
     }
 

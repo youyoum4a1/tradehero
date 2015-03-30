@@ -18,6 +18,7 @@ import com.tradehero.th.fragments.news.NewsViewLinear;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -99,6 +100,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 viewDTOFactory.createAbstractDiscussionCompactItemViewLinearDTO(discussionDTO))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<AbstractDiscussionCompactItemViewLinear.DTO>()
                         {

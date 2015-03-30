@@ -254,6 +254,7 @@ public class TimelineFragment extends DashboardFragment
         fetchPortfolioList();
 
         onStopSubscriptions.add(AppObservable.bindFragment(this, followerSummaryCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new FollowerSummaryObserver()));
 
         registerUserDiscussionActions();
@@ -326,6 +327,7 @@ public class TimelineFragment extends DashboardFragment
                 getTimelineObservable(new TimelineKey(TimelineSection.Timeline,
                         shownUserBaseKey,
                         mainTimelineAdapter.getLatestTimelineRange())))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>()
                         {
@@ -345,6 +347,7 @@ public class TimelineFragment extends DashboardFragment
                 getTimelineObservable(new TimelineKey(TimelineSection.Timeline,
                         shownUserBaseKey,
                         mainTimelineAdapter.getOlderTimelineRange())))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>()
                         {
@@ -429,6 +432,7 @@ public class TimelineFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 messageThreadHeaderCache.get(shownUserBaseKey))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new TimelineMessageThreadHeaderCacheObserver()));
     }
 
@@ -436,6 +440,7 @@ public class TimelineFragment extends DashboardFragment
     private void fetchPortfolioList()
     {
         onStopSubscriptions.add(AppObservable.bindFragment(this, displayablePortfolioFetchAssistant.get(shownUserBaseKey))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<DisplayablePortfolioDTOList>()
                 {
                     @Override public void onCompleted()
@@ -511,6 +516,7 @@ public class TimelineFragment extends DashboardFragment
     protected void fetchUserProfile()
     {
         onStopSubscriptions.add(AppObservable.bindFragment(this, userProfileCache.get().get(shownUserBaseKey))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new TimelineFragmentUserProfileCacheObserver()));
     }
 
@@ -829,6 +835,7 @@ public class TimelineFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 mainTimelineAdapter.getUserActionObservable())
+                .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<UserDiscussionAction, Observable<UserDiscussionAction>>()
                 {
                     @Override public Observable<UserDiscussionAction> call(UserDiscussionAction userDiscussionAction)

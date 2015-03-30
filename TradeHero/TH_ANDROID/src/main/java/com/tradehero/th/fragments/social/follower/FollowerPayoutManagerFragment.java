@@ -87,9 +87,9 @@ public class FollowerPayoutManagerFragment extends DashboardFragment
         followerPaymentListView.setAdapter(followerPaymentListAdapter);
     }
 
-    @Override public void onResume()
+    @Override public void onStart()
     {
-        super.onResume();
+        super.onStart();
         fetchFollowerSummary();
     }
 
@@ -107,9 +107,9 @@ public class FollowerPayoutManagerFragment extends DashboardFragment
 
     protected void fetchFollowerSummary()
     {
-        AppObservable.bindFragment(this, userFollowerCache.get().get(followerHeroRelationId))
+        onStopSubscriptions.add(AppObservable.bindFragment(this, userFollowerCache.get().get(followerHeroRelationId))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createFollowerObserver());
+                .subscribe(createFollowerObserver()));
     }
 
     protected String getDisplayName()

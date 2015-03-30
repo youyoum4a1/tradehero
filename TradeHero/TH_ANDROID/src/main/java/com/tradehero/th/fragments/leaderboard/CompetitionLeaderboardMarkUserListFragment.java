@@ -35,6 +35,7 @@ import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func3;
 import timber.log.Timber;
@@ -204,6 +205,7 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
                 this,
                 providerCache.get(providerId)
                         .map(new PairGetSecond<ProviderId, ProviderDTO>()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<ProviderDTO>()
                         {
@@ -227,6 +229,7 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
                 this,
                 competitionCache.get(competitionId)
                         .map(new PairGetSecond<CompetitionId, CompetitionDTO>()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<CompetitionDTO>()
                         {
@@ -249,6 +252,7 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
                 this,
                 competitionLeaderboardCache.get(key)
                         .map(new PairGetSecond<CompetitionLeaderboardId, CompetitionLeaderboardDTO>()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<CompetitionLeaderboardDTO>()
                         {
@@ -340,7 +344,7 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
                         currentUserId,
                         requisite.currentLeaderboardUserDTO,
                         requisite.currentUserProfileDTO,
-                        competitionLeaderboardDTO.prizes == null? 0 : competitionLeaderboardDTO.prizes.size(),
+                        competitionLeaderboardDTO.prizes == null ? 0 : competitionLeaderboardDTO.prizes.size(),
                         thisRequisite.providerDTO));
             }
             else
@@ -351,7 +355,7 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
                         currentUserId,
                         requisite.currentLeaderboardUserDTO,
                         requisite.currentUserProfileDTO,
-                        competitionLeaderboardDTO.prizes == null? 0 : competitionLeaderboardDTO.prizes.size(),
+                        competitionLeaderboardDTO.prizes == null ? 0 : competitionLeaderboardDTO.prizes.size(),
                         thisRequisite.providerDTO));
             }
         }

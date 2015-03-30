@@ -14,6 +14,7 @@ import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragment
 {
@@ -101,7 +102,9 @@ public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragme
         return AppObservable.bindFragment(
                 this,
                 securityServiceWrapper.doTransactionRx(securityId, transactionFormDTO, IS_BUY))
+                .observeOn(AndroidSchedulers.mainThread())
                 .finallyDo(new DismissDialogAction0(progressDialog))
+                .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
                 .subscribe(new BuySellObserver(IS_BUY));
     }
 

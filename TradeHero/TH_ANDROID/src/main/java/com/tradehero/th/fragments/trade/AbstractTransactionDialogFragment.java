@@ -72,6 +72,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.functions.Func1;
@@ -294,13 +295,15 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 this,
                 securityCompactCache.get(getSecurityId()))
                 .take(1)
-                .subscribe(new Action1<Pair<SecurityId, SecurityCompactDTO>>()
-                           {
-                               @Override public void call(Pair<SecurityId, SecurityCompactDTO> pair)
-                               {
-                                   AbstractTransactionDialogFragment.this.linkWith(pair.second);
-                               }
-                           },
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<Pair<SecurityId, SecurityCompactDTO>>()
+                        {
+                            @Override public void call(Pair<SecurityId, SecurityCompactDTO> pair)
+                            {
+                                AbstractTransactionDialogFragment.this.linkWith(pair.second);
+                            }
+                        },
                         new EmptyAction1<Throwable>()));
     }
 
@@ -316,6 +319,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 this,
                 portfolioCompactCache.get(getPortfolioId())
                         .map(new PairGetSecond<PortfolioId, PortfolioCompactDTO>()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<PortfolioCompactDTO>()
                         {
@@ -346,6 +350,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                                 return observable.delay(5000, TimeUnit.MILLISECONDS);
                             }
                         }))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<QuoteDTO>()
                         {
@@ -374,6 +379,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 positionCompactListCache.get()
                         .get(this.securityId)
                         .map(new PairGetSecond<SecurityId, PositionDTOCompactList>()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<PositionDTOCompactList>()
                         {
@@ -400,6 +406,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 this,
                 portfolioCompactListCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, PortfolioCompactDTOList>()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<PortfolioCompactDTOList>()
                         {
@@ -711,6 +718,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractor.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<PurchaseResult>()
                         {

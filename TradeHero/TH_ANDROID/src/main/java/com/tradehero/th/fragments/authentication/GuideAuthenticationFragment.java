@@ -35,6 +35,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.internal.util.SubscriptionList;
@@ -176,6 +177,7 @@ public class GuideAuthenticationFragment extends Fragment
                                     }
                                 }
                             }))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<Drawable>()
                             {

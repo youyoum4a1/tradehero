@@ -18,6 +18,7 @@ import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class SecurityDiscussionCommentFragment extends AbstractDiscussionFragment
@@ -45,6 +46,7 @@ public class SecurityDiscussionCommentFragment extends AbstractDiscussionFragmen
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 viewDTOFactory.createDiscussionItemViewLinearDTO((DiscussionDTO) discussionDTO))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<AbstractDiscussionCompactItemViewLinear.DTO>()
                         {

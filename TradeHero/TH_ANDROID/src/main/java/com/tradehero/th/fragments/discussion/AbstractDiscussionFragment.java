@@ -38,6 +38,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -198,6 +199,7 @@ abstract public class AbstractDiscussionFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 discussionCache.get(discussionKey))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<DiscussionKey, AbstractDiscussionCompactDTO>>()
                         {
@@ -222,6 +224,7 @@ abstract public class AbstractDiscussionFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 fetchAndCreateDTOs(createTopicDiscussionListKey()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<DiscussionListKey, List<AbstractDiscussionCompactItemViewLinear.DTO>>>()
                         {
@@ -278,6 +281,7 @@ abstract public class AbstractDiscussionFragment extends DashboardFragment
                                                         });
                                             }
                                         })))
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 new Action1<Pair<DiscussionListKey, List<AbstractDiscussionCompactItemViewLinear.DTO>>>()
                                 {
@@ -327,6 +331,7 @@ abstract public class AbstractDiscussionFragment extends DashboardFragment
                                                 });
                                     }
                                 })))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<DiscussionListKey, List<AbstractDiscussionCompactItemViewLinear.DTO>>>()
                         {
@@ -416,6 +421,7 @@ abstract public class AbstractDiscussionFragment extends DashboardFragment
             onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
                     createViewDTO(newDiscussion))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<AbstractDiscussionCompactItemViewLinear.DTO>()
                             {
@@ -434,13 +440,15 @@ abstract public class AbstractDiscussionFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 discussionListAdapter.getUserActionObservable())
-                .subscribe(new Action1<UserDiscussionAction>()
-                           {
-                               @Override public void call(UserDiscussionAction userDiscussionAction)
-                               {
-                                   discussionFragmentUtil.handleUserAction(getActivity(), userDiscussionAction);
-                               }
-                           },
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<UserDiscussionAction>()
+                        {
+                            @Override public void call(UserDiscussionAction userDiscussionAction)
+                            {
+                                discussionFragmentUtil.handleUserAction(getActivity(), userDiscussionAction);
+                            }
+                        },
                         new ToastOnErrorAction()));
     }
 

@@ -122,6 +122,7 @@ public class LocationListFragment extends DashboardFragment
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<UserProfileDTO>()
                         {

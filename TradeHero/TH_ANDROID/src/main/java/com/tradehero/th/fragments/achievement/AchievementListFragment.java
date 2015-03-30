@@ -25,6 +25,7 @@ import com.tradehero.th.persistence.achievement.AchievementCategoryListCacheRx;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -108,6 +109,7 @@ public class AchievementListFragment extends DashboardFragment
         unsubscribe(achievementListSubscription);
         achievementListSubscription = AppObservable.bindFragment(this,
                 achievementCategoryListCache.get(shownUserId))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<UserBaseKey, AchievementCategoryDTOList>>()
                         {

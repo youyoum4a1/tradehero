@@ -44,6 +44,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -191,6 +192,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
                                 return SocialFriendsFragment.this.getFilteredObservable(pair);
                             }
                         }))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<List<SocialFriendListItemDTO>>()
                         {
@@ -240,6 +242,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 getFetchAllFriendsObservable())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<UserFriendsDTOList>()
                         {
@@ -362,6 +365,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 socialFriendHandler.followFriends(usersToFollow))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new FollowFriendObserver(usersToFollow)));
     }
 
@@ -473,6 +477,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createInviteObserver(usersToInvite)));
     }
 

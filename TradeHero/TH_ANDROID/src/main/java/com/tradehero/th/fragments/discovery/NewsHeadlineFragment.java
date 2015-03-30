@@ -364,6 +364,7 @@ public class NewsHeadlineFragment extends Fragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 newsAdapter.getUserActionObservable())
+                .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<UserDiscussionAction, Observable<UserDiscussionAction>>()
                 {
                     @Override public Observable<UserDiscussionAction> call(UserDiscussionAction userDiscussionAction)

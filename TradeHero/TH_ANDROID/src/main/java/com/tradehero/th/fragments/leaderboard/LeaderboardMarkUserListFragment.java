@@ -49,6 +49,7 @@ import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
@@ -342,6 +343,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 fetchOwnRankingInfoObservables())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<LeaderboardMarkUserItemView.Requisite>()
                         {

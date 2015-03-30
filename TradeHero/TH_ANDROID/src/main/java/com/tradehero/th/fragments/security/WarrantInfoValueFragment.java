@@ -30,6 +30,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
@@ -146,6 +147,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
                     this,
                     securityCompactCache.get(securityId))
                     .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<SecurityCompactDTO>()
                             {

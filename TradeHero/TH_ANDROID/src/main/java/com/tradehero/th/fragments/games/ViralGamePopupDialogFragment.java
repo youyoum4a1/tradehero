@@ -38,6 +38,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
 {
@@ -89,11 +90,11 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
         {
             viralMiniGameDefKey = new ViralMiniGameDefKey(b.getBundle(BUNDLE_KEY_VIRAL_MINI_GAME));
             subscription = AppObservable.bindFragment(this, viralMiniGameDefCache.get(viralMiniGameDefKey))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<Pair<ViralMiniGameDefKey, ViralMiniGameDefDTO>>()
                     {
                         @Override public void onCompleted()
                         {
-
                         }
 
                         @Override public void onError(Throwable e)

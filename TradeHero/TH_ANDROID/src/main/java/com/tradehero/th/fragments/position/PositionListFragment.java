@@ -289,7 +289,8 @@ public class PositionListFragment
         {
             Bundle args = new Bundle();
             // By default tries
-            TradeListFragment.putPositionDTOKey(args, ((PositionPartialTopView.DTO) parent.getItemAtPosition(position)).positionDTO.getPositionDTOKey());
+            TradeListFragment.putPositionDTOKey(args,
+                    ((PositionPartialTopView.DTO) parent.getItemAtPosition(position)).positionDTO.getPositionDTOKey());
             OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
             if (ownedPortfolioId != null)
             {
@@ -524,6 +525,7 @@ public class PositionListFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(shownUser))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<UserBaseKey, UserProfileDTO>>()
                         {
@@ -549,6 +551,7 @@ public class PositionListFragment
             onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
                     portfolioCache.get(((OwnedPortfolioId) getPositionsDTOKey)))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<Pair<OwnedPortfolioId, PortfolioDTO>>()
                             {
@@ -571,9 +574,12 @@ public class PositionListFragment
 
         preparePortfolioHeaderView(portfolioDTO);
         portfolioHeaderView.linkWith(portfolioDTO);
-        if (portfolioDTO != null && portfolioDTO.assetClass == AssetClass.FX) {
+        if (portfolioDTO != null && portfolioDTO.assetClass == AssetClass.FX)
+        {
             btnHelp.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else
+        {
             btnHelp.setVisibility(View.INVISIBLE);
         }
     }
@@ -686,6 +692,7 @@ public class PositionListFragment
                                                     .toList();
                                         }
                                     }))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<List<Object>>()
                             {
@@ -756,7 +763,8 @@ public class PositionListFragment
                 }
                 else if (isShort)
                 {
-                    if (getArguments().getBoolean(BUNDLE_KEY_IS_TRENDING_FX_PORTFOLIO, false) || positionType.equals(TabbedPositionListFragment.TabType.SHORT))
+                    if (getArguments().getBoolean(BUNDLE_KEY_IS_TRENDING_FX_PORTFOLIO, false) || positionType.equals(
+                            TabbedPositionListFragment.TabType.SHORT))
                     {
                         filtered.add(dto);
                     }

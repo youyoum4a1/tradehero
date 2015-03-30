@@ -49,6 +49,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Actions;
@@ -114,6 +115,7 @@ public class StoreScreenFragment extends DashboardFragment
                 this,
                 StoreItemFactory.createAll(systemStatusCache, StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS)
                         .take(1))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<StoreItemDTOList>()
                         {
@@ -151,16 +153,17 @@ public class StoreScreenFragment extends DashboardFragment
     protected void fetchUserProfile()
     {
         onStopSubscriptions.add(AppObservable.bindFragment(this, userProfileCacheRx.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Pair<UserBaseKey, UserProfileDTO>>()
-                {
-                    @Override public void call(Pair<UserBaseKey, UserProfileDTO> userProfileDTO)
-                    {
-                        purchaseApplicableOwnedPortfolioId =
-                                new OwnedPortfolioId(userProfileDTO.second.portfolio.id, currentUserId.get());
-                        StoreScreenFragment.this.launchRoutedAction();
-                    }
-                },
-                new EmptyAction1<Throwable>()));
+                           {
+                               @Override public void call(Pair<UserBaseKey, UserProfileDTO> userProfileDTO)
+                               {
+                                   purchaseApplicableOwnedPortfolioId =
+                                           new OwnedPortfolioId(userProfileDTO.second.portfolio.id, currentUserId.get());
+                                   StoreScreenFragment.this.launchRoutedAction();
+                               }
+                           },
+                        new EmptyAction1<Throwable>()));
     }
 
     public void cancelOthersAndShowBillingAvailable()
@@ -174,6 +177,7 @@ public class StoreScreenFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.testAndClear())
+                .observeOn(AndroidSchedulers.mainThread())
                 .finallyDo(new Action0()
                 {
                     @Override public void call()
@@ -201,6 +205,7 @@ public class StoreScreenFragment extends DashboardFragment
                 onStopSubscriptions.add(AppObservable.bindFragment(
                         this,
                         userInteractorRx.purchase(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]))
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 Actions.empty(),
                                 new ToastOnErrorAction()));
@@ -223,6 +228,7 @@ public class StoreScreenFragment extends DashboardFragment
             AppObservable.bindFragment(
                     this,
                     userInteractorRx.purchaseAndClear(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<PurchaseResult>()
                             {

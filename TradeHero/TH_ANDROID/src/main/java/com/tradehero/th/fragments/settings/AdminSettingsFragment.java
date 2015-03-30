@@ -43,6 +43,7 @@ import com.tradehero.th.utils.AlertDialogRxUtil;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class AdminSettingsFragment extends DashboardPreferenceFragment
@@ -93,6 +94,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<UserBaseKey, UserProfileDTO>>()
                         {

@@ -38,6 +38,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
@@ -136,6 +137,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
                         },
                         new TimberOnErrorAction("Unable to handle Forex onboard views")));
         onStopSubscriptions.add(AppObservable.bindFragment(this, videoServiceWrapper.getFXVideosRx())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<VideoDTO>>()
                 {
                     @Override public void onCompleted()
@@ -196,6 +198,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
                                 return Observable.just(profile.fxPortfolio);
                             }
                         }))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<PortfolioDTO>()
                         {

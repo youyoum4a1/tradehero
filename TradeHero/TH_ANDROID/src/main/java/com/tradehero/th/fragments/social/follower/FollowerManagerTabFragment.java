@@ -33,8 +33,8 @@ import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class FollowerManagerTabFragment extends DashboardFragment
@@ -54,7 +54,6 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
     private UserBaseKey heroId;
     private FollowerSummaryDTO followerSummaryDTO;
     @Inject THRouter thRouter;
-    private Subscription followerSubscription;
 
     public static void putHeroId(@NonNull Bundle args, @NonNull UserBaseKey followerId)
     {
@@ -115,9 +114,9 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void onResume()
+    @Override public void onStart()
     {
-        super.onResume();
+        super.onStart();
 
         Timber.d("FollowerManagerTabFragment onResume");
         heroId = getHeroId(getArguments());
@@ -127,23 +126,17 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         this.followerListAdapter = null;
-        unSubscribe();
         ButterKnife.reset(this);
         super.onDestroyView();
     }
 
     protected void fetchFollowers()
     {
-        unSubscribe();
-        followerSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 followerSummaryCache.get(heroId))
-                .subscribe(createFollowerSummaryCacheObserver());
-    }
-
-    private void unSubscribe()
-    {
-        unsubscribe(followerSubscription);
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createFollowerSummaryCacheObserver()));
     }
 
     private boolean isCurrentUser()

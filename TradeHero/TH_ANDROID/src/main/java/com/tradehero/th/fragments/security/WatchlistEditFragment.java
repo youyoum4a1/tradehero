@@ -148,8 +148,11 @@ public class WatchlistEditFragment extends DashboardFragment
             {
                 updateObservable = watchlistServiceWrapper.createWatchlistEntryRx(watchPositionItemForm);
             }
+            Action0 closeDialogAction = new DismissDialogAction0(progressDialog);
             onStopSubscriptions.add(AppObservable.bindFragment(this, updateObservable)
-                    .finallyDo(new DismissDialogAction0(progressDialog))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnUnsubscribe(closeDialogAction)
+                    .finallyDo(closeDialogAction)
                     .subscribe(createWatchlistUpdateObserver()));
         } catch (NumberFormatException ex)
         {
@@ -255,7 +258,9 @@ public class WatchlistEditFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 securityCompactCache.get(securityId))
-                .doOnEach(new DismissDialogAction1<Notification<? super Pair<SecurityId, SecurityCompactDTO>>>(progressDialog))
+                .observeOn(AndroidSchedulers.mainThread())
+                .finallyDo(new DismissDialogAction0(progressDialog))
+                .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
                 .subscribe(createSecurityCompactCacheObserver()));
     }
 

@@ -62,6 +62,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -214,6 +215,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             alertsSubscription = AppObservable.bindFragment(
                     this,
                     alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<Map<SecurityId, AlertId>>()
                             {
@@ -264,9 +266,8 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                                                 }
                                             });
                                 }
-                            })
-            )
-
+                            }))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<Pair<PositionDTO, SecurityCompactDTO>>()
                             {
@@ -297,6 +298,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         {
             tradesSubscription = AppObservable.bindFragment(this, tradeListCache.get(positionDTO.getOwnedPositionId()))
                     .map(new PairGetSecond<OwnedPositionId, TradeDTOList>())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<TradeDTOList>()
                             {

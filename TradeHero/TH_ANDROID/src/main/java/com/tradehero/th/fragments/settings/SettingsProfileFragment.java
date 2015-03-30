@@ -39,6 +39,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
@@ -113,6 +114,7 @@ public class SettingsProfileFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<UserBaseKey, UserProfileDTO>>()
                         {
@@ -178,6 +180,7 @@ public class SettingsProfileFragment extends DashboardFragment
                                     }
                                 }
                             }))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<Pair<AuthData, UserProfileDTO>>()
                             {

@@ -47,6 +47,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -139,6 +140,7 @@ public class SendMessageFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<UserProfileDTO>()
                         {
@@ -245,32 +247,33 @@ public class SendMessageFragment extends DashboardFragment
     {
         String text = inputText.getText().toString();
         final ProgressDialog progressDialog = ProgressDialog.show(
-                        getActivity(),
-                        getActivity().getString(R.string.broadcast_message_waiting),
-                        getActivity().getString(R.string.broadcast_message_sending_hint),
-                        true);
+                getActivity(),
+                getActivity().getString(R.string.broadcast_message_waiting),
+                getActivity().getString(R.string.broadcast_message_sending_hint),
+                true);
 
-        onStopSubscriptions.add(
-                AppObservable.bindFragment(
-                        this,
-                        messageServiceWrapper.get().createMessageRx(
-                                createMessageForm(text)))
-                        .finallyDo(new DismissDialogAction0(progressDialog))
-                        .subscribe(
-                                new Action1<DiscussionDTO>()
-                                {
-                                    @Override public void call(DiscussionDTO discussion)
-                                    {
-                                        SendMessageFragment.this.handleDiscussionPosted(discussion);
-                                    }
-                                },
-                                new Action1<Throwable>()
-                                {
-                                    @Override public void call(Throwable error)
-                                    {
-                                        SendMessageFragment.this.handleDiscussionPostFailed(error);
-                                    }
-                                }));
+        onStopSubscriptions.add(AppObservable.bindFragment(
+                this,
+                messageServiceWrapper.get().createMessageRx(
+                        createMessageForm(text)))
+                .observeOn(AndroidSchedulers.mainThread())
+                .finallyDo(new DismissDialogAction0(progressDialog))
+                .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
+                .subscribe(
+                        new Action1<DiscussionDTO>()
+                        {
+                            @Override public void call(DiscussionDTO discussion)
+                            {
+                                SendMessageFragment.this.handleDiscussionPosted(discussion);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable error)
+                            {
+                                SendMessageFragment.this.handleDiscussionPostFailed(error);
+                            }
+                        }));
     }
 
     private MessageCreateFormDTO createMessageForm(@NonNull String messageText)

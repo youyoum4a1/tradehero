@@ -80,9 +80,10 @@ public class FollowerRevenueReportFragment extends DashboardFragment
         super.onResume();
         followerManagerViewContainer.displayChild(FollowerManagerViewContainer.INDEX_VIEW_PROGRESS);
         fetchFollowerSummary();
-        AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 followerManagerViewContainer.getClickedUserFollower())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<UserFollowerDTO>()
                         {
@@ -91,7 +92,7 @@ public class FollowerRevenueReportFragment extends DashboardFragment
                                 FollowerRevenueReportFragment.this.onListItemClick(userFollowerDTO);
                             }
                         },
-                        new ToastOnErrorAction());
+                        new ToastOnErrorAction()));
     }
 
     @Override public void onDestroyView()
@@ -142,7 +143,7 @@ public class FollowerRevenueReportFragment extends DashboardFragment
 
     protected void fetchFollowerSummary()
     {
-        AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 followerSummaryCache.get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -161,7 +162,7 @@ public class FollowerRevenueReportFragment extends DashboardFragment
                     {
                         display(pair.second);
                     }
-                });
+                }));
     }
 
     protected void display(@NonNull FollowerSummaryDTO followerSummaryDTO)

@@ -33,6 +33,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class LevelUpDialogFragment extends BaseDialogFragment
 {
@@ -115,6 +116,7 @@ public class LevelUpDialogFragment extends BaseDialogFragment
                 Observable.merge(
                         levelDefCache.get(mCurrentLevelDefId),
                         levelDefCache.get(mNextLevelDefId)))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LevelDefObserver());
     }
 

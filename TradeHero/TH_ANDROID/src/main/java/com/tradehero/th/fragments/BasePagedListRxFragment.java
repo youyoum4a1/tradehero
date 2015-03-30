@@ -28,6 +28,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -242,6 +243,7 @@ abstract public class BasePagedListRxFragment<
                                     pagedPastSubscriptions.remove(pageToLoad);
                                 }
                             }))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<Pair<PagedDTOKeyType, ContainerDTOType>>()
                             {

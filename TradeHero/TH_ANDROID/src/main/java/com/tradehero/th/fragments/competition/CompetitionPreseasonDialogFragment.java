@@ -43,6 +43,7 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragment
@@ -126,11 +127,11 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
         {
             shareSubscription = AppObservable.bindFragment(this,
                     providerServiceWrapper.sharePreSeason(CompetitionPreseasonShareFormDTOFactory.createFrom(shareList, providerId)))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<BaseResponseDTO>()
                     {
                         @Override public void onCompleted()
                         {
-
                         }
 
                         @Override public void onError(Throwable e)
@@ -195,6 +196,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     {
         super.onViewCreated(view, savedInstanceState);
         AppObservable.bindFragment(this, providerCacheRx.get(providerId))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Pair<ProviderId, ProviderDTO>>()
                 {
                     @Override public void onStart()
@@ -219,11 +221,11 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
                     }
                 });
         AppObservable.bindFragment(this, competitionPreseasonCacheRx.get(providerId))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Pair<ProviderId, CompetitionPreSeasonDTO>>()
                 {
                     @Override public void onCompleted()
                     {
-
                     }
 
                     @Override public void onError(Throwable e)

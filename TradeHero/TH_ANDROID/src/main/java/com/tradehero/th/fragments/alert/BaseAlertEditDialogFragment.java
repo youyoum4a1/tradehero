@@ -18,6 +18,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 abstract public class BaseAlertEditDialogFragment extends BaseDialogSupportFragment
@@ -85,6 +86,7 @@ abstract public class BaseAlertEditDialogFragment extends BaseDialogSupportFragm
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 viewHolder.conditionalSaveAlert())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<AlertCompactDTO>()
                         {

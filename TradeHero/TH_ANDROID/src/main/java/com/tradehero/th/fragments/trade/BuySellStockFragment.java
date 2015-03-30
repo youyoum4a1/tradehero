@@ -50,6 +50,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -162,6 +163,7 @@ public class BuySellStockFragment extends BuySellFragment
         alertCompactListCacheSubscription = AppObservable.bindFragment(
                 this,
                 alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Map<SecurityId, AlertId>>()
                 {
                     @Override public void onCompleted()
@@ -187,6 +189,7 @@ public class BuySellStockFragment extends BuySellFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userWatchlistPositionCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createUserWatchlistCacheObserver()));
     }
 

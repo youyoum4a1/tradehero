@@ -340,6 +340,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         portfolioCacheSubscription = AppObservable.bindFragment(
                 this,
                 portfolioObservable)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<PortfolioDTO>()
                            {
                                @Override public void call(PortfolioDTO portfolioDTO)
@@ -523,13 +524,15 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         portfolioMenuSubscription = AppObservable.bindFragment(
                 this,
                 mSelectedPortfolioContainer.createMenuObservable())
-                .subscribe(new Action1<MenuOwnedPortfolioId>()
-                           {
-                               public void call(MenuOwnedPortfolioId args)
-                               {
-                                   linkWithApplicable(args, true);
-                               }
-                           },
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<MenuOwnedPortfolioId>()
+                        {
+                            public void call(MenuOwnedPortfolioId args)
+                            {
+                                linkWithApplicable(args, true);
+                            }
+                        },
                         new EmptyAction1<Throwable>());
     }
 
@@ -740,30 +743,32 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                 this,
                 ownedPortfolioIdListCache.get(securityId)
                         .map(new PairGetSecond<PortfolioCompactListKey, OwnedPortfolioIdList>()))
-                .subscribe(new Action1<OwnedPortfolioIdList>()
-                           {
-                               @Override public void call(OwnedPortfolioIdList ids)
-                               {
-                                   applicableOwnedPortfolioIds = ids;
-                                   PortfolioCompactDTO candidate;
-                                   for (final OwnedPortfolioId id : ids)
-                                   {
-                                       candidate = portfolioCompactDTOs.findFirstWhere(new Predicate<PortfolioCompactDTO>()
-                                       {
-                                           @Override public boolean apply(PortfolioCompactDTO compact)
-                                           {
-                                               return compact.id == id.portfolioId;
-                                           }
-                                       });
-                                       if (candidate != null)
-                                       {
-                                           mSelectedPortfolioContainer.addMenuOwnedPortfolioId(
-                                                   new MenuOwnedPortfolioId(id.getUserBaseKey(), candidate));
-                                       }
-                                   }
-                                   BuySellFragment.this.displayBuySellContainer();
-                               }
-                           },
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<OwnedPortfolioIdList>()
+                        {
+                            @Override public void call(OwnedPortfolioIdList ids)
+                            {
+                                applicableOwnedPortfolioIds = ids;
+                                PortfolioCompactDTO candidate;
+                                for (final OwnedPortfolioId id : ids)
+                                {
+                                    candidate = portfolioCompactDTOs.findFirstWhere(new Predicate<PortfolioCompactDTO>()
+                                    {
+                                        @Override public boolean apply(PortfolioCompactDTO compact)
+                                        {
+                                            return compact.id == id.portfolioId;
+                                        }
+                                    });
+                                    if (candidate != null)
+                                    {
+                                        mSelectedPortfolioContainer.addMenuOwnedPortfolioId(
+                                                new MenuOwnedPortfolioId(id.getUserBaseKey(), candidate));
+                                    }
+                                }
+                                BuySellFragment.this.displayBuySellContainer();
+                            }
+                        },
                         new TimberOnErrorAction("Failed to get the applicable portfolio ids"));
     }
 

@@ -259,6 +259,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         messageHeaderFetchSubscription = AppObservable.bindFragment(
                 this,
                 messageHeaderCache.get(messageHeaderId))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createMessageHeaderCacheObserver());
     }
 

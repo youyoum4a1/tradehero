@@ -34,6 +34,7 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class QuestListTestingFragment extends DashboardFragment
@@ -132,6 +133,7 @@ public class QuestListTestingFragment extends DashboardFragment
         arrayAdapter.clear();
         AppObservable.bindFragment(this,
                 questBonusListCache.get(questBonusListId))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createAchievementCategoryListCacheObserver());
     }
 

@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
@@ -115,6 +116,7 @@ public class DiscoveryGameFragment extends DashboardFragment
                         AppObservable.bindFragment(
                                 this,
                                 miniGameDefListCache.get(new MiniGameDefListKey()).map(new PairGetSecond<MiniGameDefListKey, MiniGameDefDTOList>())))
+                        .observeOn(AndroidSchedulers.mainThread())
                         .doOnError(new ToastOnErrorAction())
                         .onErrorResumeNext(Observable.<MiniGameDefDTOList>empty())
                         .subscribe(miniGamesSubject));

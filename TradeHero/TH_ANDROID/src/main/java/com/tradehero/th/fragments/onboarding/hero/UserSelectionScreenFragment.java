@@ -41,6 +41,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
@@ -142,6 +143,7 @@ public class UserSelectionScreenFragment extends DashboardFragment
                                         });
                             }
                         }))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<RequiredDTO>()
                         {

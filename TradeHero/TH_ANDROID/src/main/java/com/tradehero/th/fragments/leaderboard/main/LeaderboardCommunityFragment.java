@@ -313,6 +313,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         leaderboardDefListFetchSubscription = AppObservable.bindFragment(
                 this,
                 observable)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<LeaderboardDefDTOList>()
                         {

@@ -76,6 +76,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
@@ -192,6 +193,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         levelDefSubscription = AppObservable.bindFragment(
                 this,
                 levelDefListCache.get(mLevelDefListId))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createLevelDefCacheObserver());
     }
 
@@ -363,6 +365,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
                                 AchievementShareFormDTOFactory.createFrom(
                                         shareTos,
                                         userAchievementDTO)))
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 new Action1<BaseResponseDTO>()
                                 {

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class AchievementDialogFragment extends AbstractAchievementDialogFragment
@@ -104,6 +105,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
             AppObservable.bindFragment(
                     this,
                     achievementCategoryCache.get(achievementCategoryId))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<Pair<AchievementCategoryId, AchievementCategoryDTO>>()
                             {

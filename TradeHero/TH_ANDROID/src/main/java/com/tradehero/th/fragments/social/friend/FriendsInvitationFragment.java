@@ -499,6 +499,7 @@ public class FriendsInvitationFragment extends DashboardFragment
                 this,
                 userServiceWrapper.searchSocialFriendsRx(
                         currentUserId.toUserBaseKey(), null, query))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SearchFriendsObserver()));
     }
 

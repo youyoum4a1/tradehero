@@ -33,6 +33,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -171,6 +172,7 @@ public class GameWebViewFragment extends BaseWebViewFragment
                 this,
                 miniGameDefCache.get(miniGameDefKey))
                 .map(new PairGetSecond<MiniGameDefKey, MiniGameDefDTO>())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<MiniGameDefDTO>()
                         {
@@ -235,6 +237,7 @@ public class GameWebViewFragment extends BaseWebViewFragment
                 scoreSubmitSubscription = AppObservable.bindFragment(
                         this,
                         gamesServiceWrapper.recordScore(new MiniGameDefKey(gameId), new GameScore(score, level)))
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 new Observer<MiniGameScoreResponseDTO>()
                                 {

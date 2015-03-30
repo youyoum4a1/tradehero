@@ -17,6 +17,7 @@ import retrofit.RetrofitError;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
@@ -56,6 +57,7 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         messageThreadHeaderFetchSubscription = AppObservable.bindFragment(
                 this,
                 messageThreadHeaderCache.get(correspondentId))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createMessageThreadHeaderCacheObserver());
     }
 

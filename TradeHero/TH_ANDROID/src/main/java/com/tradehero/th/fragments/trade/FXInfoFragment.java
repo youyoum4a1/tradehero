@@ -44,6 +44,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -112,6 +113,7 @@ public class FXInfoFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 positionCompactListCache.get(securityId))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<SecurityId, PositionDTOCompactList>>()
                         {
@@ -153,6 +155,7 @@ public class FXInfoFragment extends DashboardFragment
                                 return observable.delay(MILLISECOND_FX_QUOTE_REFRESH, TimeUnit.MILLISECONDS);
                             }
                         }))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<QuoteDTO>()
                         {
@@ -193,6 +196,7 @@ public class FXInfoFragment extends DashboardFragment
                                 return observable.delay(MILLISECOND_FX_CANDLE_CHART_REFRESH, TimeUnit.MILLISECONDS);
                             }
                         }))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createFXHistoryFetchObserver()));
     }
 

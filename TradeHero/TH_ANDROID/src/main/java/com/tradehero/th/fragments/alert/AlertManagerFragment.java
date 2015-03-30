@@ -42,6 +42,7 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.internal.util.SubscriptionList;
@@ -167,6 +168,7 @@ public class AlertManagerFragment extends Fragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 systemStatusCache.getOne(new SystemStatusKey()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<SystemStatusKey, SystemStatusDTO>>()
                         {
@@ -192,6 +194,7 @@ public class AlertManagerFragment extends Fragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<UserBaseKey, UserProfileDTO>>()
                         {
@@ -233,6 +236,7 @@ public class AlertManagerFragment extends Fragment
                                         .toList();
                             }
                         }))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<List<? extends AlertItemView.DTO>>()
                         {

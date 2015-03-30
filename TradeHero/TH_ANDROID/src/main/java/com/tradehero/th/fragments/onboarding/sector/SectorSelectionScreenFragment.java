@@ -34,6 +34,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.subjects.BehaviorSubject;
 
@@ -99,6 +100,7 @@ public class SectorSelectionScreenFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 sectorCompactListCache.getOne(new SectorListType()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<SectorListType, SectorCompactDTOList>>()
                         {

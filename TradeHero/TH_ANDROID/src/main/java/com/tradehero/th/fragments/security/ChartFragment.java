@@ -44,6 +44,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -278,6 +279,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
                     this,
                     securityCompactCacheRx.get(securityId))
                     .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<SecurityCompactDTO>()
                             {

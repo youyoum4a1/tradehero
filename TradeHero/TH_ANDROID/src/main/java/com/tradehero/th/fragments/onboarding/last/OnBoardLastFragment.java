@@ -21,6 +21,7 @@ import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.subjects.BehaviorSubject;
 
@@ -76,6 +77,7 @@ public class OnBoardLastFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 selectedSecuritiesObservable)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<SecurityCompactDTOList>()
                         {

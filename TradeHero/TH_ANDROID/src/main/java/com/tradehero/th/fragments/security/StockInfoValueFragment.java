@@ -18,6 +18,7 @@ import com.tradehero.th.rx.ToastAction;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class StockInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
@@ -84,6 +85,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
                     this,
                     securityCompactCache.get(securityId))
                     .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<SecurityCompactDTO>()
                             {

@@ -38,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -182,6 +183,7 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
                                 return observable.delay(AbstractBuySellFragment.this.getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS);
                             }
                         }))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<QuoteDTO>()
                         {
@@ -205,8 +207,10 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
 
     protected void fetchSecurityCompact()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(this, securityCompactCache
-                .get(this.securityId))
+        onStopSubscriptions.add(AppObservable.bindFragment(
+                this,
+                securityCompactCache.get(this.securityId))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<SecurityId, SecurityCompactDTO>>()
                         {
@@ -236,6 +240,7 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 positionCompactListCache.get(securityId))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<SecurityId, PositionDTOCompactList>>()
                         {

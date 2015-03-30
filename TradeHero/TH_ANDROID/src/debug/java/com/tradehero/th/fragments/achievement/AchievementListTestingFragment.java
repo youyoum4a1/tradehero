@@ -26,6 +26,7 @@ import com.tradehero.th.persistence.achievement.UserAchievementCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class AchievementListTestingFragment extends DashboardFragment
@@ -82,6 +83,7 @@ public class AchievementListTestingFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 achievementCategoryListCache.get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<UserBaseKey, AchievementCategoryDTOList>>()
                         {

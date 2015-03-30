@@ -45,6 +45,7 @@ import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class MainWatchlistPositionFragment extends DashboardFragment
@@ -319,28 +320,28 @@ public class MainWatchlistPositionFragment extends DashboardFragment
 
     //protected void fetchPortfolio()
     //{
-        //if (portfolioCacheSubscription == null)
-        //{
-        //    portfolioCacheSubscription = AppObservable.bindFragment(
-        //            this,
-        //            portfolioCache.get(shownPortfolioId)
-        //                    .map(new PairGetSecond<OwnedPortfolioId, PortfolioDTO>()))
-        //            .subscribe(
-        //                    new Action1<PortfolioDTO>()
-        //                    {
-        //                        @Override public void call(PortfolioDTO portfolioDTO)
-        //                        {
-        //                            WatchlistPositionFragment.this.onPortfolioReceived(portfolioDTO);
-        //                        }
-        //                    },
-        //                    new Action1<Throwable>()
-        //                    {
-        //                        @Override public void call(Throwable error)
-        //                        {
-        //                            WatchlistPositionFragment.this.onPortfolioError(error);
-        //                        }
-        //                    });
-        //}
+    //if (portfolioCacheSubscription == null)
+    //{
+    //    portfolioCacheSubscription = AppObservable.bindFragment(
+    //            this,
+    //            portfolioCache.get(shownPortfolioId)
+    //                    .map(new PairGetSecond<OwnedPortfolioId, PortfolioDTO>()))
+    //            .subscribe(
+    //                    new Action1<PortfolioDTO>()
+    //                    {
+    //                        @Override public void call(PortfolioDTO portfolioDTO)
+    //                        {
+    //                            WatchlistPositionFragment.this.onPortfolioReceived(portfolioDTO);
+    //                        }
+    //                    },
+    //                    new Action1<Throwable>()
+    //                    {
+    //                        @Override public void call(Throwable error)
+    //                        {
+    //                            WatchlistPositionFragment.this.onPortfolioError(error);
+    //                        }
+    //                    });
+    //}
     //}
 
     protected void onPortfolioReceived(PortfolioDTO portfolio)
@@ -364,6 +365,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
                     this,
                     userWatchlistPositionCache.get(currentUserId.toUserBaseKey())
                             .map(new PairGetSecond<UserBaseKey, WatchlistPositionDTOList>()))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<WatchlistPositionDTOList>()
                             {
@@ -401,7 +403,6 @@ public class MainWatchlistPositionFragment extends DashboardFragment
         watchListAdapter.addAll(watchlistPositionDTOs);
         watchListAdapter.notifyDataSetChanged();
         watchListRefreshableContainer.setRefreshing(false);
-
     }
 
     private void openWatchlistItemEditor(int position)

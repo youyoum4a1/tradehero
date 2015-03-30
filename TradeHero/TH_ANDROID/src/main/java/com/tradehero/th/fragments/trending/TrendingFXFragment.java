@@ -42,6 +42,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -122,6 +123,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
         waitForEnrolledSubscription = AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<UserBaseKey, UserProfileDTO>>()
                         {
@@ -151,6 +153,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .take(1)
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<UserProfileDTO>()
                         {
@@ -207,6 +210,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
                                 return observable.delay(MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS);
                             }
                         }))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<List<QuoteDTO>>()
                         {

@@ -30,6 +30,7 @@ import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class ProviderSecurityListRxFragment
@@ -38,7 +39,7 @@ public class ProviderSecurityListRxFragment
     @Inject ProviderCacheRx providerCache;
     @Inject ProviderUtil providerUtil;
 
-    private static final String BUNDLE_PROVIDER_ID_KEY = ProviderSecurityListRxFragment.class.getName()+".providerId";
+    private static final String BUNDLE_PROVIDER_ID_KEY = ProviderSecurityListRxFragment.class.getName() + ".providerId";
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
     private THIntentPassedListener webViewTHIntentPassedListener;
@@ -95,7 +96,7 @@ public class ProviderSecurityListRxFragment
     @Override public void onPrepareOptionsMenu(Menu menu)
     {
         super.onPrepareOptionsMenu(menu);
-        if(providerDTO != null)
+        if (providerDTO != null)
         {
             getActivity().getMenuInflater().inflate(R.menu.provider_security_list_menu, menu);
 
@@ -155,6 +156,7 @@ public class ProviderSecurityListRxFragment
                 this,
                 providerCache.get(this.providerId)
                         .map(new PairGetSecond<ProviderId, ProviderDTO>()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<ProviderDTO>()
                         {
@@ -221,7 +223,7 @@ public class ProviderSecurityListRxFragment
     protected void populateSearchArguments(@NonNull Bundle args)
     {
         SecuritySearchProviderFragment.putProviderId(args, providerId);
-        if(providerDTO != null
+        if (providerDTO != null
                 && providerDTO.associatedPortfolio != null
                 && providerDTO.associatedPortfolio.assetClass != null)
         {

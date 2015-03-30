@@ -31,6 +31,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.validation.ValidatedText;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class SettingsAlipayFragment extends DashboardFragment
@@ -93,6 +94,7 @@ public class SettingsAlipayFragment extends DashboardFragment
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<UserProfileDTO>()
                         {
@@ -140,7 +142,9 @@ public class SettingsAlipayFragment extends DashboardFragment
                 this,
                 userServiceWrapper.updateAlipayAccountRx(
                         currentUserId.toUserBaseKey(), accountDTO))
+                .observeOn(AndroidSchedulers.mainThread())
                 .finallyDo(new DismissDialogAction0(progressDialog))
+                .doOnSubscribe(new DismissDialogAction0(progressDialog))
                 .subscribe(
                         new Action1<UpdateAlipayAccountDTO>()
                         {

@@ -32,6 +32,7 @@ import com.tradehero.th.utils.route.THRouter;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
@@ -128,6 +129,7 @@ public class LeaderboardMarkUserListFragmentUtil
                         userBaseDTO
                         // ,getApplicablePortfolioId()
                 ).launchChoiceRx())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<FollowRequest, UserProfileDTO>>()
                         {

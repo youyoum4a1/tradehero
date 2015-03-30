@@ -46,6 +46,7 @@ import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class WatchlistPositionFragment extends DashboardFragment
@@ -326,6 +327,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                     this,
                     portfolioCache.get(shownPortfolioId)
                             .map(new PairGetSecond<OwnedPortfolioId, PortfolioDTO>()))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<PortfolioDTO>()
                             {
@@ -365,6 +367,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                     this,
                     userWatchlistPositionCache.get(currentUserId.toUserBaseKey())
                             .map(new PairGetSecond<UserBaseKey, WatchlistPositionDTOList>()))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<WatchlistPositionDTOList>()
                             {
@@ -402,7 +405,6 @@ public class WatchlistPositionFragment extends DashboardFragment
         watchListAdapter.addAll(watchlistPositionDTOs);
         watchListAdapter.notifyDataSetChanged();
         watchListRefreshableContainer.setRefreshing(false);
-
     }
 
     private void openWatchlistItemEditor(int position)

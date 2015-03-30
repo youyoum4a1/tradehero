@@ -35,6 +35,7 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -105,6 +106,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<UserProfileDTO>()
                         {
@@ -153,6 +155,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
                 this,
                 systemStatusCache.get(new SystemStatusKey())
                         .map(new PairGetSecond<SystemStatusKey, SystemStatusDTO>()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<SystemStatusDTO>()
                         {

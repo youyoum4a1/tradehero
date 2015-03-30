@@ -39,6 +39,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -114,6 +115,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 exchangeCompactListCache.get(new ExchangeListType(MAX_TOP_STOCKS)))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<ExchangeListType, ExchangeCompactDTOList>>()
                         {
@@ -151,6 +153,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
                                 return Observable.just(createSelectables(toShow));
                             }
                         }))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<List<SelectableExchangeDTO>>()
                         {

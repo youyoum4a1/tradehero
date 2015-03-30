@@ -27,6 +27,7 @@ import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -89,6 +90,7 @@ abstract public class BaseLeaderboardPagedListRxFragment<
                     this,
                     leaderboardDefCache.get(leaderboardDefKey)
                             .map(new PairGetSecond<LeaderboardDefKey, LeaderboardDefDTO>()))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<LeaderboardDefDTO>()
                             {
@@ -116,6 +118,7 @@ abstract public class BaseLeaderboardPagedListRxFragment<
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<UserProfileDTO>()
                         {
