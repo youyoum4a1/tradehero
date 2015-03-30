@@ -19,6 +19,7 @@ import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDiscussOrNewsFragment;
 import com.tradehero.chinabuild.fragment.stocklearning.PublicClassFragment;
 import com.tradehero.chinabuild.fragment.stocklearning.QuestionsFragment;
+import com.tradehero.chinabuild.fragment.stocklearning.ToAnswerQuestionFragment;
 import com.tradehero.chinabuild.fragment.trade.*;
 import com.tradehero.chinabuild.fragment.userCenter.*;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
@@ -323,6 +324,7 @@ import java.util.Locale;
                         //Stock Learning
                         PublicClassFragment.class,
                         QuestionsFragment.class,
+                        ToAnswerQuestionFragment.class,
 
                         //China Build End
                 },

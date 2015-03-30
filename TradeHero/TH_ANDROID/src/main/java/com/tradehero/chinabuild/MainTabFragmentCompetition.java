@@ -37,11 +37,6 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
     private String dialogContent;
 
     @Inject Analytics analytics;
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

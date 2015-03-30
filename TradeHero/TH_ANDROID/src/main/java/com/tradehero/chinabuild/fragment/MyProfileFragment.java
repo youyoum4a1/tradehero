@@ -77,10 +77,6 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
     //Photo
     private File file;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
