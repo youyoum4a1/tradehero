@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +57,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
     @Inject VideoServiceWrapper videoServiceWrapper;
     @Inject Lazy<DashboardNavigator> navigator;
     private VideoAdapter videoAdapter;
-    @NonNull private BehaviorSubject<UserActionType> userActionTypeBehaviorSubject;
+    @NonNull private BehaviorSubject<UserAction> userActionTypeBehaviorSubject;
 
     //<editor-fold desc="Constructors">
     public FxOnBoardDialogFragment()
@@ -123,7 +124,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
                                 {
                                     if (viewAnimator.getDisplayedChild() == 1)
                                     {
-                                        FxOnBoardDialogFragment.this.checkFXPortfolio();
+                                        enrollFXAndNotify();
                                     }
                                     viewAnimator.showNext();
                                 }
@@ -172,43 +173,35 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
         userActionTypeBehaviorSubject.onCompleted();
     }
 
-    @NonNull public Observable<UserActionType> getUserActionTypeObservable()
+    @NonNull public Observable<UserAction> getUserActionTypeObservable()
     {
         return userActionTypeBehaviorSubject.asObservable();
     }
 
-    private void checkFXPortfolio()
+    private void enrollFXAndNotify()
     {
-        notifyUserAction(UserActionType.ENROLLED);
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                userProfileCache.get().get(currentUserId.toUserBaseKey())
-                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
-                .subscribe(
-                        new Action1<UserProfileDTO>()
+                userProfileCache.get().getOne(currentUserId.toUserBaseKey())
+                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
+                        .flatMap(new Func1<UserProfileDTO, Observable<PortfolioDTO>>()
                         {
-                            @Override public void call(UserProfileDTO profile)
+                            @Override public Observable<PortfolioDTO> call(UserProfileDTO profile)
                             {
                                 if (profile.fxPortfolio == null)
                                 {
-                                    FxOnBoardDialogFragment.this.createFXPortfolio();
+                                    return userServiceWrapper.get()
+                                            .createFXPortfolioRx(currentUserId.toUserBaseKey());
                                 }
+                                return Observable.just(profile.fxPortfolio);
                             }
-                        },
-                        new EmptyAction1<Throwable>()));
-    }
-
-    private void createFXPortfolio()
-    {
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
-                userServiceWrapper.get().createFXPortfolioRx(currentUserId.toUserBaseKey()))
+                        }))
                 .subscribe(
                         new Action1<PortfolioDTO>()
                         {
-                            @Override public void call(PortfolioDTO portfolio)
+                            @Override public void call(PortfolioDTO fxPortfolio)
                             {
-                                userProfileCache.get().get(currentUserId.toUserBaseKey());
+                                notifyUserAction(new UserAction(UserActionType.ENROLLED, fxPortfolio));
                             }
                         },
                         new EmptyAction1<Throwable>()));
@@ -217,14 +210,14 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
     @OnClick(R.id.close)
     public void onCloseClicked()
     {
-        notifyUserAction(UserActionType.CANCELLED);
+        notifyUserAction(new UserAction(UserActionType.CANCELLED, null));
         dismiss();
         // TODO mark fx onboard handled
     }
 
-    protected void notifyUserAction(@NonNull UserActionType actionType)
+    protected void notifyUserAction(@NonNull UserAction action)
     {
-        userActionTypeBehaviorSubject.onNext(actionType);
+        userActionTypeBehaviorSubject.onNext(action);
         userActionTypeBehaviorSubject.onCompleted();
     }
 
@@ -235,8 +228,20 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
         return dialogFragment;
     }
 
-    public static enum UserActionType
+    public enum UserActionType
     {
         CANCELLED, ENROLLED
+    }
+
+    public static class UserAction
+    {
+        @NonNull public final UserActionType type;
+        @Nullable public final PortfolioDTO created;
+
+        public UserAction(@NonNull UserActionType type, @Nullable PortfolioDTO created)
+        {
+            this.type = type;
+            this.created = created;
+        }
     }
 }

@@ -179,11 +179,11 @@ public class TrendingFXFragment extends TrendingBaseFragment
                             new ToastOnErrorAction());
             onBoardDialogFragment.getUserActionTypeObservable()
                     .subscribe(
-                            new Action1<FxOnBoardDialogFragment.UserActionType>()
+                            new Action1<FxOnBoardDialogFragment.UserAction>()
                             {
-                                @Override public void call(FxOnBoardDialogFragment.UserActionType action)
+                                @Override public void call(FxOnBoardDialogFragment.UserAction action)
                                 {
-                                    if (action.equals(FxOnBoardDialogFragment.UserActionType.CANCELLED))
+                                    if (action.type.equals(FxOnBoardDialogFragment.UserActionType.CANCELLED))
                                     {
                                         trendingTabTypeBehaviorSubject.onNext(TrendingTabType.STOCK);
                                     }

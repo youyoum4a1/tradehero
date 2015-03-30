@@ -70,7 +70,6 @@ import com.tradehero.th.persistence.timeline.TimelineCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ReplaceWith;
-import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -561,20 +560,6 @@ public class TimelineFragment extends DashboardFragment
                                 }
                             },
                             new ToastOnErrorAction()
-                    );
-            onBoardDialogFragment.getUserActionTypeObservable()
-                    .subscribe(
-                            new Action1<FxOnBoardDialogFragment.UserActionType>()
-                            {
-                                @Override public void call(FxOnBoardDialogFragment.UserActionType action)
-                                {
-                                    if (action.equals(FxOnBoardDialogFragment.UserActionType.ENROLLED))
-                                    {
-                                        portfolioCompactListCache.get(currentUserId.toUserBaseKey());
-                                    }
-                                }
-                            },
-                            new TimberOnErrorAction("")
                     );
         }
     }

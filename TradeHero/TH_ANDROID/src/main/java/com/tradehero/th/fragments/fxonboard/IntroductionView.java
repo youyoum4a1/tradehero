@@ -12,15 +12,14 @@ import rx.android.view.ViewObservable;
 public class IntroductionView extends LinearLayout
     implements FxOnBoardView<Boolean>
 {
-    @NonNull @Override public Observable<Boolean> result()
-    {
-        return ViewObservable.clicks(findViewById(R.id.next_button), false)
-                .map(new ReplaceWith<>(true))
-                .asObservable();
-    }
-
     public IntroductionView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+    }
+
+    @NonNull @Override public Observable<Boolean> result()
+    {
+        return ViewObservable.clicks(findViewById(R.id.next_button), false)
+                .map(new ReplaceWith<>(true));
     }
 }

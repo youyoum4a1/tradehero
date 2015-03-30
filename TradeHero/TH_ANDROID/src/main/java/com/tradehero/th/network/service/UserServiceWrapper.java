@@ -7,6 +7,7 @@ import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.social.BatchFollowFormDTO;
 import com.tradehero.th.api.social.HeroDTOList;
@@ -47,6 +48,7 @@ import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -56,6 +58,7 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 import retrofit.client.Response;
 import rx.Observable;
+import rx.functions.Func1;
 
 @Singleton public class UserServiceWrapper
 {
@@ -64,6 +67,7 @@ import rx.Observable;
     @NonNull private final CurrentUserId currentUserId;
     @NonNull private final DTOCacheUtilImpl dtoCacheUtil;
     @NonNull private final Lazy<UserProfileCacheRx> userProfileCache;
+    @NonNull private final Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache;
     @NonNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
     @NonNull private final Lazy<HeroListCacheRx> heroListCache;
     @NonNull private final Lazy<ProviderListCacheRx> providerListCache;
@@ -75,6 +79,7 @@ import rx.Observable;
             @NonNull CurrentUserId currentUserId,
             @NonNull DTOCacheUtilImpl dtoCacheUtil,
             @NonNull Lazy<UserProfileCacheRx> userProfileCache,
+            @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
             @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
             @NonNull Lazy<HeroListCacheRx> heroListCache,
             @NonNull Lazy<ProviderListCacheRx> providerListCache,
@@ -84,6 +89,7 @@ import rx.Observable;
         this.currentUserId = currentUserId;
         this.dtoCacheUtil = dtoCacheUtil;
         this.userProfileCache = userProfileCache;
+        this.portfolioCompactListCache = portfolioCompactListCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.heroListCache = heroListCache;
         this.providerListCache = providerListCache;
@@ -494,9 +500,26 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Create FX Portfolio">
-    @NonNull public Observable<PortfolioDTO> createFXPortfolioRx(@NonNull UserBaseKey userBaseKey)
+    @NonNull public Observable<PortfolioDTO> createFXPortfolioRx(@NonNull final UserBaseKey userBaseKey)
     {
-        return userServiceRx.createFXPortfolioRx(userBaseKey.getUserId());
+        return userServiceRx.createFXPortfolioRx(userBaseKey.getUserId())
+                .map(new Func1<PortfolioDTO, PortfolioDTO>()
+                {
+                    @Override public PortfolioDTO call(PortfolioDTO createdFXPortfolioDTO)
+                    {
+                        UserProfileDTO userProfile = userProfileCache.get().getCachedValue(userBaseKey);
+                        if (userProfile != null)
+                        {
+                            userProfile.fxPortfolio = createdFXPortfolioDTO;
+                        }
+                        PortfolioCompactDTOList list = portfolioCompactListCache.get().getCachedValue(userBaseKey);
+                        if (list != null && list.getDefaultFxPortfolio() == null)
+                        {
+                            list.add(createdFXPortfolioDTO);
+                        }
+                        return createdFXPortfolioDTO;
+                    }
+                });
     }
     //</editor-fold>
 }

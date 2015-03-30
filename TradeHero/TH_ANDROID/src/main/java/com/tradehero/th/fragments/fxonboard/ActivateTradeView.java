@@ -12,15 +12,14 @@ import rx.android.view.ViewObservable;
 public class ActivateTradeView extends LinearLayout
     implements FxOnBoardView<Boolean>
 {
-    @NonNull @Override public Observable<Boolean> result()
-    {
-        return ViewObservable.clicks(findViewById(R.id.start_trading), false)
-                .map(new ReplaceWith<>(false))
-                .asObservable();
-    }
-
     public ActivateTradeView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+    }
+
+    @NonNull @Override public Observable<Boolean> result()
+    {
+        return ViewObservable.clicks(findViewById(R.id.start_trading), false)
+                .map(new ReplaceWith<>(false));
     }
 }

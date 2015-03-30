@@ -9,6 +9,7 @@ import com.tradehero.th.api.users.SuggestHeroesListTypeNew;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -28,6 +29,7 @@ public class UserServiceWrapperStub extends UserServiceWrapper
             @NonNull CurrentUserId currentUserId,
             @NonNull DTOCacheUtilImpl dtoCacheUtil,
             @NonNull Lazy<UserProfileCacheRx> userProfileCache,
+            @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
             @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
             @NonNull Lazy<HeroListCacheRx> heroListCache,
             @NonNull Lazy<ProviderListCacheRx> providerListCache,
@@ -38,6 +40,7 @@ public class UserServiceWrapperStub extends UserServiceWrapper
                 currentUserId,
                 dtoCacheUtil,
                 userProfileCache,
+                portfolioCompactListCache,
                 userMessagingRelationshipCache,
                 heroListCache,
                 providerListCache,
