@@ -259,7 +259,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
             }
             requestDtos();
         }
-        if (exchangeCompactSpinnerDTOs != null)
+        if (exchangeCompactSpinnerDTOs != null && mExchangeSelection != null)
         {
             mExchangeSelection.setSelectionById(trendingFilterTypeDTO.exchange.id);
         }

@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trending;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -37,6 +38,7 @@ import com.tradehero.th.persistence.games.ViralMiniGameDefListCache;
 import com.tradehero.th.persistence.prefs.ShowViralGameDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
@@ -44,10 +46,12 @@ import com.tradehero.th.utils.Constants;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -72,6 +76,7 @@ public class TrendingMainFragment extends DashboardFragment
     private TradingFXPagerAdapter tradingFXPagerAdapter;
     private Subscription viralSubscription;
     private boolean fetchedFXPortfolio = false;
+    private Observable<UserProfileDTO> userProfileObservable;
     @Nullable private OwnedPortfolioId fxPortfolioId;
 
     public static void putAssetClass(@NonNull Bundle args, @NonNull AssetClass assetClass)
@@ -102,6 +107,30 @@ public class TrendingMainFragment extends DashboardFragment
         return new ExchangeIntegerId(args.getBundle(KEY_EXCHANGE_ID));
     }
 
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        userProfileObservable = userProfileCache.getOne(currentUserId.toUserBaseKey())
+                .subscribeOn(Schedulers.computation())
+                .map(new Func1<Pair<UserBaseKey, UserProfileDTO>, UserProfileDTO>()
+                {
+                    @Override public UserProfileDTO call(Pair<UserBaseKey, UserProfileDTO> pair)
+                    {
+                        fetchedFXPortfolio = true;
+                        if (pair.second.fxPortfolio == null)
+                        {
+                            fxPortfolioId = null;
+                        }
+                        else
+                        {
+                            fxPortfolioId = pair.second.fxPortfolio.getOwnedPortfolioId();
+                        }
+                        return pair.second;
+                    }
+                })
+                .cache(1);
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -130,7 +159,6 @@ public class TrendingMainFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        initViews();
         pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
         {
             @Override public void onPageScrolled(int i, float v, int i2)
@@ -149,13 +177,26 @@ public class TrendingMainFragment extends DashboardFragment
         });
     }
 
+    @Override public void onStart()
+    {
+        super.onStart();
+        onStopSubscriptions.add(AppObservable.bindFragment(
+                this,
+                userProfileObservable)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO userProfileDTO)
+                            {
+                                initViews();
+                            }
+                        },
+                        new EmptyAction1<Throwable>()));
+    }
+
     private void initViews()
     {
-        List<Fragment> fragments = getChildFragmentManager().getFragments();
-        if (fragments != null)
-        {
-            fragments.clear();
-        }
         tabViewPager.setAdapter(lastType.equals(TrendingTabType.STOCK) ? tradingStockPagerAdapter : tradingFXPagerAdapter);
         if (!Constants.RELEASE)
         {
@@ -246,6 +287,7 @@ public class TrendingMainFragment extends DashboardFragment
                             if (!oldType.equals(lastType))
                             {
                                 lastPosition = 0;
+                                clearChildFragmentManager();
                                 initViews();
                             }
                         }
@@ -263,33 +305,17 @@ public class TrendingMainFragment extends DashboardFragment
                 {
                     progressDialog = null;
                 }
+                Action0 dismissProgress = new DismissDialogAction0(progressDialog);
                 // We want to identify whether to:
                 // - wait for enough info
                 // - pop for FX enroll
                 // - just change the tab
                 onStopSubscriptions.add(AppObservable.bindFragment(
                         TrendingMainFragment.this,
-                        userProfileCache.getOne(currentUserId.toUserBaseKey())
-                                .subscribeOn(Schedulers.computation())
-                                .map(new Func1<Pair<UserBaseKey, UserProfileDTO>, UserProfileDTO>()
-                                {
-                                    @Override public UserProfileDTO call(Pair<UserBaseKey, UserProfileDTO> pair)
-                                    {
-                                        fetchedFXPortfolio = true;
-                                        if (pair.second.fxPortfolio == null)
-                                        {
-                                            fxPortfolioId = null;
-                                        }
-                                        else
-                                        {
-                                            fxPortfolioId = pair.second.fxPortfolio.getOwnedPortfolioId();
-                                        }
-                                        return pair.second;
-                                    }
-                                }))
+                        userProfileObservable)
                         .observeOn(AndroidSchedulers.mainThread())
-                        .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
-                        .finallyDo(new DismissDialogAction0(progressDialog))
+                        .doOnUnsubscribe(dismissProgress)
+                        .finallyDo(dismissProgress)
                         .subscribe(
                                 effectTabChangeAction,
                                 new ToastOnErrorAction(getString(R.string.error_fetch_your_user_profile))));
@@ -324,6 +350,12 @@ public class TrendingMainFragment extends DashboardFragment
         this.tradingStockPagerAdapter = null;
         this.tradingFXPagerAdapter = null;
         super.onDestroy();
+    }
+
+    @Override public void onDetach()
+    {
+        userProfileObservable = null;
+        super.onDetach();
     }
 
     private class TradingStockPagerAdapter extends FragmentPagerAdapter
@@ -396,7 +428,17 @@ public class TrendingMainFragment extends DashboardFragment
             lastType = TrendingTabType.STOCK;
         }
         lastPosition = 0;
+        clearChildFragmentManager();
         initViews();
+    }
+
+    protected void clearChildFragmentManager()
+    {
+        List<Fragment> fragments = getChildFragmentManager().getFragments();
+        if (fragments != null)
+        {
+            fragments.clear();
+        }
     }
 
     public static void setLastType(@NonNull AssetClass assetClass)

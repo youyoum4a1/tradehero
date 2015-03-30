@@ -33,7 +33,7 @@ public class FXMainPositionListFragment extends BasePurchaseManagerFragment
     @InjectView(R.id.pager) ViewPager tabViewPager;
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
-    protected OwnedPortfolioId getPositionsDTOKey;
+    protected OwnedPortfolioId fxPortfolioId;
 
     public enum TabType
     {
@@ -69,7 +69,7 @@ public class FXMainPositionListFragment extends BasePurchaseManagerFragment
     {
         super.onCreate(savedInstanceState);
         thRouter.inject(this);
-        getPositionsDTOKey = getMainFXPortfolioId(getArguments());
+        fxPortfolioId = getMainFXPortfolioId(getArguments());
     }
 
 
@@ -111,7 +111,7 @@ public class FXMainPositionListFragment extends BasePurchaseManagerFragment
             {
                 PositionListFragment.putApplicablePortfolioId(args, purchaseApplicableOwnedPortfolioId);
             }
-            PositionListFragment.putGetPositionsDTOKey(args, getPositionsDTOKey);
+            PositionListFragment.putGetPositionsDTOKey(args, fxPortfolioId);
             PositionListFragment.putShownUser(args, currentUserId.toUserBaseKey());
             TabType positionType;
             positionType = FX_TYPES[position];
