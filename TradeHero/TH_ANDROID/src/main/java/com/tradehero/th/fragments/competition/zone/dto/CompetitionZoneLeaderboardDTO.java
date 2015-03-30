@@ -3,8 +3,8 @@ package com.tradehero.th.fragments.competition.zone.dto;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLeaderboardListItemView;
@@ -14,7 +14,7 @@ public class CompetitionZoneLeaderboardDTO extends CompetitionZoneDTO
 {
     @Nullable public final CompetitionDTO competitionDTO;
     public final int titleColor;
-    @NonNull public final Spannable roi;
+    @NonNull public final Spanned roi;
 
     //<editor-fold desc="Constructors">
     public CompetitionZoneLeaderboardDTO(
@@ -36,7 +36,7 @@ public class CompetitionZoneLeaderboardDTO extends CompetitionZoneDTO
         if (competitionDTO != null
                 && competitionDTO.leaderboardUser != null)
         {
-            roi = (Spannable) THSignedPercentage
+            roi = THSignedPercentage
                     .builder(competitionDTO.leaderboardUser.roiInPeriod * 100)
                     .withDefaultColor()
                     .build().createSpanned();
