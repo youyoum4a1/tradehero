@@ -41,6 +41,7 @@ abstract public class DashboardFragment extends Fragment
 
     public static final boolean DEFAULT_HAS_OPTION_MENU = true;
     public static final boolean DEFAULT_IS_OPTION_MENU_VISIBLE = true;
+    private static final int MENU_GROUP_HELP = "MENU_GROUP_HELP".hashCode();
 
     protected boolean hasOptionMenu;
     protected boolean isOptionMenuVisible;
@@ -135,12 +136,18 @@ abstract public class DashboardFragment extends Fragment
 
         if (this instanceof WithTutorial)
         {
-            inflater.inflate(R.menu.menu_with_tutorial, menu);
+            menu.removeGroup(MENU_GROUP_HELP);
+            MenuItem item = menu.add(MENU_GROUP_HELP, getMenuHelpID(), Menu.NONE, R.string.help);
+            item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
         actionBarOwnerMixin.onCreateOptionsMenu(menu, inflater);
 
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private int getMenuHelpID() {
+        return (getClass().getName() + ".help").hashCode();
     }
 
     @Nullable protected ActionBar getSupportActionBar()
@@ -188,23 +195,24 @@ abstract public class DashboardFragment extends Fragment
                     resideMenuLazy.get().openMenu();
                 }
                 return true;
-
-            case R.id.menu_info:
-                handleInfoMenuItemClicked();
-                return true;
+        }
+        if (item.getItemId() == getMenuHelpID()) {
+            return handleInfoMenuItemClicked();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    protected void handleInfoMenuItemClicked()
+    protected boolean handleInfoMenuItemClicked()
     {
         if (this instanceof WithTutorial)
         {
             AlertDialogUtil.popTutorialContent(getActivity(), ((WithTutorial) this).getTutorialLayout());
+            return true;
         }
         else
         {
             Timber.d("%s is not implementing WithTutorial interface, but has info menu", getClass().getName());
+            return false;
         }
     }
 
