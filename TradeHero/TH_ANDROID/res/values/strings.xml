@@ -528,6 +528,8 @@
   <string name="error_fetch_exchange_list_info">There was an error when fetching the list of exchanges</string>
 
  <!-- Learning -->
- <string name="stock_learning">股市学堂</string>
+  <string name="stock_learning">股市学堂</string>
+  <string name="stock_learning_video">学堂视频</string>
+
  <!-- Learning -->
 </resources>

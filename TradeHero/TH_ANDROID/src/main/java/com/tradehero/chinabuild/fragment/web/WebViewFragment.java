@@ -15,7 +15,7 @@ public class WebViewFragment extends DashboardFragment
     public static final String BUNDLE_WEBVIEW_URL = "bundle_webview_url";
     public static final String BUNDLE_WEBVIEW_TITLE = "bundle_webview_title";
 
-    private WebView webViewSimple;
+    public WebView webViewSimple;
 
     public String strUrl;
     public String strTitle;
@@ -43,8 +43,12 @@ public class WebViewFragment extends DashboardFragment
         webViewSimple = (WebView)view.findViewById(R.id.webViewSimple);
         webViewSimple.getSettings().setJavaScriptEnabled(true);
         webViewSimple.addJavascriptInterface(new CallNativeFromJS(), "CallNativeFromJS");
-        webViewSimple.loadUrl(strUrl);
+        loadUrl(strUrl);
         return view;
     }
 
+    public void loadUrl(String url)
+    {
+        webViewSimple.loadUrl(url);
+    }
 }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:paddingBottom="4dip" android:layout_width="fill_parent">
+  <ImageView
+      android:id="@+id/videoImage"
+      android:layout_height="fill_parent"
+      android:layout_width="fill_parent"
+      android:background="@drawable/avatar_default"
+      android:layout_centerHorizontal="true">
+  </ImageView>
+  <TextView
+      android:layout_width="fill_parent"
+      android:background="#44FFFFFF"
+      android:layout_height="wrap_content"
+      android:text="视频简介"
+      android:textSize="12sp"
+      android:textColor="@color/black"
+      android:padding="5dp"
+      android:singleLine="true"
+      android:layout_alignParentBottom="true"
+      android:gravity="center_horizontal"
+      android:id="@+id/videoText">
+  </TextView>
+</RelativeLayout>

@@ -49,6 +49,7 @@
       android:allowClearUserData="true"
       android:enabled="true"
       android:largeHeap="true"
+      android:hardwareAccelerated="true"
       >
 
     <activity
