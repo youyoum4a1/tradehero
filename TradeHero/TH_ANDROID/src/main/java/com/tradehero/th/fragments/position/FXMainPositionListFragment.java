@@ -18,24 +18,22 @@ import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
 import javax.inject.Inject;
 
 public class FXMainPositionListFragment extends BasePurchaseManagerFragment
 {
+    private static final String OWNED_PORTFOLIO_ID_BUNDLE_KEY = FXMainPositionListFragment.class.getName() + ".ownedPortfolioId";
+
     @Inject THRouter thRouter;
+    @Inject CurrentUserId currentUserId;
     @InjectView(R.id.pager) ViewPager tabViewPager;
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
-    @NonNull protected GetPositionsDTOKey getPositionsDTOKey;
-    @Inject CurrentUserId currentUserId;
-    @Inject Lazy<UserProfileCacheRx> userProfileCache;
+    protected OwnedPortfolioId getPositionsDTOKey;
 
     public enum TabType
     {
@@ -57,11 +55,21 @@ public class FXMainPositionListFragment extends BasePurchaseManagerFragment
             TabType.LONG,
     };
 
+    public static void putMainFXPortfolioId(@NonNull Bundle args, @NonNull OwnedPortfolioId ownedPortfolioId)
+    {
+        args.putBundle(OWNED_PORTFOLIO_ID_BUNDLE_KEY, ownedPortfolioId.getArgs());
+    }
+
+    @NonNull private static OwnedPortfolioId getMainFXPortfolioId(@NonNull Bundle args)
+    {
+        return new OwnedPortfolioId(args.getBundle(OWNED_PORTFOLIO_ID_BUNDLE_KEY));
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         thRouter.inject(this);
-        getPositionsDTOKey = new OwnedPortfolioId(currentUserId.get(), userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey()).fxPortfolio.id);
+        getPositionsDTOKey = getMainFXPortfolioId(getArguments());
     }
 
 
