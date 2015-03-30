@@ -36,6 +36,8 @@ import rx.Notification;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import timber.log.Timber;
 
 public class WatchlistEditFragment extends DashboardFragment
@@ -189,10 +191,13 @@ public class WatchlistEditFragment extends DashboardFragment
         if (watchlistPositionDTO != null)
         {
             final ProgressDialog progressDialog = showProgressBarOld();
+            Action0 closeDialogAction = new DismissDialogAction0(progressDialog);
             onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
                     watchlistServiceWrapper.deleteWatchlistRx(watchlistPositionDTO.getPositionCompactId()))
-                    .finallyDo(new DismissDialogAction0(progressDialog))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnUnsubscribe(closeDialogAction)
+                    .finallyDo(closeDialogAction)
                     .subscribe(createWatchlistDeleteObserver()));
         }
         else
