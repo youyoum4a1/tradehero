@@ -10,6 +10,8 @@
       android:layout_height="@dimen/size_6"
       android:src="@drawable/logo_seeking_alpha"
       android:layout_gravity="center"
+      android:scaleType="fitStart"
+      android:paddingLeft="@dimen/size_2"
       android:contentDescription="@string/seeking_alpha"
       android:background="@color/news_seeking_alpha"
       />

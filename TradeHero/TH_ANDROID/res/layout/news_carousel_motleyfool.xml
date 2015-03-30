@@ -10,6 +10,8 @@
       android:layout_height="@dimen/size_6"
       android:paddingTop="4dp"
       android:paddingBottom="4dp"
+      android:paddingLeft="@dimen/size_2"
+      android:scaleType="fitStart"
       android:src="@drawable/logo_tmf"
       android:layout_gravity="center"
       android:contentDescription="@string/motley_fool"
