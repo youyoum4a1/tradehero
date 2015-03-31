@@ -7,6 +7,7 @@ import dagger.Module;
         injects = {
 
                 PositionListFragment.class,
+                OldPositionListFragment.class,
                 LeaderboardPositionListFragment.class,
                 CompetitionLeaderboardPositionListFragment.class,
                 PositionPartialTopView.class,

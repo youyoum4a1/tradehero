@@ -3,6 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+  <TextView
+      android:id="@+id/title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:layout_alignParentLeft="true"
+      android:layout_marginLeft="@dimen/margin_small"/>
+
   <ImageView android:id="@+id/gain_indicator"
       android:layout_width="@dimen/size_1"
       android:layout_height="@dimen/size_1"

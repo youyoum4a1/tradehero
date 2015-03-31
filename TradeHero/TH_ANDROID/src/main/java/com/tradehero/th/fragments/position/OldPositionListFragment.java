@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -23,8 +22,6 @@ import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
-import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
-import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -48,7 +45,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
@@ -82,7 +78,6 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
-import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,16 +94,17 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId")
-public class PositionListFragment
+public class OldPositionListFragment
         extends BasePurchaseManagerFragment
         implements WithTutorial
 {
-    private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = PositionListFragment.class.getName() + ".showPositionDtoKey";
-    private static final String BUNDLE_KEY_SHOWN_USER_ID_BUNDLE = PositionListFragment.class.getName() + ".userBaseKey";
-    public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = PositionListFragment.class.getName() + ".firstPositionVisible";
-    public static final String BUNDLE_KEY_POSITION_TYPE = PositionListFragment.class.getName() + ".postion.type";
-    public static final String BUNDLE_KEY_SHOW_TITLE = PositionListFragment.class.getName() + ".showTitle";
-    public static final String BUNDLE_KEY_IS_TRENDING_FX_PORTFOLIO = PositionListFragment.class.getName() + ".trendingFXPortfolio";
+    private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = OldPositionListFragment.class.getName() + ".showPositionDtoKey";
+    private static final String BUNDLE_KEY_SHOWN_USER_ID_BUNDLE = OldPositionListFragment.class.getName() + ".userBaseKey";
+    public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = OldPositionListFragment.class.getName() + ".firstPositionVisible";
+    public static final String BUNDLE_KEY_POSITION_TYPE = OldPositionListFragment.class.getName() + ".postion.type";
+    public static final String BUNDLE_KEY_SHOW_TITLE = OldPositionListFragment.class.getName() + ".showTitle";
+    public static final String BUNDLE_KEY_IS_TRENDING_FX_PORTFOLIO = OldPositionListFragment.class.getName() + ".trendingFXPortfolio";
+    public static final String BUNDLE_KEY_SECURITY_ID = OldPositionListFragment.class.getName() + ".securityId";
 
     private static final int FLIPPER_INDEX_LOADING = 0;
     private static final int FLIPPER_INDEX_LIST = 1;
@@ -127,7 +123,7 @@ public class PositionListFragment
     @Inject BroadcastUtils broadcastUtils;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
 
-    @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
+    //@InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
     @InjectView(R.id.position_list) ListView positionListView;
@@ -137,7 +133,7 @@ public class PositionListFragment
     @InjectRoute PortfolioId injectedPortfolioId;
 
     private PortfolioHeaderView portfolioHeaderView;
-    @NonNull protected GetPositionsDTOKey getPositionsDTOKey;
+    @NonNull static protected GetPositionsDTOKey getPositionsDTOKey;
     protected PortfolioDTO portfolioDTO;
     protected List<Object> viewDTOs;
     protected UserBaseKey shownUser;
@@ -149,6 +145,7 @@ public class PositionListFragment
     @Inject protected THBillingInteractorRx userInteractorRx;
 
     @NonNull private TabbedPositionListFragment.TabType positionType;
+    private int securityId;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
@@ -225,6 +222,7 @@ public class PositionListFragment
 
         positionType = getPositionType(args);
         this.positionItemAdapter = createPositionItemAdapter();
+        securityId = getArguments().getInt(BUNDLE_KEY_SECURITY_ID, 0);
     }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -255,7 +253,7 @@ public class PositionListFragment
         {
             @Override public void onRefresh()
             {
-                PositionListFragment.this.refreshSimplePage();
+                OldPositionListFragment.this.refreshSimplePage();
             }
         });
     }
@@ -266,7 +264,7 @@ public class PositionListFragment
     {
         if (view instanceof PositionNothingView)
         {
-            pushTrendingFragment();
+            pushSecurityFragment();
         }
         else if (view instanceof PositionLockedView && userProfileDTO != null)
         {
@@ -278,7 +276,7 @@ public class PositionListFragment
                                 @Override public void call(Throwable e)
                                 {
                                     AlertDialogRxUtil.popErrorMessage(
-                                            PositionListFragment.this.getActivity(),
+                                            OldPositionListFragment.this.getActivity(),
                                             e);
                                     // TODO
                                 }
@@ -287,10 +285,17 @@ public class PositionListFragment
         }
         else
         {
+            if (view instanceof PositionPartialTopView)
+            {
+                PositionPartialTopView.DTO dto = ((PositionPartialTopView.DTO) parent.getItemAtPosition(position));
+                if (dto.title != null)
+                {
+                    return;
+                }
+            }
             Bundle args = new Bundle();
             // By default tries
-            TradeListFragment.putPositionDTOKey(args,
-                    ((PositionPartialTopView.DTO) parent.getItemAtPosition(position)).positionDTO.getPositionDTOKey());
+            TradeListFragment.putPositionDTOKey(args, ((PositionPartialTopView.DTO) parent.getItemAtPosition(position)).positionDTO.getPositionDTOKey());
             OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
             if (ownedPortfolioId != null)
             {
@@ -303,7 +308,7 @@ public class PositionListFragment
         }
     }
 
-    protected void pushTrendingFragment()
+    protected void pushSecurityFragment()
     {
         Bundle args = new Bundle();
 
@@ -410,7 +415,7 @@ public class PositionListFragment
                     {
                         @Override public Observable<? extends UserProfileDTO> call(PortfolioHeaderView.UserAction userAction)
                         {
-                            return PositionListFragment.this.handleHeaderUserAction(userAction);
+                            return OldPositionListFragment.this.handleHeaderUserAction(userAction);
                         }
                     })
                     .subscribe(
@@ -420,7 +425,7 @@ public class PositionListFragment
                                 @Override public void call(Throwable e)
                                 {
                                     AlertDialogRxUtil.popErrorMessage(
-                                            PositionListFragment.this.getActivity(),
+                                            OldPositionListFragment.this.getActivity(),
                                             e);
                                     // TODO
                                 }
@@ -465,18 +470,18 @@ public class PositionListFragment
                         Observable<UserProfileDTO> fromServer;
                         if (request.isPremium)
                         {
-                            fromServer = PositionListFragment.this.premiumFollow(request.heroId);
+                            fromServer = OldPositionListFragment.this.premiumFollow(request.heroId);
                         }
                         else
                         {
-                            fromServer = PositionListFragment.this.freeFollow(request.heroId);
+                            fromServer = OldPositionListFragment.this.freeFollow(request.heroId);
                         }
                         return fromServer
                                 .doOnNext(new Action1<UserProfileDTO>()
                                 {
                                     @Override public void call(UserProfileDTO userProfileDTO)
                                     {
-                                        PositionListFragment.this.handleSuccessfulFollow(request);
+                                        OldPositionListFragment.this.handleSuccessfulFollow(request);
                                     }
                                 });
                     }
@@ -520,7 +525,6 @@ public class PositionListFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(shownUser))
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<UserBaseKey, UserProfileDTO>>()
                         {
@@ -546,7 +550,6 @@ public class PositionListFragment
             onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
                     portfolioCache.get(((OwnedPortfolioId) getPositionsDTOKey)))
-                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<Pair<OwnedPortfolioId, PortfolioDTO>>()
                             {
@@ -562,6 +565,7 @@ public class PositionListFragment
                                     Timber.e(""+getString(R.string.error_fetch_portfolio_info)+" "+error.toString());
                                 }
                             }
+                            //new ToastAction<Throwable>(getString(R.string.error_fetch_portfolio_info))
                     ));
         }
         // We do not care for now about those that are loaded with LeaderboardMarkUserId
@@ -575,12 +579,9 @@ public class PositionListFragment
 
         preparePortfolioHeaderView(portfolioDTO);
         portfolioHeaderView.linkWith(portfolioDTO);
-        if (portfolioDTO != null && portfolioDTO.assetClass == AssetClass.FX)
-        {
+        if (portfolioDTO != null && portfolioDTO.assetClass == AssetClass.FX) {
             btnHelp.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        } else {
             btnHelp.setVisibility(View.INVISIBLE);
         }
     }
@@ -613,10 +614,6 @@ public class PositionListFragment
         if (portfolioHeaderView == null)
         {
             // portfolio header
-            int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);
-            headerStub.setLayoutResource(headerLayoutId);
-            final View inflatedHeader = headerStub.inflate();
-            portfolioHeaderView = (PortfolioHeaderView) inflatedHeader;
             linkPortfolioHeader();
 
             positionListView.post(new Runnable()
@@ -626,7 +623,7 @@ public class PositionListFragment
                     AbsListView listView = positionListView;
                     if (listView != null)
                     {
-                        int headerHeight = inflatedHeader.getMeasuredHeight();
+                        int headerHeight = 0;
                         positionListView.setPadding(
                                 positionListView.getPaddingLeft(),
                                 headerHeight,
@@ -636,12 +633,6 @@ public class PositionListFragment
                                 headerHeight,
                                 listView.getPaddingRight(),
                                 listView.getPaddingBottom());
-                        listView.setOnScrollListener(new MultiScrollListener(
-                                dashboardBottomTabsListViewScrollListener.get(),
-                                new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER,
-                                        inflatedHeader,
-                                        -headerHeight,
-                                        null, 0)));
                     }
                 }
             });
@@ -693,20 +684,20 @@ public class PositionListFragment
                                                     .toList();
                                         }
                                     }))
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .take(1)
                     .subscribe(
                             new Action1<List<Object>>()
                             {
                                 @Override public void call(List<Object> dtoList)
                                 {
-                                    PositionListFragment.this.linkWith(dtoList);
+                                    OldPositionListFragment.this.linkWith(dtoList);
                                 }
                             },
                             new Action1<Throwable>()
                             {
                                 @Override public void call(Throwable error)
                                 {
-                                    PositionListFragment.this.handleGetPositionsError(error);
+                                    OldPositionListFragment.this.handleGetPositionsError(error);
                                 }
                             }));
         }
@@ -740,6 +731,9 @@ public class PositionListFragment
     @NonNull protected List<Object> filterViewDTOs(@NonNull List<Object> dtoList)
     {
         List<Object> filtered = new ArrayList<>();
+        List<Object> longList = new ArrayList<>();
+        List<Object> shortList = new ArrayList<>();
+        List<Object> closedList = new ArrayList<>();
         for (Object dto : dtoList)
         {
             if (dto instanceof PositionLockedView.DTO)
@@ -749,7 +743,7 @@ public class PositionListFragment
                     filtered.add(dto);
                 }
             }
-            else if (dto instanceof PositionPartialTopView.DTO)
+            else if (dto instanceof PositionPartialTopView.DTO && securityId == 0)
             {
                 Boolean isClosed = ((PositionPartialTopView.DTO) dto).positionDTO.isClosed();
                 Integer shares = ((PositionPartialTopView.DTO) dto).positionDTO.shares;
@@ -764,8 +758,7 @@ public class PositionListFragment
                 }
                 else if (isShort)
                 {
-                    if (getArguments().getBoolean(BUNDLE_KEY_IS_TRENDING_FX_PORTFOLIO, false) || positionType.equals(
-                            TabbedPositionListFragment.TabType.SHORT))
+                    if (getArguments().getBoolean(BUNDLE_KEY_IS_TRENDING_FX_PORTFOLIO, false) || positionType.equals(TabbedPositionListFragment.TabType.SHORT))
                     {
                         filtered.add(dto);
                     }
@@ -775,6 +768,43 @@ public class PositionListFragment
                     filtered.add(dto);
                 }
             }
+            //for fx/stocks history
+            else if (dto instanceof PositionPartialTopView.DTO && securityId != 0)
+            {
+                Boolean isClosed = ((PositionPartialTopView.DTO) dto).positionDTO.isClosed();
+                Integer shares = ((PositionPartialTopView.DTO) dto).positionDTO.shares;
+                boolean isShort = shares != null && shares < 0;
+                if (((PositionPartialTopView.DTO)dto).securityCompactDTO.id == securityId)
+                {
+                    if (isClosed != null && isClosed)
+                    {
+                        closedList.add(dto);
+                    }
+                    else if (isShort)
+                    {
+                        shortList.add(dto);
+                    }
+                    else
+                    {
+                        longList.add(dto);
+                    }
+                }
+            }
+        }
+        if (longList.size() > 0)
+        {
+            filtered.add(newTitleDTO(longList, getString(R.string.position_list_header_open_long_unsure)));
+            filtered.addAll(longList);
+        }
+        if (shortList.size() > 0)
+        {
+            filtered.add(newTitleDTO(shortList, getString(R.string.position_list_header_open_short)));
+            filtered.addAll(shortList);
+        }
+        if (closedList.size() > 0)
+        {
+            filtered.add(newTitleDTO(closedList, getString(R.string.position_list_header_closed_unsure)));
+            filtered.addAll(closedList);
         }
 
         if (filtered.size() == 0)
@@ -783,6 +813,23 @@ public class PositionListFragment
         }
 
         return filtered;
+    }
+
+    private PositionPartialTopView.DTO newTitleDTO(List<Object> list,String title)
+    {
+        PositionPartialTopView.DTO titleDto = new PositionPartialTopView.DTO(getResources(),
+                ((PositionPartialTopView.DTO)list.get(0)).positionDTO, ((PositionPartialTopView.DTO)list.get(0)).securityCompactDTO);
+        titleDto.title = title;
+        titleDto.gainIndicatorVisibility = View.GONE;
+        titleDto.stockLogoVisibility = View.GONE;
+        titleDto.flagsContainerVisibility = View.GONE;
+        titleDto.companyNameVisibility = View.GONE;
+        titleDto.shareCountVisibility = View.GONE;
+        titleDto.lastPriceContainerVisibility = View.GONE;
+        titleDto.positionPercentVisibility = View.GONE;
+        titleDto.unrealisedPLVisibility = View.GONE;
+        titleDto.lastAmountHeaderVisibility = View.GONE;
+        return titleDto;
     }
 
     protected void refreshSimplePage()
@@ -837,5 +884,10 @@ public class PositionListFragment
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_position_list;
+    }
+
+    static public void setGetPositionsDTOKey(@NonNull GetPositionsDTOKey sgetPositionsDTOKey)
+    {
+        getPositionsDTOKey = sgetPositionsDTOKey;
     }
 }

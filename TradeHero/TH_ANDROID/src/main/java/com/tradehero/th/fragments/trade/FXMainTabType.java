@@ -5,13 +5,14 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
+import com.tradehero.th.fragments.position.OldPositionListFragment;
 
 enum FXMainTabType
 {
     INFO(R.string.security_info, FXInfoFragment.class, false),
     DISCUSSION(R.string.discovery_discussions, SecurityDiscussionFragment.class, false),
     //NEWS(R.string.security_news, NewsHeadlineFragment.class, false),
-    //HISTORY(R.string.security_history, DiscoveryFaqWebFragment.class, false),
+    HISTORY(R.string.security_history, OldPositionListFragment.class, false),
     ;
 
     @StringRes public final int titleStringResId;

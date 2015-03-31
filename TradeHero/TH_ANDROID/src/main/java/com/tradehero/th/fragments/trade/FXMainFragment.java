@@ -11,13 +11,17 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
+import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOUtil;
@@ -25,13 +29,16 @@ import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
+import com.tradehero.th.fragments.position.OldPositionListFragment;
 import com.tradehero.th.models.number.THSignedFXRate;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.THColorUtils;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 @Routable("securityFx/:securityRawInfo")
+//TODO need refactor by alex
 public class FXMainFragment extends BuySellFragment
 {
     private final static String BUNDLE_KEY_CLOSE_UNITS_BUNDLE = FXMainFragment.class.getName() + ".units";
@@ -73,6 +80,23 @@ public class FXMainFragment extends BuySellFragment
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
+        pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        {
+            @Override public void onPageScrolled(int i, float v, int i2)
+            {
+
+            }
+
+            @Override public void onPageSelected(int i)
+            {
+                mSelectedPortfolioContainer.setVisibility(i == 0 ? View.VISIBLE : View.GONE);
+            }
+
+            @Override public void onPageScrollStateChanged(int i)
+            {
+
+            }
+        });
     }
 
     @Nullable @Override protected PortfolioCompactDTO getPreferredApplicablePortfolio(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
@@ -106,6 +130,8 @@ public class FXMainFragment extends BuySellFragment
             this.portfolioCompactDTO = portfolioCompactDTO;
             FXInfoFragment.setPortfolioCompactDTO(portfolioCompactDTO);
             FXInfoFragment.setPurchaseApplicableOwnedPortfolioId(currentMenu);
+
+            OldPositionListFragment.setGetPositionsDTOKey((GetPositionsDTOKey)mSelectedPortfolioContainer.getCurrentMenu());
         }
         super.linkWith(portfolioCompactDTO);
     }
@@ -181,6 +207,18 @@ public class FXMainFragment extends BuySellFragment
         return quoteDTO != null && positionDTOCompactList != null && applicableOwnedPortfolioIds != null;
     }
 
+    @Override public void displayBuySellContainer()
+    {
+        if (isBuySellReady() && mBuySellBtnContainer.getVisibility() == View.GONE && tabViewPager.getCurrentItem() == 0)
+        {
+            Animation slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_from_bottom);
+            slideIn.setFillAfter(true);
+            mBuySellBtnContainer.setVisibility(View.VISIBLE);
+            mBuySellBtnContainer.startAnimation(slideIn);
+        }
+
+    }
+
     @Override protected boolean getSupportSell()
     {
         return true;
@@ -229,6 +267,19 @@ public class FXMainFragment extends BuySellFragment
         {
             FXMainTabType tabType = FXMainTabType.values()[position];
             ActionBarOwnerMixin.putKeyShowHomeAsUp(mArgs, true);
+            if (position == 2)
+            {
+                if (mSelectedPortfolioContainer.getCurrentMenu() != null && quoteDTO != null)
+                {
+                    OldPositionListFragment.putShownUser(mArgs, currentUserId.toUserBaseKey());
+                    OldPositionListFragment.putGetPositionsDTOKey(mArgs, mSelectedPortfolioContainer.getCurrentMenu());
+                    mArgs.putInt(OldPositionListFragment.BUNDLE_KEY_SECURITY_ID, quoteDTO.securityId);
+                }
+                else
+                {
+                    THToast.show(R.string.history_tab_wait_message);
+                }
+            }
             return Fragment.instantiate(getActivity(), tabType.fragmentClass.getName(), mArgs);
         }
 

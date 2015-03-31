@@ -324,4 +324,5 @@
   <string name="facebook_app_id">431745923529834</string>
   <string name="image_load_failed">Failed to load image</string>
   <string name="video_locked_hint">Coming soon!</string>
+  <string name="history_tab_wait_message">Please wait for loading portfolio</string>
 </resources>
