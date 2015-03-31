@@ -2,7 +2,10 @@ package com.tradehero.th.fragments.news;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.Menu;
+import android.view.MenuInflater;
 import com.tradehero.metrics.Analytics;
+import com.tradehero.th.R;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.AnalyticsDuration;
@@ -39,6 +42,12 @@ public class NewsWebFragment extends WebViewFragment
     {
         super.onCreate(savedInstanceState);
         previousScreen = getPreviousScreenFromBundle();
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        setActionBarTitle(R.string.discovery_news);
     }
 
     @Override public void onResume()

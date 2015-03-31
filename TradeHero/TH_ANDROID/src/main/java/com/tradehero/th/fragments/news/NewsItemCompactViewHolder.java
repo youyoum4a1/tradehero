@@ -87,17 +87,10 @@ public class NewsItemCompactViewHolder
             //<editor-fold desc="Thumbnail Url & PlaceHolder">
             if (newsItem.source != null
                     && newsItem.source.id != null
-                    && newsItem.source.id.equals(NewsItemKnowledge.SEEKING_ALPHA_SOURCE_ID))
+                    && NewsItemKnowledge.NEWS_PLACEHOLDER_MAP.containsKey(newsItem.source.id))
             {
                 thumbnailUrl = null;
-                thumbnailPlaceHolderResId = R.drawable.seeking_alpha;
-            }
-            else if (newsItem.source != null
-                    && newsItem.source.id != null
-                    && newsItem.source.id.equals(NewsItemKnowledge.MOTLEY_FOOL_SOURCE_ID))
-            {
-                thumbnailUrl = null;
-                thumbnailPlaceHolderResId = R.drawable.motley_fool;
+                thumbnailPlaceHolderResId = NewsItemKnowledge.NEWS_PLACEHOLDER_MAP.get(newsItem.source.id);
             }
             else
             {
