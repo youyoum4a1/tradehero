@@ -67,13 +67,13 @@
   <color name="light_blue_pressed">#44A3CC</color>
   <color name="light_blue_focused">#94F3FF</color>
 
-  <color name="qq_normal">@color/white</color>
-  <color name="qq_pressed">@color/darker_grey</color>
-  <color name="qq_focused">@color/pale_yellow</color>
+  <color name="qq_normal">@color/light_green_normal</color>
+  <color name="qq_pressed">@color/light_green_pressed</color>
+  <color name="qq_focused">@color/light_green_focused</color>
 
-  <color name="weibo_normal">@color/white</color>
-  <color name="weibo_pressed">@color/darker_grey</color>
-  <color name="weibo_focused">@color/pale_yellow</color>
+  <color name="weibo_normal">@color/purple_normal</color>
+  <color name="weibo_pressed">@color/purple_light</color>
+  <color name="weibo_focused">@color/purple_dark</color>
 
   <color name="dark_blue">#133979</color>
   <color name="dark_blue_light">#4369A9</color>
