@@ -3,7 +3,7 @@
 
     <item>
         <shape android:shape="rectangle" >
-            <solid android:color="@color/tile_reset_portfolio_bg"/>
+            <solid android:color="#BA2425"/>
             <corners android:radius="@dimen/grid_item_bg_radius" />
             <stroke android:width="@dimen/grid_item_bg_border_width" android:color="@color/grid_item_bg_border"/>
         </shape>

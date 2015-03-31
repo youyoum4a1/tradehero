@@ -157,7 +157,7 @@
   <com.tradehero.th.fragments.trade.view.QuickPriceButtonSet
       android:id="@+id/quick_price_button_set"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/timespan_button_min_height"
+      android:layout_height="36dp"
       android:layout_marginTop="15dp"
       android:layout_marginLeft="20dp"
       android:layout_marginRight="20dp"

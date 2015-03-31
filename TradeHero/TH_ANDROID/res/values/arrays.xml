@@ -1,63 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string-array name="servers" translatable="false">
-    <item>Prod</item>
-    <item>Staging</item>
-    <item>Dev</item>
-    <item>ThoPC</item>
-    <item>PeterPC</item>
-    <item>XavShPC</item>
-    <item>MaddyPC</item>
-    <item>JackPC</item>
-    <item>JackPC2</item>
-  </string-array>
-
-  <string-array name="server_values" translatable="false">
-    <item>https://www.tradehero.mobi/api/</item>
-    <item>https://966e65227ab24d18a2a75e4530770153.cloudapp.net/api/</item>
-    <item>https://th-paas-test-dev1.cloudapp.net/api/</item>
-    <item>http://truongtho.noip.me/api/</item>
-    <item>http://192.168.20.8/api/</item>
-    <item>http://192.168.1.10/api/</item>
-    <item>https://192.168.1.123:44300/api/</item>
-    <item>http://jackfortune.chinacloudapp.cn/api/</item>
-    <item>http://jackbao.cloudapp.net/api/</item>
-  </string-array>
-
-  <string-array name="staffs" translatable="false">
-    <item>Dinesh Bhatia|High Frequency TradeHero</item>
-    <item>Dominic Morris|GW2310FB-1</item>
-    <item>Jeff Tang|Captain China</item>
-    <item>David Qi|Hardcore Player</item>
-    <item>Brendan Gribben|Warden of the West</item>
-    <item>Chin Tai Low|Master of Coin</item>
-    <item>Arup Ray|International Man of Mystery</item>
-    <item>Maddy Mangipudi|The One</item>
-    <item>Nia Mutiara|Ghost in the Machine</item>
-    <item>Cary Yang|(^_^)</item>
-    <item>Xavier Lepretre|Code Landscapist</item>
-    <item>Tho Nguyen|(╯°□°）╯︵ ┻━┻</item>
-    <item>Alex Li|Bricklayer</item>
-    <item>Liang|Code Farmer</item>
-    <item>Gary Gan|Utility Player</item>
-    <item>Cody Nash|Hyper Product Man</item>
-    <item>Albert Camacho|Protector of Pixels</item>
-    <item>Echo Sun|Pocket Monster</item>
-    <item>Sam|Omega Supreme</item>
-    <item>Sebastian Kramer|Toast Provisioner</item>
-    <item>Sammi|Baby-sitter</item>
-    <item>Peter Wang|Luck Seeker</item>
-    <item>Jason Zhao|Fireman (!)</item>
-    <item>Reyna Jung|Propaganda Agent 1</item>
-    <item>Samar Sen|Master Handshaker</item>
-    <item>Eric Cao|Market Wolf</item>
-    <item>Eva Deng|Ads Addict</item>
-    <item>Sai Heng Pei|Postman</item>
-    <item>Arno Luo|Rain Maker</item>
-    <item>Mirsat Murutoglu|Image Hunter</item>
-    <item>Sathya Prakash|The Imp</item>
-  </string-array>
 
   <string-array name="register_choose_image">
     <item>@string/take_photo</item>
