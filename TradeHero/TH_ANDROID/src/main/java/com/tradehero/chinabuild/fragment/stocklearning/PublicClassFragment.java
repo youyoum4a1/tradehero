@@ -9,7 +9,7 @@ import android.widget.GridView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.chinabuild.data.VideoDTO;
-import com.tradehero.chinabuild.fragment.video.VideoPlayer;
+import com.tradehero.chinabuild.fragment.videoPlay.VideoPlayer;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.VideoGridAdapter;
 import com.tradehero.th.fragments.base.DashboardFragment;

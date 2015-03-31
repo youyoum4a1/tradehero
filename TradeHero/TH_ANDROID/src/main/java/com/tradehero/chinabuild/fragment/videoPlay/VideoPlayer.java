@@ -1,4 +1,4 @@
-package com.tradehero.chinabuild.fragment.video;
+package com.tradehero.chinabuild.fragment.videoPlay;
 
 import android.os.Bundle;
 import com.actionbarsherlock.view.Menu;
@@ -9,7 +9,7 @@ import com.tradehero.th.R;
 /**
  * Created by huhaiping on 15/3/30.
  */
-public class VideoPlayer2 extends WebViewFragment
+public class VideoPlayer extends WebViewFragment
 {
 
     @Override public void onCreate(Bundle savedInstanceState)

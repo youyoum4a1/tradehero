@@ -73,7 +73,7 @@ import com.tradehero.chinabuild.fragment.userCenter.UserAccountPage;
 import com.tradehero.chinabuild.fragment.userCenter.UserFansListFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
-import com.tradehero.chinabuild.fragment.video.VideoPlayer;
+import com.tradehero.chinabuild.fragment.videoPlay.VideoPlayer;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.CacheHelper;
