@@ -44,6 +44,7 @@
         android:layout_marginLeft="@dimen/margin_small"
         android:textColorLink="@color/tradehero_blue"
         style="@style/TH.Body"
+        android:lineSpacingExtra="2dp"
         android:layout_toLeftOf="@id/notification_unread_flag"
         android:layout_alignParentLeft="true"
         tools:text="Tho Nguyen has become the best trader of the world!"
