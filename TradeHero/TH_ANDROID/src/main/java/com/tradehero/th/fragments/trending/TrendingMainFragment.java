@@ -70,7 +70,7 @@ public class TrendingMainFragment extends DashboardFragment
     @Inject UserProfileCacheRx userProfileCache;
 
     @NonNull private static TrendingTabType lastType = TrendingTabType.STOCK;
-    private static int lastPosition = 0;
+    private static int lastPosition = 1;
 
     private TradingStockPagerAdapter tradingStockPagerAdapter;
     private TradingFXPagerAdapter tradingFXPagerAdapter;
@@ -286,7 +286,7 @@ public class TrendingMainFragment extends DashboardFragment
                             }
                             if (!oldType.equals(lastType))
                             {
-                                lastPosition = 0;
+                                lastPosition = 1;
                                 clearChildFragmentManager();
                                 initViews();
                             }
