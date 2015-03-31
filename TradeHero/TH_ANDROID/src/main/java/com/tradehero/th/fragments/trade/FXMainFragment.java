@@ -35,7 +35,6 @@ import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.THColorUtils;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 @Routable("securityFx/:securityRawInfo")
 //TODO need refactor by alex
@@ -216,7 +215,6 @@ public class FXMainFragment extends BuySellFragment
             mBuySellBtnContainer.setVisibility(View.VISIBLE);
             mBuySellBtnContainer.startAnimation(slideIn);
         }
-
     }
 
     @Override protected boolean getSupportSell()
@@ -274,6 +272,7 @@ public class FXMainFragment extends BuySellFragment
                     OldPositionListFragment.putShownUser(mArgs, currentUserId.toUserBaseKey());
                     OldPositionListFragment.putGetPositionsDTOKey(mArgs, mSelectedPortfolioContainer.getCurrentMenu());
                     mArgs.putInt(OldPositionListFragment.BUNDLE_KEY_SECURITY_ID, quoteDTO.securityId);
+                    OldPositionListFragment.setIsFX(true);
                 }
                 else
                 {

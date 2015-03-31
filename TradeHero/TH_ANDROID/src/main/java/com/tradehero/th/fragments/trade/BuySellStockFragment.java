@@ -22,8 +22,10 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
+import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -33,6 +35,7 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
 import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
+import com.tradehero.th.fragments.position.OldPositionListFragment;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.SecurityCircleProgressBar;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
@@ -97,10 +100,11 @@ public class BuySellStockFragment extends BuySellFragment
         bottomViewPagerAdapter =
                 new BuySellBottomStockPagerAdapter(getActivity(), this.getChildFragmentManager());
         bottomViewPagerAdapter.linkWith(securityId);
+        bottomViewPagerAdapter.linkWith(currentUserId.toUserBaseKey());
 
         mBottomViewPager.setAdapter(bottomViewPagerAdapter);
 
-        mSlidingTabLayout.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
+        mSlidingTabLayout.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         mSlidingTabLayout.setViewPager(mBottomViewPager);
 
@@ -203,6 +207,23 @@ public class BuySellStockFragment extends BuySellFragment
         defaultPortfolio = portfolioCompactDTOs.getDefaultPortfolio();
         addDefaultMainPortfolioIfShould();
         setInitialSellQuantityIfCan();
+        bottomViewPagerAdapter.linkWith(defaultPortfolio.getOwnedPortfolioId());
+    }
+
+    @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
+    {
+        MenuOwnedPortfolioId currentMenu = mSelectedPortfolioContainer.getCurrentMenu();
+        if (currentMenu != null && portfolioCompactDTO.id == currentMenu.portfolioId)
+        {
+            bottomViewPagerAdapter.linkWith(currentMenu);
+            OldPositionListFragment.setGetPositionsDTOKey((GetPositionsDTOKey) currentMenu);
+        }
+        else
+        {
+            bottomViewPagerAdapter.linkWith(new OwnedPortfolioId(currentUserId.get(), portfolioCompactDTO.id));
+            OldPositionListFragment.setGetPositionsDTOKey(new OwnedPortfolioId(currentUserId.get(), portfolioCompactDTO.id));
+        }
+        super.linkWith(portfolioCompactDTO);
     }
 
     protected void addDefaultMainPortfolioIfShould()
@@ -241,6 +262,7 @@ public class BuySellStockFragment extends BuySellFragment
     @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
         super.linkWith(securityCompactDTO, andDisplay);
+        bottomViewPagerAdapter.linkWith(securityCompactDTO.id);
         addDefaultMainPortfolioIfShould();
         if (andDisplay)
         {

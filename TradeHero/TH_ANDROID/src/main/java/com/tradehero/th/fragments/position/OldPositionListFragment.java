@@ -94,6 +94,7 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId")
+//TODO need refactor by alex
 public class OldPositionListFragment
         extends BasePurchaseManagerFragment
         implements WithTutorial
@@ -146,6 +147,7 @@ public class OldPositionListFragment
 
     @NonNull private TabbedPositionListFragment.TabType positionType;
     private int securityId;
+    static private boolean isFX;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
@@ -793,7 +795,7 @@ public class OldPositionListFragment
         }
         if (longList.size() > 0)
         {
-            filtered.add(newTitleDTO(longList, getString(R.string.position_list_header_open_long_unsure)));
+            filtered.add(newTitleDTO(longList, getString(isFX ? R.string.position_list_header_open_long_unsure : R.string.position_list_header_open_unsure)));
             filtered.addAll(longList);
         }
         if (shortList.size() > 0)
@@ -889,5 +891,10 @@ public class OldPositionListFragment
     static public void setGetPositionsDTOKey(@NonNull GetPositionsDTOKey sgetPositionsDTOKey)
     {
         getPositionsDTOKey = sgetPositionsDTOKey;
+    }
+
+    public static void setIsFX(boolean isFX)
+    {
+        OldPositionListFragment.isFX = isFX;
     }
 }
