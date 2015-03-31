@@ -20,6 +20,7 @@ public class ToAnswerQuestionFragment extends DashboardFragment implements View.
         View view = inflater.inflate(R.layout.stock_learning_to_answer, container, false);
 
         nextQuestionBtn = (Button)view.findViewById(R.id.button_next_question);
+        nextQuestionBtn.setOnClickListener(this);
 
         return view;
     }

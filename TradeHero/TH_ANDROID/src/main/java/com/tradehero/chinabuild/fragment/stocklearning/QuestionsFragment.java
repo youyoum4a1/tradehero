@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.tradehero.chinabuild.data.QuestionsItemDTO;
+import com.tradehero.chinabuild.data.StockLearningQuestionsItem;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.QuestionsAdapter;
+import com.tradehero.th.adapters.StockLearningQuestionsAdapter;
 import com.tradehero.th.fragments.base.DashboardFragment;
 
 import java.util.ArrayList;
@@ -20,14 +20,14 @@ import java.util.ArrayList;
  */
 public class QuestionsFragment extends DashboardFragment{
 
-    private QuestionsAdapter questionsAdapter;
+    private StockLearningQuestionsAdapter questionsAdapter;
 
     private ListView questionsLV;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        questionsAdapter = new QuestionsAdapter(getActivity());
+        questionsAdapter = new StockLearningQuestionsAdapter(getActivity());
     }
 
     @Override
@@ -38,7 +38,7 @@ public class QuestionsFragment extends DashboardFragment{
         questionsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                QuestionsItemDTO questionsItemDTO = questionsAdapter.getItem(position);
+                StockLearningQuestionsItem questionsItemDTO = questionsAdapter.getItem(position);
                 gotoAnswerQuestions(questionsItemDTO.id);
             }
         });
@@ -49,20 +49,20 @@ public class QuestionsFragment extends DashboardFragment{
 
     //Test
     private void refreshQuestions(){
-        ArrayList<QuestionsItemDTO> questionsItemDTOs = new ArrayList();
-        QuestionsItemDTO questionsItemDTOA = new QuestionsItemDTO();
+        ArrayList<StockLearningQuestionsItem> questionsItemDTOs = new ArrayList();
+        StockLearningQuestionsItem questionsItemDTOA = new StockLearningQuestionsItem();
         questionsItemDTOA.totalNumber = 20;
         questionsItemDTOA.alreayCompletedNumber = 6;
         questionsItemDTOA.name = "AAAAA";
         questionsItemDTOs.add(questionsItemDTOA);
 
-        QuestionsItemDTO questionsItemDTOB = new QuestionsItemDTO();
+        StockLearningQuestionsItem questionsItemDTOB = new StockLearningQuestionsItem();
         questionsItemDTOB.totalNumber = 20;
         questionsItemDTOB.alreayCompletedNumber = 6;
         questionsItemDTOB.name = "BBBBB";
         questionsItemDTOs.add(questionsItemDTOB);
 
-        QuestionsItemDTO questionsItemDTOC = new QuestionsItemDTO();
+        StockLearningQuestionsItem questionsItemDTOC = new StockLearningQuestionsItem();
         questionsItemDTOC.totalNumber = 20;
         questionsItemDTOC.alreayCompletedNumber = 6;
         questionsItemDTOC.name = "CCCCC";

@@ -94,17 +94,8 @@
   <dimen name="common_margin_4">4dp</dimen>
   <dimen name="common_margin_10">10dp</dimen>
   <dimen name="common_margin_15">15dp</dimen>
-  <dimen name="common_margin_20">20dp</dimen>
   <dimen name="common_margin_30">30dp</dimen>
-  <dimen name="common_margin_50">50dp</dimen>
-  <dimen name="common_margin_60">60dp</dimen>
   <dimen name="common_margin_80">80dp</dimen>
-  <dimen name="common_margin_100">100dp</dimen>
-  <dimen name="common_margin_110">110dp</dimen>
-  <dimen name="common_margin_130">130dp</dimen>
-  <dimen name="common_height_40">40dp</dimen>
-  <dimen name="common_text_size_30">30sp</dimen>
-  <dimen name="common_text_size_25">25sp</dimen>
 
   <dimen name="clickable_element_min_height">48dp</dimen>
   <dimen name="small_icon_w_h">24dp</dimen>
@@ -174,4 +165,9 @@
   <dimen name="viewpager_focus_height">5px</dimen>
 
   <dimen name="guide_competition_edit_intro">100dp</dimen>
+
+  <!--Stock Learning-->
+  <dimen name="stock_learning_summary_des_size_a">18sp</dimen>
+  <dimen name="stock_learning_summary_des_size_b">20sp</dimen>
+  <!--Stock Learning-->
 </resources>

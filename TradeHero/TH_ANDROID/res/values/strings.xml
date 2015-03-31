@@ -532,5 +532,7 @@
  <string name="stock_learning_video">学堂视频</string>
  <string name="stock_learning_summary_a">已完成%1$d题，错误</string>
  <string name="stock_learning_summary_b">题</string>
+ <string name="stock_learning_review_errors">复习错题</string>
+ <string name="stock_learning_review_history">回顾历史</string>
 
 </resources>

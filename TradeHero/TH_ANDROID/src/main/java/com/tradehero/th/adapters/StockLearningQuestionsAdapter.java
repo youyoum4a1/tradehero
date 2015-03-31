@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.tradehero.chinabuild.data.QuestionsItemDTO;
+import com.tradehero.chinabuild.data.StockLearningQuestionsItem;
 import com.tradehero.th.R;
 
 import java.util.ArrayList;
@@ -15,12 +15,12 @@ import java.util.ArrayList;
 /**
  * Created by palmer on 15/3/30.
  */
-public class QuestionsAdapter extends BaseAdapter {
+public class StockLearningQuestionsAdapter extends BaseAdapter {
 
-    private ArrayList<QuestionsItemDTO> questionsItemDTOs = new ArrayList();
+    private ArrayList<StockLearningQuestionsItem> questionsItemDTOs = new ArrayList();
     private LayoutInflater inflater;
 
-    public QuestionsAdapter(Context context){
+    public StockLearningQuestionsAdapter(Context context){
         inflater = LayoutInflater.from(context);
     }
 
@@ -30,7 +30,7 @@ public class QuestionsAdapter extends BaseAdapter {
     }
 
     @Override
-    public QuestionsItemDTO getItem(int i) {
+    public StockLearningQuestionsItem getItem(int i) {
         return questionsItemDTOs.get(i);
     }
 
@@ -52,7 +52,7 @@ public class QuestionsAdapter extends BaseAdapter {
         }else{
             viewHolder = (ViewHolder)convertView.getTag();
         }
-        QuestionsItemDTO questionsItemDTO = questionsItemDTOs.get(i);
+        StockLearningQuestionsItem questionsItemDTO = questionsItemDTOs.get(i);
         if(questionsItemDTO.name!=null) {
             viewHolder.questionsSetNameTV.setText(questionsItemDTO.name);
         }
@@ -63,7 +63,7 @@ public class QuestionsAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void setQuestionsItemDTOs(ArrayList<QuestionsItemDTO> questionsItemDTOs){
+    public void setQuestionsItemDTOs(ArrayList<StockLearningQuestionsItem> questionsItemDTOs){
         if(questionsItemDTOs!=null){
             this.questionsItemDTOs.clear();
             this.questionsItemDTOs.addAll(questionsItemDTOs);
