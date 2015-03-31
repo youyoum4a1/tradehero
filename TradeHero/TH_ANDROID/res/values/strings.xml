@@ -527,9 +527,10 @@
   <string name="error_fetch_hero">There was an error when fetching the hero information</string>
   <string name="error_fetch_exchange_list_info">There was an error when fetching the list of exchanges</string>
 
- <!-- Learning -->
-  <string name="stock_learning">股市学堂</string>
-  <string name="stock_learning_video">学堂视频</string>
 
- <!-- Learning -->
+ <string name="stock_learning">股市学堂</string>
+ <string name="stock_learning_video">学堂视频</string>
+ <string name="stock_learning_summary_a">已完成%1$d题，错误</string>
+ <string name="stock_learning_summary_b">题</string>
+
 </resources>

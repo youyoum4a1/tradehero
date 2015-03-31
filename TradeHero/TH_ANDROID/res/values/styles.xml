@@ -78,7 +78,7 @@
     <item name="android:background">@drawable/basic_transparent_selector</item>
     <item name="android:textColor">@color/price_bar_text_default</item>
     <item name="android:textSize">@dimen/text_xsmall</item>
-    <item name="android:minHeight">@dimen/timespan_button_min_height</item>
+    <item name="android:minHeight">36dp</item>
   </style>
 
   <style name="TH.BtnQuickPriceSet" parent="TH.Btn_Price_Bar_Base">
