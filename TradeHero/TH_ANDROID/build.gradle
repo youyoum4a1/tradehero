@@ -339,7 +339,7 @@ dependencies {
     exclude group: 'com.google.android', module: 'support-v4'
   }
 
-  compile 'com.tradehero:metrics:2.0-SNAPSHOT'
+  compile 'com.tradehero:metrics:2.1.1-SNAPSHOT'
   compile 'com.squareup.dagger:dagger:1.2.2'
   provided 'com.squareup.dagger:dagger-compiler:1.2.2'
   compile 'io.reactivex:rxandroid:0.24.0'
@@ -363,7 +363,7 @@ dependencies {
     exclude group: 'org.apache.httpcomponents', module: 'httpclient'
   }
 
-  releaseCompile('com.localytics.android:library:2.72.0') {
+  releaseCompile('com.localytics.android:library:3.1.0') {
     exclude group: 'com.google.android', module: 'support-v4'
   }
   compile 'org.ocpsoft.prettytime:prettytime:3.2.7.Final'

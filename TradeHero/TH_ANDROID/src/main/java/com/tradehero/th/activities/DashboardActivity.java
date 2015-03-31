@@ -387,7 +387,6 @@ public class DashboardActivity extends BaseActivity
     {
         super.onResume();
         launchActions();
-        analytics.openSession();
 
         subscriptions = new CompositeSubscription();
 
@@ -520,7 +519,6 @@ public class DashboardActivity extends BaseActivity
 
     @Override protected void onPause()
     {
-        analytics.closeSession();
         subscriptions.unsubscribe();
         super.onPause();
     }

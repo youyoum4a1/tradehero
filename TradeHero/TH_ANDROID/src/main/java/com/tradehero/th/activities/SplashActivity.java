@@ -75,7 +75,6 @@ public class SplashActivity extends BaseActivity
     {
         super.onResume();
 
-        analytics.openSession();
         analytics.tagScreen(AnalyticsConstants.Loading);
 
         AppEventsLogger.activateApp(this, SocialConstants.FACEBOOK_APP_ID);
@@ -130,7 +129,6 @@ public class SplashActivity extends BaseActivity
 
     @Override protected void onPause()
     {
-        analytics.closeSession();
         if (userProfileSubscription != null)
         {
             userProfileSubscription.unsubscribe();

@@ -93,7 +93,6 @@ public class AuthenticationActivity extends BaseActivity
     @Override protected void onResume()
     {
         super.onResume();
-        analytics.openSession();
         analytics.tagScreen(AnalyticsConstants.Login_Register);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginRegisterScreen));
 
@@ -108,12 +107,6 @@ public class AuthenticationActivity extends BaseActivity
         List<Object> superModules = new ArrayList<>(super.getModules());
         superModules.add(new AuthenticationActivityModule());
         return superModules;
-    }
-
-    @Override protected void onPause()
-    {
-        analytics.closeSession();
-        super.onPause();
     }
 
     @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data)

@@ -44,10 +44,9 @@ public class MetricsModule
         return predefinedDimensions;
     }
 
-
     @Provides @Singleton public Analytics provideAnalytics(Context context)
     {
-        return Analytics.with(context)
+        return Analytics.with(THApp.get(context))
                 .withLocalytics(LOCALYTICS_KEY)
 //                .withLocalytics(LOCALYTICS_KEY, LOCALYTICS_PUSH_ENABLED)
                 .withTalkingData(TD_APP_ID_KEY, Constants.TAP_STREAM_TYPE.name())
