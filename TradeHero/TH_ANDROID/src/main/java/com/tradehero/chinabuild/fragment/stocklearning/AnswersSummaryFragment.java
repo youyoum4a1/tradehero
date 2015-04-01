@@ -52,11 +52,6 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
         errorsBtn = (Button)view.findViewById(R.id.button_errors);
         errorsBtn.setOnClickListener(this);
         refreshSummary(totalNum, failedNum);
-        if(failedNum>0){
-            resultIV.setBackgroundResource(R.drawable.stock_learning_question_result_failed);
-        }else{
-            resultIV.setBackgroundResource(R.drawable.stock_learning_question_result_success);
-        }
         return view;
     }
 
@@ -106,6 +101,14 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
 
         spannableStringBuilder.append(descA).append(descB).append(descC);
         summaryDescTV.setText(spannableStringBuilder);
+
+        if(failedNum>0){
+            resultIV.setBackgroundResource(R.drawable.stock_learning_question_result_failed);
+            errorsBtn.setVisibility(View.VISIBLE);
+        }else{
+            resultIV.setBackgroundResource(R.drawable.stock_learning_question_result_success);
+            errorsBtn.setVisibility(View.GONE);
+        }
     }
 
 }

@@ -1,6 +1,8 @@
 package com.tradehero.chinabuild.data.question.questionUtils;
 
-public class Question {
+import java.io.Serializable;
+
+public class Question implements Serializable{
 	  
 	private String Qid;
 	private String QTitle;//题目
@@ -10,7 +12,7 @@ public class Question {
 	private String QAnswerFour;//答案四
 	private String QAnswerCorrect;//正确答案
 	private String QType;//大类【新手】【老手】【专家】
-	
+
 	public Question(){}
 	
 	public Question(String QTitle,String A1,String A2,String A3,String A4,String AC,String Qt,String Qid){

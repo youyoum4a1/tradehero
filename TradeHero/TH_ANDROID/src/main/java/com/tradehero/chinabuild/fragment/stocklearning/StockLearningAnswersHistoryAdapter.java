@@ -44,7 +44,7 @@ public class StockLearningAnswersHistoryAdapter extends BaseAdapter{
     }
 
     @Override
-    public Object getItem(int i) {
+    public Question getItem(int i) {
         return questionItems.get(i);
     }
 
