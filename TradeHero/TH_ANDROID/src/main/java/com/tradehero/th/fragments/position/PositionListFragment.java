@@ -29,7 +29,6 @@ import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
-import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.HelpActivity;
 import com.tradehero.th.api.portfolio.AssetClass;
@@ -98,7 +97,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-@Routable("user/:userId/portfolio/:portfolioId")
+//@Routable("user/:userId/portfolio/:portfolioId")
 public class PositionListFragment
         extends BasePurchaseManagerFragment
         implements WithTutorial

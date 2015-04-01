@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.route.InjectRoute;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
@@ -30,6 +31,7 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 
+@Routable("user/:userId/portfolio/:portfolioId")
 public class TabbedPositionListFragment extends BasePurchaseManagerFragment
 {
     private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = TabbedPositionListFragment.class.getName() + ".showPositionDtoKey";
