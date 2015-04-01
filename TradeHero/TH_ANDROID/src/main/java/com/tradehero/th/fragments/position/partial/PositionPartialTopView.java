@@ -43,7 +43,6 @@ public class PositionPartialTopView extends LinearLayout
     @InjectView(R.id.title) TextView mTitle;
     @InjectView(R.id.gain_indicator) ImageView mGainIndicator;
     @InjectView(R.id.stock_logo) ImageView stockLogo;
-    @InjectView(R.id.flags_container) FxFlagContainer flagsContainer;
     @InjectView(R.id.stock_symbol) TextView stockSymbol;
     @InjectView(R.id.company_name) TextView companyName;
     @InjectView(R.id.share_count) TextView shareCount;
@@ -166,12 +165,6 @@ public class PositionPartialTopView extends LinearLayout
                 });
         }
 
-        if (flagsContainer != null)
-        {
-            flagsContainer.setVisibility(dto.flagsContainerVisibility);
-            flagsContainer.display(dto.fxPair);
-        }
-
         if (stockSymbol != null)
         {
             stockSymbol.setText(dto.stockSymbol);
@@ -244,7 +237,7 @@ public class PositionPartialTopView extends LinearLayout
         @ViewVisibilityValue public int positionPercentVisibility;
         @NonNull public final Spanned positionPercent;
         @ViewVisibilityValue public int gainIndicatorVisibility;
-        @DrawableRes public final int gainIndicator;
+        @DrawableRes public int gainIndicator;
         @ViewVisibilityValue public int unrealisedPLVisibility;
         @NonNull public final Spanned unrealisedPL;
         @ViewVisibilityValue public int lastAmountHeaderVisibility;
@@ -402,10 +395,22 @@ public class PositionPartialTopView extends LinearLayout
                                     .withDefaultColor()
                                     .build()
                                     .createSpanned();
+                    if (PLR > 0)
+                    {
+                        gainIndicatorVisibility = VISIBLE;
+                        gainIndicator = R.drawable.indicator_green;
+                    }
+                    else
+                    {
+                        gainIndicatorVisibility = VISIBLE;
+                        gainIndicator = R.drawable.indicator_red;
+                    }
                 }
                 else
                 {
                     unrealisedPL = new SpannableString(resources.getString(R.string.na));
+                    gainIndicatorVisibility = VISIBLE;
+                    gainIndicator = R.drawable.default_image;
                 }
             }
             else

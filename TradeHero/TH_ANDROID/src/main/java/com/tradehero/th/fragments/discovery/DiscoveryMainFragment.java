@@ -98,7 +98,7 @@ public class DiscoveryMainFragment extends DashboardFragment
         {
             if (discoveryPagerAdapter.isNew(i))
             {
-                THTabView tabView = (THTabView) pagerSlidingTabStrip.getTabStrip().getChildAt(i);
+                THTabView tabView = (THTabView) ((ViewGroup)pagerSlidingTabStrip.getTabStrip()).getChildAt(i);
                 tabView.setIcon(R.drawable.icn_new_discover);
             }
         }
