@@ -27,7 +27,6 @@ import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
-import com.tradehero.th.fragments.security.FxFlagContainer;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -199,9 +198,7 @@ public class PositionPartialTopView extends LinearLayout
         @ViewVisibilityValue public final int stockLogoVisibility;
         @Nullable public final String stockLogoUrl;
         @DrawableRes public final int stockLogoRes;
-        @Nullable public final FxPairSecurityId fxPair;
         @NonNull public final String stockSymbol;
-        @ViewVisibilityValue public final int flagsContainerVisibility;
         @ViewVisibilityValue public final int companyNameVisibility;
         @NonNull public final String companyName;
         @ViewVisibilityValue public final int shareCountVisibility;
@@ -225,21 +222,18 @@ public class PositionPartialTopView extends LinearLayout
             if (securityCompactDTO != null && securityCompactDTO.imageBlobUrl != null)
             {
                 stockLogoVisibility = VISIBLE;
-                flagsContainerVisibility = GONE;
                 stockLogoUrl = securityCompactDTO.imageBlobUrl;
                 stockLogoRes = R.drawable.default_image;
             }
             else if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
                 stockLogoVisibility = GONE;
-                flagsContainerVisibility = VISIBLE;
                 stockLogoUrl = null;
                 stockLogoRes = R.drawable.default_image;
             }
             else
             {
                 stockLogoVisibility = VISIBLE;
-                flagsContainerVisibility = GONE;
                 stockLogoUrl = null;
                 stockLogoRes = securityCompactDTO.getExchangeLogoId();
             }
@@ -248,12 +242,11 @@ public class PositionPartialTopView extends LinearLayout
             //<editor-fold desc="Symbol and FxPair">
             if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
-                fxPair = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
+                FxPairSecurityId fxPair = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
                 stockSymbol = String.format("%s/%s", fxPair.left, fxPair.right);
             }
             else
             {
-                fxPair = null;
                 stockSymbol = String.format("%s:%s", securityCompactDTO.exchange, securityCompactDTO.symbol);
             }
             //</editor-fold>
@@ -312,7 +305,22 @@ public class PositionPartialTopView extends LinearLayout
             {
                 positionPercentVisibility = GONE;
                 positionPercent = new SpannableString("");
-                gain = null;
+                if (positionDTO.unrealizedPLRefCcy != null)
+                {
+                    if (positionDTO.positionStatus == PositionStatus.CLOSED
+                            || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED)
+                    {
+                        gain = positionDTO.realizedPLRefCcy;
+                    }
+                    else
+                    {
+                        gain = positionDTO.unrealizedPLRefCcy;
+                    }
+                }
+                else
+                {
+                    gain = null;
+                }
             }
             else if (positionDTO instanceof PositionInPeriodDTO && ((PositionInPeriodDTO) positionDTO).isProperInPeriod())
             {
@@ -329,7 +337,7 @@ public class PositionPartialTopView extends LinearLayout
 
             if (gain == null || gain == 0)
             {
-                gainIndicatorVisibility = INVISIBLE;
+                gainIndicatorVisibility = VISIBLE;
                 gainIndicator = R.drawable.default_image;
             }
             else if (gain > 0)
@@ -367,22 +375,10 @@ public class PositionPartialTopView extends LinearLayout
                                     .withDefaultColor()
                                     .build()
                                     .createSpanned();
-                    if (PLR > 0)
-                    {
-                        gainIndicatorVisibility = VISIBLE;
-                        gainIndicator = R.drawable.indicator_green;
-                    }
-                    else
-                    {
-                        gainIndicatorVisibility = VISIBLE;
-                        gainIndicator = R.drawable.indicator_red;
-                    }
                 }
                 else
                 {
                     unrealisedPL = new SpannableString(resources.getString(R.string.na));
-                    gainIndicatorVisibility = VISIBLE;
-                    gainIndicator = R.drawable.default_image;
                 }
             }
             else
