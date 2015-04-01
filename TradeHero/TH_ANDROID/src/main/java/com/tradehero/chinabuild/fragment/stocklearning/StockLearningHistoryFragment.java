@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.chinabuild.data.question.questionUtils.Question;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -23,6 +25,13 @@ public class StockLearningHistoryFragment extends DashboardFragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new StockLearningAnswersHistoryAdapter(getActivity());
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        setHeadViewMiddleMain(getString(R.string.stock_learning_review_history_menu));
     }
 
     @Override

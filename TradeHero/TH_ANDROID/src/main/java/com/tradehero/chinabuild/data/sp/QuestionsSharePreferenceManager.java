@@ -16,7 +16,7 @@ public class QuestionsSharePreferenceManager {
     private final static String WRONG_TAG  = "_failed";
     private final static String CURRENT_QUES = "_curr";
 
-    public static void updateWrongAnswers(Context context,String questionSetId, int wrongNumber){
+    public static void updateOneWrongAnswer(Context context,String questionSetId, int wrongNumber){
         if(wrongNumber<=0){
             return;
         }
@@ -45,6 +45,18 @@ public class QuestionsSharePreferenceManager {
         }
         String currentFailedQuestionStr = toWrongNumberString(currentFailedQuestions);
         sp.edit().putString(key, currentFailedQuestionStr).commit();
+    }
+
+    public static int getLatestAnsweredQuestion(Context context, String questionSetId){
+        SharedPreferences sp = context.getSharedPreferences(QUESTION_SP_NAME, Context.MODE_PRIVATE);
+        String key = questionSetId + CURRENT_QUES;
+        return sp.getInt(key, 0);
+    }
+
+    public static void setLatestAnsweredQuestion(Context context, String questionSetId, int questionNum){
+        SharedPreferences sp = context.getSharedPreferences(QUESTION_SP_NAME, Context.MODE_PRIVATE);
+        String key = questionSetId + CURRENT_QUES;
+        sp.edit().putInt(key, questionNum).commit();
     }
 
 

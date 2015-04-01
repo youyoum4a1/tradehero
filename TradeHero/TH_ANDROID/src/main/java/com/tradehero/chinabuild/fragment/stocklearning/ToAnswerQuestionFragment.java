@@ -15,6 +15,11 @@ public class ToAnswerQuestionFragment extends DashboardFragment implements View.
 
     public Button nextQuestionBtn;
 
+    public final static String KEY_QUESTION_SET_TYPE = "key_question_set_type";
+    public final static String TYPE_QUESTION_SET_NORMAL = "type_question_set_normal";
+    public final static String TYPE_QUESTION_SET_FAILED = "type_question_set_failed";
+    public final static String TYPE_QUESTION_SET_ONLY_RESULT = "type_question_set_only_result";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stock_learning_to_answer, container, false);

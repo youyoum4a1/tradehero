@@ -1,538 +1,556 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="follow">Follow</string>
-  <string name="follow_all">Follow All</string>
-  <string name="action_invite">Invite Friends</string>
-  <string name="update">Update</string>
-  <string name="empty_video_list">There is no learning video at the moment.</string>
-  <string name="server_response">"Server response: "</string>
-  <string name="link">Link %1$s</string>
-  <string name="link_description">You need to link your %1$s account before sharing…</string>
-  <string name="link_now">Link now!</string>
-  <string name="later">Later</string>
-  <string name="please_update_token_title">Social authentication expired</string>
+    <string name="follow">Follow</string>
+    <string name="follow_all">Follow All</string>
+    <string name="action_invite">Invite Friends</string>
+    <string name="update">Update</string>
+    <string name="empty_video_list">There is no learning video at the moment.</string>
+    <string name="server_response">"Server response: "</string>
+    <string name="link">Link %1$s</string>
+    <string name="link_description">You need to link your %1$s account before sharing…</string>
+    <string name="link_now">Link now!</string>
+    <string name="later">Later</string>
+    <string name="please_update_token_title">Social authentication expired</string>
 
 
-  <string name="discussion">Discussion</string>
-  <string name="more_character">…</string>
-  <string name="buy_sell">Buy/Sell</string>
-  <string name="share_to">Share to…</string>
-  <string name="comment">Comment</string>
-  <string name="timeline_discussion_post">@string/post</string>
-  <string name="timeline_discussion_comment_box_hint">Type your comment…</string>
-  <string name="discussion_loaded">All discussions loaded</string>
-  <string name="discussion_loading">Loading</string>
-  <string name="discussion_empty">Be the first to discuss this.</string>
+    <string name="discussion">Discussion</string>
+    <string name="more_character">…</string>
+    <string name="buy_sell">Buy/Sell</string>
+    <string name="share_to">Share to…</string>
+    <string name="comment">Comment</string>
+    <string name="timeline_discussion_post">@string/post</string>
+    <string name="timeline_discussion_comment_box_hint">Type your comment…</string>
+    <string name="discussion_loaded">All discussions loaded</string>
+    <string name="discussion_loading">Loading</string>
+    <string name="discussion_empty">Be the first to discuss this.</string>
 
-  <string name="news_view_on_web">View on the Web</string>
-  <string name="add_a_comment">Add a comment…</string>
-  <string name="start_new_discussion">Start a New Discussion</string>
-  <string name="error_empty_comment">Comment should not be empty</string>
-  <string name="error_not_enough_information">Not enough information, try again</string>
-  <string name="via">" via "</string>
+    <string name="news_view_on_web">View on the Web</string>
+    <string name="add_a_comment">Add a comment…</string>
+    <string name="start_new_discussion">Start a New Discussion</string>
+    <string name="error_empty_comment">Comment should not be empty</string>
+    <string name="error_not_enough_information">Not enough information, try again</string>
+    <string name="via">" via "</string>
 
-  <string name="broadcast_success">Send message success</string>
-  <string name="broadcast_error">Send message error</string>
-  <string name="broadcast_message_title">Broadcast Message</string>
-  <string name="broadcast_message_change_type_hint">Choose follower to send message</string>
-  <string name="broadcast_message_no_follower_hint">Sorry,you cannot send message because you don\'t have such type follower</string>
-  <string name="broadcast_message_content_length_hint">The message cannot be empty</string>
-  <string name="broadcast_message_sending_hint">Sending message…</string>
-  <string name="broadcast_message_waiting">Waiting</string>
-  <string name="social_followers">Followers</string>
-  <string name="social_heroes">Heroes</string>
+    <string name="broadcast_success">Send message success</string>
+    <string name="broadcast_error">Send message error</string>
+    <string name="broadcast_message_title">Broadcast Message</string>
+    <string name="broadcast_message_change_type_hint">Choose follower to send message</string>
+    <string name="broadcast_message_no_follower_hint">Sorry,you cannot send message because you don\'t have such type
+        follower
+    </string>
+    <string name="broadcast_message_content_length_hint">The message cannot be empty</string>
+    <string name="broadcast_message_sending_hint">Sending message…</string>
+    <string name="broadcast_message_waiting">Waiting</string>
+    <string name="social_followers">Followers</string>
+    <string name="social_heroes">Heroes</string>
 
-  <string name="common_loading_error">Sorry, there is something wrong</string>
-  <string name="no_message">You don\'t have any message yet.</string>
-  <string name="message_fetch_error">Sorry, something went wrong. \nPress to retry.</string>
-  <string name="security_discussion_add">+ Start a New Discussion</string>
-  <string name="post">Post</string>
-  <string name="discussion_new_post_hint">how do you feel about %s?</string>
-  <string name="error_discussion_empty_post">Discussion cannot be empty</string>
-  <string name="at">"@"</string>
-  <string name="hashtag">$</string>
-  <string name="discussion_edit_post_subtitle">on %s</string>
-  <string name="team_credit">Made with love in Singapore and Shanghai</string>
-  <string name="about_screen_secure_by">Secure by:</string>
-  <string name="about_screen_text_processing_by">Text processing by:</string>
-  <string name="about_screen_sentiment_analysis_by">Sentiment analysis by:</string>
-  <string name="send_fake_push" translatable="false">Send a fake PushNotification</string>
+    <string name="common_loading_error">Sorry, there is something wrong</string>
+    <string name="no_message">You don\'t have any message yet.</string>
+    <string name="message_fetch_error">Sorry, something went wrong. \nPress to retry.</string>
+    <string name="security_discussion_add">+ Start a New Discussion</string>
+    <string name="post">Post</string>
+    <string name="discussion_new_post_hint">how do you feel about %s?</string>
+    <string name="error_discussion_empty_post">Discussion cannot be empty</string>
+    <string name="at">"@"</string>
+    <string name="hashtag">$</string>
+    <string name="discussion_edit_post_subtitle">on %s</string>
+    <string name="team_credit">Made with love in Singapore and Shanghai</string>
+    <string name="about_screen_secure_by">Secure by:</string>
+    <string name="about_screen_text_processing_by">Text processing by:</string>
+    <string name="about_screen_sentiment_analysis_by">Sentiment analysis by:</string>
+    <string name="send_fake_push" translatable="false">Send a fake PushNotification</string>
 
-  <string name="buy_sell_loading_ask_price">Loading ask price…</string>
-  <string name="buy_sell_loading_bid_price">Loading bid price…</string>
-  <string name="sell">Sell</string>
-  <string name="buy">Buy</string>
-  <string name="chart_loading_image">Loading chart image…</string>
+    <string name="buy_sell_loading_ask_price">Loading ask price…</string>
+    <string name="buy_sell_loading_bid_price">Loading bid price…</string>
+    <string name="sell">Sell</string>
+    <string name="buy">Buy</string>
+    <string name="chart_loading_image">Loading chart image…</string>
 
-  <string name="plus_symbol">+</string>
+    <string name="plus_symbol">+</string>
 
-  <!--do not translate begin-->
-  <string name="tap_stream_type_google_install" translatable="false">android-tradehero-google-install</string>
-  <string name="tap_stream_type_google_open" translatable="false">android-tradehero-google-open</string>
-  <string name="tap_stream_type_baidu_install" translatable="false">android-tradehero-baidu-install</string>
-  <string name="tap_stream_type_baidu_open" translatable="false">android-tradehero-baidu-open</string>
-  <string name="tap_stream_type_tencent_install" translatable="false">android-tradehero-tencent-install</string>
-  <string name="tap_stream_type_tencent_open" translatable="false">android-tradehero-tencent-open</string>
-  <string name="tap_stream_type_xiaomi_install" translatable="false">android-tradehero-xiaomi-install</string>
-  <string name="tap_stream_type_xiaomi_open" translatable="false">android-tradehero-xiaomi-open</string>
-  <string name="tap_stream_type_91_install" translatable="false">android-tradehero-91-install</string>
-  <string name="tap_stream_type_91_open" translatable="false">android-tradehero-91-open</string>
-  <string name="tap_stream_type_azhuosc_install" translatable="false">android-tradehero-azhuosc-install</string>
-  <string name="tap_stream_type_azhuosc_open" translatable="false">android-tradehero-azhuosc-open</string>
-  <string name="tap_stream_type_azhisc_install" translatable="false">android-tradehero-azhisc-install</string>
-  <string name="tap_stream_type_azhisc_open" translatable="false">android-tradehero-azhisc-open</string>
-  <string name="tap_stream_type_lenovo_install" translatable="false">android-tradehero-lenovo-install</string>
-  <string name="tap_stream_type_lenovo_open" translatable="false">android-tradehero-lenovo-open</string>
-  <string name="tap_stream_type_wandoujia_install" translatable="false">android-tradehero-wandoujia-install</string>
-  <string name="tap_stream_type_wandoujia_open" translatable="false">android-tradehero-wandoujia-open</string>
-  <string name="tap_stream_type_360_install" translatable="false">android-tradehero-360-install</string>
-  <string name="tap_stream_type_360_open" translatable="false">android-tradehero-360-open</string>
-  <string name="tap_stream_type_oppo_install" translatable="false">android-tradehero-oppo-install</string>
-  <string name="tap_stream_type_oppo_open" translatable="false">android-tradehero-oppo-open</string>
-  <string name="tap_stream_type_jifeng_install" translatable="false">android-tradehero-jifeng-install</string>
-  <string name="tap_stream_type_jifeng_open" translatable="false">android-tradehero-jifeng-open</string>
-  <string name="tap_stream_type_yyhui_install" translatable="false">android-tradehero-yyhui-install</string>
-  <string name="tap_stream_type_yyhui_open" translatable="false">android-tradehero-yyhui-open</string>
-  <string name="tap_stream_type_ydmm_install" translatable="false">android-tradehero-ydmm-install</string>
-  <string name="tap_stream_type_ydmm_open" translatable="false">android-tradehero-ydmm-open</string>
-  <string name="tap_stream_type_mptang_install" translatable="false">android-tradehero-mptang-install</string>
-  <string name="tap_stream_type_mptang_open" translatable="false">android-tradehero-mptang-open</string>
-  <string name="tap_stream_type_dianxin_install" translatable="false">android-tradehero-dianxin-install</string>
-  <string name="tap_stream_type_dianxin_open" translatable="false">android-tradehero-dianxin-open</string>
-  <string name="tap_stream_type_baiduguard_install" translatable="false">android-tradehero-baiduguard-install</string>
-  <string name="tap_stream_type_baiduguard_open" translatable="false">android-tradehero-baiduguard-open</string>
-  <string name="tap_stream_type_wifiwanneng_install" translatable="false">android-tradehero-wifiwanneng-install</string>
-  <string name="tap_stream_type_wifiwanneng_open" translatable="false">android-tradehero-wifiwanneng-open</string>
-  <string name="tap_stream_type_caipiao500_install" translatable="false">android-tradehero-caipiao500-install</string>
-  <string name="tap_stream_type_caipiao500_open" translatable="false">android-tradehero-caipiao500-open</string>
-  <string name="tap_stream_type_mengtian1_install" translatable="false">android-tradehero-mengtian1-install</string>
-  <string name="tap_stream_type_mengtian1_open" translatable="false">android-tradehero-mengtian1-open</string>
-  <string name="tap_stream_type_mengtian2_install" translatable="false">android-tradehero-mengtian2-install</string>
-  <string name="tap_stream_type_mengtian2_open" translatable="false">android-tradehero-mengtian2-open</string>
-  <string name="tap_stream_type_sougou_install" translatable="false">android-tradehero-sougou-install</string>
-  <string name="tap_stream_type_sougou_open" translatable="false">android-tradehero-sougou-open</string>
-  <string name="tap_stream_type_huawei_install" translatable="false">android-tradehero-huawei-install</string>
-  <string name="tap_stream_type_huawei_open" translatable="false">android-tradehero-huawei-open</string>
-  <string name="tap_stream_type_meizu_install" translatable="false">android-tradehero-meizu-install</string>
-  <string name="tap_stream_type_meizu_open" translatable="false">android-tradehero-meizu-open</string>
-  <string name="tap_stream_type_dianke1_install" translatable="false">android-tradehero-dianke1-install</string>
-  <string name="tap_stream_type_dianke1_open" translatable="false">android-tradehero-dianke1-open</string>
-  <string name="tap_stream_type_dianke2_install" translatable="false">android-tradehero-dianke2-install</string>
-  <string name="tap_stream_type_dianke2_open" translatable="false">android-tradehero-dianke2-open</string>
-  <string name="tap_stream_type_dianke3_install" translatable="false">android-tradehero-dianke3-install</string>
-  <string name="tap_stream_type_dianke3_open" translatable="false">android-tradehero-dianke3-open</string>
-  <string name="tap_stream_type_dianke4_install" translatable="false">android-tradehero-dianke4-install</string>
-  <string name="tap_stream_type_dianke4_open" translatable="false">android-tradehero-dianke4-open</string>
-  <string name="tap_stream_type_dianke5_install" translatable="false">android-tradehero-dianke5-install</string>
-  <string name="tap_stream_type_dianke5_open" translatable="false">android-tradehero-dianke5-open</string>
-  <string name="tap_stream_type_91m_install" translatable="false">android-tradehero-91m-install</string>
-  <string name="tap_stream_type_91m_open" translatable="false">android-tradehero-91m-open</string>
-  <string name="tap_stream_type_dianping_install" translatable="false">android-tradehero-dianping-install</string>
-  <string name="tap_stream_type_dianping_open" translatable="false">android-tradehero-dianping-open</string>
-  <string name="tap_stream_type_aiqiyi_install" translatable="false">android-tradehero-aiqiyi-install</string>
-  <string name="tap_stream_type_aiqiyi_open" translatable="false">android-tradehero-aiqiyi-open</string>
-  <string name="tap_stream_type_dingkai_install" translatable="false">android-tradehero-dingkai-install</string>
-  <string name="tap_stream_type_dingkai_open" translatable="false">android-tradehero-dingkai-open</string>
-  <string name="tap_stream_type_adsage_install" translatable="false">android-tradehero-adsage-install</string>
-  <string name="tap_stream_type_adsage_open" translatable="false">android-tradehero-adsage-open</string>
-  <string name="tap_stream_type_wandoujiaad_install" translatable="false">android-tradehero-wandoujiaad-install</string>
-  <string name="tap_stream_type_wandoujiaad_open" translatable="false">android-tradehero-wandoujiaad-open</string>
-  <string name="tap_stream_type_channel1_install" translatable="false">android-tradehero-channel1-install</string>
-  <string name="tap_stream_type_channel1_open" translatable="false">android-tradehero-channel1-open</string>
-  <string name="tap_stream_type_channel2_install" translatable="false">android-tradehero-channel2-install</string>
-  <string name="tap_stream_type_channel2_open" translatable="false">android-tradehero-channel2-open</string>
-  <string name="tap_stream_type_channel3_install" translatable="false">android-tradehero-channel3-install</string>
-  <string name="tap_stream_type_channel3_open" translatable="false">android-tradehero-channel3-open</string>
-  <string name="tap_stream_type_channel4_install" translatable="false">android-tradehero-channel4-install</string>
-  <string name="tap_stream_type_channel4_open" translatable="false">android-tradehero-channel4-open</string>
-  <string name="tap_stream_type_channel5_install" translatable="false">android-tradehero-channel5-install</string>
-  <string name="tap_stream_type_channel5_open" translatable="false">android-tradehero-channel5-open</string>
-  <string name="tap_stream_type_channel6_install" translatable="false">android-tradehero-channel6-install</string>
-  <string name="tap_stream_type_channel6_open" translatable="false">android-tradehero-channel6-open</string>
-  <string name="tap_stream_type_channel7_install" translatable="false">android-tradehero-channel7-install</string>
-  <string name="tap_stream_type_channel7_open" translatable="false">android-tradehero-channel7-open</string>
-  <string name="tap_stream_type_channel8_install" translatable="false">android-tradehero-channel8-install</string>
-  <string name="tap_stream_type_channel8_open" translatable="false">android-tradehero-channel8-open</string>
-  <string name="tap_stream_type_channel9_install" translatable="false">android-tradehero-channel9-install</string>
-  <string name="tap_stream_type_channel9_open" translatable="false">android-tradehero-channel9-open</string>
-  <string name="tap_stream_type_channel10_install" translatable="false">android-tradehero-channel10-install</string>
-  <string name="tap_stream_type_channel10_open" translatable="false">android-tradehero-channel10-open</string>
-  <string name="tap_stream_type_channel11_install" translatable="false">android-tradehero-channel11-install</string>
-  <string name="tap_stream_type_channel11_open" translatable="false">android-tradehero-channel11-open</string>
-  <string name="tap_stream_type_channel12_install" translatable="false">android-tradehero-channel12-install</string>
-  <string name="tap_stream_type_channel12_open" translatable="false">android-tradehero-channel12-open</string>
-  <string name="tap_stream_type_channel13_install" translatable="false">android-tradehero-channel13-install</string>
-  <string name="tap_stream_type_channel13_open" translatable="false">android-tradehero-channel13-open</string>
-  <string name="tap_stream_type_channel14_install" translatable="false">android-tradehero-channel14-install</string>
-  <string name="tap_stream_type_channel14_open" translatable="false">android-tradehero-channel14-open</string>
-  <string name="tap_stream_type_channel15_install" translatable="false">android-tradehero-channel15-install</string>
-  <string name="tap_stream_type_channel15_open" translatable="false">android-tradehero-channel15-open</string>
-  <string name="tap_stream_type_ftp_install" translatable="false">android-tradehero-ftp-install</string>
-  <string name="tap_stream_type_ftp_open" translatable="false">android-tradehero-ftp-open</string>
+    <!--do not translate begin-->
+    <string name="tap_stream_type_google_install" translatable="false">android-tradehero-google-install</string>
+    <string name="tap_stream_type_google_open" translatable="false">android-tradehero-google-open</string>
+    <string name="tap_stream_type_baidu_install" translatable="false">android-tradehero-baidu-install</string>
+    <string name="tap_stream_type_baidu_open" translatable="false">android-tradehero-baidu-open</string>
+    <string name="tap_stream_type_tencent_install" translatable="false">android-tradehero-tencent-install</string>
+    <string name="tap_stream_type_tencent_open" translatable="false">android-tradehero-tencent-open</string>
+    <string name="tap_stream_type_xiaomi_install" translatable="false">android-tradehero-xiaomi-install</string>
+    <string name="tap_stream_type_xiaomi_open" translatable="false">android-tradehero-xiaomi-open</string>
+    <string name="tap_stream_type_91_install" translatable="false">android-tradehero-91-install</string>
+    <string name="tap_stream_type_91_open" translatable="false">android-tradehero-91-open</string>
+    <string name="tap_stream_type_azhuosc_install" translatable="false">android-tradehero-azhuosc-install</string>
+    <string name="tap_stream_type_azhuosc_open" translatable="false">android-tradehero-azhuosc-open</string>
+    <string name="tap_stream_type_azhisc_install" translatable="false">android-tradehero-azhisc-install</string>
+    <string name="tap_stream_type_azhisc_open" translatable="false">android-tradehero-azhisc-open</string>
+    <string name="tap_stream_type_lenovo_install" translatable="false">android-tradehero-lenovo-install</string>
+    <string name="tap_stream_type_lenovo_open" translatable="false">android-tradehero-lenovo-open</string>
+    <string name="tap_stream_type_wandoujia_install" translatable="false">android-tradehero-wandoujia-install</string>
+    <string name="tap_stream_type_wandoujia_open" translatable="false">android-tradehero-wandoujia-open</string>
+    <string name="tap_stream_type_360_install" translatable="false">android-tradehero-360-install</string>
+    <string name="tap_stream_type_360_open" translatable="false">android-tradehero-360-open</string>
+    <string name="tap_stream_type_oppo_install" translatable="false">android-tradehero-oppo-install</string>
+    <string name="tap_stream_type_oppo_open" translatable="false">android-tradehero-oppo-open</string>
+    <string name="tap_stream_type_jifeng_install" translatable="false">android-tradehero-jifeng-install</string>
+    <string name="tap_stream_type_jifeng_open" translatable="false">android-tradehero-jifeng-open</string>
+    <string name="tap_stream_type_yyhui_install" translatable="false">android-tradehero-yyhui-install</string>
+    <string name="tap_stream_type_yyhui_open" translatable="false">android-tradehero-yyhui-open</string>
+    <string name="tap_stream_type_ydmm_install" translatable="false">android-tradehero-ydmm-install</string>
+    <string name="tap_stream_type_ydmm_open" translatable="false">android-tradehero-ydmm-open</string>
+    <string name="tap_stream_type_mptang_install" translatable="false">android-tradehero-mptang-install</string>
+    <string name="tap_stream_type_mptang_open" translatable="false">android-tradehero-mptang-open</string>
+    <string name="tap_stream_type_dianxin_install" translatable="false">android-tradehero-dianxin-install</string>
+    <string name="tap_stream_type_dianxin_open" translatable="false">android-tradehero-dianxin-open</string>
+    <string name="tap_stream_type_baiduguard_install" translatable="false">android-tradehero-baiduguard-install</string>
+    <string name="tap_stream_type_baiduguard_open" translatable="false">android-tradehero-baiduguard-open</string>
+    <string name="tap_stream_type_wifiwanneng_install" translatable="false">android-tradehero-wifiwanneng-install
+    </string>
+    <string name="tap_stream_type_wifiwanneng_open" translatable="false">android-tradehero-wifiwanneng-open</string>
+    <string name="tap_stream_type_caipiao500_install" translatable="false">android-tradehero-caipiao500-install</string>
+    <string name="tap_stream_type_caipiao500_open" translatable="false">android-tradehero-caipiao500-open</string>
+    <string name="tap_stream_type_mengtian1_install" translatable="false">android-tradehero-mengtian1-install</string>
+    <string name="tap_stream_type_mengtian1_open" translatable="false">android-tradehero-mengtian1-open</string>
+    <string name="tap_stream_type_mengtian2_install" translatable="false">android-tradehero-mengtian2-install</string>
+    <string name="tap_stream_type_mengtian2_open" translatable="false">android-tradehero-mengtian2-open</string>
+    <string name="tap_stream_type_sougou_install" translatable="false">android-tradehero-sougou-install</string>
+    <string name="tap_stream_type_sougou_open" translatable="false">android-tradehero-sougou-open</string>
+    <string name="tap_stream_type_huawei_install" translatable="false">android-tradehero-huawei-install</string>
+    <string name="tap_stream_type_huawei_open" translatable="false">android-tradehero-huawei-open</string>
+    <string name="tap_stream_type_meizu_install" translatable="false">android-tradehero-meizu-install</string>
+    <string name="tap_stream_type_meizu_open" translatable="false">android-tradehero-meizu-open</string>
+    <string name="tap_stream_type_dianke1_install" translatable="false">android-tradehero-dianke1-install</string>
+    <string name="tap_stream_type_dianke1_open" translatable="false">android-tradehero-dianke1-open</string>
+    <string name="tap_stream_type_dianke2_install" translatable="false">android-tradehero-dianke2-install</string>
+    <string name="tap_stream_type_dianke2_open" translatable="false">android-tradehero-dianke2-open</string>
+    <string name="tap_stream_type_dianke3_install" translatable="false">android-tradehero-dianke3-install</string>
+    <string name="tap_stream_type_dianke3_open" translatable="false">android-tradehero-dianke3-open</string>
+    <string name="tap_stream_type_dianke4_install" translatable="false">android-tradehero-dianke4-install</string>
+    <string name="tap_stream_type_dianke4_open" translatable="false">android-tradehero-dianke4-open</string>
+    <string name="tap_stream_type_dianke5_install" translatable="false">android-tradehero-dianke5-install</string>
+    <string name="tap_stream_type_dianke5_open" translatable="false">android-tradehero-dianke5-open</string>
+    <string name="tap_stream_type_91m_install" translatable="false">android-tradehero-91m-install</string>
+    <string name="tap_stream_type_91m_open" translatable="false">android-tradehero-91m-open</string>
+    <string name="tap_stream_type_dianping_install" translatable="false">android-tradehero-dianping-install</string>
+    <string name="tap_stream_type_dianping_open" translatable="false">android-tradehero-dianping-open</string>
+    <string name="tap_stream_type_aiqiyi_install" translatable="false">android-tradehero-aiqiyi-install</string>
+    <string name="tap_stream_type_aiqiyi_open" translatable="false">android-tradehero-aiqiyi-open</string>
+    <string name="tap_stream_type_dingkai_install" translatable="false">android-tradehero-dingkai-install</string>
+    <string name="tap_stream_type_dingkai_open" translatable="false">android-tradehero-dingkai-open</string>
+    <string name="tap_stream_type_adsage_install" translatable="false">android-tradehero-adsage-install</string>
+    <string name="tap_stream_type_adsage_open" translatable="false">android-tradehero-adsage-open</string>
+    <string name="tap_stream_type_wandoujiaad_install" translatable="false">android-tradehero-wandoujiaad-install
+    </string>
+    <string name="tap_stream_type_wandoujiaad_open" translatable="false">android-tradehero-wandoujiaad-open</string>
+    <string name="tap_stream_type_channel1_install" translatable="false">android-tradehero-channel1-install</string>
+    <string name="tap_stream_type_channel1_open" translatable="false">android-tradehero-channel1-open</string>
+    <string name="tap_stream_type_channel2_install" translatable="false">android-tradehero-channel2-install</string>
+    <string name="tap_stream_type_channel2_open" translatable="false">android-tradehero-channel2-open</string>
+    <string name="tap_stream_type_channel3_install" translatable="false">android-tradehero-channel3-install</string>
+    <string name="tap_stream_type_channel3_open" translatable="false">android-tradehero-channel3-open</string>
+    <string name="tap_stream_type_channel4_install" translatable="false">android-tradehero-channel4-install</string>
+    <string name="tap_stream_type_channel4_open" translatable="false">android-tradehero-channel4-open</string>
+    <string name="tap_stream_type_channel5_install" translatable="false">android-tradehero-channel5-install</string>
+    <string name="tap_stream_type_channel5_open" translatable="false">android-tradehero-channel5-open</string>
+    <string name="tap_stream_type_channel6_install" translatable="false">android-tradehero-channel6-install</string>
+    <string name="tap_stream_type_channel6_open" translatable="false">android-tradehero-channel6-open</string>
+    <string name="tap_stream_type_channel7_install" translatable="false">android-tradehero-channel7-install</string>
+    <string name="tap_stream_type_channel7_open" translatable="false">android-tradehero-channel7-open</string>
+    <string name="tap_stream_type_channel8_install" translatable="false">android-tradehero-channel8-install</string>
+    <string name="tap_stream_type_channel8_open" translatable="false">android-tradehero-channel8-open</string>
+    <string name="tap_stream_type_channel9_install" translatable="false">android-tradehero-channel9-install</string>
+    <string name="tap_stream_type_channel9_open" translatable="false">android-tradehero-channel9-open</string>
+    <string name="tap_stream_type_channel10_install" translatable="false">android-tradehero-channel10-install</string>
+    <string name="tap_stream_type_channel10_open" translatable="false">android-tradehero-channel10-open</string>
+    <string name="tap_stream_type_channel11_install" translatable="false">android-tradehero-channel11-install</string>
+    <string name="tap_stream_type_channel11_open" translatable="false">android-tradehero-channel11-open</string>
+    <string name="tap_stream_type_channel12_install" translatable="false">android-tradehero-channel12-install</string>
+    <string name="tap_stream_type_channel12_open" translatable="false">android-tradehero-channel12-open</string>
+    <string name="tap_stream_type_channel13_install" translatable="false">android-tradehero-channel13-install</string>
+    <string name="tap_stream_type_channel13_open" translatable="false">android-tradehero-channel13-open</string>
+    <string name="tap_stream_type_channel14_install" translatable="false">android-tradehero-channel14-install</string>
+    <string name="tap_stream_type_channel14_open" translatable="false">android-tradehero-channel14-open</string>
+    <string name="tap_stream_type_channel15_install" translatable="false">android-tradehero-channel15-install</string>
+    <string name="tap_stream_type_channel15_open" translatable="false">android-tradehero-channel15-open</string>
+    <string name="tap_stream_type_ftp_install" translatable="false">android-tradehero-ftp-install</string>
+    <string name="tap_stream_type_ftp_open" translatable="false">android-tradehero-ftp-open</string>
 
-  <string name="tap_stream_type_threeg_install" translatable="false">android-tradehero-threeg-install</string>
-  <string name="tap_stream_type_threeg_open" translatable="false">android-tradehero-threeg-open</string>
+    <string name="tap_stream_type_threeg_install" translatable="false">android-tradehero-threeg-install</string>
+    <string name="tap_stream_type_threeg_open" translatable="false">android-tradehero-threeg-open</string>
 
-  <string name="tap_stream_type_suoping_install" translatable="false">android-tradehero-suoping-install</string>
-  <string name="tap_stream_type_suoping_open" translatable="false">android-tradehero-suoping-open</string>
+    <string name="tap_stream_type_suoping_install" translatable="false">android-tradehero-suoping-install</string>
+    <string name="tap_stream_type_suoping_open" translatable="false">android-tradehero-suoping-open</string>
 
-  <string name="tap_stream_type_suoping2_install" translatable="false">android-tradehero-suoping2-install</string>
-  <string name="tap_stream_type_suoping2_open" translatable="false">android-tradehero-suoping2-open</string>
+    <string name="tap_stream_type_suoping2_install" translatable="false">android-tradehero-suoping2-install</string>
+    <string name="tap_stream_type_suoping2_open" translatable="false">android-tradehero-suoping2-open</string>
 
-  <string name="tap_stream_type_suoping3_install" translatable="false">android-tradehero-suoping3-install</string>
-  <string name="tap_stream_type_suoping3_open" translatable="false">android-tradehero-suoping3-open</string>
+    <string name="tap_stream_type_suoping3_install" translatable="false">android-tradehero-suoping3-install</string>
+    <string name="tap_stream_type_suoping3_open" translatable="false">android-tradehero-suoping3-open</string>
 
-  <string name="tap_stream_type_suoping4_install" translatable="false">android-tradehero-suoping4-install</string>
-  <string name="tap_stream_type_suoping4_open" translatable="false">android-tradehero-suoping4-open</string>
+    <string name="tap_stream_type_suoping4_install" translatable="false">android-tradehero-suoping4-install</string>
+    <string name="tap_stream_type_suoping4_open" translatable="false">android-tradehero-suoping4-open</string>
 
-  <string name="tap_stream_type_suoping5_install" translatable="false">android-tradehero-suoping5-install</string>
-  <string name="tap_stream_type_suoping5_open" translatable="false">android-tradehero-suoping5-open</string>
+    <string name="tap_stream_type_suoping5_install" translatable="false">android-tradehero-suoping5-install</string>
+    <string name="tap_stream_type_suoping5_open" translatable="false">android-tradehero-suoping5-open</string>
 
-  <string name="tap_stream_type_suoping6_install" translatable="false">android-tradehero-suoping6-install</string>
-  <string name="tap_stream_type_suoping6_open" translatable="false">android-tradehero-suoping6-open</string>
+    <string name="tap_stream_type_suoping6_install" translatable="false">android-tradehero-suoping6-install</string>
+    <string name="tap_stream_type_suoping6_open" translatable="false">android-tradehero-suoping6-open</string>
 
-  <string name="tap_stream_type_suoping7_install" translatable="false">android-tradehero-suoping7-install</string>
-  <string name="tap_stream_type_suoping7_open" translatable="false">android-tradehero-suoping7-open</string>
+    <string name="tap_stream_type_suoping7_install" translatable="false">android-tradehero-suoping7-install</string>
+    <string name="tap_stream_type_suoping7_open" translatable="false">android-tradehero-suoping7-open</string>
 
-  <string name="tap_stream_type_suoping8_install" translatable="false">android-tradehero-suoping8-install</string>
-  <string name="tap_stream_type_suoping8_open" translatable="false">android-tradehero-suoping8-open</string>
+    <string name="tap_stream_type_suoping8_install" translatable="false">android-tradehero-suoping8-install</string>
+    <string name="tap_stream_type_suoping8_open" translatable="false">android-tradehero-suoping8-open</string>
 
-  <string name="tap_stream_type_douguo_install" translatable="false">android-tradehero-douguo-install</string>
-  <string name="tap_stream_type_douguo_open" translatable="false">android-tradehero-douguo-open</string>
+    <string name="tap_stream_type_douguo_install" translatable="false">android-tradehero-douguo-install</string>
+    <string name="tap_stream_type_douguo_open" translatable="false">android-tradehero-douguo-open</string>
 
-  <string name="tap_stream_type_jinshan_install" translatable="false">android-tradehero-jinshan-install</string>
-  <string name="tap_stream_type_jinshan_open" translatable="false">android-tradehero-jinshan-open</string>
+    <string name="tap_stream_type_jinshan_install" translatable="false">android-tradehero-jinshan-install</string>
+    <string name="tap_stream_type_jinshan_open" translatable="false">android-tradehero-jinshan-open</string>
 
-  <string name="tap_stream_type_taobao_install" translatable="false">android-tradehero-taobao-install</string>
-  <string name="tap_stream_type_taobao_open" translatable="false">android-tradehero-taobao-open</string>
+    <string name="tap_stream_type_taobao_install" translatable="false">android-tradehero-taobao-install</string>
+    <string name="tap_stream_type_taobao_open" translatable="false">android-tradehero-taobao-open</string>
 
-  <string name="tap_stream_type_offical_install" translatable="false">android-tradehero-offical-install</string>
-  <string name="tap_stream_type_offical_open" translatable="false">android-tradehero-offical-open</string>
+    <string name="tap_stream_type_offical_install" translatable="false">android-tradehero-offical-install</string>
+    <string name="tap_stream_type_offical_open" translatable="false">android-tradehero-offical-open</string>
 
-  <string name="tap_stream_type_test_install" translatable="false">android-tradehero-test-install</string>
-  <string name="tap_stream_type_test_open" translatable="false">android-tradehero-test-open</string>
+    <string name="tap_stream_type_test_install" translatable="false">android-tradehero-test-install</string>
+    <string name="tap_stream_type_test_open" translatable="false">android-tradehero-test-open</string>
 
-  <!--do not translate end-->
-  <string name="sure_to_delete_message">Delete this message?</string>
-  <string name="currency">US$</string>
-  <string name="invite_social_friend">Invite %s Friend</string>
-  <string name="search_social_friend_hint">Search your friend</string>
+    <!--do not translate end-->
+    <string name="sure_to_delete_message">Delete this message?</string>
+    <string name="currency">US$</string>
+    <string name="invite_social_friend">Invite %s Friend</string>
+    <string name="search_social_friend_hint">Search your friend</string>
 
-  <string name="social_friend_empty">Sorry, no friends</string>
-  <string name="search_social_friend_empty">Sorry, do not find anybody you search.</string>
-  <string name="invite_from_weibo">Invite from Weibo</string>
-  <string name="invite_from_wechat">Invite from Wechat</string>
-  <string name="invite_from_linkedIn">Invite from LinkedIn</string>
-  <string name="invite_from_twitter">Invite from Twitter</string>
-  <string name="invite_from_facebook">Invite from Facebook</string>
+    <string name="social_friend_empty">Sorry, no friends</string>
+    <string name="search_social_friend_empty">Sorry, do not find anybody you search.</string>
+    <string name="invite_from_weibo">Invite from Weibo</string>
+    <string name="invite_from_wechat">Invite from Wechat</string>
+    <string name="invite_from_linkedIn">Invite from LinkedIn</string>
+    <string name="invite_from_twitter">Invite from Twitter</string>
+    <string name="invite_from_facebook">Invite from Facebook</string>
 
-  <string name="social_no_friend_to_invite">No user to Invite</string>
-  <string name="social_no_friend_to_follow">No user to follow</string>
+    <string name="social_no_friend_to_invite">No user to Invite</string>
+    <string name="social_no_friend_to_follow">No user to follow</string>
 
-  <plurals name="inbox_notification_title">
-    <item quantity="one">1 New Message</item>
-    <item quantity="other">%d
-      <b>New</b>
-      Messages
-    </item>
-  </plurals>
+    <plurals name="inbox_notification_title">
+        <item quantity="one">1 New Message</item>
+        <item quantity="other">%d
+            <b>New</b>
+            Messages
+        </item>
+    </plurals>
 
-  <string name="inbox_summary">+%d more</string>
-  <string name="notification_unread_messages">You have %d unread messages</string>
-  <string name="notification_new_activities">You have %d new activities</string>
-  <string name="friend_link_social_network">Please Link Social Network.</string>
-  <string name="exit_app">Exit app</string>
-  <string name="referral_code_title">Claim your virtual dollars!</string>
-  <string name="referral_code_message">If you were referred by a friend, enter the referral code
-    here and get free 10,000 virtual dollars.
-  </string>
-  <string name="referral_code_callback_success">Your invite code is correct, you will get extra 10,000 TH dollars</string>
+    <string name="inbox_summary">+%d more</string>
+    <string name="notification_unread_messages">You have %d unread messages</string>
+    <string name="notification_new_activities">You have %d new activities</string>
+    <string name="friend_link_social_network">Please Link Social Network.</string>
+    <string name="exit_app">Exit app</string>
+    <string name="referral_code_title">Claim your virtual dollars!</string>
+    <string name="referral_code_message">If you were referred by a friend, enter the referral code
+        here and get free 10,000 virtual dollars.
+    </string>
+    <string name="referral_code_callback_success">Your invite code is correct, you will get extra 10,000 TH dollars
+    </string>
 
-  <string name="friends_can_be_invite">%s friends can be invite</string>
-  <string name="friends_can_be_follow">%s friends can be follow</string>
-  <string name="weibo_message_text_limit">[%d/140]</string>
-  <string name="weibo_message_length_error">no more than 140 character</string>
-  <string name="weibo_friends_invite">Join TradeHero, learn to trade, get expert tips, compete with the world top traders and earn real cash from followers, use my invitation code %1$s to get extra 10,000 TH dollars!</string>
-  <string name="done">Done</string>
-  <string name="trade_comment">Trade Comment</string>
+    <string name="friends_can_be_invite">%s friends can be invite</string>
+    <string name="friends_can_be_follow">%s friends can be follow</string>
+    <string name="weibo_message_text_limit">[%d/140]</string>
+    <string name="weibo_message_length_error">no more than 140 character</string>
+    <string name="weibo_friends_invite">Join TradeHero, learn to trade, get expert tips, compete with the world top
+        traders and earn real cash from followers, use my invitation code %1$s to get extra 10,000 TH dollars!
+    </string>
+    <string name="done">Done</string>
+    <string name="trade_comment">Trade Comment</string>
 
-  <string name="mark_as_all_read">Mark as all Read</string>
+    <string name="mark_as_all_read">Mark as all Read</string>
 
-  <string name="error_network_connection">请检查网络连接</string>
+    <string name="error_network_connection">请检查网络连接</string>
 
-  <string name="tab_main_trade">交易</string>
-  <string name="tab_main_stock_god">股神</string>
-  <string name="tab_main_descovery">发现</string>
-  <string name="tab_main_competition">竞赛</string>
-  <string name="tab_main_learning">学堂</string>
-  <string name="tab_main_me">我的</string>
+    <string name="tab_main_trade">交易</string>
+    <string name="tab_main_stock_god">股神</string>
+    <string name="tab_main_descovery">发现</string>
+    <string name="tab_main_competition">竞赛</string>
+    <string name="tab_main_learning">学堂</string>
+    <string name="tab_main_me">我的</string>
 
-  <string name="stockgod_leaderboard_all">总盈利榜</string>
-  <string name="stockgod_leaderboard_season">季度榜</string>
-  <string name="stockgod_leaderboard_6month">半年榜</string>
+    <string name="stockgod_leaderboard_all">总盈利榜</string>
+    <string name="stockgod_leaderboard_season">季度榜</string>
+    <string name="stockgod_leaderboard_6month">半年榜</string>
 
-  <string name="press_back_again_to_exit">再按一次返回退出应用</string>
-  <string name="settings">设置</string>
-  <string name="error_fetch_exchange_list">获取交易所列表错误</string>
+    <string name="press_back_again_to_exit">再按一次返回退出应用</string>
+    <string name="settings">设置</string>
+    <string name="error_fetch_exchange_list">获取交易所列表错误</string>
 
-  <string name="my_dynamic">我的动态</string>
-  <string name="my_message_center">通知</string>
-  <string name="my_invite_friends">邀请好友</string>
-  <string name="my_setting">设置</string>
+    <string name="my_dynamic">我的动态</string>
+    <string name="my_message_center">通知</string>
+    <string name="my_invite_friends">邀请好友</string>
+    <string name="my_setting">设置</string>
 
-  <string name="security_position">持仓（%d）</string>
-  <string name="security_position_closed">平仓（%d）</string>
-  <string name="watch_position">自选股（%d）</string>
-  <string name="people_watched">%d人关注</string>
-  <string name="people_holded">%d人持有</string>
-  <string name="security_market_cap_usd">总市值%s</string>
-
-
-  <string name="user_tatal_roi_day_30">收益率：</string>
-  <string name="user_tatal_fans">粉丝：</string>
-  <string name="user_tatal_wealth">总资产：</string>
-
-  <string name="chart_loading_image_">正在载入...</string>
-
-  <string name="fetch_error">获取数据失败</string>
-  <string name="guide_screen_login">Login</string>
-  <string name="guide_screen_try">Fast Login</string>
-  <string name="or">or</string>
-  <string name="position_hold_days">%d天</string>
-  <string name="competition_joined_invite">想上头条就从这个炒股比赛开始，现在参加还送一万美刀！</string>
-
-  <string name="login_with_offical_account">Official Account Login</string>
-  <string name="login_account">Account：</string>
-  <string name="login_password">Password：</string>
-  <string name="login_account_hint">Email or Mobile Number</string>
-  <string name="login_password_hint">6-20 Letters or Numbers</string>
-  <string name="agreed">Agreed</string>
-  <string name="authentication_agreement">《隐私条款和服务政策》</string>
-  <string name="authentication_next">Next</string>
-  <string name="register_diaplay_name_hint">Username (Needed)</string>
-  <string name="register_finish">Register</string>
-  <string name="register_error_account">Email Error</string>
-  <string name="register_error_password">Password 6-20 Letters or Numbers</string>
-  <string name="register_error_displayname">No Nickname</string>
-  <string name="take_photo">Camera</string>
-  <string name="from_gallery">Gallery</string>
-  <string name="settings_score">Score</string>
-  <string name="settings_logout">Log Out</string>
-  <string name="settings_version">Version</string>
-  <string name="settings_notification">Notifications</string>
-  <string name="invite_friends_title">邀请好友成功登录全民股神，输入邀请码，你和TA都将获得10000虚拟资金奖励，邀请得越多奖励越多。</string>
-  <string name="invite_friends_input">输入邀请码</string>
-  <string name="invite_friends_me">我的邀请码:</string>
-  <string name="invite_code">邀请码</string>
-  <string name="submit">提交</string>
-  <string name="invite_friend_fail">您的邀请码输入有误</string>
-  <string name="copy">复制</string>
-  <string name="copy_my_invite_code_success">复制成功，快去邀请好友吧～</string>
-  <string name="follow_success">Follow Successfully</string>
-  <string name="faster_login">Fast Login</string>
-  <string name="guest_user_id">Guest ID:%1$s</string>
-  <string name="settings_my_photo">Avatar</string>
-  <string name="settings_my_name">Name</string>
-  <string name="settings_my_account">Account Password</string>
-  <string name="settings_my_social">Account Binding</string>
-  <string name="settings_my_profile">Profile</string>
-  <string name="updating">Updating...</string>
-  <string name="bind_success">Bind Successfully</string>
-  <string name="unbind_success">Unbind Successfully</string>
-  <string name="login_verify_code">Code:</string>
-  <string name="login_verify_code_hint">Enter Code</string>
-  <string name="login_get_verify_code">Get Code</string>
-  <string name="send_verify_code_success">Verification code has been sent, please check messages.</string>
-  <string name="guest_user">Guest</string>
-  <string name="guest_user_dialog_summary">您的当前身份为游客，不会保存您 的账户信息，请升级为正式用户</string>
-  <string name="bind">Binding</string>
-  <string name="share_to_social">我要炫耀</string>
-  <string name="share_sell_title">恭喜你，盈利</string>
-  <string name="ten_thousands">万</string>
-  <string name="million">百万</string>
-  <string name="hundred_million">亿</string>
-  <string name="share_sell_title2">财运来了挡都挡不住啊</string>
-  <string name="share_sell_title11">亏损了</string>
-  <string name="share_sell_title12">坑爹了，怎么破</string>
-  <string name="share_tips">小贴士：如果不想弹出分享界面</string>
-  <string name="share_tips2">可以在出售时把分享开关关掉</string>
-  <string name="share_sell_title_money">%1$s！</string>
-  <string name="share_sell_to_wechat_title">股神也就是我的小跟班，跟我炒股有钱赚，你懂的 \nhttp://%1$s/shr/trade.html?userId=%2$s&amp;positionId=%3$s&amp;tradeId=%4$s</string>
-  <string name="share_sell_to_wechat_title_losemoney">在股市亏本了，小伙伴们快来帮帮我吧！ \nhttp://%1$s/shr/trade.html?userId=%2$s&amp;positionId=%3$s&amp;tradeId=%4$s</string>
-  <string name="share_amount_roi_value_title">轻松赚到10%，\n我简直就是股神附体！</string>
-  <string name="share_amount_roi_value_summary">股神也就是我的小跟班，跟我炒股有钱赚，你懂的。 \nhttp://%3$s/shr/yield.html?userId=%1$s&amp;positionId=%2$s</string>
-
-  <string name="share_amount_total_value_title">碉堡了，你的资产已突破15w，\n小伙伴们还不造吗？</string>
-  <string name="share_amount_total_value_summary">一不小心就有15W了，分分钟秒杀富二代。 \nhttp://%2$s/shr/assets.html?userId=%1$s</string>
-
-  <string name="share_amount_total_value_title25">恭喜你！总资产达到25w \n你这么土豪你的朋友们知道吗？</string>
-  <string name="share_amount_total_value_summary25">一不小心就有25W了，分分钟秒杀富二代 \nhttp://%2$s/shr/assets.html?userId=%1$s</string>
-  <string name="share_amount_fans_num_title">恭喜！你已经有10个小跟班，如此魅力十足还不赶紧去炫耀一记？</string>
-
-  <string name="share_amount_fans_num_summary">我擦嘞，又尼玛多了一帮小弟！</string>
-  <string name="share_buy_dialog_title">我买了 %1$s 股票，跪求大神点评？</string>
-  <string name="share_buy_dialog_summary">摊上大事了，我买了 %1$s 股票，你看行吗？ \nhttp://%4$s/shr/stock.html?userId=%2$s&amp;securityId=%3$s</string>
-  <string name="share_score_title">分享炒股神器，让大家涨涨姿势</string>
-  <string name="share_dialog_summary">现在分享还有资金奖励哦！</string>
-
-  <string name="wechat_timeline">朋友圈</string>
-  <string name="share_create_contest">想上头条就从这个炒股比赛开始，现在参加还送一万美刀！ \nhttp://%4$s/shr/match.html?userId=%1$s&amp;competitionId=%2$s&amp;title=%3$s</string>
-  <string name="share_detial_contest">想上头条就从这个炒股比赛开始，现在参加还送一万美刀！ \nhttp://%4$s/shr/match.html?userId=%1$s&amp;competitionId=%2$s&amp;title=%3$s</string>
-  <string name="local_social">社区</string>
-
-  <string name="search_no_result">No Result</string>
-  <string name="search_search">搜索</string>
-  <string name="search_cancel">取消</string>
-  <string name="competition_enter_college">Enter College</string>
-  <string name="dialog_profile_suggest_signin">必须升级为正式用户才可以更改名称</string>
-  <string name="login_by_wechat_account_failed">微信信息获取失败</string>
-  <string name="dialog_competition_choose_college_a">您所选择的学校</string>
-  <string name="dialog_competition_choose_college_b">，确定选择以后不可更改</string>
-  <string name="dialog_competition_suggest_login">您当前是游客身份，不能参加比赛，请升级为正式用户</string>
-
-  <string name="please_to_reply">评论一下吧...</string>
-
-  <string name="quickly_to_get_first">快来抢沙发</string>
-  <string name="no_useful_data">空空如也</string>
-  <string name="click_to_get_more">加载更多</string>
-  <string name="html_string_blue"><Data><![CDATA[ <font color="#1789d5">%s</font> ]]></Data></string>
-  <string name="html_string_gray"><Data><![CDATA[ <font color="#929292">%s</font> ]]></Data></string>
-  <string name="app_name_cn">全民股神</string>
-  <string name="login_continuous">我们已经在一起%1$s天啦，是时候公开了</string>
-  <string name="login_continuous_share">这酸爽，哥已经玩%1$s天了</string>
-
-  <string name="download_tradehero_android_app_on_wechat">http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th</string>
-  <string name="download_tradehero_android_app_on_weibo">http://cn.tradehero.mobi/shr/assets.html?userId=313529</string>
-  <!--  <string name="download_tradehero_android_app_on_weibo">http://tradehero.b0.upaiyun.com/th_android.apk</string> -->
-  <string name="target_user_millionaire_page">http://%1$s/shr/assets.html?userId=313529</string>
-
-  <!-- Recommend Items (Stock & Hero)-->
-  <string name="recommend_title">RECOMMEND</string>
-  <string name="recommend_follow">Follow</string>
-  <string name="recommend_next">Skip</string>
-  <string name="recommend_recommend_stock">Stock</string>
-  <string name="recommend_recommend_hero">Hero</string>
-  <string name="recommend_stock_rate_of_return">Rate: </string>
-  <string name="recommend_stock_list_title">Hero</string>
-  <string name="recommend_number_hold">s</string>
-  <string name="RMB">￥</string>
-  <string name="recommend_select_one_item">Please follow a item.</string>
-  <string name="recommend_uploading">Uploading...</string>
-  <!-- Recommend -->
-
-  <!-- Photo-->
-  <string name="photo_no_sdcard">No Secure Digital Memory Card</string>
-  <!-- Photo-->
-
-  <!--Sign in & Sign up -->
-  <string name="sign_in_display_name_no_blank">Display Name No Blank Space</string>
-  <string name="sign_in_wechat">WeChat</string>
-  <string name="sign_in_weibo">Weibo</string>
-  <string name="sign_in_reset_password">Reset Password</string>
-  <string name="sign_in_reset_password_failed">Reset Password Failed</string>
-  <string name="sign_in_reset_password_successfully">Reset Password Successfully</string>
-  <!--Sign in & Sign up -->
-
-  <!-- Notification -->
-  <string name="notification_title">NOTIFICATION</string>
-  <string name="notification_empty">Empty</string>
-  <string name="notification_list_empty">You don\'t have any notification yet. \nPlease pull to refresh your notification list!</string>
-  <string name="notification_empty_confirm">Confirm clear all notifications?</string>
-  <string name="notification_delete_confirm">Delete</string>
-  <!-- Notification -->
-
-  <!-- App Update -->
-  <string name="app_update_hint">This version is outdated, please update to continue using TradeHero</string>
-  <string name="app_update_force_update">(Update Needed)</string>
-  <!-- App Update -->
-
-  <string name="goto_choose_stock">去选股</string>
-  <string name="no_network_hint">请检查您的网络</string>
-
-  <!-- Discovery Discuss Reward -->
-  <string name="discovery_discuss_send_reward">悬赏贴</string>
-  <string name="discovery_reward_description">悬赏股神币，求助问答</string>
-  <string name="discovery_discuss_send_reward_title">标题：</string>
-  <string name="discovery_discuss_send_reward_money">悬赏金额：</string>
-  <string name="discovery_discuss_send_reward_content">内容：</string>
-  <string name="discovery_discuss_send_reward_successfully">发布成功</string>
-  <string name="discovery_discuss_send_more">更多</string>
-  <string name="discovery_discuss_send_report">举报</string>
-  <string name="discovery_discuss_send_delete">删帖</string>
-  <string name="discovery_discuss_send_share">分享</string>
-  <string name="discovery_discuss_send_comment">回复</string>
-  <string name="discovery_discuss_send_apply">采纳</string>
-  <string name="discovery_discuss_send_report_a">广告信息</string>
-  <string name="discovery_discuss_send_report_b">灌水刷屏</string>
-  <string name="discovery_discuss_send_report_c">诽谤造谣</string>
-  <string name="discovery_discuss_send_report_d">暴力色情</string>
-  <string name="discovery_discuss_send_report_e">管理员封号</string>
-  <string name="discovery_discuss_report_successfully">举报成功，我们会及时处理</string>
-  <string name="discovery_discuss_apply_successfully">采纳成功</string>
-  <string name="discovery_discuss_dlg_btn_ok">确认</string>
-  <string name="discovery_discuss_dlg_btn_cancel">取消</string>
-  <string name="discovery_discuss_dlg_title_deletetimeline">确定删除已发布的贴子？</string>
-  <string name="discovery_discuss_dlg_title_deletecomment">确定删除已发布的评论？</string>
-  <string name="discovery_discuss_dlg_title_applycomment">确定采纳这条回复？</string>
-  <string name="discovery_discuss_dlg_delete">删除中...</string>
-  <string name="discovery_discuss_dlg_apply">正在采纳...</string>
-  <string name="discovery_discuss_send_reward_title_warning">标题为3-18个字符</string>
-  <string name="discovery_discuss_send_reward_content_warning">您的帖子内容不能为空</string>
-  <string name="discovery_discuss_send_reward_title_hint">(必填)</string>
-  <string name="discovery_discuss_send_reward_content_hint">聊聊股市吧</string>
-  <string name="discovery_discuss_send_reward_right_answer">最佳答案</string>
-  <string name="discovery_discuss_already_deleted">该贴已删除</string>
-  <string name="discovery_news_detail">资讯详情</string>
-  <!-- Discovery Discuss Reward -->
-
-  <string name="discovery_square_discuss">讨论大厅</string>
-  <string name="discovery_square_discuss_description">畅所欲言，聊聊股市</string>
-  <string name="discovery_square_favorite">精华帖</string>
-  <string name="discovery_square_favorite_description">股神切磋投资技巧</string>
-  <string name="discovery_square_novice">新手学堂</string>
-  <string name="discovery_square_novice_description">不会用软件？不懂股市？进来瞧瞧！</string>
-  <string name="discovery_square_news">股市咨询</string>
-  <string name="discovery_square_news_description">最新股市咨询实时更新</string>
-  <string name="discovery_number_timelines">主贴</string>
-
-  <string name="timeline_top">置顶</string>
-  <string name="timeline_production">公告</string>
-  <string name="timeline_favorite">精华</string>
-
-  <string name="competition_detail">比赛详情</string>
-  <string name="competition_discuss">讨论</string>
-  <string name="mine_trade_history">交易信息</string>
-  <string name="mine_discuss">讨论</string>
-  <string name="regulation_competition">详细规则></string>
-  <string name="competition_rank">比赛排名</string>
-  <string name="go_competition">去比赛</string>
-  <string name="to_join_competition">报名</string>
-  <string name="competition_intro_hint">4-30位字符</string>
-  <string name="competition_intro_warning">比赛简介为4-30位字符</string>
-  <string name="competition_discussion_create_hint">聊聊比赛吧～</string>
-  <string name="competition_mine_more">点击加载历史比赛</string>
-
-  <!-- Administrator -->
-  <string name="administrator_add_favorite">加精</string>
-  <string name="administrator_remove_favorite">取消加精</string>
-  <string name="administrator_add_top">置顶</string>
-  <string name="administrator_remove_top">取消置顶</string>
-  <string name="administrator_add_production">公告</string>
-  <string name="administrator_remove_production">取消公告</string>
-  <string name="administrator_add_learning">设为新手教学贴</string>
-  <string name="administrator_remove_learning">取消新手教学贴</string>
-  <string name="administrator_operate_success">操作成功,请刷新</string>
-  <!-- Administrator -->
-
-  <string name="error_fetch_hero">There was an error when fetching the hero information</string>
-  <string name="error_fetch_exchange_list_info">There was an error when fetching the list of exchanges</string>
+    <string name="security_position">持仓（%d）</string>
+    <string name="security_position_closed">平仓（%d）</string>
+    <string name="watch_position">自选股（%d）</string>
+    <string name="people_watched">%d人关注</string>
+    <string name="people_holded">%d人持有</string>
+    <string name="security_market_cap_usd">总市值%s</string>
 
 
- <string name="stock_learning">股市学堂</string>
- <string name="stock_learning_video">学堂视频</string>
- <string name="stock_learning_summary_a">已完成%1$d题，错误</string>
- <string name="stock_learning_summary_b">题</string>
- <string name="stock_learning_review_errors">复习错题</string>
- <string name="stock_learning_review_history">回顾历史</string>
+    <string name="user_tatal_roi_day_30">收益率：</string>
+    <string name="user_tatal_fans">粉丝：</string>
+    <string name="user_tatal_wealth">总资产：</string>
+
+    <string name="chart_loading_image_">正在载入...</string>
+
+    <string name="fetch_error">获取数据失败</string>
+    <string name="guide_screen_login">Login</string>
+    <string name="guide_screen_try">Fast Login</string>
+    <string name="or">or</string>
+    <string name="position_hold_days">%d天</string>
+    <string name="competition_joined_invite">想上头条就从这个炒股比赛开始，现在参加还送一万美刀！</string>
+
+    <string name="login_with_offical_account">Official Account Login</string>
+    <string name="login_account">Account：</string>
+    <string name="login_password">Password：</string>
+    <string name="login_account_hint">Email or Mobile Number</string>
+    <string name="login_password_hint">6-20 Letters or Numbers</string>
+    <string name="agreed">Agreed</string>
+    <string name="authentication_agreement">《隐私条款和服务政策》</string>
+    <string name="authentication_next">Next</string>
+    <string name="register_diaplay_name_hint">Username (Needed)</string>
+    <string name="register_finish">Register</string>
+    <string name="register_error_account">Email Error</string>
+    <string name="register_error_password">Password 6-20 Letters or Numbers</string>
+    <string name="register_error_displayname">No Nickname</string>
+    <string name="take_photo">Camera</string>
+    <string name="from_gallery">Gallery</string>
+    <string name="settings_score">Score</string>
+    <string name="settings_logout">Log Out</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_notification">Notifications</string>
+    <string name="invite_friends_title">邀请好友成功登录全民股神，输入邀请码，你和TA都将获得10000虚拟资金奖励，邀请得越多奖励越多。</string>
+    <string name="invite_friends_input">输入邀请码</string>
+    <string name="invite_friends_me">我的邀请码:</string>
+    <string name="invite_code">邀请码</string>
+    <string name="submit">提交</string>
+    <string name="invite_friend_fail">您的邀请码输入有误</string>
+    <string name="copy">复制</string>
+    <string name="copy_my_invite_code_success">复制成功，快去邀请好友吧～</string>
+    <string name="follow_success">Follow Successfully</string>
+    <string name="faster_login">Fast Login</string>
+    <string name="guest_user_id">Guest ID:%1$s</string>
+    <string name="settings_my_photo">Avatar</string>
+    <string name="settings_my_name">Name</string>
+    <string name="settings_my_account">Account Password</string>
+    <string name="settings_my_social">Account Binding</string>
+    <string name="settings_my_profile">Profile</string>
+    <string name="updating">Updating...</string>
+    <string name="bind_success">Bind Successfully</string>
+    <string name="unbind_success">Unbind Successfully</string>
+    <string name="login_verify_code">Code:</string>
+    <string name="login_verify_code_hint">Enter Code</string>
+    <string name="login_get_verify_code">Get Code</string>
+    <string name="send_verify_code_success">Verification code has been sent, please check messages.</string>
+    <string name="guest_user">Guest</string>
+    <string name="guest_user_dialog_summary">您的当前身份为游客，不会保存您 的账户信息，请升级为正式用户</string>
+    <string name="bind">Binding</string>
+    <string name="share_to_social">我要炫耀</string>
+    <string name="share_sell_title">恭喜你，盈利</string>
+    <string name="ten_thousands">万</string>
+    <string name="million">百万</string>
+    <string name="hundred_million">亿</string>
+    <string name="share_sell_title2">财运来了挡都挡不住啊</string>
+    <string name="share_sell_title11">亏损了</string>
+    <string name="share_sell_title12">坑爹了，怎么破</string>
+    <string name="share_tips">小贴士：如果不想弹出分享界面</string>
+    <string name="share_tips2">可以在出售时把分享开关关掉</string>
+    <string name="share_sell_title_money">%1$s！</string>
+    <string name="share_sell_to_wechat_title">股神也就是我的小跟班，跟我炒股有钱赚，你懂的 \nhttp://%1$s/shr/trade.html?userId=%2$s&amp;positionId=%3$s&amp;tradeId=%4$s</string>
+    <string name="share_sell_to_wechat_title_losemoney">在股市亏本了，小伙伴们快来帮帮我吧！ \nhttp://%1$s/shr/trade.html?userId=%2$s&amp;positionId=%3$s&amp;tradeId=%4$s</string>
+    <string name="share_amount_roi_value_title">轻松赚到10%，\n我简直就是股神附体！</string>
+    <string name="share_amount_roi_value_summary">股神也就是我的小跟班，跟我炒股有钱赚，你懂的。 \nhttp://%3$s/shr/yield.html?userId=%1$s&amp;positionId=%2$s</string>
+
+    <string name="share_amount_total_value_title">碉堡了，你的资产已突破15w，\n小伙伴们还不造吗？</string>
+    <string name="share_amount_total_value_summary">一不小心就有15W了，分分钟秒杀富二代。 \nhttp://%2$s/shr/assets.html?userId=%1$s
+    </string>
+
+    <string name="share_amount_total_value_title25">恭喜你！总资产达到25w \n你这么土豪你的朋友们知道吗？</string>
+    <string name="share_amount_total_value_summary25">一不小心就有25W了，分分钟秒杀富二代 \nhttp://%2$s/shr/assets.html?userId=%1$s
+    </string>
+    <string name="share_amount_fans_num_title">恭喜！你已经有10个小跟班，如此魅力十足还不赶紧去炫耀一记？</string>
+
+    <string name="share_amount_fans_num_summary">我擦嘞，又尼玛多了一帮小弟！</string>
+    <string name="share_buy_dialog_title">我买了 %1$s 股票，跪求大神点评？</string>
+    <string name="share_buy_dialog_summary">摊上大事了，我买了 %1$s 股票，你看行吗？ \nhttp://%4$s/shr/stock.html?userId=%2$s&amp;securityId=%3$s</string>
+    <string name="share_score_title">分享炒股神器，让大家涨涨姿势</string>
+    <string name="share_dialog_summary">现在分享还有资金奖励哦！</string>
+
+    <string name="wechat_timeline">朋友圈</string>
+    <string name="share_create_contest">想上头条就从这个炒股比赛开始，现在参加还送一万美刀！ \nhttp://%4$s/shr/match.html?userId=%1$s&amp;competitionId=%2$s&amp;title=%3$s</string>
+    <string name="share_detial_contest">想上头条就从这个炒股比赛开始，现在参加还送一万美刀！ \nhttp://%4$s/shr/match.html?userId=%1$s&amp;competitionId=%2$s&amp;title=%3$s</string>
+    <string name="local_social">社区</string>
+
+    <string name="search_no_result">No Result</string>
+    <string name="search_search">搜索</string>
+    <string name="search_cancel">取消</string>
+    <string name="competition_enter_college">Enter College</string>
+    <string name="dialog_profile_suggest_signin">必须升级为正式用户才可以更改名称</string>
+    <string name="login_by_wechat_account_failed">微信信息获取失败</string>
+    <string name="dialog_competition_choose_college_a">您所选择的学校</string>
+    <string name="dialog_competition_choose_college_b">，确定选择以后不可更改</string>
+    <string name="dialog_competition_suggest_login">您当前是游客身份，不能参加比赛，请升级为正式用户</string>
+
+    <string name="please_to_reply">评论一下吧...</string>
+
+    <string name="quickly_to_get_first">快来抢沙发</string>
+    <string name="no_useful_data">空空如也</string>
+    <string name="click_to_get_more">加载更多</string>
+    <string name="html_string_blue">
+        <Data><![CDATA[ <font color="#1789d5">%s</font> ]]></Data>
+    </string>
+    <string name="html_string_gray">
+        <Data><![CDATA[ <font color="#929292">%s</font> ]]></Data>
+    </string>
+    <string name="app_name_cn">全民股神</string>
+    <string name="login_continuous">我们已经在一起%1$s天啦，是时候公开了</string>
+    <string name="login_continuous_share">这酸爽，哥已经玩%1$s天了</string>
+
+    <string name="download_tradehero_android_app_on_wechat">http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th
+    </string>
+    <string name="download_tradehero_android_app_on_weibo">http://cn.tradehero.mobi/shr/assets.html?userId=313529
+    </string>
+    <!--  <string name="download_tradehero_android_app_on_weibo">http://tradehero.b0.upaiyun.com/th_android.apk</string> -->
+    <string name="target_user_millionaire_page">http://%1$s/shr/assets.html?userId=313529</string>
+
+    <!-- Recommend Items (Stock & Hero)-->
+    <string name="recommend_title">RECOMMEND</string>
+    <string name="recommend_follow">Follow</string>
+    <string name="recommend_next">Skip</string>
+    <string name="recommend_recommend_stock">Stock</string>
+    <string name="recommend_recommend_hero">Hero</string>
+    <string name="recommend_stock_rate_of_return">Rate:</string>
+    <string name="recommend_stock_list_title">Hero</string>
+    <string name="recommend_number_hold">s</string>
+    <string name="RMB">￥</string>
+    <string name="recommend_select_one_item">Please follow a item.</string>
+    <string name="recommend_uploading">Uploading...</string>
+    <!-- Recommend -->
+
+    <!-- Photo-->
+    <string name="photo_no_sdcard">No Secure Digital Memory Card</string>
+    <!-- Photo-->
+
+    <!--Sign in & Sign up -->
+    <string name="sign_in_display_name_no_blank">Display Name No Blank Space</string>
+    <string name="sign_in_wechat">WeChat</string>
+    <string name="sign_in_weibo">Weibo</string>
+    <string name="sign_in_reset_password">Reset Password</string>
+    <string name="sign_in_reset_password_failed">Reset Password Failed</string>
+    <string name="sign_in_reset_password_successfully">Reset Password Successfully</string>
+    <!--Sign in & Sign up -->
+
+    <!-- Notification -->
+    <string name="notification_title">NOTIFICATION</string>
+    <string name="notification_empty">Empty</string>
+    <string name="notification_list_empty">You don\'t have any notification yet. \nPlease pull to refresh your
+        notification list!
+    </string>
+    <string name="notification_empty_confirm">Confirm clear all notifications?</string>
+    <string name="notification_delete_confirm">Delete</string>
+    <!-- Notification -->
+
+    <!-- App Update -->
+    <string name="app_update_hint">This version is outdated, please update to continue using TradeHero</string>
+    <string name="app_update_force_update">(Update Needed)</string>
+    <!-- App Update -->
+
+    <string name="goto_choose_stock">去选股</string>
+    <string name="no_network_hint">请检查您的网络</string>
+
+    <!-- Discovery Discuss Reward -->
+    <string name="discovery_discuss_send_reward">悬赏贴</string>
+    <string name="discovery_reward_description">悬赏股神币，求助问答</string>
+    <string name="discovery_discuss_send_reward_title">标题：</string>
+    <string name="discovery_discuss_send_reward_money">悬赏金额：</string>
+    <string name="discovery_discuss_send_reward_content">内容：</string>
+    <string name="discovery_discuss_send_reward_successfully">发布成功</string>
+    <string name="discovery_discuss_send_more">更多</string>
+    <string name="discovery_discuss_send_report">举报</string>
+    <string name="discovery_discuss_send_delete">删帖</string>
+    <string name="discovery_discuss_send_share">分享</string>
+    <string name="discovery_discuss_send_comment">回复</string>
+    <string name="discovery_discuss_send_apply">采纳</string>
+    <string name="discovery_discuss_send_report_a">广告信息</string>
+    <string name="discovery_discuss_send_report_b">灌水刷屏</string>
+    <string name="discovery_discuss_send_report_c">诽谤造谣</string>
+    <string name="discovery_discuss_send_report_d">暴力色情</string>
+    <string name="discovery_discuss_send_report_e">管理员封号</string>
+    <string name="discovery_discuss_report_successfully">举报成功，我们会及时处理</string>
+    <string name="discovery_discuss_apply_successfully">采纳成功</string>
+    <string name="discovery_discuss_dlg_btn_ok">确认</string>
+    <string name="discovery_discuss_dlg_btn_cancel">取消</string>
+    <string name="discovery_discuss_dlg_title_deletetimeline">确定删除已发布的贴子？</string>
+    <string name="discovery_discuss_dlg_title_deletecomment">确定删除已发布的评论？</string>
+    <string name="discovery_discuss_dlg_title_applycomment">确定采纳这条回复？</string>
+    <string name="discovery_discuss_dlg_delete">删除中...</string>
+    <string name="discovery_discuss_dlg_apply">正在采纳...</string>
+    <string name="discovery_discuss_send_reward_title_warning">标题为3-18个字符</string>
+    <string name="discovery_discuss_send_reward_content_warning">您的帖子内容不能为空</string>
+    <string name="discovery_discuss_send_reward_title_hint">(必填)</string>
+    <string name="discovery_discuss_send_reward_content_hint">聊聊股市吧</string>
+    <string name="discovery_discuss_send_reward_right_answer">最佳答案</string>
+    <string name="discovery_discuss_already_deleted">该贴已删除</string>
+    <string name="discovery_news_detail">资讯详情</string>
+    <!-- Discovery Discuss Reward -->
+
+    <string name="discovery_square_discuss">讨论大厅</string>
+    <string name="discovery_square_discuss_description">畅所欲言，聊聊股市</string>
+    <string name="discovery_square_favorite">精华帖</string>
+    <string name="discovery_square_favorite_description">股神切磋投资技巧</string>
+    <string name="discovery_square_novice">新手学堂</string>
+    <string name="discovery_square_novice_description">不会用软件？不懂股市？进来瞧瞧！</string>
+    <string name="discovery_square_news">股市咨询</string>
+    <string name="discovery_square_news_description">最新股市咨询实时更新</string>
+    <string name="discovery_number_timelines">主贴</string>
+
+    <string name="timeline_top">置顶</string>
+    <string name="timeline_production">公告</string>
+    <string name="timeline_favorite">精华</string>
+
+    <string name="competition_detail">比赛详情</string>
+    <string name="competition_discuss">讨论</string>
+    <string name="mine_trade_history">交易信息</string>
+    <string name="mine_discuss">讨论</string>
+    <string name="regulation_competition">详细规则></string>
+    <string name="competition_rank">比赛排名</string>
+    <string name="go_competition">去比赛</string>
+    <string name="to_join_competition">报名</string>
+    <string name="competition_intro_hint">4-30位字符</string>
+    <string name="competition_intro_warning">比赛简介为4-30位字符</string>
+    <string name="competition_discussion_create_hint">聊聊比赛吧～</string>
+    <string name="competition_mine_more">点击加载历史比赛</string>
+
+    <!-- Administrator -->
+    <string name="administrator_add_favorite">加精</string>
+    <string name="administrator_remove_favorite">取消加精</string>
+    <string name="administrator_add_top">置顶</string>
+    <string name="administrator_remove_top">取消置顶</string>
+    <string name="administrator_add_production">公告</string>
+    <string name="administrator_remove_production">取消公告</string>
+    <string name="administrator_add_learning">设为新手教学贴</string>
+    <string name="administrator_remove_learning">取消新手教学贴</string>
+    <string name="administrator_operate_success">操作成功,请刷新</string>
+    <!-- Administrator -->
+
+    <string name="error_fetch_hero">There was an error when fetching the hero information</string>
+    <string name="error_fetch_exchange_list_info">There was an error when fetching the list of exchanges</string>
+
+    <!-- Stock Learning -->
+    <string name="stock_learning_video">学堂视频</string>
+    <string name="stock_learning_summary_a">已完成%1$d题，错误</string>
+    <string name="stock_learning_summary_b">题</string>
+    <string name="stock_learning_review_errors">复习错题</string>
+    <string name="stock_learning_review_history">回顾历史</string>
+    <string name="stock_learning_review_history_menu">目录</string>
+    <!-- Stock Learning -->
 
 </resources>

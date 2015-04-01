@@ -34,7 +34,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
     private int descSizeB;
 
     private int totalNum = 80;
-    private int failedNum = 6;
+    private int failedNum = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
