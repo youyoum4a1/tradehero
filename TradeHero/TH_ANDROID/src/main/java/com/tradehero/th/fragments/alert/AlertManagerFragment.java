@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +30,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.SecurityAlertKnowledge;
 import com.tradehero.th.billing.THBillingInteractorRx;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.system.SystemStatusCache;
@@ -49,7 +49,7 @@ import rx.internal.util.SubscriptionList;
 import rx.schedulers.Schedulers;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-public class AlertManagerFragment extends Fragment
+public class AlertManagerFragment extends BaseFragment
 {
     public static final String BUNDLE_KEY_USER_ID = AlertManagerFragment.class.getName() + ".userId";
 
@@ -68,7 +68,6 @@ public class AlertManagerFragment extends Fragment
     @Inject UserProfileCacheRx userProfileCache;
     @Inject SecurityAlertKnowledge securityAlertKnowledge;
 
-    protected SubscriptionList onStopSubscriptions;
     protected UserProfileDTO currentUserProfile;
     private AlertListItemAdapter alertListItemAdapter;
 
