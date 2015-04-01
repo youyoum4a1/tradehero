@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.base;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,20 +14,18 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
-import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.BaseActivity;
-import java.lang.annotation.Target;
 
 public class ActionBarOwnerMixin
 {
     private static final String BUNDLE_KEY_TITLE = ActionBarOwnerMixin.class.getName() + ".title";
-    private static final String BUNDLE_KEY_SHOW_HOME_AS_UP = ActionBarOwnerMixin.class.getName() + ".show_home_as_up";
+    private static final String BUNDLE_KEY_SHOW_HOME = ActionBarOwnerMixin.class.getName() + ".showHome";
+    private static final String BUNDLE_KEY_SHOW_HOME_AS_UP = ActionBarOwnerMixin.class.getName() + ".showHomeAsUp";
+    private static final boolean DEFAULT_SHOW_HOME = true;
     private static final boolean DEFAULT_SHOW_HOME_AS_UP = true;
 
     private final Fragment fragment;
@@ -36,9 +33,23 @@ public class ActionBarOwnerMixin
 
     private Spinner toolbarSpinner;
 
-    public static ActionBarOwnerMixin of(Fragment fragment)
+    @NonNull public static ActionBarOwnerMixin of(@NonNull Fragment fragment)
     {
         return new ActionBarOwnerMixin(fragment);
+    }
+
+    public static void putKeyShowHome(@NonNull Bundle args, boolean showHome)
+    {
+        args.putBoolean(BUNDLE_KEY_SHOW_HOME, showHome);
+    }
+
+    protected static boolean getKeyShowHome(@Nullable Bundle args)
+    {
+        if (args == null)
+        {
+            return DEFAULT_SHOW_HOME;
+        }
+        return args.getBoolean(BUNDLE_KEY_SHOW_HOME, DEFAULT_SHOW_HOME);
     }
 
     public static void putKeyShowHomeAsUp(@NonNull Bundle args, boolean showAsUp)
@@ -63,10 +74,10 @@ public class ActionBarOwnerMixin
         }
     }
 
-    private ActionBarOwnerMixin(Fragment fragment)
+    private ActionBarOwnerMixin(@NonNull Fragment fragment)
     {
         this.fragment = fragment;
-        this.actionBar = ((ActionBarActivity)fragment.getActivity()).getSupportActionBar();
+        this.actionBar = ((ActionBarActivity) fragment.getActivity()).getSupportActionBar();
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -82,13 +93,17 @@ public class ActionBarOwnerMixin
             }
         }
 
-        if(actionBar != null)
+        if (actionBar != null)
         {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
                     | ActionBar.DISPLAY_SHOW_TITLE
                     | ActionBar.DISPLAY_SHOW_HOME);
-            if (shouldShowHomeAsUp())
+            if (!shouldShowHome())
+            {
+                actionBar.setHomeAsUpIndicator(null);
+            }
+            else if (shouldShowHomeAsUp())
             {
                 actionBar.setHomeAsUpIndicator(R.drawable.ic_actionbar_back);
             }
@@ -113,6 +128,11 @@ public class ActionBarOwnerMixin
         {
             actionBar.setTitle(title);
         }
+    }
+
+    public boolean shouldShowHome()
+    {
+        return getKeyShowHome(fragment.getArguments());
     }
 
     public boolean shouldShowHomeAsUp()
@@ -143,19 +163,21 @@ public class ActionBarOwnerMixin
 
     /**
      * Set the spinner adapter and OnItemSelectedListener of the Spinner.
+     *
      * @param toolbarSpinnerResId resource id of the spinner.
-     * @param adapter
-     * @param listener
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void configureSpinner(int toolbarSpinnerResId, ArrayAdapter adapter, AdapterView.OnItemSelectedListener listener, int selectedPosition) {
+    public void configureSpinner(int toolbarSpinnerResId, ArrayAdapter adapter, AdapterView.OnItemSelectedListener listener, int selectedPosition)
+    {
         Toolbar toolbar = ((BaseActivity) fragment.getActivity()).getToolbar();
-        if (toolbar == null) {
+        if (toolbar == null)
+        {
             return;
         }
 
         toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
-        if (toolbarSpinner == null) {
+        if (toolbarSpinner == null)
+        {
             return;
         }
 
@@ -166,7 +188,8 @@ public class ActionBarOwnerMixin
         }
         toolbarSpinner.setOnItemSelectedListener(listener);
         toolbarSpinner.setVisibility(View.VISIBLE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
             TypedValue value = new TypedValue();
             fragment.getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, value, true);
             int offset = (int) fragment.getActivity().getResources().getDimension(value.resourceId);
@@ -174,8 +197,10 @@ public class ActionBarOwnerMixin
         }
     }
 
-    public void hideToolbarSpinner() {
-        if (toolbarSpinner == null) {
+    public void hideToolbarSpinner()
+    {
+        if (toolbarSpinner == null)
+        {
             return;
         }
         toolbarSpinner.setVisibility(View.GONE);
@@ -183,7 +208,8 @@ public class ActionBarOwnerMixin
 
     public void showToolbarSpinner()
     {
-        if (toolbarSpinner == null) {
+        if (toolbarSpinner == null)
+        {
             return;
         }
         toolbarSpinner.setVisibility(View.VISIBLE);

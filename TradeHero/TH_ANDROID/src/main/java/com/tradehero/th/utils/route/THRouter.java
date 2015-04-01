@@ -108,7 +108,7 @@ public class THRouter extends Router
         {
             THRouterOptions options = (THRouterOptions) params.routerOptions;
 
-            executePreOpenFragment(options.getPreOpenRunnableClasses());
+            executePreOpenRunnables(options.getPreOpenRunnableClasses());
 
             Bundle args = new Bundle();
             if (extras != null)
@@ -139,17 +139,22 @@ public class THRouter extends Router
         }
     }
 
-    protected void executePreOpenFragment(@Nullable Class<? extends Runnable>[] preOpenRunnables)
+    protected void executePreOpenRunnables(@Nullable Class<? extends Runnable>[] preOpenRunnables)
     {
         if (preOpenRunnables != null)
         {
             for (Class<? extends Runnable> runnableClass : preOpenRunnables)
             {
+                //noinspection TryWithIdenticalCatches
                 try
                 {
                     runnableClass.newInstance().run();
                 }
-                catch (InstantiationException|IllegalAccessException e)
+                catch (InstantiationException e)
+                {
+                    Timber.e(e, "Failed to instantiate %s", runnableClass.getCanonicalName());
+                }
+                catch (IllegalAccessException e)
                 {
                     Timber.e(e, "Failed to instantiate %s", runnableClass.getCanonicalName());
                 }

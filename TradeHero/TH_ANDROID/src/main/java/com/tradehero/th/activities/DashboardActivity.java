@@ -585,7 +585,7 @@ public class DashboardActivity extends BaseActivity
                         new ToastOnErrorAction());
     }
 
-    @Override protected List<Object> getModules()
+    @NonNull @Override protected List<Object> getModules()
     {
         List<Object> superModules = new ArrayList<>(super.getModules());
         superModules.add(new DashboardActivityModule());

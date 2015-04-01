@@ -102,7 +102,7 @@ public class AuthenticationActivity extends BaseActivity
         }
     }
 
-    @Override protected List<Object> getModules()
+    @NonNull @Override protected List<Object> getModules()
     {
         List<Object> superModules = new ArrayList<>(super.getModules());
         superModules.add(new AuthenticationActivityModule());
