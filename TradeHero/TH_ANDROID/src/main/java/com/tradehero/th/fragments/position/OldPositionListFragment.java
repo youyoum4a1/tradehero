@@ -39,6 +39,7 @@ import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.GetPositionsDTOKeyFactory;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -101,11 +102,11 @@ public class OldPositionListFragment
 {
     private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = OldPositionListFragment.class.getName() + ".showPositionDtoKey";
     private static final String BUNDLE_KEY_SHOWN_USER_ID_BUNDLE = OldPositionListFragment.class.getName() + ".userBaseKey";
-    public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = OldPositionListFragment.class.getName() + ".firstPositionVisible";
-    public static final String BUNDLE_KEY_POSITION_TYPE = OldPositionListFragment.class.getName() + ".postion.type";
-    public static final String BUNDLE_KEY_SHOW_TITLE = OldPositionListFragment.class.getName() + ".showTitle";
-    public static final String BUNDLE_KEY_IS_TRENDING_FX_PORTFOLIO = OldPositionListFragment.class.getName() + ".trendingFXPortfolio";
-    public static final String BUNDLE_KEY_SECURITY_ID = OldPositionListFragment.class.getName() + ".securityId";
+    private static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = OldPositionListFragment.class.getName() + ".firstPositionVisible";
+    private static final String BUNDLE_KEY_POSITION_TYPE = OldPositionListFragment.class.getName() + ".position.type";
+    private static final String BUNDLE_KEY_SHOW_TITLE = OldPositionListFragment.class.getName() + ".showTitle";
+    private static final String BUNDLE_KEY_IS_FX_PORTFOLIO = OldPositionListFragment.class.getName() + ".isFXPortfolio";
+    private static final String BUNDLE_KEY_SECURITY_ID = OldPositionListFragment.class.getName() + ".securityId";
 
     private static final int FLIPPER_INDEX_LOADING = 0;
     private static final int FLIPPER_INDEX_LIST = 1;
@@ -147,7 +148,7 @@ public class OldPositionListFragment
 
     @NonNull private TabbedPositionListFragment.TabType positionType;
     private int securityId;
-    static private boolean isFX;
+    private boolean isFX;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
@@ -197,6 +198,25 @@ public class OldPositionListFragment
                 TabbedPositionListFragment.TabType.LONG.name()));
     }
 
+    public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityIntegerId securityIntegerId)
+    {
+        args.putInt(BUNDLE_KEY_SECURITY_ID, securityIntegerId.key);
+    }
+
+    @NonNull private static SecurityIntegerId getSecurityId(@NonNull Bundle args)
+    {
+        return new SecurityIntegerId(args.getInt(BUNDLE_KEY_SECURITY_ID, 0));
+    }
+
+    public static void putIsFx(@NonNull Bundle args, boolean isFx)
+    {
+        args.putBoolean(BUNDLE_KEY_IS_FX_PORTFOLIO, isFx);
+    }
+
+    private static boolean getIsFx(@NonNull Bundle args)
+    {
+        return args.getBoolean(BUNDLE_KEY_IS_FX_PORTFOLIO, false);
+    }
     //</editor-fold>
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -223,8 +243,9 @@ public class OldPositionListFragment
         }
 
         positionType = getPositionType(args);
+        isFX = getIsFx(args);
+        securityId = getSecurityId(args).key;
         this.positionItemAdapter = createPositionItemAdapter();
-        securityId = getArguments().getInt(BUNDLE_KEY_SECURITY_ID, 0);
     }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -556,7 +577,7 @@ public class OldPositionListFragment
                             {
                                 @Override public void call(Throwable error)
                                 {
-                                    Timber.e(""+getString(R.string.error_fetch_portfolio_info)+" "+error.toString());
+                                    Timber.e("" + getString(R.string.error_fetch_portfolio_info) + " " + error.toString());
                                 }
                             }
                             //new ToastAction<Throwable>(getString(R.string.error_fetch_portfolio_info))
@@ -752,7 +773,7 @@ public class OldPositionListFragment
                 }
                 else if (isShort)
                 {
-                    if (getArguments().getBoolean(BUNDLE_KEY_IS_TRENDING_FX_PORTFOLIO, false) || positionType.equals(TabbedPositionListFragment.TabType.SHORT))
+                    if (isFX || positionType.equals(TabbedPositionListFragment.TabType.SHORT))
                     {
                         filtered.add(dto);
                     }
@@ -881,10 +902,5 @@ public class OldPositionListFragment
     static public void setGetPositionsDTOKey(@NonNull GetPositionsDTOKey sgetPositionsDTOKey)
     {
         getPositionsDTOKey = sgetPositionsDTOKey;
-    }
-
-    public static void setIsFX(boolean isFX)
-    {
-        OldPositionListFragment.isFX = isFX;
     }
 }

@@ -25,6 +25,7 @@ import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOUtil;
+import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -271,8 +272,8 @@ public class FXMainFragment extends BuySellFragment
                 {
                     OldPositionListFragment.putShownUser(mArgs, currentUserId.toUserBaseKey());
                     OldPositionListFragment.putGetPositionsDTOKey(mArgs, mSelectedPortfolioContainer.getCurrentMenu());
-                    mArgs.putInt(OldPositionListFragment.BUNDLE_KEY_SECURITY_ID, quoteDTO.securityId);
-                    OldPositionListFragment.setIsFX(true);
+                    OldPositionListFragment.putSecurityId(mArgs, new SecurityIntegerId(quoteDTO.securityId));
+                    OldPositionListFragment.putIsFx(mArgs, true);
                 }
                 else
                 {

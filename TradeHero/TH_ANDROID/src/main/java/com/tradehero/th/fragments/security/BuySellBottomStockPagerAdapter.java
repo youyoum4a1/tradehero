@@ -9,6 +9,7 @@ import android.view.View;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineFragment;
@@ -112,8 +113,8 @@ public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
                 fragment = new OldPositionListFragment();
                 OldPositionListFragment.putShownUser(args, shownUser);
                 OldPositionListFragment.putGetPositionsDTOKey(args, portfolioId);
-                args.putInt(OldPositionListFragment.BUNDLE_KEY_SECURITY_ID, securityIntId);
-                OldPositionListFragment.setIsFX(false);
+                OldPositionListFragment.putSecurityId(args, new SecurityIntegerId(securityIntId));
+                OldPositionListFragment.putIsFx(args, false);
                 break;
 
             default:
