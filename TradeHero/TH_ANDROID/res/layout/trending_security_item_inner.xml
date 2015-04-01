@@ -65,8 +65,11 @@
         android:id="@+id/tv_stock_roi"
         style="@style/TH.Subhead.Inverse"
         android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:lines="1"
+        android:ellipsize="end"
         tools:text="+408%"
         tools:background="@color/number_up"/>
 

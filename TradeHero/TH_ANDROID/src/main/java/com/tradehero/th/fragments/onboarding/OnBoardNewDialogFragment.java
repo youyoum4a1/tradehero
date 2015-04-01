@@ -33,7 +33,6 @@ import com.tradehero.th.fragments.onboarding.last.OnBoardLastFragment;
 import com.tradehero.th.fragments.onboarding.sector.SectorSelectionScreenFragment;
 import com.tradehero.th.fragments.onboarding.stock.StockSelectionScreenFragment;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
@@ -81,7 +80,6 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
         super.onCreate(savedInstanceState);
         exchangeSectorBehavior = BehaviorSubject.create();
         selectedSecuritiesBehavior = BehaviorSubject.create();
-        HierarchyInjector.inject(this);
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

@@ -17,6 +17,7 @@
       android:padding="@dimen/margin_xsmall">
 
     <include layout="@layout/trending_security_item_inner"/>
+
   </RelativeLayout>
 
   <ImageView

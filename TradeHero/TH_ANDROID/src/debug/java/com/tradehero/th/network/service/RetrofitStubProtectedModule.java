@@ -22,12 +22,6 @@ public class RetrofitStubProtectedModule
     }
 
     @Deprecated // TODO remove when server ready
-    @Provides @Singleton MarketServiceWrapper provideMarketServiceWrapper(MarketServiceWrapperStub marketServiceWrapper)
-    {
-        return marketServiceWrapper;
-    }
-
-    @Deprecated // TODO remove when server ready
     @Provides @Singleton SecurityServiceWrapper provideSecurityServiceWrapper(SecurityServiceWrapperStub securityServiceWrapper)
     {
         return securityServiceWrapper;

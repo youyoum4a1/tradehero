@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.onboarding.stock;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -27,6 +27,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import in.srain.cube.views.GridViewWithHeaderAndFooter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,9 +48,9 @@ public class StockSelectionScreenFragment extends DashboardFragment
 
     @Inject SecurityCompactListCacheRx securityCompactListCache;
 
-    @InjectView(android.R.id.list) GridView stockList;
+    @InjectView(android.R.id.list) GridViewWithHeaderAndFooter stockList;
     @InjectView(android.R.id.button1) View nextButton;
-    @NonNull ArrayAdapter<SelectableSecurityDTO> stockAdapter;
+    ArrayAdapter<SelectableSecurityDTO> stockAdapter;
     @NonNull Map<SecurityId, SecurityCompactDTO> knownStocks;
     @NonNull Set<SecurityId> selectedStocks;
     @NonNull BehaviorSubject<SecurityCompactDTOList> selectedStocksSubject;
@@ -62,11 +63,11 @@ public class StockSelectionScreenFragment extends DashboardFragment
         selectedStocksSubject = BehaviorSubject.create();
     }
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    @Override public void onAttach(Activity activity)
     {
-        super.onCreate(savedInstanceState);
+        super.onAttach(activity);
         stockAdapter = new OnBoardEmptyOrItemAdapter<>(
-                getActivity(),
+                activity,
                 R.layout.on_board_security_item_view,
                 R.layout.on_board_empty_security);
     }
@@ -81,6 +82,7 @@ public class StockSelectionScreenFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+        stockList.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.on_board_stock_header, null), "title", false);
         stockList.setAdapter(stockAdapter);
         displayNextButton();
     }
@@ -95,6 +97,12 @@ public class StockSelectionScreenFragment extends DashboardFragment
     {
         ButterKnife.reset(this);
         super.onDestroyView();
+    }
+
+    @Override public void onDetach()
+    {
+        stockAdapter = null;
+        super.onDetach();
     }
 
     public void setSelectedExchangesSectorsObservable(@NonNull Observable<ExchangeCompactSectorListDTO> selectedExchangesSectorsObservable)

@@ -7,13 +7,17 @@
     android:background="@drawable/basic_white_selector"
     >
 
-  <RelativeLayout
+  <com.tradehero.th.fragments.security.SecurityItemView
+      android:id="@+id/security_view"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:minHeight="@dimen/grid_item_height"
+      tools:context=".activities.DashboardActivity"
+      android:gravity="center_vertical"
+      android:background="@drawable/grid_item_bg"
+      >
 
-    <include
-        layout="@layout/trending_security_item"
-        />
+      <include layout="@layout/trending_security_item_inner"/>
 
     <ImageView
         android:id="@android:id/icon2"
@@ -21,12 +25,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:src="@drawable/tick_green"
         android:visibility="gone"
         android:contentDescription="@null"
         tools:visibility="visible"
         />
 
-  </RelativeLayout>
+  </com.tradehero.th.fragments.security.SecurityItemView>
 
 </com.tradehero.th.fragments.onboarding.stock.OnBoardStockItemView>

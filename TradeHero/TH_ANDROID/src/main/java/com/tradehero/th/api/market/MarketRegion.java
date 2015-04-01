@@ -5,23 +5,20 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum MarketRegion
 {
-    OTHER(0, new String[]{}),
-    AUSTRALIA(1, new String[]{"ASX", "NZX"}),
-    SOUTH_EAST_ASIA(2, new String[]{"SGX", "JKT", "SET", "PSE", "MYX"}),
-    EAST_ASIA(3, new String[]{"HKEX", "SHA", "SHE", "KDQ", "KRX", "TPE", "TSE"}),
-    EUROPE(4, new String[]{"LSE", "PAR", "MLSE"}),
-    NORTH_AMERICA(5, new String[]{"NYSE", "NASDAQ", "OTCBB", "TSX", "TSXV", "AMEX"}),
-    INDIA(6, new String[]{"NSE", "BSE"}),
+    OTHER(0),
+    AUSTRALIA(1),
+    SOUTH_EAST_ASIA(2),
+    EAST_ASIA(3),
+    EUROPE(4),
+    NORTH_AMERICA(5),
+    INDIA(6),
     ;
 
     public final int code;
-    @Deprecated // Server should return this
-    @NonNull public final String[] exchanges;
 
-    MarketRegion(int code, @NonNull String[] exchanges)
+    MarketRegion(int code)
     {
         this.code = code;
-        this.exchanges = exchanges;
     }
 
     @SuppressWarnings("UnusedDeclaration")

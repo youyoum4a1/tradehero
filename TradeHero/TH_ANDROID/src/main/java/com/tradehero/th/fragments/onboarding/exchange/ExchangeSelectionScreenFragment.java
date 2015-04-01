@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.onboarding.exchange;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -56,7 +57,7 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
     MarketRegionSwitcherView mapHeaderSwitcherView;
     @InjectView(android.R.id.list) ListView exchangeList;
     @InjectView(android.R.id.button1) View nextButton;
-    @NonNull ArrayAdapter<SelectableExchangeDTO> exchangeAdapter;
+    ArrayAdapter<SelectableExchangeDTO> exchangeAdapter;
     @NonNull Map<MarketRegion, List<ExchangeIntegerId>> filedExchangeIds;
     @NonNull Map<ExchangeIntegerId, ExchangeCompactDTO> knownExchanges;
     @NonNull Set<ExchangeIntegerId> selectedExchanges;
@@ -70,11 +71,11 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
         selectedExchangesSubject = BehaviorSubject.create();
     }
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    @Override public void onAttach(Activity activity)
     {
-        super.onCreate(savedInstanceState);
+        super.onAttach(activity);
         exchangeAdapter = new OnBoardEmptyOrItemAdapter<>(
-                getActivity(),
+                activity,
                 R.layout.on_board_exchange_item_view,
                 R.layout.on_board_empty_exchange);
     }
@@ -108,6 +109,12 @@ public class ExchangeSelectionScreenFragment extends DashboardFragment
     {
         ButterKnife.reset(this);
         super.onDestroyView();
+    }
+
+    @Override public void onDetach()
+    {
+        exchangeAdapter = null;
+        super.onDetach();
     }
 
     protected void fetchExchangeInfo()

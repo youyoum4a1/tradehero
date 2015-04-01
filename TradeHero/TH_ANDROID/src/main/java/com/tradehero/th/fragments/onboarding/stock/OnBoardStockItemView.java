@@ -34,7 +34,10 @@ public class OnBoardStockItemView extends OnBoardSelectableViewLinear<SecurityCo
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        securityItemView.setBackgroundColor(getResources().getColor(R.color.transparent));
+        if (!isInEditMode())
+        {
+            securityItemView.setBackgroundColor(getResources().getColor(R.color.transparent));
+        }
     }
 
     @Override public void display(@NonNull SelectableDTO<SecurityCompactDTO> dto)
