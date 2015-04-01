@@ -4,6 +4,7 @@ import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.FollowStockForm;
 import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.chinabuild.data.RecommendItems;
+import com.tradehero.chinabuild.data.VideoDTOList;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -16,12 +17,21 @@ import com.tradehero.th.api.users.password.ResetPasswordDTO;
 import com.tradehero.th.api.users.password.ResetPasswordFormDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
+import java.util.List;
 import retrofit.Callback;
 import retrofit.client.Response;
-import retrofit.http.*;
+import retrofit.http.Body;
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
+import retrofit.http.GET;
+import retrofit.http.Header;
+import retrofit.http.Multipart;
+import retrofit.http.POST;
+import retrofit.http.PUT;
+import retrofit.http.Part;
+import retrofit.http.Path;
+import retrofit.http.Query;
 import retrofit.mime.TypedOutput;
-
-import java.util.List;
 
 interface UserServiceAsync
 {
@@ -195,4 +205,11 @@ interface UserServiceAsync
     @GET("/recommend")
     void downloadRecommendItems(Callback<RecommendItems> cb);
     //</editor-fold>
+
+    //<editor_fold desc="video list">
+    @GET("/videos/cnvideos")
+    void downloadVideoList(Callback<VideoDTOList> cb);
+    //</editor-fold>
+
+
 }

@@ -31,27 +31,26 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-
-
 /**
  * Created by palmer on 14-10-29.
  */
-public class RecommendStocksActivity extends SherlockActivity implements View.OnClickListener{
+public class RecommendStocksActivity extends SherlockActivity implements View.OnClickListener
+{
 
-    @InjectView(R.id.button_recommend_follow)Button followBtn;
-    @InjectView(R.id.tvHeadLeft)TextView tvHeadLeft;
-    @InjectView(R.id.tvHeadRight0)TextView tvHeadRight;
-    @InjectView(R.id.tvHeadMiddleMain)TextView tvHeadMiddleMain;
-    @InjectView(R.id.pulltorefreshlistview_recommend_stock_hero)PullToRefreshListView recommendPRLV;
-    @InjectView(R.id.progressbar_recommend_loading)TradeHeroProgressBar loadingPB;
-    @InjectView(R.id.imageview_recommend_download_failed)ImageView downloadFailedIV;
+    @InjectView(R.id.button_recommend_follow) Button followBtn;
+    @InjectView(R.id.tvHeadLeft) TextView tvHeadLeft;
+    @InjectView(R.id.tvHeadRight0) TextView tvHeadRight;
+    @InjectView(R.id.tvHeadMiddleMain) TextView tvHeadMiddleMain;
+    @InjectView(R.id.pulltorefreshlistview_recommend_stock_hero) PullToRefreshListView recommendPRLV;
+    @InjectView(R.id.progressbar_recommend_loading) TradeHeroProgressBar loadingPB;
+    @InjectView(R.id.imageview_recommend_download_failed) ImageView downloadFailedIV;
 
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
@@ -73,7 +72,8 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
     private boolean isDownloading = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recommmend_stock);
 
@@ -88,7 +88,8 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
         gotoDownloadRecommendItems();
     }
 
-    private void initViews(){
+    private void initViews()
+    {
         jumpStr = getResources().getString(R.string.recommend_next);
         titleStr = getResources().getString(R.string.recommend_title);
         tvHeadLeft.setVisibility(View.GONE);
@@ -99,17 +100,20 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
         tvHeadMiddleMain.setText(titleStr);
 
         recommendPRLV.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
-        listAdapter = new RecommendListAdapter(this,securities,heroes);
+        listAdapter = new RecommendListAdapter(this, securities, heroes);
         recommendPRLV.setAdapter(listAdapter);
-        recommendPRLV.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>(){
+        recommendPRLV.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
+        {
 
             @Override
-            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
+            {
                 gotoDownloadRecommendItems();
             }
 
             @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
+            {
 
             }
         });
@@ -117,24 +121,28 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
         checkFollowingItems();
     }
 
-
     @Override
-    public void onBackPressed(){
+    public void onBackPressed()
+    {
         disableAllBtns();
         THSharePreferenceManager.setRecommendedStock(userId, this);
         gotoNextActivity();
     }
 
-    public void checkFollowingItems(){
-        if(listAdapter.getSecuritiesSelected().size()==0 && listAdapter.getHeroesSelected().size()==0){
+    public void checkFollowingItems()
+    {
+        if (listAdapter.getSecuritiesSelected().size() == 0 && listAdapter.getHeroesSelected().size() == 0)
+        {
             followBtn.setEnabled(false);
-        }else{
+        }
+        else
+        {
             followBtn.setEnabled(true);
         }
     }
 
-
-    private void gotoNextActivity(){
+    private void gotoNextActivity()
+    {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -142,47 +150,58 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(View view)
+    {
         int viewId = view.getId();
-        if(viewId == R.id.tvHeadRight0){
+        if (viewId == R.id.tvHeadRight0)
+        {
             disableAllBtns();
             THSharePreferenceManager.setRecommendedStock(userId, this);
             gotoNextActivity();
             return;
         }
-        if(viewId == R.id.button_recommend_follow){
+        if (viewId == R.id.button_recommend_follow)
+        {
             uploadSecuritiesAndHeroes();
             return;
         }
     }
 
-    private void disableAllBtns(){
+    private void disableAllBtns()
+    {
         tvHeadRight.setClickable(false);
         followBtn.setEnabled(false);
     }
 
-    public void gotoDownloadRecommendItems(){
-        if(isDownloading){
+    public void gotoDownloadRecommendItems()
+    {
+        if (isDownloading)
+        {
             return;
         }
         userServiceWrapper.get().downloadRecommendItems(new DownloadRecommendItemsCallback());
     }
 
-    private class DownloadRecommendItemsCallback implements Callback<RecommendItems>{
+    private class DownloadRecommendItemsCallback implements Callback<RecommendItems>
+    {
 
         @Override
-        public void success(RecommendItems recommendItems, Response response) {
+        public void success(RecommendItems recommendItems, Response response)
+        {
             recommendPRLV.onRefreshComplete();
             securities.clear();
             heroes.clear();
-            for(RecommendStock stock: recommendItems.securities){
+            for (RecommendStock stock : recommendItems.securities)
+            {
                 securities.add(stock);
             }
-            for(RecommendHero hero: recommendItems.users){
+            for (RecommendHero hero : recommendItems.users)
+            {
                 heroes.add(hero);
             }
             //If not recommend heroes and stocks, go to the main activity directly.
-            if(heroes.size()==0 && securities.size()==0){
+            if (heroes.size() == 0 && securities.size() == 0)
+            {
                 disableAllBtns();
                 THSharePreferenceManager.setRecommendedStock(userId, RecommendStocksActivity.this);
                 gotoNextActivity();
@@ -198,7 +217,8 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
         }
 
         @Override
-        public void failure(RetrofitError retrofitError) {
+        public void failure(RetrofitError retrofitError)
+        {
             recommendPRLV.onRefreshComplete();
             dismissLoadingProgressBar();
             isDownloading = false;
@@ -208,46 +228,57 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
         }
     }
 
-    private void showLoadingProgressBar(){
+    private void showLoadingProgressBar()
+    {
         Handler handler = new Handler();
-        handler.post(new Runnable() {
+        handler.post(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 loadingPB.setVisibility(View.VISIBLE);
                 loadingPB.startLoading();
             }
         });
     }
 
-    private void dismissLoadingProgressBar(){
+    private void dismissLoadingProgressBar()
+    {
         Handler handler = new Handler();
-        handler.post(new Runnable() {
+        handler.post(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 loadingPB.setVisibility(View.GONE);
                 loadingPB.stopLoading();
             }
         });
     }
 
-    private void uploadSecuritiesAndHeroes(){
-        if(listAdapter.getHeroesSelected().size()==0 && listAdapter.getSecuritiesSelected().size()==0){
+    private void uploadSecuritiesAndHeroes()
+    {
+        if (listAdapter.getHeroesSelected().size() == 0 && listAdapter.getSecuritiesSelected().size() == 0)
+        {
             THToast.show(R.string.recommend_select_one_item);
             return;
         }
-        if(listAdapter.getHeroesSelected().size()>0){
+        if (listAdapter.getHeroesSelected().size() > 0)
+        {
             progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.recommend_uploading);
             uploadHeroes();
             return;
         }
-        if(listAdapter.getSecuritiesSelected().size()>0){
+        if (listAdapter.getSecuritiesSelected().size() > 0)
+        {
             progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.recommend_uploading);
             uploadStocks();
             return;
         }
     }
 
-    private void uploadHeroes(){
+    private void uploadHeroes()
+    {
         ArrayList<Integer> heroIds = listAdapter.getHeroesSelected();
         FollowFriendsForm followFriendsForm = new FollowFriendsForm();
         followFriendsForm.userIds = new ArrayList<>();
@@ -255,12 +286,17 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
         {
             followFriendsForm.userIds.add(heroId);
         }
-        userServiceWrapper.get().followBatchFree(followFriendsForm, new Callback<UserProfileDTO>() {
+        userServiceWrapper.get().followBatchFree(followFriendsForm, new Callback<UserProfileDTO>()
+        {
             @Override
-            public void success(UserProfileDTO userProfileDTO, Response response) {
-                if(listAdapter.getSecuritiesSelected().size()>0){
+            public void success(UserProfileDTO userProfileDTO, Response response)
+            {
+                if (listAdapter.getSecuritiesSelected().size() > 0)
+                {
                     uploadStocks();
-                }else{
+                }
+                else
+                {
                     THSharePreferenceManager.setRecommendedStock(userId, RecommendStocksActivity.this);
                     progressDialogUtil.dismiss(RecommendStocksActivity.this);
                     gotoNextActivity();
@@ -269,34 +305,39 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
             }
 
             @Override
-            public void failure(RetrofitError retrofitError) {
+            public void failure(RetrofitError retrofitError)
+            {
                 progressDialogUtil.dismiss(RecommendStocksActivity.this);
                 gotoNextActivity();
             }
         });
     }
 
-    private void uploadStocks(){
+    private void uploadStocks()
+    {
         ArrayList<Integer> stocks = listAdapter.getSecuritiesSelected();
         FollowStockForm followStockForm = new FollowStockForm();
         followStockForm.securityIds = new ArrayList<>();
-        for(Integer stockId:stocks){
+        for (Integer stockId : stocks)
+        {
             followStockForm.securityIds.add(stockId);
         }
-            userServiceWrapper.get().followStocks(followStockForm, new Callback<List<WatchlistPositionDTO>>() {
+        userServiceWrapper.get().followStocks(followStockForm, new Callback<List<WatchlistPositionDTO>>()
+        {
             @Override
-            public void success(List<WatchlistPositionDTO> o, Response response) {
+            public void success(List<WatchlistPositionDTO> o, Response response)
+            {
                 THSharePreferenceManager.setRecommendedStock(userId, RecommendStocksActivity.this);
                 progressDialogUtil.dismiss(RecommendStocksActivity.this);
                 gotoNextActivity();
             }
 
             @Override
-            public void failure(RetrofitError retrofitError) {
+            public void failure(RetrofitError retrofitError)
+            {
                 progressDialogUtil.dismiss(RecommendStocksActivity.this);
                 gotoNextActivity();
             }
         });
     }
-
 }

@@ -80,8 +80,8 @@ public class VideoGridAdapter extends BaseAdapter
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            ImageLoader.getInstance().displayImage(data.videoImage, holder.imgVideoPlay, UniversalImageLoader.getAvatarImageLoaderOptions());
-            holder.tvVideoPlay.setText(data.videoText);
+            ImageLoader.getInstance().displayImage(data.thumbnail, holder.imgVideoPlay, UniversalImageLoader.getAvatarImageLoaderOptions());
+            holder.tvVideoPlay.setText(data.name);
         }
         return convertView;
     }

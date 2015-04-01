@@ -12,6 +12,8 @@ import com.tradehero.th.R;
 public class VideoPlayer extends WebViewFragment
 {
 
+    public static final String BUNDLE_VIDEO_VID = "bundle_video_vid";
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -25,14 +27,16 @@ public class VideoPlayer extends WebViewFragment
     }
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
         //恢复播放
         webViewSimple.resumeTimers();
     }
 
     @Override
-    public void onPause() {
+    public void onPause()
+    {
         super.onPause();
         //暂停播放
         webViewSimple.pauseTimers();
@@ -44,10 +48,11 @@ public class VideoPlayer extends WebViewFragment
         webViewSimple.destroy();
     }
 
-    public String setWebView(String clientid, String vid) {
+    public String setWebView(String clientid, String vid)
+    {
         return "<html>"
                 + "<body>"
-                + "<div id='youkuplayer' style='width:95%;height:95%'></div>"
+                + "<div id='youkuplayer' style='width:100%;height:100%'></div>"
                 + "<script type='text/javascript' src='http://player.youku.com/jsapi'>"
                 + "player = new YKU.Player('youkuplayer',{styleid: '0',client_id: '"
                 + clientid
@@ -57,11 +62,20 @@ public class VideoPlayer extends WebViewFragment
                 + "</body>" + "</html>";
     }
 
+    public String getVid()
+    {
+        Bundle arg = getArguments();
+        if (arg != null)
+        {
+            return arg.getString(BUNDLE_VIDEO_VID, "");
+        }
+        return "";
+    }
 
     @Override public void loadUrl(String url)
     {
         //super.loadUrl(url);
-        webViewSimple.loadData(setWebView("9c46c940343c4dea", "XOTE5NTY5NTY4"),
+        webViewSimple.loadData(setWebView("9c46c940343c4dea", getVid()),
                 "text/html", "UTF-8");
     }
 }

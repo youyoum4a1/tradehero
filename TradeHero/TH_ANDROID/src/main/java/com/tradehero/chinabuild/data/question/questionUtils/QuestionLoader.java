@@ -109,17 +109,17 @@ public class QuestionLoader
     {
         if (level.equals(LEVEL_ONE))
         {
-            return "question_1.json";
+            return "question_0.json";
         }
 
         else if (level.equals(LEVEL_TWO))
         {
-            return "question_2.json";
+            return "question_1.json";
         }
 
         else if (level.equals(LEVEL_THREE))
         {
-            return "question_3.json";
+            return "question_2.json";
         }
 
         return null;

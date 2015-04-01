@@ -4,6 +4,7 @@ import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.FollowStockForm;
 import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.chinabuild.data.RecommendItems;
+import com.tradehero.chinabuild.data.VideoDTOList;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.HeroDTOList;
@@ -11,7 +12,17 @@ import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.social.key.FriendsListKey;
-import com.tradehero.th.api.users.*;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
+import com.tradehero.th.api.users.SearchAllowableRecipientListType;
+import com.tradehero.th.api.users.SearchUserListType;
+import com.tradehero.th.api.users.UpdateReferralCodeDTO;
+import com.tradehero.th.api.users.UserAvailabilityDTO;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserListType;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserSearchResultDTOList;
+import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.password.ResetPasswordDTO;
@@ -20,7 +31,12 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.social.DTOProcessorFriendInvited;
-import com.tradehero.th.models.user.*;
+import com.tradehero.th.models.user.DTOProcessorFollowFreeUser;
+import com.tradehero.th.models.user.DTOProcessorFollowPremiumUser;
+import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
+import com.tradehero.th.models.user.DTOProcessorUnfollowUser;
+import com.tradehero.th.models.user.DTOProcessorUpdateReferralCode;
+import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.DTOCacheUtil;
@@ -34,14 +50,13 @@ import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.List;
 
 @Singleton public class UserServiceWrapper
 {
@@ -502,4 +517,8 @@ import java.util.List;
         userServiceAsync.downloadRecommendItems(callback);
     }
 
+    //Download videos
+    public void downloadVideoList(@NotNull Callback<VideoDTOList> callback){
+        userServiceAsync.downloadVideoList(callback);
+    }
 }
