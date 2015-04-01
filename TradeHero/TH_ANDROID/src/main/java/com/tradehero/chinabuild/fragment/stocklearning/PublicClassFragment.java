@@ -9,11 +9,14 @@ import android.widget.GridView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.chinabuild.data.VideoDTO;
+import com.tradehero.chinabuild.data.question.questionUtils.Question;
+import com.tradehero.chinabuild.data.question.questionUtils.QuestionLoader;
 import com.tradehero.chinabuild.fragment.videoPlay.VideoPlayer;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.VideoGridAdapter;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import java.util.ArrayList;
+import java.util.List;
 import timber.log.Timber;
 
 /**
@@ -30,6 +33,7 @@ public class PublicClassFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         initGridViewAdapter();
+
     }
 
     @Override
@@ -74,5 +78,15 @@ public class PublicClassFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         //VideoPlayer.putUrl(bundle, url);
         gotoDashboard(VideoPlayer.class, bundle);
+
+        getQuestion();
+    }
+
+    public void getQuestion()
+    {
+        List<Question> arrayList1 = QuestionLoader.getInstance(getActivity()).getQuestionLevelOne();
+        List<Question> arrayList2 = QuestionLoader.getInstance(getActivity()).getQuestionLevelTwo();
+        List<Question> arrayList3 = QuestionLoader.getInstance(getActivity()).getQuestionLevelThree();
+        Timber.d("arrayList loaded!");
     }
 }
