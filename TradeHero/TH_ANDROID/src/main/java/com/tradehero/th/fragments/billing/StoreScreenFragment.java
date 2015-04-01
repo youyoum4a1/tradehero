@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.billing;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,7 +30,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemDTOList;
 import com.tradehero.th.fragments.billing.store.StoreItemFactory;
@@ -44,6 +45,7 @@ import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -58,7 +60,7 @@ import timber.log.Timber;
 @Routable({
         "store", "store/:action"
 })
-public class StoreScreenFragment extends DashboardFragment
+public class StoreScreenFragment extends BaseFragment
         implements WithTutorial
 {
     public static boolean alreadyNotifiedNeedCreateAccount = false;
@@ -76,11 +78,11 @@ public class StoreScreenFragment extends DashboardFragment
     @Inject protected THBillingInteractorRx userInteractorRx;
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    @Override public void onAttach(Activity activity)
     {
-        super.onCreate(savedInstanceState);
+        super.onAttach(activity);
         thRouter.inject(this);
-        storeItemAdapter = new StoreItemAdapter(getActivity());
+        storeItemAdapter = new StoreItemAdapter(activity);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -93,20 +95,21 @@ public class StoreScreenFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         listView.setAdapter(storeItemAdapter);
-        listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         setActionBarTitle(R.string.store_option_menu_title);  // Add the changing cute icon
-        setActionBarSubtitle(userInteractorRx.getName());
+        if (!Constants.RELEASE)
+        {
+            setActionBarSubtitle(userInteractorRx.getName());
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onStart()
     {
         super.onStart();
-
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Store));
 
         fetchUserProfile();
@@ -144,10 +147,10 @@ public class StoreScreenFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
+    @Override public void onDetach()
     {
         storeItemAdapter = null;
-        super.onDestroy();
+        super.onDetach();
     }
 
     protected void fetchUserProfile()

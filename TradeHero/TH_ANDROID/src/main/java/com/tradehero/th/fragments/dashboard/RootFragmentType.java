@@ -9,7 +9,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AlertManagerActivity;
-import com.tradehero.th.fragments.billing.StoreScreenFragment;
+import com.tradehero.th.activities.StoreScreenActivity;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
@@ -97,8 +97,8 @@ public enum RootFragmentType
             R.string.dashboard_store,
             R.string.dashboard_store_key,
             R.color.transparent,
-            StoreScreenFragment.class,
             null,
+            StoreScreenActivity.class,
             AnalyticsConstants.TabBar_Store),
     FRIEND_REFERRAL(R.layout.residemenu_text_item,
             R.string.dashboard_referral,
