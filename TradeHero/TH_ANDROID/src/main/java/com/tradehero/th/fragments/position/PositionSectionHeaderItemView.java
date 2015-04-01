@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.position;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -10,6 +12,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
+import com.tradehero.th.api.DTOView;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
@@ -18,6 +21,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class PositionSectionHeaderItemView extends RelativeLayout
+    implements DTOView<PositionSectionHeaderItemView.DTO>
 {
     public static final int INFO_TYPE_LONG = 0;
     public static final int INFO_TYPE_SHORT = 1;
@@ -25,9 +29,8 @@ public class PositionSectionHeaderItemView extends RelativeLayout
 
     @InjectView(R.id.header_text) protected TextView headerText;
     @InjectView(R.id.header_time_base) protected TextView timeBaseText;
-    protected SimpleDateFormat sdf;
 
-    private int type = -1;
+    @Nullable protected DTO viewDTO;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -52,69 +55,84 @@ public class PositionSectionHeaderItemView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        sdf = new SimpleDateFormat(getContext().getString(R.string.data_format_dd_mmm_yyyy), Locale.ENGLISH);
         ButterKnife.inject(this);
     }
 
-    public void setHeaderTextContent(String text)
+    @Override public void display(@NonNull DTO dto)
     {
+        this.viewDTO = dto;
         if (headerText != null)
         {
-            headerText.setText(text);
+            headerText.setText(dto.header);
         }
-    }
 
-    public void setTimeBaseTextContent(@Nullable Date left, @Nullable Date right)
-    {
         if (timeBaseText != null)
         {
-            if (left != null || right != null)
-            {
-                timeBaseText.setText(getResources().getString(
-                        R.string.position_list_header_time_base,
-                        left != null ? sdf.format(left) : "",
-                        right != null ? sdf.format(right) : ""));
-            }
-            else
-            {
-                timeBaseText.setText("");
-            }
+            timeBaseText.setText(dto.timeBase);
         }
-    }
-
-    public void setType(int type)
-    {
-        this.type = type;
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.header_get_info)
     protected void handleInfoClicked(@SuppressWarnings("UnusedParameters") View view)
     {
-        int resInt = -1;
-        if (type == PositionSectionHeaderItemView.INFO_TYPE_LONG)
+        if (viewDTO != null)
         {
-            resInt = R.string.position_long_info;
-        }
-        else if (type == PositionSectionHeaderItemView.INFO_TYPE_SHORT)
-        {
-            resInt = R.string.position_short_info;
-        }
-        else if (type == PositionSectionHeaderItemView.INFO_TYPE_CLOSED)
-        {
-            resInt = R.string.position_close_info;
-        }
+            int resInt = -1;
+            if (viewDTO.type == PositionSectionHeaderItemView.INFO_TYPE_LONG)
+            {
+                resInt = R.string.position_long_info;
+            }
+            else if (viewDTO.type == PositionSectionHeaderItemView.INFO_TYPE_SHORT)
+            {
+                resInt = R.string.position_short_info;
+            }
+            else if (viewDTO.type == PositionSectionHeaderItemView.INFO_TYPE_CLOSED)
+            {
+                resInt = R.string.position_close_info;
+            }
 
-        if (resInt != -1)
+            if (resInt != -1)
+            {
+                AlertDialogRxUtil.buildDefault(getContext())
+                        .setTitle(R.string.position_title_info)
+                        .setMessage(resInt)
+                        .setPositiveButton(R.string.ok)
+                        .build()
+                        .subscribe(
+                                new EmptyAction1<OnDialogClickEvent>(),
+                                new EmptyAction1<Throwable>());
+            }
+        }
+    }
+
+    public static class DTO
+    {
+        @NonNull public final String header;
+        @NonNull public final String timeBase;
+        public final int type;
+
+        public DTO(
+                @NonNull Resources resources,
+                @NonNull String header,
+                @Nullable Date left,
+                @Nullable Date right,
+                int type)
         {
-            AlertDialogRxUtil.buildDefault(getContext())
-                    .setTitle(R.string.position_title_info)
-                    .setMessage(resInt)
-                    .setPositiveButton(R.string.ok)
-                    .build()
-                    .subscribe(
-                            new EmptyAction1<OnDialogClickEvent>(),
-                            new EmptyAction1<Throwable>());
+            this.header = header;
+            SimpleDateFormat sdf = new SimpleDateFormat(resources.getString(R.string.data_format_dd_mmm_yyyy), Locale.ENGLISH);
+            if (left != null || right != null)
+            {
+                this.timeBase = resources.getString(
+                        R.string.position_list_header_time_base,
+                        left != null ? sdf.format(left) : "",
+                        right != null ? sdf.format(right) : "");
+            }
+            else
+            {
+                this.timeBase = "";
+            }
+            this.type = type;
         }
     }
 }

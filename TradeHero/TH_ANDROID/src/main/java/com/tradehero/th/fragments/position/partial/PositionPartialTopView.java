@@ -40,7 +40,6 @@ public class PositionPartialTopView extends LinearLayout
 {
     @Inject protected Picasso picasso;
 
-    @InjectView(R.id.title) TextView mTitle;
     @InjectView(R.id.gain_indicator) ImageView mGainIndicator;
     @InjectView(R.id.stock_logo) ImageView stockLogo;
     @InjectView(R.id.stock_symbol) TextView stockSymbol;
@@ -52,7 +51,6 @@ public class PositionPartialTopView extends LinearLayout
     @InjectView(R.id.position_unrealised_pl) TextView positionUnrealisedPL;
     @InjectView(R.id.position_last_amount_header) TextView positionLastAmountHeader;
     @InjectView(R.id.position_last_amount) TextView positionLastAmount;
-    @InjectView(R.id.hint_forward) ImageView hintForward;
 
     @Nullable protected DTO viewDTO;
 
@@ -106,31 +104,6 @@ public class PositionPartialTopView extends LinearLayout
     @Override public void display(@NonNull final DTO dto)
     {
         this.viewDTO = dto;
-
-        if (mTitle != null && dto.title != null)
-        {
-            mTitle.setText(dto.title);
-            if (stockSymbol != null)
-            {
-                stockSymbol.setVisibility(GONE);
-            }
-            if (hintForward != null)
-            {
-                hintForward.setVisibility(GONE);
-            }
-        }
-        else
-        {
-            mTitle.setText("");
-            if (stockSymbol != null)
-            {
-                stockSymbol.setVisibility(VISIBLE);
-            }
-            if (hintForward != null)
-            {
-                hintForward.setVisibility(VISIBLE);
-            }
-        }
 
         if (mGainIndicator != null)
         {
@@ -223,26 +196,25 @@ public class PositionPartialTopView extends LinearLayout
         @NonNull public final PositionDTO positionDTO;
         @NonNull public final SecurityCompactDTO securityCompactDTO;
 
-        @ViewVisibilityValue public int stockLogoVisibility;
+        @ViewVisibilityValue public final int stockLogoVisibility;
         @Nullable public final String stockLogoUrl;
         @DrawableRes public final int stockLogoRes;
         @Nullable public final FxPairSecurityId fxPair;
         @NonNull public final String stockSymbol;
-        @ViewVisibilityValue public int flagsContainerVisibility;
-        @ViewVisibilityValue public int companyNameVisibility;
+        @ViewVisibilityValue public final int flagsContainerVisibility;
+        @ViewVisibilityValue public final int companyNameVisibility;
         @NonNull public final String companyName;
-        @ViewVisibilityValue public int shareCountVisibility;
+        @ViewVisibilityValue public final int shareCountVisibility;
         @NonNull public final Spanned shareCount;
-        @ViewVisibilityValue public int lastPriceContainerVisibility;
-        @ViewVisibilityValue public int positionPercentVisibility;
+        @ViewVisibilityValue public final int lastPriceContainerVisibility;
+        @ViewVisibilityValue public final int positionPercentVisibility;
         @NonNull public final Spanned positionPercent;
-        @ViewVisibilityValue public int gainIndicatorVisibility;
-        @DrawableRes public int gainIndicator;
-        @ViewVisibilityValue public int unrealisedPLVisibility;
+        @ViewVisibilityValue public final int gainIndicatorVisibility;
+        @DrawableRes public final int gainIndicator;
+        @ViewVisibilityValue public final int unrealisedPLVisibility;
         @NonNull public final Spanned unrealisedPL;
-        @ViewVisibilityValue public int lastAmountHeaderVisibility;
+        @ViewVisibilityValue public final int lastAmountHeaderVisibility;
         @NonNull public final Spanned lastAmount;
-        public String title;
 
         public DTO(@NonNull Resources resources, @NonNull PositionDTO positionDTO, @NonNull SecurityCompactDTO securityCompactDTO)
         {

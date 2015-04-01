@@ -285,16 +285,8 @@ public class OldPositionListFragment
                             }
                     ));
         }
-        else
+        else if (view instanceof PositionPartialTopView)
         {
-            if (view instanceof PositionPartialTopView)
-            {
-                PositionPartialTopView.DTO dto = ((PositionPartialTopView.DTO) parent.getItemAtPosition(position));
-                if (dto.title != null)
-                {
-                    return;
-                }
-            }
             Bundle args = new Bundle();
             // By default tries
             TradeListFragment.putPositionDTOKey(args, ((PositionPartialTopView.DTO) parent.getItemAtPosition(position)).positionDTO.getPositionDTOKey());
@@ -795,17 +787,32 @@ public class OldPositionListFragment
         }
         if (longList.size() > 0)
         {
-            filtered.add(newTitleDTO(longList, getString(isFX ? R.string.position_list_header_open_long_unsure : R.string.position_list_header_open_unsure)));
+            filtered.add(new PositionSectionHeaderItemView.DTO(
+                    getResources(),
+                    getString(isFX ? R.string.position_list_header_open_long_unsure : R.string.position_list_header_open_unsure),
+                    null,
+                    null,
+                    PositionSectionHeaderItemView.INFO_TYPE_LONG));
             filtered.addAll(longList);
         }
         if (shortList.size() > 0)
         {
-            filtered.add(newTitleDTO(shortList, getString(R.string.position_list_header_open_short)));
+            filtered.add(new PositionSectionHeaderItemView.DTO(
+                    getResources(),
+                    getString(R.string.position_list_header_open_short),
+                    null,
+                    null,
+                    PositionSectionHeaderItemView.INFO_TYPE_SHORT));
             filtered.addAll(shortList);
         }
         if (closedList.size() > 0)
         {
-            filtered.add(newTitleDTO(closedList, getString(R.string.position_list_header_closed_unsure)));
+            filtered.add(new PositionSectionHeaderItemView.DTO(
+                    getResources(),
+                    getString(R.string.position_list_header_closed_unsure),
+                    null,
+                    null,
+                    PositionSectionHeaderItemView.INFO_TYPE_CLOSED));
             filtered.addAll(closedList);
         }
 
@@ -815,23 +822,6 @@ public class OldPositionListFragment
         }
 
         return filtered;
-    }
-
-    private PositionPartialTopView.DTO newTitleDTO(List<Object> list,String title)
-    {
-        PositionPartialTopView.DTO titleDto = new PositionPartialTopView.DTO(getResources(),
-                ((PositionPartialTopView.DTO)list.get(0)).positionDTO, ((PositionPartialTopView.DTO)list.get(0)).securityCompactDTO);
-        titleDto.title = title;
-        titleDto.gainIndicatorVisibility = View.GONE;
-        titleDto.stockLogoVisibility = View.GONE;
-        titleDto.flagsContainerVisibility = View.GONE;
-        titleDto.companyNameVisibility = View.GONE;
-        titleDto.shareCountVisibility = View.GONE;
-        titleDto.lastPriceContainerVisibility = View.GONE;
-        titleDto.positionPercentVisibility = View.GONE;
-        titleDto.unrealisedPLVisibility = View.GONE;
-        titleDto.lastAmountHeaderVisibility = View.GONE;
-        return titleDto;
     }
 
     protected void refreshSimplePage()

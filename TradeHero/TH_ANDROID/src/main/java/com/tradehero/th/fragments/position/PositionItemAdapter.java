@@ -64,6 +64,10 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         {
             return VIEW_TYPE_PLACEHOLDER;
         }
+        else if (item instanceof PositionSectionHeaderItemView.DTO)
+        {
+            return VIEW_TYPE_HEADER;
+        }
         throw new IllegalArgumentException("Unhandled item " + item);
     }
 
@@ -151,6 +155,10 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         else if (convertView instanceof PositionPartialTopView)
         {
             ((PositionPartialTopView) convertView).display((PositionPartialTopView.DTO) item);
+        }
+        else if (convertView instanceof PositionSectionHeaderItemView)
+        {
+            ((PositionSectionHeaderItemView) convertView).display((PositionSectionHeaderItemView.DTO) item);
         }
 
         if ((position % 2) == 0)
