@@ -5,8 +5,9 @@ import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.trade.TradeDTOListKey;
 
-public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey, DTO
+public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey, TradeDTOListKey, DTO
 {
     public final static String BUNDLE_KEY_POSITION_ID = OwnedPositionId.class.getName() + ".positionId";
 
@@ -68,6 +69,13 @@ public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey,
         }
 
         return positionId.compareTo(other.positionId);
+    }
+
+    public static boolean isValid(@NonNull Bundle args)
+    {
+        return OwnedPortfolioId.isValid(args)
+                && args.containsKey(BUNDLE_KEY_POSITION_ID)
+                && args.getInt(BUNDLE_KEY_POSITION_ID, -1) > 0;
     }
 
     @Override protected void putParameters(@NonNull Bundle args)

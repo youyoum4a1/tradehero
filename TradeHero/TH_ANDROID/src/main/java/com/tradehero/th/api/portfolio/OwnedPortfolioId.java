@@ -100,6 +100,14 @@ public class OwnedPortfolioId implements Comparable, GetPositionsDTOKey
         return userId > 0 && portfolioId > 0;
     }
 
+    public static boolean isValid(@NonNull Bundle args)
+    {
+        return args.containsKey(BUNDLE_KEY_USER_ID)
+                && args.getInt(BUNDLE_KEY_USER_ID, -1) > 0
+                && args.containsKey(BUNDLE_KEY_PORTFOLIO_ID)
+                && args.getInt(BUNDLE_KEY_PORTFOLIO_ID, -1) > 0;
+    }
+
     protected void putParameters(@NonNull Bundle args)
     {
         args.putInt(BUNDLE_KEY_USER_ID, userId);

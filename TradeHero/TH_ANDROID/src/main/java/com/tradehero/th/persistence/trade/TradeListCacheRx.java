@@ -4,15 +4,15 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.TradeDTOList;
+import com.tradehero.th.api.trade.TradeDTOListKey;
 import com.tradehero.th.network.service.TradeServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
 
 @Singleton @UserCache
-public class TradeListCacheRx extends BaseFetchDTOCacheRx<OwnedPositionId, TradeDTOList>
+public class TradeListCacheRx extends BaseFetchDTOCacheRx<TradeDTOListKey, TradeDTOList>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 100;
 
@@ -31,12 +31,12 @@ public class TradeListCacheRx extends BaseFetchDTOCacheRx<OwnedPositionId, Trade
     }
     //</editor-fold>
 
-    @Override @NonNull protected Observable<TradeDTOList> fetch(@NonNull OwnedPositionId key)
+    @Override @NonNull protected Observable<TradeDTOList> fetch(@NonNull TradeDTOListKey key)
     {
         return tradeServiceWrapper.getTradesRx(key);
     }
 
-    @Override public void onNext(@NonNull OwnedPositionId key, @NonNull TradeDTOList value)
+    @Override public void onNext(@NonNull TradeDTOListKey key, @NonNull TradeDTOList value)
     {
         tradeCache.onNext(value);
         super.onNext(key, value);

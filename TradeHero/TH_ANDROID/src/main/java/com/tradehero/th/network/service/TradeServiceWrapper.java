@@ -3,8 +3,10 @@ package com.tradehero.th.network.service;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.OwnedTradeId;
+import com.tradehero.th.api.trade.SecurityTradeDTOListKey;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
+import com.tradehero.th.api.trade.TradeDTOListKey;
 import com.tradehero.th.models.BaseDTOListProcessor;
 import com.tradehero.th.models.trade.DTOProcessorTradeReceived;
 import javax.inject.Inject;
@@ -43,6 +45,22 @@ import rx.Observable;
         }
     }
 
+    private void basicCheck(SecurityTradeDTOListKey dtoListKey)
+    {
+        if (dtoListKey == null)
+        {
+            throw new NullPointerException("dtoListKey cannot be null");
+        }
+        if (dtoListKey.getExchange() == null)
+        {
+            throw new NullPointerException("dtoListKey.exchange cannot be null");
+        }
+        if (dtoListKey.getSecuritySymbol() == null)
+        {
+            throw new NullPointerException("dtoListKey.symbol cannot be null");
+        }
+    }
+
     private void basicCheck(OwnedTradeId ownedTradeId)
     {
         basicCheck((OwnedPositionId) ownedTradeId);
@@ -53,15 +71,35 @@ import rx.Observable;
     }
 
     //<editor-fold desc="Get Trades List">
-    @NonNull public Observable<TradeDTOList> getTradesRx(@NonNull OwnedPositionId ownedPositionId)
+    @NonNull public Observable<TradeDTOList> getTradesRx(@NonNull TradeDTOListKey dtoListKey)
     {
-        basicCheck(ownedPositionId);
-        return this.tradeServiceRx.getTrades(
-                ownedPositionId.userId,
-                ownedPositionId.portfolioId,
-                ownedPositionId.positionId)
-                .map(new BaseDTOListProcessor<TradeDTO, TradeDTOList>(
-                        new DTOProcessorTradeReceived(ownedPositionId)));
+        Observable<TradeDTOList> received;
+        if (dtoListKey instanceof OwnedPositionId)
+        {
+            OwnedPositionId ownedPositionId = (OwnedPositionId) dtoListKey;
+            basicCheck(ownedPositionId);
+            received = this.tradeServiceRx.getTrades(
+                    ownedPositionId.userId,
+                    ownedPositionId.portfolioId,
+                    ownedPositionId.positionId)
+                    .map(new BaseDTOListProcessor<TradeDTO, TradeDTOList>(
+                            new DTOProcessorTradeReceived(ownedPositionId)));
+        }
+        else if (dtoListKey instanceof SecurityTradeDTOListKey)
+        {
+            SecurityTradeDTOListKey securityTradeDTOListKey = (SecurityTradeDTOListKey) dtoListKey;
+            basicCheck(securityTradeDTOListKey);
+            received = this.tradeServiceRx.getTrades(
+                    securityTradeDTOListKey.getExchange(),
+                    securityTradeDTOListKey.getPathSafeSymbol(),
+                    securityTradeDTOListKey.page,
+                    securityTradeDTOListKey.perPage);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled TradeDTOListKey " + dtoListKey);
+        }
+        return received;
     }
     //</editor-fold>
 

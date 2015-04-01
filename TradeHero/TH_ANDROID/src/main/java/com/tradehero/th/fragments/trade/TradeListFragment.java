@@ -34,6 +34,7 @@ import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
+import com.tradehero.th.api.trade.TradeDTOListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
 import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
@@ -297,7 +298,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (positionDTO != null && tradesSubscription == null)
         {
             tradesSubscription = AppObservable.bindFragment(this, tradeListCache.get(positionDTO.getOwnedPositionId()))
-                    .map(new PairGetSecond<OwnedPositionId, TradeDTOList>())
+                    .map(new PairGetSecond<TradeDTOListKey, TradeDTOList>())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<TradeDTOList>()

@@ -80,7 +80,15 @@ public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
 
     @Override public boolean equals(@Nullable Object other)
     {
-        return (other instanceof SecurityId)
+        if (other == null)
+        {
+            return false;
+        }
+        if (other == this)
+        {
+            return true;
+        }
+        return other.getClass().equals(SecurityId.class)
                 && equalFields((SecurityId) other);
     }
 
