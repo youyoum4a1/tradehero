@@ -36,8 +36,7 @@ public class QuestionsFragment extends DashboardFragment{
         questionsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                StockLearningQuestionsItem questionsItemDTO = questionsAdapter.getItem(position);
-                gotoAnswerQuestions(questionsItemDTO.id);
+                gotoAnswerQuestions(position);
             }
         });
         refreshQuestions();
@@ -49,28 +48,22 @@ public class QuestionsFragment extends DashboardFragment{
     private void refreshQuestions(){
         ArrayList<StockLearningQuestionsItem> questionsItemDTOs = new ArrayList();
         StockLearningQuestionsItem questionsItemDTOA = new StockLearningQuestionsItem();
-        questionsItemDTOA.totalNumber = 20;
-        questionsItemDTOA.alreayCompletedNumber = 6;
-        questionsItemDTOA.name = "AAAAA";
+        questionsItemDTOA.setTotalNumber(120);
         questionsItemDTOs.add(questionsItemDTOA);
 
         StockLearningQuestionsItem questionsItemDTOB = new StockLearningQuestionsItem();
-        questionsItemDTOB.totalNumber = 20;
-        questionsItemDTOB.alreayCompletedNumber = 6;
-        questionsItemDTOB.name = "BBBBB";
+        questionsItemDTOB.setTotalNumber(60);
         questionsItemDTOs.add(questionsItemDTOB);
 
         StockLearningQuestionsItem questionsItemDTOC = new StockLearningQuestionsItem();
-        questionsItemDTOC.totalNumber = 20;
-        questionsItemDTOC.alreayCompletedNumber = 6;
-        questionsItemDTOC.name = "CCCCC";
+        questionsItemDTOC.setTotalNumber(60);
         questionsItemDTOs.add(questionsItemDTOC);
 
         questionsAdapter.setQuestionsItemDTOs(questionsItemDTOs);
         questionsAdapter.notifyDataSetChanged();
     }
 
-    private void gotoAnswerQuestions(int questionSetId){
+    private void gotoAnswerQuestions(int numOfQuestionSet){
         Bundle bundle = new Bundle();
         gotoDashboard(ToAnswerQuestionFragment.class, bundle);
     }

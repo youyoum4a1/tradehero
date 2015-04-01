@@ -14,12 +14,21 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 public class StockLearningHistoryFragment extends DashboardFragment{
 
     private ListView historyLV;
+    private StockLearningAnswersHistoryAdapter adapter;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        adapter = new StockLearningAnswersHistoryAdapter(getActivity());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stock_learning_history, container, false);
 
         historyLV = (ListView)view.findViewById(R.id.listview_answers_history);
+        historyLV.setAdapter(adapter);
+
         return view;
     }
 

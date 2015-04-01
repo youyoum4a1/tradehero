@@ -1,7 +1,5 @@
 package com.tradehero.chinabuild.fragment.stocklearning;
 
-import java.util.ArrayList;
-
 /**
  * Created by palmer on 15/3/30.
  */
@@ -10,15 +8,6 @@ public class StockLearningQuestionsItem {
     private int id;
     private int totalNumber;
     private String name;
-    private ArrayList<StockLearningQuestionItem> questionItems = new ArrayList();
-
-    public ArrayList<StockLearningQuestionItem> getQuestionItems() {
-        return questionItems;
-    }
-
-    public void setQuestionItems(ArrayList<StockLearningQuestionItem> questionItems) {
-        this.questionItems = questionItems;
-    }
 
     public int getId() {
         return id;

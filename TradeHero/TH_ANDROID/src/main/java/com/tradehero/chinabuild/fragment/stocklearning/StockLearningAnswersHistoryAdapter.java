@@ -6,40 +6,43 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import com.tradehero.chinabuild.data.question.questionUtils.Question;
 import com.tradehero.th.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by palmer on 15/3/31.
  */
 public class StockLearningAnswersHistoryAdapter extends BaseAdapter{
 
-//    private ArrayList<StockLearningQuestionItem> questionItems = new ArrayList();
+    private ArrayList<Question> questionItems = new ArrayList();
     private LayoutInflater inflater;
 
     public StockLearningAnswersHistoryAdapter(Context context){
         inflater = LayoutInflater.from(context);
     }
 
-//    public void setQuestionItems(ArrayList<StockLearningQuestionItem> questionItems){
-//        if(questionItems!=null){
-//            this.questionItems.clear();
-//            this.questionItems.addAll(questionItems);
-//        }
-//    }
+    public void setQuestionItems(ArrayList<Question> questionItems){
+        if(questionItems!=null){
+            this.questionItems.clear();
+            this.questionItems.addAll(questionItems);
+        }
+    }
 
     @Override
     public int getCount() {
-        return 0;
+        return questionItems.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return null;
+        return questionItems.get(i);
     }
 
     @Override
     public long getItemId(int i) {
-        return 0;
+        return i;
     }
 
     @Override
@@ -53,6 +56,8 @@ public class StockLearningAnswersHistoryAdapter extends BaseAdapter{
         }else{
             viewHolder = (ViewHolder)convertView.getTag();
         }
+        Question question = questionItems.get(i);
+        viewHolder.quesDescTV.setText(question.getQid() + ":" + question.getQTitle());
         return convertView;
     }
 
