@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -22,6 +23,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
     private TextView summaryDescTV;
     private Button historyBtn;
     private Button errorsBtn;
+    private ImageView resultIV;
 
     //Resources
     private String descriptionSummaryA;
@@ -30,6 +32,9 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
     private int descriptionSummaryColorB;
     private int descSizeA;
     private int descSizeB;
+
+    private int totalNum = 80;
+    private int failedNum = 6;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,17 +46,42 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stock_learning_summary, container, false);
         summaryDescTV = (TextView)view.findViewById(R.id.textview_answers_summary_desc);
+        resultIV = (ImageView)view.findViewById(R.id.imageview_stocklearning_result);
         historyBtn = (Button)view.findViewById(R.id.button_history);
+        historyBtn.setOnClickListener(this);
         errorsBtn = (Button)view.findViewById(R.id.button_errors);
-        refreshSummary(80,6);
+        errorsBtn.setOnClickListener(this);
+        refreshSummary(totalNum, failedNum);
+        if(failedNum>0){
+            resultIV.setBackgroundResource(R.drawable.stock_learning_question_result_failed);
+        }else{
+            resultIV.setBackgroundResource(R.drawable.stock_learning_question_result_success);
+        }
         return view;
+    }
+
+    @Override
+    public void onClick(View view) {
+        int viewId = view.getId();
+        switch (viewId){
+            case R.id.button_errors:
+                break;
+            case R.id.button_history:
+                gotoHistory();
+                break;
+        }
+    }
+
+    private void gotoHistory(){
+        Bundle bundle = new Bundle();
+        pushFragment(StockLearningHistoryFragment.class, bundle);
     }
 
     private void initSummaryDescriptionResources(){
         descriptionSummaryA = getActivity().getResources().getString(R.string.stock_learning_summary_a);
         descriptionSummaryB = getActivity().getResources().getString(R.string.stock_learning_summary_b);
-        descriptionSummaryColorA = getActivity().getResources().getColor(R.color.stock_learning_summary_desc_color_a);
-        descriptionSummaryColorB = getActivity().getResources().getColor(R.color.stock_learning_summary_desc_color_b);
+        descriptionSummaryColorA = getActivity().getResources().getColor(R.color.stock_learning_summary_success_color);
+        descriptionSummaryColorB = getActivity().getResources().getColor(R.color.stock_learning_summary_failed_color);
         descSizeA = (int)getActivity().getResources().getDimension(R.dimen.stock_learning_summary_des_size_a);
         descSizeB = (int)getActivity().getResources().getDimension(R.dimen.stock_learning_summary_des_size_b);
     }
@@ -76,24 +106,6 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
 
         spannableStringBuilder.append(descA).append(descB).append(descC);
         summaryDescTV.setText(spannableStringBuilder);
-    }
-
-
-    @Override
-    public void onClick(View view) {
-        int viewId = view.getId();
-        switch (viewId){
-            case R.id.button_errors:
-                break;
-            case R.id.button_history:
-                gotoHistory();
-                break;
-        }
-    }
-
-    private void gotoHistory(){
-        Bundle bundle = new Bundle();
-        pushFragment(StockLearningHistoryFragment.class, bundle);
     }
 
 }

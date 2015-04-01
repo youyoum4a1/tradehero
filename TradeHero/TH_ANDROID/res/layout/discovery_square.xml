@@ -214,5 +214,11 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="1px"
+                        android:background="#ffffff">
+            <View android:layout_width="match_parent" android:layout_height="match_parent"
+                  android:background="@color/gray_normal"
+                  android:layout_marginLeft="73dp"/>
+        </RelativeLayout>
     </LinearLayout>
 </ScrollView>

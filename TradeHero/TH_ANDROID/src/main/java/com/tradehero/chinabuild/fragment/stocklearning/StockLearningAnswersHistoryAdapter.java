@@ -20,17 +20,21 @@ public class StockLearningAnswersHistoryAdapter extends BaseAdapter{
     private LayoutInflater inflater;
 
     private ArrayList<Integer> failedQuestions = new ArrayList();
-    private int rightColor;
-    private int wrongColor;
+    private int successColor;
+    private int failedColor;
 
     public StockLearningAnswersHistoryAdapter(Context context){
         inflater = LayoutInflater.from(context);
+        successColor = context.getResources().getColor(R.color.stock_learning_summary_success_color);
+        failedColor = context.getResources().getColor(R.color.stock_learning_summary_failed_color);
     }
 
-    public void setQuestionItems(ArrayList<Question> questionItems){
-        if(questionItems!=null){
+    public void setQuestionItems(ArrayList<Question> questionItems, ArrayList<Integer> failedQuestions){
+        if(questionItems!=null && failedQuestions!=null){
             this.questionItems.clear();
             this.questionItems.addAll(questionItems);
+            this.failedQuestions.clear();
+            this.failedQuestions.addAll(failedQuestions);
         }
     }
 
@@ -56,13 +60,28 @@ public class StockLearningAnswersHistoryAdapter extends BaseAdapter{
         if(convertView==null) {
             convertView = inflater.inflate(R.layout.stock_learning_question_item, null);
             viewHolder = new ViewHolder();
+            viewHolder.quesDescTV = (TextView)convertView.findViewById(R.id.textview_question_desc);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder)convertView.getTag();
         }
         Question question = questionItems.get(i);
+        if(isFailedQuestion(question)){
+            viewHolder.quesDescTV.setTextColor(failedColor);
+        } else {
+            viewHolder.quesDescTV.setTextColor(successColor);
+        }
         viewHolder.quesDescTV.setText(question.getQid() + ":" + question.getQTitle());
         return convertView;
+    }
+
+    private boolean isFailedQuestion(Question question){
+        for(Integer integer : failedQuestions){
+            if(Integer.valueOf(question.getQid()) == integer.intValue()){
+                return true;
+            }
+        }
+        return false;
     }
 
     public final class ViewHolder{

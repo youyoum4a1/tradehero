@@ -142,8 +142,8 @@
     <color name="button_yellow">#F0E68C</color>
 
     <!--Stock Learning -->
-    <color name="stock_learning_summary_desc_color_a">#000000</color>
-    <color name="stock_learning_summary_desc_color_b">#f67079</color>
+    <color name="stock_learning_summary_success_color">#000000</color>
+    <color name="stock_learning_summary_failed_color">#f67079</color>
     <!--Stock Learning -->
 
 </resources>

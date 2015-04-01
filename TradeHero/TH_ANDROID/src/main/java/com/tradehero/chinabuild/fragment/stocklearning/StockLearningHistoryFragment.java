@@ -31,7 +31,7 @@ public class StockLearningHistoryFragment extends DashboardFragment{
 
         historyLV = (ListView)view.findViewById(R.id.listview_answers_history);
         historyLV.setAdapter(adapter);
-
+        refreshHistoryData();
         return view;
     }
 
@@ -57,7 +57,8 @@ public class StockLearningHistoryFragment extends DashboardFragment{
         ArrayList<Integer> failedQuestions = new ArrayList();
         failedQuestions.add(new Integer(2));
 
-        adapter.setQuestionItems(questions);
+        adapter.setQuestionItems(questions, failedQuestions);
+        adapter.notifyDataSetChanged();
     }
 
 }
