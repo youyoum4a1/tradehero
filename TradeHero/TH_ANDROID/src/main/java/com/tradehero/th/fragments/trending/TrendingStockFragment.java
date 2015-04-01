@@ -175,10 +175,9 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.exchange_menu, menu);
         inflater.inflate(R.menu.search_menu, menu);
-
-        super.onCreateOptionsMenu(menu, inflater);
 
         exchangeMenu = menu.findItem(R.id.btn_exchange);
         View updateCenterIcon = exchangeMenu.getActionView();

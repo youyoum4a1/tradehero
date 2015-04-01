@@ -3,15 +3,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_marginRight="-30dp"
+    android:orientation="horizontal"
+    android:gravity="right">
 
   <com.tradehero.th.fragments.market.ExchangeSpinner
       android:id="@+id/exchange_selection_menu"
-      android:layout_width="wrap_content"
+      android:layout_width="122dp"
       android:layout_height="match_parent"
-      android:layout_gravity="center_horizontal"
-      android:dropDownSelector="@drawable/basic_transparent_selector"
       style="@style/TH.Spinner"
+      android:gravity="center_vertical|right"
       />
+
+  <ImageView
+      android:id="@+id/spinner_arrow"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="-15dp"
+      android:layout_gravity="center_vertical"
+      android:background="@drawable/spinner_arrow_bg"/>
 
 </LinearLayout>
