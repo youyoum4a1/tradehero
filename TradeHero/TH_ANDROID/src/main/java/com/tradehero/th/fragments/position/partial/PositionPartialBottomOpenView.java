@@ -54,7 +54,9 @@ public class PositionPartialBottomOpenView
     @Override public void display(@NonNull AbstractPartialBottomView.DTO dto)
     {
         super.display(dto);
-
+        if (!(dto instanceof DTO)) {
+            return;
+        }
         unrealisedPLValueHeader.setText(((DTO) dto).unrealisedPLValueHeader);
         unrealisedPLValue.setText(((DTO) dto).unrealisedPLValue);
         realisedPLValueHeader.setText(((DTO) dto).realisedPLValueHeader);

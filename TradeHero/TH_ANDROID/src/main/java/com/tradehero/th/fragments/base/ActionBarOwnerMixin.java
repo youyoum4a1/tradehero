@@ -90,7 +90,7 @@ public class ActionBarOwnerMixin
                     | ActionBar.DISPLAY_SHOW_HOME);
             if (shouldShowHomeAsUp())
             {
-                actionBar.setHomeAsUpIndicator(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                actionBar.setHomeAsUpIndicator(R.drawable.ic_actionbar_back);
             }
             else
             {
