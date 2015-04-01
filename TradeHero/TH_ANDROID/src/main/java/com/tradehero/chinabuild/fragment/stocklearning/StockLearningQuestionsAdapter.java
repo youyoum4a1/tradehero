@@ -1,4 +1,4 @@
-package com.tradehero.th.adapters;
+package com.tradehero.chinabuild.fragment.stocklearning;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.tradehero.chinabuild.data.StockLearningQuestionsItem;
 import com.tradehero.th.R;
 
 import java.util.ArrayList;
@@ -41,9 +40,9 @@ public class StockLearningQuestionsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View convertView, ViewGroup viewGroup) {
-        ViewHolder viewHolder = null;
+        ViewHolder viewHolder;
         if(convertView==null) {
-            convertView = inflater.inflate(R.layout.questions_item_layout, null);
+            convertView = inflater.inflate(R.layout.stock_learning_questions_item, null);
             viewHolder = new ViewHolder();
             viewHolder.questionsSetNameTV = (TextView)convertView.findViewById(R.id.textview_questions_set_name);
             viewHolder.questionsProportionTV = (TextView)convertView.findViewById(R.id.textview_questions_set_proportion);
