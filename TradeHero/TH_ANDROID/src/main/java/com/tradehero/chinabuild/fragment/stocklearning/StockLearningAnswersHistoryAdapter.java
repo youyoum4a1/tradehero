@@ -19,6 +19,10 @@ public class StockLearningAnswersHistoryAdapter extends BaseAdapter{
     private ArrayList<Question> questionItems = new ArrayList();
     private LayoutInflater inflater;
 
+    private ArrayList<Integer> failedQuestions = new ArrayList();
+    private int rightColor;
+    private int wrongColor;
+
     public StockLearningAnswersHistoryAdapter(Context context){
         inflater = LayoutInflater.from(context);
     }
