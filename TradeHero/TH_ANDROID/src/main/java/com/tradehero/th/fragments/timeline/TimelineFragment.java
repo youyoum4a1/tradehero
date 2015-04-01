@@ -578,15 +578,12 @@ public class TimelineFragment extends DashboardFragment
         TabbedPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
         TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
 
-        if (portfolioDTO != null && portfolioDTO.providerId != null && portfolioDTO.providerId > 0)
+        if (portfolioDTO != null)
         {
-            TabbedPositionListFragment.putProviderId(args, new ProviderId(portfolioDTO.providerId));
-        }
-        else
-        {
-            if (portfolioDTO != null)
+            TabbedPositionListFragment.putIsFX(args, portfolioDTO.assetClass);
+            if (portfolioDTO.providerId != null && portfolioDTO.providerId > 0)
             {
-                TabbedPositionListFragment.putIsFX(args, portfolioDTO.assetClass);
+                TabbedPositionListFragment.putProviderId(args, new ProviderId(portfolioDTO.providerId));
             }
         }
         navigator.get().pushFragment(TabbedPositionListFragment.class, args);
