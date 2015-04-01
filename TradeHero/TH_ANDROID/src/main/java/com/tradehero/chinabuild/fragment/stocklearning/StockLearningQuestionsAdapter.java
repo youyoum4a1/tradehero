@@ -52,11 +52,11 @@ public class StockLearningQuestionsAdapter extends BaseAdapter {
             viewHolder = (ViewHolder)convertView.getTag();
         }
         StockLearningQuestionsItem questionsItemDTO = questionsItemDTOs.get(i);
-        if(questionsItemDTO.name!=null) {
-            viewHolder.questionsSetNameTV.setText(questionsItemDTO.name);
+        if(questionsItemDTO.getName()!=null) {
+            viewHolder.questionsSetNameTV.setText(questionsItemDTO.getName());
         }
-        if(questionsItemDTO.totalNumber>0) {
-            String proportion = questionsItemDTO.alreayCompletedNumber + "/" + questionsItemDTO.totalNumber;
+        if(questionsItemDTO.getTotalNumber()>0) {
+            String proportion = 0 + "/" + questionsItemDTO.getTotalNumber();
             viewHolder.questionsProportionTV.setText(proportion);
         }
         return convertView;
