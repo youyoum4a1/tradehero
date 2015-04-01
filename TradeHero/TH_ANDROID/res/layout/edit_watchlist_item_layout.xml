@@ -65,40 +65,13 @@
         android:gravity="right"
         />
 
-    <EditText
+    <TextView
         android:id="@+id/edit_watchlist_item_security_price"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:maxLength="10"
         android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        />
-
-  </LinearLayout>
-
-  <LinearLayout
-      android:layout_height="wrap_content"
-      android:layout_width="match_parent"
-      android:orientation="horizontal"
-      android:padding="@dimen/add_to_watch_list_padding"
-      >
-
-    <TextView
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/watchlist_quantity_header"
-        android:gravity="right"
-        />
-
-    <EditText
-        android:id="@+id/edit_watchlist_item_security_quantity"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:maxLength="5"
-        android:text="@string/watchlist_quantity_initial"
+        android:layout_marginLeft="@dimen/size_2"
         />
 
   </LinearLayout>

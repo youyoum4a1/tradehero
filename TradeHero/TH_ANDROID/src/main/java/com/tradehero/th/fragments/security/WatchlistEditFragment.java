@@ -47,8 +47,7 @@ public class WatchlistEditFragment extends DashboardFragment
     private ImageView securityLogo;
     private TextView securityTitle;
     private TextView securityDesc;
-    private EditText watchPrice;
-    private EditText watchQuantity;
+    private TextView watchPrice;
     @NonNull private SecurityId securityKeyId;
     private SecurityCompactDTO securityCompactDTO;
     private TextView watchAction;
@@ -74,6 +73,7 @@ public class WatchlistEditFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.edit_watchlist_item_layout, container, false);
         initViews(view);
+        securityKeyId = getSecurityId(getArguments());
         return view;
     }
 
@@ -83,8 +83,7 @@ public class WatchlistEditFragment extends DashboardFragment
         securityTitle = (TextView) view.findViewById(R.id.edit_watchlist_item_security_name);
         securityDesc = (TextView) view.findViewById(R.id.edit_watchlist_item_security_desc);
 
-        watchPrice = (EditText) view.findViewById(R.id.edit_watchlist_item_security_price);
-        watchQuantity = (EditText) view.findViewById(R.id.edit_watchlist_item_security_quantity);
+        watchPrice = (TextView) view.findViewById(R.id.edit_watchlist_item_security_price);
 
         watchAction = (TextView) view.findViewById(R.id.edit_watchlist_item_done);
         if (watchAction != null)
@@ -128,7 +127,7 @@ public class WatchlistEditFragment extends DashboardFragment
         try
         {
             double price = Double.parseDouble(watchPrice.getText().toString());
-            int quantity = Integer.parseInt(watchQuantity.getText().toString());
+            int quantity = 1;
             if (quantity == 0)
             {
                 throw new Exception(getString(R.string.watchlist_quantity_should_not_be_zero));
@@ -161,9 +160,6 @@ public class WatchlistEditFragment extends DashboardFragment
         } catch (Exception ex)
         {
             THToast.show(ex.getMessage());
-        } finally
-        {
-            progressDialog.dismiss();
         }
     }
 
@@ -212,15 +208,8 @@ public class WatchlistEditFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        linkWith(getSecurityId(getArguments()), true);
-    }
 
-    private void linkWith(@NonNull SecurityId securityId, boolean andDisplay)
-    {
-        this.securityKeyId = securityId;
-
-        // TODO change the test to something passed in the args bundle
-        if (watchlistPositionCache.get().get(securityId) != null)
+        if (watchlistPositionCache.get().getCachedValue(securityKeyId) != null)
         {
             setActionBarTitle(getString(R.string.watchlist_edit_title));
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_Edit));
@@ -230,13 +219,10 @@ public class WatchlistEditFragment extends DashboardFragment
             setActionBarTitle(getString(R.string.watchlist_add_title));
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_Add));
         }
-        querySecurity(securityId);
+        querySecurity(securityKeyId);
+        displaySecurityTitle();
+        checkDeleteButtonEnable();
 
-        if (andDisplay)
-        {
-            displaySecurityTitle();
-            checkDeleteButtonEnable();
-        }
     }
 
     private void displaySecurityTitle()
@@ -255,12 +241,14 @@ public class WatchlistEditFragment extends DashboardFragment
                 getString(R.string.loading_loading),
                 true);
 
+        DismissDialogAction0 closeDialogAction = new DismissDialogAction0(progressDialog);
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 securityCompactCache.get(securityId))
+                .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new DismissDialogAction0(progressDialog))
-                .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
+                .doOnUnsubscribe(closeDialogAction)
+                .finallyDo(closeDialogAction)
                 .subscribe(createSecurityCompactCacheObserver()));
     }
 
@@ -306,11 +294,6 @@ public class WatchlistEditFragment extends DashboardFragment
                         watchListItem != null ?
                                 "" + watchListItem.watchlistPriceRefCcy :
                                 securityCompactDTO.lastPrice != null ? securityCompactDTO.lastPrice.toString() : "");
-            }
-
-            if (watchListItem != null)
-            {
-                watchQuantity.setText("" + (watchListItem.shares == null ? 1 : watchListItem.shares));
             }
         }
     }
@@ -368,6 +351,7 @@ public class WatchlistEditFragment extends DashboardFragment
         @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
         {
             linkWith(pair.second, true);
+            Timber.e("richard call OnNext:" + pair.second.name);
         }
 
         @Override public void onCompleted()

@@ -163,47 +163,49 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
 
     public void displayPlPercentage(boolean showInPercentage)
     {
-        if (gainLossLabel != null)
+        if (gainLossLabel == null)
         {
-            THSignedNumber value = getGainLoss(showInPercentage);
-            if (value != null)
-            {
-                value.into(gainLossLabel);
-            }
-            else
-            {
-                gainLossLabel.setText("");
-            }
+            return;
         }
-    }
+        SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
+        if (securityCompactDTO == null)
+        {
+            gainLossLabel.setText("0");
+            return;
+        }
+        double roi = 0;
+        if (securityCompactDTO.risePercent != null)
+        {
+            roi = securityCompactDTO.risePercent;
+        }
 
-    @Nullable protected THSignedNumber getGainLoss(boolean showInPercentage)
-    {
-        if (watchlistPositionDTO == null)
+        THSignedPercentage
+                .builder(roi * 100)
+                .relevantDigitCount(3)
+                .signTypePlusMinusAlways()
+                .build()
+                .into(gainLossLabel);
+        if (roi > 0)
         {
-            return null;
+            gainLossLabel.setBackgroundResource(R.drawable.round_label_up);
+            gainLossLabel.setTextColor(getResources().getColor(R.color.text_primary_inverse));
+            gainIndicator.setVisibility(View.VISIBLE);
+            gainIndicator.setImageResource(R.drawable.indicator_green);
         }
-        Double amountInvestedRefCcy = watchlistPositionDTO.getInvestedRefCcy();
-        Double currentValueRefCcy = watchlistPositionDTO.getCurrentValueRefCcy();
+        else if (roi < 0)
+        {
+            gainLossLabel.setBackgroundResource(R.drawable.round_label_down);
+            gainLossLabel.setTextColor(getResources().getColor(R.color.text_primary_inverse));
+            gainIndicator.setVisibility(View.VISIBLE);
+            gainIndicator.setImageResource(R.drawable.indicator_red);
+        }
+        else
+        {
+            gainLossLabel.setTextColor(getResources().getColor(R.color.text_primary));
+            gainLossLabel.setBackgroundColor(Color.WHITE);
+            gainIndicator.setVisibility(View.INVISIBLE);
+        }
 
-        if (amountInvestedRefCcy == null || currentValueRefCcy == null)
-        {
-            return null;
-        }
-        if (showInPercentage)
-        {
-            if (currentValueRefCcy == 0)
-            {
-                return null;
-            }
-            return THSignedPercentage.builder(100 * ((currentValueRefCcy - amountInvestedRefCcy) / currentValueRefCcy))
-                    .signTypePlusMinusAlways()
-                    .build();
-        }
-        return THSignedMoney.builder(currentValueRefCcy - amountInvestedRefCcy)
-                .currency(watchlistPositionDTO.getNiceCurrency())
-                .withDefaultColor()
-                .build();
     }
 
     private void displayLastPrice()
@@ -213,7 +215,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         if (securityCompactDTO != null)
         {
             Double lastPrice = securityCompactDTO.lastPrice;
-            Double watchlistPrice = watchlistPositionDTO.watchlistPriceRefCcy;
             if (lastPrice == null)
             {
                 lastPrice = 0.0;
@@ -221,42 +222,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
             // last price
             positionLastAmount.setText(formatLastPrice(securityCompactDTO.currencyDisplay, lastPrice));
 
-            // pl percentage
-            if (watchlistPrice != 0)
-            {
-                double pl = (lastPrice - watchlistPrice) * 100 / watchlistPrice;
-                gainLossLabel.setText(String.format(getContext().getString(R.string.watchlist_pl_percentage_format),
-                        new DecimalFormat("##.##").format(pl)
-                ));
 
-                gainLossLabel.setTextColor(Color.WHITE);
-                if (pl > 0)
-                {
-                    gainLossLabel.setBackgroundResource(R.drawable.round_label_up);
-                    gainIndicator.setVisibility(View.VISIBLE);
-                    gainIndicator.setImageResource(R.drawable.indicator_green);
-                }
-                else if (pl < 0)
-                {
-                    gainLossLabel.setBackgroundResource(R.drawable.round_label_down);
-                    gainIndicator.setVisibility(View.VISIBLE);
-                    gainIndicator.setImageResource(R.drawable.indicator_red);
-                }
-                else
-                {
-                    gainLossLabel.setTextColor(getResources().getColor(R.color.text_primary));
-                    gainLossLabel.setBackgroundColor(Color.WHITE);
-                    gainIndicator.setVisibility(View.INVISIBLE);
-                }
-            }
-            else
-            {
-                gainLossLabel.setText("");
-            }
-        }
-        else
-        {
-            gainLossLabel.setText("");
         }
     }
 
