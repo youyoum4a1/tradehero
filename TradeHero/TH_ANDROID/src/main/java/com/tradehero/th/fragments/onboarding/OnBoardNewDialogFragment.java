@@ -41,6 +41,7 @@ import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
+import com.viewpagerindicator.PageIndicator;
 import javax.inject.Inject;
 import rx.functions.Action1;
 import rx.subjects.BehaviorSubject;
@@ -60,6 +61,7 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
     @Inject BroadcastUtils broadcastUtils;
 
     @InjectView(android.R.id.content) ViewPager pager;
+    @InjectView(R.id.page_indicator) PageIndicator pageIndicator;
 
     private ExchangeCompactDTOList selectedExchanges;
     private SectorCompactDTOList selectedSectors;
@@ -75,9 +77,8 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
         return dialogFragment;
     }
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    public OnBoardNewDialogFragment()
     {
-        super.onCreate(savedInstanceState);
         exchangeSectorBehavior = BehaviorSubject.create();
         selectedSecuritiesBehavior = BehaviorSubject.create();
     }
@@ -99,6 +100,7 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
         pager.setAdapter(new PagerAdapter(getChildFragmentManager()));
         pager.canScrollHorizontally(-1);
         pager.setCurrentItem(getCurrentIndex());
+        pageIndicator.setViewPager(pager, getCurrentIndex());
     }
 
     @Override public void onDestroyView()
