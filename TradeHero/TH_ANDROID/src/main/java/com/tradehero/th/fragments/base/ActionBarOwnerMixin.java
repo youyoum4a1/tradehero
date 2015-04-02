@@ -23,8 +23,10 @@ import com.tradehero.th.activities.BaseActivity;
 public class ActionBarOwnerMixin
 {
     private static final String BUNDLE_KEY_TITLE = ActionBarOwnerMixin.class.getName() + ".title";
+    private static final String BUNDLE_KEY_TOUCH_HOME = ActionBarOwnerMixin.class.getName() + ".touchHome";
     private static final String BUNDLE_KEY_SHOW_HOME = ActionBarOwnerMixin.class.getName() + ".showHome";
     private static final String BUNDLE_KEY_SHOW_HOME_AS_UP = ActionBarOwnerMixin.class.getName() + ".showHomeAsUp";
+    private static final boolean DEFAULT_TOUCH_HOME = true;
     private static final boolean DEFAULT_SHOW_HOME = true;
     private static final boolean DEFAULT_SHOW_HOME_AS_UP = true;
 
@@ -36,6 +38,20 @@ public class ActionBarOwnerMixin
     @NonNull public static ActionBarOwnerMixin of(@NonNull Fragment fragment)
     {
         return new ActionBarOwnerMixin(fragment);
+    }
+
+    public static void putKeyTouchHome(@NonNull Bundle args, boolean touchHome)
+    {
+        args.putBoolean(BUNDLE_KEY_TOUCH_HOME, touchHome);
+    }
+
+    protected static boolean getKeyTouchHome(@Nullable Bundle args)
+    {
+        if (args == null)
+        {
+            return DEFAULT_TOUCH_HOME;
+        }
+        return args.getBoolean(BUNDLE_KEY_TOUCH_HOME, DEFAULT_TOUCH_HOME);
     }
 
     public static void putKeyShowHome(@NonNull Bundle args, boolean showHome)
@@ -93,7 +109,7 @@ public class ActionBarOwnerMixin
             }
         }
 
-        if (actionBar != null)
+        if (actionBar != null && shouldTouchHome())
         {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
@@ -128,6 +144,11 @@ public class ActionBarOwnerMixin
         {
             actionBar.setTitle(title);
         }
+    }
+
+    public boolean shouldTouchHome()
+    {
+        return getKeyTouchHome(fragment.getArguments());
     }
 
     public boolean shouldShowHome()
