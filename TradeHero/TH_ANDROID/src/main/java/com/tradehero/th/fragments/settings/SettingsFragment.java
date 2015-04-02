@@ -31,7 +31,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.FriendsInvitationActivity;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.i18n.LanguageDTOFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -46,6 +45,7 @@ import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.billing.report.PurchaseReportResult;
 import com.tradehero.th.fragments.location.LocationListFragment;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -656,7 +656,7 @@ public final class SettingsFragment extends BasePreferenceFragment
 
     public void handleTopBannerClick()
     {
-        navigator.get().launchActivity(FriendsInvitationActivity.class);
+        navigator.get().pushFragment(FriendsInvitationFragment.class);
     }
 
     public void handleSendLoveClick()
