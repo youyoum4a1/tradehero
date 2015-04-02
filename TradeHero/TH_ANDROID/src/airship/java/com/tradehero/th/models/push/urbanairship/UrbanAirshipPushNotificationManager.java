@@ -3,13 +3,17 @@ package com.tradehero.th.models.push.urbanairship;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.BuildConfig;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ReplaceWith;
 import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;
@@ -28,16 +32,23 @@ import timber.log.Timber;
 @Singleton public final class UrbanAirshipPushNotificationManager implements PushNotificationManager
 {
     @NonNull private final AirshipConfigOptions options;
+    @NonNull private final CurrentUserId currentUserId;
+    @NonNull private final UserProfileCacheRx userProfileCache;
     @NonNull private final SessionServiceWrapper sessionServiceWrapper;
     @NonNull private final StringPreference savedPushDeviceIdentifier;
     @Nullable private static UAirship uAirship;
 
     //<editor-fold desc="Constructors">
-    @Inject public UrbanAirshipPushNotificationManager(@NonNull AirshipConfigOptions options,
+    @Inject public UrbanAirshipPushNotificationManager(
+            @NonNull AirshipConfigOptions options,
+            @NonNull CurrentUserId currentUserId,
+            @NonNull UserProfileCacheRx userProfileCache,
             @NonNull SessionServiceWrapper sessionServiceWrapper,
             @NonNull @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier)
     {
         this.options = options;
+        this.currentUserId = currentUserId;
+        this.userProfileCache = userProfileCache;
         this.sessionServiceWrapper = sessionServiceWrapper;
         this.savedPushDeviceIdentifier = savedPushDeviceIdentifier;
     }
@@ -84,11 +95,33 @@ import timber.log.Timber;
 
                         registerActions();
 
-                        InitialisationCompleteDTO initialisationCompleteDTO = new InitialisationCompleteDTO(channelId, uAirship);
+                        final InitialisationCompleteDTO initialisationCompleteDTO = new InitialisationCompleteDTO(channelId, uAirship);
                         Timber.d("UrbanAirship Initialisation %d milliseconds", (System.nanoTime() - before) / 1000000);
                         savedPushDeviceIdentifier.set(channelId);
-                        return sessionServiceWrapper.updateDeviceRx()
-                                .map(new ReplaceWith<UserProfileDTO, PushNotificationManager.InitialisationCompleteDTO>(initialisationCompleteDTO));
+
+                        Observable<Integer> readyObservable;
+                        int userId = currentUserId.get();
+                        if (userId <= 0)
+                        {
+                            readyObservable = Observable.just(userId);
+                        }
+                        else
+                        {
+                            readyObservable = userProfileCache.getOne(new UserBaseKey(userId))
+                                    .map(new ReplaceWith<Pair<UserBaseKey, UserProfileDTO>, Integer>(userId));
+                        }
+                        return readyObservable
+                                // Making sure we got the UserProfile before we submit the device.
+                                // This is a defense mechanism to improve starting speed.
+                                .flatMap(new Func1<Integer, Observable<PushNotificationManager.InitialisationCompleteDTO>>()
+                                {
+                                    @Override public Observable<PushNotificationManager.InitialisationCompleteDTO> call(Integer ignored)
+                                    {
+                                        return sessionServiceWrapper.updateDeviceRx()
+                                                .map(new ReplaceWith<UserProfileDTO, PushNotificationManager.InitialisationCompleteDTO>(
+                                                        initialisationCompleteDTO));
+                                    }
+                                });
                     }
                 });
     }
