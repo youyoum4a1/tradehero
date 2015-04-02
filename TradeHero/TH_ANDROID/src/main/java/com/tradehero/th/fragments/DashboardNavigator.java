@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -166,6 +167,11 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         {
             throw new IllegalArgumentException("You should not call this with RootFragmentType." + tabType);
         }
-        activity.startActivity(new Intent(activity, tabType.activityClass));
+        launchActivity(tabType.activityClass);
+    }
+
+    public void launchActivity(@NonNull Class<? extends Activity> activityClass)
+    {
+        activity.startActivity(new Intent(activity, activityClass));
     }
 }
