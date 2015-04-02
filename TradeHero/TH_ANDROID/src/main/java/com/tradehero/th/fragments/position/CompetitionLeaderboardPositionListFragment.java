@@ -9,7 +9,8 @@ import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-public class CompetitionLeaderboardPositionListFragment extends PositionListFragment
+//TODO need refactor by alex
+public class CompetitionLeaderboardPositionListFragment extends TabbedPositionListFragment
 {
     @Inject Context doNotRemoveOrItFails;
 
@@ -38,7 +39,7 @@ public class CompetitionLeaderboardPositionListFragment extends PositionListFrag
         this.providerId = getProviderId(getArguments());
     }
 
-    @Override protected void pushTrendingFragment()
+    protected void pushTrendingFragment()
     {
         Bundle args = new Bundle();
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();

@@ -59,7 +59,6 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
-import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
@@ -503,10 +502,14 @@ public class MainCompetitionFragment extends DashboardFragment
             OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
             if (ownedPortfolioId != null)
             {
-                PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
-                PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
-                PositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+                CompetitionLeaderboardPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+                CompetitionLeaderboardPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
+                CompetitionLeaderboardPositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
                 CompetitionLeaderboardPositionListFragment.putProviderId(args, providerId);
+                if (providerDTO != null && providerDTO.associatedPortfolio != null)
+                {
+                    CompetitionLeaderboardPositionListFragment.putIsFX(args, providerDTO.associatedPortfolio.assetClass);
+                }
                 navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
             }
         }
