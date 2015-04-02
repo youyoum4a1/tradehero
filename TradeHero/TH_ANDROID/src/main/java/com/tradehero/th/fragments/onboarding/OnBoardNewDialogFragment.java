@@ -25,6 +25,7 @@ import com.tradehero.th.api.social.BatchFollowFormDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.BaseDialogSupportFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.onboarding.exchange.ExchangeSelectionScreenFragment;
@@ -162,10 +163,13 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
 
         @Override public Fragment getItem(int position)
         {
+            Bundle args = new Bundle();
+            ActionBarOwnerMixin.putKeyTouchHome(args, false);
             switch (position)
             {
                 case INDEX_SELECTION_EXCHANGES:
                     ExchangeSelectionScreenFragment fragment0 = new ExchangeSelectionScreenFragment();
+                    fragment0.setArguments(args);
                     onStopSubscriptions.add(fragment0.getSelectedExchangesObservable()
                             .subscribe(
                                     new Action1<ExchangeCompactDTOList>()
@@ -181,6 +185,7 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
 
                 case INDEX_SELECTION_SECTORS:
                     SectorSelectionScreenFragment fragment1 = new SectorSelectionScreenFragment();
+                    fragment1.setArguments(args);
                     onStopSubscriptions.add(fragment1.getSelectedSectorsObservable()
                             .subscribe(
                                     new Action1<SectorCompactDTOList>()
@@ -198,6 +203,7 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
                 case INDEX_SELECTION_HEROES:
                     UserSelectionScreenFragment fragment2 = new UserSelectionScreenFragment();
                     fragment2.setSelectedExchangesSectorsObservable(exchangeSectorBehavior.asObservable());
+                    fragment2.setArguments(args);
                     onStopSubscriptions.add(fragment2.getSelectedUsersObservable()
                             .subscribe(
                                     new Action1<LeaderboardUserDTOList>()
@@ -214,6 +220,7 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
                 case INDEX_SELECTION_WATCHLIST:
                     StockSelectionScreenFragment fragment3 = new StockSelectionScreenFragment();
                     fragment3.setSelectedExchangesSectorsObservable(exchangeSectorBehavior.asObservable());
+                    fragment3.setArguments(args);
                     onStopSubscriptions.add(fragment3.getSelectedStocksObservable()
                             .subscribe(
                                     new Action1<SecurityCompactDTOList>()
@@ -233,6 +240,7 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
                 case INDEX_SELECTION_LAST:
                     OnBoardLastFragment fragment4 = new OnBoardLastFragment();
                     fragment4.setSelectedSecuritiessObservable(selectedSecuritiesBehavior.asObservable());
+                    fragment4.setArguments(args);
                     onStopSubscriptions.add(fragment4.getFragmentRequestedObservable()
                             .subscribe(
                                     new Action1<Class<? extends DashboardFragment>>()

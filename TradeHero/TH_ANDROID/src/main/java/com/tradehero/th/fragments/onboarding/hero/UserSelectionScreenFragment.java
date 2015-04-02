@@ -27,7 +27,7 @@ import com.tradehero.th.api.users.SuggestHeroesListTypeNew;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
 import com.tradehero.th.persistence.leaderboard.LeaderboardUserListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -46,7 +46,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
 
-public class UserSelectionScreenFragment extends DashboardFragment
+public class UserSelectionScreenFragment extends BaseFragment
 {
     private static final int MAX_SELECTABLE_USERS = 5;
 

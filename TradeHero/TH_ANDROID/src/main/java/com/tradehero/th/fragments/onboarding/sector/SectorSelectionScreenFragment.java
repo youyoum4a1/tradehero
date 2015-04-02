@@ -21,7 +21,7 @@ import com.tradehero.th.api.market.SectorCompactDTO;
 import com.tradehero.th.api.market.SectorCompactDTOList;
 import com.tradehero.th.api.market.SectorId;
 import com.tradehero.th.api.market.SectorListType;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
 import com.tradehero.th.persistence.market.SectorCompactListCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
@@ -38,7 +38,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.subjects.BehaviorSubject;
 
-public class SectorSelectionScreenFragment extends DashboardFragment
+public class SectorSelectionScreenFragment extends BaseFragment
 {
     private static final int MAX_SELECTABLE_SECTORS = 3;
 

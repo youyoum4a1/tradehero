@@ -24,7 +24,7 @@ import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.market.MarketRegion;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
@@ -46,7 +46,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 
-public class ExchangeSelectionScreenFragment extends DashboardFragment
+public class ExchangeSelectionScreenFragment extends BaseFragment
 {
     private static final int MAX_SELECTABLE_EXCHANGES = 3;
     private static final int MAX_TOP_STOCKS = 6;

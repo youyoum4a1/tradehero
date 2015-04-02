@@ -12,6 +12,7 @@ import butterknife.InjectViews;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -25,7 +26,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.subjects.BehaviorSubject;
 
-public class OnBoardLastFragment extends DashboardFragment
+public class OnBoardLastFragment extends BaseFragment
 {
     @Inject SecurityCompactListCacheRx securityCompactListCache;
 

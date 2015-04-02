@@ -23,7 +23,7 @@ import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.key.ExchangeSectorSecurityListTypeNew;
 import com.tradehero.th.api.security.key.SecurityListType;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
@@ -42,7 +42,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
 
-public class StockSelectionScreenFragment extends DashboardFragment
+public class StockSelectionScreenFragment extends BaseFragment
 {
     private static final int MAX_SELECTABLE_SECURITIES = 10;
 
