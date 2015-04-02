@@ -21,6 +21,7 @@ import javax.inject.Singleton;
                 DashboardActivity.class,
                 FacebookShareActivity.class,
                 FriendsInvitationActivity.class,
+                HomeActivity.class,
                 SettingsActivity.class,
                 SplashActivity.class,
                 StoreScreenActivity.class,

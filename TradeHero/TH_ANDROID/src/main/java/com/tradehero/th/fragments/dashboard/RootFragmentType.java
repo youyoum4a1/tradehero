@@ -11,13 +11,12 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.AdminSettingsActivity;
 import com.tradehero.th.activities.AlertManagerActivity;
 import com.tradehero.th.activities.FriendsInvitationActivity;
+import com.tradehero.th.activities.HomeActivity;
 import com.tradehero.th.activities.SettingsActivity;
 import com.tradehero.th.activities.StoreScreenActivity;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
-import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
-import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
@@ -42,8 +41,8 @@ public enum RootFragmentType
             R.string.dashboard_home,
             R.string.dashboard_home_key,
             R.color.transparent,
-            HomeFragment.class,
             null,
+            HomeActivity.class,
             AnalyticsConstants.TabBar_Home),
     UPDATE_CENTER(R.layout.residemenu_text_item,
             R.string.dashboard_message_center,

@@ -69,22 +69,17 @@ public final class HomeFragment extends BaseWebViewFragment
     @Inject HomeContentCacheRx homeContentCache;
     @Inject THRouter thRouter;
 
-    @RouteProperty(ROUTER_SOCIALID) String socialId;
-    @RouteProperty(ROUTER_SOCIALUSERID) String socialUserId;
-    @RouteProperty(ROUTER_USERID) Integer userId;
+    @RouteProperty(ROUTER_SOCIAL_ID) String socialId;
+    @RouteProperty(ROUTER_SOCIAL_USER_ID) String socialUserId;
+    @RouteProperty(ROUTER_USER_ID) Integer userId;
 
-    public static final String ROUTER_SOCIALID = "socialId";
-    public static final String ROUTER_SOCIALUSERID = "socialUserId";
-    public static final String ROUTER_USERID = "userId";
+    public static final String ROUTER_SOCIAL_ID = "socialId";
+    public static final String ROUTER_SOCIAL_USER_ID = "socialUserId";
+    public static final String ROUTER_USER_ID = "userId";
 
     protected SocialFriendHandler socialFriendHandler;
     private UserFriendsDTO userFriendsDTO;
     @Nullable private Subscription inviteSubscription;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
 
     @LayoutRes @Override protected int getLayoutResId()
     {
@@ -136,13 +131,6 @@ public final class HomeFragment extends BaseWebViewFragment
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void onDestroyView()
-    {
-        ButterKnife.reset(this);
-        homeContentCache.get(currentUserId.toUserBaseKey());
-        super.onDestroyView();
-    }
-
     @Override public void onResume()
     {
         super.onResume();
@@ -160,8 +148,15 @@ public final class HomeFragment extends BaseWebViewFragment
 
     @Override public void onPause()
     {
-        super.onPause();
         resetRoutingData();
+        super.onPause();
+    }
+
+    @Override public void onDestroyView()
+    {
+        ButterKnife.reset(this);
+        homeContentCache.get(currentUserId.toUserBaseKey());
+        super.onDestroyView();
     }
 
     private void resetRoutingData()
@@ -170,9 +165,9 @@ public final class HomeFragment extends BaseWebViewFragment
         Bundle args = getArguments();
         if (args != null)
         {
-            args.remove(ROUTER_SOCIALID);
-            args.remove(ROUTER_SOCIALUSERID);
-            args.remove(ROUTER_USERID);
+            args.remove(ROUTER_SOCIAL_ID);
+            args.remove(ROUTER_SOCIAL_USER_ID);
+            args.remove(ROUTER_USER_ID);
         }
         socialId = null;
         socialUserId = null;

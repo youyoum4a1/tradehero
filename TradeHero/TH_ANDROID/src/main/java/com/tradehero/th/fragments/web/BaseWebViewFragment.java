@@ -12,19 +12,15 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.common.utils.SDKUtils;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.DashboardTabHost;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.network.NetworkConstants;
-import dagger.Lazy;
 import java.util.Map;
-import javax.inject.Inject;
 import timber.log.Timber;
 
-public class BaseWebViewFragment extends DashboardFragment
+public class BaseWebViewFragment extends BaseFragment
 {
     private static final String BUNDLE_KEY_URL = BaseWebViewFragment.class.getName() + ".url";
 
@@ -34,8 +30,6 @@ public class BaseWebViewFragment extends DashboardFragment
     protected THIntentPassedListener thIntentPassedListener;
     protected THWebViewClient thWebViewClient;
     protected THWebChromeClient webChromeClient;
-
-    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     public static void putUrl(@NonNull Bundle args, @NonNull String url)
     {
@@ -121,18 +115,6 @@ public class BaseWebViewFragment extends DashboardFragment
         {
             activity.setProgress(newProgress * 100);
         }
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        dashboardTabHost.get().animateHide();
-    }
-
-    @Override public void onPause()
-    {
-        dashboardTabHost.get().animateShow();
-        super.onPause();
     }
 
     @Override public void onDestroyView()
