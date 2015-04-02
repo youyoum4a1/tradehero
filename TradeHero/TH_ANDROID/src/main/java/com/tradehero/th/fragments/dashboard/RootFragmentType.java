@@ -23,41 +23,13 @@ import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 public enum RootFragmentType
 {
-    ME(R.layout.home_selector,
-            R.string.dashboard_timeline,
-            R.string.dashboard_timeline_key,
-            R.drawable.icn_menu_home,
-            MeTimelineFragment.class,
-            null,
-            AnalyticsConstants.TabBar_Me),
-    HOME(R.layout.residemenu_text_item,
-            R.string.dashboard_home,
-            R.string.dashboard_home_key,
-            R.color.transparent,
-            null,
-            HomeActivity.class,
-            AnalyticsConstants.TabBar_Home),
-    UPDATE_CENTER(R.layout.residemenu_text_item,
-            R.string.dashboard_message_center,
-            R.string.dashboard_message_center_key,
-            R.color.transparent,
-            null,
-            UpdateCenterActivity.class,
-            AnalyticsConstants.TabBar_UpdateCenter),
-    ALERTS(R.layout.residemenu_text_item,
-            R.string.dashboard_alerts,
-            R.string.dashboard_alerts_key,
-            R.color.transparent,
-            null,
-            AlertManagerActivity.class,
-            AnalyticsConstants.TabBar_Alerts),
+    // Tab host
     TRENDING(R.layout.tab_indicator_holo,
             R.string.dashboard_trending,
             R.string.dashboard_trending_key,
@@ -65,6 +37,13 @@ public enum RootFragmentType
             TrendingMainFragment.class,
             null,
             AnalyticsConstants.TabBar_Trade),
+    ME(R.layout.home_selector,
+            R.string.dashboard_timeline,
+            R.string.dashboard_timeline_key,
+            R.drawable.icn_menu_home,
+            MeTimelineFragment.class,
+            null,
+            AnalyticsConstants.TabBar_Me),
     DISCOVERY(R.layout.tab_indicator_holo,
             R.string.discovery,
             R.string.dashboard_discovery_key,
@@ -86,20 +65,28 @@ public enum RootFragmentType
             ContestCenterFragment.class,
             null,
             AnalyticsConstants.TabBar_ContestCenter),
-    TIMELINE(R.layout.home_selector,
-            R.string.dashboard_timeline,
-            R.string.dashboard_timeline_key,
-            R.color.transparent,
-            MeTimelineFragment.class,
-            null,
-            AnalyticsConstants.TabBar_Me),
-    STORE(R.layout.residemenu_text_item,
-            R.string.dashboard_store,
-            R.string.dashboard_store_key,
+    // Side menu
+    HOME(R.layout.residemenu_text_item,
+            R.string.dashboard_home,
+            R.string.dashboard_home_key,
             R.color.transparent,
             null,
-            StoreScreenActivity.class,
-            AnalyticsConstants.TabBar_Store),
+            HomeActivity.class,
+            AnalyticsConstants.TabBar_Home),
+    UPDATE_CENTER(R.layout.residemenu_text_item,
+            R.string.dashboard_message_center,
+            R.string.dashboard_message_center_key,
+            R.color.transparent,
+            null,
+            UpdateCenterActivity.class,
+            AnalyticsConstants.TabBar_UpdateCenter),
+    ALERTS(R.layout.residemenu_text_item,
+            R.string.dashboard_alerts,
+            R.string.dashboard_alerts_key,
+            R.color.transparent,
+            null,
+            AlertManagerActivity.class,
+            AnalyticsConstants.TabBar_Alerts),
     FRIEND_REFERRAL(R.layout.residemenu_text_item,
             R.string.dashboard_referral,
             R.string.dashboard_referral_key,
@@ -107,6 +94,13 @@ public enum RootFragmentType
             null,
             FriendsInvitationActivity.class,
             AnalyticsConstants.TabBar_FriendReferral),
+    STORE(R.layout.residemenu_text_item,
+            R.string.dashboard_store,
+            R.string.dashboard_store_key,
+            R.color.transparent,
+            null,
+            StoreScreenActivity.class,
+            AnalyticsConstants.TabBar_Store),
     SETTING(R.layout.residemenu_item_settings,
             R.string.dashboard_menu_settings,
             R.string.dashboard_menu_settings_key,
@@ -120,14 +114,7 @@ public enum RootFragmentType
             R.color.transparent,
             null,
             AdminSettingsActivity.class,
-            AnalyticsConstants.TabBar_AdminSettings),
-    DIVIDER(R.layout.residemenu_item_divider,
-            R.string.dashboard_divider,
-            R.string.dashboard_divider_key,
-            R.drawable.icn_menu_settings,
-            null,
-            null,
-            AnalyticsConstants.TabBar_Divider);
+            AnalyticsConstants.TabBar_AdminSettings);
 
     @LayoutRes private static final int DEFAULT_VIEW_LAYOUT_ID = R.layout.tab_indicator_holo;
 
@@ -164,27 +151,32 @@ public enum RootFragmentType
 
     @NonNull public static Collection<RootFragmentType> forResideMenu()
     {
-        List<RootFragmentType> forResideMenu = new ArrayList<>(Arrays.asList(
-                HOME, UPDATE_CENTER, ALERTS, FRIEND_REFERRAL, STORE, SETTING
-        ));
-        addAdminMenuIfNeeded(forResideMenu);
+        List<RootFragmentType> forResideMenu = new ArrayList<>();
+        for (RootFragmentType type: values())
+        {
+            if (type.activityClass != null)
+            {
+                forResideMenu.add(type);
+            }
+        }
+        if (Constants.RELEASE)
+        {
+            forResideMenu.remove(ADMIN_SETTINGS);
+        }
         return Collections.unmodifiableCollection(forResideMenu);
     }
 
     @NonNull public static Collection<RootFragmentType> forBottomBar()
     {
-        List<RootFragmentType> forBottomBar = Arrays.asList(
-                TRENDING, ME, DISCOVERY, COMMUNITY, CONTEST_CENTER
-        );
-        return Collections.unmodifiableCollection(forBottomBar);
-    }
-
-    private static void addAdminMenuIfNeeded(@NonNull List<RootFragmentType> forResideMenu)
-    {
-        if (!Constants.RELEASE)
+        List<RootFragmentType> forBottomBar = new ArrayList<>();
+        for (RootFragmentType type: values())
         {
-            forResideMenu.add(ADMIN_SETTINGS);
+            if (type.fragmentClass != null)
+            {
+                forBottomBar.add(type);
+            }
         }
+        return Collections.unmodifiableCollection(forBottomBar);
     }
 
     @NonNull public static RootFragmentType getInitialTab()
