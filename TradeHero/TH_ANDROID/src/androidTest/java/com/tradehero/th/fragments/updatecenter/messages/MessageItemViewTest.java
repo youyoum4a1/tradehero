@@ -12,7 +12,6 @@ import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
 import java.io.IOException;
 import javax.inject.Inject;
-import static org.fest.assertions.api.Assertions.assertThat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,14 +24,14 @@ public class MessageItemViewTest
 {
     @Inject @ForApp ObjectMapper objectMapper;
     @Inject MessageHeaderCacheRx messageHeaderCache;
-    private MessageItemView messageItemView;
+    private View messageItemView;
     private MessageHeaderDTO messageHeaderDTO;
 
     @Before public void setUp() throws IOException
     {
         ActivityController<DashboardActivityExtended> activityController = Robolectric.buildActivity(DashboardActivityExtended.class).create().start();
         DashboardActivity activity = activityController.get();
-        messageItemView = (MessageItemView) LayoutInflater.from(activity).inflate(R.layout.message_list_item, null);
+        messageItemView = LayoutInflater.from(activity).inflate(R.layout.message_center_listview_item, null);
 
         messageHeaderDTO = objectMapper.readValue(
                 getClass().getResourceAsStream("/com/tradehero/th/api/discussion" + "/MessageHeaderDTOUnreadBody1.json"),

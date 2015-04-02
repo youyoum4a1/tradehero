@@ -88,7 +88,6 @@ import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
-import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
@@ -698,7 +697,6 @@ public class DashboardActivity extends BaseActivity
                     MeTimelineFragment.class,
                     NotificationsCenterFragment.class,
                     MessagesCenterNewFragment.class,
-                    MessagesCenterFragment.class,
                     UpdateCenterFragment.class,
                     TrendingStockFragment.class,
                     FriendsInvitationFragment.class,

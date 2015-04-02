@@ -31,7 +31,7 @@ import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
-import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
+import com.tradehero.th.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
@@ -295,7 +295,7 @@ public class THRouterTest
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(UpdateCenterFragment.class);
 
         UpdateCenterFragment updateCenterFragment = (UpdateCenterFragment) dashboardNavigator.getCurrentFragment();
-        assertThat(updateCenterFragment.getCurrentFragment()).isInstanceOf(MessagesCenterFragment.class);
+        assertThat(updateCenterFragment.getCurrentFragment()).isInstanceOf(MessagesCenterNewFragment.class);
     }
 
     @Test public void shouldOpenTrendingScreen()
