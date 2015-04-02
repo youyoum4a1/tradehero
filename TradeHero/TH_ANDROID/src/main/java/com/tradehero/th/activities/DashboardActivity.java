@@ -355,7 +355,7 @@ public class DashboardActivity extends BaseActivity
                 navigator.launchActivity(AdminSettingsActivity.class);
                 return true;
             case R.id.hardware_menu_settings:
-                pushFragmentIfNecessary(SettingsFragment.class);
+                navigator.launchActivity(SettingsActivity.class);
                 return true;
             case R.id.hardware_menu_about:
                 pushFragmentIfNecessary(AboutFragment.class);

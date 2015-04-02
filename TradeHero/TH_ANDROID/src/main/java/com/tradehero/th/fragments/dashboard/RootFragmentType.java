@@ -11,6 +11,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.AdminSettingsActivity;
 import com.tradehero.th.activities.AlertManagerActivity;
 import com.tradehero.th.activities.FriendsInvitationActivity;
+import com.tradehero.th.activities.SettingsActivity;
 import com.tradehero.th.activities.StoreScreenActivity;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
@@ -111,8 +112,8 @@ public enum RootFragmentType
             R.string.dashboard_menu_settings,
             R.string.dashboard_menu_settings_key,
             R.color.transparent,
-            SettingsFragment.class,
             null,
+            SettingsActivity.class,
             AnalyticsConstants.TabBar_Settings),
     ADMIN_SETTINGS(R.layout.residemenu_text_item,
             R.string.dashboard_admin_settings,

@@ -133,6 +133,12 @@
           android:screenOrientation="fullSensor"
           />
       <activity
+          android:name=".activities.SettingsActivity"
+          android:label="@string/settings"
+          android:windowSoftInputMode="adjustResize"
+          android:screenOrientation="fullSensor"
+          />
+      <activity
           android:name=".activities.FriendsInvitationActivity"
           android:label="@string/action_invite"
           android:windowSoftInputMode="adjustResize"

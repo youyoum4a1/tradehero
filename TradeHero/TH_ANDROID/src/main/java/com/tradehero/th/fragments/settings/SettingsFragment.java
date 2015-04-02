@@ -93,7 +93,7 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 @Routable("settings")
-public final class SettingsFragment extends DashboardPreferenceFragment
+public final class SettingsFragment extends BasePreferenceFragment
 {
     private static final Pair<Long, TimeUnit> APPARENT_DURATION = Pair.create(500l, TimeUnit.MILLISECONDS);
     @Inject CurrentUserId currentUserId;
@@ -166,7 +166,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                     (int) getResources().getDimension(R.dimen.setting_padding_top),
                     (int) getResources().getDimension(R.dimen.setting_padding_right),
                     (int) getResources().getDimension(R.dimen.setting_padding_bottom));
-            listView.setOnScrollListener(dashboardBottomTabsScrollListener.get());
         }
         fetchUserProfile();
         initPreferenceClickHandlers();
