@@ -133,6 +133,12 @@
           android:screenOrientation="fullSensor"
           />
       <activity
+          android:name=".activities.FriendsInvitationActivity"
+          android:label="@string/action_invite"
+          android:windowSoftInputMode="adjustResize"
+          android:screenOrientation="fullSensor"
+          />
+      <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
             android:label="@string/app_name"

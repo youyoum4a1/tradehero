@@ -20,6 +20,7 @@ import javax.inject.Singleton;
                 AuthenticationActivity.class,
                 DashboardActivity.class,
                 FacebookShareActivity.class,
+                FriendsInvitationActivity.class,
                 SplashActivity.class,
                 StoreScreenActivity.class,
                 WXEntryActivity.class,

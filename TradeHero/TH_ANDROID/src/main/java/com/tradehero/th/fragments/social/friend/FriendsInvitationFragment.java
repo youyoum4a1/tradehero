@@ -33,7 +33,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
@@ -56,7 +56,7 @@ import rx.functions.Action1;
 import timber.log.Timber;
 
 @Routable("refer-friends")
-public class FriendsInvitationFragment extends DashboardFragment
+public class FriendsInvitationFragment extends BaseFragment
         implements SocialFriendUserView.OnElementClickListener
 {
     @InjectView(R.id.social_friend_type_list) ListView socialListView;
@@ -115,8 +115,6 @@ public class FriendsInvitationFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        socialListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-        friendsListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         restoreSavedData(savedInstanceState);
     }
 

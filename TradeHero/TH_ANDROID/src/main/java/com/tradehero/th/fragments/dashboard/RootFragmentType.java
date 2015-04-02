@@ -10,13 +10,13 @@ import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AdminSettingsActivity;
 import com.tradehero.th.activities.AlertManagerActivity;
+import com.tradehero.th.activities.FriendsInvitationActivity;
 import com.tradehero.th.activities.StoreScreenActivity;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
@@ -104,8 +104,8 @@ public enum RootFragmentType
             R.string.dashboard_referral,
             R.string.dashboard_referral_key,
             R.color.transparent,
-            FriendsInvitationFragment.class,
             null,
+            FriendsInvitationActivity.class,
             AnalyticsConstants.TabBar_FriendReferral),
     SETTING(R.layout.residemenu_item_settings,
             R.string.dashboard_menu_settings,

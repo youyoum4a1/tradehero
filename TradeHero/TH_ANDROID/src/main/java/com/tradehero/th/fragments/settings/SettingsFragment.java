@@ -14,7 +14,6 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.preference.PreferenceFragment;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +31,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.FriendsInvitationActivity;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.i18n.LanguageDTOFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -46,7 +46,6 @@ import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.billing.report.PurchaseReportResult;
 import com.tradehero.th.fragments.location.LocationListFragment;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -96,7 +95,6 @@ import timber.log.Timber;
 @Routable("settings")
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
-    private static final String KEY_SOCIAL_NETWORK_TO_CONNECT = SettingsFragment.class.getName() + ".socialNetworkToConnectKey";
     private static final Pair<Long, TimeUnit> APPARENT_DURATION = Pair.create(500l, TimeUnit.MILLISECONDS);
     @Inject CurrentUserId currentUserId;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
@@ -112,16 +110,16 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject protected PushNotificationManager pushNotificationManager;
     @Inject protected UserServiceWrapper userServiceWrapper;
     @Nullable protected UserTranslationSettingDTO userTranslationSettingDTO;
-    @Inject @NonNull protected UserTranslationSettingPreference userTranslationSettingPreference;
-    @Inject @NonNull protected TranslationTokenCacheRx translationTokenCache;
+    @Inject protected UserTranslationSettingPreference userTranslationSettingPreference;
+    @Inject protected TranslationTokenCacheRx translationTokenCache;
     @Nullable protected Subscription translationTokenCacheSubscription;
     @Nullable protected Subscription sequenceSubscription;
     @Inject protected SocialShareHelper socialShareHelper;
-    @Inject @NonNull protected SocialServiceWrapper socialServiceWrapper;
-    @Inject @NonNull protected UserProfileCacheRx userProfileCache;
+    @Inject protected SocialServiceWrapper socialServiceWrapper;
+    @Inject protected UserProfileCacheRx userProfileCache;
     protected Subscription userProfileCacheSubscription;
 
-    @Inject @NonNull @AuthHeader protected String authToken;
+    @Inject @AuthHeader protected String authToken;
     private UserProfileDTO userProfileDTO;
 
     @Nullable protected CheckBoxPreference socialConnectFB;
@@ -618,7 +616,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
         else if(key.equals(getString(R.string.key_settings_primary_restore_purchases)))
         {
-            handleRestorPurchaseClick();
+            handleRestorePurchaseClick();
         }
         else if(key.equals(getString(R.string.key_settings_primary_referral_code)))
         {
@@ -659,7 +657,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     public void handleTopBannerClick()
     {
-        navigator.get().pushFragment(FriendsInvitationFragment.class, null, null);
+        navigator.get().launchActivity(FriendsInvitationActivity.class);
     }
 
     public void handleSendLoveClick()
@@ -706,8 +704,9 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         navigator.get().pushFragment(SettingsTransactionHistoryFragment.class);
     }
 
-    public void handleRestorPurchaseClick()
+    public void handleRestorePurchaseClick()
     {
+        //noinspection unchecked
         onStopSubscriptions.add(billingInteractorRx.restorePurchasesAndClear()
                 .subscribe(new Observer<PurchaseReportResult>()
                 {
@@ -771,31 +770,29 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     public void handleResetHelpScreenClick()
     {
-        ProgressDialog progressDialog = null;
-        View view = null;
-        PreferenceFragment preferenceFragmentCopy = this;
         resetHelpScreen.set(true);
-        if (preferenceFragmentCopy != null)
+        View view = getView();
+        Context activityContext = getActivity();
+        final ProgressDialog progressDialog;
+        if (activityContext != null)
         {
-            view = preferenceFragmentCopy.getView();
-            Context activityContext = preferenceFragmentCopy.getActivity();
-            if (activityContext != null)
-            {
-                progressDialog = ProgressDialog.show(activityContext,
-                        preferenceFragmentCopy.getString(R.string.settings_misc_reset_help_screen),
-                        "",
-                        true);
-            }
+            progressDialog = ProgressDialog.show(activityContext,
+                    getString(R.string.settings_misc_reset_help_screen),
+                    "",
+                    true);
+        }
+        else
+        {
+            progressDialog = null;
         }
 
         if (view != null && progressDialog != null)
         {
-            final ProgressDialog finalProgressDialog = progressDialog;
             view.postDelayed(new Runnable()
             {
                 @Override public void run()
                 {
-                    finalProgressDialog.hide();
+                    progressDialog.hide();
                 }
             }, 500);
         }
@@ -1074,18 +1071,17 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     protected void showIsMainLogin(CheckBoxPreference cb,SocialNetworkEnum se)
     {
-        CheckBoxPreference clickablePrefCopy = cb;
-        if (clickablePrefCopy != null)
+        if (cb != null)
         {
             boolean mainLogin = isMainLogin(se);
-            clickablePrefCopy.setEnabled(!mainLogin);
+            cb.setEnabled(!mainLogin);
             if (mainLogin)
             {
-                clickablePrefCopy.setSummary(R.string.authentication_setting_is_current_login);
+                cb.setSummary(R.string.authentication_setting_is_current_login);
             }
             else
             {
-                clickablePrefCopy.setSummary(null);
+                cb.setSummary(null);
             }
         }
     }
@@ -1099,8 +1095,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     protected boolean changeSocialStatus(SocialNetworkEnum socialNetworkEnum ,boolean enable)
     {
-        Activity activityContext = null;
-        activityContext = getActivity();
+        final Activity activityContext = getActivity();
 
         if (activityContext != null)
         {
@@ -1125,7 +1120,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 sequence = confirmUnLinkRx(socialNetworkEnum , activityContext);
             }
             unsubscribe(sequenceSubscription);
-            final Activity finalActivityContext = activityContext;
             sequenceSubscription = sequence.observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<UserProfileDTO>()
@@ -1139,7 +1133,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                             {
                                 @Override public void call(Throwable e)
                                 {
-                                    SettingsFragment.this.onChangeStatusError(finalActivityContext, e);
+                                    SettingsFragment.this.onChangeStatusError(activityContext, e);
                                 }
                             });
         }
