@@ -15,8 +15,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
-import com.tradehero.th.BottomTabs;
-import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.BaseResponseDTO;
@@ -26,7 +24,6 @@ import com.tradehero.th.api.notification.NotificationListKey;
 import com.tradehero.th.api.notification.PaginatedNotificationDTO;
 import com.tradehero.th.api.notification.PaginatedNotificationListKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
@@ -34,7 +31,6 @@ import com.tradehero.th.network.service.NotificationServiceWrapper;
 import com.tradehero.th.persistence.notification.NotificationListCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.EndlessScrollingHelper;
-import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
@@ -51,14 +47,12 @@ public class NotificationsView extends BetterViewAnimator
     @Inject Lazy<NotificationListCacheRx> notificationListCache;
     @Inject NotificationServiceWrapper notificationServiceWrapper;
     @Inject CurrentUserId currentUserId;
-    @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsListViewScrollListener;
-    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     private PaginatedNotificationListKey paginatedNotificationListKey;
     private boolean loading;
     private int nextPageDelta;
 
-    @NonNull private SubscriptionList subscriptionList;
+    private SubscriptionList subscriptionList;
     private NotificationListKey notificationListKey;
     private ArrayDTOAdapterNew<NotificationDTO, NotificationItemView> notificationListAdapter;
     private SwipeRefreshLayout.OnRefreshListener notificationRefreshListener;
@@ -113,25 +107,12 @@ public class NotificationsView extends BetterViewAnimator
         notificationList.setEmptyView(emptyView);
 
         // scroll event will activate fetch task automatically
-        notificationList.setOnScrollListener(
-                new MultiScrollListener(new NotificationListOnScrollListener(), dashboardBottomTabsListViewScrollListener));
+        notificationList.setOnScrollListener(new NotificationListOnScrollListener());
 
         createOnRefreshListener();
         swipeRefreshLayout.setOnRefreshListener(notificationRefreshListener);
 
         fetchNextPageIfNecessary();
-
-        if (readAllLayout != null)
-        {
-            readAllLayout.setTranslationY(dashboardTabHost.get().getTranslationY());
-        }
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
-        {
-            @Override public void onTranslate(float x, float y)
-            {
-                readAllLayout.setTranslationY(y);
-            }
-        });
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -155,8 +136,6 @@ public class NotificationsView extends BetterViewAnimator
         notificationList.setOnScrollListener(null);
         swipeRefreshLayout.setOnRefreshListener(null);
         notificationList.setOnItemClickListener(null);
-
-        dashboardTabHost.get().setOnTranslate(null);
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();

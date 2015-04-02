@@ -28,7 +28,7 @@ import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -52,7 +52,7 @@ import timber.log.Timber;
         RunnableInvalidateNotificationList.class,
 })
 @Routable("updatecenter/:pageIndex")
-public class UpdateCenterFragment extends DashboardFragment
+public class UpdateCenterFragment extends BaseFragment
         implements OnTitleNumberChangeListener,
         ResideMenu.OnMenuListener
 {

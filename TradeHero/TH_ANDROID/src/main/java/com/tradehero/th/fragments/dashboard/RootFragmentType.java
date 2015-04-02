@@ -14,12 +14,12 @@ import com.tradehero.th.activities.FriendsInvitationActivity;
 import com.tradehero.th.activities.HomeActivity;
 import com.tradehero.th.activities.SettingsActivity;
 import com.tradehero.th.activities.StoreScreenActivity;
+import com.tradehero.th.activities.UpdateCenterActivity;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
-import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import java.util.ArrayList;
@@ -48,8 +48,8 @@ public enum RootFragmentType
             R.string.dashboard_message_center,
             R.string.dashboard_message_center_key,
             R.color.transparent,
-            UpdateCenterFragment.class,
             null,
+            UpdateCenterActivity.class,
             AnalyticsConstants.TabBar_UpdateCenter),
     ALERTS(R.layout.residemenu_text_item,
             R.string.dashboard_alerts,

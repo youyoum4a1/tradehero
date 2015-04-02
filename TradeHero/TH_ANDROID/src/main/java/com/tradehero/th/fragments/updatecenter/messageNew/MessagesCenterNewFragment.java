@@ -24,7 +24,6 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.common.widget.swipe.util.Attributes;
 import com.tradehero.route.Routable;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -34,8 +33,7 @@ import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.DashboardTabHost;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -48,7 +46,6 @@ import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.route.THRouter;
-import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -59,11 +56,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-/**
- * Created by huhaiping on 15/3/20.
- */
 @Routable("messages")
-public class MessagesCenterNewFragment extends DashboardFragment
+public class MessagesCenterNewFragment extends BaseFragment
         implements
         ResideMenu.OnMenuListener, MessageListViewAdapter.OnMessageItemClicked
 {
@@ -77,7 +71,6 @@ public class MessagesCenterNewFragment extends DashboardFragment
     @Inject Picasso picasso;
     @Inject PrettyTime prettyTime;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
-    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
     @Nullable private MessageListKey nextMoreRecentMessageListKey;
 
     @InjectView(R.id.layout_listview) RelativeLayout layout_listview;
@@ -90,11 +83,6 @@ public class MessagesCenterNewFragment extends DashboardFragment
 
     private boolean hasMorePage = true;
     private MessageListViewAdapter listAdapter;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
@@ -125,36 +113,20 @@ public class MessagesCenterNewFragment extends DashboardFragment
         {
             Timber.d("onStart don't have to fetch again");
             hideLoadingView();
-            setReadAllLayoutVisable();
+            setReadAllLayoutVisible();
         }
     }
 
     @Override public void onResume()
     {
         super.onResume();
-
-        if (readAllLayout != null)
-        {
-            readAllLayout.setTranslationY(dashboardTabHost.get().getTranslationY());
-        }
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
-        {
-            @Override public void onTranslate(float x, float y)
-            {
-                if (readAllLayout != null)
-                {
-                    readAllLayout.setTranslationY(y);
-                }
-            }
-        });
-        setReadAllLayoutVisable();
+        setReadAllLayoutVisible();
     }
 
     private void init(View view)
     {
         HierarchyInjector.inject(this);
         ButterKnife.inject(this, view);
-        listView.setOnScrollListener(new MultiScrollListener(new OnScrollListener(null), dashboardBottomTabsListViewScrollListener.get()));
         if (listAdapter == null)
         {
             listAdapter = new MessageListViewAdapter(getActivity(), prettyTime, picasso, userPhotoTransformation);
@@ -307,7 +279,7 @@ public class MessagesCenterNewFragment extends DashboardFragment
     {
         showListView();
         appendMessagesList(value);
-        setReadAllLayoutVisable();
+        setReadAllLayoutVisible();
     }
 
     private void appendMessagesList(List<MessageHeaderDTO> messageHeaderDTOs)
@@ -327,7 +299,7 @@ public class MessagesCenterNewFragment extends DashboardFragment
         }
     }
 
-    private void setReadAllLayoutVisable()
+    private void setReadAllLayoutVisible()
     {
         boolean haveUnread = false;
         if (listAdapter == null) return;
@@ -589,7 +561,7 @@ public class MessagesCenterNewFragment extends DashboardFragment
     private void updateAllAsRead()
     {
         setAllMessageRead();
-        setReadAllLayoutVisable();
+        setReadAllLayoutVisible();
         requestUpdateTabCounter();
     }
 

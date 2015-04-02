@@ -5,16 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
   <RelativeLayout
       android:id="@+id/layout_listview"
       android:layout_width="match_parent"
       android:layout_height="match_parent">
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-      <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+
+      <ListView
           android:id="@+id/listview"
           android:layout_width="match_parent"
           android:layout_height="match_parent"/>
@@ -28,8 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/dashboard_tabhost_height"
         />
+
   </RelativeLayout>
 
 
@@ -61,6 +62,5 @@
       android:layout_centerInParent="true"
       android:visibility="gone"
       />
-
 
 </RelativeLayout>

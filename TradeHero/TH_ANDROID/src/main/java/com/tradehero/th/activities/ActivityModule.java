@@ -25,6 +25,7 @@ import javax.inject.Singleton;
                 SettingsActivity.class,
                 SplashActivity.class,
                 StoreScreenActivity.class,
+                UpdateCenterActivity.class,
                 WXEntryActivity.class,
         },
         staticInjections = {

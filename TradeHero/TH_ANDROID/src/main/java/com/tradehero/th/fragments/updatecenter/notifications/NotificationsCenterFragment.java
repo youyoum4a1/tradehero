@@ -7,11 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import javax.inject.Inject;
 
 @Routable("notifications")
-public class NotificationsCenterFragment extends DashboardFragment
+public class NotificationsCenterFragment extends BaseFragment
 {
     @Inject Context doNotRemoveOrFails;
 

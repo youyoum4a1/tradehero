@@ -1,9 +1,6 @@
 package com.tradehero.th.fragments.updatecenter;
 
 import com.tradehero.th.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
-import com.tradehero.th.fragments.updatecenter.messages.MessageItemView;
-import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
-import com.tradehero.th.fragments.updatecenter.messages.MessagesView;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationItemView;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
@@ -16,12 +13,9 @@ import dagger.Module;
                 NotificationsView.class,
                 NotificationItemView.class,
 
-                MessagesCenterFragment.class,
                 MessagesCenterNewFragment.class,
                 NotificationsCenterFragment.class,
 
-                MessagesView.class,
-                MessageItemView.class,
                 NotificationClickHandler.class,
         },
         library = true,

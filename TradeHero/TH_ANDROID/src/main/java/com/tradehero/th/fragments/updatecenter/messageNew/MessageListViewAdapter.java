@@ -32,7 +32,7 @@ public class MessageListViewAdapter extends BaseSwipeAdapter
         this.picasso = picasso;
         this.prettyTime = prettyTime;
         this.userPhotoTransformation = userPhotoTransformation;
-        messageHeaderDTOs = new ArrayList<MessageHeaderDTO>();
+        messageHeaderDTOs = new ArrayList<>();
     }
 
     public void setOnMessageItemClicked(OnMessageItemClicked messageItemClicked)
