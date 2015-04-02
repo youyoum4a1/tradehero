@@ -23,6 +23,7 @@ import javax.inject.Singleton;
                 FriendsInvitationActivity.class,
                 HomeActivity.class,
                 SettingsActivity.class,
+                SettingsProfileActivity.class,
                 SplashActivity.class,
                 StoreScreenActivity.class,
                 UpdateCenterActivity.class,

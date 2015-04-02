@@ -26,7 +26,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.fragments.authentication.AuthDataAccountAction;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.MakePairFunc2;
@@ -44,7 +44,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
 
-public class SettingsProfileFragment extends DashboardFragment
+public class SettingsProfileFragment extends BaseFragment
 {
     @InjectView(R.id.authentication_sign_up_button) protected Button updateButton;
     @InjectView(R.id.sign_up_form_wrapper) protected NotifyingScrollView scrollView;
@@ -67,7 +67,6 @@ public class SettingsProfileFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         updateButton.setText(R.string.update);
         referralCodeEditText.setVisibility(View.GONE);
-        scrollView.setOnScrollChangedListener(dashboardBottomTabScrollViewScrollListener.get());
         setHasOptionsMenu(true);
         try
         {

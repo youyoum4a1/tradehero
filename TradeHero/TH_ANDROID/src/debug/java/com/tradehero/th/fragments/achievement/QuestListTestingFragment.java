@@ -24,7 +24,7 @@ import com.tradehero.th.api.achievement.QuestBonusDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
 import com.tradehero.th.api.achievement.key.MockQuestBonusId;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.AchievementMockServiceWrapper;
 import com.tradehero.th.persistence.achievement.QuestBonusListCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
@@ -37,7 +37,7 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
-public class QuestListTestingFragment extends DashboardFragment
+public class QuestListTestingFragment extends BaseFragment
 {
     @InjectView(R.id.generic_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
     @InjectView(R.id.generic_ptr_list) protected ListView listView;

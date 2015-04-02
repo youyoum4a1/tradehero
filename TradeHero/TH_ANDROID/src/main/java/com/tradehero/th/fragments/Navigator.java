@@ -12,7 +12,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.settings.DashboardPreferenceFragment;
 import com.tradehero.th.utils.DeviceUtil;
 import timber.log.Timber;
 
@@ -95,8 +94,7 @@ class Navigator<ActivityType extends Activity>
     {
         if (args != null)
         {
-            if (DashboardFragment.class.isAssignableFrom(fragmentClass) ||
-                    DashboardPreferenceFragment.class.isAssignableFrom(fragmentClass))
+            if (DashboardFragment.class.isAssignableFrom(fragmentClass))
             {
                 ActionBarOwnerMixin.putKeyShowHomeAsUp(args, showHomeAsUp);
             }

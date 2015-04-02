@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.etiennelawlor.quickreturn.library.views.NotifyingScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/typography_scroll"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/typography_scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -130,6 +131,7 @@
           android:layout_marginBottom="@dimen/margin_medium"
           android:text="Button\n-14sp\n-all caps"
           tools:ignore="HardcodedText"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -250,6 +252,7 @@
           android:layout_marginBottom="@dimen/margin_medium"
           android:text="Button\n-14sp\n-all caps"
           tools:ignore="HardcodedText"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -370,7 +373,9 @@
           android:layout_marginBottom="@dimen/margin_medium"
           android:text="Button\n-14sp\n-all caps"
           tools:ignore="HardcodedText"/>
+
     </LinearLayout>
 
   </LinearLayout>
+
 </com.etiennelawlor.quickreturn.library.views.NotifyingScrollView>

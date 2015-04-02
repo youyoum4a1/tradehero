@@ -136,13 +136,19 @@
           android:name=".activities.SettingsActivity"
           android:label="@string/settings"
           android:windowSoftInputMode="adjustResize"
-          android:screenOrientation="fullSensor"
+          android:screenOrientation="portrait"
+          />
+      <activity
+          android:name=".activities.SettingsProfileActivity"
+          android:label="@string/settings"
+          android:windowSoftInputMode="adjustResize"
+          android:screenOrientation="portrait"
           />
       <activity
           android:name=".activities.FriendsInvitationActivity"
           android:label="@string/action_invite"
           android:windowSoftInputMode="adjustResize"
-          android:screenOrientation="fullSensor"
+          android:screenOrientation="portrait"
           />
       <activity
           android:name=".activities.HomeActivity"
@@ -154,7 +160,7 @@
           android:name=".activities.UpdateCenterActivity"
           android:label="@string/message_center_title"
           android:windowSoftInputMode="adjustResize"
-          android:screenOrientation="fullSensor"
+          android:screenOrientation="portrait"
           />
       <activity
             android:name=".wxapi.WXEntryActivity"

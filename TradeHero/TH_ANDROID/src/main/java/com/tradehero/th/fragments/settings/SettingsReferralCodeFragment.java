@@ -26,7 +26,7 @@ import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.share.dto.SocialDialogResult;
@@ -39,7 +39,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-public class SettingsReferralCodeFragment extends DashboardFragment
+public class SettingsReferralCodeFragment extends BaseFragment
 {
     private static final int VIEW_CLAIM = 0;
     private static final int VIEW_ALREADY_CLAIMED = 1;
@@ -99,6 +99,12 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     {
         ButterKnife.reset(this);
         super.onDestroyView();
+    }
+
+    @Override public void onDetach()
+    {
+        clipboardManager = null;
+        super.onDetach();
     }
 
     protected void fetchProfile()

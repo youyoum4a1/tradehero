@@ -36,12 +36,15 @@ abstract public class OneFragmentActivity extends BaseActivity
 
         navigator = new DashboardNavigator(this, R.id.realtabcontent);
 
-        navigator.pushFragment(
-                getInitialFragment(),
-                getInitialBundle(),
-                null,
-                getInitialFragment().getName(),
-                false);
+        if (savedInstanceState == null)
+        {
+            navigator.pushFragment(
+                    getInitialFragment(),
+                    getInitialBundle(),
+                    null,
+                    getInitialFragment().getName(),
+                    false);
+        }
     }
 
     @NonNull abstract protected Class<? extends Fragment> getInitialFragment();

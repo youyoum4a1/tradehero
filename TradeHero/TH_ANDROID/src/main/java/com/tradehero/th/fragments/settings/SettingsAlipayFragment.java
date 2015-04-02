@@ -21,7 +21,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
@@ -34,7 +34,7 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-public class SettingsAlipayFragment extends DashboardFragment
+public class SettingsAlipayFragment extends BaseFragment
 {
     @InjectView(R.id.settings_alipay_email_text) protected ValidatedText alipayAccountText;
     @InjectView(R.id.settings_alipay_id_text) protected ValidatedText alipayAccountIDText;

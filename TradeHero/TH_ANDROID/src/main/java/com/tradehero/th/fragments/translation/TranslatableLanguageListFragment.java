@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.translation;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Pair;
@@ -19,7 +20,7 @@ import com.tradehero.th.api.translation.TranslatableLanguageDTOFactory;
 import com.tradehero.th.api.translation.TranslatableLanguageDTOFactoryFactory;
 import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
@@ -32,7 +33,7 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
-public class TranslatableLanguageListFragment extends DashboardFragment
+public class TranslatableLanguageListFragment extends BaseFragment
 {
     @Inject TranslationTokenCacheRx translationTokenCache;
     @Inject TranslatableLanguageDTOFactoryFactory translatableLanguageDTOFactoryFactory;
@@ -43,10 +44,10 @@ public class TranslatableLanguageListFragment extends DashboardFragment
     @InjectView(android.R.id.list) ListView listView;
     @InjectView(android.R.id.empty) View emptyView;
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    @Override public void onAttach(Activity activity)
     {
-        super.onCreate(savedInstanceState);
-        itemAdapter = createAdapter();
+        super.onAttach(activity);
+        itemAdapter = new TranslatableLanguageItemAdapter(activity, R.layout.translatable_language_item);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -61,7 +62,6 @@ public class TranslatableLanguageListFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         listView.setAdapter(itemAdapter);
         listView.setEmptyView(emptyView);
-        listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
     @Override public void onResume()
@@ -74,7 +74,6 @@ public class TranslatableLanguageListFragment extends DashboardFragment
     {
         unsubscribe(tokenFetchSubscription);
         listView.setEmptyView(null);
-        listView.setOnScrollListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -86,9 +85,10 @@ public class TranslatableLanguageListFragment extends DashboardFragment
         super.onDestroy();
     }
 
-    protected TranslatableLanguageItemAdapter createAdapter()
+    @Override public void onDetach()
     {
-        return new TranslatableLanguageItemAdapter(getActivity(), R.layout.translatable_language_item);
+        itemAdapter = null;
+        super.onDetach();
     }
 
     protected void fetchToken()
@@ -152,6 +152,7 @@ public class TranslatableLanguageListFragment extends DashboardFragment
         itemAdapter.notifyDataSetChanged();
     }
 
+    @SuppressWarnings("unused")
     @OnItemClick(android.R.id.list)
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
     {

@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Pair;
@@ -17,9 +18,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
 import com.tradehero.th.api.users.UserTransactionHistoryListType;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.persistence.user.UserTransactionHistoryListCacheRx;
 import com.tradehero.th.rx.view.DismissDialogAction0;
+import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
@@ -27,7 +29,7 @@ import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class SettingsTransactionHistoryFragment extends DashboardFragment
+public class SettingsTransactionHistoryFragment extends BaseFragment
 {
     @InjectView(R.id.transaction_list) ListView transactionListView;
     private SettingsTransactionHistoryAdapter transactionListViewAdapter;
@@ -36,11 +38,11 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    @Override public void onAttach(Activity activity)
     {
-        super.onCreate(savedInstanceState);
+        super.onAttach(activity);
         transactionListViewAdapter = new SettingsTransactionHistoryAdapter(
-                getActivity(),
+                activity,
                 R.layout.fragment_settings_transaction_history_adapter);
     }
 
@@ -62,30 +64,19 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         transactionListView.setAdapter(transactionListViewAdapter);
-        transactionListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
-    @Override public void onResume()
+    @Override public void onStart()
     {
-        super.onResume();
-
+        super.onStart();
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_TransactionHistory));
-
         fetchTransactionList();
     }
 
-    @Override public void onDestroyView()
+    @Override public void onDetach()
     {
-        transactionListView.setOnScrollListener(null);
-        ButterKnife.reset(this);
-        super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        transactionListViewAdapter.setItems(null);
         transactionListViewAdapter = null;
-        super.onDestroy();
+        super.onDetach();
     }
 
     protected void fetchTransactionList()
@@ -95,6 +86,8 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
                 getString(R.string.alert_dialog_please_wait),
                 getString(R.string.authentication_connecting_tradehero_only),
                 true);
+        progressDialog.setCancelable(true);
+        progressDialog.setCanceledOnTouchOutside(true);
 
         UserTransactionHistoryListType key = new UserTransactionHistoryListType(currentUserId.toUserBaseKey());
         onStopSubscriptions.add(AppObservable.bindFragment(
@@ -103,6 +96,7 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
                 .observeOn(AndroidSchedulers.mainThread())
                 .finallyDo(new DismissDialogAction0(progressDialog))
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
+                .doOnNext(new DismissDialogAction1<Pair<UserTransactionHistoryListType, UserTransactionHistoryDTOList>>(progressDialog))
                 .subscribe(new SettingsTransactionHistoryListObserver()));
     }
 

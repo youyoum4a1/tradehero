@@ -15,12 +15,12 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.level.UserXPAchievementDTO;
 import com.tradehero.th.api.level.UserXPMultiplierDTO;
 import com.tradehero.th.api.level.UserXPMultiplierDTOList;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import java.util.List;
 import javax.inject.Inject;
 
-public class XpTestingFragment extends DashboardFragment
+public class XpTestingFragment extends BaseFragment
 {
     @InjectView(R.id.xp_test_reason) EditText xpReason;
     @InjectView(R.id.xp_test_from) EditText xpFrom;
@@ -46,6 +46,7 @@ public class XpTestingFragment extends DashboardFragment
         ButterKnife.inject(this, view);
     }
 
+    @SuppressWarnings("unused")
     @OnClick(R.id.xp_test_launch)
     public void onLaunch()
     {

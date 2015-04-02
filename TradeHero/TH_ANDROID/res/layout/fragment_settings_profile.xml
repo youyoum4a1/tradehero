@@ -33,7 +33,6 @@
         android:background="@drawable/basic_green_selector"
         android:text="@string/authentication_register"
         style="@style/TH.Button.Inverse"
-        android:layout_marginBottom="@dimen/dashboard_tabhost_height"
         />
 
   </LinearLayout>

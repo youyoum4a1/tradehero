@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.achievement;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
@@ -20,7 +21,7 @@ import com.tradehero.th.api.achievement.AchievementDefDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.persistence.achievement.AchievementCategoryListCacheRx;
 import com.tradehero.th.persistence.achievement.UserAchievementCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
@@ -29,7 +30,7 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-public class AchievementListTestingFragment extends DashboardFragment
+public class AchievementListTestingFragment extends BaseFragment
 {
     @InjectView(R.id.generic_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
     @InjectView(R.id.generic_ptr_list) protected ListView listView;
@@ -41,10 +42,10 @@ public class AchievementListTestingFragment extends DashboardFragment
 
     private ArrayAdapter<AchievementDefDTO> arrayAdapter;
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    @Override public void onAttach(Activity activity)
     {
-        super.onCreate(savedInstanceState);
-        arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1);
+        super.onAttach(activity);
+        arrayAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -72,10 +73,10 @@ public class AchievementListTestingFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
+    @Override public void onDetach()
     {
         arrayAdapter = null;
-        super.onDestroy();
+        super.onDetach();
     }
 
     protected void fetchAchievementCategories()

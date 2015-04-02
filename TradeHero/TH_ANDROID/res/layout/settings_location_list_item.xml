@@ -16,6 +16,7 @@
       android:layout_height="@dimen/medium_image_w_h"
       android:layout_centerVertical="true"
       android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
       android:contentDescription="@null"
       tools:src="@drawable/square_aq"
       />
@@ -25,9 +26,11 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/country_logo"
+      android:layout_toEndOf="@id/country_logo"
       android:layout_centerVertical="true"
       style="@style/TH.Subhead"
       android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginStart="@dimen/margin_small"
       tools:text="AQ"
       />
 
@@ -36,9 +39,11 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/country_code"
+      android:layout_toEndOf="@id/country_code"
       android:layout_centerVertical="true"
       style="@style/TH.Subhead"
       android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginStart="@dimen/margin_small"
       tools:text="AQ"
       />
 

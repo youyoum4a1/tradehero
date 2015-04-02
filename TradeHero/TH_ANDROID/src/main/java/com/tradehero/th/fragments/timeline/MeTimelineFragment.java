@@ -4,11 +4,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.SettingsProfileActivity;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import javax.inject.Inject;
@@ -48,7 +47,7 @@ public class MeTimelineFragment extends TimelineFragment
         switch (item.getItemId())
         {
             case R.id.user_profile_edit:
-                navigator.get().pushFragment(SettingsProfileFragment.class);
+                navigator.get().launchActivity(SettingsProfileActivity.class);
                 return true;
             default:
                 break;

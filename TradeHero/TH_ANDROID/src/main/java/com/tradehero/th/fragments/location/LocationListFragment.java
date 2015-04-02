@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.location;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,7 +23,7 @@ import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastAction;
@@ -37,24 +37,23 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-public class LocationListFragment extends DashboardFragment
+public class LocationListFragment extends BaseFragment
 {
     private LocationAdapter mListAdapter;
     @Nullable private Subscription updateCountryCodeSubscription;
     protected UserProfileDTO currentUserProfile;
 
-    @Inject Context context;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject UserProfileCacheRx userProfileCache;
 
     @InjectView(android.R.id.list) ListView listView;
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    @Override public void onAttach(Activity activity)
     {
-        super.onCreate(savedInstanceState);
+        super.onAttach(activity);
         mListAdapter = new LocationAdapter(
-                context,
+                activity,
                 R.layout.settings_location_list_item);
         mListAdapter.addAll(ListedLocationDTOFactory.createListToShow());
     }
@@ -70,7 +69,6 @@ public class LocationListFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         listView.setAdapter(mListAdapter);
-        listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -107,13 +105,10 @@ public class LocationListFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
+    @Override public void onDetach()
     {
-        if (mListAdapter != null)
-        {
-            mListAdapter = null;
-        }
-        super.onDestroy();
+        mListAdapter = null;
+        super.onDetach();
     }
 
     protected void fetchUserProfile()

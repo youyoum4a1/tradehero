@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,25 +17,21 @@ import android.widget.ScrollView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.metrics.Analytics;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.DashboardTabHost;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.models.staff.StaffDTO;
 import com.tradehero.th.models.staff.StaffDTOFactory;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
 import javax.inject.Inject;
 
-public class AboutFragment extends DashboardFragment
+public class AboutFragment extends BaseFragment
 {
     @InjectView(R.id.main_content_wrapper) View mainContentWrapper;
     @InjectView(R.id.staff_list_holder) LinearLayout staffList;
     @InjectView(R.id.about_scroll) ScrollView scrollView;
 
     @Inject Analytics analytics;
-    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     private ObjectAnimator rotateAnimator;
     private ObjectAnimator scrollAnimator;
@@ -112,13 +107,6 @@ public class AboutFragment extends DashboardFragment
     {
         super.onResume();
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_About));
-        dashboardTabHost.get().animateHide();
-    }
-
-    @Override public void onPause()
-    {
-        dashboardTabHost.get().animateShow();
-        super.onPause();
     }
 
     private void scrollToBottom()

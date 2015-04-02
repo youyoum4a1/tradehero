@@ -22,7 +22,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
@@ -36,7 +36,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-public class SettingsPayPalFragment extends DashboardFragment
+public class SettingsPayPalFragment extends BaseFragment
 {
     @InjectView(R.id.settings_paypal_email_text) protected ValidatedText paypalEmailText;
     @InjectView(R.id.settings_paypal_update_button) protected Button submitButton;
