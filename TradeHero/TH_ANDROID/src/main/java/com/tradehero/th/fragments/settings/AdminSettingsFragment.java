@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.settings;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,8 +9,6 @@ import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.util.Pair;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -46,7 +43,7 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-public class AdminSettingsFragment extends DashboardPreferenceFragment
+public class AdminSettingsFragment extends BasePreferenceFragment
 {
     private static final CharSequence KEY_USER_INFO = "user_info";
     private static final CharSequence KEY_SERVER_ENDPOINT = "server_endpoint";
@@ -84,7 +81,6 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     {
         initPreferenceClickHandlers();
         ListView listView = (ListView) view.findViewById(android.R.id.list);
-        listView.setOnScrollListener(dashboardBottomTabsScrollListener.get());
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -105,16 +101,6 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
                             }
                         },
                         new ToastOnErrorAction()));
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        ActionBar actionBar = getActivity().getActionBar();
-        if (actionBar != null)
-        {
-            actionBar.setTitle(getString(R.string.admin_setting));
-        }
     }
 
     private void initPreferenceClickHandlers()

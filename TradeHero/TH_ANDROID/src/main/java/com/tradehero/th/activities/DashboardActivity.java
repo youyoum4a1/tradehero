@@ -76,7 +76,6 @@ import com.tradehero.th.fragments.onboarding.OnBoardingBroadcastSignal;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
-import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.AskForReviewSuggestedDialogFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
@@ -353,7 +352,7 @@ public class DashboardActivity extends BaseActivity
                         new EmptyAction1<Throwable>());
                 return true;
             case R.id.admin_settings:
-                navigator.pushFragment(AdminSettingsFragment.class);
+                navigator.launchActivity(AdminSettingsActivity.class);
                 return true;
             case R.id.hardware_menu_settings:
                 pushFragmentIfNecessary(SettingsFragment.class);

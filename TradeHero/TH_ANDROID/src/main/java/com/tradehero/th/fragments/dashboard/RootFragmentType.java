@@ -8,13 +8,13 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.AdminSettingsActivity;
 import com.tradehero.th.activities.AlertManagerActivity;
 import com.tradehero.th.activities.StoreScreenActivity;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
-import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -118,8 +118,8 @@ public enum RootFragmentType
             R.string.dashboard_admin_settings,
             R.string.dashboard_admin_settings_key,
             R.color.transparent,
-            AdminSettingsFragment.class,
             null,
+            AdminSettingsActivity.class,
             AnalyticsConstants.TabBar_AdminSettings),
     DIVIDER(R.layout.residemenu_item_divider,
             R.string.dashboard_divider,

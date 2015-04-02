@@ -15,13 +15,14 @@ import javax.inject.Singleton;
 
 @Module(
         injects = {
-                SplashActivity.class,
-                DashboardActivity.class,
-                AuthenticationActivity.class,
+                AdminSettingsActivity.class,
                 AlertManagerActivity.class,
+                AuthenticationActivity.class,
+                DashboardActivity.class,
+                FacebookShareActivity.class,
+                SplashActivity.class,
                 StoreScreenActivity.class,
                 WXEntryActivity.class,
-                FacebookShareActivity.class,
         },
         staticInjections = {
         },
