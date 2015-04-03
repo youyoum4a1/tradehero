@@ -627,6 +627,8 @@
     <item name="android:paddingBottom">@dimen/margin_xsmall</item>
     <item name="android:layout_gravity">bottom|center</item>
     <item name="android:background">@drawable/basic_blue_selector</item>
+    <item name="android:gravity">center</item>
+    <item name="android:textColor">@color/white</item>
   </style>
 
   <style name="TH.OnBoardDialog" parent="TH.Dialog">
