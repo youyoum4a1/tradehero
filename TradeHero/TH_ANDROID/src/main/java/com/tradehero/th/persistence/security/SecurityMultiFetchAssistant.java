@@ -52,6 +52,9 @@ public class SecurityMultiFetchAssistant
                 }
             }
         }
+        if (remainingKeys.size() == 0) {
+            return Observable.just(returned);
+        }
         return securityServiceWrapper.getMultipleSecuritiesRx(remainingKeys)
                 .map(new Func1<
                         Map<Integer, SecurityCompactDTO>,
