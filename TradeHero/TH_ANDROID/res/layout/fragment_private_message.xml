@@ -26,7 +26,7 @@
       android:layout_height="match_parent"
       android:listSelector="@color/transparent"
       android:divider="@color/transparent"
-      android:paddingBottom="@dimen/margin_xxxlarge"
+      android:paddingBottom="@dimen/margin_xxlarge"
       android:clipToPadding="false"
       android:transcriptMode="alwaysScroll"
       />

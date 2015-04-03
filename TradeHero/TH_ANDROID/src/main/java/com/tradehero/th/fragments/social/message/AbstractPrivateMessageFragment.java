@@ -32,7 +32,6 @@ import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
@@ -134,26 +133,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         super.onStart();
         fetchCorrespondentProfile();
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
-        {
-            @Override public void onTranslate(float x, float y)
-            {
-                postWidget.setTranslationY(y);
-                int bottomElementsHeight = dashboardTabHost.get().getMeasuredHeight() + postWidget.getMeasuredHeight();
-                discussionList.setPadding(0, 0, 0, (int) (bottomElementsHeight - y + getResources().getDimension(R.dimen.margin_small)));
-            }
-        });
-    }
-
-    @Override public void onPause()
-    {
-        dashboardTabHost.get().setOnTranslate(null);
-        super.onPause();
     }
 
     @Override public void onDestroyOptionsMenu()

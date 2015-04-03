@@ -40,6 +40,11 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         super.onDestroyView();
     }
 
+    @Override protected void fetchTopic()
+    {
+        // Nothing to do
+    }
+
     @Nullable @Override protected View inflateTopicView()
     {
         return null; // TODO better?

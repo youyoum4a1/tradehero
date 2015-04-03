@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.social;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
@@ -11,17 +10,17 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.models.social.FollowRequest;
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 public class RelationsListItemAdapter extends ArrayDTOAdapterNew<AllowableRecipientDTO, RelationsListItemView>
 {
-    @NonNull private BehaviorSubject<FollowRequest> followRequestBehavior;
+    @NonNull private PublishSubject<FollowRequest> followRequestBehavior;
 
     //<editor-fold desc="Constructors">
     public RelationsListItemAdapter(@NonNull Context context, @LayoutRes int layoutResId)
     {
         super(context, layoutResId);
-        this.followRequestBehavior = BehaviorSubject.create();
+        this.followRequestBehavior = PublishSubject.create();
     }
     //</editor-fold>
 
@@ -30,9 +29,9 @@ public class RelationsListItemAdapter extends ArrayDTOAdapterNew<AllowableRecipi
         return followRequestBehavior.asObservable();
     }
 
-    @Override public RelationsListItemView getView(int position, View convertView, ViewGroup viewGroup)
+    @NonNull @Override protected RelationsListItemView inflate(int position, ViewGroup viewGroup)
     {
-        RelationsListItemView prepared = super.getView(position, convertView, viewGroup);
+        RelationsListItemView prepared = super.inflate(position, viewGroup);
         prepared.getFollowRequestObservable().subscribe(followRequestBehavior);
         return prepared;
     }

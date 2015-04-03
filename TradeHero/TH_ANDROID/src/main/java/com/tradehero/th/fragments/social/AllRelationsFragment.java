@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.social;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,9 +14,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnItemClick;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.fragment.HasSelectedItem;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
@@ -24,16 +25,16 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.AdapterViewUtils;
-import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
@@ -42,21 +43,28 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-public class AllRelationsFragment extends DashboardFragment
-        implements AdapterView.OnItemClickListener, HasSelectedItem
+public class AllRelationsFragment extends BaseFragment
+        implements HasSelectedItem
 {
-    List<AllowableRecipientDTO> mRelationsList;
     @Inject AllowableRecipientPaginatedCacheRx allowableRecipientPaginatedCache;
     @Inject UserMessagingRelationshipCacheRx userMessagingRelationshipCache;
+    @Inject protected THBillingInteractorRx userInteractorRx;
 
     @InjectView(R.id.sending_to_header) View sendingToHeader;
+    @InjectView(R.id.relations_list) ListView relationsListView;
 
+    private RelationsListItemAdapter relationsListItemAdapter;
+
+    List<AllowableRecipientDTO> relationsList;
     private AllowableRecipientDTO selectedItem;
 
-    private RelationsListItemAdapter mRelationsListItemAdapter;
-    @InjectView(R.id.relations_list) ListView mRelationsListView;
-
-    @Inject protected THBillingInteractorRx userInteractorRx;
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        relationsListItemAdapter = new RelationsListItemAdapter(
+                activity,
+                R.layout.relations_list_item);
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -68,12 +76,7 @@ public class AllRelationsFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        mRelationsListItemAdapter = new RelationsListItemAdapter(
-                getActivity(),
-                R.layout.relations_list_item);
-        mRelationsListView.setAdapter(mRelationsListItemAdapter);
-        mRelationsListView.setOnItemClickListener(this);
-        mRelationsListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        relationsListView.setAdapter(relationsListItemAdapter);
 
         sendingToHeader.setVisibility(isForReturn() ? View.GONE : View.VISIBLE);
     }
@@ -88,7 +91,7 @@ public class AllRelationsFragment extends DashboardFragment
     {
         super.onStart();
         downloadRelations();
-        onStopSubscriptions.add(mRelationsListItemAdapter.getFollowRequestObservable()
+        onStopSubscriptions.add(relationsListItemAdapter.getFollowRequestObservable()
                 .subscribe(
                         new Action1<FollowRequest>()
                         {
@@ -101,22 +104,17 @@ public class AllRelationsFragment extends DashboardFragment
                 ));
     }
 
-    @Override public void onPause()
-    {
-        AlertDialogUtil.dismissProgressDialog();
-        super.onPause();
-    }
-
     @Override public void onDestroyView()
     {
-        mRelationsListView.setAdapter(null);
-        mRelationsListView.setOnItemClickListener(null);
-        mRelationsListView.setOnScrollListener(null);
-        mRelationsListView = null;
-        mRelationsListItemAdapter.clear();
-        mRelationsListItemAdapter = null;
-        mRelationsList = null;
+        relationsListView.setAdapter(null);
+        ButterKnife.reset(this);
         super.onDestroyView();
+    }
+
+    @Override public void onDetach()
+    {
+        relationsListItemAdapter = null;
+        super.onDetach();
     }
 
     @Nullable @Override public AllowableRecipientDTO getSelectedItem()
@@ -132,47 +130,42 @@ public class AllRelationsFragment extends DashboardFragment
 
     public void downloadRelations()
     {
-        AlertDialogUtil
-                .showProgressDialog(getActivity(), getString(R.string.downloading_relations));
+        final DismissDialogAction0 dismissProgress = new DismissDialogAction0(
+                ProgressDialogUtil.create(getActivity(), getString(R.string.downloading_relations)));
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 allowableRecipientPaginatedCache.get(new SearchAllowableRecipientListType(null, null, null)))
                 .observeOn(AndroidSchedulers.mainThread())
+                .finallyDo(dismissProgress)
+                .doOnUnsubscribe(dismissProgress)
                 .subscribe(
                         new Action1<Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO>>()
                         {
                             @Override public void call(
                                     Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO> pair)
                             {
+                                dismissProgress.call();
                                 AllRelationsFragment.this.onNextRecipients(pair);
                             }
                         },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable error)
-                            {
-                                AllRelationsFragment.this.onErrorRecipients(error);
-                            }
-                        }));
+                        new ToastOnErrorAction()));
     }
 
     protected void onNextRecipients(Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO> pair)
     {
-        mRelationsList = pair.second.getData();
-        AlertDialogUtil.dismissProgressDialog();
-        mRelationsListItemAdapter.addAll(mRelationsList);
-        mRelationsListItemAdapter.notifyDataSetChanged();
+        relationsList = pair.second.getData();
+        relationsListItemAdapter.setNotifyOnChange(false);
+        relationsListItemAdapter.clear();
+        relationsListItemAdapter.addAll(relationsList);
+        relationsListItemAdapter.setNotifyOnChange(true);
+        relationsListItemAdapter.notifyDataSetChanged();
     }
 
-    protected void onErrorRecipients(Throwable e)
+    @SuppressWarnings("UnusedParameters")
+    @OnItemClick(R.id.relations_list)
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        THToast.show(new THException(e));
-        AlertDialogUtil.dismissProgressDialog();
-    }
-
-    @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
-        selectedItem = mRelationsList.get(position);
+        selectedItem = relationsList.get(position);
         if (isForReturn())
         {
             navigator.get().popFragment();
@@ -185,7 +178,7 @@ public class AllRelationsFragment extends DashboardFragment
     {
         Bundle args = new Bundle();
         NewPrivateMessageFragment.putCorrespondentUserBaseKey(args,
-                mRelationsList.get(position).user.getBaseKey());
+                relationsList.get(position).user.getBaseKey());
         navigator.get().pushFragment(NewPrivateMessageFragment.class, args);
     }
 
@@ -235,9 +228,9 @@ public class AllRelationsFragment extends DashboardFragment
                     @Override public void onNext(Pair<UserBaseKey, UserMessagingRelationshipDTO> pair)
                     {
                         isEmpty = false;
-                        mRelationsListItemAdapter.updateItem(userFollowed, pair.second);
+                        relationsListItemAdapter.updateItem(userFollowed, pair.second);
                         AdapterViewUtils
-                                .updateSingleRowWhere(mRelationsListView, AllowableRecipientDTO.class,
+                                .updateSingleRowWhere(relationsListView, AllowableRecipientDTO.class,
                                         new Predicate<AllowableRecipientDTO>()
                                         {
                                             @Override public boolean apply(AllowableRecipientDTO allowableRecipientDTO)

@@ -32,7 +32,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.MessageServiceWrapper;
@@ -51,7 +51,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-public class SendMessageFragment extends DashboardFragment
+public class SendMessageFragment extends BaseFragment
 {
     public static final String KEY_MESSAGE_TYPE = SendMessageFragment.class.getName() + ".messageType";
 
@@ -125,6 +125,11 @@ public class SendMessageFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         DeviceUtil.showKeyboardDelayed(inputText);
         displayMessageTypeView();
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
         fetchCurrentUserProfile();
     }
 

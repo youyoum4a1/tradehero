@@ -45,7 +45,6 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 
 @PreRoutable(preOpenRunnables = {
         RunnableInvalidateMessageList.class,
@@ -72,24 +71,43 @@ public class UpdateCenterFragment extends BaseFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         thRouter.inject(this);
         broadcastReceiver = createBroadcastReceiver();
-        Timber.d("onCreate");
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        Timber.d("onCreateView");
-        return addTabs();
+        mTabHost = new FragmentTabHost(getActivity());
+        mTabHost.setup(getActivity(), this.getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
+        TabWidget tabWidget = mTabHost.getTabWidget();
+        if (tabWidget != null)
+        // It otherwise fails in Robolectric because it does not have R.id.tabs in the TabHost
+        {
+            GraphicUtil.setBackground(tabWidget, getResources().getDrawable(R.drawable.bar_background));
+        }
+        Bundle args = getArguments();
+        if (args == null)
+        {
+            args = new Bundle();
+        }
+        UpdateCenterTabType[] types = UpdateCenterTabType.values();
+        for (UpdateCenterTabType tabTitle : types)
+        {
+            args = new Bundle(args);
+            THTabView tabView = THTabView.inflateWith(mTabHost.getTabWidget());
+            String title = getString(tabTitle.titleRes, 0);
+            tabView.setTitle(title);
+            TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabView);
+            mTabHost.addTab(tabSpec, tabTitle.tabClass, args);
+        }
+
+        return mTabHost;
     }
 
     @Override public void onResume()
     {
         super.onResume();
-
-        Timber.d("onResume fetchUserProfile");
         fetchUserProfile();
 
         LocalBroadcastManager.getInstance(getActivity())
@@ -105,8 +123,6 @@ public class UpdateCenterFragment extends BaseFragment
     @Override public void onPause()
     {
         super.onPause();
-
-        Timber.d("onPause");
         LocalBroadcastManager.getInstance(getActivity())
                 .unregisterReceiver(broadcastReceiver);
     }
@@ -118,9 +134,11 @@ public class UpdateCenterFragment extends BaseFragment
 
     private void fetchUserProfile(boolean forceUpdate)
     {
-        AppObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
+        onStopSubscriptions.add(AppObservable.bindFragment(
+                this,
+                userProfileCache.get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createUserProfileCacheObserver());
+                .subscribe(createUserProfileCacheObserver()));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -188,7 +206,6 @@ public class UpdateCenterFragment extends BaseFragment
         {
             f.onDestroyOptionsMenu();
         }
-        Timber.d("onDestroyOptionsMenu");
 
         super.onDestroyOptionsMenu();
     }
@@ -201,16 +218,9 @@ public class UpdateCenterFragment extends BaseFragment
         navigator.get().pushFragment(SendMessageFragment.class, args);
     }
 
-    @Override public void onStop()
-    {
-        super.onStop();
-        Timber.d("onStop");
-    }
-
     @Override public void onDestroyView()
     {
         // TODO Questionable, as specified by Liang, it should not be needed to clear the tabs here
-        Timber.d("onDestroyView");
         //don't have to clear sub fragment to refresh data
         //clearTabs();
 
@@ -219,38 +229,8 @@ public class UpdateCenterFragment extends BaseFragment
 
     @Override public void onDestroy()
     {
-        Timber.d("onDestroy");
         broadcastReceiver = null;
         super.onDestroy();
-    }
-
-    private View addTabs()
-    {
-        mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
-        TabWidget tabWidget = mTabHost.getTabWidget();
-        if (tabWidget != null)
-        // It otherwise fails in Robolectric because it does not have R.id.tabs in the TabHost
-        {
-            GraphicUtil.setBackground(tabWidget, getResources().getDrawable(R.drawable.bar_background));
-        }
-        Bundle args = getArguments();
-        if (args == null)
-        {
-            args = new Bundle();
-        }
-        UpdateCenterTabType[] types = UpdateCenterTabType.values();
-        for (UpdateCenterTabType tabTitle : types)
-        {
-            args = new Bundle(args);
-            THTabView tabView = THTabView.inflateWith(mTabHost.getTabWidget());
-            String title = getString(tabTitle.titleRes, 0);
-            tabView.setTitle(title);
-            TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabView);
-            mTabHost.addTab(tabSpec, tabTitle.tabClass, args);
-        }
-
-        return mTabHost;
     }
 
     public Fragment getCurrentFragment()

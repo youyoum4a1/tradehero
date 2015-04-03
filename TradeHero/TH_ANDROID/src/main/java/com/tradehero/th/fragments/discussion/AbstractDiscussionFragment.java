@@ -14,7 +14,6 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -24,15 +23,13 @@ import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.fragments.DashboardTabHost;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.widget.MultiScrollListener;
-import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
@@ -44,7 +41,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
-abstract public class AbstractDiscussionFragment extends DashboardFragment
+abstract public class AbstractDiscussionFragment extends BaseFragment
 {
     private static final String DISCUSSION_KEY_BUNDLE_KEY = AbstractDiscussionFragment.class.getName() + ".discussionKey";
 
@@ -57,7 +54,6 @@ abstract public class AbstractDiscussionFragment extends DashboardFragment
 
     @Inject protected DiscussionCacheRx discussionCache;
     @Inject protected DiscussionListCacheRx discussionListCache;
-    @Inject @BottomTabs protected Lazy<DashboardTabHost> dashboardTabHost;
     @Inject protected MentionTaggedStockHandler mentionTaggedStockHandler;
     @Inject protected AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
     @Inject protected DiscussionFragmentUtil discussionFragmentUtil;
@@ -123,30 +119,13 @@ abstract public class AbstractDiscussionFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
-        {
-            @Override public void onTranslate(float x, float y)
-            {
-                if (postCommentView != null)
-                {
-                    postCommentView.setTranslationY(y);
-                }
-            }
-        });
         mentionTaggedStockHandler.collectSelection();
-    }
-
-    @Override public void onPause()
-    {
-        dashboardTabHost.get().setOnTranslate(null);
-        super.onPause();
     }
 
     @Override public void onDestroyView()
     {
         unsubscribe(hasSelectedSubscription);
         hasSelectedSubscription = null;
-        discussionList.setOnScrollListener(null);
         mentionTaggedStockHandler.setDiscussionPostContent(null);
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -164,7 +143,6 @@ abstract public class AbstractDiscussionFragment extends DashboardFragment
     @NonNull protected AbsListView.OnScrollListener createListScrollListener()
     {
         return new MultiScrollListener(
-                dashboardBottomTabsListViewScrollListener.get(),
                 new FlagNearEdgeScrollListener()
                 {
                     @Override public void raiseStartFlag()

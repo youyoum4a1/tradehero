@@ -29,7 +29,7 @@ import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 public class RelationsListItemView extends RelativeLayout
         implements DTOView<AllowableRecipientDTO>
@@ -40,7 +40,7 @@ public class RelationsListItemView extends RelativeLayout
     @InjectView(R.id.user_type) TextView userType;
     @InjectView(R.id.upgrade_now) TextView upgradeNow;
     private AllowableRecipientDTO allowableRecipientDTO;
-    @NonNull private BehaviorSubject<FollowRequest> followRequestedBehavior;
+    @NonNull private PublishSubject<FollowRequest> followRequestedBehavior;
 
     @Inject protected Lazy<Picasso> picassoLazy;
     @Inject @ForUserPhoto protected Lazy<Transformation> peopleIconTransformationLazy;
@@ -51,19 +51,19 @@ public class RelationsListItemView extends RelativeLayout
     public RelationsListItemView(Context context)
     {
         super(context);
-        this.followRequestedBehavior = BehaviorSubject.create();
+        this.followRequestedBehavior = PublishSubject.create();
     }
 
     public RelationsListItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        this.followRequestedBehavior = BehaviorSubject.create();
+        this.followRequestedBehavior = PublishSubject.create();
     }
 
     public RelationsListItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        this.followRequestedBehavior = BehaviorSubject.create();
+        this.followRequestedBehavior = PublishSubject.create();
     }
     //</editor-fold>
 
@@ -83,8 +83,6 @@ public class RelationsListItemView extends RelativeLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        this.followRequestedBehavior.onCompleted();
-        this.followRequestedBehavior = BehaviorSubject.create();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
