@@ -99,18 +99,22 @@ public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
         {
             case FRAGMENT_ID_CHART:
                 fragment = new ChartFragment();
-                populateForChartFragment(args);
+                ChartFragment.putSecurityId(args, securityId);
+                args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.VISIBLE);
+                args.putLong(ChartFragment.BUNDLE_KEY_TIME_SPAN_SECONDS_LONG, getDefaultChartTimeSpan().duration);
                 break;
             case FRAGMENT_ID_DISCUSS:
                 fragment = new SecurityDiscussionFragment();
-                populateForSecurityDiscussionFragment(args);
+                SecurityDiscussionFragment.setHasOptionMenu(args, false);
+                SecurityDiscussionFragment.putSecurityId(args, securityId);
                 break;
             case FRAGMENT_ID_NEWS:
                 fragment = new NewsHeadlineFragment();
-                populateForNewsHeadlineFragment(args);
+                NewsHeadlineFragment.putSecurityId(args, securityId);
                 break;
             case FRAGMENT_ID_HISTORY:
                 fragment = new OldPositionListFragment();
+                OldPositionListFragment.setHasOptionMenu(args, false);
                 OldPositionListFragment.putShownUser(args, shownUser);
                 OldPositionListFragment.putGetPositionsDTOKey(args, portfolioId);
                 OldPositionListFragment.putSecurityId(args, new SecurityIntegerId(securityIntId));
@@ -125,22 +129,5 @@ public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
         fragment.setArguments(args);
         fragment.setRetainInstance(false);
         return fragment;
-    }
-
-    private void populateForChartFragment(Bundle args)
-    {
-        ChartFragment.putSecurityId(args, securityId);
-        args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.VISIBLE);
-        args.putLong(ChartFragment.BUNDLE_KEY_TIME_SPAN_SECONDS_LONG, getDefaultChartTimeSpan().duration);
-    }
-
-    private void populateForSecurityDiscussionFragment(Bundle args)
-    {
-        SecurityDiscussionFragment.putSecurityId(args, securityId);
-    }
-
-    private void populateForNewsHeadlineFragment(Bundle args)
-    {
-        NewsHeadlineFragment.putSecurityId(args, securityId);
     }
 }

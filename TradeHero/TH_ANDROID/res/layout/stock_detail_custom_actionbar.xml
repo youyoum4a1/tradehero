@@ -1,31 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rlStockHeader"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/tradehero_blue">
 
   <Button
-      android:id="@+id/btnWatched"
+      android:id="@+id/btn_watched"
       android:layout_width="32dp"
       android:layout_height="32dp"
       android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
       android:layout_marginRight="5dp"
+      android:layout_marginEnd="5dp"
       android:layout_centerVertical="true"
       android:background="@drawable/icn_star"/>
 
   <Button
-      android:id="@+id/btnAlerted"
+      android:id="@+id/btn_alerted"
       android:layout_width="32dp"
       android:layout_height="32dp"
       android:layout_centerVertical="true"
       android:layout_marginRight="5dp"
-      android:layout_toLeftOf="@id/btnWatched"
+      android:layout_marginEnd="5dp"
+      android:layout_toLeftOf="@id/btn_watched"
+      android:layout_toStartOf="@id/btn_watched"
       android:background="@drawable/icn_alert"/>
 
   <com.tradehero.th.fragments.security.SecurityCircleProgressBar
-      android:id="@+id/circleProgressbar"
+      android:id="@+id/circle_progressbar"
       android:layout_centerVertical="true"
       android:layout_width="48dp"
       android:layout_height="48dp"/>
@@ -35,29 +40,36 @@
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
       android:layout_marginLeft="5dp"
-      android:layout_toRightOf="@id/circleProgressbar"
-      android:layout_toLeftOf="@id/btnAlerted"
+      android:layout_marginStart="5dp"
+      android:layout_toRightOf="@id/circle_progressbar"
+      android:layout_toEndOf="@id/circle_progressbar"
+      android:layout_toLeftOf="@id/btn_alerted"
+      android:layout_toStartOf="@id/btn_alerted"
       android:layout_centerVertical="true"
       android:gravity="center_vertical"
       android:orientation="vertical">
+
     <TextView
-        android:id="@+id/tvStockTitle"
+        android:id="@+id/tv_stock_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Facebook Inc."
+        tools:text="Facebook Inc."
         android:ellipsize="end"
         android:textSize="16sp"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:singleLine="true"/>
+
     <TextView
-        android:id="@+id/tvStockSubTitle"
+        android:id="@+id/tv_stock_sub_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NASDAQ:FB"
+        tools:text="NASDAQ:FB"
         android:textColor="@color/white"
         android:textSize="12sp"
         android:ellipsize="end"
         android:singleLine="true"/>
+
   </LinearLayout>
+
 </RelativeLayout>

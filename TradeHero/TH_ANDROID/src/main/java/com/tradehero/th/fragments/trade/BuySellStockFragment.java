@@ -118,7 +118,6 @@ public class BuySellStockFragment extends BuySellFragment
         fetchWatchlist();
     }
 
-    //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
@@ -127,31 +126,49 @@ public class BuySellStockFragment extends BuySellFragment
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
 
-        LayoutInflater inflator = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflator.inflate(R.layout.stock_detail_custom_actionbar, null);
-        mTvStockTitle = (TextView) v.findViewById(R.id.tvStockTitle);
-        mTvStockSubTitle = (TextView) v.findViewById(R.id.tvStockSubTitle);
-        circleProgressBar = (SecurityCircleProgressBar) v.findViewById(R.id.circleProgressbar);
-        btnWatched = (Button) v.findViewById(R.id.btnWatched);
-        btnAlerted = (Button) v.findViewById(R.id.btnAlerted);
-
-        btnAlerted.setOnClickListener(new View.OnClickListener()
+        if (mTvStockTitle == null)
         {
-            @Override public void onClick(View v)
-            {
-                handleBtnAddTriggerClicked();
-            }
-        });
+            LayoutInflater inflator = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View v = inflator.inflate(R.layout.stock_detail_custom_actionbar, null);
+            mTvStockTitle = (TextView) v.findViewById(R.id.tv_stock_title);
+            mTvStockSubTitle = (TextView) v.findViewById(R.id.tv_stock_sub_title);
+            circleProgressBar = (SecurityCircleProgressBar) v.findViewById(R.id.circle_progressbar);
+            btnWatched = (Button) v.findViewById(R.id.btn_watched);
+            btnAlerted = (Button) v.findViewById(R.id.btn_alerted);
 
-        btnWatched.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View v)
+            btnAlerted.setOnClickListener(new View.OnClickListener()
             {
-                handleBtnWatchlistClicked();
-            }
-        });
+                @Override public void onClick(View v)
+                {
+                    handleBtnAddTriggerClicked();
+                }
+            });
 
-        actionBar.setCustomView(v);
+            btnWatched.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    handleBtnWatchlistClicked();
+                }
+            });
+
+            actionBar.setCustomView(v);
+
+            if (securityCompactDTO != null)
+            {
+                displayActionBar(securityCompactDTO);
+            }
+        }
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        btnAlerted = null;
+        btnWatched = null;
+        circleProgressBar = null;
+        mTvStockSubTitle = null;
+        mTvStockTitle = null;
+        super.onDestroyOptionsMenu();
     }
 
     @Override public void onDestroyView()
@@ -259,7 +276,7 @@ public class BuySellStockFragment extends BuySellFragment
         displayWatchlistButton();
     }
 
-    @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    @Override public void linkWith(@NonNull SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
         super.linkWith(securityCompactDTO, andDisplay);
         bottomViewPagerAdapter.linkWith(securityCompactDTO.id);
@@ -270,21 +287,35 @@ public class BuySellStockFragment extends BuySellFragment
             displayAsOf();
         }
 
-        if (securityCompactDTO != null)
+        displayActionBar(securityCompactDTO);
+    }
+
+    protected void displayActionBar(@NonNull SecurityCompactDTO securityCompactDTO)
+    {
+        if (!StringUtils.isNullOrEmpty(securityCompactDTO.name))
         {
-            if (!StringUtils.isNullOrEmpty(securityCompactDTO.name))
+            if (mTvStockTitle != null)
             {
                 mTvStockTitle.setText(securityCompactDTO.name);
+            }
+            if (mTvStockSubTitle != null)
+            {
                 mTvStockSubTitle.setText(securityCompactDTO.getExchangeSymbol());
             }
-            else
+        }
+        else
+        {
+            if (mTvStockTitle != null)
             {
                 mTvStockTitle.setText(securityCompactDTO.getExchangeSymbol());
+            }
+            if (mTvStockSubTitle != null)
+            {
                 mTvStockSubTitle.setText(null);
             }
-
-            circleProgressBar.display(securityCompactDTO);
         }
+
+        circleProgressBar.display(securityCompactDTO);
     }
 
     @Override protected void linkWith(QuoteDTO quoteDTO)

@@ -134,10 +134,10 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
+    @Override public void onDetach()
     {
         adapter = null;
-        super.onDestroy();
+        super.onDetach();
     }
 
     private void showNewsList()

@@ -349,7 +349,6 @@ public class OldPositionListFragment
     @Override public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        displayActionBarTitle();
     }
 
     @Override public void onStart()
@@ -589,7 +588,6 @@ public class OldPositionListFragment
     protected void linkWith(@NonNull PortfolioDTO portfolioDTO)
     {
         this.portfolioDTO = portfolioDTO;
-        displayActionBarTitle();
         showPrettyReviewAndInvite(portfolioDTO);
 
         preparePortfolioHeaderView(portfolioDTO);
@@ -854,7 +852,6 @@ public class OldPositionListFragment
     private void display()
     {
         displayHeaderView();
-        displayActionBarTitle();
     }
 
     private void displayHeaderView()
@@ -871,26 +868,6 @@ public class OldPositionListFragment
             {
                 portfolioHeaderView.linkWith(portfolioDTO);
             }
-        }
-    }
-
-    private void displayActionBarTitle()
-    {
-        String title = null;
-
-        if (portfolioDTO != null)
-        {
-            title = portfolioDTO.title;
-        }
-
-        if (title == null)
-        {
-            title = getString(R.string.position_list_action_bar_header_unknown);
-        }
-
-        if (getArguments().getBoolean(BUNDLE_KEY_SHOW_TITLE, true))
-        {
-            setActionBarTitle(title);
         }
     }
 

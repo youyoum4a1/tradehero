@@ -45,7 +45,8 @@ public class BaseFragment extends Fragment
 
     @Inject protected Lazy<DashboardNavigator> navigator;
 
-    public static void setHasOptionMenu(@NonNull Bundle args, boolean hasOptionMenu){
+    public static void setHasOptionMenu(@NonNull Bundle args, boolean hasOptionMenu)
+    {
         args.putBoolean(BUNDLE_KEY_HAS_OPTION_MENU, hasOptionMenu);
     }
 
