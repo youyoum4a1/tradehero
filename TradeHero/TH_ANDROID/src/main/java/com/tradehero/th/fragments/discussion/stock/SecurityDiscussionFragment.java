@@ -106,8 +106,8 @@ public class SecurityDiscussionFragment extends AbstractDiscussionFragment
 
     @NonNull @Override protected AbsListView.OnScrollListener createListScrollListener()
     {
-        return new MultiScrollListener(super.createListScrollListener(),
-                new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER, buttonAdd,
+        return new MultiScrollListener(super.createListScrollListener(), dashboardBottomTabsListViewScrollListener.get(),
+                    new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER, buttonAdd,
                         -getResources().getDimensionPixelSize(R.dimen.clickable_element_min_dimen), null, 0));
     }
 
