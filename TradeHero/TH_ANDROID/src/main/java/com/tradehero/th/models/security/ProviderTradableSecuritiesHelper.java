@@ -12,15 +12,13 @@ import com.tradehero.th.fragments.competition.ProviderFxListFragment;
 import com.tradehero.th.fragments.security.ProviderSecurityListRxFragment;
 import com.tradehero.th.fragments.security.WarrantCompetitionPagerFragment;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-@Singleton
 public class ProviderTradableSecuritiesHelper
 {
-    private DashboardNavigator navigator;
+    @NonNull private final DashboardNavigator navigator;
 
     //<editor-fold desc="Constructors">
-    @Inject ProviderTradableSecuritiesHelper(DashboardNavigator navigator)
+    @Inject ProviderTradableSecuritiesHelper(@NonNull DashboardNavigator navigator)
     {
         this.navigator = navigator;
     }

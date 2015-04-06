@@ -43,17 +43,13 @@ public class DisplayablePortfolioFetchAssistant
                     @Override public Observable<? extends DisplayablePortfolioDTOList> call(
                             Pair<UserBaseKey, PortfolioCompactDTOList> pair)
                     {
-                        return DisplayablePortfolioFetchAssistant.this.getDisplayablePortfolios(pair);
+                        return getDisplayablePortfolios(pair.first, pair.second);
                     }
                 });
     }
 
-    @NonNull protected Observable<DisplayablePortfolioDTOList> getDisplayablePortfolios(@NonNull Pair<UserBaseKey, PortfolioCompactDTOList> pair)
-    {
-        return getDisplayablePortfolios(pair.first, pair.second);
-    }
-
-    @NonNull protected Observable<DisplayablePortfolioDTOList> getDisplayablePortfolios(@NonNull UserBaseKey userBaseKey,
+    @NonNull protected Observable<DisplayablePortfolioDTOList> getDisplayablePortfolios(
+            @NonNull UserBaseKey userBaseKey,
             @NonNull PortfolioCompactDTOList portfolioCompactDTOs)
     {
         return Observable.zip(

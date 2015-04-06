@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.position;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -19,15 +21,16 @@ public class CompetitionLeaderboardPositionListFragment extends TabbedPositionLi
     protected ProviderId providerId;
     @Inject Lazy<ProviderTradableSecuritiesHelper> providerTradableSecuritiesHelperLazy;
 
-    public static void putProviderId(Bundle args, ProviderId providerId)
+    public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {
         args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
     }
 
-    private static ProviderId getProviderId(Bundle args)
+    @Nullable private static ProviderId getProviderId(@NonNull Bundle args)
     {
         Bundle bundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID);
-        if (bundle == null) {
+        if (bundle == null)
+        {
             return null;
         }
         return new ProviderId(bundle);

@@ -707,6 +707,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             final Bundle args = new Bundle();
             args.putBundle(BUNDLE_KEY_USER_ACHIEVEMENT_ID, userAchievementId.getArgs());
             return userAchievementCacheInner.get(userAchievementId)
+                    .observeOn(AndroidSchedulers.mainThread())
                     .map(new Func1<Pair<UserAchievementId, UserAchievementDTO>, AbstractAchievementDialogFragment>()
                     {
                         @Override public AbstractAchievementDialogFragment call(Pair<UserAchievementId, UserAchievementDTO> pair)

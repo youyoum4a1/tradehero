@@ -251,7 +251,6 @@ public class PositionPartialTopView extends LinearLayout
             }
             //</editor-fold>
 
-
             //<editor-fold desc="Company Name">
             if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {

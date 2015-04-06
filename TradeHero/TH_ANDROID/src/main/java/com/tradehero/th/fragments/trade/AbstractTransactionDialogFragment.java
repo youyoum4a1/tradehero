@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -1088,8 +1089,12 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
         @Override public void onCompleted()
         {
+            Dialog dialog = getDialog();
             // FIXME should we dismiss the dialog on failure?
-            getDialog().dismiss();
+            if (dialog != null)
+            {
+                dialog.dismiss();
+            }
 
             updateConfirmButton(false);
         }

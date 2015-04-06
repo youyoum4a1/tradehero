@@ -18,6 +18,7 @@ import rx.Observable;
 import rx.android.widget.OnItemClickEvent;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 public class FollowerManagerViewContainer
 {
@@ -78,11 +79,19 @@ public class FollowerManagerViewContainer
 
             if (totalAmountPaid != null)
             {
-                totalAmountPaid.setText(
-                        THSignedMoney.builder(followerSummaryDTO.payoutSummary.totalPayout)
-                                .currency(SecurityUtils.getDefaultCurrency())
-                                .build()
-                                .toString());
+                if (followerSummaryDTO.payoutSummary != null)
+                {
+                    totalAmountPaid.setText(
+                            THSignedMoney.builder(followerSummaryDTO.payoutSummary.totalPayout)
+                                    .currency(SecurityUtils.getDefaultCurrency())
+                                    .build()
+                                    .toString());
+                }
+                else
+                {
+                    Timber.e(new NullPointerException(), "followerSummaryDTO.payoutSummary was null");
+                    totalAmountPaid.setText(R.string.na);
+                }
             }
 
             if (followersCount != null)

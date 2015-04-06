@@ -48,6 +48,7 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import timber.log.Timber;
 
 public class WatchlistPositionFragment extends DashboardFragment
 {
@@ -261,8 +262,14 @@ public class WatchlistPositionFragment extends DashboardFragment
                         int firstVisibleItem = view.getFirstVisiblePosition();
                         if (firstVisibleItem == 0)
                         {
-                            // TODO https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/54b6827165f8dfea15989512
-                            int offsetY = view.getChildAt(firstVisibleItem).getTop();
+                            View childView = view.getChildAt(firstVisibleItem);
+                            if (childView == null)
+                            {
+                                Timber.e(new NullPointerException(), "ChildView was null");
+                                return;
+                                // TODO https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/54b6827165f8dfea15989512
+                            }
+                            int offsetY = childView.getTop();
                             if (offsetY > maxOffsetY)
                             {
                                 maxOffsetY = offsetY;
