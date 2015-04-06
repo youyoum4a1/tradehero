@@ -77,4 +77,6 @@
   <string name="close">Close :</string>
   <string name="change">Chg :</string>
 
+  <string name="traded_facebook_share_message">bought %1$s shares of %2$s (%3$s) @ %4$s</string>
+
 </resources>

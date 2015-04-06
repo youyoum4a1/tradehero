@@ -274,9 +274,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
         ExchangeListType key = new ExchangeListType();
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                exchangeCompactListCache.get(key)
+                exchangeCompactListCache.getOne(key)
                         .map(new PairGetSecond<ExchangeListType, ExchangeCompactDTOList>()))
-                .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<ExchangeCompactDTOList>()

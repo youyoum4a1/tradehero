@@ -5,6 +5,8 @@ public class FacebookPermissionsConstants
     // https://developers.facebook.com/docs/facebook-login/permissions/v2.2#reference
     public static final String PUBLIC_PROFILE = "public_profile";
 
+    public static final String PUBLISH_STREAM = "publish_stream";
+
     /**
      * To ask for the friends that use the app, with /{user-id}/friends
      */

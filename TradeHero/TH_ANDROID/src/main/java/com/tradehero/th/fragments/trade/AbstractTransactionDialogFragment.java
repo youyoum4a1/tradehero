@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.trade;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,6 +29,7 @@ import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.FacebookShareActivity;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
@@ -37,6 +39,7 @@ import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -503,6 +506,8 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     protected abstract void displayQuickPriceButtonSet();
 
     protected abstract String getLabel();
+
+    @NonNull protected abstract THSignedNumber getFormattedPrice(double price);
 
     protected abstract int getCashLeftLabelResId();
 
@@ -1111,6 +1116,38 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 buySellTransactionListener.onTransactionFailed(isBuy, thException);
             }
         }
+    }
+
+    protected void shareFacebookClient(boolean isBuy)
+    {
+        Intent shareIntent = new Intent(getActivity(), FacebookShareActivity.class);
+        Bundle extras = new Bundle();
+        FacebookShareActivity.setMessage(
+                extras,
+                String.format(
+                        getString(R.string.traded_facebook_share_message),
+                        THSignedNumber.builder(mTransactionQuantity).build().toString(),
+                        securityCompactDTO.name,
+                        SecurityCompactDTOUtil.getShortSymbol(securityCompactDTO),
+                        getFormattedPrice(isBuy ? quoteDTO.ask : quoteDTO.bid)));
+        FacebookShareActivity.setName(extras, "TradeHero");
+        FacebookShareActivity.setCaption(extras, "tradehero.mobi");
+        FacebookShareActivity.setDescription(
+                extras,
+                String.format(
+                        "Follow %s on TradeHero for great stock tips!",
+                        userProfileDTO.displayName));
+        FacebookShareActivity.setLinkUrl(extras, "http://www.facebook.com");
+        if (securityCompactDTO.imageBlobUrl == null)
+        {
+            FacebookShareActivity.setDefaultPictureUrl(extras);
+        }
+        else
+        {
+            FacebookShareActivity.setPictureUrl(extras, securityCompactDTO.imageBlobUrl);
+        }
+        shareIntent.putExtras(extras);
+        getActivity().startActivity(shareIntent);
     }
 
     public interface BuySellTransactionListener

@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.TransactionFormDTO;
-import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
@@ -38,12 +37,7 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
         {
             return getString(R.string.na);
         }
-        THSignedNumber sthSignedNumber = THSignedMoney
-                .builder(quoteDTO.bid)
-                .withOutSign()
-                .relevantDigitCount(10)
-                .currency("")
-                .build();
+        THSignedNumber sthSignedNumber = getFormattedPrice(quoteDTO.bid);
         return getString(R.string.buy_sell_dialog_sell, sthSignedNumber.toString());
     }
 

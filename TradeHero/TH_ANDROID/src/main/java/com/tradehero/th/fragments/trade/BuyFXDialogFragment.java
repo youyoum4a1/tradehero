@@ -38,12 +38,7 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
         {
             return getString(R.string.na);
         }
-        THSignedNumber bThSignedNumber = THSignedMoney
-                .builder(quoteDTO.ask)
-                .withOutSign()
-                .relevantDigitCount(10)
-                .currency("")
-                .build();
+        THSignedNumber bThSignedNumber = getFormattedPrice(quoteDTO.ask);
         return getString(R.string.buy_sell_dialog_buy, bThSignedNumber.toString());
     }
 

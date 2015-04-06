@@ -8,6 +8,8 @@ import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 
 public abstract class AbstractFXTransactionDialogFragment extends AbstractTransactionDialogFragment
 {
@@ -69,6 +71,16 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
         return isClosing != null && isClosing
                 ? R.string.buy_sell_fx_quantity_left
                 : R.string.buy_sell_fx_cash_left;
+    }
+
+    @NonNull @Override protected THSignedNumber getFormattedPrice(double price)
+    {
+        return THSignedMoney
+                .builder(price)
+                .withOutSign()
+                .relevantDigitCount(10)
+                .currency("")
+                .build();
     }
 
     public void displayQuickPriceButtonSet()

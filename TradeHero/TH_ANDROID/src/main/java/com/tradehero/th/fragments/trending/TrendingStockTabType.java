@@ -14,7 +14,7 @@ enum TrendingStockTabType
     Price(R.string.price, TrendingStockFragment.class),
     Volume(R.string.volume, TrendingStockFragment.class),
     All(R.string.all, TrendingStockFragment.class),
-    Favorites(R.string.favorites, MainWatchlistPositionFragment.class)
+    Favorites(R.string.favorites, MainWatchlistPositionFragment.class),
     ;
 
     @StringRes public final int titleStringResId;
@@ -29,5 +29,4 @@ enum TrendingStockTabType
         this.fragmentClass = fragmentClass;
     }
     //</editor-fold>
-
 }
