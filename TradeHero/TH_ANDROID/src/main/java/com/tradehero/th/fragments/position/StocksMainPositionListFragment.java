@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,28 +19,31 @@ import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.position.GetPositionsDTOKey;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class StocksMainPositionListFragment extends BasePurchaseManagerFragment
 {
-    @Inject THRouter thRouter;
+    @Inject CurrentUserId currentUserId;
+    @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
+
     @InjectView(R.id.pager) ViewPager tabViewPager;
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
-    @NonNull protected GetPositionsDTOKey getPositionsDTOKey;
-    protected PortfolioDTO portfolioDTO;
-    @Nullable protected UserProfileDTO userProfileDTO;
-    @Inject CurrentUserId currentUserId;
-    @Inject Lazy<UserProfileCacheRx> userProfileCache;
+    protected Subscription portfolioIdSubscription;
 
     public enum TabType
     {
@@ -61,29 +65,44 @@ public class StocksMainPositionListFragment extends BasePurchaseManagerFragment
             TabType.LONG,
     };
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        thRouter.inject(this);
-        getPositionsDTOKey = new OwnedPortfolioId(currentUserId.get(), userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey()).portfolio.id);
-    }
-
-
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.tabbed_position_fragment, container, false);
-        ButterKnife.inject(this, view);
-        initViews();
-        return view;
+        return inflater.inflate(R.layout.tabbed_position_fragment, container, false);
     }
 
-    private void initViews()
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
-        tabViewPager.setAdapter(new TabbedPositionPageAdapter(getChildFragmentManager()));
-        pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
-        pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
-        pagerSlidingTabStrip.setViewPager(tabViewPager);
-        pagerSlidingTabStrip.setVisibility(View.GONE);
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
+        portfolioIdSubscription = AppObservable.bindFragment(
+                this,
+                portfolioCompactListCache.getOne(currentUserId.toUserBaseKey()))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .flatMap(new Func1<Pair<UserBaseKey, PortfolioCompactDTOList>, Observable<OwnedPortfolioId>>()
+                        {
+                            @Override public Observable<OwnedPortfolioId> call(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
+                            {
+                                PortfolioCompactDTO defaultPortfolio = pair.second.getDefaultPortfolio();
+                                if (defaultPortfolio == null)
+                                {
+                                    return Observable.error(new NullPointerException("Default portfolio is null"));
+                                }
+                                return Observable.just(defaultPortfolio.getOwnedPortfolioId());
+                            }
+                        })
+                        .subscribe(
+                                new Action1<OwnedPortfolioId>()
+                                {
+                                    @Override public void call(OwnedPortfolioId ownedPortfolioId)
+                                    {
+                                        tabViewPager.setAdapter(new TabbedPositionPageAdapter(getChildFragmentManager(), ownedPortfolioId));
+                                        pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
+                                        pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
+                                        pagerSlidingTabStrip.setViewPager(tabViewPager);
+                                        pagerSlidingTabStrip.setVisibility(View.GONE);
+                                    }
+                                },
+                                new ToastOnErrorAction());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater)
@@ -92,11 +111,20 @@ public class StocksMainPositionListFragment extends BasePurchaseManagerFragment
         setActionBarTitle("");
     }
 
+    @Override public void onDestroyView()
+    {
+        portfolioIdSubscription.unsubscribe();
+        super.onDestroyView();
+    }
+
     private class TabbedPositionPageAdapter extends FragmentPagerAdapter
     {
-        public TabbedPositionPageAdapter(FragmentManager fm)
+        @NonNull private final OwnedPortfolioId portfolioId;
+
+        public TabbedPositionPageAdapter(FragmentManager fm, @NonNull OwnedPortfolioId portfolioId)
         {
             super(fm);
+            this.portfolioId = portfolioId;
         }
 
         @Override public Fragment getItem(int position)
@@ -107,7 +135,7 @@ public class StocksMainPositionListFragment extends BasePurchaseManagerFragment
             {
                 PositionListFragment.putApplicablePortfolioId(args, purchaseApplicableOwnedPortfolioId);
             }
-            PositionListFragment.putGetPositionsDTOKey(args, getPositionsDTOKey);
+            PositionListFragment.putGetPositionsDTOKey(args, portfolioId);
             PositionListFragment.putShownUser(args, currentUserId.toUserBaseKey());
             TabType positionType;
             positionType = STOCK_TYPES[position];
