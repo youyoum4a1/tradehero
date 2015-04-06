@@ -169,5 +169,6 @@
   <!--Stock Learning-->
   <dimen name="stock_learning_summary_des_size_a">18sp</dimen>
   <dimen name="stock_learning_summary_des_size_b">20sp</dimen>
+  <dimen name="stock_learning_question_item_selector_wh">24dp</dimen>
   <!--Stock Learning-->
 </resources>

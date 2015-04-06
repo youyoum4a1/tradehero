@@ -7,7 +7,7 @@
       android:drawable="@drawable/guide_screen_yijian_active"/>
 
   <item android:state_enabled="false"
-      android:drawable="@drawable/guide_screen_yijian_active"/>
+      android:drawable="@drawable/disable_button_bg"/>
 
   <item android:drawable="@drawable/guide_screen_yijian"/>
 </selector>

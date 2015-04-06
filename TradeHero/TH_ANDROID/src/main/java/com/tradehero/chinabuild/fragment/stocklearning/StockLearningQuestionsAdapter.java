@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.tradehero.th.R;
-
 import java.util.ArrayList;
 
 /**
@@ -44,7 +43,6 @@ public class StockLearningQuestionsAdapter extends BaseAdapter {
         if(convertView==null) {
             convertView = inflater.inflate(R.layout.stock_learning_questions_item, null);
             viewHolder = new ViewHolder();
-            viewHolder.questionsSetNameTV = (TextView)convertView.findViewById(R.id.textview_questions_set_name);
             viewHolder.questionsProportionTV = (TextView)convertView.findViewById(R.id.textview_questions_set_proportion);
             viewHolder.questionsBgIV = (ImageView)convertView.findViewById(R.id.imageview_questions_set_bg);
             convertView.setTag(viewHolder);
@@ -52,13 +50,14 @@ public class StockLearningQuestionsAdapter extends BaseAdapter {
             viewHolder = (ViewHolder)convertView.getTag();
         }
         StockLearningQuestionsItem questionsItemDTO = questionsItemDTOs.get(i);
-        if(questionsItemDTO.getName()!=null) {
-            viewHolder.questionsSetNameTV.setText(questionsItemDTO.getName());
-        }
+
         if(questionsItemDTO.getTotalNumber()>0) {
-            String proportion = 0 + "/" + questionsItemDTO.getTotalNumber();
+            String proportion = questionsItemDTO.getLastNumber() + "/" + questionsItemDTO.getTotalNumber();
             viewHolder.questionsProportionTV.setText(proportion);
         }
+
+        viewHolder.questionsBgIV.setBackgroundResource(questionsItemDTO.getBgResId());
+
         return convertView;
     }
 
@@ -70,7 +69,6 @@ public class StockLearningQuestionsAdapter extends BaseAdapter {
     }
 
     public final class ViewHolder{
-        public TextView questionsSetNameTV;
         public TextView questionsProportionTV;
         public ImageView questionsBgIV;
 

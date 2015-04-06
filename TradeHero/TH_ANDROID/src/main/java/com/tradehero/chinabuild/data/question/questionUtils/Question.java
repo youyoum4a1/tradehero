@@ -1,9 +1,15 @@
 package com.tradehero.chinabuild.data.question.questionUtils;
 
+import com.tradehero.th.utils.StringUtils;
 import java.io.Serializable;
 
 public class Question implements Serializable{
-	  
+
+
+    public static final int ONECHOICE = 0; //单选
+    public static final int MULTICHOISE = 1; //多选
+    public static final int JUDGECHOISE = 2; //判断
+
 	private String Qid;
 	private String QTitle;//题目
 	private String QAnswerOne;//答案一
@@ -12,6 +18,7 @@ public class Question implements Serializable{
 	private String QAnswerFour;//答案四
 	private String QAnswerCorrect;//正确答案
 	private String QType;//大类【新手】【老手】【专家】
+    private boolean isError;//是否是答错的题
 
 	public Question(){}
 	
@@ -98,5 +105,48 @@ public class Question implements Serializable{
 		}
 		return false;
 	}
-	
+
+    public int getChoiceType()
+    {
+        if (getQAnswerCorrect().length() > 1)
+        {
+            return MULTICHOISE;
+        }
+        if (StringUtils.isNullOrEmpty(QAnswerThree))
+        {
+            return JUDGECHOISE;
+        }
+        return ONECHOICE;
+    }
+
+    public boolean isAnswerA()
+    {
+        return QAnswerCorrect.contains("A");
+    }
+
+    public boolean isAnswerB()
+    {
+        return QAnswerCorrect.contains("B");
+    }
+
+    public boolean isAnswerC()
+    {
+        return QAnswerCorrect.contains("C");
+    }
+
+    public boolean isAnswerD()
+    {
+        return QAnswerCorrect.contains("D");
+    }
+
+    public boolean isError()
+    {
+        return isError;
+    }
+
+    public void setIsError(boolean isError)
+    {
+        this.isError = isError;
+    }
 }
+

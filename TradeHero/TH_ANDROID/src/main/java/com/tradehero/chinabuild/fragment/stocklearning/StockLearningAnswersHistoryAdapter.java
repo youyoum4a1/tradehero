@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import com.tradehero.chinabuild.data.question.questionUtils.Question;
 import com.tradehero.th.R;
-
 import java.util.ArrayList;
 
 /**
@@ -19,7 +18,6 @@ public class StockLearningAnswersHistoryAdapter extends BaseAdapter{
     private ArrayList<Question> questionItems = new ArrayList();
     private LayoutInflater inflater;
 
-    private ArrayList<Integer> failedQuestions = new ArrayList();
     private int successColor;
     private int failedColor;
 
@@ -29,12 +27,10 @@ public class StockLearningAnswersHistoryAdapter extends BaseAdapter{
         failedColor = context.getResources().getColor(R.color.stock_learning_summary_failed_color);
     }
 
-    public void setQuestionItems(ArrayList<Question> questionItems, ArrayList<Integer> failedQuestions){
-        if(questionItems!=null && failedQuestions!=null){
+    public void setQuestionItems(ArrayList<Question> questionItems){
+        if(questionItems!=null){
             this.questionItems.clear();
             this.questionItems.addAll(questionItems);
-            this.failedQuestions.clear();
-            this.failedQuestions.addAll(failedQuestions);
         }
     }
 
@@ -66,7 +62,7 @@ public class StockLearningAnswersHistoryAdapter extends BaseAdapter{
             viewHolder = (ViewHolder)convertView.getTag();
         }
         Question question = questionItems.get(i);
-        if(isFailedQuestion(question)){
+        if(question.isError()){
             viewHolder.quesDescTV.setTextColor(failedColor);
         } else {
             viewHolder.quesDescTV.setTextColor(successColor);
@@ -75,14 +71,7 @@ public class StockLearningAnswersHistoryAdapter extends BaseAdapter{
         return convertView;
     }
 
-    private boolean isFailedQuestion(Question question){
-        for(Integer integer : failedQuestions){
-            if(Integer.valueOf(question.getQid()) == integer.intValue()){
-                return true;
-            }
-        }
-        return false;
-    }
+
 
     public final class ViewHolder{
         public TextView quesDescTV;

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.util.Log;
+import com.tradehero.chinabuild.data.sp.QuestionsSharePreferenceManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -16,9 +17,17 @@ public class QuestionLoader
     private static QuestionLoader instance;
     private static Context mContext;
 
-    private final String LEVEL_ONE = "ONE";
-    private final String LEVEL_TWO = "TWO";
-    private final String LEVEL_THREE = "THREE";
+    public static final String LEVEL_ONE = "ONE";
+    public static final String LEVEL_TWO = "TWO";
+    public static final String LEVEL_THREE = "THREE";
+
+    public static final String LEVEL_ONE_FAILS = "ONE_FAILS";//LEVEL ONE 的错题集
+    public static final String LEVEL_TWO_FAILS = "TWO_FAILS";//
+    public static final String LEVEL_THREE_FAILS = "THREE_FAILS";
+
+    public static final int TOTAL_NUM_QA = 125;
+    public static final int TOTAL_NUM_QB = 23;
+    public static final int TOTAL_NUM_QC = 9;
 
     public static synchronized QuestionLoader getInstance(Context context)
     {
@@ -28,6 +37,97 @@ public class QuestionLoader
             instance = new QuestionLoader();
         }
         return instance;
+    }
+
+    public static String getLevelName(int index)
+    {
+        if (index == 0)
+        {
+            return LEVEL_ONE;
+        }
+        else if (index == 1)
+        {
+            return LEVEL_TWO;
+        }
+        else if (index == 2) return LEVEL_THREE;
+        return null;
+    }
+
+    public static int getLevelMaxNumber(int index)
+    {
+        if (index == 0)
+        {
+            return TOTAL_NUM_QA;
+        }
+        else if (index == 1)
+        {
+            return TOTAL_NUM_QB;
+        }
+        else if (index == 2) return TOTAL_NUM_QC;
+        return 0;
+    }
+
+    public static int getLevelMaxNumber(String level)
+    {
+        if (level.equals(LEVEL_ONE))
+        {
+            return TOTAL_NUM_QA;
+        }
+        else if (level.equals(LEVEL_TWO))
+        {
+            return TOTAL_NUM_QB;
+        }
+        else if (level.equals(LEVEL_THREE)) return TOTAL_NUM_QC;
+        return 0;
+    }
+
+    public static String getLevelFailName(String level)
+    {
+        if (level.equals(LEVEL_ONE))
+        {
+            return LEVEL_ONE_FAILS;
+        }
+        else if (level.equals(LEVEL_TWO))
+        {
+            return LEVEL_TWO_FAILS;
+        }
+        else if (level.equals(LEVEL_THREE)) return LEVEL_THREE_FAILS;
+        return null;
+    }
+
+    public static String getNameOfFailQuestion(String level)
+    {
+        if (level.equals(LEVEL_ONE_FAILS))
+        {
+            return LEVEL_ONE;
+        }
+        else if (level.equals(LEVEL_TWO_FAILS))
+        {
+            return LEVEL_TWO;
+        }
+        else if (level.equals(LEVEL_THREE_FAILS))
+        {
+            return LEVEL_THREE;
+        }
+        return null;
+    }
+
+    //
+    public static String getCurrentSharePrefLevelName(String level)
+    {
+        if (level.equals(LEVEL_ONE_FAILS) || level.equals(LEVEL_ONE))
+        {
+            return LEVEL_ONE;
+        }
+        else if (level.equals(LEVEL_TWO_FAILS) || level.equals(LEVEL_TWO))
+        {
+            return LEVEL_TWO;
+        }
+        else if (level.equals(LEVEL_THREE_FAILS) || level.equals(LEVEL_THREE))
+        {
+            return LEVEL_THREE;
+        }
+        return null;
     }
 
     public ArrayList<Question> getQuestionLevelOne()
@@ -43,6 +143,24 @@ public class QuestionLoader
     public ArrayList<Question> getQuestionLevelThree()
     {
         return getQuestionList(LEVEL_THREE);
+    }
+
+    public ArrayList<Question> getQuestionFailsList(String level)
+    {
+        //得到level对应的原题
+        ArrayList<Question> array = getQuestionList(getNameOfFailQuestion(level));
+        //
+        ArrayList<Integer> arrayList = QuestionsSharePreferenceManager.getWrongQuestions(mContext, getNameOfFailQuestion(level));
+
+        ArrayList<Question> arrayListResult = new ArrayList();
+        if (arrayList != null)
+        {
+            for (int i = 0; i < arrayList.size(); i++)
+            {
+                arrayListResult.add(array.get(arrayList.get(i) - 1));
+            }
+        }
+        return arrayListResult;
     }
 
     public ArrayList<Question> getQuestionList(String level)
