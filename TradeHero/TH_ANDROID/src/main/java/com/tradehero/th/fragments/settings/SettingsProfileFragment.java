@@ -56,6 +56,8 @@ public class SettingsProfileFragment extends BaseFragment
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject Provider<AuthDataAccountAction> authDataActionProvider;
 
+    ProgressDialog progressDialog;
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_settings_profile, container, false);
@@ -152,7 +154,7 @@ public class SettingsProfileFragment extends BaseFragment
                                     }
                                     else
                                     {
-                                        final ProgressDialog progressDialog = ProgressDialog.show(
+                                        progressDialog = ProgressDialog.show(
                                                 getActivity(),
                                                 getString(R.string.alert_dialog_please_wait),
                                                 getString(R.string.authentication_connecting_tradehero_only),
@@ -185,9 +187,13 @@ public class SettingsProfileFragment extends BaseFragment
                             {
                                 @Override public void call(Pair<AuthData, UserProfileDTO> pair)
                                 {
+                                    if (progressDialog != null) {
+                                        progressDialog.dismiss();
+                                        progressDialog = null;
+                                    }
                                     THToast.show(R.string.settings_update_profile_successful);
                                     authDataActionProvider.get().call(pair);
-                                    navigator.get().popFragment();
+                                    getActivity().finish();
                                 }
                             },
                             new ToastAction<Throwable>(getString(R.string.error_update_your_user_profile))));

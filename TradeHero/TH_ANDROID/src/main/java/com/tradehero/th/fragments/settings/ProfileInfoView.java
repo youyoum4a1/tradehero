@@ -120,10 +120,7 @@ public class ProfileInfoView extends LinearLayout
         super.onAttachedToWindow();
         ButterKnife.inject(this);
         displayProfileImage();
-        if (!isInEditMode())
-        {
-            populateCredentials();
-        }
+
         email.setOnFocusChangeListener(emailValidator);
         email.addTextChangedListener(emailValidator);
         subscriptions.add(emailValidator.getValidationMessageObservable().subscribe(createValidatorObserver(email)));
@@ -137,6 +134,12 @@ public class ProfileInfoView extends LinearLayout
         subscriptions.add(confirmPasswordValidator.getValidationMessageObservable().subscribe(createValidatorObserver(confirmPassword)));
         displayName.setOnFocusChangeListener(displayNameValidator);
         displayName.addTextChangedListener(displayNameValidator);
+
+        if (!isInEditMode())
+        {
+            populateCredentials();
+        }
+
         if (userProfileDTO != null)
         {
             populate(userProfileDTO);
@@ -193,7 +196,7 @@ public class ProfileInfoView extends LinearLayout
 
     @NonNull public Observable<Boolean> getFieldsValidObservable()
     {
-        return Observable.combineLatest(
+        return Observable.zip(
                 emailValidator.getValidationMessageObservable(),
                 passwordValidator.getValidationMessageObservable(),
                 confirmPasswordValidator.getValidationMessageObservable(),
@@ -509,7 +512,7 @@ public class ProfileInfoView extends LinearLayout
 
     @NonNull public Observable<UserFormDTO> obtainUserFormDTO()
     {
-        return Observable.combineLatest(
+        return Observable.zip(
                 WidgetObservable.text(email, true),
                 WidgetObservable.text(password, true),
                 WidgetObservable.text(confirmPassword, true),
