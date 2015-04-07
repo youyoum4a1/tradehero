@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import com.tradehero.chinabuild.data.question.questionUtils.Question;
 import com.tradehero.th.R;
+
 import java.util.ArrayList;
 
 /**
@@ -67,7 +68,7 @@ public class StockLearningAnswersHistoryAdapter extends BaseAdapter{
         } else {
             viewHolder.quesDescTV.setTextColor(successColor);
         }
-        viewHolder.quesDescTV.setText(question.getQid() + ":" + question.getQTitle());
+        viewHolder.quesDescTV.setText(question.getQid() + ": " + question.getQTitle());
         return convertView;
     }
 

@@ -7,10 +7,10 @@
 
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
               android:id="@+id/textview_question_desc"
-              android:textColor="#000000" android:textSize="16sp"
-              android:layout_marginTop="20dp"
+              android:textColor="#000000" android:textSize="15sp"
+              android:layout_marginTop="15dp"
               android:singleLine="true"
               android:layout_marginLeft="15dp"
               android:layout_marginRight="15dp"
-              android:layout_marginBottom="20dp"/>
+              android:layout_marginBottom="15dp"/>
 </LinearLayout>

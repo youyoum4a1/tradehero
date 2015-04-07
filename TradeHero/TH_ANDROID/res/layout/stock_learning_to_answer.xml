@@ -23,9 +23,9 @@
     <LinearLayout android:id="@+id/linearlayout_question_choice_a"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="15dp"
         android:background="@drawable/listview_item_selector"
-        android:layout_marginTop="25dp">
+        android:paddingBottom="15dp"
+        android:paddingTop="25dp">
       <ImageView android:id="@+id/imageview_choice_a"
           android:layout_width="@dimen/stock_learning_question_item_selector_wh"
           android:layout_height="@dimen/stock_learning_question_item_selector_wh"
@@ -40,9 +40,9 @@
     <LinearLayout android:id="@+id/linearlayout_question_choice_b"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="15dp"
         android:background="@drawable/listview_item_selector"
-        android:layout_marginTop="15dp">
+        android:paddingBottom="15dp"
+        android:paddingTop="25dp">
       <ImageView android:id="@+id/imageview_choice_b"
           android:layout_width="@dimen/stock_learning_question_item_selector_wh"
           android:layout_height="@dimen/stock_learning_question_item_selector_wh"
@@ -57,9 +57,9 @@
     <LinearLayout android:id="@+id/linearlayout_question_choice_c"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="15dp"
         android:background="@drawable/listview_item_selector"
-        android:layout_marginTop="15dp">
+        android:paddingBottom="15dp"
+        android:paddingTop="25dp">
       <ImageView android:id="@+id/imageview_choice_c"
           android:layout_width="@dimen/stock_learning_question_item_selector_wh"
           android:layout_height="@dimen/stock_learning_question_item_selector_wh"
@@ -74,9 +74,9 @@
     <LinearLayout android:id="@+id/linearlayout_question_choice_d"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="15dp"
         android:background="@drawable/listview_item_selector"
-        android:layout_marginTop="15dp">
+        android:paddingBottom="15dp"
+        android:paddingTop="25dp">
       <ImageView android:id="@+id/imageview_choice_d"
           android:layout_width="@dimen/stock_learning_question_item_selector_wh"
           android:layout_height="@dimen/stock_learning_question_item_selector_wh"

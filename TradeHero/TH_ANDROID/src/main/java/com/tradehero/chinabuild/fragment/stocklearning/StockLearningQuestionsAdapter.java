@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.tradehero.th.R;
+
 import java.util.ArrayList;
 
 /**
@@ -18,7 +19,7 @@ public class StockLearningQuestionsAdapter extends BaseAdapter {
     private ArrayList<StockLearningQuestionsItem> questionsItemDTOs = new ArrayList();
     private LayoutInflater inflater;
 
-    public StockLearningQuestionsAdapter(Context context){
+    public StockLearningQuestionsAdapter(Context context) {
         inflater = LayoutInflater.from(context);
     }
 
@@ -40,37 +41,34 @@ public class StockLearningQuestionsAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View convertView, ViewGroup viewGroup) {
         ViewHolder viewHolder;
-        if(convertView==null) {
+        if (convertView == null) {
             convertView = inflater.inflate(R.layout.stock_learning_questions_item, null);
             viewHolder = new ViewHolder();
-            viewHolder.questionsProportionTV = (TextView)convertView.findViewById(R.id.textview_questions_set_proportion);
-            viewHolder.questionsBgIV = (ImageView)convertView.findViewById(R.id.imageview_questions_set_bg);
+            viewHolder.questionsProportionTV = (TextView) convertView.findViewById(R.id.textview_questions_set_proportion);
+            viewHolder.questionsBgIV = (ImageView) convertView.findViewById(R.id.imageview_questions_set_bg);
             convertView.setTag(viewHolder);
-        }else{
-            viewHolder = (ViewHolder)convertView.getTag();
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
         StockLearningQuestionsItem questionsItemDTO = questionsItemDTOs.get(i);
 
-        if(questionsItemDTO.getTotalNumber()>0) {
+        if (questionsItemDTO.getTotalNumber() > 0) {
             String proportion = questionsItemDTO.getLastNumber() + "/" + questionsItemDTO.getTotalNumber();
             viewHolder.questionsProportionTV.setText(proportion);
         }
-
-        viewHolder.questionsBgIV.setBackgroundResource(questionsItemDTO.getBgResId());
-
+        viewHolder.questionsBgIV.setImageResource(questionsItemDTO.getBgResId());
         return convertView;
     }
 
-    public void setQuestionsItemDTOs(ArrayList<StockLearningQuestionsItem> questionsItemDTOs){
-        if(questionsItemDTOs!=null){
+    public void setQuestionsItemDTOs(ArrayList<StockLearningQuestionsItem> questionsItemDTOs) {
+        if (questionsItemDTOs != null) {
             this.questionsItemDTOs.clear();
             this.questionsItemDTOs.addAll(questionsItemDTOs);
         }
     }
 
-    public final class ViewHolder{
+    public final class ViewHolder {
         public TextView questionsProportionTV;
         public ImageView questionsBgIV;
-
     }
 }
