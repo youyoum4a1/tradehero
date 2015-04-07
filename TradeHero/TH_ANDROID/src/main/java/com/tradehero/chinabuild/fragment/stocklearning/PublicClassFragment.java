@@ -45,6 +45,7 @@ public class PublicClassFragment extends DashboardFragment {
         View view = inflater.inflate(R.layout.stock_learning_public_class, container, false);
         ButterKnife.inject(this, view);
         initGridView();
+        showProgressBar();
         gotoDownloadVideoList();
         return view;
     }

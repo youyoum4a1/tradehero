@@ -11,6 +11,7 @@
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
       android:layout_margin="10dp"
+      android:listSelector="@android:color/transparent"
       android:numColumns="3"
       android:verticalSpacing="12dp"
       android:horizontalSpacing="15dp"
