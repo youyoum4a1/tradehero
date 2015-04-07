@@ -177,9 +177,7 @@ public final class SettingsFragment extends BasePreferenceFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        //ActionBar actionBar = getActivity().getActionBar();
-        //actionBar.setTitle(getString(R.string.settings));
-        actionBarOwnerMixin.setActionBarTitle(getString(R.string.settings));
+        actionBarOwnerMixin.setActionBarTitle(R.string.settings);
     }
     //</editor-fold>
 

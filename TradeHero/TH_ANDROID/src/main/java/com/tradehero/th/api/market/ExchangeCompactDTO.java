@@ -16,12 +16,12 @@ public class ExchangeCompactDTO implements DTO, WithMarketCap, WithTopSecurities
     private static final String BUNDLE_KEY_IS_INCLUDED_IN_TRENDING = ExchangeDTO.class.getName() + ".isIncludedInTrending";
 
     public int id;
-    @NonNull public String name;
-    @NonNull public String countryCode;
+    @SuppressWarnings("NullableProblems") @NonNull public String name;
+    @SuppressWarnings("NullableProblems") @NonNull public String countryCode;
     @Nullable public String imageUrl;
     public double sumMarketCap;
     @Nullable public String desc;
-    @NonNull public MarketRegion region;
+    @SuppressWarnings("NullableProblems") @NonNull public MarketRegion region;
     public boolean isInternal;
     public boolean isIncludedInTrending;
     public boolean chartDataSource;
@@ -32,12 +32,13 @@ public class ExchangeCompactDTO implements DTO, WithMarketCap, WithTopSecurities
     {
     }
 
+    @SuppressWarnings("NullableProblems")
     public ExchangeCompactDTO(
             int id,
-            @NonNull String name,
-            @NonNull String countryCode,
+            String name, // Do not add @NonNull as it causes problems with Proguard
+            String countryCode, // Do not add @NonNull as it causes problems with Proguard
             double sumMarketCap,
-            @Nullable String desc,
+            String desc, // Do not add @Nullable as it causes problems with Proguard
             boolean isInternal,
             boolean isIncludedInTrending,
             boolean chartDataSource)
