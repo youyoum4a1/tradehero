@@ -236,6 +236,7 @@ public class AlertManagerFragment extends BaseFragment
 
     protected void linkWith(@NonNull List<? extends AlertItemView.DTO> alertCompactDTOs)
     {
+        alertListItemAdapter.clear();
         alertListItemAdapter.appendTail(alertCompactDTOs);
         alertListItemAdapter.notifyDataSetChanged();
         if (alertListItemAdapter.getCount() == 0)

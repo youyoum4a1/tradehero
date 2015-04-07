@@ -91,6 +91,12 @@ import rx.functions.Action1;
                     @Override public void call(AlertCompactDTO alertCompactDTO)
                     {
                         alertCache.get().invalidate(alertId);
+                        alertCompactListCache.get().addCreated(alertId.getUserBaseKey(), alertCompactDTO);
+                        AlertCompactDTOList list = alertCompactListCache.get().getCachedValue(alertId.getUserBaseKey());
+                        if (list != null)
+                        {
+                            alertCompactListCache.get().onNext(alertId.getUserBaseKey(), list);
+                        }
                     }
                 });
     }
