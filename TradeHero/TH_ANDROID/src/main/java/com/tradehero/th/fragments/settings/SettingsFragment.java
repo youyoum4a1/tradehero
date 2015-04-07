@@ -45,6 +45,7 @@ import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.billing.report.PurchaseReportResult;
 import com.tradehero.th.fragments.location.LocationListFragment;
+import com.tradehero.th.fragments.onboarding.OnBoardNewDialogFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
@@ -652,6 +653,7 @@ public final class SettingsFragment extends BasePreferenceFragment
     {
         //todo replace with navigatro to viewIntro
         Timber.d("handleViewIntro");
+        OnBoardNewDialogFragment.showOnBoardDialog(SettingsFragment.this.getActivity().getSupportFragmentManager());
     }
 
     public void handleTopBannerClick()
