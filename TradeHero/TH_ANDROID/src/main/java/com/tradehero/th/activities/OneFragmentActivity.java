@@ -74,6 +74,30 @@ abstract public class OneFragmentActivity extends BaseActivity
         return superModules;
     }
 
+    @Override public void onBackPressed()
+    {
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        int realCount = 0;
+        if (fragments != null)
+        {
+            for (Fragment fragment : fragments)
+            {
+                if (fragment != null)
+                {
+                    realCount++;
+                }
+            }
+        }
+        if (realCount <= 1)
+        {
+            finish();
+        }
+        else
+        {
+            navigator.popFragment();
+        }
+    }
+
     @Module(
             addsTo = AppModule.class,
             includes = {

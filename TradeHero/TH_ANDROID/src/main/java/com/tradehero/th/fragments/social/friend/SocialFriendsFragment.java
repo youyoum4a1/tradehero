@@ -20,7 +20,6 @@ import butterknife.OnTextChanged;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -29,13 +28,11 @@ import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.social.key.FriendsListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardTabHost;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.social.friend.FriendsListCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.utils.DeviceUtil;
-import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +48,7 @@ import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
-public abstract class SocialFriendsFragment extends DashboardFragment
+public abstract class SocialFriendsFragment extends BaseFragment
         implements SocialFriendUserView.OnElementClickListener
 {
     @InjectView(R.id.friends_root_view) BetterViewAnimator friendsRootView;
@@ -65,7 +62,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Inject FriendsListCacheRx friendsListCache;
     @Inject CurrentUserId currentUserId;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
-    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     protected SocialFriendHandler socialFriendHandler;
 
@@ -99,7 +95,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         listView.setEmptyView(emptyView);
-        listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         listView.setAdapter(socialFriendsListAdapter);
         if (listedSocialItems != null)
         {
@@ -128,13 +123,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
-        {
-            @Override public void onTranslate(float x, float y)
-            {
-                inviteFollowAllContainer.setTranslationY(y);
-            }
-        });
         socialFriendsListAdapter.setOnElementClickedListener(this);
     }
 
@@ -142,13 +130,11 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         super.onPause();
         socialFriendsListAdapter.setOnElementClickedListener(null);
-        dashboardTabHost.get().setOnTranslate(null);
         DeviceUtil.dismissKeyboard(getActivity());
     }
 
     @Override public void onDestroyView()
     {
-        listView.setOnScrollListener(null);
         filterSubject = null;
         super.onDestroyView();
     }

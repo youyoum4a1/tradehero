@@ -9,7 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -92,9 +92,9 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
             @Nullable String backStackName, boolean showHomeAsUp)
     {
         Fragment currentFragment = getCurrentFragment();
-        if (currentFragment instanceof DashboardFragment)
+        if (currentFragment instanceof BaseFragment)
         {
-            DashboardFragment currentDashboardFragment = (DashboardFragment) currentFragment;
+            BaseFragment currentDashboardFragment = (BaseFragment) currentFragment;
             if (!currentDashboardFragment.allowNavigateTo(fragmentClass, args))
             {
                 return null;
