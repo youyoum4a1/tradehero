@@ -130,19 +130,11 @@ public class ActionBarOwnerMixin
         }
     }
 
-    protected void setActionBarTitle(@StringRes int titleResId)
+    public void setActionBarTitle(@StringRes int titleResId)
     {
         if (actionBar != null)
         {
             actionBar.setTitle(titleResId);
-        }
-    }
-
-    protected void setActionBarTitle(String title)
-    {
-        if (actionBar != null)
-        {
-            actionBar.setTitle(title);
         }
     }
 
@@ -179,6 +171,14 @@ public class ActionBarOwnerMixin
         if (actionBar != null)
         {
             actionBar.setSubtitle(subtitle);
+        }
+    }
+
+    public void setActionBarTitle(String title)
+    {
+        if (actionBar != null)
+        {
+            actionBar.setTitle(title);
         }
     }
 
