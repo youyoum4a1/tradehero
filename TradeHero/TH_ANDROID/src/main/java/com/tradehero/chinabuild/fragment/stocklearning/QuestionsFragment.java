@@ -11,6 +11,11 @@ import com.tradehero.chinabuild.data.question.questionUtils.QuestionLoader;
 import com.tradehero.chinabuild.data.sp.QuestionsSharePreferenceManager;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 
 /**
@@ -18,12 +23,13 @@ import java.util.ArrayList;
  *
  * Created by palmer on 15/3/27.
  */
-public class QuestionsFragment extends DashboardFragment
-{
+public class QuestionsFragment extends DashboardFragment {
 
     private StockLearningQuestionsAdapter questionsAdapter;
 
     private ListView questionsLV;
+
+    @Inject Analytics analytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -33,33 +39,29 @@ public class QuestionsFragment extends DashboardFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stock_learning_questions, container, false);
         ButterKnife.inject(this, view);
         questionsLV = (ListView) view.findViewById(R.id.listview_questions);
         questionsLV.setAdapter(questionsAdapter);
-        questionsLV.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
+        questionsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
-            {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 gotoAnswerQuestions(position);
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.QUESTION_SET_SELECT, String.valueOf(position)));
             }
         });
 
         return view;
     }
 
-    @Override public void onResume()
-    {
+    @Override public void onResume() {
         super.onResume();
         refreshQuestions();
     }
 
-    //Test
-    private void refreshQuestions()
-    {
+    //Initialize local data
+    private void refreshQuestions() {
         ArrayList<StockLearningQuestionsItem> questionsItemDTOs = new ArrayList();
         StockLearningQuestionsItem questionsItemDTOA = new StockLearningQuestionsItem();
         questionsItemDTOA.setTotalNumber(QuestionLoader.TOTAL_NUM_QA);

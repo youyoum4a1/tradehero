@@ -102,6 +102,17 @@ public class AnalyticsConstants
     public final static String BUTTON_STOCK_BUY_SALE_CONFIRM = "BUTTON_STOCK_BUY_SALE_CONFIRM";
     public final static String BUTTON_STOCK_BUY_SUCCESSFULLY = "BUTTON_STOCK_BUY_SUCCESSFULLY";
     public final static String BUTTON_STOCK_SALE_SUCCESSFULLY = "BUTTON_STOCK_SALE_SUCCESSFULLY";
+
+    //选择题库
+    public final static String QUESTION_SET_SELECT = "QUESTION_SET_SELECT";
+    //下一题
+    public final static String QUESTION_NEXT_QUESTION = "QUESTION_NEXT_QUESTION";
+    //查看结果
+    public final static String QUESTION_CHECK_QUESTION_RESULT = "QUESTION_CHECK_QUESTION_RESULT";
+    //答完一套题
+    public final static String QUESTION_COMPLETED = "QUESTION_COMPLETED";
+    //选择视频
+    public final static String VIDEO_SELECT = "VIDEO_SELECT";
     //Palmer
 
 

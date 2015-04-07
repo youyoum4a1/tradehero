@@ -17,7 +17,11 @@ import com.tradehero.chinabuild.data.question.questionUtils.QuestionLoader;
 import com.tradehero.chinabuild.data.sp.QuestionsSharePreferenceManager;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 
 /**
@@ -65,15 +69,10 @@ public class ToAnswerQuestionFragment extends DashboardFragment implements View.
     public boolean[] answers = {false, false, false, false};
     private String strTitle = "";
 
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
+    @Inject Analytics analytics;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stock_learning_to_answer, container, false);
         ButterKnife.inject(this, view);
         getBundleParameters();
@@ -188,11 +187,14 @@ public class ToAnswerQuestionFragment extends DashboardFragment implements View.
                     calcAnswer();
                     showCorrectAnswer();
                 }
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.QUESTION_CHECK_QUESTION_RESULT));
                 break;
             case STATUS_NEXT_QUESTION:
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.QUESTION_NEXT_QUESTION));
                 getNextQuestion();
                 break;
             case STATUS_COMPLETE:
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.QUESTION_COMPLETED));
                 gotoSummaryPage();
                 break;
         }
