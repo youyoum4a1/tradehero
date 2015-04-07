@@ -7,10 +7,9 @@
                 android:background="#ffffff">
 
 
-    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+    <ImageView android:layout_width="match_parent" android:layout_height="110dp"
                android:id="@+id/imageview_questions_set_bg"
-               android:src="@drawable/learning_a_bg"
-               android:scaleType="centerCrop"/>
+               android:scaleType="fitXY"/>
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
               android:id="@+id/textview_questions_set_proportion" android:textSize="14sp"
