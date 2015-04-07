@@ -38,7 +38,7 @@ import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.fragments.DashboardTabHost;
-import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
 import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
@@ -671,10 +671,10 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     {
         pushPortfolioFragment(new OwnedPortfolioId(
                 currentUserId.get(),
-                securityPositionTransactionDTO.portfolio.id));
+                securityPositionTransactionDTO.portfolio.id), securityPositionTransactionDTO.portfolio);
     }
 
-    private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId)
+    private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId, PortfolioDTO portfolioDTO)
     {
         shareToWeChat();
         if (isResumed())
@@ -688,11 +688,12 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
             if (applicablePortfolioId != null)
             {
-                PositionListFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+                TabbedPositionListFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+                TabbedPositionListFragment.putIsFX(args, portfolioDTO.assetClass);
             }
-            PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
-            PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
-            navigator.get().pushFragment(PositionListFragment.class, args);
+            TabbedPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+            TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
+            navigator.get().pushFragment(TabbedPositionListFragment.class, args);
         }
     }
 
