@@ -16,6 +16,6 @@ public class DiscussionDTOComparatorIdAsc implements Comparator<AbstractDiscussi
         {
             return 1;
         }
-        return Integer.valueOf(o1.viewHolderDTO.discussionDTO.id).compareTo(o2.viewHolderDTO.discussionDTO.id);
+        return o2.viewHolderDTO.discussionDTO.createdAtUtc.compareTo(o1.viewHolderDTO.discussionDTO.createdAtUtc);
     }
 }
