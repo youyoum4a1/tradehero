@@ -68,6 +68,20 @@ public class AlertCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, Al
         }
     }
 
+    public void addCreated(@NonNull UserBaseKey userBaseKey, @NonNull AlertCompactDTO alertCompactDTO)
+    {
+        AlertCompactDTOList list = getCachedValue(userBaseKey);
+        if (list == null)
+        {
+            list = new AlertCompactDTOList();
+        }
+        else
+        {
+            remove(alertCompactDTO.getAlertId(userBaseKey));
+        }
+        list.add(alertCompactDTO);
+    }
+
     @NonNull public Observable<Map<SecurityId, AlertId>> getSecurityMappedAlerts(@NonNull UserBaseKey userBaseKey)
     {
         return get(userBaseKey)

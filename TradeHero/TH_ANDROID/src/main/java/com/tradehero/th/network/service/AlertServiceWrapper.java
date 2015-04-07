@@ -22,7 +22,8 @@ import rx.functions.Action1;
     @NonNull private final Lazy<AlertCacheRx> alertCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public AlertServiceWrapper(@NonNull AlertServiceRx alertServiceRx,
+    @Inject public AlertServiceWrapper(
+            @NonNull AlertServiceRx alertServiceRx,
             @NonNull Lazy<AlertCompactListCacheRx> alertCompactListCache,
             @NonNull Lazy<AlertCacheRx> alertCache)
     {
@@ -61,9 +62,21 @@ import rx.functions.Action1;
     //</editor-fold>
 
     //<editor-fold desc="Create Alert">
-    @NonNull public Observable<AlertCompactDTO> createAlertRx(@NonNull UserBaseKey userBaseKey, @NonNull AlertFormDTO alertFormDTO)
+    @NonNull public Observable<AlertCompactDTO> createAlertRx(@NonNull final UserBaseKey userBaseKey, @NonNull AlertFormDTO alertFormDTO)
     {
-        return this.alertServiceRx.createAlert(userBaseKey.key, alertFormDTO);
+        return this.alertServiceRx.createAlert(userBaseKey.key, alertFormDTO)
+                .doOnNext(new Action1<AlertCompactDTO>()
+                {
+                    @Override public void call(AlertCompactDTO alertCompactDTO)
+                    {
+                        alertCompactListCache.get().addCreated(userBaseKey, alertCompactDTO);
+                        AlertCompactDTOList list = alertCompactListCache.get().getCachedValue(userBaseKey);
+                        if (list != null)
+                        {
+                            alertCompactListCache.get().onNext(userBaseKey, list);
+                        }
+                    }
+                });
     }
     //</editor-fold>
 
