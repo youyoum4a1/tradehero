@@ -119,20 +119,6 @@ public class AlertManagerFragment extends BaseFragment
         fetchAlertCompactList();
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-
-        if (alertListItemAdapter.getCount() == 0)
-        {
-            progressAnimator.setDisplayedChildByLayoutId(0);
-        }
-        else
-        {
-            progressAnimator.setDisplayedChildByLayoutId(R.id.alerts_list);
-        }
-    }
-
     @Override public void onStop()
     {
         onStopSubscriptions.unsubscribe();
@@ -250,9 +236,16 @@ public class AlertManagerFragment extends BaseFragment
 
     protected void linkWith(@NonNull List<? extends AlertItemView.DTO> alertCompactDTOs)
     {
-        progressAnimator.setDisplayedChildByLayoutId(R.id.alerts_list);
         alertListItemAdapter.appendTail(alertCompactDTOs);
         alertListItemAdapter.notifyDataSetChanged();
+        if (alertListItemAdapter.getCount() == 0)
+        {
+            progressAnimator.setDisplayedChildByLayoutId(R.id.empty_item);
+        }
+        else
+        {
+            progressAnimator.setDisplayedChildByLayoutId(R.id.alerts_list);
+        }
     }
 
     @SuppressWarnings("UnusedDeclaration")

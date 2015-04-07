@@ -90,6 +90,15 @@
         tools:background="@color/red"
         />
 
+    <TextView
+        android:id="@+id/empty_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/stock_alert_empty"
+        style="@style/TH.Headline"
+        android:gravity="center"
+        />
+
   </com.tradehero.common.widget.BetterViewAnimator>
 
 </LinearLayout>

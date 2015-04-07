@@ -34,6 +34,7 @@
   <string name="stock_alert_count_alert_format">%d alerts</string>
   <string name="stock_alert_plan_unlimited">Unlimited</string>
   <string name="stock_alert_manage_subscriptions">Manage your subscriptions</string>
+  <string name="stock_alert_empty">You have no Stock Alert</string>
 
   <string name="error_fetch_alert">There was an error when fetching alert information</string>
   <string name="error_alert_insufficient_info">There is insufficient information to submit the alert</string>
