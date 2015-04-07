@@ -12,6 +12,7 @@ import com.tradehero.chinabuild.data.VideoDTO;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.DaggerUtils;
+
 import java.util.ArrayList;
 
 //视频播放GridViewAdapter
@@ -66,7 +67,7 @@ public class VideoGridAdapter extends BaseAdapter
 
         if (data != null)
         {
-            ViewHolder holder = null;
+            ViewHolder holder;
             if (convertView == null)
             {
                 convertView = inflater.inflate(R.layout.video_class_gridview_item, viewGroup, false);

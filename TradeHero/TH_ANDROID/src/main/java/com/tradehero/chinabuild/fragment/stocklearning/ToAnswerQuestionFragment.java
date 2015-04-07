@@ -17,6 +17,7 @@ import com.tradehero.chinabuild.data.question.questionUtils.QuestionLoader;
 import com.tradehero.chinabuild.data.sp.QuestionsSharePreferenceManager;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
+
 import java.util.ArrayList;
 
 /**
@@ -92,8 +93,6 @@ public class ToAnswerQuestionFragment extends DashboardFragment implements View.
         switch (viewId)
         {
             case R.id.button_next_question:
-                //gotoSummaryPage();
-                //getNextQuestion();
                 doNextButton();
                 break;
 

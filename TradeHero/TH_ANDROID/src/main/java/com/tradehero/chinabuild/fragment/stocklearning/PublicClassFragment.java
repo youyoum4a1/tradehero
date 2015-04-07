@@ -17,114 +17,97 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import java.util.ArrayList;
-import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
 
 /**
  * Created by palmer on 15/3/27.
  */
-public class PublicClassFragment extends DashboardFragment
-{
+public class PublicClassFragment extends DashboardFragment {
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @InjectView(R.id.gridView) GridView gridView;
     private VideoGridAdapter videoGridAdapter;
 
     @InjectView(R.id.tradeheroProgressBar) TradeHeroProgressBar progressBar;
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        videoGridAdapter = new VideoGridAdapter(getActivity());
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stock_learning_public_class, container, false);
         ButterKnife.inject(this, view);
         initGridView();
+        gotoDownloadVideoList();
         return view;
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-        gotoDownloadVideoList();
-    }
-
-    private void initGridViewAdapter(VideoDTOList videoDTOList)
-    {
-        if(videoGridAdapter == null)
-        {
-            videoGridAdapter = new VideoGridAdapter(getActivity());
-            ArrayList<VideoDTO> listData = new ArrayList<>();
-            for (int i = 0; i < videoDTOList.size(); i++)
-            {
-                listData.add(videoDTOList.get(i));
-            }
-            videoGridAdapter.setListData(listData);
+    private void initGridViewAdapter(VideoDTOList videoDTOList) {
+        ArrayList<VideoDTO> listData = new ArrayList<>();
+        for (int i = 0; i < videoDTOList.size(); i++) {
+            listData.add(videoDTOList.get(i));
         }
+        videoGridAdapter.setListData(listData);
     }
 
-    private void initGridView()
-    {
+    private void initGridView() {
         gridView.setAdapter(videoGridAdapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
-            {
-                Timber.d("GridView Clicked : " + position);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 VideoDTO videoDTO = videoGridAdapter.getItem(position);
                 playVideo(videoDTO.vid);
             }
         });
     }
 
-    private void showProgressBar()
-    {
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    private void dismissProgressBar()
-    {
-        progressBar.setVisibility(View.GONE);
-    }
-
-    public void playVideo(String vid)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putString(VideoPlayer.BUNDLE_VIDEO_VID,vid);
-        gotoDashboard(VideoPlayer.class, bundle);
-    }
-
-    public void gotoDownloadVideoList(){
-        if(videoGridAdapter == null)
-        {
-            showProgressBar();
-            userServiceWrapper.get().downloadVideoList(new DownloadVideoListCallback());
+    private void showProgressBar() {
+        if(progressBar!=null) {
+            progressBar.startLoading();
+            progressBar.setVisibility(View.VISIBLE);
         }
     }
 
-    private class DownloadVideoListCallback implements Callback<VideoDTOList>
-    {
+    private void dismissProgressBar() {
+        if(progressBar!=null) {
+            progressBar.stopLoading();
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    public void playVideo(String vid) {
+        Bundle bundle = new Bundle();
+        bundle.putString(VideoPlayer.BUNDLE_VIDEO_VID, vid);
+        gotoDashboard(VideoPlayer.class, bundle);
+    }
+
+    public void gotoDownloadVideoList() {
+        showProgressBar();
+        userServiceWrapper.get().downloadVideoList(new DownloadVideoListCallback());
+    }
+
+    private class DownloadVideoListCallback implements Callback<VideoDTOList> {
 
         @Override
         public void success(VideoDTOList videoDTOList, Response response) {
-            //THToast.show("videoDTOlist success size = " + videoDTOList.size());
-            if(videoDTOList!=null)
-            {
+            if(getActivity()==null){
+                return;
+            }
+            if (videoDTOList != null) {
                 initGridViewAdapter(videoDTOList);
-                initGridView();
             }
             dismissProgressBar();
         }
 
         @Override
         public void failure(RetrofitError retrofitError) {
-            //THToast.show("videoDTOList get fail");
             dismissProgressBar();
         }
     }
