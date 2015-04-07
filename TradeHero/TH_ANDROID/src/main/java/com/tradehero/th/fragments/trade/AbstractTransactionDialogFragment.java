@@ -55,6 +55,7 @@ import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
@@ -112,7 +113,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Inject Lazy<PositionCompactListCacheRx> positionCompactListCache;
     @Inject Analytics analytics;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
-
+    @Inject SocialShareHelper socialShareHelper;
     @Inject THBillingInteractorRx userInteractor;
     @Inject Lazy<DashboardNavigator> navigator;
 
@@ -1089,6 +1090,11 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             if (buySellTransactionListener != null)
             {
                 buySellTransactionListener.onTransactionSuccessful(isBuy, securityPositionDetailDTO);
+            }
+
+            if (mBtnShareWeChat.isChecked())
+            {
+                //shareWeChatClient(isBuy);
             }
         }
 

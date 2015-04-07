@@ -56,6 +56,7 @@ import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.DeviceUtil;
@@ -662,7 +663,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             socialSharerLazy.get().share(weChatDTO)
                     .subscribe(
                             new EmptyAction1<SocialShareResult>(),
-                            new EmptyAction1<Throwable>()); // TODO proper callback?
+                            new ToastAndLogOnErrorAction("Failed to share to WeChat")); // TODO proper callback?
         }
     }
 

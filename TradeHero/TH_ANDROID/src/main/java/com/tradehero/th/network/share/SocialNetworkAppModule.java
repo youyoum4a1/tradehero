@@ -36,7 +36,7 @@ public class SocialNetworkAppModule
         return Arrays.asList(PUBLIC_PROFILE);
     }
 
-    @Provides @Singleton IWXAPI createWXAPI(Context context)
+    @Provides @Singleton IWXAPI createWeChatAPI(Context context)
     {
         IWXAPI weChatApi = WXAPIFactory.createWXAPI(context, SocialConstants.WECHAT_APP_ID, false);
         weChatApi.registerApp(SocialConstants.WECHAT_APP_ID);

@@ -43,7 +43,7 @@ public class WeChatDTO implements SocialShareFormDTO
                 '}';
     }
 
-    public Bundle getArgs()
+    @NonNull public Bundle getArgs()
     {
         Bundle args = new Bundle();
         populate(args);
@@ -63,6 +63,11 @@ public class WeChatDTO implements SocialShareFormDTO
         }
         args.putString(WECHAT_MESSAGE_TITLE_KEY, title);
         args.putString(WECHAT_MESSAGE_IMAGE_URL_KEY, imageURL);
+    }
+
+    public static boolean isValid(@NonNull Bundle args)
+    {
+        return args.containsKey(WECHAT_MESSAGE_ID_KEY);
     }
 
     // TODO make a put to Bundle method to ease passage to WxEntryActivity

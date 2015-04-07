@@ -104,7 +104,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
                         {
                             return setting.languageCode;
                         }
-                        return applicationContext.getResources().getConfiguration().locale.getLanguage();
+                        return resources.getConfiguration().locale.getLanguage();
                     }
                 });
     }
@@ -164,7 +164,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
                         }
                         else
                         {
-                            targetLanguage = applicationContext.getResources().getConfiguration().locale.getLanguage();
+                            targetLanguage = resources.getConfiguration().locale.getLanguage();
                         }
 
                         boolean canTranslate = tokenPair.second != null &&

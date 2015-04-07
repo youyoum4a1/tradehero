@@ -37,22 +37,27 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.network.service.WeChatServiceWrapper;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class WXEntryActivity extends Activity implements IWXAPIEventHandler //created by alex
+public class WXEntryActivity extends Activity
+        implements IWXAPIEventHandler
 {
     public static final int WECHAT_MESSAGE_TYPE_NONE = -1;
     private static final int TIMELINE_SUPPORTED_VERSION = 0x21020001;
@@ -61,14 +66,14 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     private static final String WECHAT_SHARE_TYPE_VALUE = "WeChat";
 
     private WeChatDTO weChatDTO;
-    private Bitmap mBitmap;
+    @Nullable private Subscription buildRequestSubscription;
     @Nullable private Subscription trackShareSubscription;
 
     @Inject CurrentUserId currentUserId;
-    @Inject IWXAPI mWeChatApi;
+    @Inject IWXAPI weChatApi;
     @Inject WeChatServiceWrapper weChatServiceWrapper;
-    @Inject Lazy<Picasso> picassoLazy;
-    @Inject Lazy<MarketUtil> marketUtil;
+    @Inject Picasso picasso;
+    @Inject MarketUtil marketUtil;
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
 
     public static void putWeChatDTO(@NonNull Intent intent, @NonNull WeChatDTO weChatDTO)
@@ -81,8 +86,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         return new WeChatDTO(intent.getBundleExtra(WECHAT_DTO_INTENT_KEY));
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState)
+    @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         THApp app = THApp.get(this);
@@ -91,18 +95,35 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         // TODO take this intent extraction into a separate method and use a new
         // WeChatDTO method to read from Intent.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        weChatDTO = getWeChatDTO(getIntent());
-        loadImage();
+        if (WeChatDTO.isValid(getIntent().getBundleExtra(WECHAT_DTO_INTENT_KEY)))
+        {
+            weChatDTO = getWeChatDTO(getIntent());
+        }
+        else
+        {
+            Timber.e(new IllegalArgumentException(), "invalid extras");
+            THToast.show("Invalid extras");
+            finish();
+            return;
+        }
 
-        boolean isWXInstalled = mWeChatApi.isWXAppInstalled();
+        boolean isWXInstalled = weChatApi.isWXAppInstalled();
         if (isWXInstalled && weChatDTO.type != null)
         {
-            if (mWeChatApi.getWXAppSupportAPI()
+            if (weChatApi.getWXAppSupportAPI()
                     >= TIMELINE_SUPPORTED_VERSION) //wechat 4.2 support timeline
             {
-                WXMediaMessage weChatMessage = buildMessage(weChatDTO.type);
-                SendMessageToWX.Req weChatReq = buildRequest(weChatMessage);
-                mWeChatApi.sendReq(weChatReq);
+                buildRequestSubscription = buildMessage(weChatDTO.type)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                new Action1<WXMediaMessage>()
+                                {
+                                    @Override public void call(WXMediaMessage wxMediaMessage)
+                                    {
+                                        weChatApi.sendReq(buildRequest(wxMediaMessage));
+                                    }
+                                },
+                                new TimberOnErrorAction("Failed to prepare message"));
             }
             else
             {
@@ -117,12 +138,13 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         }
     }
 
-    private WXMediaMessage buildMessage(WeChatMessageType weChatMessageType)
+    @NonNull private Observable<WXMediaMessage> buildMessage(WeChatMessageType weChatMessageType)
     {
         WXWebpageObject webpage = new WXWebpageObject();
-        webpage.webpageUrl = (marketUtil.get() == null || marketUtil.get().getAppMarketUrl() == null)? Constants.WECHAT_SHARE_URL : marketUtil.get().getAppMarketUrl();
+        webpage.webpageUrl = (marketUtil == null || marketUtil.getAppMarketUrl() == null) ? Constants.WECHAT_SHARE_URL
+                : marketUtil.getAppMarketUrl();
 
-        WXMediaMessage weChatMsg = new WXMediaMessage(webpage);
+        final WXMediaMessage weChatMsg = new WXMediaMessage(webpage);
         weChatMsg.description = getString(weChatMessageType.getTitleResId());
         if (weChatDTO != null && weChatDTO.title != null && !weChatDTO.title.isEmpty())
         {
@@ -133,66 +155,55 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         {
             weChatMsg.title = weChatMsg.description;
         }
-        int i = 0;
-        while (weChatDTO != null && weChatDTO.imageURL != null && mBitmap == null && i < 200)
-        {
-            i++;
-        }
-        initBitmap();
-        weChatMsg.thumbData = Util.bmpToByteArray(mBitmap, true);
-        mBitmap.recycle();
 
-        return weChatMsg;
-    }
-
-    private void loadImage()
-    {
-        final WeChatDTO weChatDTOCopy = weChatDTO;
-        if (weChatDTOCopy != null && weChatDTOCopy.imageURL != null && !weChatDTOCopy.imageURL.isEmpty())
-        {
-            Thread thread = new Thread(new Runnable()
-            {
-                @Override public void run()
+        // Default image loader
+        Observable<Bitmap> imageLoader = Observable.just(1)
+                .subscribeOn(Schedulers.computation())
+                .map(new Func1<Integer, Bitmap>()
                 {
-                    try
+                    @Override public Bitmap call(Integer integer)
                     {
-                        Bitmap picassoBmp = picassoLazy.get().load(weChatDTOCopy.imageURL).get();
-                        if (picassoBmp != null)
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.splash_logo);
+                        //bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notification_logo);
+                        return Bitmap.createScaledBitmap(bitmap, 250, 250, false);
+                    }
+                });
+        if (weChatDTO != null && weChatDTO.imageURL != null && !weChatDTO.imageURL.isEmpty())
+        {
+            imageLoader = Observable.just(weChatDTO.imageURL)
+                    .subscribeOn(Schedulers.io())
+                    .flatMap(new Func1<String, Observable<Bitmap>>()
+                    {
+                        @Override public Observable<Bitmap> call(String s)
                         {
-                            Bitmap tempBitmap = Bitmap.createBitmap(picassoBmp);
-                            // TODO find a way to force picasso to redownload and not have a recycled image.
-                            if (tempBitmap != null && !tempBitmap.isRecycled())
+                            try
                             {
-                                mBitmap = Bitmap.createScaledBitmap(tempBitmap, 250, 250, false);
+                                Bitmap picassoBmp = picasso.load(weChatDTO.imageURL)
+                                        .resize(250, 250).get();
+                                if (picassoBmp != null)
+                                {
+                                    return Observable.just(picassoBmp);
+                                }
+                            } catch (IOException e)
+                            {
+                                return Observable.error(e);
                             }
+                            return Observable.error(new NullPointerException("No image to download"));
                         }
-                    }
-                    catch (IOException e)
-                    {
-                        THToast.show(e.getMessage());
-                        e.printStackTrace();
-                    }
-                }
-            });
-            thread.start();
+                    })
+                    // Fallback to default
+                    .onErrorResumeNext(imageLoader);
         }
-    }
 
-    private void initBitmap()
-    {
-        try
+        return imageLoader.map(new Func1<Bitmap, WXMediaMessage>()
         {
-            if (mBitmap == null)
+            @Override public WXMediaMessage call(Bitmap bitmap)
             {
-                mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.splash_logo);
-                //mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notification_logo);
-                mBitmap = Bitmap.createScaledBitmap(mBitmap, 250, 250, false);
+                weChatMsg.thumbData = Util.bmpToByteArray(bitmap, true);
+                bitmap.recycle();
+                return weChatMsg;
             }
-        }
-        catch (OutOfMemoryError e)
-        {
-            Timber.e(e, null);
-        }
+        });
     }
 
     private SendMessageToWX.Req buildRequest(WXMediaMessage weChatMsg)
@@ -213,16 +224,14 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         return weChatReq;
     }
 
-    @Override
-    protected void onNewIntent(Intent intent)
+    @Override protected void onNewIntent(Intent intent)
     {
         super.onNewIntent(intent);
-        mWeChatApi.handleIntent(intent, this);
+        weChatApi.handleIntent(intent, this);
     }
 
-    //<editor-fold desc="Wechat Callback">
-    @Override
-    public void onReq(BaseReq req)
+    //<editor-fold desc="WeChat Callbacks">
+    @Override public void onReq(BaseReq req)
     {
         switch (req.getType())
         {
@@ -235,8 +244,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         }
     }
 
-    @Override
-    public void onResp(BaseResp resp)
+    @Override public void onResp(BaseResp resp)
     {
         switch (resp.errCode)
         {
@@ -292,6 +300,10 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
 
     @Override protected void onDestroy()
     {
+        if (buildRequestSubscription != null)
+        {
+            buildRequestSubscription.unsubscribe();
+        }
         detachTrackShareSubscription();
         super.onDestroy();
     }

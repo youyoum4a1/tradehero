@@ -18,6 +18,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+@Deprecated // At least consider removing it
 public class WebDialogFactory
 {
     @NonNull private final Context context;
@@ -39,12 +40,12 @@ public class WebDialogFactory
     }
     //</editor-fold>
 
-    public void addTo(@NonNull Bundle bundle, @NonNull UserFriendsFacebookDTO userFriendsFacebookDTO)
+    public static void addTo(@NonNull Bundle bundle, @NonNull UserFriendsFacebookDTO userFriendsFacebookDTO)
     {
         addTo(bundle, Arrays.asList(userFriendsFacebookDTO));
     }
 
-    public void addTo(@NonNull Bundle bundle, @NonNull Iterable<? extends UserFriendsFacebookDTO> userFriendsFacebookDTOs)
+    public static void addTo(@NonNull Bundle bundle, @NonNull Iterable<? extends UserFriendsFacebookDTO> userFriendsFacebookDTOs)
     {
         StringBuilder sb = new StringBuilder();
         String separator = "";

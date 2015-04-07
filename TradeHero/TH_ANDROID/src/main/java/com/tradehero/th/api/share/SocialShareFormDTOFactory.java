@@ -1,6 +1,6 @@
 package com.tradehero.th.api.share;
 
-import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -16,13 +16,13 @@ import com.tradehero.th.models.share.WeChatShareDestination;
 public class SocialShareFormDTOFactory
 {
     @NonNull public static SocialShareFormDTO createForm(
-            @NonNull Context context,
+            @NonNull Resources resources,
             @NonNull ShareDestination shareDestination,
             @NonNull DTO whatToShare)
     {
         if (shareDestination instanceof WeChatShareDestination)
         {
-            return WeChatDTOFactory.createFrom(context, whatToShare);
+            return WeChatDTOFactory.createFrom(resources, whatToShare);
         }
         else if (shareDestination instanceof ShareDestinationWithEnum)
         {

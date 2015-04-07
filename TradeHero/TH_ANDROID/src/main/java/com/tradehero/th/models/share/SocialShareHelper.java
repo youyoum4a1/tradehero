@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.Window;
@@ -35,7 +36,7 @@ import rx.functions.Func1;
 
 public class SocialShareHelper
 {
-    @NonNull protected final Context applicationContext;
+    @NonNull protected final Resources resources;
     @NonNull protected final Provider<Activity> activityHolder;
     @NonNull protected final Provider<DashboardNavigator> navigatorProvider;
     @NonNull protected final Provider<SocialSharer> socialSharerProvider;
@@ -49,7 +50,7 @@ public class SocialShareHelper
             @NonNull Provider<SocialSharer> socialSharerProvider,
             @NonNull @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders)
     {
-        this.applicationContext = applicationContext;
+        this.resources = applicationContext.getResources();
         this.activityHolder = activityHolder;
         this.navigatorProvider = navigatorProvider;
         this.socialSharerProvider = socialSharerProvider;
@@ -89,7 +90,7 @@ public class SocialShareHelper
         if (userAction instanceof ShareDialogLayout.ShareUserAction)
         {
             return share(SocialShareFormDTOFactory.createForm(
-                    applicationContext,
+                    resources,
                     ((ShareDialogLayout.ShareUserAction) userAction).shareDestination,
                     whatToShare));
         }

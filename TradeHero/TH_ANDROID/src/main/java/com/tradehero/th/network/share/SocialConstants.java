@@ -1,6 +1,7 @@
 package com.tradehero.th.network.share;
 
 import com.tradehero.th.auth.weibo.WeiboAppAuthData;
+import com.tradehero.th.utils.Constants;
 
 public class SocialConstants
 {
@@ -12,8 +13,9 @@ public class SocialConstants
 
     public static final String FACEBOOK_APP_ID = "431745923529834";
 
-    public static final String WECHAT_APP_ID = "wxe795a0ba8fa23cf7";//release
-    //public static final String WECHAT_APP_ID = "wxbd1f7f377d636b55";//test
+    public static final String WECHAT_APP_ID_RELEASE = "wxe795a0ba8fa23cf7";//release
+    public static final String WECHAT_APP_ID_TEST = "wxbd1f7f377d636b55";//test
+    public static final String WECHAT_APP_ID = Constants.RELEASE ? WECHAT_APP_ID_RELEASE : WECHAT_APP_ID_TEST;
 
     public static final String WEIBO_APP_ID = "280704663";//release
     //private static final String WEIBO_APP_ID = "551229853";//test

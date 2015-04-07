@@ -154,7 +154,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
     private void shareToWeChat()
     {
-        WeChatDTO weChatDTO = WeChatDTOFactory.createFrom(getActivity(), competitionPreSeasonDTO, providerDTO);
+        WeChatDTO weChatDTO = WeChatDTOFactory.createFrom(getResources(), competitionPreSeasonDTO, providerDTO);
         onStopSubscriptions.add(socialSharerLazy.get().share(weChatDTO)
                 .subscribe(
                         new EmptyAction1<SocialShareResult>(),

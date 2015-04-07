@@ -416,7 +416,10 @@ public class BuySellStockFragment extends BuySellFragment
         if (btnAlerted != null)
         {
             btnAlerted.setVisibility(mappedAlerts != null ? View.VISIBLE : View.GONE);
-            btnAlerted.setAlpha(mappedAlerts.get(securityId) != null ? 1.0f : 0.50f);
+            if (mappedAlerts != null)
+            {
+                btnAlerted.setAlpha(mappedAlerts.get(securityId) != null ? 1.0f : 0.50f);
+            }
         }
     }
 
