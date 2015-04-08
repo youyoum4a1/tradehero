@@ -23,9 +23,9 @@ public class VideoPlayer extends WebViewFragment
         super.onCreateOptionsMenu(menu, inflater);
         String videoName = getVideoName();
         if(videoName.equals("")) {
-            setHeadViewMiddleMain(getString(R.string.stock_learning_video));
+            setHeadViewMiddleMainWithFullStr(getString(R.string.stock_learning_video));
         }else{
-            setHeadViewMiddleMain(videoName);
+            setHeadViewMiddleMainWithFullStr(videoName);
         }
     }
 

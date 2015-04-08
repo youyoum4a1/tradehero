@@ -104,10 +104,25 @@ abstract public class DashboardFragment extends BaseFragment
         }
     }
 
-    public void setHeadViewMiddleMain(String middleMainText)
-    {
-        if (tvHeadMiddleMain != null)
-        {
+    public void setHeadViewMiddleMain(String middleMainText) {
+        if(middleMainText==null || middleMainText.equals("")){
+            return;
+        }
+        if (tvHeadMiddleMain != null) {
+            String str = middleMainText;
+            if(str.length()>15){
+                str = middleMainText.substring(0, 15);
+            }
+            tvHeadMiddleMain.setVisibility(View.VISIBLE);
+            tvHeadMiddleMain.setText(str);
+        }
+    }
+
+    public void setHeadViewMiddleMainWithFullStr(String middleMainText) {
+        if(middleMainText==null || middleMainText.equals("")){
+            return;
+        }
+        if (tvHeadMiddleMain != null) {
             tvHeadMiddleMain.setVisibility(View.VISIBLE);
             tvHeadMiddleMain.setText(middleMainText);
         }
