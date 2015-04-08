@@ -87,16 +87,19 @@ public class PostCommentView extends RelativeLayout
     {
         super.onFinishInflate();
 
-        ButterKnife.inject(this);
-        HierarchyInjector.inject(this);
-        postCommentSubscriptions = new SubscriptionList();
-        keypadIsShowing = false;
+        if (!isInEditMode())
+        {
+            ButterKnife.inject(this);
+            HierarchyInjector.inject(this);
+            postCommentSubscriptions = new SubscriptionList();
+            keypadIsShowing = false;
+        }
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        if (commentText != null)
+        if (!isInEditMode() && commentText != null)
         {
             commentText.setOnFocusChangeListener(createEditTextFocusChangeListener());
             commentText.requestFocus();

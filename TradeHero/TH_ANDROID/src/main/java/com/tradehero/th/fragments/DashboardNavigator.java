@@ -172,6 +172,16 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
 
     public void launchActivity(@NonNull Class<? extends Activity> activityClass)
     {
-        activity.startActivity(new Intent(activity, activityClass));
+        launchActivity(activityClass, null);
+    }
+
+    public void launchActivity(@NonNull Class<?extends Activity> activityClass, @Nullable Bundle extras)
+    {
+        Intent startIntent = new Intent(activity, activityClass);
+        if (extras != null)
+        {
+            startIntent.putExtras(extras);
+        }
+        activity.startActivity(startIntent);
     }
 }

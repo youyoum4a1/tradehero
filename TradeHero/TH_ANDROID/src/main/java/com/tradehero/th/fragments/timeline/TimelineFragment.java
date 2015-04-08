@@ -25,6 +25,7 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.PrivateDiscussionActivity;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
@@ -55,8 +56,6 @@ import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogRxUtil;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
-import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
-import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
@@ -744,19 +743,14 @@ public class TimelineFragment extends DashboardFragment
         {
             return;
         }
+
+        Bundle args = new Bundle();
+        PrivateDiscussionActivity.putCorrespondentUserBaseKey(args, shownUserBaseKey);
         if (messageThreadHeaderDTO != null)
         {
-            Bundle args = new Bundle();
-            ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
-            ReplyPrivateMessageFragment.putDiscussionKey(args, DiscussionKeyFactory.create(messageThreadHeaderDTO));
-            navigator.get().pushFragment(NewPrivateMessageFragment.class, args);
+            PrivateDiscussionActivity.putDiscussionKey(args, DiscussionKeyFactory.create(messageThreadHeaderDTO));
         }
-        else
-        {
-            Bundle args = new Bundle();
-            NewPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
-            navigator.get().pushFragment(NewPrivateMessageFragment.class, args);
-        }
+        navigator.get().launchActivity(PrivateDiscussionActivity.class, args);
     }
 
     /**
