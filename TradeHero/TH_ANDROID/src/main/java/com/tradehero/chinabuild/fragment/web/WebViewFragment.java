@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -41,7 +43,9 @@ public class WebViewFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.webview_simple_fragment, container, false);
         webViewSimple = (WebView)view.findViewById(R.id.webViewSimple);
+        webViewSimple.setWebChromeClient(new WebChromeClient());
         webViewSimple.getSettings().setJavaScriptEnabled(true);
+        webViewSimple.getSettings().setPluginState(WebSettings.PluginState.ON);
         webViewSimple.addJavascriptInterface(new CallNativeFromJS(), "CallNativeFromJS");
         loadUrl(strUrl);
         return view;

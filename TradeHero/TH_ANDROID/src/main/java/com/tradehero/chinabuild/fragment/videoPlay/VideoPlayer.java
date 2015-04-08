@@ -6,6 +6,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.th.R;
+import timber.log.Timber;
 
 /**
  * Created by huhaiping on 15/3/30.
@@ -36,13 +37,25 @@ public class VideoPlayer extends WebViewFragment
         super.onResume();
         //恢复播放
         webViewSimple.resumeTimers();
+         
     }
 
     @Override
     public void onPause() {
         super.onPause();
         //暂停播放
+        webViewSimple.stopLoading();
         webViewSimple.pauseTimers();
+        try
+        {
+            webViewSimple.pauseTimers();
+            webViewSimple.stopLoading();
+            webViewSimple.loadData("", "text/html", "utf-8");
+        }
+        catch (Exception e)
+        {
+            Timber.d("WebView OnPause ERROR");
+        }
     }
 
     @Override
