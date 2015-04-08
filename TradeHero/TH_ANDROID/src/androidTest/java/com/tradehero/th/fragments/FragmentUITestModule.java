@@ -11,7 +11,6 @@ import com.tradehero.th.fragments.timeline.FragmentTimelineUITestModule;
 import com.tradehero.th.fragments.trade.FragmentTradeUITestModule;
 import com.tradehero.th.fragments.translation.FragmentTranslationUITestModule;
 import com.tradehero.th.fragments.trending.FragmentTrendingUITestModule;
-import com.tradehero.th.fragments.updatecenter.FragmentUpdateCenterUITestModule;
 import com.tradehero.th.fragments.web.FragmentWebUITestModule;
 import dagger.Module;
 
@@ -28,7 +27,6 @@ import dagger.Module;
                 FragmentTradeUITestModule.class,
                 FragmentTranslationUITestModule.class,
                 FragmentTrendingUITestModule.class,
-                FragmentUpdateCenterUITestModule.class,
                 FragmentWebUITestModule.class,
         },
         injects = {

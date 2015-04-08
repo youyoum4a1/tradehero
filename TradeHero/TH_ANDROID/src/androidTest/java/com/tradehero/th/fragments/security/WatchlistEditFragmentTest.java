@@ -39,7 +39,6 @@ public class WatchlistEditFragmentTest
     private static final SecurityId GOOGLE_SECURITY_ID = new SecurityId("NASDAQ", "GOOGL");
     private static final String GOOGLE_NAME = "Google Inc";
     private static final Double GOOGLE_STOCK_WATCHING_PRICE = 554.51;
-    private static final Integer GOOGLE_STOCK_WATCHING_QUANTITY = 1;
 
     @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
     @Inject protected SecurityCompactCacheRx securityCompactCache;
@@ -83,7 +82,6 @@ public class WatchlistEditFragmentTest
         assertThat(holder.securityName.getText()).isEqualTo(SecurityUtils.getDisplayableSecurityName(GOOGLE_SECURITY_ID));
         assertThat(holder.securityDesc.getText()).isEqualTo(GOOGLE_NAME);
         assertThat(holder.securityPrice.getText().toString()).isEqualTo(GOOGLE_STOCK_WATCHING_PRICE.toString());
-        assertThat(holder.securityQuantity.getText().toString()).isEqualTo(GOOGLE_STOCK_WATCHING_QUANTITY.toString());
     }
 
     @Test public void clickOnDoneButtonShouldGoBackToBuySellScreen()
@@ -118,7 +116,6 @@ public class WatchlistEditFragmentTest
         @InjectView(R.id.edit_watchlist_item_security_name) TextView securityName;
         @InjectView(R.id.edit_watchlist_item_security_desc) TextView securityDesc;
         @InjectView(R.id.edit_watchlist_item_security_price) EditText securityPrice;
-        @InjectView(R.id.edit_watchlist_item_security_quantity) EditText securityQuantity;
 
         @InjectView(R.id.edit_watchlist_item_done) TextView btnDone;
         @InjectView(R.id.edit_watchlist_item_delete) TextView btnDelete;
