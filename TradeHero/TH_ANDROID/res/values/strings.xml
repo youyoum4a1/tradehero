@@ -216,6 +216,12 @@
     <string name="tap_stream_type_test_install" translatable="false">android-tradehero-test-install</string>
     <string name="tap_stream_type_test_open" translatable="false">android-tradehero-test-open</string>
 
+    <string name="tap_stream_type_jvsha1_install" translatable="false">android-tradehero-jvsha1-install</string>
+    <string name="tap_stream_type_jvsha1_open" translatable="false">android-tradehero-jvsha1-open</string>
+    <string name="tap_stream_type_jvsha2_install" translatable="false">android-tradehero-jvsha2-install</string>
+    <string name="tap_stream_type_jvsha2_open" translatable="false">android-tradehero-jvsha2-open</string>
+    <string name="tap_stream_type_jvsha3_install" translatable="false">android-tradehero-jvsha3-install</string>
+    <string name="tap_stream_type_jvsha3_open" translatable="false">android-tradehero-jvsha3-open</string>
     <!--do not translate end-->
     <string name="sure_to_delete_message">Delete this message?</string>
     <string name="currency">US$</string>

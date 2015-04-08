@@ -70,7 +70,7 @@ public class PublicClassFragment extends DashboardFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 VideoDTO videoDTO = videoGridAdapter.getItem(position);
-                playVideo(videoDTO.vid);
+                playVideo(videoDTO);
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.VIDEO_SELECT, String.valueOf(position)));
             }
         });
@@ -90,9 +90,10 @@ public class PublicClassFragment extends DashboardFragment {
         }
     }
 
-    public void playVideo(String vid) {
+    public void playVideo(VideoDTO videoDTO) {
         Bundle bundle = new Bundle();
-        bundle.putString(VideoPlayer.BUNDLE_VIDEO_VID, vid);
+        bundle.putString(VideoPlayer.BUNDLE_VIDEO_VID, videoDTO.vid);
+        bundle.putString(VideoPlayer.BUNDLE_VIDEO_NAME, videoDTO.name);
         gotoDashboard(VideoPlayer.class, bundle);
     }
 
