@@ -7,36 +7,27 @@ import javax.inject.Inject;
 
 public class SingleExpandingListViewListener extends BaseExpandingListViewListener
 {
+    private int oldSelectedPostion;
     @Inject public SingleExpandingListViewListener()
     {
         super();
+        oldSelectedPostion = -1;
     }
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        // TODO is there anyway better than looping through the item?
-        // idea is to remember a selected position, and only expand that item,
-        // problem is adapter does not know about that item's position.
-        int firstVisibleItemPosition = parent.getFirstVisiblePosition();
-        int lastVisibleItemPosition = parent.getLastVisiblePosition();
-
-        // collapse all visible item within the view
-        for (int i = 0; i < parent.getCount(); ++i)
-        {
-            // let super class take care of clicked item
-            if (position == i) continue;
-
-            Object o = parent.getItemAtPosition(i);
-            if (o instanceof ExpandableItem)
+        if ((oldSelectedPostion != -1) && (position != oldSelectedPostion)) {
+            Object item = parent.getItemAtPosition(oldSelectedPostion);
+            if (item instanceof ExpandableItem)
             {
-                ((ExpandableItem) o).setExpanded(false);
-                if (i >= firstVisibleItemPosition && i <= lastVisibleItemPosition)
-                {
-                    View child = parent.getChildAt(i-firstVisibleItemPosition);
-                    collapseView(child);
-                }
+                View child = parent.getChildAt(oldSelectedPostion);
+                collapseView(child);
+                ((ExpandableItem)item).setExpanded(false);
             }
+
         }
+
+        oldSelectedPostion = position;
 
         super.onItemClick(parent, view, position, id);
     }

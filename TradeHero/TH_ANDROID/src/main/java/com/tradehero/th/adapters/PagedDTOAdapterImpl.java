@@ -43,11 +43,6 @@ public class PagedDTOAdapterImpl<DTOType> extends ArrayAdapter<DTOType>
         throw new IllegalArgumentException();
     }
 
-    @Override public void addAll(Collection<? extends DTOType> collection)
-    {
-        throw new IllegalArgumentException();
-    }
-
     @SuppressWarnings("unchecked")
     @Override public void addAll(DTOType... items)
     {

@@ -16,7 +16,7 @@ public class BaseExpandingListViewListener extends BaseExpandingItemListener
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        Object o = parent.getItemAtPosition(parent.getPositionForView(view));
+        Object o = parent.getItemAtPosition(position);
         if (o == null || !(o instanceof ExpandableItem))
         {
             return;
