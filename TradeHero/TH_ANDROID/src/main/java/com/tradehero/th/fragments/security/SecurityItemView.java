@@ -250,27 +250,9 @@ public class SecurityItemView extends RelativeLayout
 
     public void displayMarketClose()
     {
-        if (securityCompactDTO == null)
+        if (marketCloseIcon != null && securityCompactDTO != null && securityCompactDTO.marketOpen != null)
         {
-            // Nothing to do
-        }
-        else if (securityCompactDTO.marketOpen == null)
-        {
-            Timber.w("displayMarketClose marketOpen is null");
-        }
-        else if (securityCompactDTO.marketOpen)
-        {
-            if (marketCloseIcon != null)
-            {
-                marketCloseIcon.setVisibility(View.GONE);
-            }
-        }
-        else
-        {
-            if (marketCloseIcon != null)
-            {
-                marketCloseIcon.setVisibility(View.VISIBLE);
-            }
+            marketCloseIcon.setImageResource(securityCompactDTO.marketOpen ? R.drawable.icn_market_open : R.drawable.icn_market_closed);
         }
     }
 
