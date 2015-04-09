@@ -1,12 +1,14 @@
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 buildscript {
   repositories {
     mavenCentral()
     maven { url 'http://download.crashlytics.com/maven' }
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:1.0.0'
+    classpath 'com.android.tools.build:gradle:1.1.0'
     classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
-    classpath 'org.robolectric:robolectric-gradle-plugin:0.14.+'
     //classpath 'com.amazon.device.tools.build:gradle:0.13.+' // When building for Amazon
   }
 }
@@ -23,7 +25,6 @@ project.ext.versionBuild = Integer.parseInt((String) versionProps['VERSION_BUILD
 
 apply plugin: 'com.android.application'
 apply plugin: 'crashlytics'
-apply plugin: 'robolectric'
 
 repositories {
   maven { url "http://dl.bintray.com/populov/maven" }
@@ -61,7 +62,7 @@ android {
 
   compileSdkVersion 21
 
-  buildToolsVersion "21.1.1"
+  buildToolsVersion "21.1.2"
   //useOldManifestMerger=true
 
   dexOptions {
@@ -142,6 +143,10 @@ android {
     noPush {
       flavorDimension "pushProvider"
     }
+
+    baidu {
+      flavorDimension "pushProvider"
+    }
   }
 
   sourceSets {
@@ -161,19 +166,19 @@ android {
       }
     }
 
+    googleplayNoPushDebug {
+      java {
+        srcDir 'src/googleplayDebug/java'
+      }
+    }
+
     googleplayAirshipDebug {
       java {
         srcDir 'src/googleplayDebug/java'
       }
     }
 
-    googleplayAirshipRelease {
-      java {
-        srcDir 'src/googleplayRelease/java'
-      }
-    }
-
-    googleplayNoPushDebug {
+    googleplayBaiduDebug {
       java {
         srcDir 'src/googleplayDebug/java'
       }
@@ -185,12 +190,66 @@ android {
       }
     }
 
+    googleplayAirshipRelease {
+      java {
+        srcDir 'src/googleplayRelease/java'
+      }
+    }
+
+    googleplayBaiduRelease {
+      java {
+        srcDir 'src/googleplayRelease/java'
+      }
+    }
+
     china {
+    }
+
+    chinaNoPushDebug {
+      java {
+        srcDir 'src/chinaDebug/java'
+      }
+    }
+
+    chinaAirshipDebug {
+      java {
+        srcDir 'src/chinaDebug/java'
+      }
+    }
+
+    chinaBaiduDebug {
+      java {
+        srcDir 'src/chinaDebug/java'
+      }
+    }
+
+    chinaNoPushRelease {
+      java {
+        srcDir 'src/chinaRelease/java'
+      }
+    }
+
+    chinaAirshipRelease {
+      java {
+        srcDir 'src/chinaRelease/java'
+      }
+    }
+
+    chinBaiduRelease {
+      java {
+        srcDir 'src/chinaRelease/java'
+      }
     }
 
     samsung {
       java {
         srcDir 'src/row/java'
+      }
+    }
+
+    samsungNoPushDebug {
+      java {
+        srcDir 'src/samsungDebug/java'
       }
     }
 
@@ -203,10 +262,28 @@ android {
       }
     }
 
+    samsungBaiduDebug {
+      java {
+        srcDir 'src/samsungDebug/java'
+      }
+    }
+
+    samsungNoPushRelease {
+      java {
+        srcDir 'src/samsungRelease/java'
+      }
+    }
+
     samsungAirshipRelease {
       manifest {
         srcFile 'src/googleplayAirship/java' // Reuse until there is something special for Samsung
       }
+      java {
+        srcDir 'src/samsungRelease/java'
+      }
+    }
+
+    samsungBaiduRelease {
       java {
         srcDir 'src/samsungRelease/java'
       }
@@ -218,13 +295,37 @@ android {
       }
     }
 
+    amazonNoPushDebug {
+      java {
+        srcDir 'src/amazonDebug/java'
+      }
+    }
+
     amazonAirshipDebug {
       java {
         srcDir 'src/amazonDebug/java'
       }
     }
 
+    amazonBaiduDebug {
+      java {
+        srcDir 'src/amazonDebug/java'
+      }
+    }
+
+    amazonNoPushRelease {
+      java {
+        srcDir 'src/amazonRelease/java'
+      }
+    }
+
     amazonAirshipRelease {
+      java {
+        srcDir 'src/amazonRelease/java'
+      }
+    }
+
+    amazonBaiduRelease {
       java {
         srcDir 'src/amazonRelease/java'
       }
@@ -244,38 +345,13 @@ android {
   }
 }
 
-robolectric {
-  // configure the set of classes for JUnit tests
-  include '**/*Test.class'
-  exclude '**/espresso/**/*.class'
-
-  // configure max heap size of the test JVM
-  maxHeapSize = '2048m'
-
-  // configure the test JVM arguments
-  jvmArgs '-XX:MaxPermSize=512m', '-XX:-UseSplitVerifier'
-
-  // Specify max number of processes (default is 1)
-  //maxParallelForks = 4
-
-  // Specify max number of test classes to execute in a test process
-  // before restarting the process (default is unlimited)
-  //forkEvery = 150
-
-  // configure whether failing tests should fail the build
-  //ignoreFailures true
-
-  // use afterTest to listen to the test execution results
-  //afterTest { descriptor, result ->
-  //  println "Executing test for {$descriptor.name} with result: ${result.resultType}"
-  //}
-}
-
 dependencies {
   // Helper here http://gradleplease.appspot.com
-  androidTestCompile 'junit:junit:4.10'
+  androidTestCompile 'junit:junit:4.12'
+  testCompile 'junit:junit:4.12'
+
   compile fileTree(dir: 'libs', include: ['*.jar'])
-  chinaCompile fileTree(dir: 'libs/baidu', include: ['*.jar'])
+  baiduCompile fileTree(dir: 'libs/baidu', include: ['*.jar'])
   releaseCompile fileTree(dir: 'libs/analytics', include: ['*.jar'])
 
   compile 'com.special.residemenu:library:1.0.TH-SNAPSHOT@aar'
@@ -289,7 +365,7 @@ dependencies {
   samsungCompile 'com.sec.android.iap:library:2.0@aar'
   // TODO confirm on a hardware that it is "provided" and not "compile"
   amazonCompile 'com.amazon:in-app-purchasing:2.0.0'
-  androidTestAmazonCompile 'com.amazon:in-app-purchasing:2.0.0'
+  //  testAmazonCompile 'com.amazon:in-app-purchasing:2.0.0'
   // This does not work as we would hope. Second "setProperty" wins
   //def fbproj = project(':facebook-android-sdk:facebook')
   //fbproj.ext.TEST_GOOGLE_PLAY = "true" // Swap to this one for others
@@ -330,16 +406,16 @@ dependencies {
     exclude module: 'gson'
     exclude module: 'rxjava'
   }
-  compile ('com.squareup.retrofit:converter-jackson:1.9.0') {
+  compile('com.squareup.retrofit:converter-jackson:1.9.0') {
     exclude module: 'gson'
     exclude group: 'com.squareup.retrofit', module: 'retrofit'
     exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
   }
-  compile ('com.viewpagerindicator:library:2.4.1') {
+  compile('com.viewpagerindicator:library:2.4.1') {
     exclude group: 'com.google.android', module: 'support-v4'
   }
 
-  compile ('in.srain.cube:grid-view-with-header-footer:1.0.10')
+  compile('in.srain.cube:grid-view-with-header-footer:1.0.10')
 
   compile 'com.tradehero:metrics:2.1.1-SNAPSHOT'
   compile 'com.squareup.dagger:dagger:1.2.2'
@@ -376,7 +452,7 @@ dependencies {
   //provided 'com.kenai.nbpwr:edu-umd-cs-findbugs-annotations:1.3.2-201002241900'
 
   // For Test
-  androidTestCompile('org.robolectric:robolectric:2.3') {
+  testCompile('org.robolectric:robolectric:3.0-rc2') {
     exclude module: 'classworlds'
     exclude module: 'commons-logging'
     exclude module: 'httpclient'
@@ -393,13 +469,13 @@ dependencies {
     exclude module: 'wagon-http-lightweight'
     exclude module: 'wagon-provider-api'
   }
-  androidTestCompile 'org.easytesting:fest-assert-core:2.0M10'
-  androidTestCompile 'org.mockito:mockito-core:1.10.19'
-  androidTestCompile 'org.apache.commons:commons-lang3:3.2'
-  androidTestCompile 'org.apache.commons:commons-io:1.3.2'
-  androidTestCompile 'org.reflections:reflections:0.9.8'
-  if (project.ext.isIntelliJ) {
-    androidTestCompile files('build/test-classes')
+  testCompile 'org.easytesting:fest-assert-core:2.0M10'
+  testCompile 'org.mockito:mockito-core:1.10.19'
+  testCompile 'org.apache.commons:commons-lang3:3.2'
+  testCompile 'org.apache.commons:commons-io:1.3.2'
+  testCompile 'org.reflections:reflections:0.9.8'
+  if (project.ext.isIntelliJ && file('build/test-classes').exists()) {
+    testCompile files('build/test-classes')
   }
 
   // Remove those when building for Amazon
@@ -473,8 +549,37 @@ tasks.whenTaskAdded { theTask ->
   }
 }
 
+def testResourceFilesToCopy = copySpec {
+  from "${projectDir}/src/test/resources"
+}
+
+task copyTestResources {
+  println("Copying test resources")
+  [
+          "${buildDir}/intermediates/classes/test/amazonairship/debug",
+          "${buildDir}/intermediates/classes/test/amazonairship/release",
+          "${buildDir}/intermediates/classes/test/amazonnopush/debug",
+          "${buildDir}/intermediates/classes/test/amazonnopush/release",
+          "${buildDir}/intermediates/classes/test/googleplayairship/debug",
+          "${buildDir}/intermediates/classes/test/googleplayairship/release",
+          "${buildDir}/intermediates/classes/test/googleplaynopush/debug",
+          "${buildDir}/intermediates/classes/test/googleplaynopush/release",
+          "${buildDir}/intermediates/classes/test/samsungairship/debug",
+          "${buildDir}/intermediates/classes/test/samsungairship/release",
+          "${buildDir}/intermediates/classes/test/samsungnopush/debug",
+          "${buildDir}/intermediates/classes/test/samsungnopush/release"
+  ].each { dest ->
+    copy {
+      with testResourceFilesToCopy
+      into dest
+    }
+  }
+}
+
 project.afterEvaluate {
   println("afterEvaluate")
+  Pattern flavorsPattern = Pattern.compile("compile(.+)DebugJava")
+
   tasks.each { theTask ->
     if (project.ext.isIntelliJ
             && theTask.name.matches("assemble.+Release")) {
@@ -492,6 +597,16 @@ project.afterEvaluate {
         versionProps.putAll(map)
         versionProps.store(versionFile.newWriter(), null)
       }
+    }
+
+    Matcher m = flavorsPattern.matcher(theTask.getName())
+    while (m.find()) {
+      println("Adding copy to " + theTask.getName() +
+              " from " +
+              "${projectDir}/src/test/resources" +
+              " to " +
+              "${buildDir}/intermediates/classes/test/${m.group(1).toLowerCase()}/debug")
+      theTask.dependsOn("copyTestResources")
     }
   }
 }

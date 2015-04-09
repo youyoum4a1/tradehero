@@ -56,9 +56,10 @@ public class BroadcastTaskNew
         timer.cancel();
     }
 
-    public static interface TaskListener
+    public interface TaskListener
     {
         void onStartBroadcast(@NonNull BroadcastData broadcastData);
+
         void onFinishBroadcast(@NonNull BroadcastData broadcastData, boolean isSuccessful);
     }
 

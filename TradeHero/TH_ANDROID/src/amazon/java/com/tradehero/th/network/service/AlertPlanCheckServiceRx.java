@@ -14,5 +14,4 @@ interface AlertPlanCheckServiceRx
             @Path("userId") int userId,
             @Query("purchaseToken") String purchaseToken,
             @Query("amazonUserId") String amazonUserId);
-    //</editor-fold>
 }
