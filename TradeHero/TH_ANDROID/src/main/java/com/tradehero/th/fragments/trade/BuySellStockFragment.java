@@ -420,9 +420,12 @@ public class BuySellStockFragment extends BuySellFragment
             {
                 float alpha;
                 AlertCompactDTO compactDTO = mappedAlerts.get(securityId);
-                if ((compactDTO != null) && compactDTO.active) {
+                if ((compactDTO != null) && compactDTO.active)
+                {
                     alpha = 1.0f;
-                } else {
+                }
+                else
+                {
                     alpha = 0.5f;
                 }
 

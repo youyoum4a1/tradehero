@@ -6,7 +6,6 @@ import dagger.Module;
         injects = {
                 AlertManagerFragment.class,
                 AlertCreateDialogFragment.class,
-                AlertCreateFragment.class,
                 AlertEditDialogFragment.class,
                 AlertListItemAdapter.class,
                 AlertItemView.class,

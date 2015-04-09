@@ -14,6 +14,7 @@ import com.tradehero.common.graphics.AbstractSequentialTransformation;
 import com.tradehero.common.graphics.ScaleKeepRatioTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
@@ -115,16 +116,19 @@ public class TimelineItemViewHolder
             extends AbstractDiscussionItemViewHolder.Requisite
     {
         public final boolean onWatchlist;
+        @Nullable public final AlertId stockAlertId;
 
         public Requisite(@NonNull Resources resources,
                 @NonNull PrettyTime prettyTime,
                 @NonNull TimelineItemDTO discussionDTO,
                 boolean canTranslate,
                 boolean isAutoTranslate,
-                boolean onWatchlist)
+                boolean onWatchlist,
+                @Nullable AlertId stockAlertId)
         {
             super(resources, prettyTime, discussionDTO, canTranslate, isAutoTranslate);
             this.onWatchlist = onWatchlist;
+            this.stockAlertId = stockAlertId;
         }
     }
 
@@ -137,6 +141,7 @@ public class TimelineItemViewHolder
         @Nullable public final String vendorImageUrl;
         @NonNull public final AbstractSequentialTransformation vendorImageTransformation;
         protected boolean onWatchlist;
+        @Nullable public final AlertId stockAlertId;
         @Nullable public final SecurityId vendorSecurityId;
 
         public DTO(Requisite requisite)
@@ -202,6 +207,7 @@ public class TimelineItemViewHolder
             //</editor-fold>
 
             this.onWatchlist = requisite.onWatchlist;
+            this.stockAlertId = requisite.stockAlertId;
         }
 
         @NonNull @Override protected String createUserDisplayName()
