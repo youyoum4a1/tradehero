@@ -8,9 +8,9 @@ import dagger.Module;
                 FragmentBillingStoreAppTestModule.class
         },
         injects = {
-                StoreItemClickableTest.class,
+                StoreItemClickableViewTest.class,
                 StoreItemHasFurtherTest.class,
-                StoreItemHeaderTest.class,
+                StoreItemHeaderViewTest.class,
                 StoreItemPromptPurchaseTest.class,
         },
         complete = false,

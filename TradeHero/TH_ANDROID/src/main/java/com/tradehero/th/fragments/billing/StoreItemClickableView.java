@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.billing;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -13,25 +14,24 @@ import com.tradehero.th.fragments.billing.store.StoreItemClickableDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import timber.log.Timber;
 
-public class StoreItemClickable extends RelativeLayout
+public class StoreItemClickableView extends RelativeLayout
     implements DTOView<StoreItemDTO>
 {
     @InjectView(R.id.title) protected TextView title;
     @InjectView(R.id.icon) protected ImageView icon;
-    protected StoreItemClickableDTO storeItemClickableDTO;
 
     //<editor-fold desc="Constructors">
-    public StoreItemClickable(Context context)
+    public StoreItemClickableView(Context context)
     {
         super(context);
     }
 
-    public StoreItemClickable(Context context, AttributeSet attrs)
+    public StoreItemClickableView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public StoreItemClickable(Context context, AttributeSet attrs, int defStyle)
+    public StoreItemClickableView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
@@ -43,29 +43,16 @@ public class StoreItemClickable extends RelativeLayout
         ButterKnife.inject(this);
     }
 
-    @Override public void display(StoreItemDTO dto)
+    @Override public void display(@NonNull StoreItemDTO dto)
     {
-        storeItemClickableDTO = (StoreItemClickableDTO) dto;
-        display();
-    }
+        StoreItemClickableDTO storeItemClickableDTO = (StoreItemClickableDTO) dto;
 
-    public void display()
-    {
-        displayTitle();
-        displayIcon();
-    }
-
-    protected void displayTitle()
-    {
-        if (title != null && storeItemClickableDTO != null)
+        if (title != null)
         {
             title.setText(storeItemClickableDTO.titleResId);
         }
-    }
 
-    protected void displayIcon()
-    {
-        if (icon != null && storeItemClickableDTO != null)
+        if (icon != null)
         {
             try
             {

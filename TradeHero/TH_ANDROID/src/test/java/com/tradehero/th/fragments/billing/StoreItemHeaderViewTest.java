@@ -18,30 +18,30 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)
-public class StoreItemHeaderTest
+public class StoreItemHeaderViewTest
 {
     @Inject Context context;
-    private StoreItemHeader storeItemHeader;
+    private StoreItemHeaderView storeItemHeaderView;
 
     @Before public void setUp()
     {
         TestTHApp.staticInject(this);
-        storeItemHeader = new StoreItemHeader(context);
-        storeItemHeader.title = new TextView(context);
+        storeItemHeaderView = new StoreItemHeaderView(context);
+        storeItemHeaderView.title = new TextView(context);
     }
 
     @Test(expected = ClassCastException.class)
     public void testCrashesWhenPassingNotStoreItemTitleDTO()
     {
-        storeItemHeader.display(new StoreItemDTO(1));
+        storeItemHeaderView.display(new StoreItemDTO(1));
     }
 
     @Test public void testOkWhenPassingStoreItemTitleDTO()
     {
-        assertThat(storeItemHeader.title.getText()).isEqualTo("");
+        assertThat(storeItemHeaderView.title.getText()).isEqualTo("");
 
-        storeItemHeader.display(new StoreItemTitleDTO(R.string.cancel));
+        storeItemHeaderView.display(new StoreItemTitleDTO(R.string.cancel));
 
-        assertThat(storeItemHeader.title.getText()).isEqualTo("Cancel");
+        assertThat(storeItemHeaderView.title.getText()).isEqualTo("Cancel");
     }
 }

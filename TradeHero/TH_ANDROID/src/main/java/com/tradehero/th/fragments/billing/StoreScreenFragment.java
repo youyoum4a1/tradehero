@@ -2,9 +2,7 @@ package com.tradehero.th.fragments.billing;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,9 +14,7 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
-import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.billing.tester.BillingTestResult;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -29,21 +25,20 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractorRx;
-import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemDTOList;
 import com.tradehero.th.fragments.billing.store.StoreItemFactory;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
-import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.social.follower.FollowerRevenueReportFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -70,12 +65,13 @@ public class StoreScreenFragment extends BaseFragment
     @Inject THRouter thRouter;
     @Inject SystemStatusCache systemStatusCache;
     @Inject UserProfileCacheRx userProfileCacheRx;
+    @Inject protected THBillingInteractorRx userInteractorRx;
 
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
     @InjectView(R.id.store_option_list) protected ListView listView;
+
     private StoreItemAdapter storeItemAdapter;
-    @Inject protected THBillingInteractorRx userInteractorRx;
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
     @Override public void onAttach(Activity activity)
@@ -124,8 +120,10 @@ public class StoreScreenFragment extends BaseFragment
                         {
                             @Override public void call(StoreItemDTOList storeItemDTOs)
                             {
+                                storeItemAdapter.setNotifyOnChange(false);
                                 storeItemAdapter.clear();
                                 storeItemAdapter.addAll(storeItemDTOs);
+                                storeItemAdapter.setNotifyOnChange(true);
                                 storeItemAdapter.notifyDataSetChanged();
                             }
                         },
@@ -220,98 +218,51 @@ public class StoreScreenFragment extends BaseFragment
     @OnItemClick(R.id.store_option_list)
     protected void onStoreListItemClick(AdapterView<?> adapterView, View view, int position, long l)
     {
-        handlePositionClicked((StoreItemDTO) adapterView.getItemAtPosition(position));
-    }
-
-    private void handlePositionClicked(StoreItemDTO clickedItem)
-    {
+        StoreItemDTO clickedItem = (StoreItemDTO) adapterView.getItemAtPosition(position);
         if (clickedItem instanceof StoreItemPromptPurchaseDTO)
         {
             //noinspection unchecked
-            AppObservable.bindFragment(
+            onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
                     userInteractorRx.purchaseAndClear(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            new Action1<PurchaseResult>()
-                            {
-                                @Override public void call(PurchaseResult purchaseResult)
-                                {
-                                    StoreScreenFragment.this.handlePurchaseFinished(purchaseResult);
-                                }
-                            },
-                            new Action1<Throwable>()
-                            {
-                                @Override public void call(Throwable e)
-                                {
-                                    StoreScreenFragment.this.handlePurchaseFailed(e);
-                                }
-                            });
+                            new ToastAction("Purchae done"),
+                            new ToastAndLogOnErrorAction("Purchase failed")));
         }
         else if (clickedItem instanceof StoreItemHasFurtherDTO)
         {
-            pushFragment(((StoreItemHasFurtherDTO) clickedItem).furtherFragment);
+            StoreItemHasFurtherDTO furtherDTO = (StoreItemHasFurtherDTO) clickedItem;
+            if (furtherDTO.furtherActivity != null)
+            {
+                navigator.get().launchActivity(furtherDTO.furtherActivity);
+            }
+            else if (furtherDTO.furtherFragment != null)
+            {
+                if (furtherDTO.furtherFragment.equals(HeroManagerFragment.class))
+                {
+                    Bundle bundle = new Bundle();
+                    HeroManagerFragment.putFollowerId(bundle, currentUserId.toUserBaseKey());
+                    navigator.get().pushFragment(HeroManagerFragment.class, bundle);
+                }
+                else if (furtherDTO.furtherFragment.equals(FollowerRevenueReportFragment.class))
+                {
+                    navigator.get().pushFragment(FollowerRevenueReportFragment.class);
+                }
+                else
+                {
+                    throw new IllegalArgumentException("Unhandled class " + furtherDTO.furtherFragment);
+                }
+            }
+            else
+            {
+                throw new IllegalArgumentException("Unhandled situation where both activity and fragment are null");
+            }
         }
         else
         {
             throw new IllegalArgumentException("Unhandled type " + clickedItem);
         }
-    }
-
-    protected void handlePurchaseFinished(@SuppressWarnings("UnusedParameters") @NonNull PurchaseResult purchaseResult)
-    {
-        THToast.show("Purchase done");
-    }
-
-    protected void handlePurchaseFailed(@NonNull Throwable throwable)
-    {
-        THToast.show(new THException(throwable));
-        Timber.e(throwable, "Purchase failed");
-    }
-
-    private void pushFragment(Class<? extends Fragment> fragmentClass)
-    {
-        if (fragmentClass.equals(AlertManagerFragment.class))
-        {
-            pushStockAlertFragment();
-        }
-        else if (fragmentClass.equals(HeroManagerFragment.class))
-        {
-            pushHeroFragment();
-        }
-        else if (fragmentClass.equals(FollowerRevenueReportFragment.class))
-        {
-            pushFollowerFragment();
-        }
-        else
-        {
-            throw new IllegalArgumentException("Unhandled class " + fragmentClass);
-        }
-    }
-
-    private void pushStockAlertFragment()
-    {
-        Bundle bundle = new Bundle();
-        bundle.putInt(AlertManagerFragment.BUNDLE_KEY_USER_ID, currentUserId.get());
-        navigator.get().launchTabActivity(RootFragmentType.ALERTS);
-    }
-
-    protected void pushHeroFragment()
-    {
-        Bundle bundle = new Bundle();
-        HeroManagerFragment.putFollowerId(bundle, currentUserId.toUserBaseKey());
-        pushFragment(HeroManagerFragment.class, bundle);
-    }
-
-    protected void pushFollowerFragment()
-    {
-        Bundle bundle = new Bundle();
-        pushFragment(FollowerRevenueReportFragment.class, bundle);
-    }
-
-    private void pushFragment(Class<? extends Fragment> fragmentClass, Bundle bundle)
-    {
-        navigator.get().pushFragment(fragmentClass, bundle);
     }
 
     @Override public int getTutorialLayout()

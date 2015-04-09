@@ -19,35 +19,35 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)
-public class StoreItemClickableTest
+public class StoreItemClickableViewTest
 {
     @Inject Context context;
-    private StoreItemClickable storeItemClickable;
+    private StoreItemClickableView storeItemClickableView;
 
     @Before public void setUp()
     {
         TestTHApp.staticInject(this);
-        storeItemClickable = new StoreItemClickable(context);
-        storeItemClickable.title = new TextView(context);
-        storeItemClickable.icon = new ImageView(context);
+        storeItemClickableView = new StoreItemClickableView(context);
+        storeItemClickableView.title = new TextView(context);
+        storeItemClickableView.icon = new ImageView(context);
     }
 
     @Test(expected = ClassCastException.class)
     public void testCrashesWhenPassingNotStoreItemClickableDTO1()
     {
-        storeItemClickable.display(new StoreItemDTO(1));
+        storeItemClickableView.display(new StoreItemDTO(1));
     }
 
     @Test public void testOkWhenPassingStoreItemClickableDTO()
     {
-        assertThat(storeItemClickable.title.getText()).isEqualTo("");
-        assertThat(storeItemClickable.icon.getDrawable()).isNull();
+        assertThat(storeItemClickableView.title.getText()).isEqualTo("");
+        assertThat(storeItemClickableView.icon.getDrawable()).isNull();
 
-        storeItemClickable.display(new StoreItemClickableDTO(
+        storeItemClickableView.display(new StoreItemClickableDTO(
                 R.string.cancel,
                 R.drawable.default_image));
 
-        assertThat(storeItemClickable.title.getText()).isEqualTo("Cancel");
-        assertThat(storeItemClickable.icon.getDrawable()).isNotNull();
+        assertThat(storeItemClickableView.title.getText()).isEqualTo("Cancel");
+        assertThat(storeItemClickableView.icon.getDrawable()).isNotNull();
     }
 }

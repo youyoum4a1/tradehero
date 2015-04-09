@@ -24,12 +24,12 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class StoreItemHasFurtherTest
 {
     @Inject Context context;
-    private StoreItemHasFurther storeItemHasFurther;
+    private StoreItemClickableView storeItemHasFurther;
 
     @Before public void setUp()
     {
         TestTHApp.staticInject(this);
-        storeItemHasFurther = new StoreItemHasFurther(context);
+        storeItemHasFurther = new StoreItemClickableView(context);
         storeItemHasFurther.title = new TextView(context);
         storeItemHasFurther.icon = new ImageView(context);
     }
@@ -56,7 +56,8 @@ public class StoreItemHasFurtherTest
         storeItemHasFurther.display(new StoreItemHasFurtherDTO(
                 R.string.cancel,
                 R.drawable.default_image,
-                HeroManagerFragment.class));
+                HeroManagerFragment.class,
+                null));
 
         assertThat(storeItemHasFurther.title.getText()).isEqualTo("Cancel");
         assertThat(storeItemHasFurther.icon.getDrawable()).isNotNull();

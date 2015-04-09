@@ -24,15 +24,14 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class StoreItemPromptPurchaseTest
 {
     @Inject Context context;
-    private StoreItemPromptPurchase storeItemPromptPurchase;
+    private StoreItemClickableView storeItemPromptPurchase;
 
     @Before public void setUp()
     {
         TestTHApp.staticInject(this);
-        storeItemPromptPurchase = new StoreItemPromptPurchase(context);
+        storeItemPromptPurchase = new StoreItemClickableView(context);
         storeItemPromptPurchase.title = new TextView(context);
         storeItemPromptPurchase.icon = new ImageView(context);
-        storeItemPromptPurchase.imageButton = new ImageView(context);
     }
 
     @Test(expected = ClassCastException.class)
@@ -53,16 +52,13 @@ public class StoreItemPromptPurchaseTest
     {
         assertThat(storeItemPromptPurchase.title.getText()).isEqualTo("");
         assertThat(storeItemPromptPurchase.icon.getDrawable()).isNull();
-        assertThat(storeItemPromptPurchase.imageButton.getDrawable()).isNull();
 
         storeItemPromptPurchase.display(new StoreItemPromptPurchaseDTO(
                 R.string.cancel,
-                R.drawable.default_image,
                 R.drawable.default_image,
                 ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS));
 
         assertThat(storeItemPromptPurchase.title.getText()).isEqualTo("Cancel");
         assertThat(storeItemPromptPurchase.icon.getDrawable()).isNotNull();
-        assertThat(storeItemPromptPurchase.imageButton.getDrawable()).isNotNull();
     }
 }

@@ -6,9 +6,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.fragments.alert.AlertManagerFragment;
-import com.tradehero.th.fragments.social.follower.FollowerRevenueReportFragment;
-import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import rx.Observable;
 import rx.functions.Func1;
@@ -26,6 +23,13 @@ public class StoreItemFactory
             final boolean ignoreSystemStatus)
     {
         return systemStatusCache.get(new SystemStatusKey())
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends Pair<SystemStatusKey, SystemStatusDTO>>>()
+                {
+                    @Override public Observable<? extends Pair<SystemStatusKey, SystemStatusDTO>> call(Throwable throwable)
+                    {
+                        return Observable.just(Pair.create(new SystemStatusKey(), new SystemStatusDTO()));
+                    }
+                })
                 .map(new Func1<Pair<SystemStatusKey, SystemStatusDTO>, StoreItemDTOList>()
                 {
                     @Override public StoreItemDTOList call(Pair<SystemStatusKey, SystemStatusDTO> pair)
@@ -45,33 +49,27 @@ public class StoreItemFactory
         created.add(new StoreItemPromptPurchaseDTO(
                 R.string.store_buy_virtual_dollars,
                 R.drawable.icn_th_dollars,
-                R.drawable.btn_buy_thd_large,
                 ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR));
         created.add(new StoreItemPromptPurchaseDTO(
                 R.string.store_buy_follow_credits,
                 R.drawable.icn_follow_credits,
-                R.drawable.btn_buy_credits_large,
                 ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS));
-//        if (includeAlerts)
-//        {
-//            created.add(new StoreItemPromptPurchaseDTO(
-//                    R.string.store_buy_stock_alerts,
-//                    R.drawable.icn_stock_alert,
-//                    R.drawable.btn_buy_stock_alerts,
-//                    ProductIdentifierDomain.DOMAIN_STOCK_ALERTS));
-//        }
+        if (includeAlerts)
+        {
+            created.add(new StoreItemPromptPurchaseDTO(
+                    R.string.store_buy_stock_alerts,
+                    R.drawable.icn_stock_alert,
+                    ProductIdentifierDomain.DOMAIN_STOCK_ALERTS));
+        }
         created.add(new StoreItemPromptPurchaseDTO(
                 R.string.store_buy_reset_portfolio,
                 R.drawable.icn_reset_portfolio,
-                R.drawable.btn_buy_reset_large,
                 ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO));
 
         created.add(new StoreItemPromptPurchaseDTO(
                 R.string.store_buy_restore_purchases,
-                R.drawable.icn_follow_credits,
-                R.drawable.btn_buy_credits_large,
+                R.drawable.settings_recover_purchase,
                 ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS));
-
 
 //        created.add(new StoreItemTitleDTO(R.string.store_header_manage_purchases));
 //        created.add(new StoreItemHasFurtherDTO(
