@@ -131,8 +131,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @Override public void onStart()
     {
-        fetchCorrespondentProfile();
         super.onStart();
+        fetchCorrespondentProfile();
     }
 
     @Override public void onDestroyOptionsMenu()
