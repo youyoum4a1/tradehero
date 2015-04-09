@@ -20,6 +20,7 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
@@ -91,7 +92,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @NonNull protected PositionDTOKey positionDTOKey;
     @Nullable protected PositionDTO positionDTO;
     @Nullable protected TradeDTOList tradeDTOList;
-    @Nullable protected Map<SecurityId, AlertId> mappedAlerts;
+    @Nullable protected Map<SecurityId, AlertCompactDTO> mappedAlerts;
     @Nullable protected SecurityId securityId;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
     @Nullable protected Subscription actionDialogSubscription;
@@ -211,9 +212,9 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                 alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<Map<SecurityId, AlertId>>()
+                        new Action1<Map<SecurityId, AlertCompactDTO>>()
                         {
-                            @Override public void call(Map<SecurityId, AlertId> map)
+                            @Override public void call(Map<SecurityId, AlertCompactDTO> map)
                             {
                                 TradeListFragment.this.onAlertMapReceived(map);
                             }
@@ -221,7 +222,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                         new TimberOnErrorAction("")));
     }
 
-    protected void onAlertMapReceived(@NonNull Map<SecurityId, AlertId> securityIdAlertIdMap)
+    protected void onAlertMapReceived(@NonNull Map<SecurityId, AlertCompactDTO> securityIdAlertIdMap)
     {
         mappedAlerts = securityIdAlertIdMap;
         getActivity().invalidateOptionsMenu();
@@ -430,10 +431,12 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         if (mappedAlerts != null)
         {
-            AlertId alertId = mappedAlerts.get(securityCompactDTO.getSecurityId());
+            AlertCompactDTO alertDTO = mappedAlerts.get(securityCompactDTO.getSecurityId());
+
             BaseAlertEditDialogFragment dialog = null;
-            if (alertId != null)
+            if (alertDTO != null)
             {
+                AlertId alertId = alertDTO.getAlertId(currentUserId.toUserBaseKey());
                 dialog = AlertEditDialogFragment.newInstance(alertId);
             }
             else if (securityId != null)

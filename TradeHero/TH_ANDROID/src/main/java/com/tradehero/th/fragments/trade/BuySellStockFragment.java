@@ -21,6 +21,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -76,7 +77,7 @@ public class BuySellStockFragment extends BuySellFragment
     @Nullable protected WatchlistPositionDTOList watchedList;
 
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
-    @Nullable private Map<SecurityId, AlertId> mappedAlerts;
+    @Nullable private Map<SecurityId, AlertCompactDTO> mappedAlerts;
 
     @Inject Analytics analytics;
 
@@ -107,14 +108,13 @@ public class BuySellStockFragment extends BuySellFragment
         mSlidingTabLayout.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         mSlidingTabLayout.setViewPager(mBottomViewPager);
-
-        fetchAlertCompactList();
     }
 
     @Override public void onStart()
     {
         super.onStart();
         analytics.fireEvent(new ChartTimeEvent(securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
+        fetchAlertCompactList();
         fetchWatchlist();
     }
 
@@ -185,7 +185,7 @@ public class BuySellStockFragment extends BuySellFragment
                 this,
                 alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Map<SecurityId, AlertId>>()
+                .subscribe(new Observer<Map<SecurityId, AlertCompactDTO>>()
                 {
                     @Override public void onCompleted()
                     {
@@ -197,7 +197,7 @@ public class BuySellStockFragment extends BuySellFragment
                         displayTriggerButton();
                     }
 
-                    @Override public void onNext(Map<SecurityId, AlertId> securityIdAlertIdMap)
+                    @Override public void onNext(Map<SecurityId, AlertCompactDTO> securityIdAlertIdMap)
                     {
                         mappedAlerts = securityIdAlertIdMap;
                         displayTriggerButton();
@@ -418,7 +418,15 @@ public class BuySellStockFragment extends BuySellFragment
             btnAlerted.setVisibility(mappedAlerts != null ? View.VISIBLE : View.GONE);
             if (mappedAlerts != null)
             {
-                btnAlerted.setAlpha(mappedAlerts.get(securityId) != null ? 1.0f : 0.50f);
+                float alpha;
+                AlertCompactDTO compactDTO = mappedAlerts.get(securityId);
+                if ((compactDTO != null) && compactDTO.active) {
+                    alpha = 1.0f;
+                } else {
+                    alpha = 0.5f;
+                }
+
+                btnAlerted.setAlpha(alpha);
             }
         }
     }
@@ -463,10 +471,11 @@ public class BuySellStockFragment extends BuySellFragment
     {
         if (mappedAlerts != null)
         {
-            AlertId alertId = mappedAlerts.get(securityId);
+            AlertCompactDTO alertDTO = mappedAlerts.get(securityId);
             BaseAlertEditDialogFragment dialog;
-            if (alertId != null)
+            if (alertDTO != null)
             {
+                AlertId alertId = alertDTO.getAlertId(currentUserId.toUserBaseKey());
                 dialog = AlertEditDialogFragment.newInstance(alertId);
             }
             else

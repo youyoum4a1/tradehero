@@ -82,21 +82,21 @@ public class AlertCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, Al
         list.add(alertCompactDTO);
     }
 
-    @NonNull public Observable<Map<SecurityId, AlertId>> getSecurityMappedAlerts(@NonNull UserBaseKey userBaseKey)
+    @NonNull public Observable<Map<SecurityId, AlertCompactDTO>> getSecurityMappedAlerts(@NonNull UserBaseKey userBaseKey)
     {
         return get(userBaseKey)
-                .map(new Func1<Pair<UserBaseKey, AlertCompactDTOList>, Map<SecurityId, AlertId>>()
+                .map(new Func1<Pair<UserBaseKey, AlertCompactDTOList>, Map<SecurityId, AlertCompactDTO>>()
                 {
-                    @Override public Map<SecurityId, AlertId> call(final Pair<UserBaseKey, AlertCompactDTOList> pair)
+                    @Override public Map<SecurityId, AlertCompactDTO> call(final Pair<UserBaseKey, AlertCompactDTOList> pair)
                     {
-                        final Map<SecurityId, AlertId> securitiesWithAlerts = new HashMap<>();
+                        final Map<SecurityId, AlertCompactDTO> securitiesWithAlerts = new HashMap<>();
                         CollectionUtils.apply(pair.second, new Action1<AlertCompactDTO>()
                         {
                             @Override public void call(AlertCompactDTO alertCompactDTO)
                             {
                                 if (alertCompactDTO.security != null)
                                 {
-                                    securitiesWithAlerts.put(alertCompactDTO.security.getSecurityId(), alertCompactDTO.getAlertId(pair.first));
+                                    securitiesWithAlerts.put(alertCompactDTO.security.getSecurityId(), alertCompactDTO);
                                 }
                                 else
                                 {

@@ -211,15 +211,12 @@ abstract public class BaseAlertEditFragmentHolder
 
     @NonNull protected Observable<AlertCompactDTO> saveAlertRx(@NonNull AlertFormDTO alertFormDTO)
     {
-        if (alertFormDTO.active) // TODO decide whether we need to submit even when it is inactive
+        if (alertFormDTO.active && (alertFormDTO.upOrDown != null) && (alertFormDTO.targetPrice == 0))
         {
-            return saveAlertProperRx(alertFormDTO);
+            THToast.show(R.string.error_alert_target_price_invalid);
+            return Observable.error(new IllegalArgumentException(resources.getString(R.string.error_alert_target_price_invalid)));
         }
-        else
-        {
-            THToast.show(R.string.error_alert_save_inactive);
-            return Observable.error(new IllegalArgumentException(resources.getString(R.string.error_alert_save_inactive)));
-        }
+        return saveAlertProperRx(alertFormDTO);
     }
 
     @NonNull abstract protected Observable<AlertCompactDTO> saveAlertProperRx(AlertFormDTO alertFormDTO);

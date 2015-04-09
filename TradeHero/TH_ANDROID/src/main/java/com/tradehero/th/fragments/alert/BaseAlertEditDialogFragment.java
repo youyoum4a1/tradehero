@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,18 +14,23 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogSupportFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
+import dagger.Lazy;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import timber.log.Timber;
 
 abstract public class BaseAlertEditDialogFragment extends BaseDialogSupportFragment
 {
     @Inject protected CurrentUserId currentUserId;
     @Inject protected SecurityAlertCountingHelper securityAlertCountingHelper;
+    @Inject protected Lazy<DashboardNavigator> navigator;
 
     BaseAlertEditFragmentHolder viewHolder;
 
@@ -106,6 +112,10 @@ abstract public class BaseAlertEditDialogFragment extends BaseDialogSupportFragm
 
     protected void handleAlertUpdated(@NonNull AlertCompactDTO alertCompactDTO)
     {
+        Fragment fragment = navigator.get().getCurrentFragment();
+        if (fragment instanceof BuySellStockFragment) {
+            ((BuySellStockFragment)fragment).fetchAlertCompactList();
+        }
         dismiss();
     }
 
