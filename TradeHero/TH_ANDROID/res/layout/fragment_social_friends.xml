@@ -60,7 +60,6 @@
           android:paddingTop="@dimen/margin_xsmall"
           android:paddingLeft="@dimen/margin_xsmall"
           android:paddingRight="@dimen/margin_xsmall"
-          android:paddingBottom="@dimen/dashboard_tabhost_height"
           android:background="@drawable/buy_sell_action_buttons_background"
           android:visibility="visible"
           >
@@ -85,7 +84,7 @@
             android:layout_height="wrap_content"
             android:minHeight="@dimen/clickable_element_min_dimen"
             android:layout_marginLeft="@dimen/margin_xsmall"
-            android:background="@drawable/basic_yellow_selector"
+            android:background="@drawable/basic_blue_selector"
             android:text="@string/invite_all"
             android:enabled="false"
             />

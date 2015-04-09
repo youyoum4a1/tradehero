@@ -244,6 +244,7 @@
   <string name="trade_comment">Trade Comment</string>
 
   <string name="mark_all_as_read">Mark all as Read</string>
+  <string name="compose">Compose</string>
 
   <!-- Discovery -->
   <string name="discovery_whats_hot">What\'s hot</string>

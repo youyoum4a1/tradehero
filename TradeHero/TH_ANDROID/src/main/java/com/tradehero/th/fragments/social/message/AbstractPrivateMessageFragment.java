@@ -131,8 +131,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @Override public void onStart()
     {
-        super.onStart();
         fetchCorrespondentProfile();
+        super.onStart();
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -291,7 +291,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         messageHeaderListCache.invalidateWithRecipient(correspondentId);
     }
 
-    private void reportMessageRead(MessageHeaderDTO messageHeaderDTO)
+    public  void reportMessageRead(MessageHeaderDTO messageHeaderDTO)
     {
         messageHeaderCache.setUnread(messageHeaderDTO.getDTOKey(), false);
         onStopSubscriptions.add(messageServiceWrapper.get().readMessageRx(

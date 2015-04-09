@@ -593,7 +593,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
         if (cashLeftText == null)
         {
-            cashLeftText = getResources().getString(R.string.na);
+            cashLeftText = "0"; //getResources().getString(R.string.na);
         }
 
         return cashLeftText;
@@ -634,7 +634,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
         if (shareLeftText == null)
         {
-            shareLeftText = getResources().getString(R.string.na);
+            shareLeftText = "0";//getResources().getString(R.string.na);
         }
         return shareLeftText;
     }

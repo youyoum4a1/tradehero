@@ -130,6 +130,7 @@
   <string name="trade_comment">ความเห็นในการเทรด</string>
 
   <string name="mark_all_as_read">ทำเครื่องหมายกับทุกข้อความ ว่าอ่านแล้ว</string>
+  <string name="compose">Compose</string>
 
   <!-- Discovery -->
   <string name="discovery_whats_hot">หุ้นร้อน</string>
