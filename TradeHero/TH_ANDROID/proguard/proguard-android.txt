@@ -9,7 +9,7 @@
 # Optimization is turned off by default. Dex does not like code run
 # through the ProGuard optimize and preverify steps (and performs some
 # of these optimizations on its own).
--optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
+-optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*,!code/allocation/variable
 -optimizationpasses 5
 -allowaccessmodification
 
@@ -222,3 +222,12 @@
 # For Google Play Service <--
 
 -keep class com.google.android.gms.tagmanager.**  { *; }
+
+# For Crosswalk WebView
+-keep class org.xwalk.core.** {
+*;
+}
+-keep class org.chromium.** {
+*;
+}
+-keepattributes *

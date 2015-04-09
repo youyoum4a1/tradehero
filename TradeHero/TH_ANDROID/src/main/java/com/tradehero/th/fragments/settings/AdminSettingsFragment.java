@@ -14,9 +14,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.filter.CharSequencePredicate;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -29,10 +31,13 @@ import com.tradehero.th.fragments.competition.CompetitionPreseasonDialogFragment
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.level.ForXpTestingFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardNewDialogFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.fragments.web.XWalkWebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.ServerEndpoint;
+import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
@@ -55,6 +60,7 @@ public class AdminSettingsFragment extends BasePreferenceFragment
     private static final CharSequence KEY_TYPOGRAPHY_SCREEN = "show_typography_examples";
     private static final CharSequence KEY_PRESEASON = "show_preseason_dialog";
     private static final CharSequence KEY_KCHART = "show_kchart_examples";
+    private static final CharSequence KEY_POPQ = "show_th_pop";
 
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;
     @Inject THApp app;
@@ -67,6 +73,7 @@ public class AdminSettingsFragment extends BasePreferenceFragment
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject Provider<Activity> currentActivity;
+    @Inject @AuthHeader String thAuthHeader;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -254,6 +261,20 @@ public class AdminSettingsFragment extends BasePreferenceFragment
             @Override public boolean onPreferenceClick(Preference preference)
             {
                 navigator.get().pushFragment(kChartFragmentClassProvider.get());
+                return true;
+            }
+        });
+
+        Preference showTHPop = findPreference(KEY_POPQ);
+        showTHPop.setEnabled(thAuthHeader.startsWith(SocialNetworkEnum.FB.getAuthHeader()));
+        showTHPop.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                Bundle args = new Bundle();
+                String[] splits = thAuthHeader.split(" ");
+                XWalkWebViewFragment.putUrl(args, "https://fb.tradehero.mobi/PopQuizWeb/Home?accesstoken=" + splits[1]);
+                navigator.get().pushFragment(XWalkWebViewFragment.class, args);
                 return true;
             }
         });
