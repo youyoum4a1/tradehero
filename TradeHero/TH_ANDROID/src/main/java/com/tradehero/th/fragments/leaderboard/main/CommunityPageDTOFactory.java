@@ -2,76 +2,51 @@ package com.tradehero.th.fragments.leaderboard.main;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import android.util.Pair;
+import com.android.internal.util.Predicate;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
-import javax.inject.Inject;
-import timber.log.Timber;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 
 /** TODO IMHO, CommunityPageDTOFactory hides the fact about where the real data comes from */
 class CommunityPageDTOFactory
 {
-    private static final boolean ENABLE_COUNTRY_LEADERBOARD_DEF = false;
-    @NonNull private final LeaderboardDefListCacheRx leaderboardDefListCache;
-
-    //<editor-fold desc="Constructors">
-    @Inject CommunityPageDTOFactory(
-            @NonNull LeaderboardDefListCacheRx leaderboardDefListCache)
+    @NonNull public static LeaderboardDefDTOList reOrder(@NonNull LeaderboardDefDTOList list, @Nullable String countryCode)
     {
-        this.leaderboardDefListCache = leaderboardDefListCache;
-    }
-    //</editor-fold>
-
-    @NonNull public LeaderboardDefDTOList collectFromCaches(@Nullable String countryCode)
-    {
-        LeaderboardDefDTOList collected = new LeaderboardDefDTOList();
-        LeaderboardDefListKey key;
-        LeaderboardDefDTOList cached;
-        for (LeaderboardCommunityType type : LeaderboardCommunityType.values())
+        LeaderboardDefDTOList reOrdered = new LeaderboardDefDTOList();
+        reOrdered.addAll(list.findWhere(new Predicate<LeaderboardDefDTO>()
         {
-            key = MainLeaderboardDefListKeyFactory.createFrom(type);
-            Timber.d("Type %s, key %s", type, key);
-            cached = leaderboardDefListCache.getCachedValue(key);
-            int size = collected.size();
-            if (cached != null)
+            @Override public boolean apply(LeaderboardDefDTO leaderboardDefDTO)
             {
-                if (type == LeaderboardCommunityType.Exchange && !TextUtils.isEmpty(countryCode))
-                {
-                    for (LeaderboardDefDTO dto : cached)
-                    {
-                        if (dto.countryCodes.contains(countryCode))
-                        {
-                            collected.add(size, dto);
-                        }
-                        else
-                        {
-                            collected.add(dto);
-                        }
-                    }
-                }
-                else
-                {
-                    collected.addAll(cached);
-                }
+                return leaderboardDefDTO.isTimeRestrictedLeaderboard();
             }
-            if (ENABLE_COUNTRY_LEADERBOARD_DEF && countryCode != null && key.equals(new MostSkilledLeaderboardDefListKey(1)))
-            {
-                collected.addAll(collectForCountryCodeFromCaches(countryCode));
-            }
-        }
-        return collected;
-    }
-
-    @NonNull public LeaderboardDefDTOList collectForCountryCodeFromCaches(@NonNull String countryCode)
-    {
-        LeaderboardDefDTOList allKeys = leaderboardDefListCache.getCachedValue(new LeaderboardDefListKey(1));
-        if (allKeys != null)
+        }));
+        final LeaderboardDefDTO most = list.findFirstWhere(new Predicate<LeaderboardDefDTO>()
         {
-            return allKeys.keepForCountryCode(countryCode);
+            @Override public boolean apply(LeaderboardDefDTO leaderboardDefDTO)
+            {
+                return leaderboardDefDTO.id == LeaderboardDefKeyKnowledge.MOST_SKILLED_ID;
+            }
+        });
+        if (most != null)
+        {
+            reOrdered.add(most);
         }
-        return new LeaderboardDefDTOList();
+        final LeaderboardDefDTO friend = list.findFirstWhere(new Predicate<LeaderboardDefDTO>()
+        {
+            @Override public boolean apply(LeaderboardDefDTO leaderboardDefDTO)
+            {
+                return leaderboardDefDTO.id == LeaderboardDefKeyKnowledge.FRIEND_ID;
+            }
+        });
+        if (friend != null)
+        {
+            reOrdered.add(friend);
+        }
+        final Pair<LeaderboardDefDTOList, LeaderboardDefDTOList> countryRegions = list.splitExchangeWithWithOut(
+                countryCode != null ? countryCode : "fake");
+        reOrdered.addAll(countryRegions.first);
+        reOrdered.addAll(countryRegions.second);
+        return reOrdered;
     }
 }

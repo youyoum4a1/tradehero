@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,11 +27,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
@@ -48,14 +45,13 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -63,14 +59,9 @@ import timber.log.Timber;
 public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         implements WithTutorial, View.OnClickListener
 {
-    private static final String KEY_CURRENT_LB_TYPE = "current.leader.board.type.";
-
-    @Inject Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache;
+    @Inject LeaderboardDefListCacheRx leaderboardDefListCache;
     @Inject Analytics analytics;
-    @Inject CommunityPageDTOFactory communityPageDTOFactory;
-    @Inject @THPreference(PreferenceModule.PREF_ON_BOARDING_EXCHANGE)
-    StringPreference onBoardExchangePref;
-
+    @Inject @THPreference(PreferenceModule.PREF_ON_BOARDING_EXCHANGE) StringPreference onBoardExchangePref;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
 
@@ -80,7 +71,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     private BaseWebViewFragment webFragment;
     private int currentDisplayedChildLayoutId;
-    private String countryCode;
     private LeaderboardDefDTOList leaderboardDefDTOs;
 
     /* The following 2 static fields are used to save the status of ActionBar and Tabs, so that users can still
@@ -109,7 +99,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             return;
         }
 
-        TabbedLBPageAdapter adapter = null;
+        TabbedLBPageAdapter adapter;
         switch (leaderboardType)
         {
             case STOCKS:
@@ -255,7 +245,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         switch (item.getItemId())
         {
             case R.id.btn_search:
-                pushSearchFragment();
+                navigator.get().pushFragment(PeopleSearchFragment.class);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -273,36 +263,32 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     private void fetchLeaderboardDefList()
     {
-        unsubscribe(leaderboardDefListFetchSubscription);
-
-        Observable<LeaderboardDefDTOList> observable = userProfileCache.getOne(currentUserId.toUserBaseKey())
-                .switchMap(new Func1<Pair<UserBaseKey, UserProfileDTO>, Observable<LeaderboardDefDTOList>>()
+        final String prefCountryCode = onBoardExchangePref.get();
+        Observable<LeaderboardDefDTOList> observable = Observable.combineLatest(
+                userProfileCache.getOne(currentUserId.toUserBaseKey())
+                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
+                leaderboardDefListCache.get(new LeaderboardDefListKey(1))
+                        .map(new PairGetSecond<LeaderboardDefListKey, LeaderboardDefDTOList>()),
+                new Func2<UserProfileDTO, LeaderboardDefDTOList, LeaderboardDefDTOList>()
                 {
-                    @Override public Observable<LeaderboardDefDTOList> call(Pair<UserBaseKey, UserProfileDTO> pair)
+                    @Override public LeaderboardDefDTOList call(UserProfileDTO userProfileDTO, LeaderboardDefDTOList leaderboardDefDTOs)
                     {
-                        countryCode = onBoardExchangePref.get();
-                        UserProfileDTO userProfileDTO = pair.second;
-                        if (TextUtils.isEmpty(countryCode))
+                        String countryCode;
+                        if (TextUtils.isEmpty(prefCountryCode))
                         {
                             countryCode = userProfileDTO.countryCode;
                         }
-                        return leaderboardDefListCache.get().get(new LeaderboardDefListKey(1))
-                                        .subscribeOn(Schedulers.io())
-                                        .map(new PairGetSecond<LeaderboardDefListKey, LeaderboardDefDTOList>())
-                                        .map(new Func1<LeaderboardDefDTOList, LeaderboardDefDTOList>()
-                                        {
-                                            @Override public LeaderboardDefDTOList call(LeaderboardDefDTOList leaderboardDefDTOs)
-                                            {
-                                                return communityPageDTOFactory.collectFromCaches(countryCode);
-                                            }
-                                        })
-                                        .observeOn(AndroidSchedulers.mainThread());
+                        else
+                        {
+                            countryCode = prefCountryCode;
+                        }
+                        return CommunityPageDTOFactory.reOrder(leaderboardDefDTOs, countryCode);
                     }
-                });
+                })
+                .subscribeOn(Schedulers.computation());
 
-        leaderboardDefListFetchSubscription = AppObservable.bindFragment(
-                this,
-                observable)
+        unsubscribe(leaderboardDefListFetchSubscription);
+        leaderboardDefListFetchSubscription = AppObservable.bindFragment(this, observable)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<LeaderboardDefDTOList>()
@@ -329,14 +315,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             //if error view is click it means to reload the data
             communityScreen.setDisplayedChildByLayoutId(R.id.progress);
             fetchLeaderboardDefList();
-        }
-    }
-
-    private void pushSearchFragment()
-    {
-        if (navigator != null)
-        {
-            navigator.get().pushFragment(PeopleSearchFragment.class, null);
         }
     }
 
@@ -367,12 +345,10 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
                 return Fragment.instantiate(getActivity(), FriendLeaderboardMarkUserListFragment.class.getName(), args);
             }
 
-            DashboardFragment.setHasOptionMenu(args, false);
+            LeaderboardMarkUserListFragment.setHasOptionMenu(args, false);
             LeaderboardMarkUserListFragment.putLeaderboardDefKey(args, leaderboardDefDTO.getLeaderboardDefKey());
             LeaderboardMarkUserListFragment.putLeaderboardType(args, leaderboardType);
-            Fragment f = new LeaderboardMarkUserListFragment();
-            f.setArguments(args);
-            return f;
+            return Fragment.instantiate(getActivity(), LeaderboardMarkUserListFragment.class.getName(), args);
         }
 
         @Override public int getCount()

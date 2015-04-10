@@ -4,13 +4,7 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.leaderboard.CountryCodeList;
 import com.tradehero.th.api.leaderboard.LeaderboardSortTypeDTOList;
-import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.TimePeriodLeaderboardDefListKey;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import java.util.Date;
 
 public class LeaderboardDefDTO implements DTO
@@ -47,27 +41,6 @@ public class LeaderboardDefDTO implements DTO
     @NonNull public LeaderboardDefKey getLeaderboardDefKey()
     {
         return new LeaderboardDefKey(id);
-    }
-
-    @NonNull public LeaderboardDefListKey getLeaderboardDefListKey()
-    {
-        if (exchangeRestrictions)
-        {
-            return new ExchangeLeaderboardDefListKey(1);
-        }
-        if (sectorRestrictions)
-        {
-            return new SectorLeaderboardDefListKey(1);
-        }
-        if (isTimeRestrictedLeaderboard())
-        {
-            return new TimePeriodLeaderboardDefListKey(1);
-        }
-        if (id == LeaderboardDefKeyKnowledge.MOST_SKILLED_ID)
-        {
-            return new MostSkilledLeaderboardDefListKey(1);
-        }
-        throw new IllegalStateException("Unhandled situation " + this);
     }
 
     public boolean isTimeRestrictedLeaderboard()

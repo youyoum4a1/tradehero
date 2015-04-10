@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 
-public class FriendLeaderboardDefDTO extends ConnectedLeaderboardDefDTO
+public class FriendLeaderboardDefDTO extends LeaderboardDefDTO
 {
     //<editor-fold desc="Constructors">
     public FriendLeaderboardDefDTO(@NonNull Resources resources)
