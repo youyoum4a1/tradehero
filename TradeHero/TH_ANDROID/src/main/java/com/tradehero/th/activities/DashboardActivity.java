@@ -627,6 +627,12 @@ public class DashboardActivity extends BaseActivity
                 requester.onActivityResult(requestCode, resultCode, data);
             }
         });
+        RouteParams routeParams = getRouteParams(data);
+        if (routeParams != null)
+        {
+            resideMenu.closeMenu();
+            thRouter.open(routeParams.deepLink, routeParams.extras);
+        }
     }
 
     @Override public void openMenu()

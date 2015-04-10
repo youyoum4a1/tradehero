@@ -37,7 +37,6 @@ public final class HomeWebView extends NotifyingWebView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        
         HierarchyInjector.inject(this);
     }
 

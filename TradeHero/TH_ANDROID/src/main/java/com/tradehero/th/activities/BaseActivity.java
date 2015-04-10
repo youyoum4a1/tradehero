@@ -37,6 +37,10 @@ import timber.log.Timber;
 public class BaseActivity extends ActionBarActivity
         implements OnAccountsUpdateListener, Injector
 {
+    public static final int REQUEST_CODE_ROUTE = "REQUEST_CODE_ROUTE".hashCode() & 0xFF; // 16 bit only
+    private static final String INTENT_EXTRA_KEY_ROUTE = BaseActivity.class.getName() + ".route";
+    private static final String INTENT_EXTRA_KEY_EXTRAS = BaseActivity.class.getName() + ".extras";
+
     private AccountManager accountManager;
     private Injector newInjector;
 
@@ -48,6 +52,26 @@ public class BaseActivity extends ActionBarActivity
     @Inject Lazy<MarketUtil> marketUtil;
 
     private WeakReference<Toolbar> toolbarRef;
+
+    public static void putRouteParams(@NonNull Intent returnIntent, @NonNull String deepLink, @NonNull Bundle extras)
+    {
+        returnIntent.putExtra(INTENT_EXTRA_KEY_ROUTE, deepLink);
+        returnIntent.putExtra(INTENT_EXTRA_KEY_EXTRAS, extras);
+    }
+
+    @Nullable public static RouteParams getRouteParams(@NonNull Intent returnIntent)
+    {
+        if (returnIntent.hasExtra(INTENT_EXTRA_KEY_ROUTE))
+        {
+            return new RouteParams(
+                    returnIntent.getStringExtra(INTENT_EXTRA_KEY_ROUTE),
+                    returnIntent.getBundleExtra(INTENT_EXTRA_KEY_EXTRAS));
+        }
+        else
+        {
+            return null;
+        }
+    }
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -191,6 +215,20 @@ public class BaseActivity extends ActionBarActivity
         @Provides Activity provideActivity()
         {
             return BaseActivity.this;
+        }
+    }
+
+    public static class RouteParams
+    {
+        @NonNull public final String deepLink;
+        @NonNull public final Bundle extras;
+
+        public RouteParams(
+                @NonNull String deepLink,
+                @NonNull Bundle extras)
+        {
+            this.deepLink = deepLink;
+            this.extras = extras;
         }
     }
 }

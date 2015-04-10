@@ -20,11 +20,13 @@ import dagger.Module;
 import dagger.Provides;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
 abstract public class OneFragmentActivity extends BaseActivity
 {
+    @Inject protected THRouter thRouter;
     protected DashboardNavigator navigator;
     @InjectView(R.id.my_toolbar) protected Toolbar toolbar;
 
