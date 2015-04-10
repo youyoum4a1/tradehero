@@ -14,7 +14,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
-import com.tradehero.th.fragments.base.FragmentOuterElements;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import javax.inject.Inject;
 import rx.Observable;
@@ -25,7 +24,6 @@ import rx.functions.Action1;
 public class TimelineDiscussionFragment extends AbstractDiscussionFragment
 {
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
-    @Inject FragmentOuterElements fragmentElements;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
