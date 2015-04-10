@@ -1089,7 +1089,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
             if (buySellTransactionListener != null)
             {
-                buySellTransactionListener.onTransactionSuccessful(isBuy, securityPositionDetailDTO);
+                buySellTransactionListener.onTransactionSuccessful(isBuy, securityPositionDetailDTO, mCommentsEditText.getText().toString());
             }
 
             if (mBtnShareWeChat.isChecked())
@@ -1158,7 +1158,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     public interface BuySellTransactionListener
     {
-        void onTransactionSuccessful(boolean isBuy, @NonNull SecurityPositionTransactionDTO securityPositionTransactionDTO);
+        void onTransactionSuccessful(boolean isBuy, @NonNull SecurityPositionTransactionDTO securityPositionTransactionDTO, String commentString);
 
         void onTransactionFailed(boolean isBuy, THException error);
     }
