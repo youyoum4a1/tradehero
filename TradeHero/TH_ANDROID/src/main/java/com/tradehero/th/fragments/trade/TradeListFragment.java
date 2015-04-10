@@ -137,7 +137,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         tradeListView.setAdapter(adapter);
-        tradeListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        tradeListView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
     }
 
     @Override public void onStart()

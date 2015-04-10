@@ -96,7 +96,7 @@ abstract public class BasePagedListRxFragment<
 
     @NonNull protected AbsListView.OnScrollListener createListViewScrollListener()
     {
-        return new MultiScrollListener(nearEndScrollListener, dashboardBottomTabsListViewScrollListener.get());
+        return new MultiScrollListener(nearEndScrollListener, fragmentElements.get().getListViewScrollListener());
     }
 
     @Override public void onSaveInstanceState(Bundle outState)

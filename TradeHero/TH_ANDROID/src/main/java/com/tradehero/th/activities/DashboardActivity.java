@@ -60,6 +60,8 @@ import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.NavigationAnalyticsReporter;
+import com.tradehero.th.fragments.base.DashboardFragmentOuterElements;
+import com.tradehero.th.fragments.base.FragmentOuterElements;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentBroadcastSignal;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
@@ -730,6 +732,11 @@ public class DashboardActivity extends BaseActivity
             router.registerAlias("reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
             router.registerAlias("store/reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
             return router;
+        }
+
+        @Provides FragmentOuterElements provideFragmentElements(DashboardFragmentOuterElements dashboardFragmentElements)
+        {
+            return dashboardFragmentElements;
         }
 
         @Provides @BottomTabs DashboardTabHost provideDashboardBottomBar()

@@ -18,7 +18,6 @@ import butterknife.OnTextChanged;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.utils.EditableUtil;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -31,7 +30,6 @@ import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
@@ -42,11 +40,9 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
-import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import rx.Notification;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -64,7 +60,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject DiscussionCacheRx discussionCache;
-    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
     @Inject MentionTaggedStockHandler mentionTaggedStockHandler;
 
     private DiscussionDTO discussionDTO;
@@ -144,13 +139,13 @@ public class DiscussionEditPostFragment extends DashboardFragment
         }
 
         mentionTaggedStockHandler.collectSelection();
-        dashboardTabHost.get().animateHide();
+        fragmentElements.get().getMovableBottom().animateHide();
     }
 
     @Override public void onPause()
     {
         super.onPause();
-        dashboardTabHost.get().animateShow();
+        fragmentElements.get().getMovableBottom().animateShow();
     }
 
     @Override public void onDestroyView()

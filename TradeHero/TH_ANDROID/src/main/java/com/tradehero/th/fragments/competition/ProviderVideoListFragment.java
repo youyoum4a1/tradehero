@@ -73,7 +73,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
         ButterKnife.inject(this, view);
         helpVideoListScreen.setDisplayedChildByLayoutId(android.R.id.progress);
         videoListView.setAdapter(providerVideoAdapter);
-        videoListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        videoListView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
     }
 
     @Override public void onStart()

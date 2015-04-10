@@ -636,7 +636,7 @@ public class PositionListFragment
                                 listView.getPaddingRight(),
                                 listView.getPaddingBottom());
                         listView.setOnScrollListener(new MultiScrollListener(
-                                dashboardBottomTabsListViewScrollListener.get(),
+                                fragmentElements.get().getListViewScrollListener(),
                                 new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER,
                                         inflatedHeader,
                                         -headerHeight,

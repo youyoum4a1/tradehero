@@ -12,6 +12,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
+import com.tradehero.th.fragments.base.BaseFragmentOuterElements;
+import com.tradehero.th.fragments.base.FragmentOuterElements;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Module;
@@ -117,6 +119,11 @@ abstract public class OneFragmentActivity extends BaseActivity
         @Provides @Singleton THRouter provideTHRouter(Context context, Provider<DashboardNavigator> navigatorProvider)
         {
             return new THRouter(context, navigatorProvider);
+        }
+
+        @Provides FragmentOuterElements provideFragmentElements()
+        {
+            return new BaseFragmentOuterElements();
         }
     }
 }

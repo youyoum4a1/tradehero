@@ -21,7 +21,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
@@ -37,7 +36,7 @@ import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.OnMovableBottomTranslateListener;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
@@ -104,7 +103,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     @Inject Lazy<SocialSharer> socialSharerLazy;
 
     private AbstractTransactionDialogFragment abstractTransactionDialogFragment;
-    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     @Inject protected OwnedPortfolioIdListCacheRx ownedPortfolioIdListCache;
     @Nullable protected OwnedPortfolioIdList applicableOwnedPortfolioIds;
@@ -170,7 +168,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             abstractTransactionDialogFragment.getDialog().show();
         }
 
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        fragmentElements.get().getMovableBottom().setOnMovableBottomTranslateListener(new OnMovableBottomTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -183,7 +181,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     {
         LocalBroadcastManager.getInstance(getActivity())
                 .unregisterReceiver(chartImageButtonClickReceiver);
-        dashboardTabHost.get().setOnTranslate(null);
+        fragmentElements.get().getMovableBottom().setOnMovableBottomTranslateListener(null);
         super.onPause();
     }
 

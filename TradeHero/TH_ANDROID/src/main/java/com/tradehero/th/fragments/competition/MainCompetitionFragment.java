@@ -25,7 +25,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
@@ -42,7 +41,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.OnMovableBottomTranslateListener;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.competition.zone.AbstractCompetitionZoneListItemView;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
@@ -118,7 +117,6 @@ public class MainCompetitionFragment extends DashboardFragment
     @Inject CompetitionZoneDTOUtil competitionZoneDTOUtil;
     @Inject THIntentFactory thIntentFactory;
     @Inject CompetitionPreseasonCacheRx competitionPreSeasonCacheRx;
-    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
     @Inject ProviderServiceWrapper providerServiceWrapper;
     @Inject Lazy<ProviderTradableSecuritiesHelper> providerTradableSecuritiesHelperLazy;
     @Inject protected CurrentUserId currentUserId;
@@ -189,7 +187,7 @@ public class MainCompetitionFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         this.progressBar.setVisibility(View.VISIBLE);
-        this.listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        this.listView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
         this.listView.setAdapter(this.competitionZoneListItemAdapter);
         competitionZoneDTOUtil.randomiseAd();
     }
@@ -217,7 +215,7 @@ public class MainCompetitionFragment extends DashboardFragment
         {
             this.webViewFragment.setThIntentPassedListener(null);
         }
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        fragmentElements.get().getMovableBottom().setOnMovableBottomTranslateListener(new OnMovableBottomTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -229,7 +227,7 @@ public class MainCompetitionFragment extends DashboardFragment
 
     @Override public void onPause()
     {
-        dashboardTabHost.get().setOnTranslate(null);
+        fragmentElements.get().getMovableBottom().setOnMovableBottomTranslateListener(null);
         super.onPause();
     }
 

@@ -16,21 +16,17 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Gallery;
 import android.widget.TextView;
-import com.tradehero.common.widget.NotifyingWebView;
 import com.tradehero.metrics.Analytics;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIntegerId;
-import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.base.FragmentOuterElements;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -39,7 +35,6 @@ import com.tradehero.th.persistence.security.SecurityMultiFetchAssistant;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.AnalyticsDuration;
 import com.tradehero.th.utils.metrics.events.AttributesEvent;
-import dagger.Lazy;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,7 +49,6 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import android.view.GestureDetector;
 
 public class NewsWebFragment extends WebViewFragment
 {
@@ -65,9 +59,8 @@ public class NewsWebFragment extends WebViewFragment
 
     @Inject NewsServiceWrapper newsServiceWrapper;
     @Inject protected SecurityMultiFetchAssistant securityMultiFetchAssistant;
-
     @Inject Analytics analytics;
-    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
+    @Inject FragmentOuterElements fragmentElements;
 
     private String previousScreen;
     private int newsID;
@@ -247,12 +240,12 @@ public class NewsWebFragment extends WebViewFragment
     {
         super.onResume();
         beginTime = System.currentTimeMillis();
-        dashboardTabHost.get().animateHide();
+        fragmentElements.getMovableBottom().animateHide();
     }
 
     @Override public void onPause()
     {
-        dashboardTabHost.get().animateShow();
+        fragmentElements.getMovableBottom().animateShow();
         reportAnalytics();
         super.onPause();
     }

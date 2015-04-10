@@ -1,21 +1,12 @@
 package com.tradehero.th.fragments.base;
 
 import android.view.MenuItem;
-import android.widget.AbsListView;
-import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
-import com.special.residemenu.ResideMenu;
-import com.tradehero.th.BottomTabsQuickReturnListViewListener;
-import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
 import dagger.Lazy;
 import javax.inject.Inject;
 
 abstract public class DashboardFragment extends BaseFragment
 {
-    @Inject Lazy<ResideMenu> resideMenuLazy;
-
-    @Inject @BottomTabsQuickReturnListViewListener protected Lazy<AbsListView.OnScrollListener> dashboardBottomTabsListViewScrollListener;
-    @Inject @BottomTabsQuickReturnScrollViewListener protected Lazy<NotifyingScrollView.OnScrollChangedListener>
-            dashboardBottomTabScrollViewScrollListener;
+    @Inject protected Lazy<FragmentOuterElements> fragmentElements;
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -24,7 +15,7 @@ abstract public class DashboardFragment extends BaseFragment
             case android.R.id.home:
                 if (!actionBarOwnerMixin.shouldShowHomeAsUp())
                 {
-                    resideMenuLazy.get().openMenu();
+                    fragmentElements.get().openMenu();
                     return true;
                 }
                 break;

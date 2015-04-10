@@ -68,7 +68,7 @@ public class AchievementListFragment extends DashboardFragment
         hideEmpty();
         init();
         initAdapter();
-        listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        listView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

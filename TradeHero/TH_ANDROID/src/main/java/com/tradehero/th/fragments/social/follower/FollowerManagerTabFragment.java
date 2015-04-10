@@ -83,7 +83,7 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
         }
         swipeRefreshLayout.setOnRefreshListener(this);
         followerList.setAdapter(followerListAdapter);
-        followerList.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        followerList.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
         followerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override public void onItemClick(AdapterView<?> parent, View view1, int position, long id)

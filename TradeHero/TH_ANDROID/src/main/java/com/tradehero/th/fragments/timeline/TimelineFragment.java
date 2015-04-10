@@ -23,7 +23,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.PrivateDiscussionActivity;
 import com.tradehero.th.api.competition.ProviderId;
@@ -45,7 +44,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBillingInteractorRx;
-import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.OnMovableBottomTranslateListener;
 import com.tradehero.th.fragments.achievement.AchievementListFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
@@ -123,7 +122,6 @@ public class TimelineFragment extends DashboardFragment
     @Inject MessageThreadHeaderCacheRx messageThreadHeaderCache;
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
     @Inject protected THRouter thRouter;
-    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
     @Inject protected TimelineCacheRx timelineCache;
     @Inject DiscussionFragmentUtil discussionFragmentUtil;
     @Inject AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
@@ -275,7 +273,7 @@ public class TimelineFragment extends DashboardFragment
         FlagNearEdgeScrollListener nearEndScrollListener = createNearEndScrollListener();
         nearEndScrollListener.lowerEndFlag();
         nearEndScrollListener.activateEnd();
-        timelineListView.setOnScrollListener(new MultiScrollListener(dashboardBottomTabsListViewScrollListener.get(), nearEndScrollListener));
+        timelineListView.setOnScrollListener(new MultiScrollListener(fragmentElements.get().getListViewScrollListener(), nearEndScrollListener));
         swipeRefreshContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
             @Override public void onRefresh()
@@ -311,7 +309,7 @@ public class TimelineFragment extends DashboardFragment
             swipeRefreshContainer.setRefreshing(false);
             cancelRefreshingOnResume = false;
         }
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        fragmentElements.get().getMovableBottom().setOnMovableBottomTranslateListener(new OnMovableBottomTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -395,11 +393,7 @@ public class TimelineFragment extends DashboardFragment
         {
             displayingProfileHeaderLayoutId = userProfileView.getDisplayedChildLayoutId();
         }
-        DashboardTabHost tabHost = dashboardTabHost.get();
-        if (tabHost != null)
-        {
-            tabHost.setOnTranslate(null);
-        }
+        fragmentElements.get().getMovableBottom().setOnMovableBottomTranslateListener(null);
         mainTimelineAdapter.setProfileClickListener(null);
         timelineListView.setOnScrollListener(null);
         swipeRefreshContainer.setOnRefreshListener(null);
