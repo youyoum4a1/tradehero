@@ -317,6 +317,10 @@ public class DashboardActivity extends BaseActivity
         }
     }
 
+/*
+        P2: There is a unnecessary menu button on Me page
+        https://www.pivotaltracker.com/n/projects/559137/stories/91165728
+
     @Override public boolean onCreateOptionsMenu(Menu menu)
     {
         UserProfileDTO currentUserProfile =
@@ -362,6 +366,7 @@ public class DashboardActivity extends BaseActivity
         }
         return super.onOptionsItemSelected(item);
     }
+*/
 
     private void pushFragmentIfNecessary(Class<? extends Fragment> fragmentClass)
     {
