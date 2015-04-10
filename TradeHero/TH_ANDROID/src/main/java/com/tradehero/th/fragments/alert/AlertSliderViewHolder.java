@@ -29,7 +29,12 @@ public class AlertSliderViewHolder
                 new AlertSliderView.Requisite(alertDTO.security.currencyDisplay, 0, alertDTO.security.lastPrice * 2));
         alertSliderPercentage.setRequisite(new AlertSliderView.Requisite("", -0.5f, 0.5f));
 
-        if (alertDTO.priceMovement != null)
+        if (!alertDTO.active)
+        {
+            alertSliderTarget.display(new AlertSliderView.Status(false, alertDTO.targetPrice));
+            alertSliderPercentage.display(new AlertSliderView.Status(false, 0));
+        }
+        else if (alertDTO.priceMovement != null)
         {
             alertSliderTarget.display(new AlertSliderView.Status(false, alertDTO.targetPrice));
             alertSliderPercentage.display(new AlertSliderView.Status(true, alertDTO.priceMovement));
