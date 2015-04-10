@@ -14,6 +14,7 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
+import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -57,6 +58,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     @Inject protected MentionTaggedStockHandler mentionTaggedStockHandler;
     @Inject protected AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
     @Inject protected DiscussionFragmentUtil discussionFragmentUtil;
+    @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
     protected DiscussionSetAdapter discussionListAdapter;
     protected DiscussionKey discussionKey;
@@ -92,7 +94,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        discussionList.setOnScrollListener(createListScrollListener());
+        discussionList.setOnScrollListener(new MultiScrollListener(dashboardBottomTabsScrollListener, createListScrollListener()));
         topicView = inflateTopicView();
         if (topicView != null)
         {

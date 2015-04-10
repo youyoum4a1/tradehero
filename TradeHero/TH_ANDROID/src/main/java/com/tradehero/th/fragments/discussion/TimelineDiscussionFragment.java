@@ -6,12 +6,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
+import com.tradehero.th.fragments.base.FragmentOuterElements;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import javax.inject.Inject;
 import rx.Observable;
@@ -22,10 +25,29 @@ import rx.functions.Action1;
 public class TimelineDiscussionFragment extends AbstractDiscussionFragment
 {
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
+    @Inject FragmentOuterElements fragmentElements;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.timeline_discussion, container, false);
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        setActionBarTitle(R.string.discussion);
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        fragmentElements.getMovableBottom().animateHide();
+    }
+
+    @Override public void onPause()
+    {
+        super.onPause();
+        fragmentElements.getMovableBottom().animateShow();
     }
 
     @NonNull @Override protected DiscussionSetAdapter createDiscussionListAdapter()
