@@ -52,6 +52,7 @@ import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLi
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinearDTOFactory;
 import com.tradehero.th.fragments.discussion.DiscussionFragmentUtil;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
+import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogRxUtil;
@@ -583,6 +584,8 @@ public class TimelineFragment extends DashboardFragment
             if (portfolioDTO.providerId != null && portfolioDTO.providerId > 0)
             {
                 TabbedPositionListFragment.putProviderId(args, new ProviderId(portfolioDTO.providerId));
+                navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
+                return;
             }
         }
         navigator.get().pushFragment(TabbedPositionListFragment.class, args);
