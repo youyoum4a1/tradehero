@@ -99,7 +99,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
     private int type;
     private MenuItem exchangeMenu;
     private ExchangeSpinner mExchangeSelection;
-    static private boolean cancelFirstInit = true;
 
     public static void putExchangeId(@NonNull Bundle args, @NonNull ExchangeIntegerId exchangeId)
     {
@@ -185,6 +184,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
         {
             mExchangeSelection = (ExchangeSpinner) updateCenterIcon.findViewById(R.id.exchange_selection_menu);
             mExchangeSelection.setAdapter(exchangeAdapter);
+            mExchangeSelection.setSelectionById(preferredExchangeMarket.get());
             mExchangeSelection.setOnItemSelectedListener(this);
         }
     }
@@ -416,12 +416,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
     {
-        if (cancelFirstInit)
-        {
-            cancelFirstInit = false;
-            mExchangeSelection.setSelectionById(preferredExchangeMarket.get());
-            return;
-        }
         TrendingFilterTypeDTO newFilterTypeDTO = trendingFilterTypeDTO.getByExchange((ExchangeCompactSpinnerDTO) parent.getItemAtPosition(position));
         fetchFilter(newFilterTypeDTO);
         reportAnalytics();
@@ -441,11 +435,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
                     AnalyticsConstants.InterestedExchange,
                     Collections.singletonList(trendingFilterTypeDTO.exchange.name)));
         }
-    }
-
-    public static void setCancelFirstInit(boolean cancelFirstInit)
-    {
-        TrendingStockFragment.cancelFirstInit = cancelFirstInit;
     }
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
