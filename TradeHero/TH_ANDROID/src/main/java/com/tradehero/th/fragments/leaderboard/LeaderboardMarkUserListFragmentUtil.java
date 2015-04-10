@@ -123,7 +123,7 @@ public class LeaderboardMarkUserListFragmentUtil
     protected void handleFollowRequested(@NonNull final UserBaseDTO userBaseDTO)
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
+                fragment,
                 new ChoiceFollowUserAssistantWithDialog(
                         fragment.getActivity(),
                         userBaseDTO
