@@ -196,7 +196,7 @@ public class ProfileInfoView extends LinearLayout
 
     @NonNull public Observable<Boolean> getFieldsValidObservable()
     {
-        return Observable.zip(
+        return Observable.combineLatest(
                 emailValidator.getValidationMessageObservable(),
                 passwordValidator.getValidationMessageObservable(),
                 confirmPasswordValidator.getValidationMessageObservable(),
@@ -512,7 +512,7 @@ public class ProfileInfoView extends LinearLayout
 
     @NonNull public Observable<UserFormDTO> obtainUserFormDTO()
     {
-        return Observable.zip(
+        return Observable.combineLatest(
                 WidgetObservable.text(email, true),
                 WidgetObservable.text(password, true),
                 WidgetObservable.text(confirmPassword, true),
