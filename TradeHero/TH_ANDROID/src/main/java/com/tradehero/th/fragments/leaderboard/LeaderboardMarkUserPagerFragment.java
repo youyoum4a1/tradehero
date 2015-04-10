@@ -92,7 +92,7 @@ public class LeaderboardMarkUserPagerFragment extends DashboardFragment
 
         @Override public CharSequence getPageTitle(int position)
         {
-            return getString(LeaderboardType.values()[position].getTitleResId());
+            return getString(LeaderboardType.values()[position].titleResId);
         }
     }
 }

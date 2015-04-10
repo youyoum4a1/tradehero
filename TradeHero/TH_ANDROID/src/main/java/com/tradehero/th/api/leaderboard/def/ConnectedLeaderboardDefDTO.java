@@ -1,5 +1,6 @@
 package com.tradehero.th.api.leaderboard.def;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.leaderboard.key.ConnectedLeaderboardDefListKey;
@@ -7,7 +8,7 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 
 public class ConnectedLeaderboardDefDTO extends LeaderboardDefDTO
 {
-    @Nullable public Integer bannerResId;
+    @Nullable @DrawableRes public Integer bannerResId;
 
     @NonNull @Override public LeaderboardDefListKey getLeaderboardDefListKey()
     {

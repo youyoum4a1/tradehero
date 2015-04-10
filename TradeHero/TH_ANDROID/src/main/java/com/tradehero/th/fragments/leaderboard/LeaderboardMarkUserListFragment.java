@@ -79,7 +79,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     protected PerPagedLeaderboardKeyPreference savedPreference;
 
     protected PerPagedLeaderboardKey currentLeaderboardKey;
-    protected LeaderboardType currentLeaderboardType;
+    protected LeaderboardType currentLeaderboardType = LeaderboardType.STOCKS;
 
     public static void putLeaderboardType(@NonNull Bundle args, @NonNull LeaderboardType leaderboardType)
     {
@@ -91,11 +91,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         super.onCreate(savedInstanceState);
         currentLeaderboardKey = getInitialLeaderboardKey();
         currentLeaderboardType = getInitialLeaderboardType();
-        if (currentLeaderboardType != null && currentLeaderboardType.getAssetClass() != null)
-        {
-            currentLeaderboardKey.setAssetClass(currentLeaderboardType.getAssetClass());
-        }
-        fragmentUtil.linkWith(this);
+        currentLeaderboardKey.setAssetClass(currentLeaderboardType.assetClass);
+        fragmentUtil.linkWith(this, currentLeaderboardType);
     }
 
     protected PerPagedLeaderboardKey getInitialLeaderboardKey()
@@ -365,7 +362,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     {
         UserOnLeaderboardKey userOnLeaderboardKey =
                 new UserOnLeaderboardKey(
-                        new LeaderboardKey(leaderboardDefKey.key, currentLeaderboardType != null ? currentLeaderboardType.getAssetClass() : null),
+                        new LeaderboardKey(leaderboardDefKey.key, currentLeaderboardType != null ? currentLeaderboardType.assetClass : null),
                         currentUserId.toUserBaseKey());
         return Observable.zip(
                 leaderboardCache.getOne(userOnLeaderboardKey),

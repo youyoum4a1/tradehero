@@ -6,7 +6,6 @@ import dagger.Module;
         includes = {
         },
         injects = {
-                LeaderboardDefDTOKnowledgeTest.class,
         },
         complete = false,
         library = true

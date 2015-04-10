@@ -1,7 +1,6 @@
 package com.tradehero.th.api.leaderboard.def;
 
-import android.content.Context;
-
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
@@ -9,12 +8,11 @@ import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 public class FriendLeaderboardDefDTO extends ConnectedLeaderboardDefDTO
 {
     //<editor-fold desc="Constructors">
-    public FriendLeaderboardDefDTO(@NonNull Context context)
+    public FriendLeaderboardDefDTO(@NonNull Resources resources)
     {
         super();
         id = LeaderboardDefKeyKnowledge.FRIEND_ID;
-        name = context.getString(R.string.leaderboard_community_friends);
-        //bannerResId = R.drawable.lb_friends_bg;
+        name = resources.getString(R.string.leaderboard_community_friends);
     }
     //</editor-fold>
 }

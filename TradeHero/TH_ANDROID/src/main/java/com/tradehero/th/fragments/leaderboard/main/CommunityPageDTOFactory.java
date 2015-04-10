@@ -38,15 +38,21 @@ class CommunityPageDTOFactory
             int size = collected.size();
             if (cached != null)
             {
-                if ((type == LeaderboardCommunityType.Exchange) && (!TextUtils.isEmpty(countryCode))) {
-                    for (LeaderboardDefDTO dto : cached) {
-                        if (dto.countryCodes.contains(countryCode)) {
+                if (type == LeaderboardCommunityType.Exchange && !TextUtils.isEmpty(countryCode))
+                {
+                    for (LeaderboardDefDTO dto : cached)
+                    {
+                        if (dto.countryCodes.contains(countryCode))
+                        {
                             collected.add(size, dto);
-                        } else {
+                        }
+                        else
+                        {
                             collected.add(dto);
                         }
                     }
-                } else
+                }
+                else
                 {
                     collected.addAll(cached);
                 }

@@ -1,8 +1,8 @@
 package com.tradehero.th.api.leaderboard.def;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.leaderboard.key.ConnectedLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.DrillDownLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
@@ -10,28 +10,26 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.TimePeriodLeaderboardDefListKey;
-import com.tradehero.th.persistence.prefs.PreferenceModule;
-import com.tradehero.th.persistence.prefs.THPreference;
 import java.util.HashMap;
 import javax.inject.Inject;
 import rx.functions.Func1;
 
 public class LeaderboardDefDTOFactory implements Func1<LeaderboardDefDTOList, LeaderboardDefDTOList>
 {
-    @NonNull private final Context context;
+    @NonNull private final Resources resources;
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardDefDTOFactory(
             @NonNull Context context)
     {
-        this.context = context;
+        this.resources = context.getResources();
     }
     //</editor-fold>
 
     @NonNull public LeaderboardDefDTOList call(@NonNull LeaderboardDefDTOList leaderboardDefDTOs)
     {
-        leaderboardDefDTOs.add(new FriendLeaderboardDefDTO(context));
-        leaderboardDefDTOs.add(new ExchangeContainerLeaderboardDefDTO(context));
+        leaderboardDefDTOs.add(new FriendLeaderboardDefDTO(resources));
+        leaderboardDefDTOs.add(new ExchangeContainerLeaderboardDefDTO(resources));
         return leaderboardDefDTOs;
     }
 

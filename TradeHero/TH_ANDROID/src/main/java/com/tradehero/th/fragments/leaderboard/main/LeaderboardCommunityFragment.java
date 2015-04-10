@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.leaderboard.main;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,6 +28,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
+import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -47,7 +49,6 @@ import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
@@ -82,21 +83,13 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     private String countryCode;
     private LeaderboardDefDTOList leaderboardDefDTOs;
 
-    private WeakReference<TabbedLBPageAdapter> stockLBAdapterRef;
-    private WeakReference<TabbedLBPageAdapter> fxLBAdapterRef;
-
     /* The following 2 static fields are used to save the status of ActionBar and Tabs, so that users can still
     * return to the same page from other fragments.
     * */
-    private static LeaderboardType LEADER_BOARD_Type = LeaderboardType.STOCKS;
-    private static int LAST_TAB_POSITION = 0;
+    private static LeaderboardType leaderboardType = LeaderboardType.STOCKS;
+    private static int lastTabPosition = 0;
 
     @Nullable protected Subscription leaderboardDefListFetchSubscription;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -109,42 +102,33 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         ButterKnife.inject(this, view);
     }
 
-    private void setUpViewPager() {
-        if (leaderboardDefDTOs == null) {
+    private void setUpViewPager()
+    {
+        if (leaderboardDefDTOs == null)
+        {
             return;
         }
 
-
         TabbedLBPageAdapter adapter = null;
-        switch (LEADER_BOARD_Type) {
+        switch (leaderboardType)
+        {
             case STOCKS:
-                if (stockLBAdapterRef != null) {
-                    adapter = stockLBAdapterRef.get();
-                }
-                if (adapter == null) {
-                    adapter = new TabbedLBPageAdapter(getChildFragmentManager(), leaderboardDefDTOs);
-                    stockLBAdapterRef = new WeakReference<>(adapter);
-                }
+                adapter = new TabbedLBPageAdapter(getChildFragmentManager(), leaderboardDefDTOs, leaderboardType);
                 break;
             case FX:
-                if (fxLBAdapterRef != null) {
-                    adapter = fxLBAdapterRef.get();
-                }
-                if (adapter == null) {
-                    LeaderboardDefDTOList filteredList = new LeaderboardDefDTOList();
-
-                    for (LeaderboardDefDTO dto : leaderboardDefDTOs) {
-                        if (dto.exchangeRestrictions){
-                            continue;
-                        }
-                        filteredList.add(dto);
+                LeaderboardDefDTOList filteredList = new LeaderboardDefDTOList();
+                for (LeaderboardDefDTO dto : leaderboardDefDTOs)
+                {
+                    if (dto.exchangeRestrictions)
+                    {
+                        continue;
                     }
-                    adapter = new TabbedLBPageAdapter(getChildFragmentManager(), filteredList);
-                    fxLBAdapterRef = new WeakReference<>(adapter);
+                    filteredList.add(dto);
                 }
+                adapter = new TabbedLBPageAdapter(getChildFragmentManager(), filteredList, leaderboardType);
                 break;
             default:
-                Timber.e("Invalid leaderboardType: " + LEADER_BOARD_Type);
+                Timber.e("Invalid leaderboardType: " + leaderboardType);
                 return;
         }
 
@@ -152,7 +136,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
-        tabViewPager.setCurrentItem(LAST_TAB_POSITION, true);
+        tabViewPager.setCurrentItem(lastTabPosition, true);
         pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
         {
             @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
@@ -162,7 +146,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
             @Override public void onPageSelected(int position)
             {
-                LAST_TAB_POSITION = position;
+                lastTabPosition = position;
             }
 
             @Override public void onPageScrollStateChanged(int state)
@@ -187,9 +171,12 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         super.onResume();
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Community));
         showToolbarSpinner();
-        if (leaderboardDefDTOs == null) {
+        if (leaderboardDefDTOs == null)
+        {
             fetchLeaderboardDefList();
-        } else {
+        }
+        else
+        {
             setUpViewPager();
         }
         // We came back into view so we have to forget the web fragment
@@ -228,21 +215,25 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         setUpToolbarSpinner();
     }
 
-    private void setUpToolbarSpinner() {
+    private void setUpToolbarSpinner()
+    {
         AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener()
         {
             @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
                 LeaderboardType type;
-                if (position == 0) {
+                if (position == 0)
+                {
                     type = LeaderboardType.STOCKS;
-                } else {
+                }
+                else
+                {
                     type = LeaderboardType.FX;
                 }
                 Timber.e("onItemSelected: " + parent.getItemAtPosition(position));
-                if (type != LEADER_BOARD_Type)
+                if (type != leaderboardType)
                 {
-                    LEADER_BOARD_Type = type;
+                    leaderboardType = type;
                     setUpViewPager();
                 }
             }
@@ -253,9 +244,9 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             }
         };
         configureDefaultSpinner(new String[] {
-                getString(R.string.leaderboard_type_stocks),
-                getString(R.string.leaderboard_type_fx)},
-                listener, LEADER_BOARD_Type.ordinal());
+                        getString(R.string.leaderboard_type_stocks),
+                        getString(R.string.leaderboard_type_fx)},
+                listener, leaderboardType.ordinal());
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -284,31 +275,30 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         unsubscribe(leaderboardDefListFetchSubscription);
 
-        Observable observable = userProfileCache.getOne(currentUserId.toUserBaseKey())
-                .switchMap(new Func1<Pair<UserBaseKey, UserProfileDTO>, Observable<?>>()
-        {
-            @Override public Observable<?> call(Pair<UserBaseKey, UserProfileDTO> pair)
-            {
-                countryCode = onBoardExchangePref.get();
-                UserProfileDTO userProfileDTO = pair.second;
-                if (TextUtils.isEmpty(countryCode)) {
-                    countryCode = userProfileDTO.countryCode;
-                }
-                Observable<LeaderboardDefDTOList> leaderboardDefObservable =
-                        leaderboardDefListCache.get().get(new LeaderboardDefListKey(1))
-                                .map(new PairGetSecond<LeaderboardDefListKey, LeaderboardDefDTOList>())
-                                .map(new Func1<LeaderboardDefDTOList, LeaderboardDefDTOList>()
-                                {
-                                    @Override public LeaderboardDefDTOList call(LeaderboardDefDTOList leaderboardDefDTOs)
-                                    {
-                                        return communityPageDTOFactory.collectFromCaches(countryCode);
-                                    }
-                                })
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
-                return leaderboardDefObservable;
-            }
-        });
+        Observable<LeaderboardDefDTOList> observable = userProfileCache.getOne(currentUserId.toUserBaseKey())
+                .switchMap(new Func1<Pair<UserBaseKey, UserProfileDTO>, Observable<LeaderboardDefDTOList>>()
+                {
+                    @Override public Observable<LeaderboardDefDTOList> call(Pair<UserBaseKey, UserProfileDTO> pair)
+                    {
+                        countryCode = onBoardExchangePref.get();
+                        UserProfileDTO userProfileDTO = pair.second;
+                        if (TextUtils.isEmpty(countryCode))
+                        {
+                            countryCode = userProfileDTO.countryCode;
+                        }
+                        return leaderboardDefListCache.get().get(new LeaderboardDefListKey(1))
+                                        .subscribeOn(Schedulers.io())
+                                        .map(new PairGetSecond<LeaderboardDefListKey, LeaderboardDefDTOList>())
+                                        .map(new Func1<LeaderboardDefDTOList, LeaderboardDefDTOList>()
+                                        {
+                                            @Override public LeaderboardDefDTOList call(LeaderboardDefDTOList leaderboardDefDTOs)
+                                            {
+                                                return communityPageDTOFactory.collectFromCaches(countryCode);
+                                            }
+                                        })
+                                        .observeOn(AndroidSchedulers.mainThread());
+                    }
+                });
 
         leaderboardDefListFetchSubscription = AppObservable.bindFragment(
                 this,
@@ -350,13 +340,19 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private class TabbedLBPageAdapter extends FragmentPagerAdapter {
-        private LeaderboardDefDTOList dtoList;
+    private class TabbedLBPageAdapter extends FragmentPagerAdapter
+    {
+        private final LeaderboardDefDTOList dtoList;
+        private final LeaderboardType leaderboardType;
 
-        public TabbedLBPageAdapter(FragmentManager fm, LeaderboardDefDTOList leaderboardDefDTOs)
+        public TabbedLBPageAdapter(
+                @NonNull FragmentManager fm,
+                @NonNull LeaderboardDefDTOList leaderboardDefDTOs,
+                @NonNull LeaderboardType leaderboardType)
         {
             super(fm);
             dtoList = leaderboardDefDTOs;
+            this.leaderboardType = leaderboardType;
         }
 
         @Override public Fragment getItem(int position)
@@ -365,18 +361,18 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             LeaderboardDefDTO leaderboardDefDTO = dtoList.get(position);
             Bundle args = new Bundle(getArguments());
 
-            if (leaderboardDefDTO.id == LeaderboardDefKeyKnowledge.FRIEND_ID) {
+            if (leaderboardDefDTO.id == LeaderboardDefKeyKnowledge.FRIEND_ID)
+            {
                 FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(args, leaderboardDefDTO.getLeaderboardDefKey());
-                return  Fragment.instantiate(getActivity(), FriendLeaderboardMarkUserListFragment.class.getName(), args);
+                return Fragment.instantiate(getActivity(), FriendLeaderboardMarkUserListFragment.class.getName(), args);
             }
 
             DashboardFragment.setHasOptionMenu(args, false);
             LeaderboardMarkUserListFragment.putLeaderboardDefKey(args, leaderboardDefDTO.getLeaderboardDefKey());
-            LeaderboardMarkUserListFragment.putLeaderboardType(args, LEADER_BOARD_Type);
+            LeaderboardMarkUserListFragment.putLeaderboardType(args, leaderboardType);
             Fragment f = new LeaderboardMarkUserListFragment();
             f.setArguments(args);
-            return  f;
-
+            return f;
         }
 
         @Override public int getCount()
@@ -391,7 +387,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
         @Override public long getItemId(int position)
         {
-            return super.getItemId(position) + LEADER_BOARD_Type.hashCode();
+            return super.getItemId(position) + leaderboardType.hashCode();
         }
     }
 }

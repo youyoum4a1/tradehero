@@ -48,6 +48,7 @@ public class LeaderboardMarkUserListFragmentUtil
     @NonNull private final ProviderUtil providerUtil;
 
     private BaseLeaderboardPagedListRxFragment fragment;
+    private LeaderboardType leaderboardType;
     private SubscriptionList onStopSubscriptions;
 
     //<editor-fold desc="Constructors">
@@ -68,9 +69,12 @@ public class LeaderboardMarkUserListFragmentUtil
     }
     //</editor-fold>
 
-    public void linkWith(@NonNull BaseLeaderboardPagedListRxFragment fragment)
+    public void linkWith(
+            @NonNull BaseLeaderboardPagedListRxFragment fragment,
+            @NonNull LeaderboardType leaderboardType)
     {
         this.fragment = fragment;
+        this.leaderboardType = leaderboardType;
     }
 
     public void onStart()
@@ -179,6 +183,7 @@ public class LeaderboardMarkUserListFragmentUtil
         {
             TabbedPositionListFragment.putLeaderboardTimeRestricted(bundle, leaderboardDef.isTimeRestrictedLeaderboard());
         }
+        TabbedPositionListFragment.putIsFX(bundle, leaderboardType.assetClass);
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf =
                 new SimpleDateFormat(fragment.getResources().getString(R.string.leaderboard_datetime_format));
         String formattedStartPeriodUtc = sdf.format(dto.leaderboardUserDTO.periodStartUtc);
