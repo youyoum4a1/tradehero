@@ -10,7 +10,6 @@
     tools:context=".activities.DashboardActivity"
     >
 
-
   <ProgressBar
       android:id="@+id/quote_refresh_countdown"
       android:layout_width="match_parent"

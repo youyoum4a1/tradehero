@@ -211,12 +211,26 @@ public class BuySellStockFragment extends BuySellFragment
                 this,
                 userWatchlistPositionCache.get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createUserWatchlistCacheObserver()));
-    }
+                .take(1)
+                .subscribe(new Observer<Pair<UserBaseKey, WatchlistPositionDTOList>>()
+                {
+                    @Override public void onCompleted()
+                    {
 
-    @NonNull protected Observer<Pair<UserBaseKey, WatchlistPositionDTOList>> createUserWatchlistCacheObserver()
-    {
-        return new BuySellUserWatchlistCacheObserver();
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+                        Timber.e(e, "Failed to fetch list of watch list items");
+                        THToast.show(R.string.error_fetch_portfolio_list_info);
+                    }
+
+                    @Override public void onNext(Pair<UserBaseKey, WatchlistPositionDTOList> userBaseKeyWatchlistPositionDTOListPair)
+                    {
+                        linkWith(userBaseKeyWatchlistPositionDTOListPair.second);
+                    }
+                })
+        );
     }
 
     protected void linkWith(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
@@ -248,25 +262,6 @@ public class BuySellStockFragment extends BuySellFragment
         if (defaultPortfolio != null && securityCompactDTO != null && !(securityCompactDTO instanceof WarrantDTO))
         {
             mSelectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(), defaultPortfolio));
-        }
-    }
-
-    protected class BuySellUserWatchlistCacheObserver
-            implements Observer<Pair<UserBaseKey, WatchlistPositionDTOList>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, WatchlistPositionDTOList> pair)
-        {
-            linkWith(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            Timber.e(e, "Failed to fetch list of watch list items");
-            THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }
 

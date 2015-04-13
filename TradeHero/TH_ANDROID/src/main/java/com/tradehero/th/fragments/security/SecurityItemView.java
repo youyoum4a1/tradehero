@@ -33,6 +33,8 @@ public class SecurityItemView extends RelativeLayout
     @Inject protected Picasso mPicasso;
 
     @InjectView(R.id.stock_logo) ImageView stockLogo;
+    @InjectView(R.id.icon_watchlist) @Optional ImageView inWatchListIcon;
+    @InjectView(R.id.icon_alert) @Optional ImageView inAlertListIcon;
     @InjectView(R.id.ic_market_close) @Optional ImageView marketCloseIcon;
     @InjectView(R.id.stock_name) TextView stockName;
     @InjectView(R.id.exchange_symbol) TextView exchangeSymbol;
@@ -147,7 +149,7 @@ public class SecurityItemView extends RelativeLayout
             displayDate();
             displayLastPrice();
             displayStockRoi();
-            displayMarketClose();
+            displayIcon();
             displaySecurityType();
             displayCountryLogo();
             loadImage();
@@ -162,7 +164,7 @@ public class SecurityItemView extends RelativeLayout
         displayDate();
         displayLastPrice();
         displayStockRoi();
-        displayMarketClose();
+        displayIcon();
         displaySecurityType();
         displayCountryLogo();
         loadImage();
@@ -248,11 +250,33 @@ public class SecurityItemView extends RelativeLayout
         }
     }
 
-    public void displayMarketClose()
+    public void displayIcon()
     {
         if (marketCloseIcon != null && securityCompactDTO != null && securityCompactDTO.marketOpen != null)
         {
             marketCloseIcon.setImageResource(securityCompactDTO.marketOpen ? R.drawable.icn_market_open : R.drawable.icn_market_closed);
+        }
+        if (inWatchListIcon != null && securityCompactDTO != null)
+        {
+            if (securityCompactDTO.inWatchList != null && securityCompactDTO.inWatchList)
+            {
+                inWatchListIcon.setImageResource(R.drawable.icn_tile_favorite_on);
+            }
+            else
+            {
+                inWatchListIcon.setImageResource(R.drawable.icn_tile_favorite_off);
+            }
+        }
+        if (inAlertListIcon != null && securityCompactDTO != null)
+        {
+            if (securityCompactDTO.inAlertList != null && securityCompactDTO.inAlertList)
+            {
+                inAlertListIcon.setImageResource(R.drawable.icn_tile_alert_on);
+            }
+            else
+            {
+                inAlertListIcon.setImageResource(R.drawable.icn_tile_alert_off);
+            }
         }
     }
 
