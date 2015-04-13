@@ -181,6 +181,6 @@ public enum RootFragmentType
 
     @NonNull public static RootFragmentType getInitialTab()
     {
-        return RootFragmentType.ME;
+        return RootFragmentType.TRENDING;
     }
 }
