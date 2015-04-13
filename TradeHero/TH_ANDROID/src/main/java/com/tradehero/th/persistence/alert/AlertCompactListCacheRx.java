@@ -65,6 +65,7 @@ public class AlertCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, Al
                     list.remove(dto);
                 }
             }
+            putValue(alertId.getUserBaseKey(), list);
         }
     }
 
@@ -80,6 +81,7 @@ public class AlertCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, Al
             remove(alertCompactDTO.getAlertId(userBaseKey));
         }
         list.add(alertCompactDTO);
+        putValue(userBaseKey, list);
     }
 
     @NonNull public Observable<Map<SecurityId, AlertCompactDTO>> getSecurityMappedAlerts(@NonNull UserBaseKey userBaseKey)
