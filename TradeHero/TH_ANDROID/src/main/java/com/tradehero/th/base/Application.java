@@ -15,9 +15,6 @@ import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
-import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
-import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
-import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.Constants;
@@ -69,9 +66,6 @@ public class Application extends PApplication
         pushNotificationManager.initialise();
 
         thRouter.registerRoutes(
-                NotificationsCenterFragment.class,
-                MessagesCenterFragment.class,
-                UpdateCenterFragment.class,
                 TrendingFragment.class,
                 FriendsInvitationFragment.class,
                 MainCompetitionFragment.class,

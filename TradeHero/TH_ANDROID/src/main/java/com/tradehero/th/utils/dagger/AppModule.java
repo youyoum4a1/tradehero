@@ -58,7 +58,6 @@ import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
-import com.tradehero.th.fragments.updatecenter.messages.MessageListAdapter;
 import com.tradehero.th.fragments.watchlist.WatchlistItemView;
 import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
@@ -200,7 +199,6 @@ import java.util.Locale;
                         TimelineItemViewHolder.class,
                         SingleViewDiscussionSetAdapter.class,
                         MessageHeaderDTO.class,
-                        MessageListAdapter.class,
                         NewPrivateMessageFragment.class,
                         ReplyPrivateMessageFragment.class,
                         DiscussionSetAdapter.class,

@@ -223,7 +223,6 @@
     <string name="tap_stream_type_jvsha3_install" translatable="false">android-tradehero-jvsha3-install</string>
     <string name="tap_stream_type_jvsha3_open" translatable="false">android-tradehero-jvsha3-open</string>
     <!--do not translate end-->
-    <string name="sure_to_delete_message">Delete this message?</string>
     <string name="currency">US$</string>
     <string name="invite_social_friend">Invite %s Friend</string>
     <string name="search_social_friend_hint">Search your friend</string>

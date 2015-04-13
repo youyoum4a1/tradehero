@@ -4,16 +4,12 @@ import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
-import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 
 public enum DashboardTabType
 {
     TRENDING(R.layout.tab_indicator_holo,
             R.string.dashboard_trending, R.string.dashboard_trending_key,
             R.drawable.launcher, TrendingFragment.class),
-    UPDATE_CENTER(R.layout.update_center_selector,
-            R.string.dashboard_message_center, R.string.dashboard_message_center_key,
-            R.color.transparent, UpdateCenterFragment.class),
     REFERRAL(R.layout.tab_indicator_holo,
             R.string.dashboard_referral, R.string.dashboard_referral_key,
             R.drawable.launcher, FriendsInvitationFragment.class);

@@ -9,15 +9,6 @@ import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.fragments.social.friend.SocialFriendUserView;
 import com.tradehero.th.fragments.social.message.PrivatePostCommentView;
 import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
-import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
-import com.tradehero.th.fragments.updatecenter.UpdateCenterResideMenuItem;
-import com.tradehero.th.fragments.updatecenter.messages.MessageItemView;
-import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
-import com.tradehero.th.fragments.updatecenter.messages.MessagesView;
-import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
-import com.tradehero.th.fragments.updatecenter.notifications.NotificationItemView;
-import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
-import com.tradehero.th.fragments.updatecenter.notifications.NotificationsView;
 import dagger.Module;
 import dagger.Provides;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -30,16 +21,6 @@ import javax.inject.Singleton;
         },
         injects = {
                 TimelineItemViewLinear.class,
-                UpdateCenterFragment.class,
-                NotificationsView.class,
-                NotificationItemView.class,
-
-                MessagesCenterFragment.class,
-                NotificationsCenterFragment.class,
-                UpdateCenterResideMenuItem.class,
-
-                MessagesView.class,
-                MessageItemView.class,
 
                 SecurityDiscussionView.class,
                 SecurityDiscussionFragment.class,
@@ -60,7 +41,6 @@ import javax.inject.Singleton;
 
                 FollowDialogView.class,
 
-                NotificationClickHandler.class,
                 SocialFriendUserView.class
         },
         complete = false,
