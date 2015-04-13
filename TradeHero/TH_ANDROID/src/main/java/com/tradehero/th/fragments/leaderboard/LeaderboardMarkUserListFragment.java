@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,22 +91,24 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     {
         super.onCreate(savedInstanceState);
         currentLeaderboardKey = getInitialLeaderboardKey();
-        currentLeaderboardType = getInitialLeaderboardType();
-        currentLeaderboardKey.setAssetClass(currentLeaderboardType.assetClass);
         fragmentUtil.linkWith(this, currentLeaderboardType);
+        setHasOptionsMenu(true);
     }
 
     protected PerPagedLeaderboardKey getInitialLeaderboardKey()
     {
+        currentLeaderboardType = getInitialLeaderboardType();
         savedPreference = new PerPagedFilteredLeaderboardKeyPreference(
                 getActivity(),
                 preferences,
-                PREFERENCE_KEY_PREFIX + leaderboardDefKey,
+                PREFERENCE_KEY_PREFIX + leaderboardDefKey + "." + currentLeaderboardType.assetClass.name(),
                 LeaderboardFilterSliderContainer.getStartingFilter(getResources(), leaderboardDefKey.key).getFilterStringSet());
         PerPagedFilteredLeaderboardKey initialKey = ((PerPagedFilteredLeaderboardKeyPreference) savedPreference)
                 .getPerPagedFilteredLeaderboardKey();
-        // We override here to make sure we do not pick up key, page or perPage from the preference
-        return new PerPagedFilteredLeaderboardKey(initialKey, leaderboardDefKey.key, null, null);
+
+        PerPagedFilteredLeaderboardKey filterKey = new PerPagedFilteredLeaderboardKey(initialKey, leaderboardDefKey.key, null, null);
+        filterKey.setAssetClass(currentLeaderboardType.assetClass);
+        return filterKey;
     }
 
     protected LeaderboardType getInitialLeaderboardType()
@@ -167,16 +170,10 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         fetchOwnRanking();
     }
 
-    //<editor-fold desc="ActionBar">
-    @Override protected int getMenuResource()
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        return R.menu.leaderboard_listview_menu;
-    }
-
-    @Override public void onPrepareOptionsMenu(Menu menu)
-    {
-        displayFilterIcon(menu.findItem(R.id.leaderboard_listview_menu_help));
-        super.onPrepareOptionsMenu(menu);
+        MenuItem item = menu.findItem(R.id.button_leaderboard_filter);
+        displayFilterIcon(item);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -200,6 +197,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         if (leaderboardFilterFragment != null)
         {
             PerPagedFilteredLeaderboardKey newLeaderboardKey = leaderboardFilterFragment.getPerPagedFilteredLeaderboardKey();
+            newLeaderboardKey.setAssetClass(currentLeaderboardType.assetClass);
             leaderboardFilterFragment = null;
             Timber.d("%s", newLeaderboardKey.equals(currentLeaderboardKey));
 
@@ -207,6 +205,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
             {
                 currentLeaderboardKey = newLeaderboardKey;
                 swipeContainer.setRefreshing(true);
+                itemViewAdapter.clear();
+                unsubscribeListCache();
                 requestDtos();
             }
         }

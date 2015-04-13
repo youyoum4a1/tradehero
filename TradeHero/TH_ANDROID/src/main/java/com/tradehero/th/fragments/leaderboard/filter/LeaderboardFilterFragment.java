@@ -23,7 +23,8 @@ import javax.inject.Inject;
 
 public class LeaderboardFilterFragment extends DashboardFragment
 {
-    private static final String BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE = LeaderboardFilterFragment.class.getName() + ".perPagedFilteredLeaderboardKey";
+    private static final String BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE =
+            LeaderboardFilterFragment.class.getName() + ".perPagedFilteredLeaderboardKey";
 
     @Inject Analytics analytics;
     @Inject LeaderboardCacheRx leaderboardCache;
@@ -87,7 +88,8 @@ public class LeaderboardFilterFragment extends DashboardFragment
 
             case R.id.btn_leaderboard_filter_confirm:
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_FilterDone));
-                returnToLeaderboard();
+                collectPagedFilteredLeaderboardKey();
+                navigator.get().popFragment();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -141,11 +143,5 @@ public class LeaderboardFilterFragment extends DashboardFragment
         {
             filterSliderContainer.setParameters(this.perPagedFilteredLeaderboardKey, leaderboardDTO);
         }
-    }
-
-    protected void returnToLeaderboard()
-    {
-        collectPagedFilteredLeaderboardKey();
-        navigator.get().popFragment();
     }
 }

@@ -67,14 +67,6 @@ abstract public class BaseLeaderboardPagedListRxFragment<
         super.onCreate(savedInstanceState);
     }
 
-    //<editor-fold desc="ActionBar">
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        inflater.inflate(getMenuResource(), menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    //</editor-fold>
-
     @Override public void onStart()
     {
         super.onStart();
