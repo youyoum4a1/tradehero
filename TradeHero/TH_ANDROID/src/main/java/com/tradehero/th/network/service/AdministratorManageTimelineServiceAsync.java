@@ -1,9 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.chinabuild.data.ManageEssentialDTO;
-import com.tradehero.chinabuild.data.ManageLearningDTO;
-import com.tradehero.chinabuild.data.ManageProductionDTO;
-import com.tradehero.chinabuild.data.ManageTopDTO;
+import com.tradehero.chinabuild.data.*;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
@@ -26,4 +23,7 @@ public interface AdministratorManageTimelineServiceAsync {
 
     @POST("/users/{userId}/timeline/{timelineId}/operation")
     void operateTop(@Path("userId")int userId, @Path("timelineId") int timelineId, @Body ManageTopDTO dto, Callback<Response> callback);
+
+    @POST("/users/{userId}/timeline/{timelineId}/operation")
+    void operateDeleteTimeLine(@Path("userId")int userId, @Path("timelineId") int timelineId, @Body ManageDeleteTimeLineDTO dto, Callback<Response> callback);
 }

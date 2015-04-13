@@ -85,5 +85,16 @@
                   android:textSize="17sp"
                   android:text="@string/administrator_add_learning"
                   android:textColor="@color/black"/>
+        <View android:layout_width="match_parent" android:layout_height="1px"
+              android:background="@color/discovery_discuss_reward_gray"
+                />
+        <TextView android:id="@+id/textview_administrator_delete_timeline"
+                  android:layout_width="match_parent"
+                  android:layout_height="?android:attr/listPreferredItemHeight"
+                  android:textAppearance="?android:attr/textAppearanceListItem"
+                  android:gravity="center_vertical|center_horizontal"
+                  android:textSize="17sp"
+                  android:text="@string/administrator_delete_timeline"
+                  android:textColor="@color/black"/>
     </LinearLayout>
 </com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout>

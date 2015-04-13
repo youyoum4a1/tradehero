@@ -544,6 +544,7 @@
     <string name="administrator_remove_production">取消公告</string>
     <string name="administrator_add_learning">设为新手教学贴</string>
     <string name="administrator_remove_learning">取消新手教学贴</string>
+    <string name="administrator_delete_timeline">管理员删帖</string>
     <string name="administrator_operate_success">操作成功,请刷新</string>
     <!-- Administrator -->
 

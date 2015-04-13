@@ -30,6 +30,8 @@ public class TimeLineDetailDialogLayout extends LinearLayout {
     @InjectView(R.id.textview_administrator_learning)TextView learningTV;
     @InjectView(R.id.textview_administrator_favorite)TextView favoriteTV;
     @InjectView(R.id.textview_administrator_production)TextView productionTV;
+    @InjectView(R.id.textview_administrator_delete_timeline)TextView deleteTimeLineTV;
+
     @InjectView(R.id.view_divider_administrator_top)View topDividerV;
     @InjectView(R.id.view_divider_administrator_learning)View learningDividerV;
 
@@ -116,6 +118,14 @@ public class TimeLineDetailDialogLayout extends LinearLayout {
                 }
             }
         });
+        deleteTimeLineTV.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(menuClickListener!=null){
+                    menuClickListener.onDeleteTimeLineClick();
+                }
+            }
+        });
     }
 
     @Override
@@ -186,5 +196,6 @@ public class TimeLineDetailDialogLayout extends LinearLayout {
         public void onProductionClick();
         public void onTopClick();
         public void onLearningClick();
+        public void onDeleteTimeLineClick();
     }
 }

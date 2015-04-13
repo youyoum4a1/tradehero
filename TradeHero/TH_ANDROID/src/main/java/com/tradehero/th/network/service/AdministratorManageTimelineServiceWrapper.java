@@ -1,9 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.chinabuild.data.ManageEssentialDTO;
-import com.tradehero.chinabuild.data.ManageLearningDTO;
-import com.tradehero.chinabuild.data.ManageProductionDTO;
-import com.tradehero.chinabuild.data.ManageTopDTO;
+import com.tradehero.chinabuild.data.*;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.client.Response;
@@ -36,5 +33,9 @@ public class AdministratorManageTimelineServiceWrapper {
 
     public void operationLearning(int userId, int timelineId, ManageLearningDTO dto, Callback<Response> callback){
         administratorManageTimelineServiceAsync.operateLearning(userId, timelineId, dto, callback);
+    }
+
+    public void operationDeleteTimeLine(int userId, int timelineId, ManageDeleteTimeLineDTO dto, Callback<Response> callback){
+        administratorManageTimelineServiceAsync.operateDeleteTimeLine(userId, timelineId, dto, callback);
     }
 }
