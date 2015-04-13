@@ -20,7 +20,6 @@ import com.tradehero.chinabuild.fragment.security.SecurityDiscussOrNewsFragment;
 import com.tradehero.chinabuild.fragment.stocklearning.*;
 import com.tradehero.chinabuild.fragment.trade.*;
 import com.tradehero.chinabuild.fragment.userCenter.*;
-import com.tradehero.chinabuild.fragment.videoPlay.VideoPlayer;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.CacheHelper;
@@ -325,6 +324,7 @@ import java.util.Locale;
                         QuestionsFragment.class,
                         ToAnswerQuestionFragment.class,
                         AnswersSummaryFragment.class,
+                        VideoPlayer.class,
                         StockLearningHistoryFragment.class,
                         //Stock Learning
 

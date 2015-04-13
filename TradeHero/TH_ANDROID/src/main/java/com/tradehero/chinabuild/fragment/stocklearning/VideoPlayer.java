@@ -1,4 +1,4 @@
-package com.tradehero.chinabuild.fragment.videoPlay;
+package com.tradehero.chinabuild.fragment.stocklearning;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
