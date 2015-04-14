@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUniteFragment;
 import com.tradehero.chinabuild.fragment.trade.TradeOfChinaConceptFragment;
@@ -61,10 +60,6 @@ public class MainTabFragmentTrade extends AbsBaseFragment implements ViewPager.O
         pager.setOffscreenPageLimit(5);
         indicator.setViewPager(pager);
         indicator.setOutsideListener(this);
-        if(!THSharePreferenceManager.isShowTradeHoldOnce(getActivity()))
-        {
-            pager.setCurrentItem(1);
-        }
     }
 
     @OnClick(R.id.imgSearch)
@@ -74,27 +69,11 @@ public class MainTabFragmentTrade extends AbsBaseFragment implements ViewPager.O
         gotoDashboard(SearchUniteFragment.class.getName());
     }
 
-    @Override public void onStop()
-    {
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
         super.onDestroyView();
     }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-    }
-
     private static final String[] CONTENT = new String[] {"我的交易", "热门持有", "涨幅榜单", "中国概念"};
 
     @Override public void onPageScrolled(int i, float v, int i2)

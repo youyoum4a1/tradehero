@@ -73,7 +73,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
-    private UserProfileDTO myProfileDTO = null;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
@@ -293,8 +292,13 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
             TabHost.TabSpec tabSpec = frg_tabHost.newTabSpec(getString(strTabArray[i])).setIndicator(textView);
             frg_tabHost.addTab(tabSpec, fragmentArray[i], null);
         }
-        //you can set default by this method
-        llTabStockGod.performClick();
+
+        //When a novice first login, jump to leaderboards.
+        if(THSharePreferenceManager.isFirstLoginSuccess(this, currentUserId.toUserBaseKey().getUserId())) {
+            llTabStockGod.performClick();
+        }else{
+            llTabTrade.performClick();
+        }
     }
 
     private void detachUserProfileCache()

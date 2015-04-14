@@ -36,9 +36,6 @@ public class THSharePreferenceManager {
     public static boolean isLoginContinuallyShowed = false;
     public static int Login_Continuous_Time = 0;
 
-    //只显示一次 交易直接跳转热门持有
-    public final static String KEY_APP_SHOW_TRADE_HOLD_ONCE = "key_app_show_trade_hold_once";
-
     //Novice
     public final static String RECOMMEND_STOCK_GOD = "recommend_stock_god";
 
@@ -255,19 +252,6 @@ public class THSharePreferenceManager {
         sp.edit().putBoolean(key, false).commit();
     }
 
-    public static boolean isShowTradeHoldOnce(Context context) {
-        if (context == null) {
-            return false;
-        }
-        SharedPreferences sp = context.getSharedPreferences(TH_SP_GUIDE_NAME, Context.MODE_PRIVATE);
-        boolean isOn = sp.getBoolean(KEY_APP_SHOW_TRADE_HOLD_ONCE, false);
-        if(!isOn)
-        {
-            sp.edit().putBoolean(KEY_APP_SHOW_TRADE_HOLD_ONCE, true).commit();
-        }
-        return isOn;
-    }
-
     //Share End Point
     public final static String KEY_SHARE_ENDPOINT = "key_share_end_point";
 
@@ -280,6 +264,17 @@ public class THSharePreferenceManager {
     public static void setShareEndpoint(Context context, String endPoint){
         SharedPreferences sp = context.getSharedPreferences(TH_SP_SHARE_ENDPOINT, Context.MODE_PRIVATE);
         sp.edit().putString(endPoint, Constants.DEFAULT_SHARE_ENDPOINT).commit();
+    }
+
+    //Only first login jump to leaderboard
+    private final static String KEY_FIRST_LOGIN_SUCCESS = "key_first_login_success";
+    public static boolean isFirstLoginSuccess(Context context, int userId){
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
+        boolean isFirstLogin = sp.getBoolean(KEY_FIRST_LOGIN_SUCCESS + userId, true);
+        if(isFirstLogin){
+            sp.edit().putBoolean(KEY_FIRST_LOGIN_SUCCESS + userId, false).commit();
+        }
+        return isFirstLogin;
     }
 
 }
