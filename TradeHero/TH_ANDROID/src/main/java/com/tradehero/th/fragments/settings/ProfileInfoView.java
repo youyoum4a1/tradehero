@@ -9,7 +9,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,7 +28,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.activities.ActivityResultRequester;
@@ -43,14 +46,18 @@ import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.GraphicUtil;
+import com.tradehero.th.widget.validation.DisplayNameValidatedText;
 import com.tradehero.th.widget.validation.DisplayNameValidator;
 import com.tradehero.th.widget.validation.MatchingPasswordText;
 import com.tradehero.th.widget.validation.PasswordConfirmTextValidator;
-import com.tradehero.th.widget.validation.DisplayNameValidatedText;
 import com.tradehero.th.widget.validation.TextValidator;
 import com.tradehero.th.widget.validation.ValidatedText;
 import com.tradehero.th.widget.validation.ValidatedView;
 import com.tradehero.th.widget.validation.ValidationMessage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -71,6 +78,7 @@ public class ProfileInfoView extends LinearLayout
 {
     public static final int REQUEST_GALLERY = 1309;
     public static final int REQUEST_CAMERA = 1310;
+    private final static int REQUEST_PHOTO_ZOOM = 1311;
 
     @InjectView(R.id.authentication_sign_up_email) ValidatedText email;
     TextValidator emailValidator;
@@ -93,8 +101,10 @@ public class ProfileInfoView extends LinearLayout
     @Inject DashboardNavigator dashboardNavigator;
 
     private UserProfileDTO userProfileDTO;
-    private String newImagePath;
     @NonNull protected SubscriptionList subscriptions;
+    private File mCurrentPhotoFile;
+    private File croppedPhotoFile;
+    private int currentRequest = -1;
 
     //<editor-fold desc="Constructors">
     public ProfileInfoView(Context context, AttributeSet attrs)
@@ -159,7 +169,6 @@ public class ProfileInfoView extends LinearLayout
         password.setOnFocusChangeListener(null);
         email.removeTextChangedListener(emailValidator);
         email.setOnFocusChangeListener(null);
-
         subscriptions.unsubscribe();
         subscriptions = new SubscriptionList();
         ButterKnife.reset(this);
@@ -217,43 +226,17 @@ public class ProfileInfoView extends LinearLayout
         );
     }
 
-    public void handleDataFromLibrary(Intent data)
-    {
-        Uri selectedImageUri = data.getData();
-        if (selectedImageUri != null)
-        {
-            String selectedPath = FileUtils.getPath(getContext(), selectedImageUri);
-            setNewImagePath(selectedPath);
-        }
-        else
-        {
-            AlertDialogRxUtil.buildDefault(getContext())
-                    .setTitle(R.string.error_fetch_image_library)
-                    .setMessage(R.string.error_fetch_image_library)
-                    .setPositiveButton(R.string.cancel)
-                    .build()
-                    .subscribe(
-                            new EmptyAction1<OnDialogClickEvent>(),
-                            new EmptyAction1<Throwable>());
-        }
-    }
-
-    public void setNewImagePath(String newImagePath)
-    {
-        this.newImagePath = newImagePath;
-        displayProfileImage();
-    }
-
     protected BitmapTypedOutput safeCreateProfilePhoto()
     {
         BitmapTypedOutput created = null;
-        if (newImagePath != null)
+        if (croppedPhotoFile != null)
         {
             try
             {
-                created = BitmapTypedOutputFactory.createForProfilePhoto(
-                        getResources(), newImagePath);
-            } catch (OutOfMemoryError e)
+                Bitmap bitmap = BitmapFactory.decodeFile(croppedPhotoFile.getAbsolutePath());
+                created = new BitmapTypedOutput(BitmapTypedOutput.TYPE_JPEG, bitmap, croppedPhotoFile.getAbsolutePath(), 75);
+            }
+            catch (OutOfMemoryError e)
             {
                 THToast.show(R.string.error_decode_image_memory);
             }
@@ -285,17 +268,10 @@ public class ProfileInfoView extends LinearLayout
     //region Display user information
     public void displayProfileImage()
     {
-        if (newImagePath != null)
+        if (croppedPhotoFile != null)
         {
-            Bitmap decoded = GraphicUtil.decodeBitmapForProfile(getResources(), newImagePath);
-            if (decoded != null)
-            {
-                displayProfileImage(decoded);
-            }
-            else
-            {
-                displayDefaultProfileImage();
-            }
+            Bitmap bitmap = BitmapFactory.decodeFile(croppedPhotoFile.getAbsolutePath());
+            displayProfileImage(bitmap);
         }
         else if (userProfileDTO != null)
         {
@@ -319,26 +295,10 @@ public class ProfileInfoView extends LinearLayout
     {
         if (this.profileImage != null)
         {
-            if (userBaseDTO.picture == null)
-            {
-                displayDefaultProfileImage();
-            }
-            else
-            {
-                picasso.load(userBaseDTO.picture)
-                        .transform(userPhotoTransformation)
-                        .into(profileImage, new Callback()
-                        {
-                            @Override public void onSuccess()
-                            {
-                            }
-
-                            @Override public void onError()
-                            {
-                                displayDefaultProfileImage();
-                            }
-                        });
-            }
+            picasso.load(userBaseDTO.picture)
+                    .placeholder(R.drawable.superman_facebook)
+                    .transform(userPhotoTransformation)
+                    .into(profileImage);
         }
     }
 
@@ -449,7 +409,14 @@ public class ProfileInfoView extends LinearLayout
         List<ResolveInfo> handlerActivities = pm.queryIntentActivities(cameraIntent, 0);
         if (handlerActivities.size() > 0)
         {
-            //cameraIntent.setType("image/jpeg");
+            mCurrentPhotoFile = createImageFile();
+            if (mCurrentPhotoFile == null)
+            {
+                THToast.show(R.string.error_save_image_in_external_storage);
+                return;
+            }
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                    Uri.fromFile(mCurrentPhotoFile));
             Fragment currentFragment = dashboardNavigator.getCurrentFragment();
             if (currentFragment != null)
             {
@@ -462,6 +429,32 @@ public class ProfileInfoView extends LinearLayout
         }
     }
 
+    private File createImageFile()
+    {
+        String imageFileName = "JPEG_" + System.currentTimeMillis();
+        Fragment currentFragment = dashboardNavigator.getCurrentFragment();
+        if (currentFragment == null)
+        {
+            return null;
+        }
+        File storageDir = currentFragment.getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = null;
+        try
+        {
+            image = File.createTempFile(
+                    imageFileName,  /* prefix */
+                    ".jpg",         /* suffix */
+                    storageDir      /* directory */
+            );
+        }
+        catch (IOException e)
+        {
+            Timber.d(e, "createImageFile");
+            return null;
+        }
+        return image;
+    }
+
     private void onImageFromLibraryRequested()
     {
         Intent libraryIntent = new Intent(Intent.ACTION_PICK);
@@ -472,7 +465,8 @@ public class ProfileInfoView extends LinearLayout
             try
             {
                 currentFragment.startActivityForResult(libraryIntent, REQUEST_GALLERY);
-            } catch (ActivityNotFoundException e)
+            }
+            catch (ActivityNotFoundException e)
             {
                 Timber.e(e, "Could not request gallery");
                 THToast.show(R.string.error_launch_photo_library);
@@ -482,31 +476,90 @@ public class ProfileInfoView extends LinearLayout
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        // handle image upload
-        if (resultCode == Activity.RESULT_OK)
+
+        if (requestCode == REQUEST_GALLERY && resultCode == Activity.RESULT_OK
+                && data != null)
         {
-            if ((requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) && data != null)
+            startPhotoZoom(data.getData(), 150);
+            currentRequest = REQUEST_GALLERY;
+            return;
+        }
+        if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK)
+        {
+            startPhotoZoom(Uri.fromFile(mCurrentPhotoFile), 150);
+            currentRequest = REQUEST_CAMERA;
+            return;
+        }
+        if (requestCode == REQUEST_PHOTO_ZOOM && data != null)
+        {
+            Bundle bundle = data.getExtras();
+            if (bundle != null)
             {
-                try
+                Bitmap bitmap = bundle.getParcelable("data");
+                if (saveBitmapToFile(bitmap)) return;
+
+                if (currentRequest == REQUEST_CAMERA)
                 {
-                    handleDataFromLibrary(data);
-                } catch (OutOfMemoryError e)
+                    currentRequest = -1;
+                    profileImage.setImageBitmap(bitmap);
+                    return;
+                }
+                if (currentRequest == REQUEST_GALLERY)
                 {
-                    THToast.show(R.string.error_decode_image_memory);
-                } catch (Exception e)
-                {
-                    THToast.show(R.string.error_fetch_image_library);
-                    Timber.e(e, "Failed to extract image from library");
+                    currentRequest = -1;
+                    profileImage.setImageBitmap(bitmap);
+                    return;
                 }
             }
-            else if (requestCode == REQUEST_GALLERY)
-            {
-                Timber.e(new Exception("Got null data from library"), "");
+            return;
+        }
+    }
+
+    private boolean saveBitmapToFile(Bitmap bitmap)
+    {
+        croppedPhotoFile = createImageFile();
+        if (croppedPhotoFile == null)
+        {
+            THToast.show(R.string.error_save_image_in_external_storage);
+            return true;
+        }
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(croppedPhotoFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 75, outputStream);
+            outputStream.flush();
+        } catch (Exception e) {
+            THToast.show(R.string.error_save_image_in_external_storage);
+            return true;
+        } finally
+        {
+            if (outputStream != null) {
+                try
+                {
+                    outputStream.close();
+                }
+                catch (IOException e)
+                {
+                    Timber.d(e, "Close");
+                }
             }
         }
-        else if (resultCode != Activity.RESULT_CANCELED)
+        return false;
+    }
+
+    private void startPhotoZoom(Uri data, int size) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(data, "image/*");
+        intent.putExtra("crop", "true");
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        intent.putExtra("outputX", size);
+        intent.putExtra("outputY", size);
+        intent.putExtra("return-data", true);
+        Fragment currentFragment = dashboardNavigator.getCurrentFragment();
+        if (currentFragment != null)
         {
-            Timber.e(new Exception("Failed to get image from library, resultCode: " + resultCode), "");
+            currentFragment.startActivityForResult(intent, REQUEST_PHOTO_ZOOM);
         }
     }
 
