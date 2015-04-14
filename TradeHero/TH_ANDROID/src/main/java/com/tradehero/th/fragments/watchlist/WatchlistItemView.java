@@ -28,8 +28,6 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import dagger.Lazy;
@@ -190,14 +188,14 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
             gainLossLabel.setBackgroundResource(R.drawable.round_label_up);
             gainLossLabel.setTextColor(getResources().getColor(R.color.text_primary_inverse));
             gainIndicator.setVisibility(View.VISIBLE);
-            gainIndicator.setImageResource(R.drawable.indicator_green);
+            gainIndicator.setImageResource(R.drawable.indicator_up);
         }
         else if (roi < 0)
         {
             gainLossLabel.setBackgroundResource(R.drawable.round_label_down);
             gainLossLabel.setTextColor(getResources().getColor(R.color.text_primary_inverse));
             gainIndicator.setVisibility(View.VISIBLE);
-            gainIndicator.setImageResource(R.drawable.indicator_red);
+            gainIndicator.setImageResource(R.drawable.indicator_down);
         }
         else
         {

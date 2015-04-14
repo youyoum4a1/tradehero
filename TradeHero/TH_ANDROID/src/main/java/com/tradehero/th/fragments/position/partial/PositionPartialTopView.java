@@ -342,12 +342,12 @@ public class PositionPartialTopView extends LinearLayout
             else if (gain > 0)
             {
                 gainIndicatorVisibility = VISIBLE;
-                gainIndicator = R.drawable.indicator_green;
+                gainIndicator = R.drawable.indicator_up;
             }
             else
             {
                 gainIndicatorVisibility = VISIBLE;
-                gainIndicator = R.drawable.indicator_red;
+                gainIndicator = R.drawable.indicator_down;
             }
             //</editor-fold>
 
