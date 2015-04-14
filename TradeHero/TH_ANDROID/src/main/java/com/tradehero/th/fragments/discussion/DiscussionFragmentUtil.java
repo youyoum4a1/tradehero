@@ -37,6 +37,7 @@ import com.tradehero.th.widget.VotePair;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 public class DiscussionFragmentUtil
 {
@@ -186,6 +187,10 @@ public class DiscussionFragmentUtil
                 Bundle bundle = new Bundle();
                 WebViewFragment.putUrl(bundle, newsItem.url);
                 navigator.pushFragment(WebViewFragment.class, bundle);
+            }
+            else
+            {
+                Timber.e(new NullPointerException(), "We should not have reached here");
             }
         }
         else if (userAction instanceof DiscussionActionButtonsView.CommentUserAction)

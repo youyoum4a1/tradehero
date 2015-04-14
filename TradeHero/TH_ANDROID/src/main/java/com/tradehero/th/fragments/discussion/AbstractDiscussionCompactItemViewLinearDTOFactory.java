@@ -10,17 +10,24 @@ import com.tradehero.th.api.article.ArticleInfoDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerId;
+import com.tradehero.th.api.security.SecurityIntegerIdList;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.discovery.ArticleItemView;
 import com.tradehero.th.fragments.news.NewsHeadlineViewLinear;
+import com.tradehero.th.fragments.news.NewsViewLinear;
 import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
+import com.tradehero.th.persistence.security.SecurityMultiFetchAssistant;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +46,7 @@ public class AbstractDiscussionCompactItemViewLinearDTOFactory
     @NonNull private final SocialShareTranslationHelper shareTranslationHelper;
     @NonNull private final UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @NonNull private final AlertCompactListCacheRx alertCompactListCache;
+    @NonNull private final SecurityMultiFetchAssistant securityMultiFetchAssistant;
 
     //<editor-fold desc="Constructors">
     @Inject public AbstractDiscussionCompactItemViewLinearDTOFactory(
@@ -47,7 +55,8 @@ public class AbstractDiscussionCompactItemViewLinearDTOFactory
             @NonNull CurrentUserId currentUserId,
             @NonNull SocialShareTranslationHelper shareTranslationHelper,
             @NonNull UserWatchlistPositionCacheRx userWatchlistPositionCache,
-            @NonNull AlertCompactListCacheRx alertCompactListCache)
+            @NonNull AlertCompactListCacheRx alertCompactListCache,
+            @NonNull SecurityMultiFetchAssistant securityMultiFetchAssistant)
     {
         this.resources = context.getResources();
         this.prettyTime = prettyTime;
@@ -55,6 +64,7 @@ public class AbstractDiscussionCompactItemViewLinearDTOFactory
         this.shareTranslationHelper = shareTranslationHelper;
         this.userWatchlistPositionCache = userWatchlistPositionCache;
         this.alertCompactListCache = alertCompactListCache;
+        this.securityMultiFetchAssistant = securityMultiFetchAssistant;
     }
     //</editor-fold>
 
@@ -151,6 +161,42 @@ public class AbstractDiscussionCompactItemViewLinearDTOFactory
                     }
                 })
                 .toList();
+    }
+
+    @NonNull
+    public Observable<AbstractDiscussionCompactItemViewLinear.DTO> createNewsViewLinearDTO(@NonNull final NewsItemDTO discussionDTO)
+    {
+        final SecurityIntegerIdList idsList;
+        if (discussionDTO.securityIds == null)
+        {
+            idsList = new SecurityIntegerIdList();
+        }
+        else
+        {
+            idsList = new SecurityIntegerIdList(discussionDTO.securityIds, 0);
+        }
+        return Observable.combineLatest(
+                shareTranslationHelper.getTranslateFlags(discussionDTO),
+                securityMultiFetchAssistant.get(idsList),
+                new Func2<SocialShareTranslationHelper.TranslateFlags,
+                        Map<SecurityIntegerId, SecurityCompactDTO>,
+                        AbstractDiscussionCompactItemViewLinear.DTO > ()
+        {
+                            @Override
+                            public AbstractDiscussionCompactItemViewLinear.DTO call(
+                                    SocialShareTranslationHelper.TranslateFlags translateFlags,
+                                    Map<SecurityIntegerId, SecurityCompactDTO> securities)
+                            {
+                                return new NewsViewLinear.DTO(
+                                        new NewsViewLinear.Requisite(
+                                                resources,
+                                                prettyTime,
+                                                discussionDTO,
+                                                translateFlags.canTranslate,
+                                                translateFlags.autoTranslate,
+                                                new ArrayList<>(securities.values())));
+                            }
+                        });
     }
 
     @NonNull

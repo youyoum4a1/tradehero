@@ -20,7 +20,7 @@ public class NewsItemCompactViewHolder
         extends AbstractDiscussionCompactItemViewHolder
 {
     @InjectView(R.id.news_title_title) @Optional protected TextView newsTitle;
-    @InjectView(R.id.news_icon) ImageView newsIcon;
+    @InjectView(R.id.news_icon) @Optional ImageView newsIcon;
     @Inject Picasso picasso;
 
     //<editor-fold desc="Constructors">
@@ -45,15 +45,18 @@ public class NewsItemCompactViewHolder
         {
             newsTitle.setText(dto.getTitle());
         }
-        if (dto.thumbnailUrl != null)
+        if (newsIcon != null)
         {
-            picasso.load(dto.thumbnailUrl)
-                    .placeholder(dto.thumbnailPlaceHolderResId)
-                    .into(newsIcon);
-        }
-        else
-        {
-            newsIcon.setImageResource(dto.thumbnailPlaceHolderResId);
+            if (dto.thumbnailUrl != null)
+            {
+                picasso.load(dto.thumbnailUrl)
+                        .placeholder(dto.thumbnailPlaceHolderResId)
+                        .into(newsIcon);
+            }
+            else
+            {
+                newsIcon.setImageResource(dto.thumbnailPlaceHolderResId);
+            }
         }
     }
     //</editor-fold>

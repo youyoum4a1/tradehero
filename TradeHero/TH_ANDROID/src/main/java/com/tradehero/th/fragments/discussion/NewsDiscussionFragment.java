@@ -10,16 +10,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.fragments.news.NewsViewLinear;
+import com.tradehero.th.models.discussion.UserDiscussionAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 public class NewsDiscussionFragment extends AbstractDiscussionFragment
@@ -30,7 +34,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
     @SuppressWarnings("unused") @Inject Context doNotRemoveOrItFails;
 
-    @InjectView(R.id.news_view_linear) NewsViewLinear newsView;
+    protected SubscriptionList onDestroyViewSubscriptions;
 
     public static void putBackgroundResId(@NonNull Bundle args, @DrawableRes int resId)
     {
@@ -42,9 +46,16 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         args.putString(NewsDiscussionFragment.BUNDLE_KEY_SECURITY_SYMBOL, symbol);
     }
 
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
+        onDestroyViewSubscriptions = new SubscriptionList();
         return inflater.inflate(R.layout.fragment_news_discussion, container, false);
     }
 
@@ -55,12 +66,6 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         setActionBarTitle(title);
         Timber.d("onCreateOptionsMenu");
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override public void onResume()
@@ -81,6 +86,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         {
             args.putBoolean(BUNDLE_KEY_IS_RETURNING, true);
         }
+        onDestroyViewSubscriptions.unsubscribe();
         super.onDestroyView();
     }
 
@@ -89,27 +95,43 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         return new SingleViewDiscussionSetAdapter(getActivity(), R.layout.timeline_discussion_comment_item);
     }
 
-    @Nullable @Override protected View inflateTopicView()
+    @Nullable @Override protected NewsViewLinear inflateTopicView()
     {
-        return LayoutInflater.from(getActivity()).inflate(R.layout.news_detail_view_header, null, false);
+        NewsViewLinear topicView = (NewsViewLinear) LayoutInflater.from(getActivity()).inflate(R.layout.news_detail_view_header, null, false);
+        onDestroyViewSubscriptions.add(topicView.getUserActionObservable()
+                .subscribe(
+                        new Action1<UserDiscussionAction>()
+                        {
+                            @Override public void call(UserDiscussionAction userDiscussionAction)
+                            {
+                                discussionFragmentUtil.handleUserAction(getActivity(), userDiscussionAction);
+                            }
+                        },
+                        new ToastAndLogOnErrorAction("Failed to register to topic's user action")));
+        return topicView;
     }
 
     @Override protected void displayTopic(@NonNull final AbstractDiscussionCompactDTO discussionDTO)
     {
         super.displayTopic(discussionDTO);
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
-                viewDTOFactory.createAbstractDiscussionCompactItemViewLinearDTO(discussionDTO))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<AbstractDiscussionCompactItemViewLinear.DTO>()
-                        {
-                            @Override public void call(AbstractDiscussionCompactItemViewLinear.DTO viewDTO)
+        // Because the cache saves both NewsItemDTO and NewsItemCompactDTO with a NewsItemDTOKey
+        if (discussionDTO instanceof NewsItemDTO)
+        {
+            onStopSubscriptions.add(AppObservable.bindFragment(
+                    this,
+                    viewDTOFactory.createNewsViewLinearDTO((NewsItemDTO) discussionDTO))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            new Action1<AbstractDiscussionCompactItemViewLinear.DTO>()
                             {
-                                ((AbstractDiscussionCompactItemViewLinear) topicView).display(viewDTO);
-                            }
-                        },
-                        new ToastOnErrorAction()));
+                                @Override public void call(AbstractDiscussionCompactItemViewLinear.DTO viewDTO)
+                                {
+                                    ((NewsViewLinear) topicView).display(viewDTO);
+                                }
+                            },
+                            new ToastOnErrorAction()));
+        }
+        setActionBarTitle(((NewsItemCompactDTO) discussionDTO).title);
     }
 
     @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)
@@ -123,7 +145,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         int bgRes = getArguments().getInt(BUNDLE_KEY_TITLE_BACKGROUND_RES, 0);
         if (bgRes != 0)
         {
-            newsView.setTitleBackground(bgRes);
+            //newsView.setTitleBackground(bgRes);
         }
     }
 

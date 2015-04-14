@@ -39,6 +39,7 @@ public class NewsItemViewHolder extends
     @InjectView(R.id.news_detail_title_placeholder) @Optional ImageView mNewsDetailTitlePlaceholder;
     @InjectView(R.id.news_detail_reference) @Optional GridView mNewsDetailReference;
     @InjectView(R.id.news_detail_reference_container) @Optional LinearLayout mNewsDetailReferenceContainer;
+    @InjectView(R.id.news_view_on_web) View openOnWebView;
 
     @NonNull protected SimpleSecurityItemViewAdapter simpleSecurityItemViewAdapter;
 
@@ -93,6 +94,10 @@ public class NewsItemViewHolder extends
         if (discussionActionButtonsView != null)
         {
             discussionActionButtonsView.setShowMore(false);
+        }
+        if (openOnWebView != null)
+        {
+            openOnWebView.setVisibility(dto.openOnWebVisibility);
         }
         if (textContent != null)
         {
@@ -162,6 +167,7 @@ public class NewsItemViewHolder extends
         @ViewVisibilityValue public final int newsDetailReferenceVisibility;
         public final int newsDetailReferenceContainerWidth;
         public final boolean contentWrapperIsLoading;
+        @ViewVisibilityValue public final int openOnWebVisibility;
         @Nullable private String text;
 
         public DTO(@NonNull Requisite requisite)
@@ -171,6 +177,8 @@ public class NewsItemViewHolder extends
             this.newsDetailReferenceVisibility = requisite.securityCompactDTOs.size() > 0 ? View.VISIBLE : View.GONE;
             this.newsDetailReferenceContainerWidth = (int) requisite.resources.getDimension(R.dimen.stock_item_width) * requisite.securityCompactDTOs.size();
             this.contentWrapperIsLoading = !(requisite.discussionDTO instanceof NewsItemDTO) || ((NewsItemDTO) requisite.discussionDTO).text == null;
+            this.openOnWebVisibility = ((NewsItemCompactDTO) requisite.discussionDTO).url == null ? View.GONE : View.VISIBLE;
+            this.text = createText();
         }
 
         @NonNull @Override protected String createTimeToDisplay(@NonNull PrettyTime prettyTime)
