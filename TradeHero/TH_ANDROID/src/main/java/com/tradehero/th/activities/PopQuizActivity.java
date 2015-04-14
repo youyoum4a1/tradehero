@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.fragments.web.XWalkWebViewFragment;
 import com.tradehero.th.persistence.prefs.AuthHeader;
@@ -32,7 +33,7 @@ public class PopQuizActivity extends OneFragmentActivity
         }
         else
         {
-            THToast.show("Please login with Facebook to play PopQuiz");
+            THToast.show(R.string.popquiz_require_fb);
             finish();
         }
         return args;
