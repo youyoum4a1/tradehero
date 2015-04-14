@@ -24,6 +24,7 @@ import javax.inject.Singleton;
                 HomeActivity.class,
                 PrivateDiscussionActivity.class,
                 SettingsActivity.class,
+                PopQuizActivity.class,
                 SettingsProfileActivity.class,
                 SplashActivity.class,
                 StoreScreenActivity.class,

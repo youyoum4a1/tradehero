@@ -35,6 +35,7 @@
   <string name="dashboard_referral">Refer Friends</string>
   <string name="dashboard_contest_center">Competitions</string>
   <string name="dashboard_store">Store</string>
+  <string name="dashboard_popquiz">Play PopQuiz</string>
   <string name="dashboard_menu_settings">Settings</string>
   <string name="dashboard_admin_settings" translatable="false">Admin Settings</string>
   <string name="dashboard_divider" translatable="false">Divider</string>

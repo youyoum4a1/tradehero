@@ -14,6 +14,7 @@
   <string name="dashboard_referral_key" translatable="false">key_refer_friends</string>
   <string name="dashboard_contest_center_key" translatable="false">key_contest_center</string>
   <string name="dashboard_store_key" translatable="false">key_store</string>
+  <string name="dashboard_popquiz_key" translatable="false">key_popquiz</string>
   <string name="dashboard_menu_settings_key" translatable="false">key_settings</string>
   <string name="dashboard_discovery_key" translatable="false">key_discovery</string>
   <string name="dashboard_admin_settings_key" translatable="false">key_admin_settings</string>

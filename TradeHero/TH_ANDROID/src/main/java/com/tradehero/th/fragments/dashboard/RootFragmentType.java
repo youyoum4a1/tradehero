@@ -12,6 +12,7 @@ import com.tradehero.th.activities.AdminSettingsActivity;
 import com.tradehero.th.activities.AlertManagerActivity;
 import com.tradehero.th.activities.FriendsInvitationActivity;
 import com.tradehero.th.activities.HomeActivity;
+import com.tradehero.th.activities.PopQuizActivity;
 import com.tradehero.th.activities.SettingsActivity;
 import com.tradehero.th.activities.StoreScreenActivity;
 import com.tradehero.th.activities.UpdateCenterActivity;
@@ -100,6 +101,13 @@ public enum RootFragmentType
             R.color.transparent,
             null,
             StoreScreenActivity.class,
+            AnalyticsConstants.TabBar_Store),
+    POPQUIZ(R.layout.residemenu_text_item,
+            R.string.dashboard_popquiz,
+            R.string.dashboard_popquiz_key,
+            R.color.transparent,
+            null,
+            PopQuizActivity.class,
             AnalyticsConstants.TabBar_Store),
     SETTING(R.layout.residemenu_item_settings,
             R.string.dashboard_menu_settings,
