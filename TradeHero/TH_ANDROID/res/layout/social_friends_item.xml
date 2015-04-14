@@ -45,6 +45,7 @@
         android:layout_height="wrap_content"
         android:visibility="visible"
         style="@style/TH.Btn_Invite_Action"
+        android:gravity="center"
         tools:text="Invite"
         />
 

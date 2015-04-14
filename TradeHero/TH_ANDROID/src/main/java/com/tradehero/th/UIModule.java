@@ -7,6 +7,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardResideMenu;
 import com.tradehero.th.fragments.FragmentModule;
 import com.tradehero.th.fragments.settings.SettingsResideMenuItem;
+import com.tradehero.th.fragments.settings.SettingsResideMenuItemUpdateCenter;
 import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
@@ -38,6 +39,7 @@ import org.ocpsoft.prettytime.PrettyTime;
         injects = {
                 FollowUserAssistant.class,
                 SimpleFollowUserAssistant.class,
+                SettingsResideMenuItemUpdateCenter.class,
                 SettingsResideMenuItem.class,
         },
         complete = false,

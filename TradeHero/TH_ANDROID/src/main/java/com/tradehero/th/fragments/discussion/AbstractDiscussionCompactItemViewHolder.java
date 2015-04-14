@@ -127,13 +127,22 @@ public class AbstractDiscussionCompactItemViewHolder
         }
         else if (userAction instanceof TranslateUserAction)
         {
+            final DTO dto = ((TranslateUserAction) userAction).viewDTO;
+            if (dto.getCurrentTranslationStatus() == TranslationStatus.ORIGINAL ||
+                    dto.getCurrentTranslationStatus() == TranslationStatus.FAILED)
+            {
+                dto.setCurrentTranslationStatus(TranslationStatus.TRANSLATING);
+                if (viewDTO != null)
+                {
+                    display(viewDTO);
+                }
+            }
             return socialShareHelper.translate(userAction.discussionDTO)
                     .observeOn(AndroidSchedulers.mainThread())
                     .flatMap(new Func1<SocialDialogResult, Observable<SocialDialogResult>>()
                     {
                         @Override public Observable<SocialDialogResult> call(SocialDialogResult result)
                         {
-                            DTO dto = ((TranslateUserAction) userAction).viewDTO;
                             //noinspection unchecked
                             dto.translatedDiscussionDTO = ((TranslateResult) result).translated;
                             if (dto.getCurrentTranslationStatus() == TranslationStatus.TRANSLATING)
@@ -151,7 +160,6 @@ public class AbstractDiscussionCompactItemViewHolder
                     {
                         @Override public void call(Throwable throwable)
                         {
-                            DTO dto = ((TranslateUserAction) userAction).viewDTO;
                             if (dto.getCurrentTranslationStatus() == TranslationStatus.TRANSLATING)
                             {
                                 dto.setCurrentTranslationStatus(TranslationStatus.ORIGINAL);

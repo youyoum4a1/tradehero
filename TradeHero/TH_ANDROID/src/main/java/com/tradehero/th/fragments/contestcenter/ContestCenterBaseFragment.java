@@ -73,7 +73,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     @Override public void onStart()
     {
         super.onStart();
-        contestListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        contestListView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
         if (currentDisplayedChildLayoutId != 0)
         {
             setContestCenterScreen(currentDisplayedChildLayoutId);

@@ -21,14 +21,31 @@
   </RelativeLayout>
 
   <ImageView
-      android:id="@+id/ic_market_close"
-      android:layout_width="@dimen/small_image_w_h"
-      android:layout_height="@dimen/small_image_w_h"
-      android:layout_alignParentRight="true"
-      android:layout_marginTop="-8dp"
+      android:id="@+id/icon_watchlist"
+      android:layout_width="@dimen/size_2"
+      android:layout_height="@dimen/size_2"
       android:contentDescription="@null"
       android:scaleType="centerInside"
-      android:src="@drawable/buyscreen_stock_inactive_pressed"
+      android:layout_marginLeft="@dimen/margin_xsmall"
+      />
+
+  <ImageView
+      android:id="@+id/icon_alert"
+      android:layout_width="@dimen/size_2"
+      android:layout_height="@dimen/size_2"
+      android:layout_toRightOf="@+id/icon_watchlist"
+      android:contentDescription="@null"
+      android:scaleType="centerInside"
+      />
+
+  <ImageView
+      android:id="@+id/ic_market_close"
+      android:layout_width="@dimen/size_2"
+      android:layout_height="@dimen/size_2"
+      android:layout_alignParentRight="true"
+      android:layout_marginRight="@dimen/margin_xsmall"
+      android:contentDescription="@null"
+      android:scaleType="centerInside"
       />
 
 </com.tradehero.th.fragments.security.SecurityItemView>

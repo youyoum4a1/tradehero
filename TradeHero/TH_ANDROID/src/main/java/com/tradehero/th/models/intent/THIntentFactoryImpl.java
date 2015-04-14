@@ -3,6 +3,7 @@ package com.tradehero.th.models.intent;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import com.tradehero.th.activities.BaseActivity;
 import com.tradehero.th.utils.route.THRouter;
 import java.util.HashMap;
 import java.util.Map;
@@ -97,6 +98,10 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
             thRouter.open(url, extras, activityProvider.get());
         } catch (Exception ex)
         {
+            Intent returnIntent = new Intent();
+            BaseActivity.putRouteParams(returnIntent, url, extras);
+            activityProvider.get().setResult(BaseActivity.REQUEST_CODE_ROUTE, returnIntent);
+            activityProvider.get().finish();
             Timber.e(ex, "%s host is unhandled %s", host, intent.getDataString());
         }
     }

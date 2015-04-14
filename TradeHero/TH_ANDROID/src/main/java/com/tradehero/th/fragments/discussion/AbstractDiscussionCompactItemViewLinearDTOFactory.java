@@ -4,26 +4,39 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.Pair;
+import com.tradehero.common.rx.PairGetSecond;
+import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.article.ArticleInfoDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerId;
+import com.tradehero.th.api.security.SecurityIntegerIdList;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.discovery.ArticleItemView;
 import com.tradehero.th.fragments.news.NewsHeadlineViewLinear;
+import com.tradehero.th.fragments.news.NewsViewLinear;
 import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
+import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
+import com.tradehero.th.persistence.security.SecurityMultiFetchAssistant;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.functions.Func3;
 
 public class AbstractDiscussionCompactItemViewLinearDTOFactory
 {
@@ -32,6 +45,8 @@ public class AbstractDiscussionCompactItemViewLinearDTOFactory
     @NonNull private final CurrentUserId currentUserId;
     @NonNull private final SocialShareTranslationHelper shareTranslationHelper;
     @NonNull private final UserWatchlistPositionCacheRx userWatchlistPositionCache;
+    @NonNull private final AlertCompactListCacheRx alertCompactListCache;
+    @NonNull private final SecurityMultiFetchAssistant securityMultiFetchAssistant;
 
     //<editor-fold desc="Constructors">
     @Inject public AbstractDiscussionCompactItemViewLinearDTOFactory(
@@ -39,13 +54,17 @@ public class AbstractDiscussionCompactItemViewLinearDTOFactory
             @NonNull PrettyTime prettyTime,
             @NonNull CurrentUserId currentUserId,
             @NonNull SocialShareTranslationHelper shareTranslationHelper,
-            @NonNull UserWatchlistPositionCacheRx userWatchlistPositionCache)
+            @NonNull UserWatchlistPositionCacheRx userWatchlistPositionCache,
+            @NonNull AlertCompactListCacheRx alertCompactListCache,
+            @NonNull SecurityMultiFetchAssistant securityMultiFetchAssistant)
     {
         this.resources = context.getResources();
         this.prettyTime = prettyTime;
         this.currentUserId = currentUserId;
         this.shareTranslationHelper = shareTranslationHelper;
         this.userWatchlistPositionCache = userWatchlistPositionCache;
+        this.alertCompactListCache = alertCompactListCache;
+        this.securityMultiFetchAssistant = securityMultiFetchAssistant;
     }
     //</editor-fold>
 
@@ -130,7 +149,8 @@ public class AbstractDiscussionCompactItemViewLinearDTOFactory
     }
 
     @NonNull
-    public Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> createNewsHeadlineViewLinearDTOs(@NonNull final Collection<? extends NewsItemCompactDTO> discussionDTOs)
+    public Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> createNewsHeadlineViewLinearDTOs(
+            @NonNull final Collection<? extends NewsItemCompactDTO> discussionDTOs)
     {
         return Observable.from(discussionDTOs)
                 .flatMap(new Func1<NewsItemCompactDTO, Observable<AbstractDiscussionCompactItemViewLinear.DTO>>()
@@ -144,43 +164,91 @@ public class AbstractDiscussionCompactItemViewLinearDTOFactory
     }
 
     @NonNull
+    public Observable<AbstractDiscussionCompactItemViewLinear.DTO> createNewsViewLinearDTO(@NonNull final NewsItemDTO discussionDTO)
+    {
+        final SecurityIntegerIdList idsList;
+        if (discussionDTO.securityIds == null)
+        {
+            idsList = new SecurityIntegerIdList();
+        }
+        else
+        {
+            idsList = new SecurityIntegerIdList(discussionDTO.securityIds, 0);
+        }
+        return Observable.combineLatest(
+                shareTranslationHelper.getTranslateFlags(discussionDTO),
+                securityMultiFetchAssistant.get(idsList),
+                new Func2<SocialShareTranslationHelper.TranslateFlags,
+                        Map<SecurityIntegerId, SecurityCompactDTO>,
+                        AbstractDiscussionCompactItemViewLinear.DTO > ()
+        {
+                            @Override
+                            public AbstractDiscussionCompactItemViewLinear.DTO call(
+                                    SocialShareTranslationHelper.TranslateFlags translateFlags,
+                                    Map<SecurityIntegerId, SecurityCompactDTO> securities)
+                            {
+                                return new NewsViewLinear.DTO(
+                                        new NewsViewLinear.Requisite(
+                                                resources,
+                                                prettyTime,
+                                                discussionDTO,
+                                                translateFlags.canTranslate,
+                                                translateFlags.autoTranslate,
+                                                new ArrayList<>(securities.values())));
+                            }
+                        });
+    }
+
+    @NonNull
     public Observable<AbstractDiscussionCompactItemViewLinear.DTO> createTimelineItemViewLinearDTO(@NonNull final TimelineItemDTO discussionDTO)
     {
         return Observable.zip(
                 shareTranslationHelper.getTranslateFlags(discussionDTO),
-                userWatchlistPositionCache.getOne(currentUserId.toUserBaseKey()),
-                new Func2<SocialShareTranslationHelper.TranslateFlags, Pair<UserBaseKey, WatchlistPositionDTOList>,
-                        Pair<SocialShareTranslationHelper.TranslateFlags, WatchlistPositionDTOList>>()
-                {
-                    @Override public Pair<SocialShareTranslationHelper.TranslateFlags, WatchlistPositionDTOList> call(
-                            SocialShareTranslationHelper.TranslateFlags translateFlags,
-                            Pair<UserBaseKey, WatchlistPositionDTOList> userWatchlistPair)
-                    {
-                        return Pair.create(translateFlags, userWatchlistPair.second);
-                    }
-                })
-                .map(new Func1<Pair<SocialShareTranslationHelper.TranslateFlags, WatchlistPositionDTOList>,
+                userWatchlistPositionCache.getOne(currentUserId.toUserBaseKey())
+                        .map(new PairGetSecond<UserBaseKey, WatchlistPositionDTOList>()),
+                alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()),
+                new Func3<SocialShareTranslationHelper.TranslateFlags,
+                        WatchlistPositionDTOList,
+                        Map<SecurityId, AlertCompactDTO>,
                         AbstractDiscussionCompactItemViewLinear.DTO>()
                 {
-                    @Override
-                    public AbstractDiscussionCompactItemViewLinear.DTO call(
-                            Pair<SocialShareTranslationHelper.TranslateFlags, WatchlistPositionDTOList> infoFlags)
+                    @Override public AbstractDiscussionCompactItemViewLinear.DTO call(
+                            SocialShareTranslationHelper.TranslateFlags translateFlags,
+                            WatchlistPositionDTOList userWatchlist,
+                            Map<SecurityId, AlertCompactDTO> alertCompactDTOMap)
                     {
-                        return createTimelineItemViewLinearDTO(discussionDTO,
-                                infoFlags.first,
-                                infoFlags.second);
+                        return createTimelineItemViewLinearDTO(
+                                discussionDTO,
+                                translateFlags,
+                                userWatchlist,
+                                alertCompactDTOMap);
                     }
                 });
     }
 
     @NonNull
-    public Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> createTimelineItemViewLinearDTOs(@NonNull final Collection<? extends TimelineItemDTO> discussionDTOs)
+    public Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> createTimelineItemViewLinearDTOs(
+            @NonNull final Collection<? extends TimelineItemDTO> discussionDTOs)
     {
-        return userWatchlistPositionCache.getOne(currentUserId.toUserBaseKey())
-                .flatMap(new Func1<Pair<UserBaseKey, WatchlistPositionDTOList>, Observable<AbstractDiscussionCompactItemViewLinear.DTO>>()
+        return Observable.zip(
+                userWatchlistPositionCache.getOne(currentUserId.toUserBaseKey())
+                        .map(new PairGetSecond<UserBaseKey, WatchlistPositionDTOList>()),
+                alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()),
+                new Func2<WatchlistPositionDTOList, Map<SecurityId, AlertCompactDTO>,
+                        Pair<WatchlistPositionDTOList, Map<SecurityId, AlertCompactDTO>>>()
+                {
+                    @Override public Pair<WatchlistPositionDTOList, Map<SecurityId, AlertCompactDTO>> call(
+                            WatchlistPositionDTOList watchlistPositionDTOs,
+                            Map<SecurityId, AlertCompactDTO> alertCompactDTOMap)
+                    {
+                        return Pair.create(watchlistPositionDTOs, alertCompactDTOMap);
+                    }
+                })
+                .flatMap(new Func1<Pair<WatchlistPositionDTOList, Map<SecurityId, AlertCompactDTO>>,
+                        Observable<AbstractDiscussionCompactItemViewLinear.DTO>>()
                 {
                     @Override public Observable<AbstractDiscussionCompactItemViewLinear.DTO> call(
-                            final Pair<UserBaseKey, WatchlistPositionDTOList> userWatchlistPair)
+                            final Pair<WatchlistPositionDTOList, Map<SecurityId, AlertCompactDTO>> positionDTOs)
                     {
                         return Observable.from(discussionDTOs)
                                 .flatMap(new Func1<TimelineItemDTO, Observable<AbstractDiscussionCompactItemViewLinear.DTO>>()
@@ -199,7 +267,8 @@ public class AbstractDiscussionCompactItemViewLinearDTOFactory
                                                         return createTimelineItemViewLinearDTO(
                                                                 discussionDTO,
                                                                 translateFlags,
-                                                                userWatchlistPair.second);
+                                                                positionDTOs.first,
+                                                                positionDTOs.second);
                                                     }
                                                 });
                                     }
@@ -212,8 +281,11 @@ public class AbstractDiscussionCompactItemViewLinearDTOFactory
     @NonNull public TimelineItemViewLinear.DTO createTimelineItemViewLinearDTO(
             @NonNull TimelineItemDTO discussionDTO,
             @NonNull SocialShareTranslationHelper.TranslateFlags translateFlags,
-            @NonNull WatchlistPositionDTOList watchlistPositionDTOs)
+            @NonNull WatchlistPositionDTOList watchlistPositionDTOs,
+            @NonNull Map<SecurityId, AlertCompactDTO> alertCompactDTOs)
     {
+        SecurityId flavorSecurity = discussionDTO.createFlavorSecurityIdForDisplay();
+        AlertCompactDTO alertCompactDTO = flavorSecurity == null ? null : alertCompactDTOs.get(flavorSecurity);
         return new TimelineItemViewLinear.DTO(
                 new TimelineItemViewLinear.Requisite(
                         resources,
@@ -221,6 +293,7 @@ public class AbstractDiscussionCompactItemViewLinearDTOFactory
                         discussionDTO,
                         translateFlags.canTranslate,
                         translateFlags.autoTranslate,
-                        watchlistPositionDTOs.contains(discussionDTO.createFlavorSecurityIdForDisplay())));
+                        watchlistPositionDTOs.contains(flavorSecurity),
+                        alertCompactDTO == null ? null : alertCompactDTO.getAlertId(currentUserId.get())));
     }
 }

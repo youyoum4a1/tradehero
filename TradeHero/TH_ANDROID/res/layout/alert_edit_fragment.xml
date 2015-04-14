@@ -52,7 +52,7 @@
         style="@style/TH.Headline.Inverse"
         android:gravity="center"
         android:minHeight="@dimen/clickable_element_min_dimen"
-        android:background="@drawable/basic_blue_selector"
+        android:background="@drawable/blue_rounded_button_selector"
         android:textStyle="bold"
         />
 

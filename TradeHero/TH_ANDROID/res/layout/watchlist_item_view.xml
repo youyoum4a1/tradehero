@@ -41,7 +41,7 @@
     <ImageView android:id="@+id/gain_indicator"
         android:layout_width="@dimen/size_1"
         android:layout_height="@dimen/size_1"
-        android:src="@drawable/indicator_green"/>
+        android:src="@drawable/indicator_down"/>
     <ImageView
         android:id="@+id/stock_logo"
         android:layout_width="@dimen/medium_image_w_h"

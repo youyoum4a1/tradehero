@@ -216,7 +216,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
             try
             {
                 discussionList.addHeaderView(topicView, null, false);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 // Can happen on older APIs.
                 Timber.e(e, "Failed adding topic view");
@@ -257,6 +258,15 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         //        }
         //    }
         //}
+
+        if (messageHeaderId != null)
+        {
+            MessageHeaderDTO messageHeaderDTO = messageHeaderCache.getCachedValue(messageHeaderId);
+            if (messageHeaderDTO != null)
+            {
+                reportMessageRead(messageHeaderDTO);
+            }
+        }
     }
 
     private void fetchCorrespondentProfile()
@@ -291,7 +301,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         messageHeaderListCache.invalidateWithRecipient(correspondentId);
     }
 
-    private void reportMessageRead(MessageHeaderDTO messageHeaderDTO)
+    public void reportMessageRead(MessageHeaderDTO messageHeaderDTO)
     {
         messageHeaderCache.setUnread(messageHeaderDTO.getDTOKey(), false);
         onStopSubscriptions.add(messageServiceWrapper.get().readMessageRx(

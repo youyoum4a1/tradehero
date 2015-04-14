@@ -167,7 +167,6 @@ public class TrendingMainFragment extends DashboardFragment
 
             @Override public void onPageSelected(int i)
             {
-                TrendingStockFragment.setCancelFirstInit(true);
                 lastPosition = i;
             }
 

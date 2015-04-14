@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.updatecenter.notifications;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
@@ -339,9 +338,10 @@ public class NotificationsView extends BetterViewAnimator
         @Override public void onItemClick(AdapterView<?> parent, View itemView, int position, long id)
         {
             NotificationDTO notificationDTO = (NotificationDTO) parent.getItemAtPosition(position);
+            reportNotificationRead(notificationDTO.pushId);
             NotificationClickHandler notificationClickHandler = new NotificationClickHandler(getContext(), notificationDTO);
             notificationClickHandler.handleNotificationItemClicked();
-            reportNotificationRead(notificationDTO.pushId);
+            setNotificationRead(position);
         }
     }
 
@@ -372,5 +372,13 @@ public class NotificationsView extends BetterViewAnimator
             notificationListAdapter.getItem(i).unread = false;
         }
         notificationListAdapter.notifyDataSetChanged();
+    }
+
+    private void setNotificationRead(int position)
+    {
+        if (notificationListAdapter != null && position < notificationListAdapter.getCount())
+        {
+            notificationListAdapter.getItem(position).unread = false;
+        }
     }
 }

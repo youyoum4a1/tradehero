@@ -34,6 +34,7 @@ import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -79,7 +80,7 @@ public class MessagesCenterNewFragment extends BaseFragment
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(android.R.id.empty) TextView emptyView;
     @InjectView(R.id.error) View errorView;
-    @InjectView(R.id.readAllLayout) View readAllLayout;
+    @InjectView(R.id.composeLayout) View composeLayout;
 
     private boolean hasMorePage = true;
     private MessageListViewAdapter listAdapter;
@@ -145,6 +146,7 @@ public class MessagesCenterNewFragment extends BaseFragment
             {
                 Timber.d("onItemClick", "onItemClick:" + position);
                 pushMessageFragment(position);
+                setMessageRead(position);
             }
         });
 
@@ -156,7 +158,7 @@ public class MessagesCenterNewFragment extends BaseFragment
             }
         });
 
-        setReadAllLayoutClickListener();
+        setComposeLayoutClickListener();
     }
 
     private void pushUserProfileFragment(@Nullable MessageHeaderDTO messageHeaderDTO)
@@ -301,20 +303,21 @@ public class MessagesCenterNewFragment extends BaseFragment
 
     private void setReadAllLayoutVisible()
     {
-        boolean haveUnread = false;
-        if (listAdapter == null) return;
-        int itemCount = listAdapter.getCount();
-        for (int i = 0; i < itemCount; i++)
+        //boolean haveUnread = false;
+        //if (listAdapter == null) return;
+        //int itemCount = listAdapter.getCount();
+        //for (int i = 0; i < itemCount; i++)
+        //{
+        //    if (listAdapter.getItem(i).unread)
+        //    {
+        //        haveUnread = true;
+        //        break;
+        //    }
+        //}
+
+        if (composeLayout != null)
         {
-            if (listAdapter.getItem(i).unread)
-            {
-                haveUnread = true;
-                break;
-            }
-        }
-        if (readAllLayout != null)
-        {
-            readAllLayout.setVisibility(haveUnread ? View.VISIBLE : View.GONE);
+            composeLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -520,15 +523,16 @@ public class MessagesCenterNewFragment extends BaseFragment
         view.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-    private void setReadAllLayoutClickListener()
+    private void setComposeLayoutClickListener()
     {
-        if (readAllLayout != null)
+        if (composeLayout != null)
         {
-            readAllLayout.setOnClickListener(new View.OnClickListener()
+            composeLayout.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(View view)
                 {
-                    MessagesCenterNewFragment.this.reportMessageAllRead();
+                    //MessagesCenterNewFragment.this.reportMessageAllRead();
+                    navigator.get().pushFragment(AllRelationsFragment.class);
                 }
             });
         }
@@ -556,6 +560,14 @@ public class MessagesCenterNewFragment extends BaseFragment
 
         //Mark this locally as read, makes the user feels it's marked instantly for better experience
         updateAllAsRead();
+    }
+
+    private void setMessageRead(int position)
+    {
+        if (listAdapter!=null && position < listAdapter.getCount())
+        {
+            listAdapter.getItem(position).unread = false;
+        }
     }
 
     private void updateAllAsRead()

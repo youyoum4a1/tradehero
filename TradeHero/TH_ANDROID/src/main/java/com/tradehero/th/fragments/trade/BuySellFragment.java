@@ -21,7 +21,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
@@ -37,7 +36,7 @@ import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.OnMovableBottomTranslateListener;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
@@ -104,7 +103,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     @Inject Lazy<SocialSharer> socialSharerLazy;
 
     private AbstractTransactionDialogFragment abstractTransactionDialogFragment;
-    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     @Inject protected OwnedPortfolioIdListCacheRx ownedPortfolioIdListCache;
     @Nullable protected OwnedPortfolioIdList applicableOwnedPortfolioIds;
@@ -170,7 +168,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             abstractTransactionDialogFragment.getDialog().show();
         }
 
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        fragmentElements.get().getMovableBottom().setOnMovableBottomTranslateListener(new OnMovableBottomTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -183,7 +181,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     {
         LocalBroadcastManager.getInstance(getActivity())
                 .unregisterReceiver(chartImageButtonClickReceiver);
-        dashboardTabHost.get().setOnTranslate(null);
+        fragmentElements.get().getMovableBottom().setOnMovableBottomTranslateListener(null);
         super.onPause();
     }
 
@@ -248,10 +246,13 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             abstractTransactionDialogFragment.setBuySellTransactionListener(new AbstractStockTransactionDialogFragment.BuySellTransactionListener()
             {
                 @Override public void onTransactionSuccessful(boolean isBuy,
-                        @NonNull SecurityPositionTransactionDTO securityPositionTransactionDTO)
+                        @NonNull SecurityPositionTransactionDTO securityPositionTransactionDTO, String commentString)
                 {
                     showPrettyReviewAndInvite(isBuy);
-                    pushPortfolioFragment(securityPositionTransactionDTO);
+                    shareToWeChat(commentString);
+                    pushPortfolioFragment(new OwnedPortfolioId(
+                            currentUserId.get(),
+                            securityPositionTransactionDTO.portfolio.id), securityPositionTransactionDTO.portfolio);
                 }
 
                 @Override public void onTransactionFailed(boolean isBuy, THException error)
@@ -636,7 +637,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    public void shareToWeChat()
+    public void shareToWeChat(String commentString)
     {
         //TODO Move this!
         if (socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.WECHAT, DEFAULT_IS_SHARED_TO_WECHAT))
@@ -660,6 +661,10 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                         + securityCompactDTO.name + " " + abstractTransactionDialogFragment.getQuantityString() + getString(
                         R.string.buy_sell_share_count) + " @" + quoteDTO.bid;
             }
+            if (commentString != null && !commentString.isEmpty())
+            {
+                weChatDTO.title = commentString;
+            }
             socialSharerLazy.get().share(weChatDTO)
                     .subscribe(
                             new EmptyAction1<SocialShareResult>(),
@@ -667,16 +672,8 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    private void pushPortfolioFragment(@NonNull SecurityPositionTransactionDTO securityPositionTransactionDTO)
-    {
-        pushPortfolioFragment(new OwnedPortfolioId(
-                currentUserId.get(),
-                securityPositionTransactionDTO.portfolio.id), securityPositionTransactionDTO.portfolio);
-    }
-
     private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId, PortfolioDTO portfolioDTO)
     {
-        shareToWeChat();
         if (isResumed())
         {
             DeviceUtil.dismissKeyboard(getActivity());

@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 public class AlertEditDialogFragment extends BaseAlertEditDialogFragment
 {
-    private static final String BUNDLE_KEY_ALERT_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".alertId";
+    private static final String BUNDLE_KEY_ALERT_ID_BUNDLE = AlertEditDialogFragment.class.getName() + ".alertId";
 
     @Inject protected AlertCacheRx alertCache;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;

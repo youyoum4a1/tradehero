@@ -251,7 +251,7 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     @NonNull protected AbsListView.OnScrollListener createListViewScrollListener()
     {
-        return new MultiScrollListener(dashboardBottomTabsListViewScrollListener.get(),
+        return new MultiScrollListener(fragmentElements.get().getListViewScrollListener(),
                 new AbsListView.OnScrollListener()
                 {
                     int maxOffsetY = 0;

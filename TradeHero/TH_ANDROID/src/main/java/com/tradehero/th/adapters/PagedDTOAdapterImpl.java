@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import com.tradehero.th.api.DTOView;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -27,6 +26,7 @@ public class PagedDTOAdapterImpl<DTOType> extends ArrayAdapter<DTOType>
     @NonNull protected final Map<Integer, List<DTOType>> pagedObjects;
     @LayoutRes protected int layoutResourceId;
     @NonNull protected LayoutInflater inflater;
+    @NonNull private List<Integer> showedPageNum;
 
     //<editor-fold desc="Constructors">
     public PagedDTOAdapterImpl(@NonNull Context context, @LayoutRes int resource)
@@ -35,15 +35,11 @@ public class PagedDTOAdapterImpl<DTOType> extends ArrayAdapter<DTOType>
         this.pagedObjects = new HashMap<>();
         this.layoutResourceId = resource;
         this.inflater = LayoutInflater.from(context);
+        showedPageNum = new ArrayList<>();
     }
     //</editor-fold>
 
     @Override public void add(DTOType object)
-    {
-        throw new IllegalArgumentException();
-    }
-
-    @Override public void addAll(Collection<? extends DTOType> collection)
     {
         throw new IllegalArgumentException();
     }
@@ -68,6 +64,7 @@ public class PagedDTOAdapterImpl<DTOType> extends ArrayAdapter<DTOType>
     {
         pagedObjects.clear();
         rebuild();
+        showedPageNum.clear();
     }
 
     @Override public void addPages(@NonNull Map<Integer, ? extends List<DTOType>> objects)
@@ -81,8 +78,21 @@ public class PagedDTOAdapterImpl<DTOType> extends ArrayAdapter<DTOType>
 
     @Override public void addPage(int page, @NonNull List<DTOType> objects)
     {
+        if (showedPageNum.contains(page))
+        {
+            return;
+        }
+        else
+        {
+            showedPageNum.add(page);
+        }
+        //save page
         pagedObjects.put(page, objects);
-        rebuild();
+        //add new page
+        super.addAll(pagedObjects.get(page));
+        //notify
+        notifyDataSetChanged();
+        setNotifyOnChange(true);
     }
 
     protected void rebuild()

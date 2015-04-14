@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.AssetClass;
@@ -10,19 +11,18 @@ public enum LeaderboardType
     STOCKS(R.string.stocks, AssetClass.STOCKS),
     FX(R.string.fx, AssetClass.FX);
 
-    @StringRes private int titleResId;
-    private AssetClass assetClass;
+    @StringRes public final int titleResId;
+    @NonNull public final AssetClass assetClass;
 
-    LeaderboardType(int titleResId, AssetClass assetClass)
+    //<editor-fold desc="Constructors">
+    LeaderboardType(
+            @StringRes int titleResId,
+            @NonNull AssetClass assetClass)
     {
         this.titleResId = titleResId;
         this.assetClass = assetClass;
     }
-
-    public int getTitleResId()
-    {
-        return titleResId;
-    }
+    //</editor-fold>
 
     public int getLeaderboardTypeId()
     {
@@ -40,10 +40,5 @@ public enum LeaderboardType
         }
         Timber.e("Unknown id for LeaderboardType %d", value);
         return null;
-    }
-
-    public AssetClass getAssetClass()
-    {
-        return assetClass;
     }
 }

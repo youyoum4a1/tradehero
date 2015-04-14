@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -16,8 +15,6 @@ import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.BetterViewAnimator;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemListKey;
@@ -26,6 +23,7 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.base.FragmentOuterElements;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinearDTOFactory;
 import com.tradehero.th.fragments.discussion.DiscussionFragmentUtil;
@@ -63,12 +61,10 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
     @Inject DiscussionFragmentUtil discussionFragmentUtil;
+    @Inject FragmentOuterElements fragmentElements;
     @InjectView(R.id.list_news_headline_wrapper) BetterViewAnimator listViewWrapper;
     @InjectView(R.id.list_news_headline) ListView listView;
     @InjectView(R.id.list_news_headline_progressbar) ProgressBar progressBar;
-
-    @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardTabListViewScrollListener;
-    @Inject Analytics analytics;
 
     private NewsHeadlineAdapter adapter;
 
@@ -104,7 +100,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         ButterKnife.inject(this, view);
         showLoadingNews();
         listView.setAdapter(adapter);
-        listView.setOnScrollListener(dashboardTabListViewScrollListener);
+        listView.setOnScrollListener(fragmentElements.getListViewScrollListener());
     }
 
     @Override public void onStart()

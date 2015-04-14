@@ -125,7 +125,7 @@ public class FollowerRevenueReportFragment extends DashboardFragment
                     followerListView.getPaddingBottom());
 
             followerListView.setOnScrollListener(new MultiScrollListener(
-                    dashboardBottomTabsListViewScrollListener.get(),
+                    fragmentElements.get().getListViewScrollListener(),
                     headerQuickReturnScrollListener));
         }
     }

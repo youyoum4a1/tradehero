@@ -24,6 +24,7 @@ import com.tradehero.th.api.discussion.key.DiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.base.FragmentOuterElements;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
@@ -57,6 +58,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     @Inject protected MentionTaggedStockHandler mentionTaggedStockHandler;
     @Inject protected AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
     @Inject protected DiscussionFragmentUtil discussionFragmentUtil;
+    @Inject protected FragmentOuterElements fragmentElements;
 
     protected DiscussionSetAdapter discussionListAdapter;
     protected DiscussionKey discussionKey;
@@ -92,7 +94,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        discussionList.setOnScrollListener(createListScrollListener());
+        discussionList.setOnScrollListener(new MultiScrollListener(fragmentElements.getListViewScrollListener(), createListScrollListener()));
         topicView = inflateTopicView();
         if (topicView != null)
         {

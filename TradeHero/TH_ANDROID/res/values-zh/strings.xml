@@ -123,6 +123,7 @@
   <string name="trade_comment">交易评论</string>
 
   <string name="mark_all_as_read">全部标记为已读</string>
+  <string name="compose">发私信</string>
 
   <!-- Discovery -->
   <string name="discovery_whats_hot">热门</string>

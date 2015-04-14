@@ -1,27 +1,29 @@
 package com.tradehero.th.api.leaderboard.def;
 
 import android.support.annotation.NonNull;
-import com.android.internal.util.Predicate;
+import android.util.Pair;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
 
 public class LeaderboardDefDTOList extends BaseArrayList<LeaderboardDefDTO>
-    implements DTO, ContainerDTO<LeaderboardDefDTO, LeaderboardDefDTOList>
+        implements DTO, ContainerDTO<LeaderboardDefDTO, LeaderboardDefDTOList>
 {
-    @NonNull
-    public LeaderboardDefDTOList keepForCountryCode(@NonNull String countryCode)
+    @NonNull public Pair<LeaderboardDefDTOList, LeaderboardDefDTOList> splitExchangeWithWithOut(@NonNull String countryCode)
     {
-        Predicate<LeaderboardDefDTO> leaderboardDefDTOPredicate = new LeaderboardDefDTOCountryCodeContainPredicate(countryCode);
-        LeaderboardDefDTOList kept = new LeaderboardDefDTOList();
+        Pair<LeaderboardDefDTOList, LeaderboardDefDTOList> split = Pair.create(new LeaderboardDefDTOList(), new LeaderboardDefDTOList());
         for (LeaderboardDefDTO leaderboardDefDTO : this)
         {
-            if (leaderboardDefDTOPredicate.apply(leaderboardDefDTO))
+            if (leaderboardDefDTO.countryCodes != null && leaderboardDefDTO.countryCodes.contains(countryCode))
             {
-                kept.add(leaderboardDefDTO);
+                split.first.add(leaderboardDefDTO);
+            }
+            else if (leaderboardDefDTO.isExchangeRestricted())
+            {
+                split.second.add(leaderboardDefDTO);
             }
         }
-        return kept;
+        return split;
     }
 
     @Override public LeaderboardDefDTOList getList()

@@ -2,6 +2,7 @@ package com.tradehero.th.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
@@ -14,13 +15,14 @@ import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.widget.THTabView;
 import java.util.Collection;
 
-public class DashboardTabHost extends TabHost implements DashboardNavigator.DashboardFragmentWatcher
+public class DashboardTabHost extends TabHost
+        implements DashboardNavigator.DashboardFragmentWatcher, MovableBottom
 {
     private final Collection<RootFragmentType> bottomBarFragmentTypes = RootFragmentType.forBottomBar();
     private final Collection<RootFragmentType> slideFragmentTypes = RootFragmentType.forResideMenu();
     private Animation slideInAnimation;
     private Animation slideOutAnimation;
-    private OnTranslateListener onTranslateListener;
+    private OnMovableBottomTranslateListener onTranslateListener;
 
     public DashboardTabHost(Context context, AttributeSet attrs)
     {
@@ -76,12 +78,12 @@ public class DashboardTabHost extends TabHost implements DashboardNavigator.Dash
         }
     }
 
-    public void animateHide()
+    @Override public void animateHide()
     {
         animate().translationYBy(getResources().getDimensionPixelSize(R.dimen.dashboard_tabhost_height)).start();
     }
 
-    public void animateShow()
+    @Override public void animateShow()
     {
         animate().translationY(0).start();
     }
@@ -95,7 +97,7 @@ public class DashboardTabHost extends TabHost implements DashboardNavigator.Dash
         super.setTranslationY(translationY);
     }
 
-    public void setOnTranslate(OnTranslateListener onTranslateListener)
+    @Override public void setOnMovableBottomTranslateListener(@Nullable OnMovableBottomTranslateListener onTranslateListener)
     {
         this.onTranslateListener = onTranslateListener;
     }
@@ -122,10 +124,5 @@ public class DashboardTabHost extends TabHost implements DashboardNavigator.Dash
         {
             return new View(getContext());
         }
-    }
-
-    public static interface OnTranslateListener
-    {
-        void onTranslate(float x, float y);
     }
 }

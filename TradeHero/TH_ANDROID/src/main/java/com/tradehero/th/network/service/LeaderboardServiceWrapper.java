@@ -1,9 +1,11 @@
 package com.tradehero.th.network.service;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
+import com.tradehero.th.api.leaderboard.def.FriendLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOFactory;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
@@ -27,17 +29,17 @@ import rx.functions.Func1;
 
 @Singleton public class LeaderboardServiceWrapper
 {
+    @NonNull private final Resources resources;
     @NonNull private final LeaderboardServiceRx leaderboardServiceRx;
-    @NonNull private final LeaderboardDefDTOFactory leaderboardDefDTOFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardServiceWrapper(
-            @NonNull LeaderboardServiceRx leaderboardServiceRx,
-            @NonNull LeaderboardDefDTOFactory leaderboardDefDTOFactory)
+            @NonNull Context context,
+            @NonNull LeaderboardServiceRx leaderboardServiceRx)
     {
         super();
+        this.resources = context.getResources();
         this.leaderboardServiceRx = leaderboardServiceRx;
-        this.leaderboardDefDTOFactory = leaderboardDefDTOFactory;
     }
     //</editor-fold>
 
@@ -45,7 +47,14 @@ import rx.functions.Func1;
     @NonNull public Observable<LeaderboardDefDTOList> getLeaderboardDefinitionsRx()
     {
         return leaderboardServiceRx.getLeaderboardDefinitions()
-                .map(leaderboardDefDTOFactory);
+                .map(new Func1<LeaderboardDefDTOList, LeaderboardDefDTOList>()
+                {
+                    @Override public LeaderboardDefDTOList call(LeaderboardDefDTOList leaderboardDefDTOs)
+                    {
+                        leaderboardDefDTOs.add(new FriendLeaderboardDefDTO(resources));
+                        return leaderboardDefDTOs;
+                    }
+                });
     }
     //</editor-fold>
 

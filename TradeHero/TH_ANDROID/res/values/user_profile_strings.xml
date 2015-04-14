@@ -45,5 +45,6 @@
   <string name="error_fetch_your_user_profile">There was an error when fetching your profile information</string>
   <string name="error_update_your_user_profile">There was an error when updating your profile information</string>
   <string name="error_fetch_people_list_info">There was an error when fetching the list of people</string>
+  <string name="error_save_image_in_external_storage">Error in saving image in external storage of your device.</string>
 
 </resources>

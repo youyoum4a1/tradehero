@@ -14,7 +14,6 @@ import android.widget.TabHost;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
@@ -22,7 +21,7 @@ import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.OnMovableBottomTranslateListener;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.social.follower.AllHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
@@ -48,7 +47,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
-    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     private UserBaseKey heroId;
     @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
@@ -140,7 +138,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Override public void onResume()
     {
         super.onResume();
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
+        fragmentElements.get().getMovableBottom().setOnMovableBottomTranslateListener(new OnMovableBottomTranslateListener()
         {
             @Override public void onTranslate(float x, float y)
             {
@@ -151,7 +149,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     @Override public void onPause()
     {
-        dashboardTabHost.get().setOnTranslate(null);
+        fragmentElements.get().getMovableBottom().setOnMovableBottomTranslateListener(null);
         super.onPause();
     }
 

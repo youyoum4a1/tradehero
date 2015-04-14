@@ -181,7 +181,7 @@ public class SocialFriendUserView extends SocialFriendItemView
         else
         {
             actionBtn.setText(R.string.invite);
-            actionBtn.setBackgroundResource(R.drawable.basic_yellow_selector);
+            actionBtn.setBackgroundResource(R.drawable.basic_blue_selector);
             actionBtn.setEnabled(!socialFriendListItemUserDTO.userFriendsDTO.alreadyInvited);
             setWeiboCheckBox();
         }

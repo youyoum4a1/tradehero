@@ -12,17 +12,21 @@ import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
+import com.tradehero.th.fragments.base.BaseFragmentOuterElements;
+import com.tradehero.th.fragments.base.FragmentOuterElements;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Module;
 import dagger.Provides;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
 abstract public class OneFragmentActivity extends BaseActivity
 {
+    @Inject protected THRouter thRouter;
     protected DashboardNavigator navigator;
     @InjectView(R.id.my_toolbar) protected Toolbar toolbar;
 
@@ -117,6 +121,11 @@ abstract public class OneFragmentActivity extends BaseActivity
         @Provides @Singleton THRouter provideTHRouter(Context context, Provider<DashboardNavigator> navigatorProvider)
         {
             return new THRouter(context, navigatorProvider);
+        }
+
+        @Provides FragmentOuterElements provideFragmentElements()
+        {
+            return new BaseFragmentOuterElements();
         }
     }
 }

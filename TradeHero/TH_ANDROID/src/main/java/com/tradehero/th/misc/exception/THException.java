@@ -1,5 +1,6 @@
 package com.tradehero.th.misc.exception;
 
+import android.support.annotation.StringRes;
 import com.facebook.FacebookOperationCanceledException;
 import com.tradehero.common.utils.RetrofitHelper;
 import com.tradehero.th.R;
@@ -125,38 +126,23 @@ public class THException extends Exception
         RenewSocialToken(R.string.please_update_token_title),
         ;
 
-        private boolean canContinue;
-        private String errorMessage;
+        private final boolean canContinue;
+        @StringRes private final int errorMessage;
 
-        private ExceptionCode(boolean canContinue, String errorMessage)
+        private ExceptionCode(@StringRes int errorMessageResourceId)
         {
-            init(canContinue, errorMessage);
+            this(false, errorMessageResourceId);
         }
 
-        private ExceptionCode(boolean canContinue, int errorMessageResourceId)
-        {
-            init(canContinue, THApp.context().getString(errorMessageResourceId));
-        }
-
-        private ExceptionCode(String errorMessage)
-        {
-            init(false, errorMessage);
-        }
-
-        private ExceptionCode(int errorMessageResourceId)
-        {
-            init(false, THApp.context().getString(errorMessageResourceId));
-        }
-
-        private void init(boolean canContinue, String errorMessage)
+        private ExceptionCode(boolean canContinue, @StringRes int errorMessageResourceId)
         {
             this.canContinue = canContinue;
-            this.errorMessage = errorMessage;
+            this.errorMessage = errorMessageResourceId;
         }
 
         public String getErrorMessage()
         {
-            return errorMessage;
+            return THApp.context().getString(errorMessage);
         }
 
         public boolean isCanContinue()
@@ -166,7 +152,7 @@ public class THException extends Exception
 
         public THException toException()
         {
-            THException exception = new THException(errorMessage);
+            THException exception = new THException(getErrorMessage());
             exception.code = this;
             return exception;
         }

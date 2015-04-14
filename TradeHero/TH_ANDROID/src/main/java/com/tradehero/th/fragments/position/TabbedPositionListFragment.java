@@ -234,9 +234,9 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
             if (providerId != null)
             {
                 CompetitionLeaderboardPositionListFragment.putProviderId(args, providerId);
-                return Fragment.instantiate(getActivity(), CompetitionLeaderboardPositionListFragment.class.getName(), args);
             }
-            else if (getPositionsDTOKey instanceof LeaderboardMarkUserId)
+
+            if (getPositionsDTOKey instanceof LeaderboardMarkUserId)
             {
                 return Fragment.instantiate(getActivity(), LeaderboardPositionListFragment.class.getName(), args);
             }

@@ -128,7 +128,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
             );
         }
         setListShown(false);
-        this.heroListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        this.heroListView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
     }
 
     private void setListShown(boolean shown)

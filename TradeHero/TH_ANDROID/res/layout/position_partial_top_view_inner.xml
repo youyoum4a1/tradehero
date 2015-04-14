@@ -19,7 +19,7 @@
       android:layout_marginRight="@dimen/margin_small"
       android:layout_marginEnd="@dimen/margin_small"
       android:layout_weight="0"
-      android:src="@drawable/indicator_green"/>
+      android:src="@drawable/indicator_down"/>
 
   <ImageView
       android:id="@+id/stock_logo"

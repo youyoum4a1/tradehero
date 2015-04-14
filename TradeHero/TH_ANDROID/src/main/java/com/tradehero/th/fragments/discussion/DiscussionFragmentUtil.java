@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -13,7 +15,8 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.alert.AlertCreateFragment;
+import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
+import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemViewLinear;
@@ -34,6 +37,7 @@ import com.tradehero.th.widget.VotePair;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 public class DiscussionFragmentUtil
 {
@@ -63,8 +67,6 @@ public class DiscussionFragmentUtil
     //</editor-fold>
 
     /**
-     * @param context
-     * @param userAction
      * @return an empty observable when the action has been handled. Or one observable with the action when not.
      */
     @NonNull public Observable<UserDiscussionAction> handleUserAction(@NonNull Context context, @NonNull final UserDiscussionAction userAction)
@@ -87,14 +89,37 @@ public class DiscussionFragmentUtil
             navigator.pushFragment(WatchlistEditFragment.class, args, null);
             return Observable.empty();
         }
-        else if (userAction instanceof TimelineItemViewLinear.OpenStockAlertUserAction)
+        else if (userAction instanceof TimelineItemViewLinear.OpenNewStockAlertUserAction)
         {
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_Alert));
-            Bundle args = new Bundle();
-            SecurityId securityId = ((TimelineItemViewLinear.OpenStockAlertUserAction) userAction).securityId;
-            AlertCreateFragment.putSecurityId(args, securityId);
-            navigator.pushFragment(AlertCreateFragment.class, args);
-            return Observable.empty();
+            Fragment currentFragment = navigator.getCurrentFragment();
+            if (currentFragment != null)
+            {
+                DialogFragment dialog = AlertCreateDialogFragment.newInstance(
+                        ((TimelineItemViewLinear.OpenNewStockAlertUserAction) userAction).securityId);
+                dialog.show(currentFragment.getFragmentManager(), AlertCreateDialogFragment.class.getName());
+                return Observable.empty();
+            }
+            else
+            {
+                return Observable.just(userAction);
+            }
+        }
+        else if (userAction instanceof TimelineItemViewLinear.UpdateStockAlertUserAction)
+        {
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_Alert));
+            Fragment currentFragment = navigator.getCurrentFragment();
+            if (currentFragment != null)
+            {
+                DialogFragment dialog = AlertEditDialogFragment.newInstance(
+                        ((TimelineItemViewLinear.UpdateStockAlertUserAction) userAction).alertId);
+                dialog.show(currentFragment.getFragmentManager(), AlertEditDialogFragment.class.getName());
+                return Observable.empty();
+            }
+            else
+            {
+                return Observable.just(userAction);
+            }
         }
         else if (userAction instanceof TimelineItemViewHolder.SecurityUserAction)
         {
@@ -162,6 +187,10 @@ public class DiscussionFragmentUtil
                 Bundle bundle = new Bundle();
                 WebViewFragment.putUrl(bundle, newsItem.url);
                 navigator.pushFragment(WebViewFragment.class, bundle);
+            }
+            else
+            {
+                Timber.e(new NullPointerException(), "We should not have reached here");
             }
         }
         else if (userAction instanceof DiscussionActionButtonsView.CommentUserAction)

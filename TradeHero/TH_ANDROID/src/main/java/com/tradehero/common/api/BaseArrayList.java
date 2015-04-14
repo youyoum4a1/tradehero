@@ -50,6 +50,19 @@ public class BaseArrayList<T> extends ArrayList<T>
         return null;
     }
 
+    @NonNull public BaseArrayList<T> findWhere(@NonNull Predicate<T> predicate)
+    {
+        BaseArrayList<T> found = new BaseArrayList<>();
+        for (T item : this)
+        {
+            if (predicate.apply(item))
+            {
+                found.add(item);
+            }
+        }
+        return found;
+    }
+
     public StringBuilder createStringBuilder()
     {
         StringBuilder sb = new StringBuilder("[");

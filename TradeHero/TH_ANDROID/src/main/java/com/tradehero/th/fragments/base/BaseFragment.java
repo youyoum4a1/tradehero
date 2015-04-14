@@ -132,12 +132,15 @@ public class BaseFragment extends Fragment
             hideSupportActionBar();
         }
 
+        /*
+        P2: There is a unnecessary menu button on Me page
+        https://www.pivotaltracker.com/n/projects/559137/stories/91165728
         if (this instanceof WithTutorial)
         {
             menu.removeGroup(MENU_GROUP_HELP);
             MenuItem item = menu.add(MENU_GROUP_HELP, getMenuHelpID(), Menu.NONE, R.string.help);
             item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        }
+        }*/
 
         actionBarOwnerMixin.onCreateOptionsMenu(menu, inflater);
 

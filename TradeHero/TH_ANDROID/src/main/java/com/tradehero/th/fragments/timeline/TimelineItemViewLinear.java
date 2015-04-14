@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.PopupMenu;
 import com.tradehero.common.rx.PopupMenuItemClickOperator;
 import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
@@ -50,6 +51,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
     @NonNull @Override protected Observable<UserDiscussionAction> handleUserAction(
             final UserDiscussionAction userAction)
     {
+        final TimelineItemViewHolder.DTO viewHolderDTO = (TimelineItemViewHolder.DTO) viewDTO.viewHolderDTO;
         if (userAction instanceof DiscussionActionButtonsView.MoreUserAction)
         {
             final SecurityId securityId;
@@ -83,9 +85,17 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
                                     return Observable.just(userAction);
 
                                 case R.id.timeline_action_add_alert:
-                                    if (securityId != null)
+                                    if (viewHolderDTO.stockAlertId != null)
                                     {
-                                        return Observable.just(new OpenStockAlertUserAction(userAction.discussionDTO, securityId));
+                                        return Observable.just(new UpdateStockAlertUserAction(
+                                                userAction.discussionDTO,
+                                                viewHolderDTO.stockAlertId));
+                                    }
+                                    else if (securityId != null)
+                                    {
+                                        return Observable.just(new OpenNewStockAlertUserAction(
+                                                userAction.discussionDTO,
+                                                securityId));
                                     }
                                     return Observable.just(userAction);
 
@@ -135,6 +145,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
     public static class Requisite extends AbstractDiscussionCompactItemViewLinear.Requisite
     {
         public final boolean onWatchlist;
+        @Nullable public final AlertId stockAlertId;
 
         public Requisite(
                 @NonNull Resources resources,
@@ -142,10 +153,12 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
                 @NonNull TimelineItemDTO discussionDTO,
                 boolean canTranslate,
                 boolean isAutoTranslate,
-                boolean onWatchlist)
+                boolean onWatchlist,
+                @Nullable AlertId stockAlertId)
         {
             super(resources, prettyTime, discussionDTO, canTranslate, isAutoTranslate);
             this.onWatchlist = onWatchlist;
+            this.stockAlertId = stockAlertId;
         }
     }
 
@@ -166,7 +179,8 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
                             (TimelineItemDTO) requisite.discussionDTO,
                             requisite.canTranslate,
                             requisite.isAutoTranslate,
-                            ((Requisite) requisite).onWatchlist));
+                            ((Requisite) requisite).onWatchlist,
+                            ((Requisite) requisite).stockAlertId));
         }
     }
 
@@ -182,16 +196,29 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
         }
     }
 
-    public static class OpenStockAlertUserAction extends UserDiscussionAction
+    public static class OpenNewStockAlertUserAction extends UserDiscussionAction
     {
         @NonNull public final SecurityId securityId;
 
-        public OpenStockAlertUserAction(
+        public OpenNewStockAlertUserAction(
                 @NonNull AbstractDiscussionCompactDTO discussionDTO,
                 @NonNull SecurityId securityId)
         {
             super(discussionDTO);
             this.securityId = securityId;
+        }
+    }
+
+    public static class UpdateStockAlertUserAction extends UserDiscussionAction
+    {
+        @NonNull public final AlertId alertId;
+
+        public UpdateStockAlertUserAction(
+                @NonNull AbstractDiscussionCompactDTO discussionDTO,
+                @NonNull AlertId alertId)
+        {
+            super(discussionDTO);
+            this.alertId = alertId;
         }
     }
 }

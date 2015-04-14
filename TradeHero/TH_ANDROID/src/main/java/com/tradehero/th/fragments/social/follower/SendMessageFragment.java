@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -33,11 +34,14 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.discussion.MentionActionButtonsView;
+import com.tradehero.th.fragments.discussion.MentionTaggedStockHandler;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -63,12 +67,14 @@ public class SendMessageFragment extends BaseFragment
     @InjectView(R.id.follower_count_switcher) BetterViewAnimator followerCountSwitcher;
     @InjectView(R.id.follower_count_hint) TextView followerCountView;
     @InjectView(R.id.no_follower_hint) TextView noFollowerView;
+    @InjectView(R.id.mention_widget) MentionActionButtonsView mentionActionButtonsView;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject Analytics analytics;
     @Inject UserProfileDTOUtil userProfileDTOUtil;
+    @Inject protected MentionTaggedStockHandler mentionTaggedStockHandler;
 
     protected UserProfileDTO currentUserProfileDTO;
 
@@ -77,7 +83,7 @@ public class SendMessageFragment extends BaseFragment
         args.putInt(KEY_MESSAGE_TYPE, messageType.typeId);
     }
 
-    public static MessageType getMessageType(@NonNull Bundle args)
+    @NonNull public static MessageType getMessageType(@NonNull Bundle args)
     {
         return MessageType.fromId(args.getInt(SendMessageFragment.KEY_MESSAGE_TYPE));
     }
@@ -125,19 +131,35 @@ public class SendMessageFragment extends BaseFragment
         ButterKnife.inject(this, view);
         DeviceUtil.showKeyboardDelayed(inputText);
         displayMessageTypeView();
+        mentionTaggedStockHandler.setDiscussionPostContent(inputText);
     }
 
     @Override public void onStart()
     {
         super.onStart();
         fetchCurrentUserProfile();
+        registerMentions();
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        mentionTaggedStockHandler.collectSelection();
     }
 
     @Override public void onDestroyView()
     {
+        mentionTaggedStockHandler.setDiscussionPostContent(null);
         DeviceUtil.dismissKeyboard(inputText);
         ButterKnife.reset(this);
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        mentionTaggedStockHandler.setHasSelectedItemFragment(null);
+        mentionTaggedStockHandler = null;
+        super.onDestroy();
     }
 
     private void fetchCurrentUserProfile()
@@ -174,6 +196,20 @@ public class SendMessageFragment extends BaseFragment
     {
         Timber.e(e, "Error fetching profile");
         THToast.show(new THException(e));
+    }
+
+    protected void registerMentions()
+    {
+        onStopSubscriptions.add(mentionActionButtonsView.getSelectedItemObservable()
+                .subscribe(
+                        new Action1<HasSelectedItem>()
+                        {
+                            @Override public void call(HasSelectedItem hasSelectedItem)
+                            {
+                                mentionTaggedStockHandler.setHasSelectedItemFragment(hasSelectedItem);
+                            }
+                        },
+                        new ToastOnErrorAction()));
     }
 
     protected boolean canSendMessage()

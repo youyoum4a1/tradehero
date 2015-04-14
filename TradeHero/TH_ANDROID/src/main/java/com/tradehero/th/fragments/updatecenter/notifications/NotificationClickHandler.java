@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.updatecenter.notifications;
 
 import android.content.Context;
 import android.os.Bundle;
+import com.tradehero.th.activities.PrivateDiscussionActivity;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.discussion.key.SecurityDiscussionKey;
@@ -18,7 +19,6 @@ import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -142,13 +142,13 @@ public class NotificationClickHandler
                     }
                     if (notificationDTO.referencedUserId != null)
                     {
-                        ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(bundle, new UserBaseKey(notificationDTO.referencedUserId));
+                        PrivateDiscussionActivity.putCorrespondentUserBaseKey(bundle, new UserBaseKey(notificationDTO.referencedUserId));
                     }
                     if (notificationDTO.threadId != null)
                     {
-                        ReplyPrivateMessageFragment.putDiscussionKey(bundle, DiscussionKeyFactory.create(discussionType, notificationDTO.threadId));
+                        PrivateDiscussionActivity.putDiscussionKey(bundle, DiscussionKeyFactory.create(discussionType, notificationDTO.threadId));
                     }
-                    navigator.pushFragment(ReplyPrivateMessageFragment.class, bundle);
+                    navigator.launchActivity(PrivateDiscussionActivity.class, bundle);
                 }
                 break;
 
@@ -164,13 +164,13 @@ public class NotificationClickHandler
                     }
                     if (notificationDTO.referencedUserId != null)
                     {
-                        ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(bundle, new UserBaseKey(notificationDTO.referencedUserId));
+                        PrivateDiscussionActivity.putCorrespondentUserBaseKey(bundle, new UserBaseKey(notificationDTO.referencedUserId));
                     }
                     if (notificationDTO.replyableId != null)
                     {
-                        ReplyPrivateMessageFragment.putDiscussionKey(bundle, DiscussionKeyFactory.create(discussionType, notificationDTO.replyableId));
+                        PrivateDiscussionActivity.putDiscussionKey(bundle, DiscussionKeyFactory.create(discussionType, notificationDTO.replyableId));
                     }
-                    navigator.pushFragment(ReplyPrivateMessageFragment.class, bundle);
+                    navigator.launchActivity(PrivateDiscussionActivity.class, bundle);
                 }
                 break;
 

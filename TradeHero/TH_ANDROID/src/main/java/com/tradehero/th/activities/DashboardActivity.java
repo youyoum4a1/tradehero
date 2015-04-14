@@ -60,6 +60,8 @@ import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.NavigationAnalyticsReporter;
+import com.tradehero.th.fragments.base.DashboardFragmentOuterElements;
+import com.tradehero.th.fragments.base.FragmentOuterElements;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentBroadcastSignal;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
@@ -317,6 +319,10 @@ public class DashboardActivity extends BaseActivity
         }
     }
 
+/*
+        P2: There is a unnecessary menu button on Me page
+        https://www.pivotaltracker.com/n/projects/559137/stories/91165728
+
     @Override public boolean onCreateOptionsMenu(Menu menu)
     {
         UserProfileDTO currentUserProfile =
@@ -362,6 +368,7 @@ public class DashboardActivity extends BaseActivity
         }
         return super.onOptionsItemSelected(item);
     }
+*/
 
     private void pushFragmentIfNecessary(Class<? extends Fragment> fragmentClass)
     {
@@ -620,6 +627,12 @@ public class DashboardActivity extends BaseActivity
                 requester.onActivityResult(requestCode, resultCode, data);
             }
         });
+        RouteParams routeParams = getRouteParams(data);
+        if (routeParams != null)
+        {
+            resideMenu.closeMenu();
+            thRouter.open(routeParams.deepLink, routeParams.extras);
+        }
     }
 
     @Override public void openMenu()
@@ -725,6 +738,11 @@ public class DashboardActivity extends BaseActivity
             router.registerAlias("reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
             router.registerAlias("store/reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
             return router;
+        }
+
+        @Provides FragmentOuterElements provideFragmentElements(DashboardFragmentOuterElements dashboardFragmentElements)
+        {
+            return dashboardFragmentElements;
         }
 
         @Provides @BottomTabs DashboardTabHost provideDashboardBottomBar()

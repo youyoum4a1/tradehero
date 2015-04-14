@@ -93,7 +93,10 @@
           android:background="@drawable/basic_light_grey_selector"
           android:layout_marginLeft="@dimen/margin_small"
           android:layout_marginRight="@dimen/margin_small"
-          android:layout_marginTop="@dimen/margin_small"/>
+          android:layout_marginTop="@dimen/margin_small"
+          android:visibility="gone"
+          tools:visibility="visible"
+          />
 
       <Button
           android:id="@+id/news_start_new_discussion"

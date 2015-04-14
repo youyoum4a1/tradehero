@@ -73,7 +73,7 @@ public enum RootFragmentType
             null,
             HomeActivity.class,
             AnalyticsConstants.TabBar_Home),
-    UPDATE_CENTER(R.layout.residemenu_text_item,
+    UPDATE_CENTER(R.layout.residemenu_item_update_center,
             R.string.dashboard_message_center,
             R.string.dashboard_message_center_key,
             R.color.transparent,
@@ -181,6 +181,6 @@ public enum RootFragmentType
 
     @NonNull public static RootFragmentType getInitialTab()
     {
-        return RootFragmentType.ME;
+        return RootFragmentType.TRENDING;
     }
 }

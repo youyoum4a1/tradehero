@@ -41,7 +41,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        fragmentUtil.linkWith(this);
+        fragmentUtil.linkWith(this, LeaderboardType.STOCKS);
     }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

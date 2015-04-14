@@ -2,17 +2,23 @@ package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.adapters.PagedViewDTOAdapterImpl;
+import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class SecurityPagedViewDTOAdapter extends PagedViewDTOAdapterImpl<SecurityCompactDTO, SecurityItemView>
 {
+    @Nullable protected WatchlistPositionDTOList watchedList;
+    @Nullable private Map<SecurityId, AlertCompactDTO> mappedAlerts;
     //<editor-fold desc="Constructors">
     public SecurityPagedViewDTOAdapter(Context context, int resource)
     {
@@ -63,6 +69,49 @@ public class SecurityPagedViewDTOAdapter extends PagedViewDTOAdapterImpl<Securit
                         securityCompactDTO.bidPrice = quote.bid;
                     }
                 }
+            }
+        }
+    }
+
+    public void setWatchList(WatchlistPositionDTOList watchedList)
+    {
+        this.watchedList = watchedList;
+    }
+
+    public void setAlertList(Map<SecurityId, AlertCompactDTO> securityIdAlertIdMap)
+    {
+        mappedAlerts = securityIdAlertIdMap;
+    }
+
+    @Override public SecurityCompactDTO getItem(int position)
+    {
+        SecurityCompactDTO dto = super.getItem(position);
+        updateWatchListAndAlert(dto);
+        return dto;
+    }
+
+    private void updateWatchListAndAlert(SecurityCompactDTO dto)
+    {
+        if (watchedList != null && watchedList.size() > 0 && getCount() > 0)
+        {
+            if (watchedList.contains(dto.getSecurityId()))
+            {
+                dto.inWatchList = true;
+            }
+            else
+            {
+                dto.inWatchList = false;
+            }
+        }
+        if (mappedAlerts != null && mappedAlerts.size() > 0 && getCount() > 0)
+        {
+            if (mappedAlerts.get(dto.getSecurityId()) != null)
+            {
+                dto.inAlertList = true;
+            }
+            else
+            {
+                dto.inAlertList = false;
             }
         }
     }

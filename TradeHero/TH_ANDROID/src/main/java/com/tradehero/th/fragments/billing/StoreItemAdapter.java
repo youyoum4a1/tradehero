@@ -86,6 +86,14 @@ public class StoreItemAdapter extends ArrayAdapter<StoreItemDTO>
 
         //noinspection unchecked
         ((DTOView<StoreItemDTO>) view).display(getItem(position));
+        if ((position & 1) == 0)
+        {
+            view.setBackgroundResource(R.drawable.basic_white_selector);
+        }
+        else
+        {
+            view.setBackgroundResource(R.drawable.basic_light_grey_selector);
+        }
 
         return view;
     }

@@ -18,7 +18,10 @@ import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-@Routable("web/url/:requiredUrlEncoded")
+@Routable({
+        "web/url/:requiredUrlEncoded",
+        "web"
+})
 public class WebViewFragment extends BaseWebViewFragment
 {
     @Inject THRouter thRouter;

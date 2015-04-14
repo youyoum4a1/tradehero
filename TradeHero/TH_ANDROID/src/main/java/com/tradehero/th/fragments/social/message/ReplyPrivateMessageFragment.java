@@ -78,6 +78,7 @@ public class ReplyPrivateMessageFragment extends AbstractPrivateMessageFragment
                 {
                     @Override public DiscussionListKey call(Pair<MessageHeaderId, MessageHeaderDTO> pair)
                     {
+                        linkWith(discussionKey,true);
                         return DiscussionListKeyFactory.create(pair.second);
                     }
                 });

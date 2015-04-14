@@ -1,16 +1,23 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedViewDTOAdapterImpl;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -23,6 +30,8 @@ public class LeaderboardMarkUserListAdapter extends PagedViewDTOAdapterImpl<
 
     @NonNull protected final PublishSubject<LeaderboardMarkUserItemView.UserAction> followRequestedPublish;
 
+    Set<Integer> pageState;
+
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserListAdapter(
             @NonNull Context context,
@@ -32,6 +41,7 @@ public class LeaderboardMarkUserListAdapter extends PagedViewDTOAdapterImpl<
         super(context, resource);
         this.leaderboardKey = leaderboardKey;
         this.followRequestedPublish = PublishSubject.create();
+        pageState = Collections.synchronizedSet(new HashSet<Integer>());
     }
     //</editor-fold>
 
@@ -67,11 +77,29 @@ public class LeaderboardMarkUserListAdapter extends PagedViewDTOAdapterImpl<
         }
         dtoView.linkWith(applicablePortfolioId);
 
-        boolean expanded = getItem(position).leaderboardUserDTO.isExpanded();
+        boolean expanded = getItem(position).isExpanded();
         dtoView.expandingLayout.expandWithNoAnimation(expanded);
         dtoView.setExpanded(expanded);
 
         return dtoView;
+    }
+
+    @Override public void addPage(int page, @NonNull List<LeaderboardMarkUserItemView.DTO> objects)
+    {
+        if (pageState.contains(page)) {
+            return;
+        }
+        pageState.add(page);
+        pagedObjects.put(page, objects);
+        super.addAll(objects);
+        notifyDataSetChanged();
+        setNotifyOnChange(true);
+    }
+
+    @Override public void clear()
+    {
+        super.clear();
+        pageState.clear();
     }
 
     @NonNull @Override protected LeaderboardMarkUserItemView inflate(int position, ViewGroup viewGroup)
