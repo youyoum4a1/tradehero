@@ -2,10 +2,8 @@ package com.tradehero.th.api.users;
 
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.purchase.UserCreditPlanDTO;
 import com.tradehero.th.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -27,8 +25,6 @@ public class UserProfileDTO extends UserProfileCompactDTO
     /** newly added fields */
     public int allHeroCount;
     public int allFollowerCount;
-    public int freeFollowerCount;
-    public int paidFollowerCount;
     /** newly added fields */
 
     public Integer ccPerMonthBalance;   // recurring monthly balance (not used, old)
@@ -51,8 +47,6 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public boolean useTHPrice;
 
-    @Deprecated
-    public int unreadCount;
     public int alertCount;
 
     public int unreadMessageThreadsCount;
@@ -63,11 +57,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public String inviteCode;
 
     public List<UserAlertPlanDTO> userAlertPlans;
-    public List<UserCreditPlanDTO> userCreditPlans;
     public List<ProviderDTO> enrolledProviders;
-
-    public boolean competitionAutoEnrollOnFirstLaunch;
-    public LeaderboardDTO mostSkilledLbmu;
 
 
     public boolean isFollowingUser(int userId)
