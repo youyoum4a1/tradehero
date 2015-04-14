@@ -33,6 +33,7 @@ public class PopQuizActivity extends OneFragmentActivity
         else
         {
             THToast.show("Please login with Facebook to play PopQuiz");
+            finish();
         }
         return args;
     }
