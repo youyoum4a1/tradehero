@@ -31,6 +31,7 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.HelpActivity;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -62,6 +63,7 @@ import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.position.PositionDTOUtils;
+import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
 import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
@@ -125,6 +127,7 @@ public class PositionListFragment
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject BroadcastUtils broadcastUtils;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
+    @Inject Lazy<ProviderTradableSecuritiesHelper> providerTradableSecuritiesHelper;
 
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
@@ -265,7 +268,7 @@ public class PositionListFragment
     {
         if (view instanceof PositionNothingView)
         {
-            pushTrendingFragment();
+            pushSecuritiesFragment();
         }
         else if (view instanceof PositionLockedView && userProfileDTO != null)
         {
@@ -302,7 +305,7 @@ public class PositionListFragment
         }
     }
 
-    protected void pushTrendingFragment()
+    protected void pushSecuritiesFragment()
     {
         Bundle args = new Bundle();
 
@@ -313,16 +316,27 @@ public class PositionListFragment
             SecurityListRxFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        if (portfolioDTO != null && portfolioDTO.assetClass != null)
+        if (portfolioDTO == null || portfolioDTO.providerId == null)
         {
-            TrendingMainFragment.putAssetClass(args, portfolioDTO.assetClass);
-            if (portfolioDTO.assetClass != null)
+            if (portfolioDTO != null && portfolioDTO.assetClass != null)
             {
-                TrendingMainFragment.setLastType(portfolioDTO.assetClass);
+                TrendingMainFragment.putAssetClass(args, portfolioDTO.assetClass);
+                if (portfolioDTO.assetClass != null)
+                {
+                    TrendingMainFragment.setLastType(portfolioDTO.assetClass);
+                }
+                TrendingMainFragment.setLastPosition(1);
             }
-            TrendingMainFragment.setLastPosition(1);
+            navigator.get().pushFragment(TrendingMainFragment.class, args);
         }
-        navigator.get().pushFragment(TrendingMainFragment.class, args);
+        else
+        {
+            providerTradableSecuritiesHelper.get().pushTradableSecuritiesList(
+                    args,
+                    ownedPortfolioId,
+                    portfolioDTO,
+                    new ProviderId(portfolioDTO.providerId));
+        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater)
