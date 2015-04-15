@@ -28,7 +28,7 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.portfolio.key.PortfolioCompactListKey;
-import com.tradehero.th.api.position.PositionDTOCompactList;
+import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -363,9 +363,9 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         displayBuySellSwitch();
     }
 
-    @Override public void linkWith(PositionDTOCompactList positionDTOCompacts)
+    @Override public void linkWith(PositionDTOList positionDTOs)
     {
-        super.linkWith(positionDTOCompacts);
+        super.linkWith(positionDTOs);
         setInitialSellQuantityIfCan();
         displayBuySellSwitch();
         displayBuySellContainer();

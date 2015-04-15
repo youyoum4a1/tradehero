@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,6 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
-import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -41,12 +41,11 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.internal.util.SubscriptionList;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 /**
@@ -54,7 +53,7 @@ import timber.log.Timber;
  * needed. In case the news are not in the cache, the download is done in the background using the `fetchSecurityTask` AsyncTask. The task is
  * cancelled when the fragment is paused.
  */
-public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
+public class NewsHeadlineFragment extends AbstractSecurityInfoFragment
 {
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject NewsItemCompactListCacheRx newsTitleCache;
@@ -62,18 +61,12 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     @Inject AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
     @Inject DiscussionFragmentUtil discussionFragmentUtil;
     @Inject FragmentOuterElements fragmentElements;
+
     @InjectView(R.id.list_news_headline_wrapper) BetterViewAnimator listViewWrapper;
     @InjectView(R.id.list_news_headline) ListView listView;
     @InjectView(R.id.list_news_headline_progressbar) ProgressBar progressBar;
 
     private NewsHeadlineAdapter adapter;
-
-    @Nullable Subscription securitySubscription;
-    @Nullable Subscription securityNewsSubscription;
-    protected SubscriptionList onStopSubscriptions;
-
-    public static final String TEST_KEY = "News-Test";
-    public static long start = 0;
 
     @Override public void onAttach(Activity activity)
     {
@@ -85,7 +78,6 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     {
         super.onCreate(savedInstanceState);
         HierarchyInjector.inject(this);
-        start = System.currentTimeMillis();
     }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -98,26 +90,10 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        showLoadingNews();
         listView.setAdapter(adapter);
         listView.setOnScrollListener(fragmentElements.getListViewScrollListener());
-    }
-
-    @Override public void onStart()
-    {
-        super.onStart();
-        onStopSubscriptions = new SubscriptionList();
+        fetchSecurityNews();
         registerUserActions();
-    }
-
-    @Override public void onStop()
-    {
-        onStopSubscriptions.unsubscribe();
-        unsubscribe(securitySubscription);
-        securitySubscription = null;
-        unsubscribe(securityNewsSubscription);
-        securityNewsSubscription = null;
-        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -136,98 +112,58 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         super.onDetach();
     }
 
-    private void showNewsList()
-    {
-        listViewWrapper.setDisplayedChildByLayoutId(listView.getId());
-    }
-
-    private void showLoadingNews()
-    {
-        listViewWrapper.setDisplayedChildByLayoutId(progressBar.getId());
-    }
-
-    @Override protected SecurityCompactCacheRx getInfoCache()
-    {
-        return securityCompactCache;
-    }
-
-    @Override public void linkWith(@Nullable SecurityId securityId)
-    {
-        super.linkWith(securityId);
-        if (securityId != null)
-        {
-            fetchSecurity(securityId);
-        }
-    }
-
-    protected void fetchSecurity(@NonNull SecurityId securityId)
-    {
-        unsubscribe(securitySubscription);
-        securitySubscription = AppObservable.bindFragment(
-                this,
-                securityCompactCache.get(securityId))
-                .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<SecurityCompactDTO>()
-                        {
-                            @Override public void call(SecurityCompactDTO compactDTO)
-                            {
-                                linkWith(compactDTO);
-                            }
-                        },
-                        new EmptyAction1<Throwable>());
-    }
-
-    public void linkWith(SecurityCompactDTO securityCompactDTO)
-    {
-        value = securityCompactDTO;
-
-        if (this.value != null)
-        {
-            fetchSecurityNews();
-        }
-    }
-
     private void fetchSecurityNews()
     {
-        Timber.d("%s fetchSecurityNews,consume: %s", TEST_KEY, (System.currentTimeMillis() - start));
-
-        unsubscribe(securityNewsSubscription);
-        NewsItemListKey listKey = new NewsItemListSecurityKey(value.getSecurityIntegerId(), null, null);
-        securityNewsSubscription = AppObservable.bindFragment(
-                this,
-                newsTitleCache.get(listKey))
-                .map(new PairGetSecond<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>())
-                .flatMap(new Func1<PaginatedDTO<NewsItemCompactDTO>, Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>>>()
-                {
-                    @Override public Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> call(
-                            PaginatedDTO<NewsItemCompactDTO> newsItemCompactDTOPaginatedDTO)
-                    {
-                        List<NewsItemCompactDTO> newsItems = newsItemCompactDTOPaginatedDTO.getData();
-                        if (newsItems == null)
-                        {
-                            return Observable.empty();
-                        }
-                        return viewDTOFactory.createNewsHeadlineViewLinearDTOs(newsItems);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>()
-                        {
-                            @Override public void call(List<AbstractDiscussionCompactItemViewLinear.DTO> dtos)
+        if (adapter.getCount() == 0)
+        {
+            listViewWrapper.setDisplayedChildByLayoutId(progressBar.getId());
+        }
+        if (securityId != null)
+        {
+            onDestroyViewSubscriptions.add(
+                    securityCompactCache.getOne(securityId)
+                            .subscribeOn(Schedulers.computation())
+                            .flatMap(new Func1<Pair<SecurityId, SecurityCompactDTO>, Observable<PaginatedDTO<NewsItemCompactDTO>>>()
                             {
-                                adapter.setItems(dtos);
-                                listViewWrapper.setDisplayedChildByLayoutId(listView.getId());
-                            }
-                        },
-                        new ToastAction<Throwable>(getString(R.string.error_fetch_security_info)));
+                                @Override public Observable<PaginatedDTO<NewsItemCompactDTO>> call(Pair<SecurityId, SecurityCompactDTO> pair)
+                                {
+                                    securityCompactDTO = pair.second;
+                                    return newsTitleCache.get(new NewsItemListSecurityKey(
+                                            pair.second.getSecurityIntegerId(),
+                                            null, null))
+                                            .map(new PairGetSecond<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>());
+                                }
+                            })
+                            .flatMap(new Func1<PaginatedDTO<NewsItemCompactDTO>, Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>>>()
+                            {
+                                @Override public Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> call(
+                                        PaginatedDTO<NewsItemCompactDTO> newsItemCompactDTOPaginatedDTO)
+                                {
+                                    List<NewsItemCompactDTO> newsItems = newsItemCompactDTOPaginatedDTO.getData();
+                                    if (newsItems == null)
+                                    {
+                                        return Observable.empty();
+                                    }
+                                    return viewDTOFactory.createNewsHeadlineViewLinearDTOs(newsItems);
+                                }
+                            })
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>()
+                                    {
+                                        @Override public void call(List<AbstractDiscussionCompactItemViewLinear.DTO> dtos)
+                                        {
+                                            adapter.setItems(dtos);
+                                            listViewWrapper.setDisplayedChildByLayoutId(listView.getId());
+                                        }
+                                    },
+                                    new ToastAction<Throwable>(getString(R.string.error_fetch_security_info))));
+        }
     }
 
     protected void registerUserActions()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
                 this,
                 adapter.getUserActionObservable())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -247,12 +183,6 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
                             }
                         },
                         new TimberOnErrorAction("When registering actions")));
-    }
-
-    @Override public void display()
-    {
-        Timber.d("%s display consume: %s", TEST_KEY, (System.currentTimeMillis() - start));
-        showNewsList();
     }
 
     @SuppressWarnings({"UnusedDeclaration", "UnusedParameters"})

@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,26 +15,27 @@ import butterknife.InjectView;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
-import com.tradehero.route.InjectRoute;
-import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.fx.FXChartGranularity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOCompact;
-import com.tradehero.th.api.position.PositionDTOCompactList;
+import com.tradehero.th.api.position.PositionDTOList;
+import com.tradehero.th.api.position.PositionDTOUtil;
 import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.portfolio.header.MarginCloseOutStatusTextView;
+import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
-import com.tradehero.th.persistence.position.PositionCompactListCacheRx;
+import com.tradehero.th.persistence.position.PositionListCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.SecurityUtils;
@@ -47,17 +49,17 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.subjects.BehaviorSubject;
 
-@Routable("securityFx/:securityRawInfo")
-public class FXInfoFragment extends DashboardFragment
+public class FXInfoFragment extends AbstractSecurityInfoFragment
         implements TimeSpanButtonSet.OnTimeSpanButtonSelectedListener
 {
+    private final static String BUNDLE_KEY_APPLICABLE_PORTFOLIO_ID = FXInfoFragment.class.getName() + ".applicablePortfolioId";
     private final static long MILLISECOND_FX_QUOTE_REFRESH = 5000;
     private final static long MILLISECOND_FX_CANDLE_CHART_REFRESH = 60000;
-    private final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = "securityId";
 
     @Inject SecurityServiceWrapper securityServiceWrapper;
-    @Inject protected PositionCompactListCacheRx positionCompactListCache;
+    @Inject protected PositionListCacheRx positionCompactListCache;
     @Inject protected QuoteServiceWrapper quoteServiceWrapper;
 
     @InjectView(R.id.margin_close_out_status) protected MarginCloseOutStatusTextView marginCloseOutStatus;
@@ -68,12 +70,39 @@ public class FXInfoFragment extends DashboardFragment
     @InjectView(R.id.tv_position_units) protected TextView tvPositionUnits;
     @InjectView(R.id.tv_position_money) protected TextView tvPositionMoney;
 
-    @InjectRoute protected SecurityId securityId;
-    @Nullable protected PositionDTOCompactList positionDTOCompactList;
+    @Nullable protected PositionDTOList positionDTOList;
     @Nullable protected PositionDTOCompact positionDTOCompact;
-    @Nullable static protected PortfolioCompactDTO portfolioCompactDTO;
+    @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
+    @NonNull protected BehaviorSubject<PortfolioCompactDTO> portfolioCompactDTOBehavior;
     @Nullable protected QuoteDTO quoteDTO;
-    @Nullable static protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
+    protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
+
+    public static void putApplicablePortfolioId(@NonNull Bundle args, @NonNull OwnedPortfolioId applicablePortfolioId)
+    {
+        args.putBundle(BUNDLE_KEY_APPLICABLE_PORTFOLIO_ID, applicablePortfolioId.getArgs());
+    }
+
+    private static OwnedPortfolioId getPurchaseApplicableOwnedPortfolioId(@NonNull Bundle args)
+    {
+        return new OwnedPortfolioId(args.getBundle(BUNDLE_KEY_APPLICABLE_PORTFOLIO_ID));
+    }
+
+    public FXInfoFragment()
+    {
+        portfolioCompactDTOBehavior = BehaviorSubject.create();
+    }
+
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        HierarchyInjector.inject(this);
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        purchaseApplicableOwnedPortfolioId = getPurchaseApplicableOwnedPortfolioId(getArguments());
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -87,37 +116,27 @@ public class FXInfoFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         setRetainInstance(false);
         initTimeSpanButton();
-        securityId = getSecurityId(getArguments());
-    }
-
-    @Override public void onStart()
-    {
-        super.onStart();
         fetchKChart(FXChartGranularity.min1);
         fetchPositionCompactList();
         fetchQuote();
+        registerToPortfolio();
     }
 
-    @Nullable public static SecurityId getSecurityId(@NonNull Bundle args)
+    @NonNull public Observer<PortfolioCompactDTO> getPortfolioObserver()
     {
-        Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
-        if (securityIdBundle == null)
-        {
-            return null;
-        }
-        return new SecurityId(securityIdBundle);
+        return portfolioCompactDTOBehavior;
     }
 
     protected void fetchPositionCompactList()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
                 this,
                 positionCompactListCache.get(securityId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<Pair<SecurityId, PositionDTOCompactList>>()
+                        new Action1<Pair<SecurityId, PositionDTOList>>()
                         {
-                            @Override public void call(Pair<SecurityId, PositionDTOCompactList> pair)
+                            @Override public void call(Pair<SecurityId, PositionDTOList> pair)
                             {
                                 linkWith(pair.second);
                             }
@@ -127,23 +146,23 @@ public class FXInfoFragment extends DashboardFragment
                                 "Failed to fetch positions for this security")));
     }
 
-    public void linkWith(final PositionDTOCompactList positionDTOCompacts)
+    public void linkWith(final PositionDTOList positionDTOs)
     {
-        this.positionDTOCompactList = positionDTOCompacts;
-        if (positionDTOCompactList != null && portfolioCompactDTO != null)
+        this.positionDTOList = positionDTOs;
+        if (positionDTOList != null && portfolioCompactDTO != null)
         {
-            this.positionDTOCompact = positionDTOCompactList.findFirstWhere(new Predicate<PositionDTOCompact>()
+            this.positionDTOCompact = positionDTOList.findFirstWhere(new Predicate<PositionDTO>()
             {
-                @Override public boolean apply(PositionDTOCompact position)
+                @Override public boolean apply(PositionDTO position)
                 {
-                    return position.portfolioId == portfolioCompactDTO.id && position.shares != 0;
+                    return position.portfolioId == portfolioCompactDTO.id && position.shares != null && position.shares != 0;
                 }
             });
             if (positionDTOCompact == null)
             {
-                this.positionDTOCompact = positionDTOCompactList.findFirstWhere(new Predicate<PositionDTOCompact>()
+                this.positionDTOCompact = positionDTOList.findFirstWhere(new Predicate<PositionDTO>()
                 {
-                    @Override public boolean apply(PositionDTOCompact position)
+                    @Override public boolean apply(PositionDTO position)
                     {
                         return position.portfolioId == portfolioCompactDTO.id;
                     }
@@ -155,7 +174,7 @@ public class FXInfoFragment extends DashboardFragment
 
     protected void fetchQuote()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
                 this,
                 quoteServiceWrapper.getQuoteRx(securityId)
                         .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
@@ -172,10 +191,6 @@ public class FXInfoFragment extends DashboardFragment
                             @Override public void call(QuoteDTO quote)
                             {
                                 quoteDTO = quote;
-                                if (portfolioCompactDTO != null)
-                                {
-                                    marginCloseOutStatus.linkWith(portfolioCompactDTO);
-                                }
                                 displayPositionStatus();
                             }
                         },
@@ -189,14 +204,9 @@ public class FXInfoFragment extends DashboardFragment
         mTimeSpanButtonSet.setActive(new ChartTimeSpan(ChartTimeSpan.MIN_1));
     }
 
-    @Override public void onDestroyView()
-    {
-        super.onDestroyView();
-    }
-
     private void fetchKChart(@NonNull FXChartGranularity granularity)
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXHistory(securityId, granularity)
                         .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
@@ -210,16 +220,32 @@ public class FXInfoFragment extends DashboardFragment
                 .subscribe(createFXHistoryFetchObserver()));
     }
 
+    private void registerToPortfolio()
+    {
+        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
+                this,
+                portfolioCompactDTOBehavior)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<PortfolioCompactDTO>()
+                        {
+                            @Override public void call(PortfolioCompactDTO portfolioCompactDTO)
+                            {
+                                FXInfoFragment.this.portfolioCompactDTO = portfolioCompactDTO;
+                                if (marginCloseOutStatus != null)
+                                {
+                                    marginCloseOutStatus.linkWith(portfolioCompactDTO);
+                                }
+                                displayPositionStatus();
+                            }
+                        },
+                        new ToastAndLogOnErrorAction("Failed to listen to portfolio")));
+    }
+
     //<editor-fold desc="Display Methods"> //hide switch portfolios for temp
     public void displayPositionStatus()
     {
-        if (positionDTOCompact == null)
-        {
-            // Not enough info
-            return;
-        }
-
-        if (llPositionStatus != null)
+        if (llPositionStatus != null && positionDTOCompact != null)
         {
             boolean toShow = positionDTOCompact.shares != null
                     && positionDTOCompact.positionStatus != null;
@@ -270,12 +296,13 @@ public class FXInfoFragment extends DashboardFragment
     public Double getUnRealizedPLRefCcy()
     {
         OwnedPortfolioId ownedPortfolioId = purchaseApplicableOwnedPortfolioId;
-        if (ownedPortfolioId != null && positionDTOCompactList != null
+        if (ownedPortfolioId != null && positionDTOList != null
                 && this.quoteDTO != null && portfolioCompactDTO != null)
         {
-            return positionDTOCompactList.getUnRealizedPLRefCcy(
+            return PositionDTOUtil.getUnRealizedPLRefCcy(
+                    positionDTOList,
                     this.quoteDTO,
-                    this.portfolioCompactDTO
+                    portfolioCompactDTO
             );
         }
         return null;
@@ -310,15 +337,5 @@ public class FXInfoFragment extends DashboardFragment
         {
             THToast.show(R.string.error_fx_candle_charts_load_fail);
         }
-    }
-
-    public static void setPurchaseApplicableOwnedPortfolioId(@Nullable OwnedPortfolioId spurchaseApplicableOwnedPortfolioId)
-    {
-        purchaseApplicableOwnedPortfolioId = spurchaseApplicableOwnedPortfolioId;
-    }
-
-    public static void setPortfolioCompactDTO(@Nullable PortfolioCompactDTO sportfolioCompactDTO)
-    {
-        portfolioCompactDTO = sportfolioCompactDTO;
     }
 }

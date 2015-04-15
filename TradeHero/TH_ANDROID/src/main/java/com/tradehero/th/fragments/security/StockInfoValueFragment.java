@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -16,25 +18,22 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.rx.ToastAction;
 import javax.inject.Inject;
-import rx.Subscription;
-import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-public class StockInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
+public class StockInfoValueFragment extends AbstractSecurityInfoFragment
 {
-    private TextView mPreviousClose;
-    private TextView mOpen;
-    private TextView mDaysHigh;
-    private TextView mDaysLow;
-    private TextView mMarketCap;
-    private TextView mPERatio;
-    private TextView mEps;
-    private TextView mVolume;
-    private TextView mAvgVolume;
+    @InjectView(R.id.vprevious_close) TextView mPreviousClose;
+    @InjectView(R.id.vopen) TextView mOpen;
+    @InjectView(R.id.vdays_high) TextView mDaysHigh;
+    @InjectView(R.id.vdays_low) TextView mDaysLow;
+    @InjectView(R.id.vmarket_cap) TextView mMarketCap;
+    @InjectView(R.id.vpe_ratio) TextView mPERatio;
+    @InjectView(R.id.veps) TextView mEps;
+    @InjectView(R.id.vvolume) TextView mVolume;
+    @InjectView(R.id.vavg_volume) TextView mAvgVolume;
 
     @Inject protected SecurityCompactCacheRx securityCompactCache;
-    @Nullable Subscription securityCompactCacheSubscription;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -44,46 +43,21 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view;
-        view = inflater.inflate(R.layout.fragment_stockinfo_value, container, false);
-        initViews(view);
-        return view;
+        return inflater.inflate(R.layout.fragment_stockinfo_value, container, false);
     }
 
-    private void initViews(View v)
+    @Override public void onViewCreated(View v, @Nullable Bundle savedInstanceState)
     {
-        mPreviousClose = (TextView) v.findViewById(R.id.vprevious_close);
-        mOpen = (TextView) v.findViewById(R.id.vopen);
-        mDaysHigh = (TextView) v.findViewById(R.id.vdays_high);
-        mDaysLow = (TextView) v.findViewById(R.id.vdays_low);
-        mMarketCap = (TextView) v.findViewById(R.id.vmarket_cap);
-        mPERatio = (TextView) v.findViewById(R.id.vpe_ratio);
-        mEps = (TextView) v.findViewById(R.id.veps);
-        mVolume = (TextView) v.findViewById(R.id.vvolume);
-        mAvgVolume = (TextView) v.findViewById(R.id.vavg_volume);
+        super.onViewCreated(v, savedInstanceState);
+        ButterKnife.inject(this, v);
+        fetchSecurity();
     }
 
-    @Override public void onDestroyView()
+    protected void fetchSecurity()
     {
-        unsubscribe(securityCompactCacheSubscription);
-        securityCompactCacheSubscription = null;
-        super.onDestroyView();
-    }
-
-    @Override protected SecurityCompactCacheRx getInfoCache()
-    {
-        return securityCompactCache;
-    }
-
-    @Override public void linkWith(@Nullable SecurityId securityId)
-    {
-        super.linkWith(securityId);
         if (this.securityId != null)
         {
-            unsubscribe(securityCompactCacheSubscription);
-            securityCompactCacheSubscription = AppObservable.bindFragment(
-                    this,
-                    securityCompactCache.get(securityId))
+            onDestroyViewSubscriptions.add(securityCompactCache.get(securityId)
                     .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
@@ -94,26 +68,14 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
                                     linkWith(securityCompactDTO);
                                 }
                             },
-                            new ToastAction<Throwable>(getString(R.string.error_fetch_security_info)));
+                            new ToastAction<Throwable>(getString(R.string.error_fetch_security_info))));
         }
     }
 
-    //<editor-fold desc="Display Methods">
-    public void display()
+    public void linkWith(SecurityCompactDTO value)
     {
-        displayPreviousClose();
-        displayOpen();
-        displayDaysHigh();
-        displayDaysLow();
-        displayMarketCap();
-        displayPERatio();
-        displayEps();
-        displayVolume();
-        displayAvgVolume();
-    }
+        this.securityCompactDTO = value;
 
-    public void displayPreviousClose()
-    {
         if (!isDetached() && mPreviousClose != null)
         {
             if (value == null || value.previousClose == null)
@@ -128,10 +90,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
                         .build().toString());
             }
         }
-    }
 
-    public void displayOpen()
-    {
         if (!isDetached() && mOpen != null)
         {
             if (value == null || value.open == null)
@@ -145,10 +104,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
                         .build().toString());
             }
         }
-    }
 
-    public void displayDaysHigh()
-    {
         if (!isDetached() && mDaysHigh != null)
         {
             if (value == null || value.high == null)
@@ -162,10 +118,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
                         .build().toString());
             }
         }
-    }
 
-    public void displayDaysLow()
-    {
         if (!isDetached() && mDaysLow != null)
         {
             if (value == null || value.low == null)
@@ -179,10 +132,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
                         .build().toString());
             }
         }
-    }
 
-    public void displayMarketCap()
-    {
         if (!isDetached() && mMarketCap != null)
         {
             if (value == null || value.marketCap == null)
@@ -196,10 +146,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
                         .build().toString());
             }
         }
-    }
 
-    public void displayPERatio()
-    {
         if (!isDetached() && mPERatio != null)
         {
             if (value == null || value.pe == null)
@@ -213,10 +160,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
                         .build().toString());
             }
         }
-    }
 
-    public void displayEps()
-    {
         if (!isDetached() && mEps != null)
         {
             if (value == null || value.eps == null)
@@ -230,10 +174,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
                         .build().toString());
             }
         }
-    }
 
-    public void displayVolume()
-    {
         if (!isDetached() && mVolume != null)
         {
             if (value == null || value.volume == null)
@@ -246,10 +187,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
                         .build().toString());
             }
         }
-    }
 
-    public void displayAvgVolume()
-    {
         if (!isDetached() && mAvgVolume != null)
         {
             if (value == null || value.averageDailyVolume == null)

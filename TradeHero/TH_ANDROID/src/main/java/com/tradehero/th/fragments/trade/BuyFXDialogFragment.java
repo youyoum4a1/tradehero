@@ -5,9 +5,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
+import com.tradehero.th.api.position.PositionDTOCompactUtil;
 import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.TransactionFormDTO;
-import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
@@ -44,17 +44,17 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
 
     @Override @Nullable protected Double getProfitOrLossUsd()
     {
-        if (positionDTOCompactList == null || portfolioCompactDTO == null)
+        if (positionDTOList == null || portfolioCompactDTO == null)
         {
             return null;
         }
-        Integer shareCount = positionDTOCompactList.getShareCountIn(portfolioCompactDTO.getPortfolioId());
+        Integer shareCount = PositionDTOCompactUtil.getShareCountIn(positionDTOList, portfolioCompactDTO.getPortfolioId());
         if (shareCount != null && shareCount >= 0)
         {
             return null;
         }
 
-        Double total = positionDTOCompactList.getUnRealizedPLRefCcy(quoteDTO, portfolioCompactDTO);
+        Double total = PositionDTOCompactUtil.getUnRealizedPLRefCcy(positionDTOList, quoteDTO, portfolioCompactDTO);
         if (total == null || shareCount == null)
         {
             return null;

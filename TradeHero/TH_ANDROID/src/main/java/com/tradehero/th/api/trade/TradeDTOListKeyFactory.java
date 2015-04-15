@@ -9,11 +9,7 @@ public class TradeDTOListKeyFactory
     @NonNull public static TradeDTOListKey create(@NonNull Bundle args)
     {
         TradeDTOListKey created;
-        if (SecurityTradeDTOListKey.isValid(args))
-        {
-            created = new SecurityTradeDTOListKey(args);
-        }
-        else if (OwnedPositionId.isValid(args))
+        if (OwnedPositionId.isValid(args))
         {
             created = new OwnedPositionId(args);
         }

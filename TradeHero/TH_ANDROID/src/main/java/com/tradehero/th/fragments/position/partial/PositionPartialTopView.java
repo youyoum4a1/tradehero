@@ -219,13 +219,13 @@ public class PositionPartialTopView extends LinearLayout
             this.securityCompactDTO = securityCompactDTO;
 
             //<editor-fold desc="Stock Logo">
-            if (securityCompactDTO != null && securityCompactDTO.imageBlobUrl != null)
+            if (securityCompactDTO.imageBlobUrl != null)
             {
                 stockLogoVisibility = VISIBLE;
                 stockLogoUrl = securityCompactDTO.imageBlobUrl;
                 stockLogoRes = R.drawable.default_image;
             }
-            else if (securityCompactDTO instanceof FxSecurityCompactDTO)
+            else if (securityCompactDTO instanceof FxSecurityCompactDTO) // TODO Improve and show flags?
             {
                 stockLogoVisibility = GONE;
                 stockLogoUrl = null;

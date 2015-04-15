@@ -5,7 +5,7 @@ import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.fx.FXChartGranularity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
-import com.tradehero.th.api.position.PositionDTOCompactList;
+import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -197,9 +197,9 @@ import rx.functions.Func1;
                 securityId.getSecuritySymbol());
     }
 
-    @NonNull public Observable<PositionDTOCompactList> getSecurityPositionCompacts(@NonNull SecurityId securityId)
+    @NonNull public Observable<PositionDTOList> getSecurityPositions(@NonNull SecurityId securityId)
     {
-        return securityServiceRx.getPositionCompacts(
+        return securityServiceRx.getPositions(
                 securityId.getExchange(),
                 securityId.getSecuritySymbol());
     }

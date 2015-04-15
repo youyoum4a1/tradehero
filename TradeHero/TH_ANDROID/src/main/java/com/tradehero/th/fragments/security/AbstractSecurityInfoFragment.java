@@ -1,63 +1,50 @@
 package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
-import com.tradehero.common.persistence.DTO;
-import com.tradehero.common.persistence.DTOCacheRx;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import rx.Subscription;
+import rx.internal.util.SubscriptionList;
 
-abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
+abstract public class AbstractSecurityInfoFragment
         extends Fragment
 {
-    private static final String BUNDLE_KEY_SECURITY_ID = "securityId";
+    private static final String BUNDLE_KEY_SECURITY_ID = AbstractSecurityInfoFragment.class.getName() + "securityId";
 
     protected SecurityId securityId;
-    protected InfoType value;
+    @Nullable protected SecurityCompactDTO securityCompactDTO;
+    protected SubscriptionList onDestroyViewSubscriptions;
 
-    public static void putSecurityId(Bundle args, SecurityId securityId)
+    //<editor-fold desc="Arguments Passing">
+    public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
     {
         args.putBundle(BUNDLE_KEY_SECURITY_ID, securityId.getArgs());
     }
 
-    public static SecurityId getSecurityId(Bundle args)
+    @NonNull private static SecurityId getSecurityId(@NonNull Bundle args)
     {
-        SecurityId extracted = null;
-        if (args != null)
-        {
-            extracted = new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID));
-        }
-        return extracted;
+        return new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID));
+    }
+    //</editor-fold>
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        this.securityId = getSecurityId(getArguments());
     }
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        linkWith(getSecurityId(getArguments()));
+        onDestroyViewSubscriptions = new SubscriptionList();
     }
 
-    abstract protected DTOCacheRx<SecurityId, InfoType> getInfoCache();
-
-    protected void unsubscribe(@Nullable Subscription subscription)
+    @Override public void onDestroyView()
     {
-        if (subscription != null)
-        {
-            subscription.unsubscribe();
-        }
+        onDestroyViewSubscriptions.unsubscribe();
+        super.onDestroyView();
     }
-
-    public void linkWith(@Nullable SecurityId securityId)
-    {
-        this.securityId = securityId;
-    }
-
-    public void linkWith(InfoType value)
-    {
-        this.value = value;
-        display();
-    }
-
-    abstract public void display();
 }

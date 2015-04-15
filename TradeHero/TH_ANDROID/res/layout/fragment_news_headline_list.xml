@@ -12,7 +12,13 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
-    <ListView
+      <ProgressBar
+          android:id="@+id/list_news_headline_progressbar"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"/>
+
+      <ListView
         android:id="@+id/list_news_headline"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,11 +30,6 @@
         android:clipToPadding="false"
         />
 
-    <ProgressBar
-        android:id="@+id/list_news_headline_progressbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
   </com.tradehero.common.widget.BetterViewAnimator>
 
 </LinearLayout>

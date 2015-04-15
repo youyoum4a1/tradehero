@@ -2,11 +2,13 @@ package com.tradehero.th.api.watchlist;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.position.PositionDTOList;
+import com.tradehero.common.api.BaseArrayList;
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.security.SecurityId;
 import java.util.ArrayList;
 
-public class WatchlistPositionDTOList extends PositionDTOList<WatchlistPositionDTO>
+public class WatchlistPositionDTOList extends BaseArrayList<WatchlistPositionDTO>
+    implements DTO
 {
     @Nullable public Double getInvestedUsd()
     {

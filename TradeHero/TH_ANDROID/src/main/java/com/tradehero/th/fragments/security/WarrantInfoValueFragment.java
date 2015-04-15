@@ -1,7 +1,9 @@
 package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -24,18 +27,18 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
+public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment
 {
-    public final static String BUNDLE_KEY_PROVIDER_ID_KEY = WarrantInfoValueFragment.class.getName() + ".providerId";
+    private final static String BUNDLE_KEY_PROVIDER_ID_KEY = WarrantInfoValueFragment.class.getName() + ".providerId";
 
     @InjectView(R.id.warrant_help_video_link) protected Button mHelpVideoLink;
     @InjectView(R.id.vwarrant_type) protected TextView mWarrantType;
@@ -46,106 +49,92 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
     @InjectView(R.id.vwarrant_issuer) protected TextView mIssuer;
 
     @Inject protected SecurityCompactCacheRx securityCompactCache;
-    @Nullable Subscription securityCompactCacheSubscription;
-    protected WarrantDTO warrantDTO;
-    protected ProviderId providerId;
-    protected ProviderDTO providerDTO;
     @Inject protected ProviderCacheRx providerCache;
     @Inject Lazy<DashboardNavigator> navigator;
+    protected WarrantDTO warrantDTO;
+    @Nullable protected ProviderId providerId;
+    protected ProviderDTO providerDTO;
+
+    //<editor-fold desc="Argument Passing">
+    public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
+    {
+        args.putBundle(BUNDLE_KEY_PROVIDER_ID_KEY, providerId.getArgs());
+    }
+
+    @Nullable private static ProviderId getProviderId(@NonNull Bundle args)
+    {
+        Bundle providerIdBundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID_KEY);
+        if (providerIdBundle != null)
+        {
+            return new ProviderId(providerIdBundle);
+        }
+        return null;
+    }
+    //</editor-fold>
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         HierarchyInjector.inject(this);
+        this.providerId = getProviderId(getArguments());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_warrantinfo_value, container, false);
-        initViews(view);
-        return view;
+        return inflater.inflate(R.layout.fragment_warrantinfo_value, container, false);
     }
 
-    private void initViews(View view)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-
-        if (mHelpVideoLink != null)
-        {
-            mHelpVideoLink.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    WarrantInfoValueFragment.this.handleVideoLinkClicked(v);
-                }
-            });
-        }
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        Bundle args = getArguments();
-        if (args != null)
-        {
-            Bundle providerIdBundle = getArguments().getBundle(BUNDLE_KEY_PROVIDER_ID_KEY);
-            if (providerIdBundle != null)
-            {
-                linkWith(new ProviderId(providerIdBundle), true);
-            }
-        }
+        fetchProvider();
+        fetchSecurity();
     }
 
     @Override public void onDestroyView()
     {
-        unsubscribe(securityCompactCacheSubscription);
-        securityCompactCacheSubscription = null;
-        if (mHelpVideoLink != null)
-        {
-            mHelpVideoLink.setOnClickListener(null);
-        }
-        mHelpVideoLink = null;
-
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
-    @Override protected SecurityCompactCacheRx getInfoCache()
+    protected void fetchProvider()
     {
-        return securityCompactCache;
-    }
-
-    public void linkWith(ProviderId providerId, boolean andDisplay)
-    {
-        this.providerId = providerId;
         if (this.providerId != null)
         {
-            linkWith(providerCache.getCachedValue(providerId), andDisplay);
+            onDestroyViewSubscriptions.add(AppObservable.bindFragment(
+                    this,
+                    providerCache.getOne(this.providerId))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            new Action1<Pair<ProviderId, ProviderDTO>>()
+                            {
+                                @Override public void call(Pair<ProviderId, ProviderDTO> pair)
+                                {
+                                    linkWith(pair.second);
+                                }
+                            },
+                            new ToastOnErrorAction()));
         }
         else
         {
-            linkWith((ProviderDTO) null, andDisplay);
+            linkWith((ProviderDTO) null);
         }
     }
 
-    public void linkWith(ProviderDTO providerDTO, boolean andDisplay)
+    public void linkWith(ProviderDTO providerDTO)
     {
         this.providerDTO = providerDTO;
-        if (andDisplay)
-        {
-            displayLinkHelpVideoLink();
-            displayLinkHelpVideoText();
-        }
+        displayVideo();
     }
 
-    @Override public void linkWith(@Nullable SecurityId securityId)
+    protected void fetchSecurity()
     {
-        super.linkWith(securityId);
         if (securityId != null)
         {
-            unsubscribe(securityCompactCacheSubscription);
-            securityCompactCacheSubscription = AppObservable.bindFragment(
+            onDestroyViewSubscriptions.add(AppObservable.bindFragment(
                     this,
-                    securityCompactCache.get(securityId))
+                    securityCompactCache.getOne(securityId))
                     .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
@@ -156,56 +145,17 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
                                     linkWith(compactDTO);
                                 }
                             },
-                            new ToastAction<Throwable>(getString(R.string.error_fetch_security_info)));
+                            new ToastAction<Throwable>(getString(R.string.error_fetch_security_info))));
         }
     }
 
-    @Override public void linkWith(SecurityCompactDTO value)
+    public void linkWith(SecurityCompactDTO value)
     {
+        securityCompactDTO = value;
         warrantDTO = (WarrantDTO) value;
-        super.linkWith(value);
-    }
 
-    //<editor-fold desc="Display Methods">
-    public void display()
-    {
-        displayLinkHelpVideoLink();
-        displayLinkHelpVideoText();
-        displayWarrantType();
-        displayWarrantCode();
-        displayExpiry();
-        displayStrikePrice();
-        displayUnderlying();
-        displayIssuer();
-    }
+        displayVideo();
 
-    public void displayLinkHelpVideoLink()
-    {
-        if (!isDetached() && mHelpVideoLink != null)
-        {
-            mHelpVideoLink.setVisibility(hasHelpVideo() ? View.VISIBLE : View.GONE);
-        }
-    }
-
-    public void displayLinkHelpVideoText()
-    {
-        if (!isDetached() && mHelpVideoLink != null)
-        {
-            if (providerDTO != null)
-            {
-                mHelpVideoLink.setText(providerDTO.helpVideoText);
-            }
-            mHelpVideoLink.setTextColor(getResources().getColor(R.color.black));
-        }
-    }
-
-    public boolean hasHelpVideo()
-    {
-        return providerDTO != null && providerDTO.hasHelpVideo;
-    }
-
-    public void displayWarrantType()
-    {
         if (!isDetached() && mWarrantType != null)
         {
             if (warrantDTO == null || warrantDTO.warrantType == null)
@@ -218,7 +168,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
                 WarrantType warrantType = warrantDTO.getWarrantType();
                 if (warrantType != null)
                 {
-                    switch(warrantType)
+                    switch (warrantType)
                     {
                         case CALL:
                             warrantTypeStringResId = R.string.warrant_type_call;
@@ -237,25 +187,19 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
                 }
             }
         }
-    }
 
-    public void displayWarrantCode()
-    {
         if (!isDetached() && mWarrantCode != null)
         {
-            if (value == null || value.symbol == null)
+            if (securityCompactDTO == null || securityCompactDTO.symbol == null)
             {
                 mWarrantCode.setText(R.string.na);
             }
             else
             {
-                mWarrantCode.setText(value.symbol);
+                mWarrantCode.setText(securityCompactDTO.symbol);
             }
         }
-    }
 
-    public void displayExpiry()
-    {
         if (!isDetached() && mWarrantExpiry != null)
         {
             if (warrantDTO == null || warrantDTO.expiryDate == null)
@@ -268,10 +212,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
                 mWarrantExpiry.setText(df.format(warrantDTO.expiryDate));
             }
         }
-    }
 
-    public void displayStrikePrice()
-    {
         if (!isDetached() && mStrikePrice != null)
         {
             if (warrantDTO == null || warrantDTO.strikePrice == null || warrantDTO.strikePriceCcy == null)
@@ -285,13 +226,10 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
                                 .currency(warrantDTO.strikePriceCcy)
                                 .withOutSign()
                                 .build().toString()
-                        );
+                );
             }
         }
-    }
 
-    public void displayUnderlying()
-    {
         if (!isDetached() && mUnderlying != null)
         {
             if (warrantDTO == null || warrantDTO.underlyingName == null)
@@ -303,10 +241,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
                 mUnderlying.setText(warrantDTO.underlyingName);
             }
         }
-    }
 
-    public void displayIssuer()
-    {
         if (!isDetached() && mIssuer != null)
         {
             if (warrantDTO == null || warrantDTO.issuerName == null)
@@ -318,13 +253,36 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
                 mIssuer.setText(warrantDTO.issuerName.toUpperCase()); // HACK upperCase
             }
         }
-    }
-    //</editor-fold>
 
-    @SuppressWarnings("UnusedParameters")
-    private void handleVideoLinkClicked(View view)
+    }
+
+    protected void displayVideo()
     {
-        if (navigator != null)
+        if (!isDetached() && mHelpVideoLink != null)
+        {
+            mHelpVideoLink.setVisibility(hasHelpVideo() ? View.VISIBLE : View.GONE);
+        }
+
+        if (!isDetached() && mHelpVideoLink != null)
+        {
+            if (providerDTO != null)
+            {
+                mHelpVideoLink.setText(providerDTO.helpVideoText);
+            }
+            mHelpVideoLink.setTextColor(getResources().getColor(R.color.black));
+        }
+    }
+
+    public boolean hasHelpVideo()
+    {
+        return providerDTO != null && providerDTO.hasHelpVideo;
+    }
+
+    @SuppressWarnings("unused")
+    @OnClick(R.id.warrant_help_video_link)
+    protected void handleVideoLinkClicked(View view)
+    {
+        if (providerId != null)
         {
             Bundle args = new Bundle();
             ProviderVideoListFragment.putProviderId(args, providerId);

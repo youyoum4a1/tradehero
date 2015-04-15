@@ -11,6 +11,7 @@ import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import timber.log.Timber;
 
+@Deprecated // Not in use?
 public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
 {
     private SecurityCompactDTO securityCompactDTO;
@@ -107,7 +108,7 @@ public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
         }
         if (providerId != null)
         {
-            args.putBundle(WarrantInfoValueFragment.BUNDLE_KEY_PROVIDER_ID_KEY, providerId.getArgs());
+            WarrantInfoValueFragment.putProviderId(args, providerId);
         }
     }
 
