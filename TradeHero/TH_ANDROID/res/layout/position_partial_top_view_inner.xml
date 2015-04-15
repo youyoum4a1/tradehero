@@ -32,6 +32,9 @@
       android:layout_weight="0"
       />
 
+  <include
+      layout="@layout/fx_flags"/>
+
   <RelativeLayout
       android:id="@+id/first_part"
       android:layout_width="0dp"
