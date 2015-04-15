@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -42,6 +43,7 @@ import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
 import java.util.Arrays;
 import java.util.List;
@@ -63,6 +65,7 @@ public class FriendsInvitationFragment extends BaseFragment
     @InjectView(R.id.social_friends_list) ListView friendsListView;
     @InjectView(R.id.social_search_friends_progressbar) ProgressBar searchProgressBar;
     @InjectView(R.id.social_search_friends_none) TextView friendsListEmptyView;
+    @InjectView(R.id.search_social_friends) EditText filterTextView;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
