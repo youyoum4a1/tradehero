@@ -46,8 +46,6 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import javax.inject.Inject;
-import javax.inject.Provider;
-import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -66,7 +64,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     private static final String BUNDLE_KEY_LEADERBOARD_TYPE_ID = LeaderboardMarkUserListFragment.class.getName() + ".leaderboardTypeId";
 
     @Inject Analytics analytics;
-    @Inject Provider<PrettyTime> prettyTime;
     @Inject @ForUser SharedPreferences preferences;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardCacheRx leaderboardCache;
@@ -91,13 +88,13 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     {
         super.onCreate(savedInstanceState);
         currentLeaderboardKey = getInitialLeaderboardKey();
+        currentLeaderboardType = getInitialLeaderboardType();
         fragmentUtil.linkWith(this, currentLeaderboardType);
         setHasOptionsMenu(true);
     }
 
     protected PerPagedLeaderboardKey getInitialLeaderboardKey()
     {
-        currentLeaderboardType = getInitialLeaderboardType();
         savedPreference = new PerPagedFilteredLeaderboardKeyPreference(
                 getActivity(),
                 preferences,
