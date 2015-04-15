@@ -11,6 +11,7 @@ public class NetworkConstants
 
     //public static final String TRADEHERO_PROD_API_ENDPOINT = "http://192.168.20.8/api/";
     //public static final String TRADEHERO_PROD_API_ENDPOINT = "https://thvm-proxy.cloudapp.net:8000/api";
+    //public static final String TRADEHERO_PROD_ENDPOINT = "http://th-paas-test-dev1.cloudapp.net/";
 
     public static final String TRADEHERO_QA_ENDPOINT = "https://th-paas-test-dev1.cloudapp.net/";
     public static final String TRADEHERO_QA_API_ENDPOINT = TRADEHERO_QA_ENDPOINT + "api/";

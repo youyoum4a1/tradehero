@@ -237,7 +237,7 @@ public class OldPositionListFragment
         {
             getPositionsDTOKey = keyFromArgs;
         }
-        else
+        else if (injectedUserBaseKey != null && injectedPortfolioId != null)
         {
             getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey.key, injectedPortfolioId.key);
         }

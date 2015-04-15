@@ -30,7 +30,7 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -249,9 +249,7 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
                                 linkWith(pair.second);
                             }
                         },
-                        new ToastAndLogOnErrorAction(
-                                getString(R.string.error_fetch_position_list_info),
-                                "Failed to fetch positions for this security")));
+                        new TimberOnErrorAction(getString(R.string.error_fetch_position_list_info))));
     }
 
     public void linkWith(final PositionDTOCompactList positionDTOCompacts)
@@ -274,9 +272,19 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
             {
                 @Override public boolean apply(PositionDTOCompact position)
                 {
-                    return position.portfolioId == portfolioCompactDTO.id;
+                    return position.portfolioId == portfolioCompactDTO.id && position.shares != 0;
                 }
             });
+            if (positionDTOCompact == null)
+            {
+                this.positionDTOCompact = positionDTOCompactList.findFirstWhere(new Predicate<PositionDTOCompact>()
+                {
+                    @Override public boolean apply(PositionDTOCompact position)
+                    {
+                        return position.portfolioId == portfolioCompactDTO.id;
+                    }
+                });
+            }
         }
     }
 
