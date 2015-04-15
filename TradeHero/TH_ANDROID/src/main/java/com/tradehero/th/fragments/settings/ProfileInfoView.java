@@ -31,7 +31,6 @@ import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.activities.ActivityResultRequester;
-import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -40,12 +39,10 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.BitmapTypedOutput;
-import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
-import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.widget.validation.DisplayNameValidatedText;
 import com.tradehero.th.widget.validation.DisplayNameValidator;
 import com.tradehero.th.widget.validation.MatchingPasswordText;
@@ -54,7 +51,6 @@ import com.tradehero.th.widget.validation.TextValidator;
 import com.tradehero.th.widget.validation.ValidatedText;
 import com.tradehero.th.widget.validation.ValidatedView;
 import com.tradehero.th.widget.validation.ValidationMessage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -258,7 +254,7 @@ public class ProfileInfoView extends LinearLayout
             referralCode.setEnabled(false);
         }
         String currentEmail = email.getText().toString();
-        if (currentEmail == null || currentEmail.isEmpty())
+        if (currentEmail.isEmpty())
         {
             email.setText(userProfileDTO.email);
         }
