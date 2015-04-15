@@ -27,7 +27,7 @@ import com.tradehero.th.api.security.key.TrendingFxSecurityListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
-import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
+import com.tradehero.th.fragments.security.FXSecurityPagedViewDTOAdapter;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -105,9 +105,9 @@ public class TrendingFXFragment extends TrendingBaseFragment
         return portfolioCompactDTOs.getDefaultFxPortfolio();
     }
 
-    @Override @NonNull protected SecurityPagedViewDTOAdapter createItemViewAdapter()
+    @Override @NonNull protected FXSecurityPagedViewDTOAdapter createItemViewAdapter()
     {
-        return new SecurityPagedViewDTOAdapter(getActivity(), R.layout.trending_fx_item);
+        return new FXSecurityPagedViewDTOAdapter(getActivity(), R.layout.trending_fx_item);
     }
 
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
@@ -224,8 +224,8 @@ public class TrendingFXFragment extends TrendingBaseFragment
 
     private void handlePricesReceived(List<QuoteDTO> list)
     {
-        ((SecurityPagedViewDTOAdapter) itemViewAdapter).updatePrices(list);
-        ((SecurityPagedViewDTOAdapter) itemViewAdapter).notifyDataSetChanged();
+        ((FXSecurityPagedViewDTOAdapter) itemViewAdapter).updatePrices(list);
+        ((FXSecurityPagedViewDTOAdapter) itemViewAdapter).notifyDataSetChanged();
     }
 
     @Override public boolean canMakePagedDtoKey()

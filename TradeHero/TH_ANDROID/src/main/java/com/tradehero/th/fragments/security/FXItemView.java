@@ -10,14 +10,14 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedFXRate;
-import javax.inject.Inject;
 
-public class FXItemView extends RelativeLayout implements DTOView<FxSecurityCompactDTO>
+public class FXItemView extends RelativeLayout implements DTOView<SecurityCompactDTO>
 {
     @InjectView(R.id.fx_pair_name) TextView fxPairName;
     @InjectView(R.id.flags_container) protected FxFlagContainer flagsContainer;
@@ -60,14 +60,9 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
         mBlinkDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
     }
 
-    @Override public void display(final FxSecurityCompactDTO securityCompactDTO)
+    @Override public void display(final SecurityCompactDTO securityCompactDTO)
     {
-        linkWith(securityCompactDTO);
-    }
-
-    public void linkWith(FxSecurityCompactDTO securityCompactDTO)
-    {
-        this.fxSecurityCompactDTO = securityCompactDTO;
+        this.fxSecurityCompactDTO = (FxSecurityCompactDTO) securityCompactDTO;
         displayFlagContainer();
         displayStockName();
         displayPrice();

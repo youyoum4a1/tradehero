@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.PagedDTOAdapter;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
@@ -135,7 +136,7 @@ public class ProviderSecurityListRxFragment
         super.onDestroy();
     }
 
-    @NonNull @Override protected SecurityPagedViewDTOAdapter createItemViewAdapter()
+    @NonNull @Override protected PagedDTOAdapter<SecurityCompactDTO> createItemViewAdapter()
     {
         return new SecurityPagedViewDTOAdapter(getActivity(), R.layout.trending_security_item);
     }
