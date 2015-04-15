@@ -82,8 +82,4 @@
       android:key="show_kchart_examples"
       android:title="show_kchart_examples"/>
 
-  <Preference
-      android:key="show_th_pop"
-      android:title="Try TH Pop Quiz"/>
-
 </PreferenceScreen>
