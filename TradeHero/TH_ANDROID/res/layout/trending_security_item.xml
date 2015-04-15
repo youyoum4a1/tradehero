@@ -27,6 +27,7 @@
       android:contentDescription="@null"
       android:scaleType="centerInside"
       android:layout_marginLeft="@dimen/margin_xsmall"
+      android:layout_marginStart="@dimen/margin_xsmall"
       />
 
   <ImageView
@@ -34,8 +35,10 @@
       android:layout_width="@dimen/size_2"
       android:layout_height="@dimen/size_2"
       android:layout_toRightOf="@+id/icon_watchlist"
+      android:layout_toEndOf="@+id/icon_watchlist"
       android:contentDescription="@null"
       android:scaleType="centerInside"
+      tools:src="@drawable/icn_tile_alert_on"
       />
 
   <ImageView
@@ -43,7 +46,9 @@
       android:layout_width="@dimen/size_2"
       android:layout_height="@dimen/size_2"
       android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
       android:layout_marginRight="@dimen/margin_xsmall"
+      android:layout_marginEnd="@dimen/margin_xsmall"
       android:contentDescription="@null"
       android:scaleType="centerInside"
       />
