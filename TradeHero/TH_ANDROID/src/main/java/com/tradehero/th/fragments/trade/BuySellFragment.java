@@ -1,13 +1,8 @@
 package com.tradehero.th.fragments.trade;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +33,6 @@ import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.fragments.OnMovableBottomTranslateListener;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
-import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
 import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.fragments.trade.view.PortfolioSelectorView;
@@ -72,8 +66,6 @@ import rx.functions.Func3;
 abstract public class BuySellFragment extends AbstractBuySellFragment
         implements WithTutorial
 {
-    public static final String EVENT_CHART_IMAGE_CLICKED = BuySellFragment.class.getName() + ".chartButtonClicked";
-
     public static final int MS_DELAY_FOR_BG_IMAGE = 200;
 
     public static final boolean DEFAULT_IS_SHARED_TO_WECHAT = false;
@@ -97,7 +89,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     @Nullable protected Subscription portfolioChangedSubscription;
 
     protected Animation progressAnimation;
-    protected BroadcastReceiver chartImageButtonClickReceiver;
 
     @Nullable protected Subscription alertCompactListCacheSubscription;
     @Inject Lazy<SocialSharer> socialSharerLazy;
@@ -118,7 +109,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         setRetainInstance(true);
-        chartImageButtonClickReceiver = createImageButtonClickBroadcastReceiver();
         mSelectedPortfolioContainer.setDefaultPortfolioId(getApplicablePortfolioId(getArguments()));
 
         mBuySellBtnContainer.setVisibility(View.GONE);
@@ -158,10 +148,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     {
         super.onResume();
 
-        LocalBroadcastManager.getInstance(getActivity())
-                .registerReceiver(chartImageButtonClickReceiver,
-                        new IntentFilter(EVENT_CHART_IMAGE_CLICKED));
-
         if (abstractTransactionDialogFragment != null && abstractTransactionDialogFragment.getDialog() != null)
         {
             abstractTransactionDialogFragment.populateComment();
@@ -179,8 +165,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onPause()
     {
-        LocalBroadcastManager.getInstance(getActivity())
-                .unregisterReceiver(chartImageButtonClickReceiver);
         fragmentElements.get().getMovableBottom().setOnMovableBottomTranslateListener(null);
         super.onPause();
     }
@@ -224,7 +208,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroy()
     {
-        chartImageButtonClickReceiver = null;
         abstractTransactionDialogFragment = null;
         portfolioObservable = null;
         super.onDestroy();
@@ -692,29 +675,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
             navigator.get().pushFragment(TabbedPositionListFragment.class, args);
         }
-    }
-
-    private BroadcastReceiver createImageButtonClickBroadcastReceiver()
-    {
-        return new BroadcastReceiver()
-        {
-            @Override public void onReceive(Context context, Intent intent)
-            {
-                pushStockInfoFragmentIn();
-            }
-        };
-    }
-
-    private void pushStockInfoFragmentIn()
-    {
-        Bundle args = new Bundle();
-        args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, this.securityId.getArgs());
-        if (providerId != null)
-        {
-            args.putBundle(StockInfoFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE,
-                    providerId.getArgs());
-        }
-        navigator.get().pushFragment(StockInfoFragment.class, args);
     }
 
     @Override public int getTutorialLayout()
