@@ -448,6 +448,16 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             {
                 @Override public boolean apply(PositionDTOCompact position)
                 {
+                    return position.portfolioId == portfolioCompactDTO.id && position.shares != 0;
+                }
+            });
+        }
+        if (positionDTOCompact == null && positionDTOCompactList != null && portfolioCompactDTO != null)
+        {
+            this.positionDTOCompact = positionDTOCompactList.findFirstWhere(new Predicate<PositionDTOCompact>()
+            {
+                @Override public boolean apply(PositionDTOCompact position)
+                {
                     return position.portfolioId == portfolioCompactDTO.id;
                 }
             });

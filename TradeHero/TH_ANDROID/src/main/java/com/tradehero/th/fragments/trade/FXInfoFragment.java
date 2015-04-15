@@ -136,9 +136,19 @@ public class FXInfoFragment extends DashboardFragment
             {
                 @Override public boolean apply(PositionDTOCompact position)
                 {
-                    return position.portfolioId == portfolioCompactDTO.id;
+                    return position.portfolioId == portfolioCompactDTO.id && position.shares != 0;
                 }
             });
+            if (positionDTOCompact == null)
+            {
+                this.positionDTOCompact = positionDTOCompactList.findFirstWhere(new Predicate<PositionDTOCompact>()
+                {
+                    @Override public boolean apply(PositionDTOCompact position)
+                    {
+                        return position.portfolioId == portfolioCompactDTO.id;
+                    }
+                });
+            }
         }
         displayPositionStatus();
     }
