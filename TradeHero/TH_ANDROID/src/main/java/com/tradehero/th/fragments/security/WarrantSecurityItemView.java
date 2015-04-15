@@ -43,16 +43,13 @@ public class WarrantSecurityItemView extends SecurityItemView
         }
     }
 
-    @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    @Override public void display(SecurityCompactDTO securityCompactDTO)
     {
-        super.linkWith(securityCompactDTO, andDisplay);
+        super.display(securityCompactDTO);
 
-        if (andDisplay)
-        {
-            displayCombinedStrikePriceType();
-            displayWarrantType();
-            displayExpiryDate();
-        }
+        displayCombinedStrikePriceType();
+        displayWarrantType();
+        displayExpiryDate();
     }
 
     @Override public void display()

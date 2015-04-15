@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.security;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.view.ViewGroup;
 import com.tradehero.th.adapters.PagedViewDTOAdapterImpl;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -19,6 +21,7 @@ public class SecurityPagedViewDTOAdapter extends PagedViewDTOAdapterImpl<Securit
 {
     @Nullable protected WatchlistPositionDTOList watchedList;
     @Nullable private Map<SecurityId, AlertCompactDTO> mappedAlerts;
+
     //<editor-fold desc="Constructors">
     public SecurityPagedViewDTOAdapter(Context context, int resource)
     {
@@ -78,41 +81,15 @@ public class SecurityPagedViewDTOAdapter extends PagedViewDTOAdapterImpl<Securit
         this.watchedList = watchedList;
     }
 
-    public void setAlertList(Map<SecurityId, AlertCompactDTO> securityIdAlertIdMap)
+    public void setAlertList(@Nullable Map<SecurityId, AlertCompactDTO> securityIdAlertIdMap)
     {
         mappedAlerts = securityIdAlertIdMap;
     }
 
-    @Override public SecurityCompactDTO getItem(int position)
+    @Override public SecurityItemView getView(int position, View convertView, ViewGroup viewGroup)
     {
-        SecurityCompactDTO dto = super.getItem(position);
-        updateWatchListAndAlert(dto);
-        return dto;
-    }
-
-    private void updateWatchListAndAlert(SecurityCompactDTO dto)
-    {
-        if (watchedList != null && watchedList.size() > 0 && getCount() > 0)
-        {
-            if (watchedList.contains(dto.getSecurityId()))
-            {
-                dto.inWatchList = true;
-            }
-            else
-            {
-                dto.inWatchList = false;
-            }
-        }
-        if (mappedAlerts != null && mappedAlerts.size() > 0 && getCount() > 0)
-        {
-            if (mappedAlerts.get(dto.getSecurityId()) != null)
-            {
-                dto.inAlertList = true;
-            }
-            else
-            {
-                dto.inAlertList = false;
-            }
-        }
+        SecurityItemView view = super.getView(position, convertView, viewGroup);
+        view.display(mappedAlerts, watchedList);
+        return view;
     }
 }

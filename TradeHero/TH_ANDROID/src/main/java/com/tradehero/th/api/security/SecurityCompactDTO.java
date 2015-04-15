@@ -97,9 +97,6 @@ public class SecurityCompactDTO implements DTO
     public String secTypeDesc;
     public Double risePercent;
 
-    public Boolean inWatchList;
-    public Boolean inAlertList;
-
     //<editor-fold desc="Constructors">
     public SecurityCompactDTO()
     {

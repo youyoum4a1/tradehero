@@ -379,7 +379,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
                         this,
                         userWatchlistPositionCache.get(currentUserId.toUserBaseKey()))
                         .observeOn(AndroidSchedulers.mainThread())
-                        .take(1)
                         .subscribe(new Observer<Pair<UserBaseKey, WatchlistPositionDTOList>>()
                         {
                             @Override public void onCompleted()
@@ -411,7 +410,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 this,
                 alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
-                .take(1)
                 .subscribe(new Observer<Map<SecurityId, AlertCompactDTO>>()
                 {
                     @Override public void onCompleted()

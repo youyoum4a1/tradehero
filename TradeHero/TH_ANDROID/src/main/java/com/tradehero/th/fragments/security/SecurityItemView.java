@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,12 +19,16 @@ import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DateUtils;
+import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -45,6 +50,8 @@ public class SecurityItemView extends RelativeLayout
     @InjectView(R.id.sec_type) @Optional TextView securityType;
 
     protected SecurityCompactDTO securityCompactDTO;
+    protected Map<SecurityId, AlertCompactDTO> alerts;
+    protected WatchlistPositionDTOList watchlist;
     private Target myLogoImageTarget;
 
     //<editor-fold desc="Constructors">
@@ -135,25 +142,25 @@ public class SecurityItemView extends RelativeLayout
 
     @Override public void display(final SecurityCompactDTO securityCompactDTO)
     {
-        linkWith(securityCompactDTO, true);
-    }
-
-    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
-    {
         this.securityCompactDTO = securityCompactDTO;
 
-        if (andDisplay)
-        {
-            displayStockName();
-            displayExchangeSymbol();
-            displayDate();
-            displayLastPrice();
-            displayStockRoi();
-            displayIcon();
-            displaySecurityType();
-            displayCountryLogo();
-            loadImage();
-        }
+        displayStockName();
+        displayExchangeSymbol();
+        displayDate();
+        displayLastPrice();
+        displayStockRoi();
+        displayIcon();
+        displaySecurityType();
+        displayCountryLogo();
+        loadImage();
+    }
+
+    public void display(@Nullable Map<SecurityId, AlertCompactDTO> alerts,
+            @Nullable WatchlistPositionDTOList watchlist)
+    {
+        this.alerts = alerts;
+        this.watchlist = watchlist;
+        displayIcon();
     }
 
     //<editor-fold desc="Display Methods">
@@ -254,28 +261,40 @@ public class SecurityItemView extends RelativeLayout
     {
         if (marketCloseIcon != null && securityCompactDTO != null && securityCompactDTO.marketOpen != null)
         {
-            marketCloseIcon.setImageResource(securityCompactDTO.marketOpen ? R.drawable.icn_market_open : R.drawable.icn_market_closed);
+            marketCloseIcon.setImageResource(
+                    securityCompactDTO.marketOpen
+                            ? R.drawable.icn_market_open
+                            : R.drawable.icn_market_closed);
         }
-        if (inWatchListIcon != null && securityCompactDTO != null)
+        if (inWatchListIcon != null)
         {
-            if (securityCompactDTO.inWatchList != null && securityCompactDTO.inWatchList)
+            if (watchlist == null || securityCompactDTO == null)
             {
-                inWatchListIcon.setImageResource(R.drawable.icn_tile_favorite_on);
+                inWatchListIcon.setVisibility(INVISIBLE);
             }
             else
             {
-                inWatchListIcon.setImageResource(R.drawable.icn_tile_favorite_off);
+                inWatchListIcon.setVisibility(VISIBLE);
+                inWatchListIcon.setImageResource(
+                        watchlist.contains(securityCompactDTO.getSecurityId())
+                                ? R.drawable.icn_tile_favorite_on
+                                : R.drawable.icn_tile_favorite_off);
             }
         }
-        if (inAlertListIcon != null && securityCompactDTO != null)
+        if (inAlertListIcon != null)
         {
-            if (securityCompactDTO.inAlertList != null && securityCompactDTO.inAlertList)
+            if (alerts == null || securityCompactDTO == null)
             {
-                inAlertListIcon.setImageResource(R.drawable.icn_tile_alert_on);
+                inAlertListIcon.setVisibility(View.INVISIBLE);
             }
             else
             {
-                inAlertListIcon.setImageResource(R.drawable.icn_tile_alert_off);
+                inAlertListIcon.setVisibility(VISIBLE);
+                AlertCompactDTO alert = alerts.get(securityCompactDTO.getSecurityId());
+                inAlertListIcon.setImageResource(
+                        (alert != null && alert.active)
+                        ? R.drawable.icn_tile_alert_on
+                        : R.drawable.icn_tile_alert_off);
             }
         }
     }
@@ -432,5 +451,4 @@ public class SecurityItemView extends RelativeLayout
 
         }
     }
-
 }
