@@ -41,7 +41,6 @@ public class Application extends PApplication
     @Override protected void init()
     {
         super.init();
-
         if (!timberPlanted)
         {
             Timber.plant(createTimberTree());

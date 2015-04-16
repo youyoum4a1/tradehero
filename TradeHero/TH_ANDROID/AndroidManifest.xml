@@ -161,12 +161,17 @@
 
     <!-- BEGIN Baidu inter-process communication -->
     <receiver android:name="com.baidu.android.pushservice.PushServiceReceiver" android:process=":bdservice_v1">
-      <intent-filter>
-        <action android:name="android.intent.action.BOOT_COMPLETED"/>
-        <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-        <action android:name="com.baidu.android.pushservice.action.notification.SHOW"/>
-        <action android:name="com.baidu.android.pushservice.action.media.CLICK"/>
-      </intent-filter>
+        <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED" />
+            <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            <action android:name="com.baidu.android.pushservice.action.notification.SHOW" />
+            <action android:name="com.baidu.android.pushservice.action.media.CLICK" />
+            <!-- 以下四项为可选的action声明，可大大提高service存活率和消息到达速度 -->
+            <action android:name="android.intent.action.MEDIA_MOUNTED" />
+            <action android:name="android.intent.action.USER_PRESENT" />
+            <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+            <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+        </intent-filter>
     </receiver>
 
     <receiver android:name="com.baidu.android.pushservice.RegistrationReceiver" android:process=":bdservice_v1">
@@ -184,6 +189,11 @@
         android:name="com.baidu.android.pushservice.PushService"
         android:exported="true"
         android:process=":bdservice_v1"/>
+      <!-- 4.4版本新增的CommandService声明，提升小米和魅族手机上的实际推送到达率 -->
+      <service
+              android:name="com.baidu.android.pushservice.CommandService"
+              android:exported="true" />
+      <!-- push结束 -->
     <!--END Baidu inter-process communication-->
 
     <receiver android:name="com.mobileapptracker.Tracker" android:exported="true">
@@ -193,5 +203,8 @@
     </receiver>
 
     <meta-data android:name="com.crashlytics.ApiKey" android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf"/>
+
+      <!-- 在百度开发者中心查询应用的API Key -->
+      <meta-data android:name="api_key" android:value="iI9WWqP3SfGApTW37UuSyIdc" />
   </application>
 </manifest>

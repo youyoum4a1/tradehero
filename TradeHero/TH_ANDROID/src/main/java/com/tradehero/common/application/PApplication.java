@@ -1,9 +1,9 @@
 package com.tradehero.common.application;
 
-import android.app.Application;
 import android.content.Context;
+import com.baidu.frontia.FrontiaApplication;
 
-public class PApplication extends Application
+public class PApplication extends FrontiaApplication
 {
     private static Context context;
 

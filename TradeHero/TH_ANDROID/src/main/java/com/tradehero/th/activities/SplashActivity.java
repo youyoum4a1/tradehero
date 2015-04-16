@@ -104,9 +104,6 @@ public class SplashActivity extends SherlockActivity
         };
         initialAsyncTask.execute();
 
-//        analytics.openSession();
-//        analytics.tagScreen(AnalyticsConstants.Loading);
-
         tapStream.get().fireEvent(new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
 
         mobileAppTracker.setReferralSources(this);

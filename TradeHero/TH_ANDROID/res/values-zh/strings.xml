@@ -1,215 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="follow">关注</string>
-  <string name="follow_all">全部关注</string>
-  <string name="action_invite">邀请好友</string>
-  <string name="update">更新</string>
-  <string name="empty_video_list">当前没有任何学习视频</string>
-  <string name="server_response">""</string>
-  <string name="link">连接 %1$s</string>
-  <string name="link_description">分享前，请连接您的 %1$s 账号…</string>
-  <string name="link_now">现在连接!</string>
-  <string name="later">晚点</string>
-  <string name="discussion">讨论</string>
-  <string name="more_character">. . .</string>
-  <string name="buy_sell">买入/卖出</string>
-  <string name="share_to">分享至…</string>
-  <string name="comment">评论</string>
-  <string name="timeline_discussion_post">发布</string>
-  <string name="timeline_discussion_comment_box_hint">请输入您的评论…</string>
-  <string name="discussion_loaded">已全部读取</string>
-  <string name="discussion_loading">读取中…</string>
-  <string name="discussion_empty">成为第一个发布评论的人吧</string>
-  <string name="news_view_on_web">在网页中查看</string>
-  <string name="add_a_comment">发布评论…</string>
-  <string name="start_new_discussion">开始新的讨论</string>
-  <string name="error_empty_comment">评论不可为空白</string>
-  <string name="error_not_enough_information">信息不足，请再试一次</string>
-  <string name="via">" 通过 "</string>
-  <string name="broadcast_success">发送信息成功</string>
-  <string name="broadcast_error">发送信息错误</string>
-  <string name="broadcast_message_title">广播</string>
-  <string name="broadcast_message_change_type_hint">请选择粉丝类型发送信息</string>
-  <string name="broadcast_message_no_follower_hint">对不起，你无法发送广播。因为你没有此类粉丝。</string>
-  <string name="broadcast_message_content_length_hint">信息不可为空白</string>
-  <string name="broadcast_message_waiting">请稍候</string>
-  <string name="broadcast_message_sending_hint">信息传送中...</string>
-  <string name="social_followers">粉丝</string>
-  <string name="social_heroes">股神</string>
-  <string name="common_loading_error">对不起，发生了点问题</string>
-  <string name="no_message">您还没有任何消息。\n请下拉刷新通知列表!</string>
-  <string name="message_fetch_error">对不起，发生了点问题。\n请点击重试</string>
-  <string name="security_discussion_add">+ 开始新的讨论</string>
-  <string name="post">发送</string>
-  <string name="discussion_new_post_hint">我感觉 %s 会涨/跌</string>
-  <string name="error_discussion_empty_post">发布内容不可为空</string>
-  <string name="at">"@"</string>
-  <string name="hashtag">$</string>
-  <string name="discussion_edit_post_subtitle">在 %s</string>
-  <string name="team_credit">新加坡和上海团队倾情奉献</string>
-  <string name="about_screen_secure_by">安全:</string>
-  <string name="about_screen_text_processing_by">文字处理:</string>
-  <string name="about_screen_sentiment_analysis_by">观点分析:</string>
-  <string name="buy_sell_loading_ask_price">加载买入价格…</string>
-  <string name="buy_sell_loading_bid_price">加载卖出价格…</string>
-  <string name="sell">卖</string>
-  <string name="buy">买</string>
-  <string name="chart_loading_image">加载图表…</string>
-  <string name="currency">美元$</string>
-  <string name="search_social_friend_hint">搜索你的好友</string>
-  <string name="invite_social_friend">邀请%s好友</string>
+    <string name="follow">关注</string>
+    <string name="follow_all">全部关注</string>
+    <string name="action_invite">邀请好友</string>
+    <string name="update">更新</string>
+    <string name="empty_video_list">当前没有任何学习视频</string>
+    <string name="server_response">""</string>
+    <string name="link">连接 %1$s</string>
+    <string name="link_description">分享前，请连接您的 %1$s 账号…</string>
+    <string name="link_now">现在连接!</string>
+    <string name="later">晚点</string>
+    <string name="discussion">讨论</string>
+    <string name="more_character">. . .</string>
+    <string name="buy_sell">买入/卖出</string>
+    <string name="share_to">分享至…</string>
+    <string name="comment">评论</string>
+    <string name="timeline_discussion_post">发布</string>
+    <string name="timeline_discussion_comment_box_hint">请输入您的评论…</string>
+    <string name="discussion_loaded">已全部读取</string>
+    <string name="discussion_loading">读取中…</string>
+    <string name="discussion_empty">成为第一个发布评论的人吧</string>
+    <string name="news_view_on_web">在网页中查看</string>
+    <string name="add_a_comment">发布评论…</string>
+    <string name="start_new_discussion">开始新的讨论</string>
+    <string name="error_empty_comment">评论不可为空白</string>
+    <string name="error_not_enough_information">信息不足，请再试一次</string>
+    <string name="via">" 通过 "</string>
+    <string name="broadcast_success">发送信息成功</string>
+    <string name="broadcast_error">发送信息错误</string>
+    <string name="broadcast_message_title">广播</string>
+    <string name="broadcast_message_change_type_hint">请选择粉丝类型发送信息</string>
+    <string name="broadcast_message_no_follower_hint">对不起，你无法发送广播。因为你没有此类粉丝。</string>
+    <string name="broadcast_message_content_length_hint">信息不可为空白</string>
+    <string name="broadcast_message_waiting">请稍候</string>
+    <string name="broadcast_message_sending_hint">信息传送中...</string>
+    <string name="social_followers">粉丝</string>
+    <string name="social_heroes">股神</string>
+    <string name="common_loading_error">对不起，发生了点问题</string>
+    <string name="no_message">您还没有任何消息。\n请下拉刷新通知列表!</string>
+    <string name="message_fetch_error">对不起，发生了点问题。\n请点击重试</string>
+    <string name="security_discussion_add">+ 开始新的讨论</string>
+    <string name="post">发送</string>
+    <string name="discussion_new_post_hint">我感觉 %s 会涨/跌</string>
+    <string name="error_discussion_empty_post">发布内容不可为空</string>
+    <string name="at">"@"</string>
+    <string name="hashtag">$</string>
+    <string name="discussion_edit_post_subtitle">在 %s</string>
+    <string name="team_credit">新加坡和上海团队倾情奉献</string>
+    <string name="about_screen_secure_by">安全:</string>
+    <string name="about_screen_text_processing_by">文字处理:</string>
+    <string name="about_screen_sentiment_analysis_by">观点分析:</string>
+    <string name="buy_sell_loading_ask_price">加载买入价格…</string>
+    <string name="buy_sell_loading_bid_price">加载卖出价格…</string>
+    <string name="sell">卖</string>
+    <string name="buy">买</string>
+    <string name="chart_loading_image">加载图表…</string>
+    <string name="currency">美元$</string>
+    <string name="search_social_friend_hint">搜索你的好友</string>
+    <string name="invite_social_friend">邀请%s好友</string>
 
-  <string name="social_friend_empty">没有好友数据</string>
-  <string name="search_social_friend_empty">没有找到好友数据</string>
-  <string name="invite_from_weibo">邀请微博好友</string>
-  <string name="invite_from_wechat">邀请微信好友</string>
-  <string name="invite_from_linkedIn">邀请LinkedIn好友</string>
-  <string name="invite_from_facebook">邀请Facebook好友</string>
-  <string name="invite_from_twitter">邀请Twitter好友</string>
-  <string name="social_no_friend_to_invite">请选中一个被邀请人</string>
-  <string name="social_no_friend_to_follow">请选中一个被关注人</string>
-  <plurals name="inbox_notification_title">
-    <item quantity="one">1 条新消息</item>
-    <item quantity="other">%d 条<b>新</b>消息
-    </item>
-  </plurals>
-  <string name="inbox_summary">+%d 更多</string>
-  <string name="notification_unread_messages">您有 %d 条未读消息</string>
-  <string name="notification_new_activities">您有 %d 条新活动</string>
-  <string name="friend_link_social_network">请绑定社交网络</string>
-  <string name="referral_code_title">认领您的虚拟奖金!</string>
-  <string name="referral_code_message">如果您是由朋友邀请而来，在此输入邀请码将获得 10,000 虚拟货币。</string>
-  <string name="referral_code_callback_success">您的邀请码识别成功，稍后会获得 10,000 TH$奖励</string>
+    <string name="social_friend_empty">没有好友数据</string>
+    <string name="search_social_friend_empty">没有找到好友数据</string>
+    <string name="invite_from_weibo">邀请微博好友</string>
+    <string name="invite_from_wechat">邀请微信好友</string>
+    <string name="invite_from_linkedIn">邀请LinkedIn好友</string>
+    <string name="invite_from_facebook">邀请Facebook好友</string>
+    <string name="invite_from_twitter">邀请Twitter好友</string>
+    <string name="social_no_friend_to_invite">请选中一个被邀请人</string>
+    <string name="social_no_friend_to_follow">请选中一个被关注人</string>
+    <plurals name="inbox_notification_title">
+        <item quantity="one">1 条新消息</item>
+        <item quantity="other">%d 条<b>新</b>消息
+        </item>
+    </plurals>
+    <string name="inbox_summary">+%d 更多</string>
+    <string name="notification_unread_messages">您有 %d 条未读消息</string>
+    <string name="notification_new_activities">您有 %d 条新活动</string>
+    <string name="friend_link_social_network">请绑定社交网络</string>
+    <string name="referral_code_title">认领您的虚拟奖金!</string>
+    <string name="referral_code_message">如果您是由朋友邀请而来，在此输入邀请码将获得 10,000 虚拟货币。</string>
+    <string name="referral_code_callback_success">您的邀请码识别成功，稍后会获得 10,000 TH$奖励</string>
 
-  <string name="friends_can_be_invite">%s 个好友可邀请</string>
-  <string name="friends_can_be_follow">%s 个好友可关注</string>
-  <string name="weibo_message_text_limit">[%d/140]</string>
-  <string name="weibo_message_length_error">不能超过140字</string>
-  <string name="weibo_friends_invite">我正在玩一款牛逼的炒股应用。虚拟股金，真实数据，零风险提高炒股技术。分享股市洞察，还能从粉丝那里赚取现金！赶快加入，与我一试高下吧！使用我的邀请码 %1$s 更有额外奖励哦！</string>
+    <string name="friends_can_be_invite">%s 个好友可邀请</string>
+    <string name="friends_can_be_follow">%s 个好友可关注</string>
+    <string name="weibo_message_text_limit">[%d/140]</string>
+    <string name="weibo_message_length_error">不能超过140字</string>
+    <string name="weibo_friends_invite">我正在玩一款牛逼的炒股应用。虚拟股金，真实数据，零风险提高炒股技术。分享股市洞察，还能从粉丝那里赚取现金！赶快加入，与我一试高下吧！使用我的邀请码 %1$s
+        更有额外奖励哦！
+    </string>
 
-  <string name="mark_as_all_read">全部已读</string>
-  <string name="guide_screen_login">登录</string>
-  <string name="guide_screen_try">马上体验</string>
-  <string name="or">或者</string>
-  <string name="login_with_offical_account">使用官方账号登录</string>
-  <string name="login_account">账号：</string>
-  <string name="login_password">密码：</string>
-  <string name="login_account_hint">手机号或邮箱</string>
-  <string name="login_password_hint">6-20位数字或字母</string>
-  <string name="agreed">已同意</string>
-  <string name="authentication_agreement">《隐私条款和服务政策》</string>
-  <string name="authentication_next">下一步</string>
-  <string name="register_diaplay_name_hint">用户名（必填）</string>
-  <string name="register_finish">完成注册</string>
-  <string name="register_error_account">亲，邮箱是不是写错啦？</string>
-  <string name="register_error_password">密码须为6-20位字母或数字</string>
-  <string name="register_error_displayname">请输入您的用户名</string>
-  <string name="take_photo">拍照</string>
-  <string name="from_gallery">从相册选择</string>
-  <string name="settings_score">去评分</string>
-  <string name="settings_logout">退出当前账号</string>
-  <string name="settings_version">版本</string>
-  <string name="settings_notification">推送通知</string>
-  <string name="invite_friends_title">邀请好友成功登录全民股神，输入邀请码，你和TA都将获得10000虚拟资金奖励，邀请得越多奖励越多。</string>
-  <string name="invite_friends_input">输入邀请码</string>
-  <string name="invite_friends_me">我的邀请码:</string>
-  <string name="invite_code">邀请码</string>
-  <string name="submit">提交</string>
-  <string name="invite_friend_fail">您的邀请码输入有误</string>
-  <string name="copy">复制</string>
-  <string name="copy_my_invite_code_success">复制成功，快去邀请好友吧～</string>
-  <string name="follow_success">关注成功</string>
-  <string name="faster_login">快速登录</string>
-  <string name="guest_user_id">游客 ID:%1$s</string>
-  <string name="settings_my_photo">头像</string>
-  <string name="settings_my_name">名字</string>
-  <string name="settings_my_account">账号密码</string>
-  <string name="settings_my_social">账号绑定</string>
-  <string name="settings_my_profile">个人资料</string>
-  <string name="updating">更新中...</string>
-  <string name="bind_success">绑定成功</string>
-  <string name="unbind_success">解绑成功</string>
-  <string name="login_verify_code">验证码:</string>
-  <string name="login_verify_code_hint">请输入验证码</string>
-  <string name="login_get_verify_code">获取验证码</string>
-  <string name="send_verify_code_success">验证码已发送，请注意查收短信</string>
-  <string name="guest_user">游客</string>
-  <string name="guest_user_dialog_summary">您的当前身份为游客，不会保存您 的账户信息，请升级为正式用户</string>
-  <string name="bind">绑定</string>
-  <string name="share_to_social">我要炫耀</string>
-  <string name="share_sell_title">恭喜你，盈利</string>
-  <string name="ten_thousands">万</string>
-  <string name="million">百万</string>
-  <string name="hundred_million">亿</string>
-  <string name="share_sell_title2">财运来了挡都挡不住啊</string>
-  <string name="share_sell_title11">亏损了</string>
-  <string name="share_sell_title12">坑爹了，怎么破</string>
-  <string name="share_tips">小贴士：如果不想弹出分享界面</string>
-  <string name="share_tips2">可以在出售时把分享开关关掉</string>
-  <string name="share_sell_title_money">%1$s！</string>
-  <string name="share_amount_roi_value_title">轻松赚到10%，\n我简直就是股神附体！</string>
+    <string name="mark_as_all_read">全部已读</string>
+    <string name="guide_screen_login">登录</string>
+    <string name="guide_screen_try">马上体验</string>
+    <string name="or">或者</string>
+    <string name="login_with_offical_account">使用官方账号登录</string>
+    <string name="login_account">账号：</string>
+    <string name="login_password">密码：</string>
+    <string name="login_account_hint">手机号或邮箱</string>
+    <string name="login_password_hint">6-20位数字或字母</string>
+    <string name="agreed">已同意</string>
+    <string name="authentication_agreement">《隐私条款和服务政策》</string>
+    <string name="authentication_next">下一步</string>
+    <string name="register_diaplay_name_hint">用户名（必填）</string>
+    <string name="register_finish">完成注册</string>
+    <string name="register_error_account">亲，邮箱是不是写错啦？</string>
+    <string name="register_error_password">密码须为6-20位字母或数字</string>
+    <string name="register_error_displayname">请输入您的用户名</string>
+    <string name="take_photo">拍照</string>
+    <string name="from_gallery">从相册选择</string>
+    <string name="settings_score">去评分</string>
+    <string name="settings_logout">退出当前账号</string>
+    <string name="settings_version">版本</string>
+    <string name="settings_notification">推送通知</string>
+    <string name="invite_friends_title">邀请好友成功登录全民股神，输入邀请码，你和TA都将获得10000虚拟资金奖励，邀请得越多奖励越多。</string>
+    <string name="invite_friends_input">输入邀请码</string>
+    <string name="invite_friends_me">我的邀请码:</string>
+    <string name="invite_code">邀请码</string>
+    <string name="submit">提交</string>
+    <string name="invite_friend_fail">您的邀请码输入有误</string>
+    <string name="copy">复制</string>
+    <string name="copy_my_invite_code_success">复制成功，快去邀请好友吧～</string>
+    <string name="follow_success">关注成功</string>
+    <string name="faster_login">快速登录</string>
+    <string name="guest_user_id">游客 ID:%1$s</string>
+    <string name="settings_my_photo">头像</string>
+    <string name="settings_my_name">名字</string>
+    <string name="settings_my_account">账号密码</string>
+    <string name="settings_my_social">账号绑定</string>
+    <string name="settings_my_profile">个人资料</string>
+    <string name="updating">更新中...</string>
+    <string name="bind_success">绑定成功</string>
+    <string name="unbind_success">解绑成功</string>
+    <string name="login_verify_code">验证码:</string>
+    <string name="login_verify_code_hint">请输入验证码</string>
+    <string name="login_get_verify_code">获取验证码</string>
+    <string name="send_verify_code_success">验证码已发送，请注意查收短信</string>
+    <string name="guest_user">游客</string>
+    <string name="guest_user_dialog_summary">您的当前身份为游客，不会保存您 的账户信息，请升级为正式用户</string>
+    <string name="bind">绑定</string>
+    <string name="share_to_social">我要炫耀</string>
+    <string name="share_sell_title">恭喜你，盈利</string>
+    <string name="ten_thousands">万</string>
+    <string name="million">百万</string>
+    <string name="hundred_million">亿</string>
+    <string name="share_sell_title2">财运来了挡都挡不住啊</string>
+    <string name="share_sell_title11">亏损了</string>
+    <string name="share_sell_title12">坑爹了，怎么破</string>
+    <string name="share_tips">小贴士：如果不想弹出分享界面</string>
+    <string name="share_tips2">可以在出售时把分享开关关掉</string>
+    <string name="share_sell_title_money">%1$s！</string>
+    <string name="share_amount_roi_value_title">轻松赚到10%，\n我简直就是股神附体！</string>
 
-  <string name="share_amount_total_value_title">碉堡了，你的资产已突破15w，\n小伙伴们还不造吗？</string>
-  <string name="share_amount_fans_num_title">恭喜！你已经有10个小跟班，如此魅力十足还不赶紧去炫耀一记？</string>
-  <string name="share_amount_fans_num_summary">我擦嘞，又尼玛多了一帮小弟！</string>
-  <string name="share_score_title">分享炒股神器，让大家涨涨姿势</string>
-  <string name="share_dialog_summary">现在分享还有资金奖励哦！</string>
+    <string name="share_amount_total_value_title">碉堡了，你的资产已突破15w，\n小伙伴们还不造吗？</string>
+    <string name="share_amount_fans_num_title">恭喜！你已经有10个小跟班，如此魅力十足还不赶紧去炫耀一记？</string>
+    <string name="share_amount_fans_num_summary">我擦嘞，又尼玛多了一帮小弟！</string>
+    <string name="share_score_title">分享炒股神器，让大家涨涨姿势</string>
+    <string name="share_dialog_summary">现在分享还有资金奖励哦！</string>
 
-  <string name="wechat_timeline">朋友圈</string>
-  <string name="local_social">社区</string>
+    <string name="wechat_timeline">朋友圈</string>
+    <string name="local_social">社区</string>
 
-  <string name="search_no_result">无结果</string>
-  <string name="search_search">搜索</string>
-  <string name="search_cancel">取消</string>
-  <string name="competition_enter_college">输入学校名称</string>
-  <string name="dialog_profile_suggest_signin">必须升级为正式用户才可以更改名称</string>
-  <string name="login_by_wechat_account_failed">微信信息获取失败</string>
-  <string name="dialog_competition_suggest_login">您当前是游客身份，不能参加比赛，请升级为正式用户</string>
-  <string name="app_name_cn">全民股神</string>
-  <string name="login_continuous">连续登录很多天了，分享下？</string>
+    <string name="search_no_result">无结果</string>
+    <string name="search_search">搜索</string>
+    <string name="search_cancel">取消</string>
+    <string name="competition_enter_college">输入学校名称</string>
+    <string name="dialog_profile_suggest_signin">必须升级为正式用户才可以更改名称</string>
+    <string name="login_by_wechat_account_failed">微信信息获取失败</string>
+    <string name="dialog_competition_suggest_login">您当前是游客身份，不能参加比赛，请升级为正式用户</string>
+    <string name="app_name_cn">全民股神</string>
+    <string name="login_continuous">连续登录很多天了，分享下？</string>
 
 
-  <!-- Recommend Items (Stock & Hero)-->
-  <string name="recommend_title">推荐关注</string>
-  <string name="recommend_follow">关注</string>
-  <string name="recommend_next">跳过</string>
-  <string name="recommend_recommend_stock">推荐股票</string>
-  <string name="recommend_recommend_hero">推荐股神</string>
-  <string name="recommend_stock_rate_of_return">收益率: </string>
-  <string name="recommend_number_hold">人持有</string>
-  <string name="RMB">￥</string>
-  <string name="recommend_select_one_item">至少选择一个股神或股票。</string>
-  <string name="recommend_uploading">提交中...</string>
-  <!-- Recommend -->
+    <!-- Recommend Items (Stock & Hero)-->
+    <string name="recommend_title">推荐关注</string>
+    <string name="recommend_follow">关注</string>
+    <string name="recommend_next">跳过</string>
+    <string name="recommend_recommend_stock">推荐股票</string>
+    <string name="recommend_recommend_hero">推荐股神</string>
+    <string name="recommend_stock_rate_of_return">收益率:</string>
+    <string name="recommend_number_hold">人持有</string>
+    <string name="RMB">￥</string>
+    <string name="recommend_select_one_item">至少选择一个股神或股票。</string>
+    <string name="recommend_uploading">提交中...</string>
+    <!-- Recommend -->
 
-  <!--Sign in & Sign up -->
-  <string name="sign_in_display_name_no_blank">用户名不允许有空格。</string>
-  <string name="sign_in_wechat">微信</string>
-  <string name="sign_in_weibo">微博</string>
-  <string name="sign_in_reset_password">密码重置</string>
-  <string name="sign_in_reset_password_failed">重置密码失败</string>
-  <string name="sign_in_reset_password_successfully">重置密码成功</string>
-  <!--Sign in & Sign up -->
+    <!--Sign in & Sign up -->
+    <string name="sign_in_display_name_no_blank">用户名不允许有空格。</string>
+    <string name="sign_in_wechat">微信</string>
+    <string name="sign_in_weibo">微博</string>
+    <string name="sign_in_reset_password">密码重置</string>
+    <string name="sign_in_reset_password_failed">重置密码失败</string>
+    <string name="sign_in_reset_password_successfully">重置密码成功</string>
+    <!--Sign in & Sign up -->
 
-  <!-- Photo-->
-  <string name="photo_no_sdcard">请插入SD卡。</string>
-  <!-- Photo-->
+    <!-- Photo-->
+    <string name="photo_no_sdcard">请插入SD卡。</string>
+    <!-- Photo-->
 
-  <!-- Notification -->
-  <string name="notification_title">通知</string>
-  <string name="notification_empty">清空</string>
-  <string name="notification_list_empty">您还没有任何通知。\n请下拉刷新通知列表!</string>
-  <string name="notification_empty_confirm">确定要清空全部通知？</string>
-  <string name="notification_delete_confirm">删除</string>
-  <!-- Notification -->
+    <!-- Notification -->
+    <string name="notification_title">通知</string>
+    <string name="notification_empty">清空</string>
+    <string name="notification_list_empty">您还没有任何通知。\n请下拉刷新通知列表!</string>
+    <string name="notification_empty_confirm">确定要清空全部通知？</string>
+    <string name="notification_delete_confirm">删除</string>
+    <!-- Notification -->
 
-  <!-- App Update -->
-  <string name="app_update_hint">发现新版本，是否更新至最新版</string>
-  <string name="app_update_force_update">（强制升级）</string>
-  <!-- App Update -->
+    <!-- App Update -->
+    <string name="app_update_hint">发现新版本，是否更新至最新版</string>
+    <string name="app_update_force_update">（强制升级）</string>
+    <!-- App Update -->
 
-  <string name="goto_choose_stock">去选股</string>
+    <string name="goto_choose_stock">去选股</string>
 
-  <string name="error_fetch_hero">获取英雄信息发生了点错误</string>
-  <string name="error_fetch_exchange_list_info">获取交易所列表时发生了点错误</string>
+    <string name="error_fetch_hero">获取英雄信息发生了点错误</string>
+    <string name="error_fetch_exchange_list_info">获取交易所列表时发生了点错误</string>
+
+    <string name="error_fetch_message_thread_header">获取消息信息失败</string>
 </resources>
