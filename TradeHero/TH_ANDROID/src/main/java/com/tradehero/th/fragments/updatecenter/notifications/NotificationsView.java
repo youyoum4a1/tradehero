@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -338,6 +339,7 @@ public class NotificationsView extends BetterViewAnimator
         @Override public void onItemClick(AdapterView<?> parent, View itemView, int position, long id)
         {
             NotificationDTO notificationDTO = (NotificationDTO) parent.getItemAtPosition(position);
+            notificationDTO.unread = false;
             reportNotificationRead(notificationDTO.pushId);
             NotificationClickHandler notificationClickHandler = new NotificationClickHandler(getContext(), notificationDTO);
             notificationClickHandler.handleNotificationItemClicked();

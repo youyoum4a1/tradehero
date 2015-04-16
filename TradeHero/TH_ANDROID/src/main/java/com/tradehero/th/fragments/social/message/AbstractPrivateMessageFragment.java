@@ -198,10 +198,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
             topicView = inflateTopicView();
             try
             {
-                if (discussionList.getAdapter() == null)
-                {
-                    discussionList.addHeaderView(topicView, null, false);
-                }
+                discussionList.addHeaderView(topicView, null, false);
             }
             catch (Exception e)
             {

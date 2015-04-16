@@ -72,4 +72,9 @@ public class SettingsResideMenuItemUpdateCenter extends LinearLayout
         unReadCount = userProfileCache.getCachedValue(currentUserId.toUserBaseKey()).unreadNotificationsCount;
         return unReadCount > 0;
     }
+
+    public void refresh() {
+        tvUnreadCount.setVisibility(hasUnVisitedSetting() ? View.VISIBLE : View.INVISIBLE);
+        tvUnreadCount.setText(" "+unReadCount+" ");
+    }
 }

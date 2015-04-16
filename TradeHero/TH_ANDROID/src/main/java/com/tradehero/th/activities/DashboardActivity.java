@@ -80,6 +80,7 @@ import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AskForReviewSuggestedDialogFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.settings.SettingsResideMenuItemUpdateCenter;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -474,6 +475,17 @@ public class DashboardActivity extends BaseActivity
                         AskForReviewSuggestedDialogFragment.showReviewDialog(DashboardActivity.this.getFragmentManager());
                     }
                 }, new EmptyAction1<Throwable>()));
+
+        if (resideMenu.isOpened())
+        {
+            try
+            {
+                ((SettingsResideMenuItemUpdateCenter) resideMenu.getMenuItems().get(1)).refresh();
+            } catch (Exception e) {
+                Timber.e("Correct the index of UpdateCenter if necessary.");
+            }
+        }
+
     }
 
     @Override protected void onNewIntent(Intent intent)
