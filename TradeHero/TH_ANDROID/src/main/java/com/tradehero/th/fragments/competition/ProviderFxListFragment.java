@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.competition;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.View;
 import com.tradehero.th.R;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.fragments.security.FXSecurityPagedViewDTOAdapter;
@@ -20,6 +22,12 @@ import rx.functions.Func1;
 public class ProviderFxListFragment extends ProviderSecurityListRxFragment
 {
     @Inject SecurityServiceWrapper securityServiceWrapper;
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        tradeTitleView.setText(R.string.provider_fx_list_tradable);
+    }
 
     @Override public void onStart()
     {
