@@ -329,8 +329,8 @@ public class LeaderboardMarkUserItemView
         @NonNull final Spanned lbmuRoiAnnualized;
         final String lbmuFoF;
         @ViewVisibilityValue final int lbmuFoFVisibility;
-        @ViewVisibilityValue final int lbmuFollowUserVisibility;
-        @ViewVisibilityValue final int lbmuFollowingUserVisibility;
+        @ViewVisibilityValue int lbmuFollowUserVisibility;
+        @ViewVisibilityValue int lbmuFollowingUserVisibility;
         private String maxOwnLeaderRanking;
         private boolean expanded;
 

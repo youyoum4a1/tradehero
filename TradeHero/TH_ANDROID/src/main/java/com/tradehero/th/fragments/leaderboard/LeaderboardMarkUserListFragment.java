@@ -444,12 +444,19 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     {
         AdapterViewUtils.updateSingleRowWhere(
                 listView,
-                UserBaseDTO.class,
-                new Predicate<UserBaseDTO>()
+                LeaderboardMarkUserItemView.DTO.class,
+                new Predicate<LeaderboardMarkUserItemView.DTO>()
                 {
-                    @Override public boolean apply(UserBaseDTO userBaseDTO)
+                    @Override public boolean apply(LeaderboardMarkUserItemView.DTO dto)
                     {
-                        return userBaseDTO.getBaseKey().equals(heroId);
+                        boolean isUpdatedRow = dto.leaderboardUserDTO.getBaseKey().equals(heroId);
+                        if (isUpdatedRow)
+                        {
+                            dto.lbmuFollowingUserVisibility = View.VISIBLE;
+                            dto.lbmuFollowUserVisibility = View.GONE;
+                        }
+
+                        return isUpdatedRow;
                     }
                 });
     }
