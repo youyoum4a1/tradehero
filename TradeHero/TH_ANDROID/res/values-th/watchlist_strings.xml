@@ -28,7 +28,7 @@
   <string name="watchlist_item_deleted_failed">ไม่สามารถลบรายการเฝ้าระวังประเภทหลักทรัพย์ %d</string>
   <string name="watchlist_more">เพิ่มเติม</string>
   <string name="watchlist_quantity_should_not_be_zero">ปริมาณไม่ควรน้อยกว่า 1</string>
-  <string name="watchlist_empty_view">แตะปุ่ม \&apos;+\&apos; ด้านบน เพื่อเพิ่มหลักทรัพย์ในรายการเฝ้าระวัง</string>
+  <string name="watchlist_empty_view">แตะปุ่ม ด้านบน เพื่อเพิ่มหลักทรัพย์ในรายการเฝ้าระวัง</string>
   <string name="watchlist_new_discussion">การสนทนาใหม่</string>
   <string name="watchlist_not_yet_implemented">ยังไม่ได้นำไปใช้ ติดตามต่อไป</string>
 
