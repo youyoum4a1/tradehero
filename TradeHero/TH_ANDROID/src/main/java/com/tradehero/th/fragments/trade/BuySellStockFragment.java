@@ -83,8 +83,9 @@ public class BuySellStockFragment extends BuySellFragment
     protected TextView mTvStockTitle;
     protected TextView mTvStockSubTitle;
     protected SecurityCircleProgressBar circleProgressBar;
-    protected Button btnWatched;
-    protected Button btnAlerted;
+    protected View btnWatched;
+    protected View btnAlerted;
+    protected View marketCloseIcon;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -122,8 +123,10 @@ public class BuySellStockFragment extends BuySellFragment
             mTvStockTitle = (TextView) v.findViewById(R.id.tv_stock_title);
             mTvStockSubTitle = (TextView) v.findViewById(R.id.tv_stock_sub_title);
             circleProgressBar = (SecurityCircleProgressBar) v.findViewById(R.id.circle_progressbar);
-            btnWatched = (Button) v.findViewById(R.id.btn_watched);
-            btnAlerted = (Button) v.findViewById(R.id.btn_alerted);
+            marketCloseIcon = v.findViewById(R.id.action_bar_market_closed_icon);
+
+            btnWatched = v.findViewById(R.id.btn_watched);
+            btnAlerted = v.findViewById(R.id.btn_alerted);
 
             btnAlerted.setOnClickListener(new View.OnClickListener()
             {
@@ -297,6 +300,13 @@ public class BuySellStockFragment extends BuySellFragment
         }
 
         circleProgressBar.display(securityCompactDTO);
+        if (marketCloseIcon != null)
+        {
+            boolean marketIsOpen = securityCompactDTO == null
+                    || securityCompactDTO.marketOpen == null
+                    || securityCompactDTO.marketOpen;
+            marketCloseIcon.setVisibility(marketIsOpen ? View.GONE : View.VISIBLE);
+        }
     }
 
     @Override protected void linkWith(QuoteDTO quoteDTO)

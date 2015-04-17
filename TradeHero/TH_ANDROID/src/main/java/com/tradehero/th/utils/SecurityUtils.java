@@ -1,6 +1,7 @@
 package com.tradehero.th.utils;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import com.tradehero.th.api.security.SecurityId;
 
 public class SecurityUtils
@@ -24,5 +25,14 @@ public class SecurityUtils
     @NonNull public static String getDisplayableSecurityName(SecurityId securityId)
     {
         return String.format("%s:%s", securityId.getExchange(), securityId.getSecuritySymbol());
+    }
+
+    public static String getMarketCloseHint(String nextOpenTime) {
+        if (TextUtils.isEmpty(nextOpenTime)) {
+            return "";
+        }
+
+        return "";
+
     }
 }

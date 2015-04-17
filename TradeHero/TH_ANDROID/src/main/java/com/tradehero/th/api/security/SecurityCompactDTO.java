@@ -97,6 +97,8 @@ public class SecurityCompactDTO implements DTO
     public String secTypeDesc;
     public Double risePercent;
 
+    public String timeTillNextExchangeOpen;
+
     //<editor-fold desc="Constructors">
     public SecurityCompactDTO()
     {
@@ -139,6 +141,7 @@ public class SecurityCompactDTO implements DTO
         this.exchangeClosingTimeLocal = other.exchangeClosingTimeLocal;
         this.secTypeDesc = other.secTypeDesc;
         this.risePercent = other.risePercent;
+        this.timeTillNextExchangeOpen = other.timeTillNextExchangeOpen;
     }
     //</editor-fold>
 

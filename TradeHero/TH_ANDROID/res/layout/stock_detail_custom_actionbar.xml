@@ -3,46 +3,61 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rlStockHeader"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/tradehero_blue">
 
-  <Button
+  <FrameLayout
+      android:id="@+id/circle_progressbar_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true">
+    <com.tradehero.th.fragments.security.SecurityCircleProgressBar
+        android:id="@+id/circle_progressbar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="@dimen/size_1"
+        />
+    <ImageView
+        android:id="@+id/action_bar_market_closed_icon"
+        android:layout_width="@dimen/size_3"
+        android:layout_height="@dimen/size_3"
+        android:contentDescription="@null"
+        android:scaleType="centerInside"
+        android:visibility="visible"
+        android:layout_gravity="bottom|right"
+
+        android:src="@drawable/buyscreen_stock_inactive_pressed"
+        />
+  </FrameLayout>
+
+  <ImageView
       android:id="@+id/btn_watched"
-      android:layout_width="32dp"
-      android:layout_height="32dp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       android:layout_alignParentRight="true"
-      android:layout_alignParentEnd="true"
-      android:layout_marginRight="5dp"
-      android:layout_marginEnd="5dp"
+      android:layout_marginRight="@dimen/size_2"
       android:layout_centerVertical="true"
-      android:background="@drawable/icn_star"/>
+      android:paddingBottom="2dp"
+      android:src="@drawable/icn_star"/>
 
-  <Button
+  <ImageView
       android:id="@+id/btn_alerted"
-      android:layout_width="32dp"
-      android:layout_height="32dp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       android:layout_centerVertical="true"
-      android:layout_marginRight="5dp"
-      android:layout_marginEnd="5dp"
       android:layout_toLeftOf="@id/btn_watched"
-      android:layout_toStartOf="@id/btn_watched"
-      android:background="@drawable/icn_alert"/>
-
-  <com.tradehero.th.fragments.security.SecurityCircleProgressBar
-      android:id="@+id/circle_progressbar"
-      android:layout_centerVertical="true"
-      android:layout_width="48dp"
-      android:layout_height="48dp"/>
+      android:layout_marginRight="@dimen/size_1"
+      android:src="@drawable/icn_alert"/>
 
 
   <LinearLayout
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
       android:layout_marginLeft="5dp"
       android:layout_marginStart="5dp"
-      android:layout_toRightOf="@id/circle_progressbar"
-      android:layout_toEndOf="@id/circle_progressbar"
+      android:layout_toRightOf="@id/circle_progressbar_container"
+      android:layout_toEndOf="@id/circle_progressbar_container"
       android:layout_toLeftOf="@id/btn_alerted"
       android:layout_toStartOf="@id/btn_alerted"
       android:layout_centerVertical="true"
