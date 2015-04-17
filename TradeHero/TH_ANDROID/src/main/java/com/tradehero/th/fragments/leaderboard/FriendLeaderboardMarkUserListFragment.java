@@ -154,7 +154,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
         return new LeaderboardFriendsKey(page);
     }
 
-    @Override protected void updateListViewRow(@NonNull final UserBaseKey heroId)
+    @Override protected void updateListViewRow(@NonNull UserProfileDTO currentUserProfile, @NonNull final UserBaseKey heroId)
     {
         AdapterViewUtils.updateSingleRowWhere(
                 listView,

@@ -128,7 +128,7 @@ abstract public class BaseLeaderboardPagedListRxFragment<
     {
     }
 
-    protected void updateListViewRow(@NonNull final UserBaseKey heroId)
+    protected void updateListViewRow(@NonNull UserProfileDTO currentUserProfile, @NonNull final UserBaseKey heroId)
     {
     }
 

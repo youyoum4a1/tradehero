@@ -31,7 +31,6 @@ import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
@@ -441,7 +440,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         }
     }
 
-    @Override protected void updateListViewRow(@NonNull final UserBaseKey heroId)
+    @Override protected void updateListViewRow(@NonNull final UserProfileDTO currentUserProfile, @NonNull final UserBaseKey heroId)
     {
         AdapterViewUtils.updateSingleRowWhere(
                 listView,
@@ -453,10 +452,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
                         boolean isUpdatedRow = dto.leaderboardUserDTO.getBaseKey().equals(heroId);
                         if (isUpdatedRow)
                         {
-                            dto.lbmuFollowingUserVisibility = View.VISIBLE;
-                            dto.lbmuFollowUserVisibility = View.GONE;
+                            dto.followChanged(currentUserProfile, heroId);
                         }
-
                         return isUpdatedRow;
                     }
                 });
