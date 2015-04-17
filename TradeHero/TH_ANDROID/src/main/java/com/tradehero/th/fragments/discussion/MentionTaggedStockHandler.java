@@ -10,6 +10,7 @@ import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.common.utils.EditableUtil;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -24,10 +25,9 @@ public class MentionTaggedStockHandler
     @Nullable private HasSelectedItem hasSelectedItemFragment;
 
     //<editor-fold desc="Constructors">
-    @Inject public MentionTaggedStockHandler(
-            @NonNull RichTextCreator parser)
+    @Inject public MentionTaggedStockHandler(@NonNull CurrentUserId currentUserId)
     {
-        this.parser = parser;
+        this.parser = new RichTextCreator(currentUserId);
     }
     //</editor-fold>
 

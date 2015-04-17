@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -56,12 +55,6 @@ abstract public class DiscussionSetAdapter
     @NonNull public Observable<UserDiscussionAction> getUserActionObservable()
     {
         return userDiscussionActionSubject.asObservable();
-    }
-
-    @Override
-    public AbstractDiscussionCompactItemViewLinear getView(int position, @Nullable View convertView, ViewGroup parent)
-    {
-        return super.getView(position, convertView, parent);
     }
 
     @Override protected AbstractDiscussionCompactItemViewLinear inflate(int position, ViewGroup parent)

@@ -18,6 +18,7 @@ import android.widget.Button;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -41,7 +42,10 @@ import javax.inject.Inject;
 import rx.Observer;
 import timber.log.Timber;
 
-@Routable("securityFx/:securityRawInfo")
+@Routable({
+        "securityFx/:securityRawInfo",
+        "fxSecurity/:exchange/:symbol"
+})
 //TODO need refactor by alex
 public class FXMainFragment extends BuySellFragment
 {
@@ -59,9 +63,21 @@ public class FXMainFragment extends BuySellFragment
     private BuySellBottomFXPagerAdapter buySellBottomFXPagerAdapter;
     @Nullable private Observer<PortfolioCompactDTO> portfolioCompactDTOObserver;
 
+    @RouteProperty("exchange") String exchange;
+    @RouteProperty("symbol") String symbol;
+
     private static int getCloseAttribute(@NonNull Bundle args)
     {
         return args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        if (securityId == null)
+        {
+            securityId = new SecurityId(exchange, symbol);
+        }
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,

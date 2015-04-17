@@ -417,9 +417,14 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
 
     protected void registerUserActions()
     {
+        Observable<UserDiscussionAction> userActionObservable = discussionListAdapter.getUserActionObservable();
+        if (topicView instanceof AbstractDiscussionCompactItemViewLinear)
+        {
+            userActionObservable.mergeWith(((AbstractDiscussionCompactItemViewLinear) topicView).getUserActionObservable());
+        }
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                discussionListAdapter.getUserActionObservable())
+                userActionObservable)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<UserDiscussionAction>()

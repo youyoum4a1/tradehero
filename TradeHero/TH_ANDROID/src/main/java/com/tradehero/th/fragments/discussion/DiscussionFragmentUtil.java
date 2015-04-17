@@ -1,6 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
-import android.content.Context;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -20,16 +20,19 @@ import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemViewLinear;
-import com.tradehero.th.fragments.news.NewsItemViewHolder;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.models.discussion.NewNewsDiscussionAction;
+import com.tradehero.th.models.discussion.OpenNewStockAlertUserAction;
+import com.tradehero.th.models.discussion.OpenWatchlistUserAction;
+import com.tradehero.th.models.discussion.OpenWebUserAction;
+import com.tradehero.th.models.discussion.PlayerUserAction;
+import com.tradehero.th.models.discussion.SecurityUserAction;
+import com.tradehero.th.models.discussion.UpdateStockAlertUserAction;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -69,34 +72,34 @@ public class DiscussionFragmentUtil
     /**
      * @return an empty observable when the action has been handled. Or one observable with the action when not.
      */
-    @NonNull public Observable<UserDiscussionAction> handleUserAction(@NonNull Context context, @NonNull final UserDiscussionAction userAction)
+    @NonNull public Observable<UserDiscussionAction> handleUserAction(@NonNull Activity activity, @NonNull final UserDiscussionAction userAction)
     {
-        if (userAction instanceof TimelineItemViewLinear.OpenWatchlistUserAction)
+        if (userAction instanceof OpenWatchlistUserAction)
         {
             Bundle args = new Bundle();
-            SecurityId securityId = ((TimelineItemViewLinear.OpenWatchlistUserAction) userAction).securityId;
+            SecurityId securityId = ((OpenWatchlistUserAction) userAction).securityId;
             WatchlistEditFragment.putSecurityId(args, securityId);
             if (watchlistPositionCache.getCachedValue(securityId) != null)
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
-                ActionBarOwnerMixin.putActionBarTitle(args, context.getString(R.string.watchlist_edit_title));
+                ActionBarOwnerMixin.putActionBarTitle(args, activity.getString(R.string.watchlist_edit_title));
             }
             else
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
-                ActionBarOwnerMixin.putActionBarTitle(args, context.getString(R.string.watchlist_add_title));
+                ActionBarOwnerMixin.putActionBarTitle(args, activity.getString(R.string.watchlist_add_title));
             }
             navigator.pushFragment(WatchlistEditFragment.class, args, null);
             return Observable.empty();
         }
-        else if (userAction instanceof TimelineItemViewLinear.OpenNewStockAlertUserAction)
+        else if (userAction instanceof OpenNewStockAlertUserAction)
         {
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_Alert));
             Fragment currentFragment = navigator.getCurrentFragment();
             if (currentFragment != null)
             {
                 DialogFragment dialog = AlertCreateDialogFragment.newInstance(
-                        ((TimelineItemViewLinear.OpenNewStockAlertUserAction) userAction).securityId);
+                        ((OpenNewStockAlertUserAction) userAction).securityId);
                 dialog.show(currentFragment.getFragmentManager(), AlertCreateDialogFragment.class.getName());
                 return Observable.empty();
             }
@@ -105,14 +108,14 @@ public class DiscussionFragmentUtil
                 return Observable.just(userAction);
             }
         }
-        else if (userAction instanceof TimelineItemViewLinear.UpdateStockAlertUserAction)
+        else if (userAction instanceof UpdateStockAlertUserAction)
         {
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_Alert));
             Fragment currentFragment = navigator.getCurrentFragment();
             if (currentFragment != null)
             {
                 DialogFragment dialog = AlertEditDialogFragment.newInstance(
-                        ((TimelineItemViewLinear.UpdateStockAlertUserAction) userAction).alertId);
+                        ((UpdateStockAlertUserAction) userAction).alertId);
                 dialog.show(currentFragment.getFragmentManager(), AlertEditDialogFragment.class.getName());
                 return Observable.empty();
             }
@@ -121,31 +124,34 @@ public class DiscussionFragmentUtil
                 return Observable.just(userAction);
             }
         }
-        else if (userAction instanceof TimelineItemViewHolder.SecurityUserAction)
+        else if (userAction instanceof SecurityUserAction)
         {
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_BuySell));
-            Bundle args = new Bundle();
-            SecurityId securityId = ((TimelineItemViewHolder.SecurityUserAction) userAction).securityId;
-            BuySellStockFragment.putSecurityId(args, securityId);
-            navigator.pushFragment(BuySellStockFragment.class, args);
-            return Observable.empty();
-        }
-        else if (userAction instanceof AbstractDiscussionItemViewHolder.PlayerUserAction)
-        {
-            Bundle bundle = new Bundle();
-            UserBaseKey userClicked = ((AbstractDiscussionItemViewHolder.PlayerUserAction) userAction).userClicked;
-            thRouter.save(bundle, userClicked);
-            if (currentUserId.toUserBaseKey().equals(userClicked))
+            SecurityId securityId = ((SecurityUserAction) userAction).securityId;
+            if (securityId.getExchange().equals(SecurityUtils.FX_EXCHANGE))
             {
-                navigator.pushFragment(MeTimelineFragment.class, bundle);
+                thRouter.open("fxSecurity/" + securityId.getExchange() + "/" + securityId.getSecuritySymbol(), activity);
             }
             else
             {
-                navigator.pushFragment(PushableTimelineFragment.class, bundle);
+                thRouter.open("stockSecurity/" + securityId.getExchange() + "/" + securityId.getSecuritySymbol(), activity);
             }
             return Observable.empty();
         }
-        else if (userAction instanceof NewsItemViewHolder.NewNewsDiscussionAction)
+        else if (userAction instanceof PlayerUserAction)
+        {
+            UserBaseKey userClicked = ((PlayerUserAction) userAction).userClicked;
+            if (currentUserId.toUserBaseKey().equals(userClicked))
+            {
+                thRouter.open("user/me", activity);
+            }
+            else
+            {
+                thRouter.open("user/" + userClicked.key, activity);
+            }
+            return Observable.empty();
+        }
+        else if (userAction instanceof NewNewsDiscussionAction)
         {
             Bundle args = new Bundle();
             NewsDiscussionFragment.putDiscussionKey(args, userAction.discussionDTO.getDiscussionKey());
@@ -179,7 +185,7 @@ public class DiscussionFragmentUtil
             }
             Observable.empty();
         }
-        else if (userAction instanceof NewsItemViewHolder.OpenWebUserAction)
+        else if (userAction instanceof OpenWebUserAction)
         {
             NewsItemCompactDTO newsItem = (NewsItemCompactDTO) userAction.discussionDTO;
             if (newsItem.url != null)

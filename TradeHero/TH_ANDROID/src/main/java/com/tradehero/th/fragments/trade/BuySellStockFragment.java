@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.InjectView;
@@ -20,6 +19,7 @@ import com.android.common.SlidingTabLayout;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertId;
@@ -56,7 +56,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-@Routable("security/:securityRawInfo")
+@Routable({
+        "security/:securityRawInfo",
+        "stockSecurity/:exchange/:symbol"
+})
 public class BuySellStockFragment extends BuySellFragment
 {
     @InjectView(R.id.buy_price) protected TextView mBuyPrice;
@@ -73,6 +76,9 @@ public class BuySellStockFragment extends BuySellFragment
     @Inject AlertCompactListCacheRx alertCompactListCache;
     @Inject Analytics analytics;
 
+    @RouteProperty("exchange") String exchange;
+    @RouteProperty("symbol") String symbol;
+
     private PortfolioCompactDTO defaultPortfolio;
 
     @Nullable protected WatchlistPositionDTOList watchedList;
@@ -86,6 +92,15 @@ public class BuySellStockFragment extends BuySellFragment
     protected View btnWatched;
     protected View btnAlerted;
     protected View marketCloseIcon;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        if (securityId == null)
+        {
+            securityId = new SecurityId(exchange, symbol);
+        }
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)

@@ -13,21 +13,25 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.annotation.ViewVisibilityValue;
+import com.tradehero.common.text.ClickableTagProcessor;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.models.discussion.PlayerUserAction;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
+import com.tradehero.th.models.discussion.UserDiscussionActionFactory;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.widget.MarkdownTextView;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
+import rx.Observable;
+import rx.functions.Func1;
 
 public class AbstractDiscussionItemViewHolder
         extends AbstractDiscussionCompactItemViewHolder
 {
     @InjectView(R.id.text_container) @Optional protected View textContainer;
-    @InjectView(R.id.discussion_content) protected TextView textContent;
-    @InjectView(R.id.discussion_stub_content) @Optional protected TextView stubContent;
+    @InjectView(R.id.discussion_content) protected MarkdownTextView textContent;
+    @InjectView(R.id.discussion_stub_content) @Optional protected MarkdownTextView stubContent;
     @InjectView(R.id.discussion_user_picture) @Optional ImageView discussionUserPicture;
     @InjectView(R.id.user_profile_name) @Optional TextView userProfileName;
 
@@ -40,12 +44,6 @@ public class AbstractDiscussionItemViewHolder
         super();
     }
     //</editor-fold>
-
-    @Override public void onFinishInflate(@NonNull View view)
-    {
-        super.onFinishInflate(view);
-        textContent.setText("Inside here 2");
-    }
 
     @Override public void onDetachedFromWindow()
     {
@@ -83,6 +81,28 @@ public class AbstractDiscussionItemViewHolder
         {
             userProfileName.setText(dto.userProfileName);
         }
+    }
+
+    @NonNull @Override protected Observable<UserDiscussionAction> getMergedUserActionObservable()
+    {
+        Observable<ClickableTagProcessor.UserAction> markdownActionSubject = textContent.getUserActionObservable();
+        if (stubContent != null)
+        {
+            markdownActionSubject = markdownActionSubject.mergeWith(stubContent.getUserActionObservable());
+        }
+        return super.getMergedUserActionObservable().mergeWith(markdownActionSubject
+                .flatMap(
+                        new Func1<ClickableTagProcessor.UserAction, Observable<UserDiscussionAction>>()
+                        {
+                            @Override public Observable<UserDiscussionAction> call(ClickableTagProcessor.UserAction userAction)
+                            {
+                                if (viewDTO != null)
+                                {
+                                    return UserDiscussionActionFactory.createObservable(viewDTO.discussionDTO, userAction);
+                                }
+                                return Observable.empty();
+                            }
+                        }));
     }
 
     @NonNull protected RequestCreator createUserPicassoRequest()
@@ -164,19 +184,6 @@ public class AbstractDiscussionItemViewHolder
         @Nullable public String getTextContent()
         {
             return textContent;
-        }
-    }
-
-    public static class PlayerUserAction extends UserDiscussionAction
-    {
-        @NonNull public final UserBaseKey userClicked;
-
-        public PlayerUserAction(
-                @NonNull AbstractDiscussionCompactDTO discussionDTO,
-                @NonNull UserBaseKey userClicked)
-        {
-            super(discussionDTO);
-            this.userClicked = userClicked;
         }
     }
 }

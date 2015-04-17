@@ -1,6 +1,8 @@
 package com.tradehero.th.utils.route;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +11,7 @@ import com.tradehero.route.Routable;
 import com.tradehero.route.Router;
 import com.tradehero.route.RouterOptions;
 import com.tradehero.route.RouterParams;
+import com.tradehero.th.activities.BaseActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -44,15 +47,25 @@ public class THRouter extends Router
             url = aliases.get(url);
         }
 
-        RouterParams params = this.paramsForUrl(url);
-        if (params.routerOptions instanceof THRouterOptions)
+        try
         {
-            openFragment(params, extras);
-        }
-        else
+            RouterParams params = this.paramsForUrl(url);
+            if (params.routerOptions instanceof THRouterOptions)
+            {
+                openFragment(params, extras);
+            }
+            else
+            {
+                super.open(url, extras, context);
+            }
+        } catch (Exception ex)
         {
-            super.open(url, extras, context);
+            Intent returnIntent = new Intent();
+            BaseActivity.putRouteParams(returnIntent, url, extras);
+            ((Activity) context).setResult(BaseActivity.REQUEST_CODE_ROUTE, returnIntent);
+            ((Activity) context).finish();
         }
+
     }
 
     @Override public Router registerRoutes(Class<?>... targets)

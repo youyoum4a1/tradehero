@@ -3,36 +3,35 @@ package com.tradehero.common.text;
 import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
-import android.view.View;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public abstract class ClickableTagProcessor extends RichSpanTextProcessor
 {
-    @NonNull @Override protected Span getSpanElement(String replacement, String[] matchStrings)
-    {
-        return new RichClickableSpan(replacement, matchStrings);
-    }
+    @NonNull protected final PublishSubject<UserAction> userActionSubject;
 
-    private class RichClickableSpan extends ClickableSpan
-        implements Span
+    //<editor-fold desc="Constructors">
+    public ClickableTagProcessor()
+    {
+        userActionSubject = PublishSubject.create();
+    }
+    //</editor-fold>
+
+    abstract protected class RichClickableSpan extends ClickableSpan
+            implements Span
     {
         private final String replacement;
         private final String originalText;
-        private final String[] matchStrings;
+        protected final String[] matchStrings;
 
+        //<editor-fold desc="Constructors">
         public RichClickableSpan(String replacement, String[] matchStrings)
         {
             this.replacement = replacement;
             this.matchStrings = matchStrings;
             this.originalText = matchStrings.length > 0 ? matchStrings[0] : null;
         }
-
-        @Override public void onClick(View view)
-        {
-            if (view instanceof OnElementClickListener)
-            {
-                ((OnElementClickListener) view).onClick(view, replacement, key(), matchStrings);
-            }
-        }
+        //</editor-fold>
 
         @Override public void updateDrawState(@NonNull TextPaint ds)
         {
@@ -43,6 +42,21 @@ public abstract class ClickableTagProcessor extends RichSpanTextProcessor
         @Override public String getOriginalText()
         {
             return originalText;
+        }
+    }
+
+    @NonNull public Observable<UserAction> getUserActionSubject()
+    {
+        return userActionSubject.asObservable();
+    }
+
+    public static class UserAction
+    {
+        @NonNull public final String[] matchStrings;
+
+        public UserAction(@NonNull String[] matchStrings)
+        {
+            this.matchStrings = matchStrings;
         }
     }
 }
