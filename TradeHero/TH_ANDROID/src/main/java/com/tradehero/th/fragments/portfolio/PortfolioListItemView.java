@@ -116,7 +116,10 @@ public class PortfolioListItemView extends RelativeLayout
         displayUserIcon();
         displayTitle();
         displayDescription();
-        displayRoiValue();
+        if (!displayablePortfolioDTO.portfolioDTO.isWatchlist)
+        {
+            displayRoiValue();
+        }
         displayImage();
     }
 
@@ -139,7 +142,12 @@ public class PortfolioListItemView extends RelativeLayout
         displayUserIcon();
         displayTitle();
         displayDescription();
-        displayRoiValue();
+        if ((displayablePortfolioDTO != null)
+                && (displayablePortfolioDTO.portfolioDTO != null)
+                && !displayablePortfolioDTO.portfolioDTO.isWatchlist)
+        {
+            displayRoiValue();
+        }
     }
 
     public void displayUserIcon()

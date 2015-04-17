@@ -12,13 +12,27 @@ public class SecuritySearchWatchlistFragment extends SecuritySearchFragment
 {
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
+    private static final String BUNDLE_KEY_RETURN_FRAGMENT = "SecuritySearchWatchlistFragment.returnFragment";
+    public static void putReturnFragment(Bundle args, String returnFragment) {
+        args.putString(BUNDLE_KEY_RETURN_FRAGMENT, returnFragment);
+    }
+
+    private String getReturnFragment() {
+        Bundle args = getArguments();
+        if (args == null) {
+            return TrendingMainFragment.class.getName();
+        }
+
+        return args.getString(BUNDLE_KEY_RETURN_FRAGMENT, TrendingMainFragment.class.getName());
+    }
+
     @Override protected void pushTradeFragmentIn(SecurityCompactDTO securityCompactDTO)
     {
         Bundle args = new Bundle();
+        String returnFragment = getReturnFragment();
         WatchlistEditFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
         args.putString(
-                DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT,
-                TrendingMainFragment.class.getName());
+                DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT, returnFragment);
         navigator.get().pushFragment(WatchlistEditFragment.class, args);
     }
 }
