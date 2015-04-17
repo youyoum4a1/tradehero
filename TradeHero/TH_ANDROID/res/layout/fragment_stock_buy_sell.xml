@@ -52,6 +52,7 @@
           android:layout_marginStart="@dimen/margin_small"
           android:layout_marginTop="@dimen/size_1"
           android:layout_toRightOf="@id/stock_logo"
+          android:layout_toEndOf="@id/stock_logo"
           android:visibility="visible"
           >
         <!--TODO use dropdown/spinner view-->
@@ -61,6 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:text="@string/buy_sell_portfolio_selected_title"
             style="@style/TH.Body"
             android:textColor="@color/white"
@@ -71,17 +73,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_small"
             android:layout_toRightOf="@id/selected_title_anchor"
+            android:layout_toEndOf="@id/selected_title_anchor"
             tools:text="Main Portfolio"
             android:textColor="@color/white"
             android:layout_centerVertical="true"/>
 
-        <ImageView android:id="@+id/img_action_icon"
+        <ImageView
+            android:id="@+id/img_action_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_small"
             android:layout_toRightOf="@id/portfolio_selected"
+            android:layout_toEndOf="@id/portfolio_selected"
             android:background="@drawable/expand_down"
             />
 
@@ -108,7 +115,9 @@
           style="@style/TH.Subhead.Inverse"
           android:layout_alignTop="@id/buy_price"
           android:layout_marginLeft="@dimen/size_1"
+          android:layout_marginStart="@dimen/size_1"
           android:layout_toRightOf="@id/buy_price"
+          android:layout_toEndOf="@id/buy_price"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           tools:text="+408%"

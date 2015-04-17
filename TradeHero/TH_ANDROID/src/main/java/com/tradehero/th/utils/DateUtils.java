@@ -68,4 +68,54 @@ public class DateUtils
         requiredFormat.setTimeZone(TimeZone.getTimeZone("GMT00:00"));
         return requiredFormat.format(date);
     }
+
+    public static String getDurationText(@NonNull Resources resources, int days, int hours, int minutes, int seconds)
+    {
+        Resources sysRes = Resources.getSystem();
+
+        StringBuilder sb = new StringBuilder();
+        int id = 0;
+        if (days == 1)
+        {
+            id = sysRes.getIdentifier("day", "string", "android");
+            sb.append("1 ").append(resources.getString(id)).append(" ");
+        }
+        else if (days > 1)
+        {
+            id = sysRes.getIdentifier("days", "string", "android");
+            sb.append(String.valueOf(days)).append(" ").append(resources.getString(id)).append(" ");
+        }
+
+        if (hours > 1)
+        {
+            id = sysRes.getIdentifier("hours", "string", "android");
+        }
+        else
+        {
+            id = sysRes.getIdentifier("hour", "string", "android");
+        }
+        sb.append(String.valueOf(hours)).append(" ").append(resources.getString(id)).append(" ");
+
+        if (minutes > 1)
+        {
+            id = sysRes.getIdentifier("minutes", "string", "android");
+        }
+        else
+        {
+            id = sysRes.getIdentifier("minute", "string", "android");
+        }
+        sb.append(String.valueOf(minutes)).append(" ").append(resources.getString(id)).append(" ");
+
+        if (seconds > 1)
+        {
+            id = sysRes.getIdentifier("seconds", "string", "android");
+        }
+        else
+        {
+            id = sysRes.getIdentifier("second", "string", "android");
+        }
+        sb.append(String.valueOf(seconds)).append(" ").append(resources.getString(id));
+
+        return sb.toString();
+    }
 }
