@@ -151,25 +151,30 @@
           android:layout_marginTop="4dp"
           android:visibility="visible"
           >
+
         <TextView
             android:id="@+id/market_close_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Market will open in 03h:28m:34s"
+            tools:text="Market will open in 03h:28m:34s"
             android:layout_centerInParent="true"
             style="@style/TH.Caption.Inverse"/>
+
         <ImageView
             android:id="@+id/market_closed_icon"
             android:layout_width="@dimen/size_3"
             android:layout_height="@dimen/size_3"
             android:layout_toLeftOf="@id/market_close_hint"
+            android:layout_toStartOf="@id/market_close_hint"
             android:contentDescription="@null"
             android:scaleType="centerInside"
             android:visibility="visible"
             android:background="@drawable/basic_transparent_selector"
             android:src="@drawable/buyscreen_stock_inactive"
             />
+
       </RelativeLayout>
+
     </RelativeLayout>
 
     <com.android.common.SlidingTabLayout
@@ -188,7 +193,6 @@
         />
 
     <include layout="@layout/buy_sell_buttons"/>
-
 
   </RelativeLayout>
 

@@ -11,12 +11,12 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
@@ -75,8 +75,8 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
 
     @InjectView(R.id.portfolio_selector_container) PortfolioSelectorView mSelectedPortfolioContainer;
     @Nullable Subscription portfolioMenuSubscription;
-    @InjectView(R.id.market_close_container) protected View mMarketClosedContainer;
-    @InjectView(R.id.market_close_hint) protected TextView marketCloseHint;
+    @InjectView(R.id.market_close_container) @Optional protected View mMarketClosedContainer;
+    @InjectView(R.id.market_close_hint) @Optional protected TextView marketCloseHint;
     @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject BroadcastUtils broadcastUtils;
@@ -102,11 +102,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     @Inject protected OwnedPortfolioIdListCacheRx ownedPortfolioIdListCache;
     @Nullable protected OwnedPortfolioIdList applicableOwnedPortfolioIds;
     @Nullable protected Subscription securityApplicableOwnedPortfolioIdListSubscription;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
@@ -360,34 +355,23 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
 
     public void displayStockName()
     {
-        //if (securityCompactDTO != null)
-        //{
-        //    if (!StringUtils.isNullOrEmpty(securityCompactDTO.name))
-        //    {
-        //        setActionBarTitle(securityCompactDTO.name);
-        //        setActionBarSubtitle(securityCompactDTO.getExchangeSymbol());
-        //    }
-        //    else
-        //    {
-        //        setActionBarTitle(securityCompactDTO.getExchangeSymbol());
-        //        setActionBarSubtitle(null);
-        //    }
-        //}
-
         if (mMarketClosedContainer != null)
         {
             boolean marketIsOpen = securityCompactDTO == null
                     || securityCompactDTO.marketOpen == null
                     || securityCompactDTO.marketOpen;
             mMarketClosedContainer.setVisibility(marketIsOpen ? View.GONE : View.VISIBLE);
-            if (!marketIsOpen) {
+            if (!marketIsOpen)
+            {
                 marketCloseHint.setText(getMarketCloseHint(securityCompactDTO.timeTillNextExchangeOpen));
             }
         }
     }
 
-    public String getMarketCloseHint(String nextOpenTime) {
-        if (TextUtils.isEmpty(nextOpenTime)) {
+    public String getMarketCloseHint(String nextOpenTime)
+    {
+        if (TextUtils.isEmpty(nextOpenTime))
+        {
             return "";
         }
         int days = 0;
@@ -395,47 +379,60 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         int minutes = 0;
         int seconds = 0;
         int lastIndex = nextOpenTime.lastIndexOf(":");
-        seconds = (int)Float.parseFloat(nextOpenTime.substring(lastIndex + 1));
+        seconds = (int) Float.parseFloat(nextOpenTime.substring(lastIndex + 1));
         nextOpenTime = nextOpenTime.substring(0, lastIndex);
         lastIndex = nextOpenTime.lastIndexOf(":");
         minutes = Integer.parseInt(nextOpenTime.substring(lastIndex + 1));
         nextOpenTime = nextOpenTime.substring(0, lastIndex);
         lastIndex = nextOpenTime.lastIndexOf(".");
-        if (lastIndex != -1) {
+        if (lastIndex != -1)
+        {
             days = Integer.parseInt(nextOpenTime.substring(0, lastIndex));
         }
         hours = Integer.parseInt(nextOpenTime.substring(lastIndex + 1));
 
-        Resources res= Resources.getSystem();
+        Resources res = Resources.getSystem();
 
         StringBuilder sb = new StringBuilder();
         sb.append(getString(R.string.market_close_hint)).append(" ");
         int id = 0;
-        if (days == 1) {
+        if (days == 1)
+        {
             id = res.getIdentifier("day", "string", "android");
             sb.append("1 ").append(getString(id)).append(" ");
-        } else if (days > 1){
+        }
+        else if (days > 1)
+        {
             id = res.getIdentifier("days", "string", "android");
             sb.append(String.valueOf(days)).append(" ").append(getString(id)).append(" ");
         }
 
-        if (hours > 1) {
+        if (hours > 1)
+        {
             id = res.getIdentifier("hours", "string", "android");
-        } else {
+        }
+        else
+        {
             id = res.getIdentifier("hour", "string", "android");
         }
         sb.append(String.valueOf(hours)).append(" ").append(getString(id)).append(" ");
 
-        if (minutes > 1) {
+        if (minutes > 1)
+        {
             id = res.getIdentifier("minutes", "string", "android");
-        } else {
+        }
+        else
+        {
             id = res.getIdentifier("minute", "string", "android");
         }
         sb.append(String.valueOf(minutes)).append(" ").append(getString(id)).append(" ");
 
-        if (seconds > 1) {
+        if (seconds > 1)
+        {
             id = res.getIdentifier("seconds", "string", "android");
-        } else {
+        }
+        else
+        {
             id = res.getIdentifier("second", "string", "android");
         }
         sb.append(String.valueOf(seconds)).append(" ").append(getString(id));
