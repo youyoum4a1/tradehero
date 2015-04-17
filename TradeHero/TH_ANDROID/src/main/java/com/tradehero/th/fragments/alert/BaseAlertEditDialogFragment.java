@@ -14,7 +14,6 @@ import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.BaseDialogSupportFragment;
 import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
-import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
@@ -25,7 +24,6 @@ abstract public class BaseAlertEditDialogFragment extends BaseDialogSupportFragm
 {
     @Inject protected CurrentUserId currentUserId;
     @Inject protected SecurityAlertCountingHelper securityAlertCountingHelper;
-    @Inject AlertCompactListCacheRx alertCompactListCache;
 
     BaseAlertEditFragmentHolder viewHolder;
 
@@ -101,7 +99,6 @@ abstract public class BaseAlertEditDialogFragment extends BaseDialogSupportFragm
 
     protected void handleAlertUpdated(@NonNull AlertCompactDTO alertCompactDTO)
     {
-        alertCompactListCache.invalidate(currentUserId.toUserBaseKey());
         dismiss();
     }
 }
