@@ -256,7 +256,7 @@ public class TrendingMainFragment extends DashboardFragment
                 {
                     @Override public void call(UserProfileDTO userProfileDTO)
                     {
-                        if (position == 1 && userProfileDTO.fxPortfolio == null)
+                        if (position == 1 && userProfileDTO.fxPortfolio == null && fxPortfolioId == null)
                         {
                             final FxOnBoardDialogFragment onBoardDialogFragment =
                                     FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
