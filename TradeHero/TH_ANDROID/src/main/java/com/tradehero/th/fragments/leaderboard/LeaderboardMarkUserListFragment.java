@@ -87,8 +87,9 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        currentLeaderboardKey = getInitialLeaderboardKey();
+        //please make sure to get the type before get key
         currentLeaderboardType = getInitialLeaderboardType();
+        currentLeaderboardKey = getInitialLeaderboardKey();
         fragmentUtil.linkWith(this, currentLeaderboardType);
         setHasOptionsMenu(true);
     }
