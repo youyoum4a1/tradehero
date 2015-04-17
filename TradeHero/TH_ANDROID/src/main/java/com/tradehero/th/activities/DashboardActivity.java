@@ -12,8 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
@@ -77,10 +75,8 @@ import com.tradehero.th.fragments.onboarding.OnBoardNewDialogFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardingBroadcastSignal;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
-import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AskForReviewSuggestedDialogFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
-import com.tradehero.th.fragments.settings.SettingsResideMenuItemUpdateCenter;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -108,7 +104,6 @@ import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.ui.AppContainer;
-import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.dagger.AppModule;
@@ -478,12 +473,7 @@ public class DashboardActivity extends BaseActivity
 
         if (resideMenu.isOpened())
         {
-            try
-            {
-                ((SettingsResideMenuItemUpdateCenter) resideMenu.getMenuItems().get(1)).refresh();
-            } catch (Exception e) {
-                Timber.e("Correct the index of UpdateCenter if necessary.");
-            }
+            userProfileCache.get().get(currentUserId.toUserBaseKey());
         }
 
     }

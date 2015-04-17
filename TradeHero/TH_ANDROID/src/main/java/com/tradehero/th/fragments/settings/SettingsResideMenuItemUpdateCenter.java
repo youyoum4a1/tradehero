@@ -1,7 +1,9 @@
 package com.tradehero.th.fragments.settings;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -9,9 +11,14 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import javax.inject.Inject;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.internal.util.SubscriptionList;
 
 public class SettingsResideMenuItemUpdateCenter extends LinearLayout
@@ -21,8 +28,7 @@ public class SettingsResideMenuItemUpdateCenter extends LinearLayout
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
 
-    protected SubscriptionList onStopSubscriptions;
-    private int unReadCount = 0;
+    protected SubscriptionList onDetachedSubscriptions;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -58,23 +64,30 @@ public class SettingsResideMenuItemUpdateCenter extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        tvUnreadCount.setVisibility(hasUnVisitedSetting() ? View.VISIBLE : View.INVISIBLE);
-        tvUnreadCount.setText(" "+unReadCount+" ");
+        onDetachedSubscriptions = new SubscriptionList();
+        onDetachedSubscriptions.add(userProfileCache.get(currentUserId.toUserBaseKey())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<Pair<UserBaseKey, UserProfileDTO>>()
+                        {
+                            @Override public void call(Pair<UserBaseKey, UserProfileDTO> userBaseKeyUserProfileDTOPair)
+                            {
+                                linkWith(userBaseKeyUserProfileDTOPair.second);
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to get userProfile in ResideMenu")));
     }
 
     @Override protected void onDetachedFromWindow()
     {
+        onDetachedSubscriptions.unsubscribe();
         super.onDetachedFromWindow();
     }
 
-    public boolean hasUnVisitedSetting()
+    public void linkWith(@NonNull UserProfileDTO currentUserProfile)
     {
-        unReadCount = userProfileCache.getCachedValue(currentUserId.toUserBaseKey()).unreadNotificationsCount;
-        return unReadCount > 0;
-    }
-
-    public void refresh() {
-        tvUnreadCount.setVisibility(hasUnVisitedSetting() ? View.VISIBLE : View.INVISIBLE);
-        tvUnreadCount.setText(" "+unReadCount+" ");
+        int unReadCount = currentUserProfile.unreadNotificationsCount;
+        tvUnreadCount.setVisibility(unReadCount > 0 ? View.VISIBLE : View.INVISIBLE);
+        tvUnreadCount.setText(" " + unReadCount + " ");
     }
 }
