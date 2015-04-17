@@ -16,7 +16,6 @@ import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
-import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -82,7 +81,6 @@ import rx.functions.Actions;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
-@Routable("trending-securities")
 public class TrendingStockFragment extends TrendingBaseFragment
         implements WithTutorial, AdapterView.OnItemSelectedListener
 {
