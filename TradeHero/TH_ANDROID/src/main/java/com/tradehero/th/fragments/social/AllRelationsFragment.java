@@ -125,7 +125,7 @@ public class AllRelationsFragment extends BaseFragment
     private boolean isForReturn()
     {
         Bundle args = getArguments();
-        return args != null && args.containsKey(DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT);
+        return args != null && DashboardNavigator.getReturnFragment(args) != null;
     }
 
     public void downloadRelations()
