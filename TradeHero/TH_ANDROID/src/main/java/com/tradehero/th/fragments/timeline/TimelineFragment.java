@@ -557,6 +557,12 @@ public class TimelineFragment extends DashboardFragment
                                 @Override public void call(DialogInterface dialog)
                                 {
                                     onBoardDialogFragment = null;
+                                    swipeRefreshContainer.setRefreshing(true);
+                                    portfolioCompactListCache.invalidate(shownUserBaseKey);
+                                    portfolioCompactListCache.get(shownUserBaseKey);
+                                    userProfileCache.get().invalidate(shownUserBaseKey);
+                                    userProfileCache.get().get(shownUserBaseKey);
+                                    swipeRefreshContainer.setRefreshing(false);
                                 }
                             },
                             new ToastOnErrorAction()
