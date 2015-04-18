@@ -70,7 +70,10 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
                 .subscribe(
                         fragmentUtil,
                         new TimberOnErrorAction("Error on follow requested")));
-        requestDtos();
+        if ((itemViewAdapter != null) && (itemViewAdapter.getCount() == 0))
+        {
+            requestDtos();
+        }
     }
 
     @Override public void onResume()

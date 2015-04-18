@@ -16,6 +16,7 @@ import com.tradehero.common.api.PagedDTOKey;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOCacheRx;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedDTOAdapter;
@@ -290,6 +291,8 @@ abstract public class BasePagedListRxFragment<
     protected void onError(@NonNull PagedDTOKeyType key, @NonNull Throwable error)
     {
         nearEndScrollListener.lowerEndFlag();
+        updateVisibilities();
+        THToast.show(R.string.error_fetch_leaderboard_info);
     }
 
     abstract public boolean canMakePagedDtoKey();

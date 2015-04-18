@@ -44,6 +44,7 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
+import java.util.Timer;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
@@ -67,8 +68,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardCacheRx leaderboardCache;
     @Inject LeaderboardMarkUserListFragmentUtil fragmentUtil;
-
-    @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
 
     private View mRankHeaderView;
 
@@ -143,27 +142,23 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         ((ListView) listView).addHeaderView(userRankingHeaderView);
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
-        {
-            @Override public void onRefresh()
-            {
-                leaderboardCache.get(new PagedLeaderboardKey(leaderboardDefKey.key, 1));
-            }
-        });
-    }
-
     @Override public void onStart()
     {
         super.onStart();
+        Timber.e("Richard: Begin===================================");
+        Timber.e("Richard: " + isVisible());
+        Timber.e("Richard: " + currentLeaderboardKey.id);
+        Timber.e("Richard: " + currentLeaderboardType.name());
+        Timber.e("Richard: END===================================");
         fragmentUtil.onStart();
         onStopSubscriptions.add(((LeaderboardMarkUserListAdapter) itemViewAdapter).getFollowRequestedObservable()
                 .subscribe(
                         fragmentUtil,
                         new TimberOnErrorAction("Error when receiving user follow requested")));
-        requestDtos();
+        if ((itemViewAdapter != null) && (itemViewAdapter.getCount() == 0))
+        {
+            requestDtos();
+        }
         fetchOwnRanking();
     }
 
@@ -201,7 +196,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
             if (!newLeaderboardKey.equals(currentLeaderboardKey))
             {
                 currentLeaderboardKey = newLeaderboardKey;
-                swipeContainer.setRefreshing(true);
                 itemViewAdapter.clear();
                 unsubscribeListCache();
                 requestDtos();
@@ -264,11 +258,10 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
                             ListView listView = (ListView) view;
                             int mTotalHeadersAndFooters = listView.getHeaderViewsCount() + listView.getFooterViewsCount();
 
-                            if (totalItemCount > mTotalHeadersAndFooters && (totalItemCount - visibleItemCount) <= (firstVisibleItem + 1))
+                            if (totalItemCount > mTotalHeadersAndFooters && (totalItemCount - visibleItemCount) < (firstVisibleItem + 1))
                             {
                                 scrollStateChanged = false;
-                                swipeContainer.setRefreshing(true);
-                                // TODO load previous page
+                                requestDtos();
                             }
                         }
                     }
@@ -292,11 +285,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
                 currentUserId,
                 leaderboardCache,
                 userProfileCache);
-    }
-
-    @Override protected void linkWith(LeaderboardDefDTO leaderboardDefDTO)
-    {
-        super.linkWith(leaderboardDefDTO);
     }
 
     protected void saveCurrentFilterKey()
@@ -492,5 +480,17 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     {
         singleExpandingListViewListener.onItemClick(parent, view, position, id);
         super.onItemClick(parent, view, position, id);
+    }
+
+    @Override protected void onNext(@NonNull PagedLeaderboardKey key, @NonNull LeaderboardMarkUserItemView.DTOList value)
+    {
+        super.onNext(key, value);
+        //swipeContainer.setRefreshing(false);
+    }
+
+    @Override protected void onError(@NonNull PagedLeaderboardKey key, @NonNull Throwable error)
+    {
+        super.onError(key, error);
+        //swipeContainer.setRefreshing(false);
     }
 }
