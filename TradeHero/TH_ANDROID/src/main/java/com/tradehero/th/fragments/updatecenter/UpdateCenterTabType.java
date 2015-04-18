@@ -7,7 +7,7 @@ import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenter
 
 public enum UpdateCenterTabType
 {
-    Messages(R.string.message_center_tab_message, MessagesCenterNewFragment.class),
+    Messages(R.string.message_center_private_message_menu, MessagesCenterNewFragment.class),
     Notifications(R.string.message_center_tab_notification, NotificationsCenterFragment.class);
 
     public final int titleRes;
