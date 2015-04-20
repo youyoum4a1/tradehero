@@ -11,6 +11,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
+import com.tradehero.th.utils.GraphicUtil;
 
 public class WatchlistAdapter extends ArrayDTOAdapterNew<WatchlistPositionDTO, WatchlistItemView>
 {
@@ -31,14 +32,7 @@ public class WatchlistAdapter extends ArrayDTOAdapterNew<WatchlistPositionDTO, W
         View front = view.findViewById(R.id.front);
         if (front != null)
         {
-            if ((position % 2) == 0)
-            {
-                front.setBackgroundColor(Color.WHITE);
-            }
-            else
-            {
-                front.setBackgroundResource(R.color.portfolio_header_background_color);
-            }
+            GraphicUtil.setEvenOddBackground(position, front);
         }
         return view;
     }
