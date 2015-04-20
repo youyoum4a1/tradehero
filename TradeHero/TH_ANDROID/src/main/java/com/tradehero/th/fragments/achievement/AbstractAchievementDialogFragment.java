@@ -593,7 +593,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         picasso.cancelRequest(badge);
         mBadgeCallback = null;
         userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
-
+        GraphicUtil.removeColorFilter(imagesToColorFilter);
         super.onDestroyView();
     }
 

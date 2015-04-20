@@ -262,6 +262,32 @@ public class GraphicUtil
         d.clearColorFilter();
         d.setColorFilter(color, PorterDuff.Mode.SRC_IN);
     }
+
+    public static void removeColorFilter(@NonNull ImageView[] imageViews)
+    {
+        for (ImageView imageView : imageViews)
+        {
+            removeColorFilter(imageView);
+        }
+    }
+
+    public static void removeColorFilter(@NonNull Collection<? extends ImageView> imageViews)
+    {
+        for (ImageView imageView : imageViews)
+        {
+            removeColorFilter(imageView);
+        }
+    }
+
+    public static void removeColorFilter(@NonNull ImageView imageView)
+    {
+        removeColorFilter(imageView.getDrawable());
+    }
+
+    public static void removeColorFilter(@NonNull Drawable d)
+    {
+        d.clearColorFilter();
+    }
     //</editor-fold>
 
     public static StateListDrawable createStateListDrawable(@NonNull Context context, int normal)
