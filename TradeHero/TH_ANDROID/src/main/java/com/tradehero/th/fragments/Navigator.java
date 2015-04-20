@@ -17,7 +17,7 @@ import timber.log.Timber;
 
 class Navigator<ActivityType extends Activity>
 {
-    public static final String BUNDLE_KEY_RETURN_FRAGMENT = Navigator.class.getName() + ".returnFragment";
+    private static final String BUNDLE_KEY_RETURN_FRAGMENT = Navigator.class.getName() + ".returnFragment";
     private static final boolean DEFAULT_SHOW_HOME_KEY_AS_UP = true;
 
     public static final int[] DEFAULT_FRAGMENT_ANIMATION = new int[] {
@@ -30,6 +30,18 @@ class Navigator<ActivityType extends Activity>
     private int fragmentContentId;
     private int backPressedCount;
     private final int minimumBackstackSize;
+
+    //<editor-fold desc="Argument passing">
+    public static void putReturnFragment(@NonNull Bundle args, @NonNull String fragmentClassName)
+    {
+        args.putString(BUNDLE_KEY_RETURN_FRAGMENT, fragmentClassName);
+    }
+
+    @Nullable public static String getReturnFragment(@NonNull Bundle args)
+    {
+        return args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
+    }
+    //</editor-fold>
 
     //<editor-fold desc="Constructors">
     public Navigator(ActivityType activity, FragmentManager manager, int fragmentContentId, int minimumBackstackSize)

@@ -8,11 +8,13 @@ import android.text.Spanned;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLeaderboardListItemView;
+import com.tradehero.th.fragments.leaderboard.LeaderboardType;
 import com.tradehero.th.models.number.THSignedPercentage;
 
 public class CompetitionZoneLeaderboardDTO extends CompetitionZoneDTO
 {
-    @Nullable public final CompetitionDTO competitionDTO;
+    @NonNull public final CompetitionDTO competitionDTO;
+    @NonNull public final LeaderboardType leaderboardType;
     public final int titleColor;
     @NonNull public final Spanned roi;
 
@@ -21,20 +23,21 @@ public class CompetitionZoneLeaderboardDTO extends CompetitionZoneDTO
             @NonNull Resources resources,
             @Nullable String title,
             @Nullable String description,
-            @Nullable CompetitionDTO competitionDTO)
+            @NonNull CompetitionDTO competitionDTO,
+            @Nullable LeaderboardType leaderboardType)
     {
         super(title,
                 description,
-                competitionDTO != null ? competitionDTO.getIconUrl() : null,
+                competitionDTO.getIconUrl(),
                 R.drawable.default_image);
         this.competitionDTO = competitionDTO;
+        this.leaderboardType = leaderboardType != null ? leaderboardType : LeaderboardType.STOCKS;
 
         Boolean isActive = isActive();
         titleColor = isActive == null || isActive ? CompetitionZoneLeaderboardListItemView.COLOR_ACTIVE : CompetitionZoneLeaderboardListItemView.COLOR_INACTIVE;
 
         //<editor-fold desc="ROI">
-        if (competitionDTO != null
-                && competitionDTO.leaderboardUser != null)
+        if (competitionDTO.leaderboardUser != null)
         {
             roi = THSignedPercentage
                     .builder(competitionDTO.leaderboardUser.roiInPeriod * 100)
@@ -51,7 +54,7 @@ public class CompetitionZoneLeaderboardDTO extends CompetitionZoneDTO
 
     @Nullable public Boolean isActive()
     {
-        if (competitionDTO == null || competitionDTO.leaderboard == null)
+        if (competitionDTO.leaderboard == null)
         {
             return null;
         }

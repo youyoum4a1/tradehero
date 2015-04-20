@@ -1,6 +1,8 @@
 package com.tradehero.common.text;
 
 import android.support.annotation.NonNull;
+import android.view.View;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
@@ -30,5 +32,41 @@ public class SecurityTagProcessor extends ClickableTagProcessor
     @NonNull @Override public String key()
     {
         return "security";
+    }
+
+    @NonNull @Override protected Span getSpanElement(String replacement, String[] matchStrings)
+    {
+        return new SecurityClickableSpan(replacement, matchStrings);
+    }
+
+    protected class SecurityClickableSpan extends RichClickableSpan
+    {
+        //<editor-fold desc="Constructors">
+        public SecurityClickableSpan(String replacement, String[] matchStrings)
+        {
+            super(replacement, matchStrings);
+        }
+        //</editor-fold>
+
+        @Override public void onClick(View view)
+        {
+            if (matchStrings.length >= 3)
+            {
+                String exchange = matchStrings[1];
+                String symbol = matchStrings[2];
+                userActionSubject.onNext(new SecurityTagProcessor.SecurityUserAction(matchStrings, new SecurityId(exchange, symbol)));
+            }
+        }
+    }
+
+    public static class SecurityUserAction extends UserAction
+    {
+        @NonNull public final SecurityId securityId;
+
+        public SecurityUserAction(@NonNull String[] matchStrings, @NonNull SecurityId securityId)
+        {
+            super(matchStrings);
+            this.securityId = securityId;
+        }
     }
 }

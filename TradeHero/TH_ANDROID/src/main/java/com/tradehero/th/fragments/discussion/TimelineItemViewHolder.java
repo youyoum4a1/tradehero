@@ -20,6 +20,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
+import com.tradehero.th.models.discussion.SecurityUserAction;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;
@@ -236,18 +237,6 @@ public class TimelineItemViewHolder
         public TimelineCommentUserAction(@NonNull AbstractDiscussionCompactDTO discussionDTO)
         {
             super(discussionDTO);
-        }
-    }
-
-    public static class SecurityUserAction extends UserDiscussionAction
-    {
-        @NonNull public final SecurityId securityId;
-
-        public SecurityUserAction(@NonNull AbstractDiscussionCompactDTO discussionDTO,
-                @NonNull SecurityId securityId)
-        {
-            super(discussionDTO);
-            this.securityId = securityId;
         }
     }
 }

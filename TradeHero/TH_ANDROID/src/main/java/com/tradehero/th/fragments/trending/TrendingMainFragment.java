@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.games.ViralMiniGameDefDTO;
 import com.tradehero.th.api.games.ViralMiniGameDefDTOList;
@@ -57,6 +58,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
+@Routable("trending-securities")
 public class TrendingMainFragment extends DashboardFragment
 {
     private static final String KEY_ASSET_CLASS = TrendingMainFragment.class.getName() + ".assetClass";
@@ -256,7 +258,7 @@ public class TrendingMainFragment extends DashboardFragment
                 {
                     @Override public void call(UserProfileDTO userProfileDTO)
                     {
-                        if (position == 1 && userProfileDTO.fxPortfolio == null)
+                        if (position == 1 && userProfileDTO.fxPortfolio == null && fxPortfolioId == null)
                         {
                             final FxOnBoardDialogFragment onBoardDialogFragment =
                                     FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());

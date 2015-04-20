@@ -8,8 +8,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.PagedDTOAdapter;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
@@ -45,6 +47,8 @@ public class ProviderSecurityListRxFragment
     private THIntentPassedListener webViewTHIntentPassedListener;
     private BaseWebViewFragment webViewFragment;
 
+    protected TextView tradeTitleView;
+
     public static void putProviderId(@NonNull Bundle bundle, @NonNull ProviderId providerId)
     {
         bundle.putBundle(BUNDLE_PROVIDER_ID_KEY, providerId.getArgs());
@@ -64,7 +68,9 @@ public class ProviderSecurityListRxFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_provider_security_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_provider_security_list, container, false);
+        tradeTitleView = (TextView) view.findViewById(R.id.provider_securities_tradable);
+        return view;
     }
 
     @Override public void onStart()
@@ -135,7 +141,7 @@ public class ProviderSecurityListRxFragment
         super.onDestroy();
     }
 
-    @NonNull @Override protected SecurityPagedViewDTOAdapter createItemViewAdapter()
+    @NonNull @Override protected PagedDTOAdapter<SecurityCompactDTO> createItemViewAdapter()
     {
         return new SecurityPagedViewDTOAdapter(getActivity(), R.layout.trending_security_item);
     }

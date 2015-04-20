@@ -41,7 +41,7 @@ public class ArticleAdapter extends ArrayDTOAdapter<AbstractDiscussionCompactIte
         return view;
     }
 
-    @Override protected View inflate(int position, ViewGroup viewGroup)
+    @NonNull @Override protected View inflate(int position, ViewGroup viewGroup)
     {
         View view = super.inflate(position, viewGroup);
         ((ArticleItemView) view).getUserActionObservable().subscribe(userActionSubject);

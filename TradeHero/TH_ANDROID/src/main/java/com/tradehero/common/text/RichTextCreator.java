@@ -4,129 +4,88 @@ import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.widget.TextView;
-import java.util.HashMap;
+import com.tradehero.th.api.users.CurrentUserId;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import javax.inject.Inject;
+import rx.Observable;
 
 public class RichTextCreator
 {
-    private static final Map<String, Spanned> cachedTexts = new HashMap<>();
     private String originalText;
-    private SpannableStringBuilder richText;
-    private List<RichTextProcessor> processors;
-    private final boolean useBuiltInTextProcessors;
+    @NonNull private List<RichTextProcessor> processors;
 
     //<editor-fold desc="Constructors">
-    @Inject public RichTextCreator()
+    public RichTextCreator(@NonNull CurrentUserId currentUserId)
     {
-        this(true);
+        this(getBuiltInProcessors(currentUserId));
     }
 
-    public RichTextCreator(boolean useBuiltInTextProcessors)
+    public RichTextCreator(@NonNull RichTextProcessor[] processors)
     {
-        this.useBuiltInTextProcessors = useBuiltInTextProcessors;
-
-        if (useBuiltInTextProcessors)
-        {
-            RichTextProcessor[] builtInProcessors = getBuildInProcessors();
-            for (RichTextProcessor processor : builtInProcessors)
-            {
-                register(processor);
-            }
-        }
+        this.processors = new LinkedList<>();
+        Collections.addAll(this.processors, processors);
     }
     //</editor-fold>
 
-    @NonNull private RichTextProcessor[] getBuildInProcessors()
+    @NonNull private static RichTextProcessor[] getBuiltInProcessors(@NonNull CurrentUserId currentUserId)
     {
         return new RichTextProcessor[] {
-                new UserTagProcessor(),
+                new UserTagProcessor(currentUserId),
                 new BoldTagProcessor(),
                 new ItalicTagProcessor(),
                 new SecurityTagProcessor(),
-                new LinkTagProcessor(),
+                new LinkTagProcessor(currentUserId),
                 new ColorTagProcessor(),
                 new SpecialCharacterProcessor(),
                 new BackTickTagProcessor(),
         };
     }
 
-    private void register(RichTextProcessor processor)
-    {
-        if (processor == null)
-        {
-            throw new IllegalArgumentException("processor cannot be null");
-        }
-
-        if (processors == null)
-        {
-            processors = new LinkedList<>();
-        }
-        processors.add(processor);
-    }
-
-    public RichTextCreator load(CharSequence text)
+    @NonNull public RichTextCreator load(@NonNull CharSequence text)
     {
         return load(text.toString());
     }
 
-    public RichTextCreator load(String text)
+    @NonNull public RichTextCreator load(@NonNull String text)
     {
         setText(text);
         return this;
     }
 
-    private void setText(String text)
+    private void setText(@NonNull String text)
     {
         this.originalText = text;
-        richText = new SpannableStringBuilder(text);
     }
 
-    public Spanned create()
+    public void apply(@NonNull TextView textView)
     {
-        if (!needProcess())
-        {
-            return richText;
-        }
+        textView.setText(create());
+    }
 
-        String cachedKey = getCachedText();
-        Spanned cachedText = cachedTexts.get(cachedKey);
-
-        if (cachedText != null)
-        {
-            return cachedText;
-        }
+    @NonNull public Spanned create()
+    {
+        SpannableStringBuilder richText = new SpannableStringBuilder(originalText);
 
         for (RichTextProcessor processor : processors)
         {
             richText = processor.process(richText);
         }
 
-        cachedTexts.put(cachedKey, richText);
         return richText;
     }
 
-    private boolean needProcess()
+    @NonNull public Observable<ClickableTagProcessor.UserAction> getUserActionObservable()
     {
-        return processors != null && !processors.isEmpty();
-    }
-
-    private String getCachedText()
-    {
-        StringBuilder cachedKey = new StringBuilder();
-        cachedKey.append(richText);
+        List<Observable<ClickableTagProcessor.UserAction>> observables = new ArrayList<>();
         for (RichTextProcessor processor : processors)
         {
-            cachedKey.append('_').append(processor.key());
+            if (processor instanceof ClickableTagProcessor)
+            {
+                observables.add(((ClickableTagProcessor) processor).getUserActionSubject());
+            }
         }
-        return cachedKey.toString();
-    }
-
-    public void apply(TextView textView)
-    {
-        Spanned richText = create();
-        textView.setText(richText);
+        return Observable.merge(observables);
     }
 }

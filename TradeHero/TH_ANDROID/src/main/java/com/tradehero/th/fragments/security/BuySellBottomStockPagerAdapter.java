@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -9,11 +10,10 @@ import android.view.View;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineFragment;
-import com.tradehero.th.fragments.position.OldPositionListFragment;
+import com.tradehero.th.fragments.position.SecurityPositionListFragment;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import timber.log.Timber;
 
@@ -23,43 +23,31 @@ public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
     public static final int FRAGMENT_ID_DISCUSS = 1;
     public static final int FRAGMENT_ID_NEWS = 2;
     public static final int FRAGMENT_ID_HISTORY = 3;
-    private SecurityId securityId;
-    private int securityIntId;
-    private Context context;
-    private OwnedPortfolioId portfolioId;
-    protected UserBaseKey shownUser;
+
+    @NonNull private final Context context;
+    @NonNull private final OwnedPortfolioId applicablePortfolioId;
+    @NonNull private final SecurityId securityId;
+    @NonNull private final UserBaseKey shownUser;
 
     //<editor-fold desc="Constructors">
-    public BuySellBottomStockPagerAdapter(Context context, FragmentManager fragmentManager)
+    public BuySellBottomStockPagerAdapter(
+            @NonNull Context context,
+            @NonNull FragmentManager fragmentManager,
+            @NonNull OwnedPortfolioId applicablePortfolioId,
+            @NonNull SecurityId securityId,
+            @NonNull UserBaseKey shownUser)
     {
         super(fragmentManager);
         this.context = context;
+        this.applicablePortfolioId = applicablePortfolioId;
+        this.securityId = securityId;
+        this.shownUser = shownUser;
     }
     //</editor-fold>
 
     public static ChartTimeSpan getDefaultChartTimeSpan()
     {
         return new ChartTimeSpan(ChartTimeSpan.MONTH_3);
-    }
-
-    public void linkWith(SecurityId securityId)
-    {
-        this.securityId = securityId;
-    }
-
-    public void linkWith(int securityID)
-    {
-        securityIntId = securityID;
-    }
-
-    public void linkWith(OwnedPortfolioId key)
-    {
-        portfolioId = key;
-    }
-
-    public void linkWith(UserBaseKey key)
-    {
-        shownUser = key;
     }
 
     @Override public CharSequence getPageTitle(int position)
@@ -80,14 +68,7 @@ public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
 
     @Override public int getCount()
     {
-        if (securityId == null)
-        {
-            return 0;
-        }
-        else
-        {
-            return 4;
-        }
+        return 4;
     }
 
     @Override public Fragment getItem(int position)
@@ -113,12 +94,11 @@ public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
                 NewsHeadlineFragment.putSecurityId(args, securityId);
                 break;
             case FRAGMENT_ID_HISTORY:
-                fragment = new OldPositionListFragment();
-                OldPositionListFragment.setHasOptionMenu(args, false);
-                OldPositionListFragment.putShownUser(args, shownUser);
-                OldPositionListFragment.putGetPositionsDTOKey(args, portfolioId);
-                OldPositionListFragment.putSecurityId(args, new SecurityIntegerId(securityIntId));
-                OldPositionListFragment.putIsFx(args, false);
+                fragment = new SecurityPositionListFragment();
+                SecurityPositionListFragment.setHasOptionMenu(args, false);
+                SecurityPositionListFragment.putShownUser(args, shownUser);
+                SecurityPositionListFragment.putSecurityId(args, securityId);
+                SecurityPositionListFragment.putApplicablePortfolioId(args, applicablePortfolioId);
                 break;
 
             default:

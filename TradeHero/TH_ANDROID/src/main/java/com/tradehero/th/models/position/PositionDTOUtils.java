@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -334,14 +335,14 @@ public class PositionDTOUtils
                 });
     }
 
-    @NonNull public static Observable<Pair<PositionDTO, SecurityCompactDTO>> getSecuritiesSoft(
-            @NonNull Observable<Pair<PositionDTO, SecurityId>> securityIds,
+    @NonNull public static <PositionType extends PositionDTOCompact> Observable<Pair<PositionType, SecurityCompactDTO>> getSecuritiesSoft(
+            @NonNull Observable<Pair<PositionType, SecurityId>> securityIds,
             @NonNull final BaseDTOCacheRx<SecurityId, SecurityCompactDTO> securityCompactCache)
     {
         return securityIds.flatMap(
-                new Func1<Pair<PositionDTO, SecurityId>, Observable<Pair<PositionDTO, SecurityCompactDTO>>>()
+                new Func1<Pair<PositionType, SecurityId>, Observable<Pair<PositionType, SecurityCompactDTO>>>()
                 {
-                    @Override public Observable<Pair<PositionDTO, SecurityCompactDTO>> call(final Pair<PositionDTO, SecurityId> positionPair)
+                    @Override public Observable<Pair<PositionType, SecurityCompactDTO>> call(final Pair<PositionType, SecurityId> positionPair)
                     {
                         if (positionPair.second == null)
                         {
@@ -349,10 +350,10 @@ public class PositionDTOUtils
                         }
                         return securityCompactCache.getOne(positionPair.second)
                                 .map(
-                                        new Func1<Pair<SecurityId, SecurityCompactDTO>, Pair<PositionDTO, SecurityCompactDTO>>()
+                                        new Func1<Pair<SecurityId, SecurityCompactDTO>, Pair<PositionType, SecurityCompactDTO>>()
                                         {
                                             @Override
-                                            public Pair<PositionDTO, SecurityCompactDTO> call(
+                                            public Pair<PositionType, SecurityCompactDTO> call(
                                                     Pair<SecurityId, SecurityCompactDTO> securityCompactPair)
                                             {
                                                 return Pair.create(positionPair.first, securityCompactPair.second);

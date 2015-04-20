@@ -16,21 +16,22 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
-import com.tradehero.th.api.position.PositionDTOCompact;
-import com.tradehero.th.api.position.PositionDTOCompactList;
+import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionDTOList;
+import com.tradehero.th.api.position.PositionDTOUtil;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
-import com.tradehero.th.persistence.position.PositionCompactListCacheRx;
+import com.tradehero.th.persistence.position.PositionListCacheRx;
 import com.tradehero.th.persistence.prefs.ShowMarketClosed;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -44,7 +45,7 @@ import rx.functions.Func1;
 
 public class AbstractBuySellFragment extends BasePurchaseManagerFragment
 {
-    private final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = "securityId";
+    private final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".securityId";
     private final static String BUNDLE_KEY_IS_BUY = AbstractBuySellFragment.class.getName() + ".isBuy";
     private final static String BUNDLE_KEY_QUANTITY_BUY = AbstractBuySellFragment.class.getName() + ".quantityBuy";
     private final static String BUNDLE_KEY_QUANTITY_SELL = AbstractBuySellFragment.class.getName() + ".quantitySell";
@@ -56,7 +57,7 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
     @Inject protected QuoteServiceWrapper quoteServiceWrapper;
     @Inject protected SecurityCompactCacheRx securityCompactCache;
     @Inject protected UserProfileCacheRx userProfileCache;
-    @Inject protected PositionCompactListCacheRx positionCompactListCache;
+    @Inject protected PositionListCacheRx positionCompactListCache;
     @Inject protected THRouter thRouter;
     @Inject @ShowMarketClosed TimingIntervalPreference showMarketClosedIntervalPreference;
 
@@ -65,8 +66,8 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
     @Nullable protected QuoteDTO quoteDTO;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
 
-    @Nullable protected PositionDTOCompactList positionDTOCompactList;
-    @Nullable protected PositionDTOCompact positionDTOCompact;
+    @Nullable protected PositionDTOList positionDTOList;
+    @Nullable protected PositionDTO positionDTO;
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
 
     protected boolean isTransactionTypeBuy = true;
@@ -242,21 +243,19 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
                 positionCompactListCache.get(securityId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<Pair<SecurityId, PositionDTOCompactList>>()
+                        new Action1<Pair<SecurityId, PositionDTOList>>()
                         {
-                            @Override public void call(Pair<SecurityId, PositionDTOCompactList> pair)
+                            @Override public void call(Pair<SecurityId, PositionDTOList> pair)
                             {
                                 linkWith(pair.second);
                             }
                         },
-                        new ToastAndLogOnErrorAction(
-                                getString(R.string.error_fetch_position_list_info),
-                                "Failed to fetch positions for this security")));
+                        new TimberOnErrorAction(getString(R.string.error_fetch_position_list_info))));
     }
 
-    public void linkWith(final PositionDTOCompactList positionDTOCompacts)
+    public void linkWith(final PositionDTOList positionDTOCompacts)
     {
-        this.positionDTOCompactList = positionDTOCompacts;
+        this.positionDTOList = positionDTOCompacts;
         selectPositionDTO();
     }
 
@@ -268,15 +267,25 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
 
     protected void selectPositionDTO()
     {
-        if (positionDTOCompactList != null && portfolioCompactDTO != null)
+        if (positionDTOList != null && portfolioCompactDTO != null)
         {
-            this.positionDTOCompact = positionDTOCompactList.findFirstWhere(new Predicate<PositionDTOCompact>()
+            this.positionDTO = positionDTOList.findFirstWhere(new Predicate<PositionDTO>()
             {
-                @Override public boolean apply(PositionDTOCompact position)
+                @Override public boolean apply(PositionDTO position)
                 {
-                    return position.portfolioId == portfolioCompactDTO.id;
+                    return position.portfolioId == portfolioCompactDTO.id &&  position.shares != null && position.shares != 0;
                 }
             });
+            if (positionDTO == null)
+            {
+                this.positionDTO = positionDTOList.findFirstWhere(new Predicate<PositionDTO>()
+                {
+                    @Override public boolean apply(PositionDTO position)
+                    {
+                        return position.portfolioId == portfolioCompactDTO.id;
+                    }
+                });
+            }
         }
     }
 
@@ -305,7 +314,7 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
         return PortfolioCompactDTOUtil.getMaxPurchasableShares(
                 this.portfolioCompactDTO,
                 this.quoteDTO,
-                this.positionDTOCompact);
+                this.positionDTO);
     }
 
     protected void clampSellQuantity()
@@ -333,16 +342,17 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
         return PortfolioCompactDTOUtil.getMaxSellableShares(
                 this.portfolioCompactDTO,
                 this.quoteDTO,
-                this.positionDTOCompact);
+                this.positionDTO);
     }
 
     public Double getUnRealizedPLRefCcy()
     {
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if (ownedPortfolioId != null && positionDTOCompactList != null
+        if (ownedPortfolioId != null && positionDTOList != null
                 && this.quoteDTO != null && portfolioCompactDTO != null)
         {
-            return positionDTOCompactList.getUnRealizedPLRefCcy(
+            return PositionDTOUtil.getUnRealizedPLRefCcy(
+                    positionDTOList,
                     this.quoteDTO,
                     this.portfolioCompactDTO
             );

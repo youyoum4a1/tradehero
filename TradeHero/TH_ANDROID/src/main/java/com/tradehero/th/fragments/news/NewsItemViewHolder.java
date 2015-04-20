@@ -10,32 +10,38 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import butterknife.Optional;
 import com.tradehero.common.annotation.ViewVisibilityValue;
+import com.tradehero.common.text.ClickableTagProcessor;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
+import com.tradehero.th.models.discussion.NewNewsDiscussionAction;
+import com.tradehero.th.models.discussion.OpenWebUserAction;
+import com.tradehero.th.models.discussion.SecurityUserAction;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
+import com.tradehero.th.models.discussion.UserDiscussionActionFactory;
+import com.tradehero.th.widget.MarkdownTextView;
 import java.util.Collections;
 import java.util.List;
 import org.ocpsoft.prettytime.PrettyTime;
+import rx.Observable;
+import rx.functions.Func1;
 
 public class NewsItemViewHolder extends
         NewsItemCompactViewHolder
 {
     @InjectView(R.id.news_detail_wrapper) @Optional protected BetterViewAnimator mNewsContentWrapper;
     @InjectView(R.id.news_detail_loading) @Optional protected View loadingTextContent;
-    @InjectView(R.id.discussion_content) protected TextView textContent;
+    @InjectView(R.id.discussion_content) protected MarkdownTextView textContent;
     @InjectView(R.id.news_detail_title_placeholder) @Optional ImageView mNewsDetailTitlePlaceholder;
     @InjectView(R.id.news_detail_reference) @Optional GridView mNewsDetailReference;
     @InjectView(R.id.news_detail_reference_container) @Optional LinearLayout mNewsDetailReferenceContainer;
@@ -111,6 +117,24 @@ public class NewsItemViewHolder extends
         {
             mNewsDetailTitlePlaceholder.setBackgroundResource(resId);
         }
+    }
+
+    @NonNull @Override protected Observable<UserDiscussionAction> getMergedUserActionObservable()
+    {
+        return super.getMergedUserActionObservable().mergeWith(
+                textContent.getUserActionObservable().flatMap(
+                        new Func1<ClickableTagProcessor.UserAction, Observable<UserDiscussionAction>>()
+                        {
+                            @Override public Observable<UserDiscussionAction> call(ClickableTagProcessor.UserAction userAction)
+                            {
+                                if (viewDTO != null)
+                                {
+                                    return UserDiscussionActionFactory.createObservable(viewDTO.discussionDTO, userAction);
+                                }
+                                return Observable.empty();
+                            }
+                        }
+                ));
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -222,35 +246,6 @@ public class NewsItemViewHolder extends
         @Nullable public String getText()
         {
             return text;
-        }
-    }
-
-    public static class NewNewsDiscussionAction extends UserDiscussionAction
-    {
-        public NewNewsDiscussionAction(@NonNull AbstractDiscussionCompactDTO discussionDTO)
-        {
-            super(discussionDTO);
-        }
-    }
-
-    public static class OpenWebUserAction extends UserDiscussionAction
-    {
-        public OpenWebUserAction(@NonNull NewsItemCompactDTO discussionDTO)
-        {
-            super(discussionDTO);
-        }
-    }
-
-    public static class SecurityUserAction extends UserDiscussionAction
-    {
-        @NonNull public final SecurityId securityId;
-
-        public SecurityUserAction(
-                @NonNull AbstractDiscussionCompactDTO discussionDTO,
-                @NonNull SecurityId securityId)
-        {
-            super(discussionDTO);
-            this.securityId = securityId;
         }
     }
 }

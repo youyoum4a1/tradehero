@@ -9,7 +9,7 @@ import com.tradehero.th.api.security.SecurityCompactDTOList;
 
 public class GetPositionsDTO implements DTO
 {
-    @Nullable public PositionDTOList<PositionDTO> positions;
+    @Nullable public PositionDTOList positions;
     @Nullable public SecurityCompactDTOList securities;
     public int openPositionsCount;
     public int closedPositionsCount;
@@ -19,7 +19,7 @@ public class GetPositionsDTO implements DTO
     {
         if (positions != null)
         {
-            positions.setOnInPeriod(leaderboardMarkUserId);
+            PositionDTOUtil.setOnInPeriod(positions, leaderboardMarkUserId);
         }
     }
 

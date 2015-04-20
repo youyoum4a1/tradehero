@@ -61,7 +61,7 @@ public class BaseActivity extends ActionBarActivity
 
     @Nullable public static RouteParams getRouteParams(@NonNull Intent returnIntent)
     {
-        if (returnIntent.hasExtra(INTENT_EXTRA_KEY_ROUTE))
+        if ((returnIntent != null) && returnIntent.hasExtra(INTENT_EXTRA_KEY_ROUTE))
         {
             return new RouteParams(
                     returnIntent.getStringExtra(INTENT_EXTRA_KEY_ROUTE),

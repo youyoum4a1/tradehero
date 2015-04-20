@@ -16,7 +16,7 @@ import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.TestTHApp;
-import com.tradehero.th.persistence.position.PositionCompactListCacheRx;
+import com.tradehero.th.persistence.position.PositionListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
@@ -34,7 +34,7 @@ public abstract class AbstractTransactionDialogFragmentTestBase
 
     @Inject UserProfileCacheRx userProfileCache;
     @Inject SecurityCompactCacheRx securityCompactCache;
-    @Inject PositionCompactListCacheRx positionCompactListCache;
+    @Inject PositionListCacheRx positionCompactListCache;
 
     @Inject CurrentUserId currentUserId;
 

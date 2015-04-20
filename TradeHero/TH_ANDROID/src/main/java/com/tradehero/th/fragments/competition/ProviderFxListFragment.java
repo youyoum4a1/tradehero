@@ -1,10 +1,12 @@
 package com.tradehero.th.fragments.competition;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.View;
 import com.tradehero.th.R;
 import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.fragments.security.FXSecurityPagedViewDTOAdapter;
 import com.tradehero.th.fragments.security.ProviderSecurityListRxFragment;
-import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
 import com.tradehero.th.fragments.trending.TrendingFXFragment;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.rx.ToastAction;
@@ -21,15 +23,21 @@ public class ProviderFxListFragment extends ProviderSecurityListRxFragment
 {
     @Inject SecurityServiceWrapper securityServiceWrapper;
 
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        tradeTitleView.setText(R.string.provider_fx_list_tradable);
+    }
+
     @Override public void onStart()
     {
         super.onStart();
         fetchFXPrice();
     }
 
-    @NonNull @Override protected SecurityPagedViewDTOAdapter createItemViewAdapter()
+    @NonNull @Override protected FXSecurityPagedViewDTOAdapter createItemViewAdapter()
     {
-        return new SecurityPagedViewDTOAdapter(
+        return new FXSecurityPagedViewDTOAdapter(
                 getActivity(),
                 R.layout.trending_fx_item);
     }
@@ -60,7 +68,7 @@ public class ProviderFxListFragment extends ProviderSecurityListRxFragment
 
     private void handlePricesReceived(@NonNull List<QuoteDTO> list)
     {
-        ((SecurityPagedViewDTOAdapter) itemViewAdapter).updatePrices(list);
-        ((SecurityPagedViewDTOAdapter) itemViewAdapter).notifyDataSetChanged();
+        ((FXSecurityPagedViewDTOAdapter) itemViewAdapter).updatePrices(list);
+        ((FXSecurityPagedViewDTOAdapter) itemViewAdapter).notifyDataSetChanged();
     }
 }

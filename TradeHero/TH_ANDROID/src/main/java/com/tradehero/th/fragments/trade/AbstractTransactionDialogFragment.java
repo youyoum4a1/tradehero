@@ -34,8 +34,9 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.portfolio.PortfolioId;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOCompact;
-import com.tradehero.th.api.position.PositionDTOCompactList;
+import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -55,12 +56,11 @@ import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.persistence.position.PositionCompactListCacheRx;
+import com.tradehero.th.persistence.position.PositionListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
@@ -110,10 +110,9 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject PortfolioCompactCacheRx portfolioCompactCache;
     @Inject SecurityServiceWrapper securityServiceWrapper;
-    @Inject Lazy<PositionCompactListCacheRx> positionCompactListCache;
+    @Inject Lazy<PositionListCacheRx> positionCompactListCache;
     @Inject Analytics analytics;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
-    @Inject SocialShareHelper socialShareHelper;
     @Inject THBillingInteractorRx userInteractor;
     @Inject Lazy<DashboardNavigator> navigator;
 
@@ -125,7 +124,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     protected QuoteDTO quoteDTO;
     protected Integer mTransactionQuantity = 0;
-    @Nullable protected PositionDTOCompactList positionDTOCompactList;
+    @Nullable protected PositionDTOList positionDTOList;
     @Nullable protected PositionDTOCompact positionDTOCompact;
     protected boolean showProfitLossUsd = true; // false will show in RefCcy
 
@@ -280,7 +279,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         securityCompactDTO = null;
         portfolioCompactDTO = null;
         quoteDTO = null;
-        positionDTOCompactList = null;
+        positionDTOList = null;
         super.onDestroy();
     }
 
@@ -383,12 +382,12 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 this,
                 positionCompactListCache.get()
                         .get(this.securityId)
-                        .map(new PairGetSecond<SecurityId, PositionDTOCompactList>()))
+                        .map(new PairGetSecond<SecurityId, PositionDTOList>()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<PositionDTOCompactList>()
+                        new Action1<PositionDTOList>()
                         {
-                            @Override public void call(PositionDTOCompactList list)
+                            @Override public void call(PositionDTOList list)
                             {
                                 linkWith(list);
                             }
@@ -396,9 +395,9 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                         new ToastOnErrorAction()));
     }
 
-    protected void linkWith(PositionDTOCompactList positionDTOCompacts)
+    protected void linkWith(PositionDTOList positionDTOs)
     {
-        this.positionDTOCompactList = positionDTOCompacts;
+        this.positionDTOList = positionDTOs;
         setPositionDTO();
         initPortfolioRelatedInfo();
         clampQuantity();
@@ -442,11 +441,21 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     protected void setPositionDTO()
     {
-        if (positionDTOCompactList != null && portfolioCompactDTO != null)
+        if (positionDTOList != null && portfolioCompactDTO != null)
         {
-            this.positionDTOCompact = positionDTOCompactList.findFirstWhere(new Predicate<PositionDTOCompact>()
+            this.positionDTOCompact = positionDTOList.findFirstWhere(new Predicate<PositionDTO>()
             {
-                @Override public boolean apply(PositionDTOCompact position)
+                @Override public boolean apply(PositionDTO position)
+                {
+                    return position.portfolioId == portfolioCompactDTO.id && position.shares != null && position.shares != 0;
+                }
+            });
+        }
+        if (positionDTOCompact == null && positionDTOList != null && portfolioCompactDTO != null)
+        {
+            this.positionDTOCompact = positionDTOList.findFirstWhere(new Predicate<PositionDTO>()
+            {
+                @Override public boolean apply(PositionDTO position)
                 {
                     return position.portfolioId == portfolioCompactDTO.id;
                 }

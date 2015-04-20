@@ -25,7 +25,7 @@
   <string name="watchlist_item_deleted_failed">관심종목에서 %d삭제 시도에 실패하였습니다</string>
   <string name="watchlist_more">더보기</string>
   <string name="watchlist_quantity_should_not_be_zero">수량이 최소 1 이상이어야 합니다</string>
-  <string name="watchlist_empty_view">관심종목에 추가하려면\'+\'버튼을 누르세요 </string>
+  <string name="watchlist_empty_view">관심종목에 추가하려면버튼을 누르세요 </string>
   <string name="watchlist_new_discussion">새토론</string>
   <string name="watchlist_not_yet_implemented">아직 처리되지 않았습니다. 잠시 기다려주세요.</string>
 

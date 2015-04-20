@@ -9,7 +9,7 @@ import javax.inject.Inject;
 public class LeaderboardPositionListFragment
         extends PositionListFragment
 {
-    @Inject Context doNotRemoveOrItFails;
+    @SuppressWarnings("unused") @Inject Context doNotRemoveOrItFails;
 
     private static final String LEADERBOARD_DEF_TIME_RESTRICTED = "LEADERBOARD_DEF_TIME_RESTRICTED";
     private static final String LEADERBOARD_PERIOD_START_STRING = "LEADERBOARD_PERIOD_START_STRING";

@@ -18,6 +18,10 @@ import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHo
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.DiscussionActionButtonsView;
 import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
+import com.tradehero.th.models.discussion.OpenNewStockAlertUserAction;
+import com.tradehero.th.models.discussion.OpenWatchlistUserAction;
+import com.tradehero.th.models.discussion.SecurityUserAction;
+import com.tradehero.th.models.discussion.UpdateStockAlertUserAction;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;
@@ -102,7 +106,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
                                 case R.id.timeline_popup_menu_buy_sell:
                                     if (securityId != null)
                                     {
-                                        return Observable.just(new TimelineItemViewHolder.SecurityUserAction(userAction.discussionDTO, securityId));
+                                        return Observable.just(new SecurityUserAction(userAction.discussionDTO, securityId));
                                     }
                                     return Observable.just(userAction);
                             }
@@ -181,44 +185,6 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
                             requisite.isAutoTranslate,
                             ((Requisite) requisite).onWatchlist,
                             ((Requisite) requisite).stockAlertId));
-        }
-    }
-
-    public static class OpenWatchlistUserAction extends UserDiscussionAction
-    {
-        @NonNull public final SecurityId securityId;
-
-        public OpenWatchlistUserAction(@NonNull AbstractDiscussionCompactDTO discussionDTO,
-                @NonNull SecurityId securityId)
-        {
-            super(discussionDTO);
-            this.securityId = securityId;
-        }
-    }
-
-    public static class OpenNewStockAlertUserAction extends UserDiscussionAction
-    {
-        @NonNull public final SecurityId securityId;
-
-        public OpenNewStockAlertUserAction(
-                @NonNull AbstractDiscussionCompactDTO discussionDTO,
-                @NonNull SecurityId securityId)
-        {
-            super(discussionDTO);
-            this.securityId = securityId;
-        }
-    }
-
-    public static class UpdateStockAlertUserAction extends UserDiscussionAction
-    {
-        @NonNull public final AlertId alertId;
-
-        public UpdateStockAlertUserAction(
-                @NonNull AbstractDiscussionCompactDTO discussionDTO,
-                @NonNull AlertId alertId)
-        {
-            super(discussionDTO);
-            this.alertId = alertId;
         }
     }
 }

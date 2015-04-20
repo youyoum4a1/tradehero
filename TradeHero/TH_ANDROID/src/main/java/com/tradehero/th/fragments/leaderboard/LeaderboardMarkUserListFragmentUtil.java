@@ -149,7 +149,7 @@ public class LeaderboardMarkUserListFragmentUtil
                                 {
                                     analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
                                 }
-                                fragment.updateListViewRow(userBaseDTO.getBaseKey());
+                                fragment.updateListViewRow(pair.second, userBaseDTO.getBaseKey());
                             }
                         },
                         new ToastOnErrorAction()

@@ -127,7 +127,7 @@ public class AlertSliderView extends RelativeLayout
         if (alertSlider != null)
         {
             alertSlider.setEnabled(status.enabled);
-            int sliderValue = (int) (100 * (status.sliderValue - requisite.min) / (requisite.max - requisite.min));
+            int sliderValue = (int) (alertSlider.getMax() * (status.sliderValue - requisite.min) / (requisite.max - requisite.min));
             alertSlider.setProgress(sliderValue);
         }
     }
@@ -143,7 +143,7 @@ public class AlertSliderView extends RelativeLayout
 
     protected void handleSlider(int progress, boolean fromUser)
     {
-        double value = requisite.min + (progress * (requisite.max - requisite.min)) / 100;
+        double value = requisite.min + (progress * (requisite.max - requisite.min)) / alertSlider.getMax();
         this.status = new Status(status.enabled, value);
 
         THSignedNumber.Builder valueDisplay;

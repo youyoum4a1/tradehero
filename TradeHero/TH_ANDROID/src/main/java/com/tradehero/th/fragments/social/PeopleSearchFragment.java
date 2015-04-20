@@ -82,8 +82,8 @@ public class PeopleSearchFragment extends BaseSearchRxFragment<
     {
         super.handleDtoClicked(clicked);
 
-        if (getArguments() != null && getArguments().containsKey(
-                DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT))
+        if (getArguments() != null &&
+                DashboardNavigator.getReturnFragment(getArguments()) != null)
         {
             navigator.get().popFragment();
             return;

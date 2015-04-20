@@ -12,9 +12,11 @@ import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
 import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
+import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
+import com.tradehero.th.fragments.leaderboard.LeaderboardType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -137,6 +139,10 @@ public class CompetitionZoneDTOUtil
 
             if (competitionDTOs != null)
             {
+                AssetClass assetClass = (providerDTO.associatedPortfolio != null && providerDTO.associatedPortfolio.assetClass != null)
+                        ? providerDTO.associatedPortfolio.assetClass
+                        : AssetClass.STOCKS;
+                LeaderboardType leaderboardType = AssetClass.FX.equals(assetClass) ? LeaderboardType.FX : null;
                 Collections.sort(competitionDTOs, new CompetitionDTORestrictionComparator());
                 for (CompetitionDTO competitionDTO : competitionDTOs)
                 {
@@ -148,7 +154,8 @@ public class CompetitionZoneDTOUtil
                                         context.getResources(),
                                         competitionDTO.name,
                                         competitionDTO.leaderboard != null ? competitionDTO.leaderboard.desc : "",
-                                        competitionDTO)));
+                                        competitionDTO,
+                                        leaderboardType)));
                     }
                 }
             }

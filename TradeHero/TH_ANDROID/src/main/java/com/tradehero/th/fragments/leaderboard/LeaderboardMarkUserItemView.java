@@ -329,8 +329,8 @@ public class LeaderboardMarkUserItemView
         @NonNull final Spanned lbmuRoiAnnualized;
         final String lbmuFoF;
         @ViewVisibilityValue final int lbmuFoFVisibility;
-        @ViewVisibilityValue final int lbmuFollowUserVisibility;
-        @ViewVisibilityValue final int lbmuFollowingUserVisibility;
+        @ViewVisibilityValue private int lbmuFollowUserVisibility;
+        @ViewVisibilityValue private int lbmuFollowingUserVisibility;
         private String maxOwnLeaderRanking;
         private boolean expanded;
 
@@ -371,20 +371,42 @@ public class LeaderboardMarkUserItemView
                     ? VISIBLE
                     : GONE;
 
-            if (currentUserId.get() == leaderboardItem.id)
+            lbmuFollowUserVisibility = createLbmuFollowUserVisibility(currentUserProfileDTO, leaderboardItem.getBaseKey());
+            lbmuFollowingUserVisibility = createLbmuFollowingUserVisibility(currentUserProfileDTO, leaderboardItem.getBaseKey());
+        }
+
+        @ViewVisibilityValue protected int createLbmuFollowUserVisibility(
+                @NonNull UserProfileDTO currentUserProfileDTO,
+                @NonNull UserBaseKey heroId)
+        {
+            if (heroId.key.equals(currentUserProfileDTO.id))
             {
                 // you can't follow yourself
-                lbmuFollowUserVisibility = GONE;
+                return GONE;
             }
             else
             {
-                lbmuFollowUserVisibility = !currentUserProfileDTO.isFollowingUser(leaderboardItem.getBaseKey())
+                return !currentUserProfileDTO.isFollowingUser(heroId)
                         ? VISIBLE
                         : GONE;
             }
-            lbmuFollowingUserVisibility = currentUserProfileDTO.isFollowingUser(leaderboardItem.getBaseKey())
+        }
+
+        @ViewVisibilityValue protected int createLbmuFollowingUserVisibility(
+                @NonNull UserProfileDTO currentUserProfileDTO,
+                @NonNull UserBaseKey heroId)
+        {
+            return currentUserProfileDTO.isFollowingUser(heroId)
                     ? VISIBLE
                     : GONE;
+        }
+
+        public void followChanged(
+                @NonNull UserProfileDTO currentUserProfileDTO,
+                @NonNull UserBaseKey heroId)
+        {
+            this.lbmuFollowUserVisibility = createLbmuFollowUserVisibility(currentUserProfileDTO, heroId);
+            this.lbmuFollowingUserVisibility = createLbmuFollowingUserVisibility(currentUserProfileDTO, heroId);
         }
 
         @Override public boolean isExpanded()

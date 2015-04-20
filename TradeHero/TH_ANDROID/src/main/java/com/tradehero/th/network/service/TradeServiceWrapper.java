@@ -3,7 +3,6 @@ package com.tradehero.th.network.service;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.OwnedTradeId;
-import com.tradehero.th.api.trade.SecurityTradeDTOListKey;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.trade.TradeDTOListKey;
@@ -45,22 +44,6 @@ import rx.Observable;
         }
     }
 
-    private void basicCheck(SecurityTradeDTOListKey dtoListKey)
-    {
-        if (dtoListKey == null)
-        {
-            throw new NullPointerException("dtoListKey cannot be null");
-        }
-        if (dtoListKey.getExchange() == null)
-        {
-            throw new NullPointerException("dtoListKey.exchange cannot be null");
-        }
-        if (dtoListKey.getSecuritySymbol() == null)
-        {
-            throw new NullPointerException("dtoListKey.symbol cannot be null");
-        }
-    }
-
     private void basicCheck(OwnedTradeId ownedTradeId)
     {
         basicCheck((OwnedPositionId) ownedTradeId);
@@ -84,16 +67,6 @@ import rx.Observable;
                     ownedPositionId.positionId)
                     .map(new BaseDTOListProcessor<TradeDTO, TradeDTOList>(
                             new DTOProcessorTradeReceived(ownedPositionId)));
-        }
-        else if (dtoListKey instanceof SecurityTradeDTOListKey)
-        {
-            SecurityTradeDTOListKey securityTradeDTOListKey = (SecurityTradeDTOListKey) dtoListKey;
-            basicCheck(securityTradeDTOListKey);
-            received = this.tradeServiceRx.getTrades(
-                    securityTradeDTOListKey.getExchange(),
-                    securityTradeDTOListKey.getPathSafeSymbol(),
-                    securityTradeDTOListKey.page,
-                    securityTradeDTOListKey.perPage);
         }
         else
         {

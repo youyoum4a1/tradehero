@@ -71,7 +71,7 @@
       android:layout_below="@id/alert_edit_target_price_help_text"
       android:progress="50"
       android:enabled="false"
-      android:max="100"
+      android:max="100000"
       />
 
 </com.tradehero.th.fragments.alert.AlertSliderView>

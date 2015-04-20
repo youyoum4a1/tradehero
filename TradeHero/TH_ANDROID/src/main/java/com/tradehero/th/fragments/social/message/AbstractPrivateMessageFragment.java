@@ -69,7 +69,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     protected UserBaseKey correspondentId;
     protected UserProfileDTO correspondentProfile;
 
-    @InjectView(android.R.id.list) protected ListView discussionList;
+    //@InjectView(android.R.id.list) protected ListView discussionList;
     @InjectView(R.id.discussion_comment_widget) protected PrivatePostCommentView postWidget;
     @InjectView(R.id.private_message_empty) protected TextView emptyHint;
     @InjectView(R.id.post_comment_action_submit) protected TextView buttonSend;
@@ -110,23 +110,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
             postWidget.linkWith(MessageType.PRIVATE);
             postWidget.setRecipient(correspondentId);
         }
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        inflater.inflate(R.menu.private_message_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.private_message_refresh_btn:
-                refresh();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onStart()

@@ -70,7 +70,10 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
                 .subscribe(
                         fragmentUtil,
                         new TimberOnErrorAction("Error on follow requested")));
-        requestDtos();
+        if ((itemViewAdapter != null) && (itemViewAdapter.getCount() == 0))
+        {
+            requestDtos();
+        }
     }
 
     @Override public void onResume()
@@ -154,7 +157,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
         return new LeaderboardFriendsKey(page);
     }
 
-    @Override protected void updateListViewRow(@NonNull final UserBaseKey heroId)
+    @Override protected void updateListViewRow(@NonNull UserProfileDTO currentUserProfile, @NonNull final UserBaseKey heroId)
     {
         AdapterViewUtils.updateSingleRowWhere(
                 listView,

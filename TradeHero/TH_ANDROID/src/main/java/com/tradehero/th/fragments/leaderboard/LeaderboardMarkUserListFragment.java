@@ -31,7 +31,6 @@ import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
@@ -45,9 +44,8 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
+import java.util.Timer;
 import javax.inject.Inject;
-import javax.inject.Provider;
-import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -66,13 +64,10 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     private static final String BUNDLE_KEY_LEADERBOARD_TYPE_ID = LeaderboardMarkUserListFragment.class.getName() + ".leaderboardTypeId";
 
     @Inject Analytics analytics;
-    @Inject Provider<PrettyTime> prettyTime;
     @Inject @ForUser SharedPreferences preferences;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardCacheRx leaderboardCache;
     @Inject LeaderboardMarkUserListFragmentUtil fragmentUtil;
-
-    @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
 
     private View mRankHeaderView;
 
@@ -90,6 +85,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        //please make sure to get the type before get key
+        currentLeaderboardType = getInitialLeaderboardType();
         currentLeaderboardKey = getInitialLeaderboardKey();
         fragmentUtil.linkWith(this, currentLeaderboardType);
         setHasOptionsMenu(true);
@@ -97,7 +94,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
 
     protected PerPagedLeaderboardKey getInitialLeaderboardKey()
     {
-        currentLeaderboardType = getInitialLeaderboardType();
         savedPreference = new PerPagedFilteredLeaderboardKeyPreference(
                 getActivity(),
                 preferences,
@@ -146,27 +142,23 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         ((ListView) listView).addHeaderView(userRankingHeaderView);
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
-        {
-            @Override public void onRefresh()
-            {
-                leaderboardCache.get(new PagedLeaderboardKey(leaderboardDefKey.key, 1));
-            }
-        });
-    }
-
     @Override public void onStart()
     {
         super.onStart();
+        Timber.e("Richard: Begin===================================");
+        Timber.e("Richard: " + isVisible());
+        Timber.e("Richard: " + currentLeaderboardKey.id);
+        Timber.e("Richard: " + currentLeaderboardType.name());
+        Timber.e("Richard: END===================================");
         fragmentUtil.onStart();
         onStopSubscriptions.add(((LeaderboardMarkUserListAdapter) itemViewAdapter).getFollowRequestedObservable()
                 .subscribe(
                         fragmentUtil,
                         new TimberOnErrorAction("Error when receiving user follow requested")));
-        requestDtos();
+        if ((itemViewAdapter != null) && (itemViewAdapter.getCount() == 0))
+        {
+            requestDtos();
+        }
         fetchOwnRanking();
     }
 
@@ -204,7 +196,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
             if (!newLeaderboardKey.equals(currentLeaderboardKey))
             {
                 currentLeaderboardKey = newLeaderboardKey;
-                swipeContainer.setRefreshing(true);
                 itemViewAdapter.clear();
                 unsubscribeListCache();
                 requestDtos();
@@ -267,11 +258,10 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
                             ListView listView = (ListView) view;
                             int mTotalHeadersAndFooters = listView.getHeaderViewsCount() + listView.getFooterViewsCount();
 
-                            if (totalItemCount > mTotalHeadersAndFooters && (totalItemCount - visibleItemCount) <= (firstVisibleItem + 1))
+                            if (totalItemCount > mTotalHeadersAndFooters && (totalItemCount - visibleItemCount) < (firstVisibleItem + 1))
                             {
                                 scrollStateChanged = false;
-                                swipeContainer.setRefreshing(true);
-                                // TODO load previous page
+                                requestDtos();
                             }
                         }
                     }
@@ -295,11 +285,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
                 currentUserId,
                 leaderboardCache,
                 userProfileCache);
-    }
-
-    @Override protected void linkWith(LeaderboardDefDTO leaderboardDefDTO)
-    {
-        super.linkWith(leaderboardDefDTO);
     }
 
     protected void saveCurrentFilterKey()
@@ -443,16 +428,21 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         }
     }
 
-    @Override protected void updateListViewRow(@NonNull final UserBaseKey heroId)
+    @Override protected void updateListViewRow(@NonNull final UserProfileDTO currentUserProfile, @NonNull final UserBaseKey heroId)
     {
         AdapterViewUtils.updateSingleRowWhere(
                 listView,
-                UserBaseDTO.class,
-                new Predicate<UserBaseDTO>()
+                LeaderboardMarkUserItemView.DTO.class,
+                new Predicate<LeaderboardMarkUserItemView.DTO>()
                 {
-                    @Override public boolean apply(UserBaseDTO userBaseDTO)
+                    @Override public boolean apply(LeaderboardMarkUserItemView.DTO dto)
                     {
-                        return userBaseDTO.getBaseKey().equals(heroId);
+                        boolean isUpdatedRow = dto.leaderboardUserDTO.getBaseKey().equals(heroId);
+                        if (isUpdatedRow)
+                        {
+                            dto.followChanged(currentUserProfile, heroId);
+                        }
+                        return isUpdatedRow;
                     }
                 });
     }
@@ -490,5 +480,17 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     {
         singleExpandingListViewListener.onItemClick(parent, view, position, id);
         super.onItemClick(parent, view, position, id);
+    }
+
+    @Override protected void onNext(@NonNull PagedLeaderboardKey key, @NonNull LeaderboardMarkUserItemView.DTOList value)
+    {
+        super.onNext(key, value);
+        //swipeContainer.setRefreshing(false);
+    }
+
+    @Override protected void onError(@NonNull PagedLeaderboardKey key, @NonNull Throwable error)
+    {
+        super.onError(key, error);
+        //swipeContainer.setRefreshing(false);
     }
 }

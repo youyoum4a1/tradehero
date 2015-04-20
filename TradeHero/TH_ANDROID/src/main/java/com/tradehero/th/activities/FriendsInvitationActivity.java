@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.Menu;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
+import com.tradehero.th.utils.DeviceUtil;
 
 public class FriendsInvitationActivity extends OneFragmentActivity
 {
@@ -13,6 +14,7 @@ public class FriendsInvitationActivity extends OneFragmentActivity
     {
         super.onCreate(savedInstanceState);
         thRouter.registerRoutes(FriendsInvitationFragment.class);
+        DeviceUtil.dismissKeyboard(this);
     }
 
     @NonNull @Override protected Class<? extends Fragment> getInitialFragment()

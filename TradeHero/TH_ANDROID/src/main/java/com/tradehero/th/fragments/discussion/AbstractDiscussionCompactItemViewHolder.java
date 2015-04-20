@@ -67,7 +67,7 @@ public class AbstractDiscussionCompactItemViewHolder
 
     protected boolean downVote;
     @Nullable protected DTO viewDTO;
-    @NonNull protected PublishSubject<UserDiscussionAction> userActionSubject;
+    @NonNull protected final PublishSubject<UserDiscussionAction> userActionSubject;
 
     //<editor-fold desc="Constructors">
     public AbstractDiscussionCompactItemViewHolder()
@@ -96,16 +96,7 @@ public class AbstractDiscussionCompactItemViewHolder
 
     @NonNull public Observable<UserDiscussionAction> getUserActionObservable()
     {
-        Observable<UserDiscussionAction> actionButtonsObservable;
-        if (discussionActionButtonsView != null)
-        {
-            actionButtonsObservable = discussionActionButtonsView.getUserActionObservable();
-        }
-        else
-        {
-            actionButtonsObservable = Observable.never();
-        }
-        return userActionSubject.mergeWith(actionButtonsObservable)
+        return getMergedUserActionObservable()
                 .flatMap(new Func1<UserDiscussionAction,
                         Observable<UserDiscussionAction>>()
                 {
@@ -115,6 +106,20 @@ public class AbstractDiscussionCompactItemViewHolder
                         return handleCertainUserAction(userAction);
                     }
                 });
+    }
+
+    @NonNull protected Observable<UserDiscussionAction> getMergedUserActionObservable()
+    {
+        Observable<UserDiscussionAction> actionButtonsObservable;
+        if (discussionActionButtonsView != null)
+        {
+            actionButtonsObservable = discussionActionButtonsView.getUserActionObservable();
+        }
+        else
+        {
+            actionButtonsObservable = Observable.never();
+        }
+        return userActionSubject.mergeWith(actionButtonsObservable);
     }
 
     @NonNull public Observable<UserDiscussionAction> handleCertainUserAction(

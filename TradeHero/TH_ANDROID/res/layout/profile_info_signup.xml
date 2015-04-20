@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+  <com.tradehero.th.fragments.settings.ProfileInfoView
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:id="@+id/profile_info"
+      tools:background="@color/black"
+      >
+
+    <com.tradehero.th.widget.validation.ValidatedText
+        android:id="@+id/authentication_sign_up_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom"
+        android:hint="@string/user_profile_email"
+        android:textColorHint="@color/red"
+        android:inputType="textEmailAddress"
+        android:imeOptions="actionNext"
+        style="@style/TH.Authentication.EditText"
+
+        android:drawableRight="@drawable/accounts_glyph_transparent_default"
+        android:drawableEnd="@drawable/accounts_glyph_transparent_default"
+        app:invalidDrawableRight="@drawable/warning_red"
+        app:validDrawableRight="@drawable/tick_green"
+
+        app:minTextLength="1"
+        app:validatePattern="@string/regex_email_validator"
+        app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
+        app:delayValidationByMilliSec="500"
+        />
+
+    <com.tradehero.th.widget.validation.ValidatedText
+        android:id="@+id/authentication_sign_up_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_gravity="center_vertical"
+        android:hint="@string/user_profile_password"
+        android:textColorHint="@color/red"
+        android:inputType="textPassword"
+        style="@style/TH.Authentication.EditText"
+
+        android:drawableRight="@drawable/accounts_glyph_transparent_default"
+        android:drawableEnd="@drawable/accounts_glyph_transparent_default"
+        app:invalidDrawableRight="@drawable/warning_red"
+        app:validDrawableRight="@drawable/tick_green"
+
+        app:minTextLength="6"
+        app:delayValidationByMilliSec="1000"
+        />
+
+    <com.tradehero.th.widget.validation.MatchingPasswordText
+        android:id="@+id/authentication_sign_up_confirm_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_gravity="center_vertical"
+        android:hint="@string/user_profile_confirm_pwd"
+        android:textColorHint="@color/red"
+        android:inputType="textPassword"
+        style="@style/TH.Authentication.EditText"
+
+        android:drawableRight="@drawable/accounts_glyph_transparent_default"
+        android:drawableEnd="@drawable/accounts_glyph_transparent_default"
+        app:invalidDrawableRight="@drawable/warning_red"
+        app:validDrawableRight="@drawable/tick_green"
+
+        app:matchWith="@id/authentication_sign_up_password"
+        app:delayValidationByMilliSec="1000"
+        />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/margin_small">
+
+      <com.tradehero.th.widget.validation.DisplayNameValidatedText
+          android:id="@+id/authentication_sign_up_username"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/user_profile_display_name"
+          android:textColorHint="@color/red"
+          android:inputType="text"
+          style="@style/TH.Authentication.EditText"
+
+          android:drawableRight="@drawable/accounts_glyph_transparent_default"
+          android:drawableEnd="@drawable/accounts_glyph_transparent_default"
+          app:invalidDrawableRight="@drawable/warning_red"
+          app:validDrawableRight="@drawable/tick_green"
+
+          app:minTextLength="1"
+          app:delayValidationByMilliSec="500"
+          app:progressIndicator="@+id/authentication_sign_up_username_validator"
+          >
+      </com.tradehero.th.widget.validation.DisplayNameValidatedText>
+
+      <ProgressBar
+          android:id="@+id/authentication_sign_up_username_validator"
+          android:layout_width="32dip"
+          android:layout_height="32dip"
+          android:layout_gravity="end|center"
+          android:layout_marginRight="5dip"
+          android:layout_marginEnd="5dip"
+          android:visibility="invisible"
+          />
+
+    </FrameLayout>
+
+    <EditText
+        android:id="@+id/authentication_sign_up_referral_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:hint="@string/user_profile_referral_code"
+        android:inputType="text"
+        style="@style/TH.Authentication.EditText"/>
+
+    <EditText
+        android:id="@+id/et_firstname"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:hint="@string/user_profile_first_name"
+        android:inputType="text"
+
+        style="@style/TH.Authentication.EditText"/>
+
+    <EditText
+        android:id="@+id/et_lastname"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:hint="@string/user_profile_last_name"
+        android:inputType="text"
+        style="@style/TH.Authentication.EditText"/>
+
+  </com.tradehero.th.fragments.settings.ProfileInfoView>
+
+</merge>

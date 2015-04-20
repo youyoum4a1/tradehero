@@ -150,7 +150,7 @@ public class UpdateCenterFragment extends BaseFragment
         }
 
         setActionBarTitle(R.string.message_center_title);
-        inflater.inflate(R.menu.notification_center_menu, menu);
+        //inflater.inflate(R.menu.notification_center_menu, menu);
 
         super.onCreateOptionsMenu(menu, inflater);
     }

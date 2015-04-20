@@ -112,25 +112,6 @@ public final class HomeFragment extends BaseWebViewFragment
         webView.reload();
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle(R.string.dashboard_home);
-        inflater.inflate(R.menu.menu_refresh_button, menu);
-    }
-
-    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.btn_fresh:
-                webView.reload();
-                userProfileCacheLazy.get().get(currentUserId.toUserBaseKey());
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override public void onResume()
     {
         super.onResume();

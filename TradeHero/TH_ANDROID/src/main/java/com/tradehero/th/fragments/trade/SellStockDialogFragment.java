@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
+import com.tradehero.th.api.position.PositionDTOCompactUtil;
 import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -43,17 +44,17 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
 
     @Override @Nullable protected Double getProfitOrLossUsd()
     {
-        if (positionDTOCompactList == null || portfolioCompactDTO == null)
+        if (positionDTOList == null || portfolioCompactDTO == null)
         {
             return null;
         }
-        Double netProceedsUsd = positionDTOCompactList.getNetSellProceedsUsd(
+        Double netProceedsUsd = PositionDTOCompactUtil.getNetSellProceedsUsd(
                 mTransactionQuantity,
                 quoteDTO,
                 getPortfolioId(),
                 true,
                 portfolioCompactDTO.getProperTxnCostUsd());
-        Double totalSpentUsd = positionDTOCompactList.getSpentOnQuantityUsd(mTransactionQuantity, portfolioCompactDTO);
+        Double totalSpentUsd = PositionDTOCompactUtil.getSpentOnQuantityUsd(positionDTOList, mTransactionQuantity, portfolioCompactDTO);
         if (netProceedsUsd == null || totalSpentUsd == null)
         {
             return null;

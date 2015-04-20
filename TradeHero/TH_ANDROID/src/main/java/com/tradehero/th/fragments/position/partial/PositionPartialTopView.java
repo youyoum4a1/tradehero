@@ -27,6 +27,7 @@ import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
+import com.tradehero.th.fragments.security.FxFlagContainer;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -41,6 +42,7 @@ public class PositionPartialTopView extends LinearLayout
 
     @InjectView(R.id.gain_indicator) ImageView mGainIndicator;
     @InjectView(R.id.stock_logo) ImageView stockLogo;
+    @InjectView(R.id.flags_container) FxFlagContainer flagsContainer;
     @InjectView(R.id.stock_symbol) TextView stockSymbol;
     @InjectView(R.id.company_name) TextView companyName;
     @InjectView(R.id.share_count) TextView shareCount;
@@ -137,6 +139,12 @@ public class PositionPartialTopView extends LinearLayout
                 });
         }
 
+        if (flagsContainer != null)
+        {
+            flagsContainer.setVisibility(dto.flagsContainerVisibility);
+            flagsContainer.display(dto.fxPair);
+        }
+
         if (stockSymbol != null)
         {
             stockSymbol.setText(dto.stockSymbol);
@@ -198,7 +206,9 @@ public class PositionPartialTopView extends LinearLayout
         @ViewVisibilityValue public final int stockLogoVisibility;
         @Nullable public final String stockLogoUrl;
         @DrawableRes public final int stockLogoRes;
+        @Nullable public final FxPairSecurityId fxPair;
         @NonNull public final String stockSymbol;
+        @ViewVisibilityValue public final int flagsContainerVisibility;
         @ViewVisibilityValue public final int companyNameVisibility;
         @NonNull public final String companyName;
         @ViewVisibilityValue public final int shareCountVisibility;
@@ -219,21 +229,24 @@ public class PositionPartialTopView extends LinearLayout
             this.securityCompactDTO = securityCompactDTO;
 
             //<editor-fold desc="Stock Logo">
-            if (securityCompactDTO != null && securityCompactDTO.imageBlobUrl != null)
+            if (securityCompactDTO.imageBlobUrl != null)
             {
                 stockLogoVisibility = VISIBLE;
+                flagsContainerVisibility = GONE;
                 stockLogoUrl = securityCompactDTO.imageBlobUrl;
                 stockLogoRes = R.drawable.default_image;
             }
-            else if (securityCompactDTO instanceof FxSecurityCompactDTO)
+            else if (securityCompactDTO instanceof FxSecurityCompactDTO) // TODO Improve and show flags?
             {
                 stockLogoVisibility = GONE;
+                flagsContainerVisibility = VISIBLE;
                 stockLogoUrl = null;
                 stockLogoRes = R.drawable.default_image;
             }
             else
             {
                 stockLogoVisibility = VISIBLE;
+                flagsContainerVisibility = GONE;
                 stockLogoUrl = null;
                 stockLogoRes = securityCompactDTO.getExchangeLogoId();
             }
@@ -242,11 +255,12 @@ public class PositionPartialTopView extends LinearLayout
             //<editor-fold desc="Symbol and FxPair">
             if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
-                FxPairSecurityId fxPair = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
+                fxPair = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
                 stockSymbol = String.format("%s/%s", fxPair.left, fxPair.right);
             }
             else
             {
+                fxPair = null;
                 stockSymbol = String.format("%s:%s", securityCompactDTO.exchange, securityCompactDTO.symbol);
             }
             //</editor-fold>

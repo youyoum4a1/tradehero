@@ -57,7 +57,7 @@ public class MentionActionButtonsView extends LinearLayout
                     @Override public HasSelectedItem call(OnClickEvent event)
                     {
                         Bundle bundle = new Bundle();
-                        bundle.putString(DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT, returnFragmentName);
+                        DashboardNavigator.putReturnFragment(bundle, returnFragmentName);
                         switch(event.view().getId())
                         {
                             case R.id.btn_mention:

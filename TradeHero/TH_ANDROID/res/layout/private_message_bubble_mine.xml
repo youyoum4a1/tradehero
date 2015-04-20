@@ -41,7 +41,7 @@
           style="@style/TH.Body1.Inverse"
           android:autoLink="web"
           android:textIsSelectable="true"
-          android:text="Hey. Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey"/>
+          tools:text="Hey. Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey"/>
 
     </LinearLayout>
 
@@ -56,7 +56,7 @@
         android:visibility="gone"
         >
 
-      <TextView
+      <com.tradehero.th.widget.MarkdownTextView
           android:id="@+id/discussion_stub_content"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"

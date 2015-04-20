@@ -32,7 +32,7 @@
           android:src="@drawable/settings_back_light_default"/>
 
       <include
-          layout="@layout/profile_info"/>
+          layout="@layout/profile_info_signup"/>
 
     </LinearLayout>
 

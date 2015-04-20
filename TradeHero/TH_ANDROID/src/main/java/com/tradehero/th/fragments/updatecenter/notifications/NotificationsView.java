@@ -338,6 +338,7 @@ public class NotificationsView extends BetterViewAnimator
         @Override public void onItemClick(AdapterView<?> parent, View itemView, int position, long id)
         {
             NotificationDTO notificationDTO = (NotificationDTO) parent.getItemAtPosition(position);
+            notificationDTO.unread = false;
             reportNotificationRead(notificationDTO.pushId);
             NotificationClickHandler notificationClickHandler = new NotificationClickHandler(getContext(), notificationDTO);
             notificationClickHandler.handleNotificationItemClicked();

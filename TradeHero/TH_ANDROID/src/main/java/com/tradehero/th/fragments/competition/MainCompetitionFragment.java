@@ -531,9 +531,9 @@ public class MainCompetitionFragment extends DashboardFragment
         }
         else if (competitionZoneDTO instanceof CompetitionZoneLeaderboardDTO)
         {
-            LeaderboardDefDTO leaderboardDefDTO = ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO.leaderboard;
             CompetitionLeaderboardMarkUserListFragment.putProviderId(args, providerId);
             CompetitionLeaderboardMarkUserListFragment.putCompetition(args, ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO);
+            CompetitionLeaderboardMarkUserListFragment.putLeaderboardType(args, ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).leaderboardType);
 
             OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
             if (ownedPortfolioId != null)

@@ -17,6 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import com.facebook.FacebookOperationCanceledException;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -505,6 +506,10 @@ public abstract class SocialFriendsFragment extends BaseFragment
     @SuppressWarnings("UnusedParameters")
     protected void handleInviteError(@NonNull Throwable e)
     {
+        if (e instanceof FacebookOperationCanceledException) {
+            THToast.show(R.string.invite_friend_request_cancelled);
+            return;
+        }
         THToast.show(R.string.invite_friend_request_error);
     }
 }

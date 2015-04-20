@@ -12,8 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
@@ -77,7 +75,6 @@ import com.tradehero.th.fragments.onboarding.OnBoardNewDialogFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardingBroadcastSignal;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
-import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AskForReviewSuggestedDialogFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
@@ -87,7 +84,7 @@ import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trade.FXInfoFragment;
 import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trending.TrendingStockFragment;
+import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
@@ -107,7 +104,6 @@ import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.ui.AppContainer;
-import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.dagger.AppModule;
@@ -474,6 +470,12 @@ public class DashboardActivity extends BaseActivity
                         AskForReviewSuggestedDialogFragment.showReviewDialog(DashboardActivity.this.getFragmentManager());
                     }
                 }, new EmptyAction1<Throwable>()));
+
+        if (resideMenu.isOpened())
+        {
+            userProfileCache.get().get(currentUserId.toUserBaseKey());
+        }
+
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -711,7 +713,7 @@ public class DashboardActivity extends BaseActivity
                     NotificationsCenterFragment.class,
                     MessagesCenterNewFragment.class,
                     UpdateCenterFragment.class,
-                    TrendingStockFragment.class,
+                    TrendingMainFragment.class,
                     FriendsInvitationFragment.class,
                     SettingsFragment.class,
                     MainCompetitionFragment.class,

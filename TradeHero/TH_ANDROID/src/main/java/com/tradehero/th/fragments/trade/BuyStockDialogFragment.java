@@ -51,7 +51,9 @@ public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragme
         if (positionDTOCompact == null)
         {
             // This means we have incomplete information
-            return null;
+            //return null;
+            // This means user never trade this stock before
+            return false;
         }
         return positionDTOCompact.positionStatus != null
                 && positionDTOCompact.positionStatus.equals(PositionStatus.SHORT);

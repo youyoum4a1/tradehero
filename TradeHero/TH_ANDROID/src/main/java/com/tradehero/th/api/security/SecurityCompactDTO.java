@@ -3,6 +3,7 @@ package com.tradehero.th.api.security;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.common.persistence.DTO;
@@ -52,6 +53,7 @@ public class SecurityCompactDTO implements DTO
 {
     public static final String EXCHANGE_SYMBOL_FORMAT = "%s:%s";
 
+    private final long createdAtNanoTime = System.nanoTime();
     public Integer id;
     public String symbol;
     public String name;
@@ -97,8 +99,7 @@ public class SecurityCompactDTO implements DTO
     public String secTypeDesc;
     public Double risePercent;
 
-    public Boolean inWatchList;
-    public Boolean inAlertList;
+    protected String timeTillNextExchangeOpen;
 
     //<editor-fold desc="Constructors">
     public SecurityCompactDTO()
@@ -142,6 +143,7 @@ public class SecurityCompactDTO implements DTO
         this.exchangeClosingTimeLocal = other.exchangeClosingTimeLocal;
         this.secTypeDesc = other.secTypeDesc;
         this.risePercent = other.risePercent;
+        this.timeTillNextExchangeOpen = other.timeTillNextExchangeOpen;
     }
     //</editor-fold>
 
@@ -165,12 +167,10 @@ public class SecurityCompactDTO implements DTO
         try
         {
             return Exchange.valueOf(exchange).logoId;
-        }
-        catch (IllegalArgumentException ex)
+        } catch (IllegalArgumentException ex)
         {
             return defaultResId;
-        }
-        catch (NullPointerException ex) // there isn't any client Exchange resource with the given value exchange
+        } catch (NullPointerException ex) // there isn't any client Exchange resource with the given value exchange
         {
             Timber.e("Missing exchange resource for %s", exchange);
             return defaultResId;
@@ -185,6 +185,33 @@ public class SecurityCompactDTO implements DTO
     @NonNull public SecurityId getSecurityId()
     {
         return new SecurityId(exchange, symbol);
+    }
+
+    @Nullable public TillExchangeOpenDuration getTillExchangeOpen()
+    {
+        if (TextUtils.isEmpty(timeTillNextExchangeOpen))
+        {
+            return null;
+        }
+        int lastIndex = timeTillNextExchangeOpen.lastIndexOf(":");
+        int seconds = (int) Float.parseFloat(timeTillNextExchangeOpen.substring(lastIndex + 1));
+        timeTillNextExchangeOpen = timeTillNextExchangeOpen.substring(0, lastIndex);
+        lastIndex = timeTillNextExchangeOpen.lastIndexOf(":");
+        int minutes = Integer.parseInt(timeTillNextExchangeOpen.substring(lastIndex + 1));
+        timeTillNextExchangeOpen = timeTillNextExchangeOpen.substring(0, lastIndex);
+        lastIndex = timeTillNextExchangeOpen.lastIndexOf(".");
+        int days;
+        if (lastIndex != -1)
+        {
+            days = Integer.parseInt(timeTillNextExchangeOpen.substring(0, lastIndex));
+        }
+        else
+        {
+            days = 0;
+        }
+        int hours = Integer.parseInt(timeTillNextExchangeOpen.substring(lastIndex + 1));
+
+        return new TillExchangeOpenDuration(createdAtNanoTime, days, hours, minutes, seconds);
     }
 
     @Override public String toString()

@@ -79,7 +79,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/portfolio_header_total_asset_value"
-          android:layout_gravity="center_vertical"
+          android:layout_gravity="center_vertical|start"
           style="@style/TH.Caption.Portfolio"/>
       <Space
           android:layout_width="0dp"
@@ -91,7 +91,9 @@
           android:layout_height="wrap_content"
           android:gravity="center"
           android:text="@string/portfolio_header_total_profit_fx"
-          android:layout_gravity="center_vertical"
+          android:layout_gravity="center_vertical|start"
+          android:lines="1"
+          android:ellipsize="end"
           style="@style/TH.Caption.Portfolio"
           />
       <Space
@@ -155,7 +157,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/portfolio_header_margin_available_title"
-          android:layout_gravity="center_vertical"
+          android:layout_gravity="center_vertical|left"
           style="@style/TH.Caption.Portfolio"
           />
 
@@ -168,7 +170,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/portfolio_header_margin_used_title"
-          android:layout_gravity="center_vertical"
+          android:layout_gravity="center_vertical|left"
           style="@style/TH.Caption.Portfolio"
           />
       <Space

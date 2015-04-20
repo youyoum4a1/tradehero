@@ -98,8 +98,6 @@ public class NumericalAnimatedTextView extends TextSwitcher
         textSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14,
                 getContext().getResources().getDisplayMetrics());
         textSize = a.getDimensionPixelSize(R.styleable.AnimatedTextView_textSize, textSize);
-
-        Timber.d("Get textSize %s", textSize);
     }
 
     @Override protected void onFinishInflate()

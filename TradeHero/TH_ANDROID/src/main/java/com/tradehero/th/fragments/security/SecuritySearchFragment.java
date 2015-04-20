@@ -58,7 +58,7 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
 
     private AssetClass getAssetClass()
     {
-        if(assetClass == null)
+        if (assetClass == null)
         {
             assetClass = getAssetClassFromBundle(getArguments());
         }
@@ -141,7 +141,7 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
     {
         super.handleDtoClicked(clicked);
 
-        if (getArguments() != null && getArguments().containsKey(DashboardNavigator.BUNDLE_KEY_RETURN_FRAGMENT))
+        if (getArguments() != null && DashboardNavigator.getReturnFragment(getArguments()) != null)
         {
             navigator.get().popFragment();
             return;

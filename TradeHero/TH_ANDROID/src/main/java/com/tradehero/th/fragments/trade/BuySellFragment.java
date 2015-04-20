@@ -1,24 +1,20 @@
 package com.tradehero.th.fragments.trade;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
@@ -28,17 +24,17 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.portfolio.key.PortfolioCompactListKey;
-import com.tradehero.th.api.position.PositionDTOCompactList;
+import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.TillExchangeOpenDuration;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.fragments.OnMovableBottomTranslateListener;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
-import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
 import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.fragments.trade.view.PortfolioSelectorView;
@@ -58,6 +54,7 @@ import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
+import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
@@ -72,15 +69,14 @@ import rx.functions.Func3;
 abstract public class BuySellFragment extends AbstractBuySellFragment
         implements WithTutorial
 {
-    public static final String EVENT_CHART_IMAGE_CLICKED = BuySellFragment.class.getName() + ".chartButtonClicked";
-
     public static final int MS_DELAY_FOR_BG_IMAGE = 200;
 
     public static final boolean DEFAULT_IS_SHARED_TO_WECHAT = false;
 
     @InjectView(R.id.portfolio_selector_container) PortfolioSelectorView mSelectedPortfolioContainer;
     @Nullable Subscription portfolioMenuSubscription;
-    @InjectView(R.id.market_closed_icon) protected ImageView mMarketClosedIcon;
+    @InjectView(R.id.market_close_container) @Optional protected View mMarketClosedContainer;
+    @InjectView(R.id.market_close_hint) @Optional protected TextView marketCloseHint;
     @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject BroadcastUtils broadcastUtils;
@@ -97,7 +93,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     @Nullable protected Subscription portfolioChangedSubscription;
 
     protected Animation progressAnimation;
-    protected BroadcastReceiver chartImageButtonClickReceiver;
 
     @Nullable protected Subscription alertCompactListCacheSubscription;
     @Inject Lazy<SocialSharer> socialSharerLazy;
@@ -108,17 +103,11 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     @Nullable protected OwnedPortfolioIdList applicableOwnedPortfolioIds;
     @Nullable protected Subscription securityApplicableOwnedPortfolioIdListSubscription;
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
-
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         setRetainInstance(true);
-        chartImageButtonClickReceiver = createImageButtonClickBroadcastReceiver();
         mSelectedPortfolioContainer.setDefaultPortfolioId(getApplicablePortfolioId(getArguments()));
 
         mBuySellBtnContainer.setVisibility(View.GONE);
@@ -158,10 +147,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     {
         super.onResume();
 
-        LocalBroadcastManager.getInstance(getActivity())
-                .registerReceiver(chartImageButtonClickReceiver,
-                        new IntentFilter(EVENT_CHART_IMAGE_CLICKED));
-
         if (abstractTransactionDialogFragment != null && abstractTransactionDialogFragment.getDialog() != null)
         {
             abstractTransactionDialogFragment.populateComment();
@@ -179,8 +164,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onPause()
     {
-        LocalBroadcastManager.getInstance(getActivity())
-                .unregisterReceiver(chartImageButtonClickReceiver);
         fragmentElements.get().getMovableBottom().setOnMovableBottomTranslateListener(null);
         super.onPause();
     }
@@ -224,7 +207,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroy()
     {
-        chartImageButtonClickReceiver = null;
         abstractTransactionDialogFragment = null;
         portfolioObservable = null;
         super.onDestroy();
@@ -363,9 +345,9 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         displayBuySellSwitch();
     }
 
-    @Override public void linkWith(PositionDTOCompactList positionDTOCompacts)
+    @Override public void linkWith(PositionDTOList positionDTOs)
     {
-        super.linkWith(positionDTOCompacts);
+        super.linkWith(positionDTOs);
         setInitialSellQuantityIfCan();
         displayBuySellSwitch();
         displayBuySellContainer();
@@ -373,27 +355,28 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
 
     public void displayStockName()
     {
-        //if (securityCompactDTO != null)
-        //{
-        //    if (!StringUtils.isNullOrEmpty(securityCompactDTO.name))
-        //    {
-        //        setActionBarTitle(securityCompactDTO.name);
-        //        setActionBarSubtitle(securityCompactDTO.getExchangeSymbol());
-        //    }
-        //    else
-        //    {
-        //        setActionBarTitle(securityCompactDTO.getExchangeSymbol());
-        //        setActionBarSubtitle(null);
-        //    }
-        //}
-
-        if (mMarketClosedIcon != null)
+        if (mMarketClosedContainer != null)
         {
             boolean marketIsOpen = securityCompactDTO == null
                     || securityCompactDTO.marketOpen == null
                     || securityCompactDTO.marketOpen;
-            mMarketClosedIcon.setVisibility(marketIsOpen ? View.GONE : View.VISIBLE);
+            mMarketClosedContainer.setVisibility(marketIsOpen ? View.GONE : View.VISIBLE);
+            if (!marketIsOpen)
+            {
+                marketCloseHint.setText(getMarketCloseHint(securityCompactDTO));
+            }
         }
+    }
+
+    public String getMarketCloseHint(@NonNull SecurityCompactDTO securityCompactDTO)
+    {
+        TillExchangeOpenDuration duration = securityCompactDTO.getTillExchangeOpen();
+        if (duration == null)
+        {
+            return "";
+        }
+        return getString(R.string.market_close_hint) + " " +
+                DateUtils.getDurationText(getResources(), duration.days, duration.hours, duration.minutes, duration.seconds);
     }
 
     abstract public void displayBuySellPrice();
@@ -692,29 +675,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
             navigator.get().pushFragment(TabbedPositionListFragment.class, args);
         }
-    }
-
-    private BroadcastReceiver createImageButtonClickBroadcastReceiver()
-    {
-        return new BroadcastReceiver()
-        {
-            @Override public void onReceive(Context context, Intent intent)
-            {
-                pushStockInfoFragmentIn();
-            }
-        };
-    }
-
-    private void pushStockInfoFragmentIn()
-    {
-        Bundle args = new Bundle();
-        args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, this.securityId.getArgs());
-        if (providerId != null)
-        {
-            args.putBundle(StockInfoFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE,
-                    providerId.getArgs());
-        }
-        navigator.get().pushFragment(StockInfoFragment.class, args);
     }
 
     @Override public int getTutorialLayout()

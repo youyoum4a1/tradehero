@@ -70,6 +70,7 @@
       android:layout_below="@id/alert_edit_price_change_help_text"
       android:paddingTop="@dimen/margin_xsmall"
       android:enabled="false"
+      android:max="100000"
       />
 
 </com.tradehero.th.fragments.alert.AlertSliderView>

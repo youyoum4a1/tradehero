@@ -120,10 +120,10 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<AbstractDiscussionCompa
         return view;
     }
 
-    @Override protected View inflate(int position, ViewGroup viewGroup)
+    @NonNull @Override protected View inflate(int position, ViewGroup viewGroup)
     {
         View view = super.inflate(position, viewGroup);
-        ((NewsHeadlineViewLinear) view).getUserActionObservable().subscribe(userActionSubject);
+        ((NewsHeadlineViewLinear) view).getUserActionObservable().retry().subscribe(userActionSubject);
         return view;
     }
 }

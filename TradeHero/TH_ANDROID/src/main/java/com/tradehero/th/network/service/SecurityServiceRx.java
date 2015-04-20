@@ -2,7 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
-import com.tradehero.th.api.position.PositionDTOCompactList;
+import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -87,8 +87,8 @@ public interface SecurityServiceRx
             @Query("exch") String exchange,
             @Query("symbol") String securitySymbol);
 
-    @GET("/securities/positionCompacts")
-    Observable<PositionDTOCompactList> getPositionCompacts(
+    @GET("/securities/positions")
+    Observable<PositionDTOList> getPositions(
             @Query("exch") String exchange,
             @Query("symbol") String securitySymbol);
 

@@ -44,5 +44,6 @@
   <string name="market_on_board_country_from">你来自哪里？</string>
   <string name="security_on_board_select_invitation_title">建议您 ...</string>
   <string name="security_on_board_select_invitation_come_on">关注这些股票 !</string>
+  <string name="market_close_hint">开盘时间还有: </string>
 
 </resources>
