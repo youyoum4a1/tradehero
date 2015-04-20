@@ -88,7 +88,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     private static final String KEY_SECURITY_ID = AbstractTransactionDialogFragment.class.getName() + ".security_id";
     private static final String KEY_PORTFOLIO_ID = AbstractTransactionDialogFragment.class.getName() + ".portfolio_id";
     private static final String KEY_QUOTE_DTO = AbstractTransactionDialogFragment.class.getName() + ".quote_dto";
-    private static final double INITIAL_PRICE = 5000;
+    private static final double INITIAL_VALUE = 5000;
 
     @InjectView(R.id.dialog_stock_name) protected TextView mStockNameTextView;
     @InjectView(R.id.vcash_left) protected TextView mCashShareLeftTextView;
@@ -135,7 +135,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     private TextWatcher mQuantityTextWatcher;
     private TransactionEditCommentFragment transactionCommentFragment;
     Editable unSpannedComment;
-    private boolean initialPriceSet;
+    private boolean initialValueSet;
 
     @Nullable protected abstract Integer getMaxValue();
 
@@ -293,7 +293,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         quoteDTO = getBundledQuoteDTO();
         fetchQuote();
         fetchPositionCompactList();
-        setInitialPriceIfPossible();
+        setInitialValueIfPossible();
     }
 
     private void fetchSecurityCompact()
@@ -377,7 +377,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         updateProfitLoss();
         updateTransactionDialog();
         displayCashShareLabel();
-        setInitialPriceIfPossible();
+        setInitialValueIfPossible();
     }
 
     private void fetchPositionCompactList()
@@ -438,7 +438,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 return portfolioCompactDTO1.getPortfolioId().equals(AbstractTransactionDialogFragment.this.getPortfolioId());
             }
         });
-        setInitialPriceIfPossible();
+        setInitialValueIfPossible();
         updateTransactionDialog();
         displayAddCashButton();
         displayCashShareLabel();
@@ -466,7 +466,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 }
             });
         }
-        setInitialPriceIfPossible();
     }
     //</editor-fold>
 
@@ -1051,18 +1050,18 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         }
     }
 
-    protected void setInitialPriceIfPossible()
+    protected void setInitialValueIfPossible()
     {
-        if(!initialPriceSet && canSetPrice())
+        if(!initialValueSet && canSetValue())
         {
-            initialPriceSet = true;
-            setPrice(INITIAL_PRICE);
+            initialValueSet = true;
+            linkWithQuantity((int) Math.floor(INITIAL_VALUE / getPriceCcy()));
         }
     }
 
-    private boolean canSetPrice()
+    private boolean canSetValue()
     {
-        return quoteDTO != null && (mQuickPriceButtonSet.isPercent()? (getMaxValue() != null):(getPriceCcy() != null && getPriceCcy() > 0));
+        return getPriceCcy() != null && getPriceCcy() > 0;
     }
 
     protected void setPrice(double price)
