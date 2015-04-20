@@ -12,9 +12,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.BaseDTOListProcessor;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioReceived;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
-import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
@@ -23,18 +21,15 @@ import rx.Observable;
 {
     @NonNull private final PortfolioServiceRx portfolioServiceRx;
     @NonNull private final UserProfileCacheRx userProfileCache;
-    @NonNull private final Lazy<HomeContentCacheRx> homeContentCache;
 
     //<editor-fold desc="Constructors">
     @Inject public PortfolioServiceWrapper(
             @NonNull PortfolioServiceRx portfolioServiceRx,
-            @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull Lazy<HomeContentCacheRx> homeContentCache)
+            @NonNull UserProfileCacheRx userProfileCache)
     {
         super();
         this.portfolioServiceRx = portfolioServiceRx;
         this.userProfileCache = userProfileCache;
-        this.homeContentCache = homeContentCache;
     }
     //</editor-fold>
 
@@ -66,7 +61,7 @@ import rx.Observable;
             PurchaseReportDTO purchaseReportDTO)
     {
         return this.portfolioServiceRx.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseReportDTO)
-                .map(new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache.get()));
+                .map(new DTOProcessorUpdateUserProfile(userProfileCache));
     }
     //</editor-fold>
 

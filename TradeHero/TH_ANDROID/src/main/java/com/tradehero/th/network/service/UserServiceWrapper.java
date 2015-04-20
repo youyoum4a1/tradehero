@@ -42,12 +42,11 @@ import com.tradehero.th.models.user.DTOProcessorFollowPremiumUser;
 import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUpdateCountryCode;
 import com.tradehero.th.models.user.DTOProcessorUpdateReferralCode;
-import com.tradehero.th.models.user.DTOProcessorUpdateUserProfileDeep;
+import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
-import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
@@ -71,7 +70,6 @@ import rx.functions.Func1;
     @NonNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
     @NonNull private final Lazy<HeroListCacheRx> heroListCache;
     @NonNull private final Lazy<ProviderListCacheRx> providerListCache;
-    @NonNull private final Lazy<HomeContentCacheRx> homeContentCache;
 
     //<editor-fold desc="Constructors">
     @Inject public UserServiceWrapper(
@@ -83,8 +81,7 @@ import rx.functions.Func1;
             @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
             @NonNull Lazy<HeroListCacheRx> heroListCache,
             @NonNull Lazy<ProviderListCacheRx> providerListCache,
-            @NonNull Provider<UserFormDTO.Builder2> userFormBuilderProvider,
-            @NonNull Lazy<HomeContentCacheRx> homeContentCache)
+            @NonNull Provider<UserFormDTO.Builder2> userFormBuilderProvider)
     {
         this.currentUserId = currentUserId;
         this.dtoCacheUtil = dtoCacheUtil;
@@ -95,7 +92,6 @@ import rx.functions.Func1;
         this.providerListCache = providerListCache;
         this.userServiceRx = userServiceRx;
         this.userFormBuilderProvider = userFormBuilderProvider;
-        this.homeContentCache = homeContentCache;
     }
     //</editor-fold>
 
@@ -147,7 +143,6 @@ import rx.functions.Func1;
 
         return created.map(new DTOProcessorSignInUpUserProfile(
                 userProfileCache.get(),
-                homeContentCache.get(),
                 currentUserId,
                 dtoCacheUtil));
     }
@@ -206,9 +201,7 @@ import rx.functions.Func1;
                     userFormDTO.profilePicture);
         }
 
-        return created.map(new DTOProcessorUpdateUserProfileDeep(
-                userProfileCache.get(),
-                homeContentCache.get()));
+        return created.map(new DTOProcessorUpdateUserProfile(userProfileCache.get()));
     }
 
     @NonNull public Observable<UserProfileDTO> updateProfilePropertyEmailNotificationsRx(
@@ -355,7 +348,6 @@ import rx.functions.Func1;
         return userServiceRx.followBatchFree(batchFollowFormDTO)
                 .map(new DTOProcessorFollowFreeUserBatch(
                         userProfileCache.get(),
-                        homeContentCache.get(),
                         userMessagingRelationshipCache.get(),
                         batchFollowFormDTO));
     }
@@ -385,7 +377,6 @@ import rx.functions.Func1;
         return userServiceRx.follow(heroId.key)
                 .map(new DTOProcessorFollowPremiumUser(
                         userProfileCache.get(),
-                        homeContentCache.get(),
                         heroListCache.get(),
                         userMessagingRelationshipCache.get(),
                         currentUserId.toUserBaseKey(),
@@ -399,7 +390,6 @@ import rx.functions.Func1;
         return userServiceRx.follow(heroId.key, purchaseDTO)
                 .map(new DTOProcessorFollowPremiumUser(
                         userProfileCache.get(),
-                        homeContentCache.get(),
                         heroListCache.get(),
                         userMessagingRelationshipCache.get(),
                         currentUserId.toUserBaseKey(),
@@ -411,7 +401,6 @@ import rx.functions.Func1;
         return userServiceRx.freeFollow(heroId.key)
                 .map(new DTOProcessorFollowFreeUser(
                         userProfileCache.get(),
-                        homeContentCache.get(),
                         heroListCache.get(),
                         userMessagingRelationshipCache.get(),
                         currentUserId.toUserBaseKey(),

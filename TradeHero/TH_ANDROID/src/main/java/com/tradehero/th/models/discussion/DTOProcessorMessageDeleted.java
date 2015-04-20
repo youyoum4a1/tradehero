@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -18,12 +17,11 @@ public class DTOProcessorMessageDeleted extends DTOProcessorMessageRead
     public DTOProcessorMessageDeleted(
             @NonNull MessageHeaderCacheRx messageHeaderCache,
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull HomeContentCacheRx homeContentCache,
             @NonNull MessageHeaderListCacheRx messageHeaderListCache,
             @NonNull MessageHeaderId messageHeaderId,
             @NonNull UserBaseKey readerId)
     {
-        super(messageHeaderCache, userProfileCache, homeContentCache, messageHeaderId, readerId);
+        super(messageHeaderCache, userProfileCache, messageHeaderId, readerId);
         this.messageHeaderListCache = messageHeaderListCache;
         this.messageHeaderId = messageHeaderId;
     }

@@ -33,7 +33,6 @@ import com.tradehero.th.persistence.achievement.QuestBonusListCacheRx;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
-import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
 import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
@@ -68,7 +67,6 @@ import rx.functions.Func2;
     //<editor-fold desc="Caches">
     protected final Lazy<AlertCompactListCacheRx> alertCompactListCache;
     protected final Lazy<ExchangeCompactListCacheRx> exchangeCompactListCache;
-    protected final Lazy<HomeContentCacheRx> homeContentCache;
     protected final Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache;
     protected final Lazy<LevelDefListCacheRx> levelDefListCache;
     protected final Lazy<NotificationCacheRx> notificationCache;
@@ -100,7 +98,6 @@ import rx.functions.Func2;
             CurrentUserId currentUserId,
             Lazy<AlertCompactListCacheRx> alertCompactListCache,
             Lazy<ExchangeCompactListCacheRx> exchangeCompactListCache,
-            Lazy<HomeContentCacheRx> homeContentCache,
             Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache,
             Lazy<LevelDefListCacheRx> levelDefListCacheLazy,
             Lazy<NotificationCacheRx> notificationCache,
@@ -129,7 +126,6 @@ import rx.functions.Func2;
 
         this.alertCompactListCache = alertCompactListCache;
         this.exchangeCompactListCache = exchangeCompactListCache; // Not added to list
-        this.homeContentCache = homeContentCache;
         this.leaderboardDefListCache = leaderboardDefListCache;
         this.levelDefListCache = levelDefListCacheLazy;
         this.notificationCache = notificationCache;
@@ -353,10 +349,5 @@ import rx.functions.Func2;
     public void preFetchLeaderboardDefs()
     {
         leaderboardDefListCache.get().getOne(new LeaderboardDefListKey(1));
-    }
-
-    public void preFetchHomeContent()
-    {
-        homeContentCache.get().getOne(currentUserId.toUserBaseKey());
     }
 }

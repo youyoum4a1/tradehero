@@ -8,7 +8,6 @@ import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.ThroughDTOProcessor;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
-import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 
@@ -22,7 +21,6 @@ public class DTOProcessorUserLogin extends ThroughDTOProcessor<UserLoginDTO>
     public DTOProcessorUserLogin(
             @NonNull SystemStatusCache systemStatusCache,
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull HomeContentCacheRx homeContentCache,
             @NonNull CurrentUserId currentUserId,
             @NonNull DTOCacheUtilImpl dtoCacheUtil)
     {
@@ -30,7 +28,6 @@ public class DTOProcessorUserLogin extends ThroughDTOProcessor<UserLoginDTO>
         this.currentUserId = currentUserId;
         this.processorSignInUp = new DTOProcessorSignInUpUserProfile(
                 userProfileCache,
-                homeContentCache,
                 currentUserId,
                 dtoCacheUtil);
     }

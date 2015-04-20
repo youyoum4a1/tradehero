@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
-import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 
 public class DTOProcessorSignInUpUserProfile extends DTOProcessorUpdateUserProfile
@@ -15,11 +14,10 @@ public class DTOProcessorSignInUpUserProfile extends DTOProcessorUpdateUserProfi
     //<editor-fold desc="Constructors">
     public DTOProcessorSignInUpUserProfile(
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull HomeContentCacheRx homeContentCache,
             @NonNull CurrentUserId currentUserId,
             @NonNull DTOCacheUtilImpl dtoCacheUtil)
     {
-        super(userProfileCache, homeContentCache);
+        super(userProfileCache);
         this.currentUserId = currentUserId;
         this.dtoCacheUtil = dtoCacheUtil;
     }

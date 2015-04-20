@@ -4,11 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import butterknife.ButterKnife;
@@ -34,7 +30,6 @@ import com.tradehero.th.fragments.social.friend.SocialFriendHandler;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandlerFacebook;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
@@ -66,7 +61,6 @@ public final class HomeFragment extends BaseWebViewFragment
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject Provider<SocialFriendHandlerFacebook> socialFriendHandlerFacebookProvider;
     @Inject CurrentUserId currentUserId;
-    @Inject HomeContentCacheRx homeContentCache;
     @Inject THRouter thRouter;
 
     @RouteProperty(ROUTER_SOCIAL_ID) String socialId;
@@ -136,7 +130,6 @@ public final class HomeFragment extends BaseWebViewFragment
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
-        homeContentCache.get(currentUserId.toUserBaseKey());
         super.onDestroyView();
     }
 

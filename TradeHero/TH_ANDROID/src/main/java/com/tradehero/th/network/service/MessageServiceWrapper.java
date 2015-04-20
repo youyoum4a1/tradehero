@@ -21,7 +21,6 @@ import com.tradehero.th.models.discussion.DTOProcessorMessageRead;
 import com.tradehero.th.models.discussion.DTOProcessorReadablePaginatedMessageReceived;
 import com.tradehero.th.network.DelayRetriesOrFailFunc1;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
-import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
@@ -46,7 +45,6 @@ public class MessageServiceWrapper
     @NonNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
     @NonNull private final Lazy<DiscussionCacheRx> discussionCache;
     @NonNull private final Lazy<UserProfileCacheRx> userProfileCache;
-    @NonNull private final Lazy<HomeContentCacheRx> homeContentCache;
 
     //<editor-fold desc="Constructors">
     @Inject MessageServiceWrapper(
@@ -56,8 +54,7 @@ public class MessageServiceWrapper
             @NonNull Lazy<MessageHeaderCacheRx> messageHeaderCache,
             @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
             @NonNull Lazy<DiscussionCacheRx> discussionCache,
-            @NonNull Lazy<UserProfileCacheRx> userProfileCache,
-            @NonNull Lazy<HomeContentCacheRx> homeContentCache)
+            @NonNull Lazy<UserProfileCacheRx> userProfileCache)
     {
         this.messageServiceRx = messageServiceRx;
         this.currentUserId = currentUserId;
@@ -66,7 +63,6 @@ public class MessageServiceWrapper
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.discussionCache = discussionCache;
         this.userProfileCache = userProfileCache;
-        this.homeContentCache = homeContentCache;
     }
     //</editor-fold>
 
@@ -161,7 +157,6 @@ public class MessageServiceWrapper
                 .map(new DTOProcessorMessageDeleted(
                         messageHeaderCache.get(),
                         userProfileCache.get(),
-                        homeContentCache.get(),
                         messageHeaderListCache.get(),
                         messageHeaderId,
                         readerId));
@@ -183,7 +178,6 @@ public class MessageServiceWrapper
                 .map(new DTOProcessorMessageRead(
                         messageHeaderCache.get(),
                         userProfileCache.get(),
-                        homeContentCache.get(),
                         messageHeaderId,
                         readerId));
     }
@@ -197,7 +191,6 @@ public class MessageServiceWrapper
                 .map(new DTOProcessorAllMessagesRead(
                         messageHeaderCache.get(),
                         userProfileCache.get(),
-                        homeContentCache.get(),
                         readerId));
     }
     //</editor-fold>
