@@ -97,11 +97,8 @@ import javax.inject.Singleton;
 
     //<editor-fold desc="Update Device">
 
-    public MiddleCallback<UserProfileDTO> updateDevice(Callback<UserProfileDTO> callback)
-    {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateDeviceProcessor());
-        sessionServiceAsync.updateDevice(savedPushDeviceIdentifier.get(), middleCallback);
-        return middleCallback;
+    public void updateDevice(String deviceToken, Callback callback){
+        sessionServiceAsync.updateDevice(deviceToken, callback);
     }
     //</editor-fold>
 }

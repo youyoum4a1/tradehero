@@ -15,6 +15,7 @@ public class THSharePreferenceManager {
     private final static String TH_SP_NAME = "th_sp_name_app_version";
     private final static String TH_SP_GUIDE_NAME = "th_sp_guide_name";
     private final static String TH_SP_SHARE_ENDPOINT = "th_sp_share_endpoint";
+    private final static String TH_SP_GETUI = "th_sp_getui";
 
     //The latest version
     public final static String KEY_APP_NEW_VERSION_DOWNLOAD_URL = "key_app_new_version_download_url";
@@ -277,4 +278,16 @@ public class THSharePreferenceManager {
         return isFirstLogin;
     }
 
+
+    public final static String KEY_GETUI_ID = "key_getui_id";
+
+    public static void saveGETUIID(Context context, String getui_id){
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_GETUI, Context.MODE_PRIVATE);
+        sp.edit().putString(KEY_GETUI_ID, getui_id).commit();
+    }
+
+    public static String getGETUIID(Context context){
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_GETUI, Context.MODE_PRIVATE);
+        return sp.getString(KEY_GETUI_ID, "");
+    }
 }

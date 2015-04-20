@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.chinabuild.data.question.questionUtils.QuestionLoader;
+import com.tradehero.chinabuild.fragment.stocklearning.question.questionUtils.QuestionLoader;
 import com.tradehero.chinabuild.data.sp.QuestionsSharePreferenceManager;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;

@@ -1,4 +1,4 @@
-package com.tradehero.chinabuild.data.question.util;
+package com.tradehero.chinabuild.fragment.stocklearning.question.util;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

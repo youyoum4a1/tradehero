@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import com.tradehero.chinabuild.data.question.questionUtils.Question;
+import com.tradehero.chinabuild.fragment.stocklearning.question.questionUtils.Question;
 import com.tradehero.th.R;
 
 import java.util.ArrayList;

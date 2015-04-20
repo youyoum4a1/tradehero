@@ -47,6 +47,7 @@ import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.PositionServiceWrapper;
+import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.ShareServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.BindGuestUser;
@@ -113,6 +114,9 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @InjectView(R.id.imageview_main_tab4_record) ImageView guideTab4IV;
 
     @Inject ShareServiceWrapper shareServiceWrapper;
+
+    //GETUI PUSH
+    @Inject SessionServiceWrapper sessionServiceWrapper;
 
     private FragmentTabHost frg_tabHost;
     private static GetPositionsDTO getPositionsDTO;
@@ -204,6 +208,9 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
 
         // SDK初始化，第三方程序启动时，都要进行SDK初始化工作
         PushManager.getInstance().initialize(this.getApplicationContext());
+
+        //Update GETUI
+        updateGETUIID();
     }
 
     public void fetchUserProfile(boolean force)
@@ -403,15 +410,14 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     {
         alertDialogUtil.get().popWithOkCancelButton(this, R.string.app_name,
                 R.string.guest_user_dialog_summary,
-                R.string.ok, R.string.cancel, new DialogInterface.OnClickListener()
-        {
-            @Override public void onClick(DialogInterface dialog, int which)
-            {
-                Intent gotoAuthticationIntent = new Intent(MainActivity.this, AuthenticationActivity.class);
-                startActivity(gotoAuthticationIntent);
-                finish();
-            }
-        });
+                R.string.ok, R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent gotoAuthticationIntent = new Intent(MainActivity.this, AuthenticationActivity.class);
+                        startActivity(gotoAuthticationIntent);
+                        finish();
+                    }
+                });
     }
 
     private void gotoGetTimesContinuallyLogin()
@@ -440,11 +446,9 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     //Init Guide View
     public void initGuideView()
     {
-        guideView.setOnClickListener(new View.OnClickListener()
-        {
+        guideView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 dismissGuideView();
             }
         });
@@ -766,5 +770,21 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
             updateAppDialog.dismiss();
         }
         finish();
+    }
+
+    private void updateGETUIID(){
+        final String getuiid = THSharePreferenceManager.getGETUIID(this);
+        if(getuiid.equals("")){
+            return;
+        }
+        sessionServiceWrapper.updateDevice(getuiid, new Callback() {
+            @Override
+            public void success(Object o, Response response) {
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+            }
+        });
     }
 }

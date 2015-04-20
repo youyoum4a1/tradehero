@@ -1,4 +1,4 @@
-package com.tradehero.chinabuild.data.question.util;
+package com.tradehero.chinabuild.fragment.stocklearning.question.util;
 
 import android.app.Activity;
 import android.os.Build;
@@ -78,7 +78,7 @@ public abstract class SystemUiHider {
     protected OnVisibilityChangeListener mOnVisibilityChangeListener = sDummyListener;
 
     /**
-     * Creates and returns an instance of {@link com.tradehero.chinabuild.data.question.util.SystemUiHider} that is
+     * Creates and returns an instance of {@link com.tradehero.chinabuild.fragment.stocklearning.question.util.SystemUiHider} that is
      * appropriate for this device. The object will be either a
      * {@link SystemUiHiderBase} or {@link SystemUiHiderHoneycomb} depending on
      * the device.

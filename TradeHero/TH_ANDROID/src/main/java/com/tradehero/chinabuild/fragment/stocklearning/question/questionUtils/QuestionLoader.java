@@ -1,4 +1,4 @@
-package com.tradehero.chinabuild.data.question.questionUtils;
+package com.tradehero.chinabuild.fragment.stocklearning.question.questionUtils;
 
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;

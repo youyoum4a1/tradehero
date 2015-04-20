@@ -7,7 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.chinabuild.data.question.questionUtils.Question;
+import com.tradehero.chinabuild.fragment.stocklearning.question.questionUtils.Question;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 
