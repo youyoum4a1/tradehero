@@ -230,4 +230,7 @@
 -keep class org.chromium.** {
 *;
 }
+-keep class com.tradehero.th.fragments.games.popquiz.XWalkWebViewFragment {
+    public <methods>;
+}
 -keepattributes *

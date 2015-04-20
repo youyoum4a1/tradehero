@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.web;
+package com.tradehero.th.fragments.games.popquiz;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

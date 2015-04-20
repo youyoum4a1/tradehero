@@ -7,7 +7,6 @@ import dagger.Module;
                 BaseWebViewFragment.class,
                 THWebViewClient.class,
                 WebViewFragment.class,
-                XWalkWebViewFragment.class
         },
         library = true,
         complete = false

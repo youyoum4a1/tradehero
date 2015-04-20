@@ -167,7 +167,7 @@ public enum RootFragmentType
                 forResideMenu.add(type);
             }
         }
-        if(!Constants.DOGFOOD_BUILD)
+        if(!Constants.RELEASE && !Constants.DOGFOOD_BUILD)
         {
             forResideMenu.remove(POPQUIZ);
         }

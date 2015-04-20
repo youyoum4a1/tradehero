@@ -11,6 +11,7 @@ import com.tradehero.th.fragments.achievement.ForQuestListTestingFragment;
 import com.tradehero.th.fragments.achievement.QuestListTestingFragment;
 import com.tradehero.th.fragments.level.ForXpTestingFragment;
 import com.tradehero.th.fragments.level.XpTestingFragment;
+import com.tradehero.th.fragments.games.popquiz.ForXWalkFragment;
 import dagger.Module;
 import dagger.Provides;
 
@@ -48,5 +49,10 @@ public class BuildTypeUIModule implements BuildTypeUIModuleExpectation
     @Provides @ForKChartFragment @Override public Class provideKChartExampleFragment()
     {
         return TestKChartsFragment.class;
+    }
+
+    @Provides @ForXWalkFragment @Override public Class provideXWalkFragment()
+    {
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.games;
 
+import com.tradehero.th.fragments.games.popquiz.PopQuizGameModule;
 import dagger.Module;
 
 @Module(
@@ -9,6 +10,9 @@ import dagger.Module;
                 MiniGameScoreDialogFragment.class,
                 ViralGamePopupDialogFragment.class,
                 ViralGameWebFragment.class,
+        },
+        includes = {
+                PopQuizGameModule.class
         },
         library = true,
         complete = false

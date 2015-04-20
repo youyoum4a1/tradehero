@@ -9,4 +9,5 @@ public interface BuildTypeUIModuleExpectation
     /*@ForTypographyFragment*/ Class provideTypographyExampleFragment();
     /*@ForKChartFragment*/ Class provideKChartExampleFragment();
 //    /*@ForFXDetailFragment*/ Class provideFXDetailExampleFragment();
+    /*@ForXWalkFragment*/ Class provideXWalkFragment();
 }
