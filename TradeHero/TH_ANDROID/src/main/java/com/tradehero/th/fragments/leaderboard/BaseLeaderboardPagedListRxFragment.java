@@ -49,6 +49,7 @@ abstract public class BaseLeaderboardPagedListRxFragment<
 
     @NonNull protected LeaderboardDefKey leaderboardDefKey;
 
+    private UserProfileDTO currentUserProfileDTO;
 
     public static void putLeaderboardDefKey(@NonNull Bundle args, @NonNull LeaderboardDefKey leaderboardDefKey)
     {
@@ -69,7 +70,20 @@ abstract public class BaseLeaderboardPagedListRxFragment<
     @Override public void onStart()
     {
         super.onStart();
-        fetchCurrentUserProfile();
+        if (currentUserProfileDTO == null)
+        {
+            fetchCurrentUserProfile();
+        }
+        else
+        {
+            setCurrentUserProfileDTO(currentUserProfileDTO);
+        }
+    }
+
+    @Override public void onDestroy()
+    {
+        currentUserProfileDTO = null;
+        super.onDestroy();
     }
 
     protected void fetchCurrentUserProfile()
@@ -94,6 +108,7 @@ abstract public class BaseLeaderboardPagedListRxFragment<
 
     protected void setCurrentUserProfileDTO(@NonNull UserProfileDTO currentUserProfileDTO)
     {
+        this.currentUserProfileDTO = currentUserProfileDTO;
     }
 
     protected void updateListViewRow(@NonNull UserProfileDTO currentUserProfile, @NonNull final UserBaseKey heroId)
