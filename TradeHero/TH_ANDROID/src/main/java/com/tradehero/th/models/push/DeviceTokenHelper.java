@@ -12,7 +12,6 @@ import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 
@@ -37,19 +36,12 @@ public class DeviceTokenHelper
     }
     //</editor-fold>
 
-    public boolean isChineseVersion()
-    {
-        return true;
-        //return Constants.TAP_STREAM_TYPE.marketSegment.equals(MarketSegment.CHINA);
-    }
-
     /**
      * If locale is Chinese, return the token from baidu,otherwise from urbanairship
      */
     public String getDeviceToken()
     {
         String token = savedPushDeviceIdentifier.get();
-        Timber.d("get saved the token from baidu %s", token);
         return token;
     }
 

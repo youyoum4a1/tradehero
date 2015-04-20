@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.igexin.sdk.PushManager;
 import com.tradehero.chinabuild.*;
 import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
@@ -200,6 +201,9 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
 
         //Download Endpoint
         downloadEndPoint();
+
+        // SDK初始化，第三方程序启动时，都要进行SDK初始化工作
+        PushManager.getInstance().initialize(this.getApplicationContext());
     }
 
     public void fetchUserProfile(boolean force)

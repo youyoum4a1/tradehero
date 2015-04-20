@@ -17,7 +17,7 @@
         android:id="@+id/news_detail_title_placeholder"
         android:scaleType="centerCrop"
         android:alpha="0.2"
-        tools:src="@drawable/logo_about_bull"
+        tools:src="@drawable/logo"
         />
 
     <LinearLayout
