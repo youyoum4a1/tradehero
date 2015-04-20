@@ -41,7 +41,7 @@ public class WebViewFragment extends DashboardFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.webview_simple_fragment, container, false);
+        View view = inflater.inflate(R.layout.webview_layout, container, false);
         webViewSimple = (WebView)view.findViewById(R.id.webViewSimple);
         webViewSimple.setWebChromeClient(new WebChromeClient());
         webViewSimple.getSettings().setJavaScriptEnabled(true);

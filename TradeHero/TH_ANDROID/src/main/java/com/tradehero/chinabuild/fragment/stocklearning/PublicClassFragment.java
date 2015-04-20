@@ -1,5 +1,6 @@
 package com.tradehero.chinabuild.fragment.stocklearning;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import butterknife.InjectView;
 import com.tradehero.chinabuild.data.VideoDTO;
 import com.tradehero.chinabuild.data.VideoDTOList;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.VideoPlayActivity;
 import com.tradehero.th.adapters.VideoGridAdapter;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -90,10 +92,14 @@ public class PublicClassFragment extends DashboardFragment {
     }
 
     public void playVideo(VideoDTO videoDTO) {
+        if(getActivity()==null){
+            return;
+        }
         Bundle bundle = new Bundle();
         bundle.putString(VideoPlayer.BUNDLE_VIDEO_VID, videoDTO.vid);
-        bundle.putString(VideoPlayer.BUNDLE_VIDEO_NAME, videoDTO.name);
-        gotoDashboard(VideoPlayer.class, bundle);
+        Intent playVideoIntent = new Intent(getActivity(), VideoPlayActivity.class);
+        playVideoIntent.putExtras(bundle);
+        getActivity().startActivity(playVideoIntent);
     }
 
     public void gotoDownloadVideoList() {

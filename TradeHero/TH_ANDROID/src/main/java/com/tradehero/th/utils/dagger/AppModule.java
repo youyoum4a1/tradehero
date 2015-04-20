@@ -296,7 +296,6 @@ import java.util.Locale;
                         DiscoveryDiscussSendFragment.class,
                         SettingsAboutUsFragment.class,
                         PositionDetailFragment.class,
-                        VideoPlayer.class,
                         VideoGridAdapter.class,
 
                         ShareDialogFragment.class,
@@ -320,7 +319,6 @@ import java.util.Locale;
                         QuestionsFragment.class,
                         ToAnswerQuestionFragment.class,
                         AnswersSummaryFragment.class,
-                        VideoPlayer.class,
                         StockLearningHistoryFragment.class,
                         //Stock Learning
 

@@ -127,6 +127,11 @@
                       android:pathPattern=".*"/>
             </intent-filter>
         </activity>
+        
+        <activity android:name="com.tradehero.th.activities.VideoPlayActivity"
+                android:screenOrientation="landscape"
+                android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+                android:launchMode="singleTask"/>
 
         <activity
                 android:name="com.tradehero.th.wxapi.WXEntryActivity"
