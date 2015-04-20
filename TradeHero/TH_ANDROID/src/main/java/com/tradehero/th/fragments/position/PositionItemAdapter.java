@@ -16,6 +16,7 @@ import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.position.view.PositionView;
+import com.tradehero.th.utils.GraphicUtil;
 import java.util.Map;
 
 public class PositionItemAdapter extends ArrayAdapter<Object>
@@ -161,14 +162,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
             ((PositionSectionHeaderItemView) convertView).display((PositionSectionHeaderItemView.DTO) item);
         }
 
-        if ((position % 2) == 0)
-        {
-            convertView.setBackgroundColor(Color.WHITE);
-        }
-        else
-        {
-            convertView.setBackgroundResource(R.color.portfolio_header_background_color);
-        }
+        GraphicUtil.setEvenOddBackground(position, convertView);
 
         return convertView;
     }
