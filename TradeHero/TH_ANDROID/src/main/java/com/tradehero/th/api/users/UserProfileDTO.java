@@ -182,6 +182,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
                 ", ccPerMonthBalance=" + ccPerMonthBalance +
                 ", ccBalance=" + ccBalance +
                 ", portfolio=" + portfolio +
+                ", fxPortfolio=" + fxPortfolio +
                 ", paypalEmailAddress='" + paypalEmailAddress + '\'' +
                 ", alipayAccount='" + alipayAccount + '\'' +
                 ", alipayIdentityNumber='" + alipayIdentityNumber + '\'' +

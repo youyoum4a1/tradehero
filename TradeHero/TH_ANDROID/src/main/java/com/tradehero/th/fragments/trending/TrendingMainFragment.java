@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.route.Routable;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.games.ViralMiniGameDefDTO;
 import com.tradehero.th.api.games.ViralMiniGameDefDTOList;
@@ -41,7 +42,6 @@ import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.Constants;
 import dagger.Lazy;
@@ -49,12 +49,14 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.internal.util.SubscriptionList;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -80,6 +82,7 @@ public class TrendingMainFragment extends DashboardFragment
     private boolean fetchedFXPortfolio = false;
     private Observable<UserProfileDTO> userProfileObservable;
     @Nullable private OwnedPortfolioId fxPortfolioId;
+    public static boolean fxDialogShowed = false;
 
     public static void putAssetClass(@NonNull Bundle args, @NonNull AssetClass assetClass)
     {
@@ -198,6 +201,10 @@ public class TrendingMainFragment extends DashboardFragment
 
     private void initViews()
     {
+        if (fxPortfolioId == null)
+        {
+            lastType = TrendingTabType.STOCK;
+        }
         tabViewPager.setAdapter(lastType.equals(TrendingTabType.STOCK) ? tradingStockPagerAdapter : tradingFXPagerAdapter);
         if (!Constants.RELEASE)
         {
@@ -254,46 +261,6 @@ public class TrendingMainFragment extends DashboardFragment
             @Override public void onItemSelected(AdapterView<?> parent, View view, final int position, long id)
             {
                 final TrendingTabType oldType = lastType;
-                final Action1<UserProfileDTO> effectTabChangeAction = new Action1<UserProfileDTO>()
-                {
-                    @Override public void call(UserProfileDTO userProfileDTO)
-                    {
-                        if (position == 1 && userProfileDTO.fxPortfolio == null && fxPortfolioId == null)
-                        {
-                            final FxOnBoardDialogFragment onBoardDialogFragment =
-                                    FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
-                            onBoardDialogFragment.getUserActionTypeObservable()
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(
-                                            new Action1<FxOnBoardDialogFragment.UserAction>()
-                                            {
-                                                @Override public void call(FxOnBoardDialogFragment.UserAction action)
-                                                {
-                                                    handleUserEnrolledFX(action);
-                                                }
-                                            },
-                                            new TimberOnErrorAction("")
-                                    );
-                        }
-                        else
-                        {
-                            if (position == 0)
-                            {
-                                lastType = TrendingTabType.STOCK;
-                            }
-                            else
-                            {
-                                lastType = TrendingTabType.FX;
-                            }
-                            if (!oldType.equals(lastType))
-                            {
-                                lastPosition = 1;
-                                clearChildFragmentManager();
-                                initViews();
-                            }
-                        }
-                    }
-                };
 
                 final ProgressDialog progressDialog;
                 if (!fetchedFXPortfolio && userProfileCache.getCachedValue(currentUserId.toUserBaseKey()) == null)
@@ -311,15 +278,74 @@ public class TrendingMainFragment extends DashboardFragment
                 // - wait for enough info
                 // - pop for FX enroll
                 // - just change the tab
+                if (onStopSubscriptions == null)
+                {
+                    onStopSubscriptions = new SubscriptionList();
+                }
                 onStopSubscriptions.add(AppObservable.bindFragment(
                         TrendingMainFragment.this,
                         userProfileObservable)
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnUnsubscribe(dismissProgress)
                         .finallyDo(dismissProgress)
-                        .subscribe(
-                                effectTabChangeAction,
-                                new ToastOnErrorAction(getString(R.string.error_fetch_your_user_profile))));
+                        .subscribe(new Subscriber<UserProfileDTO>()
+                        {
+                            @Override public void onCompleted()
+                            {
+
+                            }
+
+                            @Override public void onError(Throwable e)
+                            {
+                                THToast.show(getString(R.string.error_fetch_your_user_profile));
+                            }
+
+                            @Override public void onNext(UserProfileDTO userProfileDTO)
+                            {
+                                if (position == 1 && userProfileDTO.fxPortfolio == null && fxPortfolioId == null)
+                                {
+                                    if (fxDialogShowed)
+                                    {
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        fxDialogShowed = true;
+                                    }
+                                    final FxOnBoardDialogFragment onBoardDialogFragment =
+                                            FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
+                                    onBoardDialogFragment.getUserActionTypeObservable()
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe(
+                                                    new Action1<FxOnBoardDialogFragment.UserAction>()
+                                                    {
+                                                        @Override public void call(FxOnBoardDialogFragment.UserAction action)
+                                                        {
+                                                            handleUserEnrolledFX(action);
+                                                        }
+                                                    },
+                                                    new TimberOnErrorAction("")
+                                            );
+                                }
+                                else
+                                {
+                                    if (position == 0)
+                                    {
+                                        lastType = TrendingTabType.STOCK;
+                                    }
+                                    else
+                                    {
+                                        lastType = TrendingTabType.FX;
+                                    }
+                                    if (!oldType.equals(lastType))
+                                    {
+                                        lastPosition = 1;
+                                        clearChildFragmentManager();
+                                        initViews();
+                                    }
+                                }
+                            }
+                        }));
             }
 
             @Override public void onNothingSelected(AdapterView<?> parent)
@@ -422,13 +448,17 @@ public class TrendingMainFragment extends DashboardFragment
         {
             //noinspection ConstantConditions
             fxPortfolioId = userAction.created.getOwnedPortfolioId();
+            if (fxPortfolioId != null)
+            {
+                userProfileCache.invalidate(currentUserId.toUserBaseKey());
+            }
             lastType = TrendingTabType.FX;
+            lastPosition = 1;
         }
         else
         {
             lastType = TrendingTabType.STOCK;
         }
-        lastPosition = 0;
         clearChildFragmentManager();
         initViews();
     }
