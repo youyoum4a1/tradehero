@@ -21,7 +21,7 @@
   <string name="portfolio_header_cash_value">Cash Left</string>
   <string name="portfolio_header_total_asset_value">Total Value</string>
   <string name="portfolio_header_total_profit">Profit</string>
-  <string name="portfolio_header_total_profit_fx">Profit</string>
+  <string name="portfolio_header_total_profit_fx">Profit on Open Positions</string>
   <string name="portfolio_header_margin_title">Margin</string>
   <string name="portfolio_header_margin_available_title">Margin Available</string>
   <string name="portfolio_header_margin_used_title">Margin Used</string>
