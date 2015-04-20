@@ -13,6 +13,7 @@ import com.tradehero.th.adapters.PagedViewDTOAdapterImpl;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.utils.GraphicUtil;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -70,11 +71,7 @@ public class LeaderboardMarkUserListAdapter extends PagedViewDTOAdapterImpl<
     @Override public LeaderboardMarkUserItemView getView(int position, View convertView, ViewGroup viewGroup)
     {
         LeaderboardMarkUserItemView dtoView = super.getView(position, convertView, viewGroup);
-        if (position % 2 == 0) {
-            dtoView.setBackgroundResource(R.color.lb_item_even);
-        } else {
-            dtoView.setBackgroundResource(R.color.lb_item_odd);
-        }
+        GraphicUtil.setEvenOddBackground(position, dtoView);
         dtoView.linkWith(applicablePortfolioId);
 
         boolean expanded = getItem(position).isExpanded();

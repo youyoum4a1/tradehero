@@ -9,6 +9,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
+import com.tradehero.th.utils.GraphicUtil;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -30,14 +31,7 @@ public class ArticleAdapter extends ArrayDTOAdapter<AbstractDiscussionCompactIte
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
         View view = super.getView(position, convertView, viewGroup);
-        if (position % 2 == 0)
-        {
-            view.setBackgroundResource(R.color.lb_item_even);
-        }
-        else
-        {
-            view.setBackgroundResource(R.color.lb_item_odd);
-        }
+        GraphicUtil.setEvenOddBackground(position, view);
         return view;
     }
 

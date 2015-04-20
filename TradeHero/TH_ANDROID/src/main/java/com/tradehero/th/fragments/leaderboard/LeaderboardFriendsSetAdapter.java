@@ -12,6 +12,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.utils.GraphicUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -183,11 +184,7 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
     }
 
     private void setBackgroundColor(View view, int position) {
-        if (position % 2 == 0) {
-            view.setBackgroundResource(R.color.lb_item_even);
-        } else {
-            view.setBackgroundResource(R.color.lb_item_odd);
-        }
+        GraphicUtil.setEvenOddBackground(position, view);
     }
 
     @NonNull @Override protected View inflate(int position, ViewGroup viewGroup)
