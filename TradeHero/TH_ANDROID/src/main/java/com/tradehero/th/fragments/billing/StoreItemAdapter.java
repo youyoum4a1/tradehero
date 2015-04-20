@@ -11,6 +11,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemRestoreDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemTitleDTO;
 import java.util.HashMap;
 
@@ -56,7 +57,8 @@ public class StoreItemAdapter extends ArrayAdapter<StoreItemDTO>
         {
             viewType = VIEW_TYPE_HEADER;
         }
-        else if (storeItemDTO instanceof StoreItemPromptPurchaseDTO)
+        else if (storeItemDTO instanceof StoreItemPromptPurchaseDTO
+                || storeItemDTO instanceof StoreItemRestoreDTO)
         {
             viewType = VIEW_TYPE_LIKE_BUTTON;
         }

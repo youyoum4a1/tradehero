@@ -31,6 +31,7 @@ import com.tradehero.th.fragments.billing.store.StoreItemDTOList;
 import com.tradehero.th.fragments.billing.store.StoreItemFactory;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemRestoreDTO;
 import com.tradehero.th.fragments.social.follower.FollowerRevenueReportFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -227,8 +228,19 @@ public class StoreScreenFragment extends BaseFragment
                     userInteractorRx.purchaseAndClear(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            new ToastAction("Purchae done"),
+                            new ToastAction("Purchase done"),
                             new ToastAndLogOnErrorAction("Purchase failed")));
+        }
+        else if (clickedItem instanceof StoreItemRestoreDTO)
+        {
+            //noinspection unchecked
+            onStopSubscriptions.add(AppObservable.bindFragment(
+                    this,
+                    userInteractorRx.restorePurchasesAndClear(true))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            new ToastAction("Restore done"),
+                            new ToastAndLogOnErrorAction("Restore failed")));
         }
         else if (clickedItem instanceof StoreItemHasFurtherDTO)
         {
