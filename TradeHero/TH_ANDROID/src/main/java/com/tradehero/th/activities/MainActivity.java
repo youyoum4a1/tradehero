@@ -43,7 +43,6 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.DeviceTokenHelper;
-import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.PositionServiceWrapper;
@@ -80,7 +79,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @Inject SystemStatusCache systemStatusCache;
     @Inject Analytics analytics;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    @Inject Lazy<PushNotificationManager> pushNotificationManager;
     @Inject @BindGuestUser BooleanPreference mBindGuestUserPreference;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     private MiddleCallback<GetPositionsDTO> getPositionDTOCallback;
@@ -186,7 +184,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         fetchUserProfile(false);
 
         //enable baidu push
-        pushNotificationManager.get().enablePush();
         mBindGuestUserPreference.set(false);
 
         //Guide View

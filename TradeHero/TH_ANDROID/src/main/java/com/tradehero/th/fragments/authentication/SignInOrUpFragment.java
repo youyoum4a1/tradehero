@@ -4,21 +4,21 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.utils.DaggerUtils;
+
 import javax.inject.Inject;
-import timber.log.Timber;
 
 abstract public class SignInOrUpFragment extends AuthenticationFragment
 {
-    @Inject protected DeviceTokenHelper deviceTokenHelper;
 
     abstract protected int getViewId();
 
     abstract protected int getEmailSignUpViewId();
+
+    @Inject protected DeviceTokenHelper deviceTokenHelper;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -48,32 +48,7 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        checkLocale();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    private void checkLocale()
-    {
-        boolean isChineseLocale = deviceTokenHelper.isChineseVersion();
-        String language = MetaHelper.getLanguage(getActivity());
-        Timber.d("language %s", language);
-        if (isChineseLocale)
-        {
-            showViewForChinese();
-        }
-        // TODO remove this shit
-        //else if (language != null && language.startsWith("ko"))
-        //if not ChineseLocale weibo & qq will show gone ,checked with Cody
-        else
-        {
-            getView().findViewById(R.id.btn_weibo_signin).setVisibility(View.GONE);
-            getView().findViewById(R.id.btn_qq_signin).setVisibility(View.GONE);
-        }
+        showViewForChinese();
     }
 
     private void showViewForChinese()

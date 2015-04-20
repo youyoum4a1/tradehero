@@ -69,8 +69,6 @@ import com.tradehero.th.models.ModelsModule;
 import com.tradehero.th.models.chart.ChartModule;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
-import com.tradehero.th.models.push.DefaultIntentReceiver;
-import com.tradehero.th.models.push.PushModule;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.models.user.SimplePremiumFollowUserAssistant;
 import com.tradehero.th.network.NetworkModule;
@@ -102,7 +100,6 @@ import java.util.Locale;
                 UserModule.class,
                 PreferenceModule.class,
                 ChartModule.class,
-                PushModule.class,
         },
         injects =
                 {
@@ -288,7 +285,6 @@ import java.util.Locale;
                         MyEditNameFragment.class,
                         MyEditAccountFragment.class,
                         MySocialFragment.class,
-                        DefaultIntentReceiver.class,
                         UserHeroesListFragment.class,
                         UserFansListFragment.class,
                         UserAccountPage.class,

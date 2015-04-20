@@ -43,7 +43,7 @@ public class Constants {
     public final static String DEFAULT_SHARE_ENDPOINT = "cn.tradehero.mobi";
 
     //Notification Id
-    public final static int NOTIFICATION_ID = 999;
+    public final static int NOTIFICATION_ID = 90001;
 
     //Manager Account
     public final static boolean isManager = false;

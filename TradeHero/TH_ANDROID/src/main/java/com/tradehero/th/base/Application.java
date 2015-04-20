@@ -16,7 +16,6 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.models.intent.IntentDaggerModule;
-import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceSignUtils;
@@ -35,7 +34,6 @@ public class Application extends PApplication
 {
     public static boolean timberPlanted = false;
 
-    @Inject protected PushNotificationManager pushNotificationManager;
     @Inject protected THRouter thRouter;
 
     @Override protected void init()
@@ -61,8 +59,6 @@ public class Application extends PApplication
 
         EmailSignUtils.initialize();
         DeviceSignUtils.initialize();
-
-        pushNotificationManager.initialise();
 
         thRouter.registerRoutes(
                 TrendingFragment.class,

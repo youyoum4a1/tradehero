@@ -27,7 +27,6 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.misc.exception.THException.ExceptionCode;
-import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.CredentialsSetPreference;
@@ -67,7 +66,6 @@ public class THUser
     @Inject static Lazy<CurrentActivityHolder> currentActivityHolder;
     @Inject static CredentialsDTOFactory credentialsDTOFactory;
     @Inject static LoginSignUpFormDTOFactory loginSignUpFormDTOFactory;
-    @Inject static DeviceTokenHelper deviceTokenHelper;
     @Inject @BindGuestUser static BooleanPreference mBindGuestUserPreference;
     @Inject @DiviceID static StringPreference mDeviceIDStringPreference;
 
@@ -126,10 +124,6 @@ public class THUser
             // input error, unable to parse as json data
             THToast.show(R.string.authentication_error_creating_signup_form);
             return;
-        }
-        if (userFormDTO.deviceToken == null)
-        {
-            userFormDTO.deviceToken = deviceTokenHelper.getDeviceToken();
         }
 
         if (authenticationMode == null)
