@@ -38,8 +38,6 @@ public class SecurityItemView extends RelativeLayout
     @Inject protected Picasso mPicasso;
 
     @InjectView(R.id.stock_logo) ImageView stockLogo;
-    @InjectView(R.id.icon_watchlist) @Optional ImageView inWatchListIcon;
-    @InjectView(R.id.icon_alert) @Optional ImageView inAlertListIcon;
     @InjectView(R.id.ic_market_close) @Optional ImageView marketCloseIcon;
     @InjectView(R.id.stock_name) TextView stockName;
     @InjectView(R.id.exchange_symbol) TextView exchangeSymbol;
@@ -265,37 +263,6 @@ public class SecurityItemView extends RelativeLayout
                     securityCompactDTO.marketOpen
                             ? R.drawable.icn_market_open
                             : R.drawable.icn_market_closed);
-        }
-        if (inWatchListIcon != null)
-        {
-            if (watchlist == null || securityCompactDTO == null)
-            {
-                inWatchListIcon.setVisibility(INVISIBLE);
-            }
-            else
-            {
-                inWatchListIcon.setVisibility(VISIBLE);
-                inWatchListIcon.setImageResource(
-                        watchlist.contains(securityCompactDTO.getSecurityId())
-                                ? R.drawable.icn_tile_favorite_on
-                                : R.drawable.icn_tile_favorite_off);
-            }
-        }
-        if (inAlertListIcon != null)
-        {
-            if (alerts == null || securityCompactDTO == null)
-            {
-                inAlertListIcon.setVisibility(View.INVISIBLE);
-            }
-            else
-            {
-                inAlertListIcon.setVisibility(VISIBLE);
-                AlertCompactDTO alert = alerts.get(securityCompactDTO.getSecurityId());
-                inAlertListIcon.setImageResource(
-                        (alert != null && alert.active)
-                        ? R.drawable.icn_tile_alert_on
-                        : R.drawable.icn_tile_alert_off);
-            }
         }
     }
 
