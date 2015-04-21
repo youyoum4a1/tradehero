@@ -264,13 +264,6 @@ public class DashboardActivity extends BaseActivity
         });
         navigator.addDashboardFragmentWatcher(analyticsReporter.get());
         navigator.addDashboardFragmentWatcher(dashboardTabHost);
-
-        //Temp Fix: tabHost is not visible on Android 5
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) dashboardTabHost.getLayoutParams();
-            int bottomMargin = (int) getResources().getDimension(R.dimen.dashboard_tabhost_height);
-            mlp.setMargins(mlp.leftMargin, mlp.topMargin, mlp.rightMargin, bottomMargin);
-        }
     }
 
     private void initBroadcastReceivers()
