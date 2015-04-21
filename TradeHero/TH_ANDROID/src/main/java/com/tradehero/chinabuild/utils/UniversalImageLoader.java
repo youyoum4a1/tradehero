@@ -56,4 +56,15 @@ public class UniversalImageLoader {
                 .build();
         return options;
     }
+
+    public static DisplayImageOptions getVideoImageLoaderOptions(){
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .showImageOnLoading(R.drawable.bg_default)
+                .showImageForEmptyUri(R.drawable.bg_default)
+                .showImageOnFail(R.drawable.bg_default)
+                .cacheInMemory(true)
+                .cacheOnDisc(true)
+                .build();
+        return options;
+    }
 }

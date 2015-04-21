@@ -9,6 +9,7 @@
       android:layout_height="80dp"
       android:layout_width="match_parent"
       android:scaleType="fitXY"
+      android:src="@drawable/bg_default"
       android:gravity="center_horizontal">
   </ImageView>
   <TextView

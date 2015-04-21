@@ -61,34 +61,28 @@ public class VideoGridAdapter extends BaseAdapter
         return listData == null ? 0 : listData.size();
     }
 
-    @Override public View getView(int position, View convertView, ViewGroup viewGroup)
-    {
+    @Override
+    public View getView(int position, View convertView, ViewGroup viewGroup) {
         VideoDTO data = getItem(position);
-
-        if (data != null)
-        {
+        if (data != null) {
             ViewHolder holder;
-            if (convertView == null)
-            {
+            if (convertView == null) {
                 convertView = inflater.inflate(R.layout.video_class_gridview_item, viewGroup, false);
                 holder = new ViewHolder();
                 holder.imgVideoPlay = (ImageView) convertView.findViewById(R.id.videoImage);
                 holder.tvVideoPlay = (TextView) convertView.findViewById(R.id.videoText);
                 convertView.setTag(holder);
             }
-            else
-            {
+            else {
                 holder = (ViewHolder) convertView.getTag();
             }
-
-            ImageLoader.getInstance().displayImage(data.thumbnail, holder.imgVideoPlay, UniversalImageLoader.getAvatarImageLoaderOptions());
+            ImageLoader.getInstance().displayImage(data.thumbnail, holder.imgVideoPlay, UniversalImageLoader.getVideoImageLoaderOptions());
             holder.tvVideoPlay.setText(data.name);
         }
         return convertView;
     }
 
-    static class ViewHolder
-    {
+    class ViewHolder {
         public ImageView imgVideoPlay = null;
         public TextView tvVideoPlay = null;
     }

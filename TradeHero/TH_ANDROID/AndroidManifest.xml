@@ -166,13 +166,6 @@
                 <action android:name="com.igexin.sdk.action.refreshls" />
             </intent-filter>
         </receiver>
-        <!-- <receiver
-            android:name="com.igexin.sdk.PushReceiver"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.igexin.sdk.action.pushmanager" />
-            </intent-filter>
-        </receiver> -->
         <receiver
                 android:name="com.igexin.sdk.PushManagerReceiver"
                 android:exported="false" >

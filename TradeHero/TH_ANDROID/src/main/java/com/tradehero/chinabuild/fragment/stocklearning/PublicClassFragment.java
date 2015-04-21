@@ -96,7 +96,7 @@ public class PublicClassFragment extends DashboardFragment {
             return;
         }
         Bundle bundle = new Bundle();
-        bundle.putString(VideoPlayer.BUNDLE_VIDEO_VID, videoDTO.vid);
+        bundle.putString(VideoPlayActivity.BUNDLE_VIDEO_VID, videoDTO.vid);
         Intent playVideoIntent = new Intent(getActivity(), VideoPlayActivity.class);
         playVideoIntent.putExtras(bundle);
         getActivity().startActivity(playVideoIntent);
