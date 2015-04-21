@@ -11,6 +11,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THProductDetail;
+import com.tradehero.th.utils.GraphicUtil;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -28,20 +29,15 @@ abstract public class ProductDetailAdapter<
 
     protected Comparator<THProductDetailType> productDetailComparator;
     protected Map<ProductIdentifier, Boolean> enabledItems;
-    protected ProductIdentifierDomain skuDomain;
+    @NonNull protected final ProductIdentifierDomain skuDomain;
 
     //<editor-fold desc="Constructors">
-    public ProductDetailAdapter(@NonNull Context context, @LayoutRes int layoutResourceId, ProductIdentifierDomain skuDomain)
+    public ProductDetailAdapter(@NonNull Context context, @LayoutRes int layoutResourceId, @NonNull ProductIdentifierDomain skuDomain)
     {
         super(context, layoutResourceId);
         this.skuDomain = skuDomain;
     }
     //</editor-fold>
-
-    public Comparator<THProductDetailType> getProductDetailComparator()
-    {
-        return productDetailComparator;
-    }
 
     public void setProductDetailComparator(Comparator<THProductDetailType> productDetailComparator)
     {
@@ -109,6 +105,7 @@ abstract public class ProductDetailAdapter<
                 getHeaderView(position, convertView, viewGroup) :
                 super.getView(position, convertView instanceof ProductDetailQuickDescriptionView ? null : convertView, viewGroup);
         view.setEnabled(isEnabled(position));
+        GraphicUtil.setEvenOddBackground(position, view);
         return view;
     }
 
@@ -142,15 +139,5 @@ abstract public class ProductDetailAdapter<
         }
         Boolean status = enabledItems.get(id);
         return status == null || status;
-    }
-
-    public ProductIdentifierDomain getSkuDomain()
-    {
-        return skuDomain;
-    }
-
-    public void setSkuDomain(ProductIdentifierDomain skuDomain)
-    {
-        this.skuDomain = skuDomain;
     }
 }

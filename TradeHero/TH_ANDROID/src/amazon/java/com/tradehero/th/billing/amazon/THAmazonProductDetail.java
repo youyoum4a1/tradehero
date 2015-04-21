@@ -18,8 +18,6 @@ public class THAmazonProductDetail extends AmazonProductDetail<AmazonSKU>
     int iconResId;
     boolean hasFurtherDetails = false;
     int furtherDetailsResId = R.string.na;
-    boolean hasRibbon = false;
-    int iconRibbonResId = R.drawable.default_image;
     ProductIdentifierDomain domain;
 
     //<editor-fold desc="Constructors">
@@ -47,16 +45,6 @@ public class THAmazonProductDetail extends AmazonProductDetail<AmazonSKU>
     @Override public int getFurtherDetailsResId()
     {
         return furtherDetailsResId;
-    }
-
-    @Override public boolean getHasRibbon()
-    {
-        return hasRibbon;
-    }
-
-    @Override public int getIconRibbonResId()
-    {
-        return iconRibbonResId;
     }
 
     @Override public ProductIdentifierDomain getDomain()

@@ -64,12 +64,14 @@
         android:id="@+id/dialog_btn_add_cash"
         android:layout_width="@dimen/medium_image_w_h"
         android:layout_height="@dimen/medium_image_w_h"
-        android:src="@drawable/buy_vd"
+        android:src="@drawable/icn_th_dollars"
         android:scaleType="fitCenter"
         android:background="@null"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:visibility="gone"
+        tools:visibility="visible"
         />
 
   </RelativeLayout>

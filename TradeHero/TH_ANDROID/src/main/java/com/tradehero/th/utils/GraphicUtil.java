@@ -38,8 +38,8 @@ public class GraphicUtil
     }
 
     /**
-     * ExifInterface.ORIENTATION_ROTATE_270, ExifInterface.ORIENTATION_ROTATE_180,
-     * ExifInterface.ORIENTATION_ROTATE_90, ExifInterface.ORIENTATION_NORMAL, null when unsure
+     * ExifInterface.ORIENTATION_ROTATE_270, ExifInterface.ORIENTATION_ROTATE_180, ExifInterface.ORIENTATION_ROTATE_90,
+     * ExifInterface.ORIENTATION_NORMAL, null when unsure
      */
     @Nullable
     public static Integer getOrientationCode(@NonNull File imageFile)
@@ -343,9 +343,12 @@ public class GraphicUtil
 
     public static void setEvenOddBackground(int position, View toSet)
     {
-        if (position % 2 == 0) {
+        if (position % 2 == 0)
+        {
             toSet.setBackgroundResource(R.drawable.basic_lb_even_selector);
-        } else {
+        }
+        else
+        {
             toSet.setBackgroundResource(R.drawable.basic_lb_odd_selector);
         }
     }

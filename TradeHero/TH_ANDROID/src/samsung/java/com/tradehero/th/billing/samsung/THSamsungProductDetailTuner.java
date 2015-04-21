@@ -1,11 +1,11 @@
 package com.tradehero.th.billing.samsung;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THProductDetailTuner;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THSamsungProductDetailTuner implements THProductDetailTuner<SamsungSKU, THSamsungProductDetail>
@@ -24,19 +24,15 @@ public class THSamsungProductDetailTuner implements THProductDetailTuner<Samsung
             switch (productDetails.getItemId())
             {
                 case THSamsungConstants.EXTRA_CASH_T0_DATA_1:
-                    productDetails.iconResId = R.drawable.cash_1;
+                    productDetails.iconResId = R.drawable.icn_th_dollars;
                     productDetails.domain = ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR;
                     break;
                 case THSamsungConstants.EXTRA_CASH_T1_DATA_1:
-                    productDetails.iconResId = R.drawable.cash_2;
-                    productDetails.hasRibbon = true;
-                    productDetails.iconRibbonResId = R.drawable.ribbon_cash_disc10;
+                    productDetails.iconResId = R.drawable.icn_th_dollars_50k;
                     productDetails.domain = ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR;
                     break;
                 case THSamsungConstants.EXTRA_CASH_T2_DATA_1:
-                    productDetails.iconResId = R.drawable.cash_3;
-                    productDetails.hasRibbon = true;
-                    productDetails.iconRibbonResId = R.drawable.ribbon_cash_best;
+                    productDetails.iconResId = R.drawable.icn_th_dollars_100k;
                     productDetails.domain = ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR;
                     break;
 
@@ -46,7 +42,7 @@ public class THSamsungProductDetailTuner implements THProductDetailTuner<Samsung
                     break;
 
                 case THSamsungConstants.CREDIT_1_DATA_1:
-                    productDetails.iconResId = R.drawable.credit_1;
+                    productDetails.iconResId = R.drawable.icn_follow_credits;
                     productDetails.domain = ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS;
                     break;
 
@@ -56,32 +52,23 @@ public class THSamsungProductDetailTuner implements THProductDetailTuner<Samsung
                 //    break;
 
                 case THSamsungConstants.CREDIT_10_DATA_1:
-                    productDetails.iconResId = R.drawable.credit_5;
-                    productDetails.hasRibbon = true;
-                    productDetails.iconRibbonResId = R.drawable.ribbon_cash_disc5;
+                    productDetails.iconResId = R.drawable.icn_follow_credits_10;
                     productDetails.domain = ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS;
                     break;
                 case THSamsungConstants.CREDIT_20_DATA_1:
-                    productDetails.iconResId = R.drawable.credit_10;
-                    productDetails.hasRibbon = true;
-                    productDetails.iconRibbonResId = R.drawable.ribbon_cc_best;
+                    productDetails.iconResId = R.drawable.icn_follow_credits_20;
                     productDetails.domain = ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS;
                     break;
                 case THSamsungConstants.ALERT_1_DATA_1:
                     productDetails.iconResId = R.drawable.buy_alerts_2;
-                    productDetails.hasRibbon = false;
                     productDetails.domain = ProductIdentifierDomain.DOMAIN_STOCK_ALERTS;
                     break;
                 case THSamsungConstants.ALERT_5_DATA_1:
                     productDetails.iconResId = R.drawable.buy_alerts_5;
-                    productDetails.hasRibbon = true;
-                    productDetails.iconRibbonResId = R.drawable.ribbon_cash_disc10;
                     productDetails.domain = ProductIdentifierDomain.DOMAIN_STOCK_ALERTS;
                     break;
                 case THSamsungConstants.ALERT_UNLIMITED_DATA_1:
                     productDetails.iconResId = R.drawable.buy_alerts_infinite;
-                    productDetails.hasRibbon = true;
-                    productDetails.iconRibbonResId = R.drawable.ribbon_buy_alerts_best;
                     productDetails.domain = ProductIdentifierDomain.DOMAIN_STOCK_ALERTS;
                     break;
 

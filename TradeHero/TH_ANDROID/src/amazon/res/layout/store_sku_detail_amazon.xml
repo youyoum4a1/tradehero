@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="16dp"
+    android:paddingLeft="@dimen/margin_small"
+    android:paddingRight="@dimen/margin_small"
   >
 
   <ImageView
@@ -13,10 +14,9 @@
       android:layout_width="40dp"
       android:layout_height="40dp"
       android:layout_alignParentLeft="true"
-      android:layout_toRightOf="@+id/selected_hint"
-      android:layout_marginRight="8dp"
-      android:layout_marginTop="8dp"
-      android:layout_marginBottom="8dp"
+      android:layout_marginRight="@dimen/size_1"
+      android:layout_marginTop="@dimen/size_1"
+      android:layout_marginBottom="@dimen/size_1"
       android:layout_centerVertical="true"
       android:contentDescription="@null"
       tools:src="@drawable/buy_alerts_2"
@@ -36,7 +36,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="24dp"
         android:layout_centerVertical="true"
         android:textSize="16sp"
         tools:text="$2.58"
@@ -54,19 +53,6 @@
         />
 
   </RelativeLayout>
-
-  <ImageView
-      android:id="@+id/ic_ribbon"
-      android:layout_width="40dp"
-      android:layout_height="40dp"
-      android:layout_alignParentRight="true"
-      android:layout_alignParentTop="true"
-      android:visibility="gone"
-      tools:visibility="visible"
-      tools:src="@drawable/ribbon_buy_alerts_best"
-      android:scaleType="fitCenter"
-      android:contentDescription="@null"
-    />
 
   <TextView
       android:id="@+id/further_description"

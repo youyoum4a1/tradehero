@@ -1,9 +1,11 @@
 package com.tradehero.th.fragments.billing;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
+import butterknife.InjectView;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.THProductDetail;
@@ -14,9 +16,8 @@ public class StoreProductDetailView<
         ProductDetailType extends THProductDetail<ProductIdentifierType>>
         extends ProductDetailView<ProductIdentifierType, ProductDetailType>
 {
-    protected ImageView icDeliverable;
-    protected TextView furtherDescription;
-    protected ImageView icRibbon;
+    @InjectView(R.id.ic_deliverable) protected ImageView icDeliverable;
+    @InjectView(R.id.further_description) protected TextView furtherDescription;
 
     //<editor-fold desc="Constructors">
     public StoreProductDetailView(Context context)
@@ -35,68 +36,26 @@ public class StoreProductDetailView<
     }
     //</editor-fold>
 
-    @Override protected void initViews()
+    @Override public void display(@NonNull ProductDetailType productDetail)
     {
-        super.initViews();
-        icDeliverable = (ImageView) findViewById(R.id.ic_deliverable);
-        furtherDescription = (TextView) findViewById(R.id.further_description);
-        icRibbon = (ImageView) findViewById(R.id.ic_ribbon);
-    }
+        super.display(productDetail);
 
-    @Override public void display()
-    {
-        super.display();
-        displayIcDeliverable();
-        displayFurtherDescription();
-        displayIcRibbon();
-    }
-
-    protected void displayIcDeliverable()
-    {
         if (icDeliverable != null)
         {
-            if (skuDetails != null)
+            try
             {
-                try
-                {
-                    icDeliverable.setImageResource(skuDetails.getIconResId());
-                }
-                catch (OutOfMemoryError e)
-                {
-                    Timber.e(e, "");
-                }
+                icDeliverable.setImageResource(productDetail.getIconResId());
+            }
+            catch (OutOfMemoryError e)
+            {
+                Timber.e(e, "");
             }
         }
-    }
 
-    protected void displayFurtherDescription()
-    {
         if (furtherDescription != null)
         {
-            if (skuDetails != null)
-            {
-                furtherDescription.setVisibility(skuDetails.getHasFurtherDetails() ? VISIBLE : GONE);
-                furtherDescription.setText(skuDetails.getFurtherDetailsResId());
-            }
-        }
-    }
-
-    protected void displayIcRibbon()
-    {
-        if (icRibbon != null)
-        {
-            if (skuDetails != null)
-            {
-                icRibbon.setVisibility(skuDetails.getHasRibbon() ? VISIBLE : GONE);
-                try
-                {
-                    icRibbon.setImageResource(skuDetails.getIconRibbonResId());
-                }
-                catch (OutOfMemoryError e)
-                {
-                    Timber.e(e, "");
-                }
-            }
+            furtherDescription.setVisibility(productDetail.getHasFurtherDetails() ? VISIBLE : GONE);
+            furtherDescription.setText(productDetail.getFurtherDetailsResId());
         }
     }
 }

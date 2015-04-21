@@ -22,7 +22,7 @@
       android:layout_centerVertical="true"
       android:scaleType="fitXY"
       android:contentDescription="@null"
-      tools:src="@drawable/credit_1"
+      tools:src="@drawable/icn_follow_credits"
     />
 
   <TextView
