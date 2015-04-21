@@ -19,8 +19,8 @@ import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
-import com.tradehero.route.Routable;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.games.ViralMiniGameDefDTO;
 import com.tradehero.th.api.games.ViralMiniGameDefDTOList;
@@ -405,8 +405,9 @@ public class TrendingMainFragment extends DashboardFragment
         {
             Bundle args = new Bundle();
             ActionBarOwnerMixin.putKeyShowHomeAsUp(args, false);
-            Class fragmentClass = TrendingStockTabType.values()[position].fragmentClass;
-            args.putInt(TrendingStockFragment.KEY_TYPE_ID, position);
+            TrendingStockTabType tabType = TrendingStockTabType.values()[position];
+            Class fragmentClass = tabType.fragmentClass;
+            TrendingStockFragment.putTabType(args, tabType);
             return Fragment.instantiate(getActivity(), fragmentClass.getName(), args);
         }
 

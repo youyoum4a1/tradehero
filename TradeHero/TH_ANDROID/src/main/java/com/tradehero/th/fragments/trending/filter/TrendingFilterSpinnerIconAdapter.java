@@ -3,43 +3,36 @@ package com.tradehero.th.fragments.trending.filter;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.adapters.ViewDTOSetAdapter;
+import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 
-public class TrendingFilterSpinnerIconSetAdapter
-        extends ViewDTOSetAdapter<ExchangeCompactSpinnerDTO, TrendingFilterSpinnerItemView>
+public class TrendingFilterSpinnerIconAdapter
+        extends ArrayDTOAdapterNew<ExchangeCompactSpinnerDTO, TrendingFilterSpinnerItemView>
 {
-    @LayoutRes private int resId;
     @LayoutRes private int dropDownResId;
 
     //<editor-fold desc="Constructors">
-    public TrendingFilterSpinnerIconSetAdapter(
+    public TrendingFilterSpinnerIconAdapter(
             @NonNull Context context,
             @LayoutRes int layoutResourceId)
     {
-        super(context);
-        this.resId = layoutResourceId;
+        super(context, layoutResourceId);
     }
     //</editor-fold>
 
-    public void setDropDownViewResource(@LayoutRes int resource)
+    @Override public void setDropDownViewResource(@LayoutRes int resource)
     {
+        super.setDropDownViewResource(resource);
         this.dropDownResId = resource;
-    }
-
-    @Override protected int getViewResId(int position)
-    {
-        return resId;
     }
 
     @Override public TrendingFilterSpinnerItemView getDropDownView(int position, View convertView, ViewGroup parent)
     {
         if (convertView == null)
         {
-            convertView = LayoutInflater.from(context).inflate(dropDownResId, parent, false);
+            convertView = View.inflate(getContext(), dropDownResId, null);
         }
         TrendingFilterSpinnerItemView dtoView = (TrendingFilterSpinnerItemView) convertView;
         dtoView.display(getItem(position));

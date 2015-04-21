@@ -11,26 +11,17 @@ import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 public class TrendingFilterTypePriceDTO extends TrendingFilterTypeDTO
 {
     public static final int DEFAULT_TITLE_RES_ID = R.string.trending_filter_price_title;
-    public static final int DEFAULT_ICON_RES_ID = R.drawable.ic_trending_price;
-    public static final int DEFAULT_DESCRIPTION_RES_ID = R.string.trending_filter_price_description;
     public static final String TRACK_EVENT_SYMBOL = "Price Action";
 
     //<editor-fold desc="Constructors">
     public TrendingFilterTypePriceDTO(@NonNull Resources resources)
     {
-        super(resources,
-                DEFAULT_TITLE_RES_ID,
-                DEFAULT_ICON_RES_ID,
-                DEFAULT_DESCRIPTION_RES_ID);
+        super(resources, DEFAULT_TITLE_RES_ID);
     }
 
     public TrendingFilterTypePriceDTO(@NonNull ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO)
     {
-        super(
-                DEFAULT_TITLE_RES_ID,
-                DEFAULT_ICON_RES_ID,
-                DEFAULT_DESCRIPTION_RES_ID,
-                exchangeCompactSpinnerDTO);
+        super(DEFAULT_TITLE_RES_ID, exchangeCompactSpinnerDTO);
     }
     //</editor-fold>
 
