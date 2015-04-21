@@ -115,6 +115,11 @@ public class TrendingMainFragment extends DashboardFragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
+        initUserProfileObservable();
+    }
+
+    private void initUserProfileObservable()
+    {
         userProfileObservable = userProfileCache.getOne(currentUserId.toUserBaseKey())
                 .subscribeOn(Schedulers.computation())
                 .map(new Func1<Pair<UserBaseKey, UserProfileDTO>, UserProfileDTO>()
@@ -281,6 +286,10 @@ public class TrendingMainFragment extends DashboardFragment
                 if (onStopSubscriptions == null)
                 {
                     onStopSubscriptions = new SubscriptionList();
+                }
+                if (userProfileObservable == null)
+                {
+                    initUserProfileObservable();
                 }
                 onStopSubscriptions.add(AppObservable.bindFragment(
                         TrendingMainFragment.this,
