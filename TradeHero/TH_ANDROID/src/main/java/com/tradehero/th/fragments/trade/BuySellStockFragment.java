@@ -133,7 +133,7 @@ public class BuySellStockFragment extends BuySellFragment
 
         if (mTvStockTitle == null)
         {
-            LayoutInflater inflator = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflator = LayoutInflater.from(actionBar.getThemedContext());
             View v = inflator.inflate(R.layout.stock_detail_custom_actionbar, null);
             mTvStockTitle = (TextView) v.findViewById(R.id.tv_stock_title);
             mTvStockSubTitle = (TextView) v.findViewById(R.id.tv_stock_sub_title);
