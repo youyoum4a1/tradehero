@@ -31,7 +31,6 @@ abstract public class THBaseBillingLogicHolderRx<
         ProductIdentifierType extends ProductIdentifier,
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         THProductDetailType extends THProductDetail<ProductIdentifierType>,
-        THProductTunerType extends THProductDetailTuner<ProductIdentifierType, THProductDetailType>,
         THPurchaseOrderType extends THPurchaseOrder<ProductIdentifierType>,
         THOrderIdType extends THOrderId,
         THProductPurchaseType extends THProductPurchase<ProductIdentifierType, THOrderIdType>>
@@ -41,7 +40,6 @@ abstract public class THBaseBillingLogicHolderRx<
                 ProductIdentifierType,
                 ProductIdentifierListType,
                 THProductDetailType,
-                THProductTunerType,
                 THPurchaseOrderType,
                 THOrderIdType,
                 THProductPurchaseType>
@@ -66,7 +64,7 @@ abstract public class THBaseBillingLogicHolderRx<
     public THBaseBillingLogicHolderRx(
             @NonNull
             ProductIdentifierListCacheRx<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache,
-            @NonNull ProductDetailCacheRx<ProductIdentifierType, THProductDetailType, THProductTunerType> productDetailCache,
+            @NonNull ProductDetailCacheRx<ProductIdentifierType, THProductDetailType> productDetailCache,
             @NonNull ProductPurchaseCacheRx<ProductIdentifierType, THOrderIdType, THProductPurchaseType> purchaseCache,
             @NonNull BillingAvailableTesterHolderRx billingAvailableTesterHolder,
             @NonNull

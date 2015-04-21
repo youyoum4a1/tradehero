@@ -1,22 +1,13 @@
 package com.tradehero.th.billing.amazon;
 
-import com.tradehero.common.billing.amazon.AmazonSKU;
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THProductDetailTuner;
-import javax.inject.Inject;
 import timber.log.Timber;
 
-public class THAmazonProductDetailTuner implements THProductDetailTuner<AmazonSKU, THAmazonProductDetail>
+public class THAmazonProductDetailTuner
 {
-    //<editor-fold desc="Constructors">
-    @Inject public THAmazonProductDetailTuner()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @Override public void fineTune(THAmazonProductDetail productDetails)
+    public static void fineTune(@NonNull THAmazonProductDetail productDetails)
     {
         switch (productDetails.getProductIdentifier().skuId)
         {

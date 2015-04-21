@@ -4,20 +4,12 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THProductDetailTuner;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class THSamsungProductDetailTuner implements THProductDetailTuner<SamsungSKU, THSamsungProductDetail>
+public class THSamsungProductDetailTuner
 {
-    //<editor-fold desc="Constructors">
-    @Inject public THSamsungProductDetailTuner()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @Override public void fineTune(@NonNull THSamsungProductDetail productDetails)
+    public static void fineTune(@NonNull THSamsungProductDetail productDetails)
     {
         if (productDetails.getProductIdentifier().groupId.equals(THSamsungConstants.IAP_ITEM_GROUP_ID))
         {

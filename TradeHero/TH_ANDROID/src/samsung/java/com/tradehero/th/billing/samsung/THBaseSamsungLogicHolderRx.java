@@ -25,7 +25,6 @@ public class THBaseSamsungLogicHolderRx
         SamsungSKU,
         SamsungSKUList,
         THSamsungProductDetail,
-        THSamsungProductDetailTuner,
         THSamsungPurchaseOrder,
         THSamsungOrderId,
         THSamsungPurchase>

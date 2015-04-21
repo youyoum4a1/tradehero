@@ -11,16 +11,21 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton @UserCache
-public class THAmazonProductDetailCacheRx extends ProductDetailCacheRx<AmazonSKU, THAmazonProductDetail, THAmazonProductDetailTuner>
+public class THAmazonProductDetailCacheRx extends ProductDetailCacheRx<AmazonSKU, THAmazonProductDetail>
 {
     private static final int DEFAULT_MAX_SIZE = 200;
 
     //<editor-fold desc="Constructors">
     @Inject public THAmazonProductDetailCacheRx(
-            @NonNull THAmazonProductDetailTuner thAmazonProductDetailTuner,
             @NonNull DTOCacheUtilRx dtoCacheUtilNew)
     {
-        super(DEFAULT_MAX_SIZE, thAmazonProductDetailTuner, dtoCacheUtilNew);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtilNew);
     }
     //</editor-fold>
+
+    @Override public void onNext(@NonNull AmazonSKU key, @NonNull THAmazonProductDetail value)
+    {
+        THAmazonProductDetailTuner.fineTune(value);
+        super.onNext(key, value);
+    }
 }

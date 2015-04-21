@@ -32,7 +32,6 @@ public class THBaseIABLogicHolderRx
         IABSKU,
         IABSKUList,
         THIABProductDetail,
-        THIABProductDetailTuner,
         THIABPurchaseOrder,
         THIABOrderId,
         THIABPurchase>

@@ -1,22 +1,13 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.common.billing.googleplay.IABSKU;
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THProductDetailTuner;
-import javax.inject.Inject;
 import timber.log.Timber;
 
-public class THIABProductDetailTuner implements THProductDetailTuner<IABSKU, THIABProductDetail>
+public class THIABProductDetailTuner
 {
-    //<editor-fold desc="Constructors">
-    @Inject public THIABProductDetailTuner()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @Override public void fineTune(THIABProductDetail productDetails)
+    public static void fineTune(@NonNull THIABProductDetail productDetails)
     {
         switch (productDetails.getProductIdentifier().identifier)
         {
