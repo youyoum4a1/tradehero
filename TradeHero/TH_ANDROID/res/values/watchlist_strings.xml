@@ -28,7 +28,7 @@
   <string name="watchlist_item_deleted_failed">Fail to delete watchlist item for security %d</string>
   <string name="watchlist_more">More</string>
   <string name="watchlist_quantity_should_not_be_zero">Quantity should be at least 1</string>
-  <string name="watchlist_empty_view">Tab the button above to add a security to your watchlist</string>
+  <string name="watchlist_empty_view">Tap the button above to add a security to your watchlist</string>
   <string name="watchlist_new_discussion">New Discussion</string>
   <string name="watchlist_not_yet_implemented">Not yet implemented. Stay stuned.</string>
 
