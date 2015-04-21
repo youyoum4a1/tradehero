@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.BaseIABServiceCaller;
-import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABProductDetail;
 import com.tradehero.common.billing.googleplay.IABSKU;
@@ -18,7 +17,9 @@ import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.th.BuildConfig;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.json.JSONException;
 import rx.Observable;
 import rx.functions.Func1;
@@ -39,10 +40,9 @@ abstract public class BaseIABInventoryFetcherRx<
             int requestCode,
             @NonNull List<IABSKUType> iabSKUs,
             @NonNull Context context,
-            @NonNull IABExceptionFactory iabExceptionFactory,
-            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
+            @NonNull IABExceptionFactory iabExceptionFactory)
     {
-        super(requestCode, context, iabExceptionFactory, billingServiceBinderObservable);
+        super(requestCode, context, iabExceptionFactory);
         this.iabSKUs = iabSKUs;
     }
 
@@ -64,13 +64,13 @@ abstract public class BaseIABInventoryFetcherRx<
                     {
                         try
                         {
-                            List<ProductInventoryResult<IABSKUType, IABProductDetailsType>> list =
-                                    BaseIABInventoryFetcherRx.this.fetchOne(result, IABSKUListKey.getInApp());
+                            Map<IABSKUType, IABProductDetailsType> mapped = new HashMap<>();
+                            mapped.putAll(BaseIABInventoryFetcherRx.this.fetchOne(result, IABSKUListKey.getInApp()).mapped);
                             if (result.subscriptionSupported)
                             {
-                                list.addAll(BaseIABInventoryFetcherRx.this.fetchOne(result, IABSKUListKey.getSubs()));
+                                mapped.putAll(BaseIABInventoryFetcherRx.this.fetchOne(result, IABSKUListKey.getSubs()).mapped);
                             }
-                            return Observable.from(list);
+                            return Observable.just(new ProductInventoryResult<>(getRequestCode(), mapped));
                         } catch (RemoteException e)
                         {
                             Timber.e("Remote Exception while fetching inventory.", e);
@@ -88,7 +88,7 @@ abstract public class BaseIABInventoryFetcherRx<
                 });
     }
 
-    @NonNull private List<ProductInventoryResult<IABSKUType, IABProductDetailsType>>
+    @NonNull private ProductInventoryResult<IABSKUType, IABProductDetailsType>
     fetchOne(@NonNull IABServiceResult iabServiceResult, @NonNull IABSKUListKey itemType)
             throws RemoteException, JSONException
     {
@@ -112,17 +112,14 @@ abstract public class BaseIABInventoryFetcherRx<
         }
 
         List<String> responseList = productDetails.getStringArrayList(IABConstants.RESPONSE_GET_SKU_DETAILS_LIST);
-        List<ProductInventoryResult<IABSKUType, IABProductDetailsType>> detailList = new ArrayList<>();
+        Map<IABSKUType, IABProductDetailsType> mapped = new HashMap<>();
         for (String json : responseList)
         {
             IABProductDetailsType details = createSKUDetails(itemType, json);
             Timber.d("Got iabSKU details: %s", details);
-            detailList.add(new ProductInventoryResult<>(
-                    getRequestCode(),
-                    details.getProductIdentifier(),
-                    details));
+            mapped.put(details.getProductIdentifier(), details);
         }
-        return detailList;
+        return new ProductInventoryResult<>(getRequestCode(), mapped);
     }
 
     @NonNull private Bundle getQuerySKUBundle()

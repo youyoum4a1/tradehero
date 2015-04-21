@@ -17,7 +17,9 @@ import com.tradehero.common.billing.tester.BillingAvailableTesterHolderRx;
 import com.tradehero.common.billing.tester.BillingTestResult;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.rx.ReplaceWith;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import rx.Observable;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -182,14 +184,18 @@ abstract public class BaseBillingLogicHolderRx<
                                 return productIdentifierFetcherHolder.get(requestCode);
                             }
                         })
-                .doOnNext(new Action1<ProductIdentifierListResult<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType>>()
-                {
-                    @Override public void call(
-                            ProductIdentifierListResult<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType> result)
-                    {
-                        productIdentifierCache.onNext(result.type, result.productIdentifiers);
-                    }
-                });
+                .doOnNext(
+                        new Action1<ProductIdentifierListResult<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType>>()
+                        {
+                            @Override public void call(
+                                    ProductIdentifierListResult<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType> results)
+                            {
+                                for (Map.Entry<ProductIdentifierListKeyType, ProductIdentifierListType> entry : results.mappedIds.entrySet())
+                                {
+                                    productIdentifierCache.onNext(entry.getKey(), entry.getValue());
+                                }
+                            }
+                        });
     }
     //</editor-fold>
 
@@ -210,16 +216,21 @@ abstract public class BaseBillingLogicHolderRx<
 
     @NonNull @Override public Observable<ProductInventoryResult<
             ProductIdentifierType,
-            ProductDetailType>> getInventory(int requestCode)
+            ProductDetailType>> getInventory(final int requestCode)
     {
         return getIds(requestCode)
                 .flatMap(
                         new Func1<ProductIdentifierListResult<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType>, Observable<? extends ProductInventoryResult<ProductIdentifierType, ProductDetailType>>>()
                         {
                             @Override public Observable<? extends ProductInventoryResult<ProductIdentifierType, ProductDetailType>> call(
-                                    ProductIdentifierListResult<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType> result)
+                                    ProductIdentifierListResult<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType> results)
                             {
-                                return BaseBillingLogicHolderRx.this.getInventory(result.requestCode, result.productIdentifiers);
+                                List<ProductIdentifierType> ids = new ArrayList<>();
+                                for (ProductIdentifierListType value : results.mappedIds.values())
+                                {
+                                    ids.addAll(value);
+                                }
+                                return BaseBillingLogicHolderRx.this.getInventory(requestCode, ids);
                             }
                         });
     }
@@ -254,9 +265,12 @@ abstract public class BaseBillingLogicHolderRx<
                 .doOnNext(new Action1<ProductInventoryResult<ProductIdentifierType, ProductDetailType>>()
                 {
                     @Override public void call(
-                            ProductInventoryResult<ProductIdentifierType, ProductDetailType> result)
+                            ProductInventoryResult<ProductIdentifierType, ProductDetailType> results)
                     {
-                        productDetailCache.onNext(result.id, result.detail);
+                        for (Map.Entry<ProductIdentifierType, ProductDetailType> entry : results.mapped.entrySet())
+                        {
+                            productDetailCache.onNext(entry.getKey(), entry.getValue());
+                        }
                     }
                 });
     }
@@ -453,7 +467,8 @@ abstract public class BaseBillingLogicHolderRx<
                     }
                 })
                 .toList()
-                .map(new ReplaceWith<List<PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>>, PurchaseRestoreTotalResult<ProductIdentifierType, OrderIdType, ProductPurchaseType>>(result));
+                .map(new ReplaceWith<List<PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>>, PurchaseRestoreTotalResult<ProductIdentifierType, OrderIdType, ProductPurchaseType>>(
+                        result));
     }
     //</editor-fold>
 

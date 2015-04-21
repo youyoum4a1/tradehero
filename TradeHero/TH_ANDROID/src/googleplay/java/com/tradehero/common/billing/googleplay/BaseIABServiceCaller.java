@@ -1,7 +1,6 @@
 package com.tradehero.common.billing.googleplay;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
@@ -12,10 +11,8 @@ import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.th.BuildConfig;
 import rx.Observable;
-import rx.Subscription;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
 public class BaseIABServiceCaller extends BaseRequestCodeActor
@@ -24,25 +21,26 @@ public class BaseIABServiceCaller extends BaseRequestCodeActor
 
     @NonNull protected final Context context;
     @NonNull protected final IABExceptionFactory iabExceptionFactory;
-    @NonNull protected final Intent serviceIntent;
-    protected final int bindType;
-    @NonNull private Subscription billingServiceBinderSubscription;
-    private BehaviorSubject<IABServiceResult> serviceSubject;
 
     //<editor-fold desc="Constructors">
     public BaseIABServiceCaller(
             int requestCode,
             @NonNull Context context,
-            @NonNull IABExceptionFactory iabExceptionFactory,
-            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
+            @NonNull IABExceptionFactory iabExceptionFactory)
     {
         super(requestCode);
         this.context = context;
         this.iabExceptionFactory = iabExceptionFactory;
-        this.serviceIntent = BillingServiceBinderObservable.getBillingBindIntent();
-        this.bindType = Context.BIND_AUTO_CREATE;
-        serviceSubject = BehaviorSubject.create();
-        this.billingServiceBinderSubscription = billingServiceBinderObservable.getBinder()
+    }
+    //</editor-fold>
+
+    @NonNull protected Observable<IABServiceResult> getBillingServiceResult()
+    {
+        return BillingServiceBinderObservable.getServiceBinder(
+                context,
+                BillingServiceBinderObservable.getBillingBindIntent(),
+                0,
+                Context.BIND_AUTO_CREATE)
                 .observeOn(Schedulers.computation())
                 .flatMap(new Func1<IBinder, Observable<? extends IABServiceResult>>()
                 {
@@ -50,20 +48,7 @@ public class BaseIABServiceCaller extends BaseRequestCodeActor
                     {
                         return BaseIABServiceCaller.this.createResult(binder);
                     }
-                })
-                .subscribe(serviceSubject);
-    }
-    //</editor-fold>
-
-    public void onDestroy()
-    {
-        billingServiceBinderSubscription.unsubscribe();
-    }
-
-    @NonNull protected Observable<IABServiceResult> getBillingServiceResult()
-    {
-        return serviceSubject.asObservable()
-                .take(1); // The onCompleted call comes from the context;
+                });
     }
 
     @NonNull protected Observable<IABServiceResult> createResult(@NonNull IBinder binder)

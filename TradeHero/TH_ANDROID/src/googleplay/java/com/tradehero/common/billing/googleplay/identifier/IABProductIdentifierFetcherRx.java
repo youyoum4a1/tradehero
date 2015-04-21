@@ -14,5 +14,4 @@ public interface IABProductIdentifierFetcherRx<
         IABSKUType,
         IABSKUListType>
 {
-    void onDestroy();
 }

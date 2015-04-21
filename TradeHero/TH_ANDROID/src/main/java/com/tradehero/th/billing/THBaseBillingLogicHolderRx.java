@@ -20,6 +20,8 @@ import com.tradehero.common.billing.tester.BillingAvailableTesterHolderRx;
 import com.tradehero.th.billing.report.PurchaseReportResult;
 import com.tradehero.th.billing.report.THPurchaseReporterHolderRx;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import rx.Observable;
 import rx.functions.Action0;
 import rx.functions.Func1;
@@ -177,9 +179,10 @@ abstract public class THBaseBillingLogicHolderRx<
                             public Observable<? extends PurchaseReportResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>> call(
                                     ProductInventoryResult<ProductIdentifierType, THProductDetailType> result)
                             {
-                                if (result.id.equals(purchase.getProductIdentifier()))
+                                THProductDetailType detail = result.mapped.get(purchase.getProductIdentifier());
+                                if (detail != null)
                                 {
-                                    return THBaseBillingLogicHolderRx.this.report(requestCode, purchase, result.detail);
+                                    return THBaseBillingLogicHolderRx.this.report(requestCode, purchase, detail);
                                 }
                                 return Observable.empty();
                             }
@@ -245,16 +248,25 @@ abstract public class THBaseBillingLogicHolderRx<
     @NonNull @Override public Observable<ProductInventoryResult<
             ProductIdentifierType,
             THProductDetailType>> getDetailsOfDomain(
-            int requestCode,
+            final int requestCode,
             @NonNull final ProductIdentifierDomain domain)
     {
         return getInventory(requestCode)
-                .filter(new Func1<ProductInventoryResult<ProductIdentifierType, THProductDetailType>, Boolean>()
+                .map(new Func1<ProductInventoryResult<ProductIdentifierType, THProductDetailType>,
+                        ProductInventoryResult<ProductIdentifierType, THProductDetailType>>()
                 {
-                    @Override public Boolean call(
+                    @Override public ProductInventoryResult<ProductIdentifierType, THProductDetailType> call(
                             ProductInventoryResult<ProductIdentifierType, THProductDetailType> result)
                     {
-                        return result.detail.getDomain().equals(domain);
+                        Map<ProductIdentifierType, THProductDetailType> mapped = new HashMap<>();
+                        for (Map.Entry<ProductIdentifierType, THProductDetailType> entry : result.mapped.entrySet())
+                        {
+                            if (entry.getValue().getDomain().equals(domain))
+                            {
+                                mapped.put(entry.getKey(), entry.getValue());
+                            }
+                        }
+                        return new ProductInventoryResult<>(result.requestCode, mapped);
                     }
                 });
     }

@@ -14,5 +14,4 @@ public interface IABPurchaseFetcherRx<
         IABOrderIdType,
         IABPurchaseType>
 {
-    void onDestroy();
 }

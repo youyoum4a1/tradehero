@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.BaseIABServiceCaller;
-import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABOrderId;
 import com.tradehero.common.billing.googleplay.IABPurchase;
@@ -53,10 +52,9 @@ abstract public class BaseIABPurchaserRx<
             int requestCode,
             @NonNull IABPurchaseOrderType purchaseOrder,
             @NonNull Activity activity,
-            @NonNull IABExceptionFactory iabExceptionFactory,
-            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
+            @NonNull IABExceptionFactory iabExceptionFactory)
     {
-        super(requestCode, activity, iabExceptionFactory, billingServiceBinderObservable);
+        super(requestCode, activity, iabExceptionFactory);
         this.purchaseOrder = purchaseOrder;
         subject = BehaviorSubject.create();
     }

@@ -9,7 +9,6 @@ import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
-import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -93,7 +92,7 @@ import rx.functions.Func1;
     }
 
     @NonNull @Override public Observable<THIABPurchaseOrder> createPurchaseOrder(
-            @NonNull final ProductInventoryResult<IABSKU, THIABProductDetail> inventoryResult)
+            @NonNull final THIABProductDetail detail)
     {
         return getDefaultPortfolio()
                 .map(new Func1<PortfolioCompactDTO, THIABPurchaseOrder>()
@@ -101,15 +100,15 @@ import rx.functions.Func1;
                     @Override public THIABPurchaseOrder call(PortfolioCompactDTO dto)
                     {
                         return new THIABPurchaseOrder(
-                                inventoryResult.id,
-                                inventoryResult.detail.getType(),
+                                detail.getProductIdentifier(),
+                                detail.getType(),
                                 dto.getOwnedPortfolioId());
                     }
                 });
     }
 
     @NonNull @Override public Observable<THIABPurchaseOrder> createPurchaseOrder(
-            @NonNull final ProductInventoryResult<IABSKU, THIABProductDetail> inventoryResult,
+            @NonNull final THIABProductDetail detail,
             @NonNull final UserBaseKey heroId)
     {
         return getDefaultPortfolio()
@@ -118,8 +117,8 @@ import rx.functions.Func1;
                     @Override public THIABPurchaseOrder call(PortfolioCompactDTO dto)
                     {
                         return new THIABPurchaseOrder(
-                                inventoryResult.id,
-                                inventoryResult.detail.getType(),
+                                detail.getProductIdentifier(),
+                                detail.getType(),
                                 dto.getOwnedPortfolioId(),
                                 heroId);
                     }

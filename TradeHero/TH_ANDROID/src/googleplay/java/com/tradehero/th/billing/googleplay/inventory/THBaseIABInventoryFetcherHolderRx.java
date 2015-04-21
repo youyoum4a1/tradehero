@@ -3,7 +3,6 @@ package com.tradehero.th.billing.googleplay.inventory;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.inventory.BaseIABInventoryFetcherHolderRx;
@@ -20,17 +19,14 @@ public class THBaseIABInventoryFetcherHolderRx
 {
     @NonNull protected final Context context;
     @NonNull protected final IABExceptionFactory iabExceptionFactory;
-    @NonNull protected final BillingServiceBinderObservable billingServiceBinderObservable;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseIABInventoryFetcherHolderRx(
             @NonNull Context context,
-            @NonNull IABExceptionFactory iabExceptionFactory,
-            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
+            @NonNull IABExceptionFactory iabExceptionFactory)
     {
         this.context = context;
         this.iabExceptionFactory = iabExceptionFactory;
-        this.billingServiceBinderObservable = billingServiceBinderObservable;
     }
     //</editor-fold>
 
@@ -38,7 +34,7 @@ public class THBaseIABInventoryFetcherHolderRx
             int requestCode,
             @NonNull List<IABSKU> productIdentifiers)
     {
-        return new THBaseIABInventoryFetcherRx(requestCode, productIdentifiers, context, iabExceptionFactory, billingServiceBinderObservable);
+        return new THBaseIABInventoryFetcherRx(requestCode, productIdentifiers, context, iabExceptionFactory);
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)

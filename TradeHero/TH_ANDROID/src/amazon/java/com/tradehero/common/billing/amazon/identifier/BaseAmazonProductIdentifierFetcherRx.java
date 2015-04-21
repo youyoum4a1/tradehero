@@ -7,8 +7,8 @@ import com.tradehero.common.billing.amazon.AmazonSKUListKey;
 import com.tradehero.common.billing.amazon.BaseAmazonSKUList;
 import com.tradehero.common.billing.identifier.BaseProductIdentifierFetcherRx;
 import com.tradehero.common.billing.identifier.ProductIdentifierListResult;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import rx.Observable;
 
 abstract public class BaseAmazonProductIdentifierFetcherRx<
@@ -38,20 +38,16 @@ abstract public class BaseAmazonProductIdentifierFetcherRx<
             AmazonSKUType,
             AmazonSKUListType>> get()
     {
-        List<ProductIdentifierListResult<
-                        AmazonSKUListKeyType,
-                        AmazonSKUType,
-                        AmazonSKUListType>> typeList = new ArrayList<>();
+        Map<AmazonSKUListKeyType, AmazonSKUListType> mapped = new HashMap<>();
         for (ProductType productType : ProductType.values())
         {
             AmazonSKUListType idList = createAmazonSKUList();
             populate(idList, productType);
-            typeList.add(new ProductIdentifierListResult<>(
-                    getRequestCode(),
-                    createAmazonListKey(productType),
-                    idList));
+            mapped.put(createAmazonListKey(productType), idList);
         }
-        return Observable.from(typeList);
+        return Observable.just(new ProductIdentifierListResult<>(
+                getRequestCode(),
+                mapped));
     }
 
     @NonNull abstract protected AmazonSKUListType createAmazonSKUList();

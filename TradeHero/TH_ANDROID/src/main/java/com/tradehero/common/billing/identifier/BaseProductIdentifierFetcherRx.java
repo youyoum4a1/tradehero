@@ -5,6 +5,7 @@ import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.BaseRequestCodeActor;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierListKey;
+import java.util.Map;
 
 abstract public class BaseProductIdentifierFetcherRx<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -28,9 +29,8 @@ abstract public class BaseProductIdentifierFetcherRx<
             ProductIdentifierType,
             ProductIdentifierListType>
     createResult(
-            @NonNull ProductIdentifierListKeyType type,
-            @NonNull ProductIdentifierListType productIdentifiers)
+            @NonNull Map<ProductIdentifierListKeyType, ProductIdentifierListType> mapped)
     {
-        return new ProductIdentifierListResult<>(getRequestCode(), type, productIdentifiers);
+        return new ProductIdentifierListResult<>(getRequestCode(), mapped);
     }
 }

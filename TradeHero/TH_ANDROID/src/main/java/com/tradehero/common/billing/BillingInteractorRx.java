@@ -73,9 +73,7 @@ public interface BillingInteractorRx<
     //</editor-fold>
 
     @NonNull Observable<PurchaseOrderType> createPurchaseOrder(
-            @NonNull ProductInventoryResult<
-                    ProductIdentifierType,
-                    ProductDetailType> inventoryResult);
+            @NonNull ProductDetailType detail);
 
     //<editor-fold desc="Get Purchases">
     @NonNull Observable<PurchaseFetchResult<

@@ -14,6 +14,7 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.billing.tester.BillingTestResult;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -35,6 +36,7 @@ import com.tradehero.th.fragments.billing.store.StoreItemRestoreDTO;
 import com.tradehero.th.fragments.social.follower.FollowerRevenueReportFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
@@ -46,6 +48,7 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
+import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -65,7 +68,8 @@ public class StoreScreenFragment extends BaseFragment
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
     @Inject SystemStatusCache systemStatusCache;
-    @Inject UserProfileCacheRx userProfileCacheRx;
+    @Inject UserProfileCacheRx userProfileCache;
+    @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject protected THBillingInteractorRx userInteractorRx;
 
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
@@ -74,6 +78,7 @@ public class StoreScreenFragment extends BaseFragment
 
     private StoreItemAdapter storeItemAdapter;
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
+    @Nullable protected Subscription purchaseSubscription;
 
     @Override public void onAttach(Activity activity)
     {
@@ -154,7 +159,7 @@ public class StoreScreenFragment extends BaseFragment
 
     protected void fetchUserProfile()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(this, userProfileCacheRx.get(currentUserId.toUserBaseKey()))
+        onStopSubscriptions.add(AppObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Pair<UserBaseKey, UserProfileDTO>>()
                            {
@@ -222,25 +227,41 @@ public class StoreScreenFragment extends BaseFragment
         StoreItemDTO clickedItem = (StoreItemDTO) adapterView.getItemAtPosition(position);
         if (clickedItem instanceof StoreItemPromptPurchaseDTO)
         {
+            unsubscribe(purchaseSubscription);
             //noinspection unchecked
-            onStopSubscriptions.add(AppObservable.bindFragment(
+            purchaseSubscription = AppObservable.bindFragment(
                     this,
                     userInteractorRx.purchaseAndClear(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            new ToastAction("Purchase done"),
-                            new ToastAndLogOnErrorAction("Purchase failed")));
+                            new Action1<PurchaseResult>()
+                            {
+                                @Override public void call(PurchaseResult ignored)
+                                {
+                                    userProfileCache.get(currentUserId.toUserBaseKey());
+                                    portfolioCompactListCache.get(currentUserId.toUserBaseKey());
+                                }
+                            },
+                            new ToastAndLogOnErrorAction("Purchase failed"));
         }
         else if (clickedItem instanceof StoreItemRestoreDTO)
         {
+            unsubscribe(purchaseSubscription);
             //noinspection unchecked
-            onStopSubscriptions.add(AppObservable.bindFragment(
+            purchaseSubscription = AppObservable.bindFragment(
                     this,
                     userInteractorRx.restorePurchasesAndClear(true))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            new ToastAction("Restore done"),
-                            new ToastAndLogOnErrorAction("Restore failed")));
+                            new Action1<PurchaseResult>()
+                            {
+                                @Override public void call(PurchaseResult ignored)
+                                {
+                                    userProfileCache.get(currentUserId.toUserBaseKey());
+                                    portfolioCompactListCache.get(currentUserId.toUserBaseKey());
+                                }
+                            },
+                            new ToastAndLogOnErrorAction("Restore failed"));
         }
         else if (clickedItem instanceof StoreItemHasFurtherDTO)
         {

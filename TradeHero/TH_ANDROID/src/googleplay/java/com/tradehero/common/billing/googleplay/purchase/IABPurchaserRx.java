@@ -19,5 +19,4 @@ public interface IABPurchaserRx<
             IABPurchaseType>,
         ActivityResultRequester
 {
-    void onDestroy();
 }
