@@ -7,6 +7,7 @@ import android.view.Menu;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.games.popquiz.ForXWalkFragment;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import java.lang.reflect.InvocationTargetException;
@@ -42,9 +43,9 @@ public class PopQuizActivity extends OneFragmentActivity
         {
             String[] splits = thAuthHeader.split(" ");
             Class<? extends Fragment> xwalk = xWalkFragmentProvider.get();
-            if(xwalk != null)
+            if (xwalk != null)
             {
-                Class[] cArg = new Class[]{Bundle.class, String.class};
+                Class[] cArg = new Class[] {Bundle.class, String.class};
                 try
                 {
                     Method m = xwalk.getDeclaredMethod("putUrl", cArg);
@@ -64,6 +65,7 @@ public class PopQuizActivity extends OneFragmentActivity
         else
         {
             THToast.show(R.string.popquiz_require_fb);
+            navigator.launchTabActivity(RootFragmentType.SETTING);
             finish();
         }
         return args;

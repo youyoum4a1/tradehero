@@ -328,5 +328,5 @@
   <string name="video_locked_hint">Coming soon!</string>
   <string name="history_tab_wait_message">Please wait for loading portfolio</string>
 
-  <string name="popquiz_require_fb">Please login using Facebook to play PopQuiz</string>
+  <string name="popquiz_require_fb">Please link and/or login using Facebook to play PopQuiz</string>
 </resources>
