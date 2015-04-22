@@ -9,7 +9,6 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.filter.FilterModule;
 import com.tradehero.th.fragments.competition.CompetitionModule;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
-import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -63,7 +62,6 @@ public class Application extends PApplication
         thRouter.registerRoutes(
                 TrendingFragment.class,
                 FriendsInvitationFragment.class,
-                MainCompetitionFragment.class,
                 BuySellFragment.class,
                 CompetitionWebViewFragment.class,
                 PositionListFragment.class,

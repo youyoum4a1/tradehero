@@ -518,7 +518,6 @@ public class TrendingFragment extends SecurityListFragment
 
         @Override public void onErrorThrown(@NotNull ProviderListKey key, @NotNull Throwable error)
         {
-            THToast.show(R.string.error_fetch_provider_competition_list);
         }
     }
     //</editor-fold>

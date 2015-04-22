@@ -2,7 +2,6 @@
 <resources>
 
   <string name="error_fetch_provider_info">获取比赛提供方信息发生错误</string>
-  <string name="error_fetch_provider_competition_list">获取比赛列表时发生错误</string>
   <string name="provider_competition_portfolio_title">比赛投资组合</string>
   <string name="provider_competition_wizard_title">精灵</string>
   <string name="provider_competition_rules_title">比赛规则</string>

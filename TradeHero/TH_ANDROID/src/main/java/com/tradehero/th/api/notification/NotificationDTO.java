@@ -12,17 +12,12 @@ public class NotificationDTO implements DTO, KeyGenerator
     public Date createdAtUtc;
     public Integer referencedUserId;
     public Integer replyableId;
-    public Integer threadId;
     public Integer replyableTypeId;
     public int pushId;
-    public String pushGuid;
 
     public String referencedUserName;
 
     // "legacy" fields to replace custom payloads in iOS pushes
-    public Integer relatesToHeroUserId;
-    public NotificationTradeDTO trade;
-    public NotificationStockAlertDTO stockAlert;
     public Integer providerId;
     public Integer pushTypeId;
     public Integer relatesToCompetitionId;
@@ -35,17 +30,4 @@ public class NotificationDTO implements DTO, KeyGenerator
         return new NotificationKey(pushId);
     }
 
-    @Override public String toString()
-    {
-        return new StringBuilder()
-                .append("[NotificationDTO")
-                .append(" pushType=").append(pushTypeId)
-                .append(" text=").append(text)
-                .append(" pushId=").append(pushId)
-                .append(" replyableId=").append(replyableId)
-                .append(" threadId=").append(threadId)
-                .append(" referencedUserId=").append(referencedUserId)
-                .append("]")
-                .toString();
-    }
 }
