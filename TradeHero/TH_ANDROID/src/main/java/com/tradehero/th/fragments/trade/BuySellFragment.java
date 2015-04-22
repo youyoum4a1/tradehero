@@ -646,7 +646,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             }
             if (commentString != null && !commentString.isEmpty())
             {
-                weChatDTO.title = commentString;
+                weChatDTO.title += '\n' + commentString;
             }
             socialSharerLazy.get().share(weChatDTO)
                     .subscribe(
