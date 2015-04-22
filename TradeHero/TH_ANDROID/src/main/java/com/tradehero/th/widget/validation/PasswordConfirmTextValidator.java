@@ -6,13 +6,16 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 
-public class PasswordConfirmTextValidator extends TextValidator
+public class PasswordConfirmTextValidator extends PasswordValidator
 {
     @Nullable private CharSequence mainPassword;
 
-    public PasswordConfirmTextValidator(@NonNull Resources resources, @NonNull PasswordConfirmValidationDTO validationDTO)
+    public PasswordConfirmTextValidator(
+            @NonNull Resources resources,
+            @NonNull PasswordConfirmValidationDTO validationDTO,
+            boolean allowEmpty)
     {
-        super(resources, validationDTO);
+        super(resources, validationDTO, allowEmpty);
     }
 
     public void setMainPassword(@Nullable CharSequence mainPassword)

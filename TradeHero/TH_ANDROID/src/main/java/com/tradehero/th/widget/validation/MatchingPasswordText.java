@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
-public class MatchingPasswordText extends ValidatedText
+public class MatchingPasswordText extends PasswordValidatedText
 {
     public final PasswordConfirmValidationDTO passwordConfirmValidationDTO;
 
@@ -24,6 +24,6 @@ public class MatchingPasswordText extends ValidatedText
 
     @NonNull @Override public PasswordConfirmTextValidator getValidator()
     {
-        return new PasswordConfirmTextValidator(getResources(), passwordConfirmValidationDTO);
+        return new PasswordConfirmTextValidator(getResources(), passwordConfirmValidationDTO, isRealSocialNetwork());
     }
 }

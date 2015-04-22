@@ -93,4 +93,9 @@ public enum SocialNetworkEnum
     {
         return accessTokenSecretName;
     }
+
+    public boolean isLogin(@NonNull String authToken)
+    {
+        return authToken.startsWith(getAuthHeader());
+    }
 }
