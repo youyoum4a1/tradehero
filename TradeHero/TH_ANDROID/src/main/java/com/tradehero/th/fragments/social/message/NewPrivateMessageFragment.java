@@ -10,10 +10,13 @@ import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.DiscussionListKeyFactory;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -26,6 +29,8 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
 
     @Inject protected MessageThreadHeaderCacheRx messageThreadHeaderCache;
     @Nullable protected Subscription messageThreadHeaderFetchSubscription;
+
+    private DiscussionListKey discussionListKey;
 
     @Override public void onResume()
     {
@@ -77,6 +82,19 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         }
     }
 
+    @NonNull @Override protected Observable<DiscussionListKey> createTopicDiscussionListKey()
+    {
+        if (discussionListKey != null)
+        {
+            return Observable.just(discussionListKey);
+        }
+        else
+        {
+            return Observable.empty();
+        }
+
+    }
+
     @NonNull protected Observer<Pair<UserBaseKey, MessageHeaderDTO>> createMessageThreadHeaderCacheObserver()
     {
         return new NewPrivateMessageFragmentThreadHeaderCacheObserver();
@@ -90,6 +108,7 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
             if (getDiscussionKey() == null)
             {
                 linkWith(DiscussionKeyFactory.create(pair.second), true);
+                discussionListKey = DiscussionListKeyFactory.create(pair.second);
             }
         }
 
