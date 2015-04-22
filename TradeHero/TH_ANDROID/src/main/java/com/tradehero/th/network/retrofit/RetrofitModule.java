@@ -37,7 +37,6 @@ import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import java.io.File;
-import java.io.IOException;
 import javax.inject.Singleton;
 import javax.net.ssl.HostnameVerifier;
 import retrofit.Endpoint;
@@ -47,7 +46,6 @@ import retrofit.client.Client;
 import retrofit.client.OkClient;
 import retrofit.converter.Converter;
 import retrofit.converter.JacksonConverter;
-import timber.log.Timber;
 
 @Module(
         includes = {
@@ -152,17 +150,7 @@ public class RetrofitModule
     @Provides @Singleton Cache provideHttpCache(Context context)
     {
         File httpCacheDirectory = new File(context.getCacheDir(), "HttpCache");
-
-        try
-        {
-            // HttpResponseCache httpResponseCache = HttpResponseCache.install(httpCacheDirectory, );
-            return new Cache(httpCacheDirectory, 10 * 1024 * 1024);
-        }
-        catch (IOException e)
-        {
-            Timber.e("Could not create http cache", e);
-        }
-        return null;
+        return new Cache(httpCacheDirectory, 10 * 1024 * 1024);
     }
 
     @Provides @Singleton OkHttpClient provideOkHttpClient(Cache cache, Authenticator authenticator, HostnameVerifier hostNameVerifier)
