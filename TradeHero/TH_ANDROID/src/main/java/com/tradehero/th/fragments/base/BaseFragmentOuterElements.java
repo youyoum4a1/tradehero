@@ -60,6 +60,11 @@ public class BaseFragmentOuterElements implements FragmentOuterElements
             {
                 // Do nothing
             }
+
+            @Override public int getHeight()
+            {
+                return 0;
+            }
         };
     }
 }

@@ -7,4 +7,5 @@ public interface MovableBottom
     void animateShow();
     void animateHide();
     void setOnMovableBottomTranslateListener(@Nullable OnMovableBottomTranslateListener listener);
+    int getHeight();
 }

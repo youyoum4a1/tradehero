@@ -40,6 +40,7 @@ public class TimelineDiscussionFragment extends AbstractDiscussionFragment
     {
         super.onResume();
         fragmentElements.getMovableBottom().animateHide();
+        postCommentView.animate().translationYBy(fragmentElements.getMovableBottom().getHeight()).start();
     }
 
     @Override public void onPause()

@@ -23,6 +23,7 @@ import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.fragments.OnMovableBottomTranslateListener;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.FragmentOuterElements;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
@@ -122,6 +123,22 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     {
         super.onResume();
         mentionTaggedStockHandler.collectSelection();
+        fragmentElements.getMovableBottom().setOnMovableBottomTranslateListener(new OnMovableBottomTranslateListener()
+        {
+            @Override public void onTranslate(float x, float y)
+            {
+                if (postCommentView != null)
+                {
+                    postCommentView.setTranslationY(y);
+                }
+            }
+        });
+    }
+
+    @Override public void onPause()
+    {
+        fragmentElements.getMovableBottom().setOnMovableBottomTranslateListener(null);
+        super.onPause();
     }
 
     @Override public void onDestroyView()
