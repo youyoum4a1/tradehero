@@ -278,13 +278,13 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
 
     private void moveOnToFragment(Pair<SecurityId, Class<? extends DashboardFragment>> pair)
     {
-        Bundle args = new Bundle();
         if (pair.second.equals(BuySellStockFragment.class))
         {
             SecurityId securityId = pair.first;
             thRouter.open("stockSecurity/" + securityId.getExchange() + "/" + securityId.getSecuritySymbol(), getActivity());
-            return;
+        } else {
+            thRouter.open("trendingstocks/1", getActivity());
         }
-        navigator.pushFragment(pair.second, args);
+
     }
 }

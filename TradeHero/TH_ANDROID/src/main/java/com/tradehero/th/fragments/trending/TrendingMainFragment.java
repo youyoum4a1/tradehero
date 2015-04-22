@@ -21,6 +21,7 @@ import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.games.ViralMiniGameDefDTO;
 import com.tradehero.th.api.games.ViralMiniGameDefDTOList;
@@ -60,7 +61,10 @@ import rx.internal.util.SubscriptionList;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-@Routable("trending-securities")
+@Routable({
+        "trending-securities",
+        "trendingstocks/:pageIndex"
+})
 public class TrendingMainFragment extends DashboardFragment
 {
     private static final String KEY_ASSET_CLASS = TrendingMainFragment.class.getName() + ".assetClass";
@@ -72,6 +76,7 @@ public class TrendingMainFragment extends DashboardFragment
     @Inject Lazy<ViralMiniGameDefListCache> viralMiniGameDefListCache;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
+    @RouteProperty("pageIndex") int selectedPageIndex = -1;
 
     @NonNull private static TrendingTabType lastType = TrendingTabType.STOCK;
     private static int lastPosition = 1;
@@ -218,7 +223,13 @@ public class TrendingMainFragment extends DashboardFragment
         pagerSlidingTabStrip.setCustomTabView(lastType.equals(TrendingTabType.STOCK) ? R.layout.th_page_indicator : R.layout.th_tab_indicator, android.R.id.title);
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
-        tabViewPager.setCurrentItem(lastPosition, true);
+        if (selectedPageIndex != -1) {
+            tabViewPager.setCurrentItem(selectedPageIndex, true);
+        }
+        else
+        {
+            tabViewPager.setCurrentItem(lastPosition, true);
+        }
     }
 
     @Override public void onResume()
