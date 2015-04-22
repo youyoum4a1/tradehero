@@ -99,7 +99,7 @@ public class SecurityCompactDTO implements DTO
     public String secTypeDesc;
     public Double risePercent;
 
-    protected String timeTillNextExchangeOpen;
+    public String timeTillNextExchangeOpen;
 
     //<editor-fold desc="Constructors">
     public SecurityCompactDTO()
