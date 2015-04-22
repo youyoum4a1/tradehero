@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.article.ArticleInfoDTO;
@@ -14,17 +16,9 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 public class ArticleItemViewHolder extends AbstractDiscussionCompactItemViewHolder
 {
-    @Inject Picasso picasso;
-
     @InjectView(R.id.article_title) TextView articleTitle;
     @InjectView(R.id.article_description) TextView articleDescriptionView;
     @InjectView(R.id.article_image) ImageView imageView;
-
-    @Override public void onDetachedFromWindow()
-    {
-        picasso.cancelRequest(imageView);
-        super.onDetachedFromWindow();
-    }
 
     @Override public void display(@NonNull AbstractDiscussionCompactItemViewHolder.DTO parentDto)
     {
@@ -34,19 +28,11 @@ public class ArticleItemViewHolder extends AbstractDiscussionCompactItemViewHold
 
         if (imageView != null)
         {
-            picasso.cancelRequest(imageView);
-            if (((ArticleInfoDTO) dto.discussionDTO).image != null)
-            {
-                picasso.load(((ArticleInfoDTO) dto.discussionDTO).image)
-                        // TODO better placeholder images showing that image is still being loaded
-                        .placeholder(R.drawable.card_item_top_bg)
-                        .into(imageView);
-            }
-            else
-            {
-                picasso.load(R.drawable.card_item_top_bg)
-                        .into(imageView);
-            }
+            ImageLoader.getInstance()
+                    .displayImage(
+                            ((ArticleInfoDTO) dto.discussionDTO).image,
+                            imageView,
+                            getArticleImageLoaderOptions());
         }
         if (articleDescriptionView != null)
         {
@@ -56,6 +42,17 @@ public class ArticleItemViewHolder extends AbstractDiscussionCompactItemViewHold
         {
             articleTitle.setText(dto.title);
         }
+    }
+
+    public static DisplayImageOptions getArticleImageLoaderOptions(){
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .showImageOnLoading(R.drawable.card_item_top_bg)
+                .showImageForEmptyUri(R.drawable.card_item_top_bg)
+                .showImageOnFail(R.drawable.card_item_top_bg)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .build();
+        return options;
     }
 
     public static class Requisite extends AbstractDiscussionCompactItemViewHolder.Requisite

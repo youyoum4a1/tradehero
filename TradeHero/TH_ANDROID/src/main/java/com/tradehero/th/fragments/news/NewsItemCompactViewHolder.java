@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.Optional;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
@@ -21,7 +23,6 @@ public class NewsItemCompactViewHolder
 {
     @InjectView(R.id.news_title_title) @Optional protected TextView newsTitle;
     @InjectView(R.id.news_icon) @Optional ImageView newsIcon;
-    @Inject Picasso picasso;
 
     //<editor-fold desc="Constructors">
     public NewsItemCompactViewHolder()
@@ -29,12 +30,6 @@ public class NewsItemCompactViewHolder
         super();
     }
     //</editor-fold>
-
-    @Override public void onDetachedFromWindow()
-    {
-        picasso.cancelRequest(newsIcon);
-        super.onDetachedFromWindow();
-    }
 
     //<editor-fold desc="Display Methods">
     @Override public void display(@NonNull AbstractDiscussionCompactItemViewHolder.DTO parentViewDto)
@@ -47,19 +42,24 @@ public class NewsItemCompactViewHolder
         }
         if (newsIcon != null)
         {
-            if (dto.thumbnailUrl != null)
-            {
-                picasso.load(dto.thumbnailUrl)
-                        .placeholder(dto.thumbnailPlaceHolderResId)
-                        .into(newsIcon);
-            }
-            else
-            {
-                newsIcon.setImageResource(dto.thumbnailPlaceHolderResId);
-            }
+            ImageLoader.getInstance().
+                    displayImage(dto.thumbnailUrl,
+                            newsIcon,
+                            getNewsImageLoaderOptions(dto.thumbnailPlaceHolderResId));
         }
     }
     //</editor-fold>
+
+    public static DisplayImageOptions getNewsImageLoaderOptions(int placeHolderId){
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .showImageOnLoading(placeHolderId)
+                .showImageForEmptyUri(placeHolderId)
+                .showImageOnFail(placeHolderId)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .build();
+        return options;
+    }
 
     public static class Requisite extends AbstractDiscussionCompactItemViewHolder.Requisite
     {
