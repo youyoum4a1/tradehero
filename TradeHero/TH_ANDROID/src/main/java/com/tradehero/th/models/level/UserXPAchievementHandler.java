@@ -42,6 +42,7 @@ public class UserXPAchievementHandler
     public void register(@NonNull final Application application)
     {
         subscriptions.add(LifecycleObservableUtil.getObservable(application)
+                .retry()
                 .subscribe(
                         new Observer<LifecycleEventWithActivity>()
                         {

@@ -8,7 +8,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 
 public class StoreScreenActivity extends OneFragmentActivity
-    implements AchievementAcceptor
 {
     @Override protected void onCreate(Bundle savedInstanceState)
     {

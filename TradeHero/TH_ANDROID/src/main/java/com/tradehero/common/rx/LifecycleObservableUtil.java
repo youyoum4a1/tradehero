@@ -54,7 +54,6 @@ public class LifecycleObservableUtil
                     @Override public void onActivityDestroyed(Activity activity)
                     {
                         subscriber.onNext(new LifecycleEventWithActivity(activity, LifecycleEvent.DESTROY));
-                        subscriber.onCompleted();
                     }
                 };
                 Subscription cleanUp = Subscriptions.create(new Action0()
