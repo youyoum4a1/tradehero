@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.position.partial;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -27,18 +29,22 @@ import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.FxFlagContainer;
+import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.position.PositionDTOUtils;
+import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
 
 public class PositionPartialTopView extends LinearLayout
-    implements DTOView<PositionPartialTopView.DTO>
+        implements DTOView<PositionPartialTopView.DTO>
 {
     @Inject protected Picasso picasso;
+    @Inject protected Lazy<DashboardNavigator> navigator;
 
     @InjectView(R.id.gain_indicator) ImageView mGainIndicator;
     @InjectView(R.id.stock_logo) ImageView stockLogo;
@@ -52,6 +58,7 @@ public class PositionPartialTopView extends LinearLayout
     @InjectView(R.id.position_unrealised_pl) TextView positionUnrealisedPL;
     @InjectView(R.id.position_last_amount_header) TextView positionLastAmountHeader;
     @InjectView(R.id.position_last_amount) TextView positionLastAmount;
+    @InjectView(R.id.btn_position_close) TextView btnClose;
 
     @Nullable protected DTO viewDTO;
 
@@ -102,6 +109,16 @@ public class PositionPartialTopView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
+    @OnClick(R.id.btn_position_close)
+    protected void handleBtnCloseClicked(@SuppressWarnings("UnusedParameters") View view)
+    {
+        Bundle args = new Bundle();
+        FXMainFragment.putSecurityId(args, viewDTO.securityCompactDTO.getSecurityId());
+        FXMainFragment.putApplicablePortfolioId(args, viewDTO.positionDTO.getOwnedPortfolioId());
+        FXMainFragment.putCloseAttribute(args, viewDTO.positionDTO.shares);
+        navigator.get().pushFragment(FXMainFragment.class, args);
+    }
+
     @Override public void display(@NonNull final DTO dto)
     {
         this.viewDTO = dto;
@@ -125,24 +142,29 @@ public class PositionPartialTopView extends LinearLayout
                 request = picasso.load(dto.stockLogoRes);
             }
             request.placeholder(R.drawable.default_image)
-                .transform(new WhiteToTransparentTransformation())
-                .into(stockLogo, new Callback()
-                {
-                    @Override public void onSuccess()
+                    .transform(new WhiteToTransparentTransformation())
+                    .into(stockLogo, new Callback()
                     {
-                    }
+                        @Override public void onSuccess()
+                        {
+                        }
 
-                    @Override public void onError()
-                    {
-                        stockLogo.setImageResource(dto.stockLogoRes);
-                    }
-                });
+                        @Override public void onError()
+                        {
+                            stockLogo.setImageResource(dto.stockLogoRes);
+                        }
+                    });
         }
 
         if (flagsContainer != null)
         {
             flagsContainer.setVisibility(dto.flagsContainerVisibility);
             flagsContainer.display(dto.fxPair);
+        }
+
+        if (btnClose != null)
+        {
+            btnClose.setVisibility(dto.btnCloseVisibility);
         }
 
         if (stockSymbol != null)
@@ -209,6 +231,7 @@ public class PositionPartialTopView extends LinearLayout
         @Nullable public final FxPairSecurityId fxPair;
         @NonNull public final String stockSymbol;
         @ViewVisibilityValue public final int flagsContainerVisibility;
+        @ViewVisibilityValue public final int btnCloseVisibility;
         @ViewVisibilityValue public final int companyNameVisibility;
         @NonNull public final String companyName;
         @ViewVisibilityValue public final int shareCountVisibility;
@@ -285,10 +308,12 @@ public class PositionPartialTopView extends LinearLayout
                         || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED))
                 {
                     shareCountVisibility = GONE;
+                    btnCloseVisibility = GONE;
                 }
                 else
                 {
                     shareCountVisibility = VISIBLE;
+                    btnCloseVisibility = VISIBLE;
                 }
                 if (positionDTO.shares == null)
                 {
@@ -307,6 +332,7 @@ public class PositionPartialTopView extends LinearLayout
             {
                 shareCountVisibility = GONE;
                 shareCount = new SpannableString("");
+                btnCloseVisibility = GONE;
             }
             //</editor-fold>
 

@@ -232,9 +232,26 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                 {
                     showPrettyReviewAndInvite(isBuy);
                     shareToWeChat(commentString);
-                    pushPortfolioFragment(new OwnedPortfolioId(
-                            currentUserId.get(),
-                            securityPositionTransactionDTO.portfolio.id), securityPositionTransactionDTO.portfolio);
+                    String positionType = null;
+                    if (securityPositionTransactionDTO.positions == null)
+                    {
+                        positionType = TabbedPositionListFragment.TabType.CLOSED.name();
+                    }
+                    else
+                    {
+                        if (securityPositionTransactionDTO.positions.size() == 0)
+                        {
+                            positionType = TabbedPositionListFragment.TabType.CLOSED.name();
+                        }
+                        else
+                        {
+                            positionType = securityPositionTransactionDTO.positions.get(0).positionStatus.name();
+                        }
+                    }
+                    pushPortfolioFragment(
+                            new OwnedPortfolioId(currentUserId.get(), securityPositionTransactionDTO.portfolio.id),
+                            securityPositionTransactionDTO.portfolio,
+                            positionType);
                 }
 
                 @Override public void onTransactionFailed(boolean isBuy, THException error)
@@ -655,7 +672,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId, PortfolioDTO portfolioDTO)
+    private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId, PortfolioDTO portfolioDTO, String positionType)
     {
         if (isResumed())
         {
@@ -673,6 +690,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             }
             TabbedPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
             TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
+            TabbedPositionListFragment.putPositionType(args, positionType);
             navigator.get().pushFragment(TabbedPositionListFragment.class, args);
         }
     }
