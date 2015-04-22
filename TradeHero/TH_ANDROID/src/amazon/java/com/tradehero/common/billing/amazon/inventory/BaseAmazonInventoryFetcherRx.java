@@ -10,6 +10,7 @@ import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 import com.tradehero.common.billing.amazon.service.AmazonPurchasingServiceProductDataOperator;
 import com.tradehero.common.billing.inventory.BaseBillingInventoryFetcherRx;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -53,19 +54,23 @@ abstract public class BaseAmazonInventoryFetcherRx<
                 new AmazonPurchasingServiceProductDataOperator(
                         purchasingService,
                         getSkuSet()))
-                .flatMap(new Func1<ProductDataResponse, Observable<? extends Map.Entry<String, Product>>>()
+                .flatMap(new Func1<ProductDataResponse, Observable<? extends ProductInventoryResult<
+                        AmazonSKUType,
+                        AmazonProductDetailType>>>()
                 {
-                    @Override public Observable<? extends Map.Entry<String, Product>> call(ProductDataResponse response)
+                    @Override public Observable<? extends ProductInventoryResult<
+                            AmazonSKUType,
+                            AmazonProductDetailType>> call(ProductDataResponse response)
                     {
                         reportUnavailable(response);
-                        return Observable.from(response.getProductData().entrySet());
-                    }
-                })
-                .map(new Func1<Map.Entry<String, Product>, ProductInventoryResult<AmazonSKUType, AmazonProductDetailType>>()
-                {
-                    @Override public ProductInventoryResult<AmazonSKUType, AmazonProductDetailType> call(Map.Entry<String, Product> result)
-                    {
-                        return BaseAmazonInventoryFetcherRx.this.createResult(result);
+                        Map<AmazonSKUType, AmazonProductDetailType> mapped = new HashMap<>();
+                        AmazonSKUType sku;
+                        for (Map.Entry<String, Product> entry : response.getProductData().entrySet())
+                        {
+                            sku = createAmazonSku(entry.getKey());
+                            mapped.put(sku, createAmazonProductDetail(sku, entry.getValue()));
+                        }
+                        return Observable.just(new ProductInventoryResult<>(getRequestCode(), mapped));
                     }
                 });
     }
@@ -101,15 +106,6 @@ abstract public class BaseAmazonInventoryFetcherRx<
             }
             Timber.e(new Exception("Unavailable Skus found"), "Unavailable Skus found %s", sb);
         }
-    }
-
-    @NonNull private ProductInventoryResult<AmazonSKUType,
-            AmazonProductDetailType> createResult(@NonNull Map.Entry<String, Product> pair)
-    {
-        AmazonSKUType sku = createAmazonSku(pair.getKey());
-        return new ProductInventoryResult<>(getRequestCode(),
-                sku,
-                createAmazonProductDetail(sku, pair.getValue()));
     }
 
     @NonNull abstract protected AmazonSKUType createAmazonSku(@NonNull String skuId);

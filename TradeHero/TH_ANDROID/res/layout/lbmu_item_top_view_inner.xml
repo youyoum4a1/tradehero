@@ -35,6 +35,7 @@
       android:layout_toRightOf="@id/leaderboard_user_item_position"
       android:layout_centerVertical="true"
       android:layout_marginRight="@dimen/size_2"
+      android:scaleType="centerCrop"
       />
 
   <TextView

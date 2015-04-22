@@ -38,6 +38,7 @@ import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.List;
@@ -147,14 +148,7 @@ public class NewsHeadlineFragment extends Fragment
                     @Override public AbstractDiscussionCompactItemViewLinear getView(int position, View convertView, ViewGroup viewGroup)
                     {
                         AbstractDiscussionCompactItemViewLinear view = super.getView(position, convertView, viewGroup);
-                        if (position % 2 == 0)
-                        {
-                            view.setBackgroundResource(R.color.lb_item_even);
-                        }
-                        else
-                        {
-                            view.setBackgroundResource(R.color.lb_item_odd);
-                        }
+                        GraphicUtil.setEvenOddBackground(position, view);
                         return view;
                     }
                 };

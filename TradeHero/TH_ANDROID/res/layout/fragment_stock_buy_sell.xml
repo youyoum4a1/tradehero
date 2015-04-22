@@ -28,7 +28,8 @@
         android:id="@+id/stock_details_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/tradehero_blue">
+        android:animateLayoutChanges="true"
+        android:background="?attr/colorPrimary">
       <ImageView
           android:id="@+id/stock_logo"
           android:layout_width="@dimen/medium_image_w_h"
@@ -41,7 +42,6 @@
           android:layout_alignParentStart="true"
           android:layout_marginLeft="@dimen/margin_medium"
           android:layout_marginStart="@dimen/margin_medium"
-          android:layout_marginTop="@dimen/margin_small"
           tools:src="@drawable/square_ca"
           />
       <com.tradehero.th.fragments.trade.view.PortfolioSelectorView
@@ -50,10 +50,11 @@
           android:layout_height="wrap_content"
           android:layout_marginLeft="@dimen/margin_small"
           android:layout_marginStart="@dimen/margin_small"
-          android:layout_marginTop="@dimen/size_1"
+          android:layout_marginBottom="4dp"
           android:layout_toRightOf="@id/stock_logo"
           android:layout_toEndOf="@id/stock_logo"
-          android:visibility="visible"
+          android:background="@drawable/basic_themed_selector"
+          android:visibility="gone"
           >
         <!--TODO use dropdown/spinner view-->
 
@@ -64,8 +65,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:text="@string/buy_sell_portfolio_selected_title"
-            style="@style/TH.Body"
-            android:textColor="@color/white"
+            style="@style/TH.Body1.Inverse"
             android:layout_centerVertical="true"/>
 
         <TextView
@@ -77,7 +77,7 @@
             android:layout_toRightOf="@id/selected_title_anchor"
             android:layout_toEndOf="@id/selected_title_anchor"
             tools:text="Main Portfolio"
-            android:textColor="@color/white"
+            style="@style/TH.Body1.Inverse"
             android:layout_centerVertical="true"/>
 
         <ImageView
@@ -85,28 +85,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/margin_xsmall"
+            android:layout_marginStart="@dimen/margin_xsmall"
             android:layout_toRightOf="@id/portfolio_selected"
             android:layout_toEndOf="@id/portfolio_selected"
-            android:background="@drawable/expand_down"
+            android:src="@drawable/spinner_arrow_bg"
             />
 
       </com.tradehero.th.fragments.trade.view.PortfolioSelectorView>
 
       <TextView
           android:id="@+id/buy_price"
-          style="@style/TH.Body"
+          style="@style/TH.Subhead.Inverse"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginTop="4dp"
           android:layout_marginLeft="@dimen/margin_small"
           android:layout_marginStart="@dimen/margin_small"
           android:layout_toRightOf="@id/stock_logo"
           android:layout_toEndOf="@id/stock_logo"
           android:layout_below="@id/portfolio_selector_container"
-          android:textColor="@color/white"
-          android:textSize="18sp"
           android:text="@string/buy_sell_loading_ask_price"
           />
 
@@ -125,7 +122,7 @@
 
       <TextView
           android:id="@+id/sell_price"
-          style="@style/TH.Body"
+          style="@style/TH.Body1.Inverse"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_toRightOf="@id/stock_logo"
@@ -133,7 +130,7 @@
           android:layout_below="@id/buy_price"
           android:layout_marginLeft="@dimen/margin_small"
           android:layout_marginStart="@dimen/margin_small"
-          android:textColor="@color/white"
+          android:layout_marginBottom="4dp"
           android:text="@string/buy_sell_loading_bid_price"
           />
 
@@ -149,7 +146,6 @@
           android:layout_alignStart="@id/sell_price"
           android:layout_alignLeft="@id/sell_price"
           android:layout_marginTop="@dimen/margin_small"
-          android:textColor="@color/white"
           tools:text="06 Feb 05:00"/>
 
       <RelativeLayout
@@ -157,7 +153,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_below="@id/sell_price"
-          android:layout_marginTop="4dp"
+          android:layout_marginBottom="4dp"
           android:visibility="visible"
           >
 

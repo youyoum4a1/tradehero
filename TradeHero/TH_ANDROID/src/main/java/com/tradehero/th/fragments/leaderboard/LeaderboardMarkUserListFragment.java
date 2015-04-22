@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,14 +16,12 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
@@ -44,7 +41,6 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
-import java.util.Timer;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
@@ -76,6 +72,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
 
     protected PerPagedLeaderboardKey currentLeaderboardKey;
     protected LeaderboardType currentLeaderboardType = LeaderboardType.STOCKS;
+    private LeaderboardMarkUserItemView.Requisite ownRankRequisite;
 
     public static void putLeaderboardType(@NonNull Bundle args, @NonNull LeaderboardType leaderboardType)
     {
@@ -145,11 +142,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     @Override public void onStart()
     {
         super.onStart();
-        Timber.e("Richard: Begin===================================");
-        Timber.e("Richard: " + isVisible());
-        Timber.e("Richard: " + currentLeaderboardKey.id);
-        Timber.e("Richard: " + currentLeaderboardType.name());
-        Timber.e("Richard: END===================================");
         fragmentUtil.onStart();
         onStopSubscriptions.add(((LeaderboardMarkUserListAdapter) itemViewAdapter).getFollowRequestedObservable()
                 .subscribe(
@@ -159,7 +151,13 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         {
             requestDtos();
         }
-        fetchOwnRanking();
+        if (ownRankRequisite == null)
+        {
+            fetchOwnRanking();
+        } else {
+            updateCurrentRankHeaderView(ownRankRequisite);
+        }
+
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -222,6 +220,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     @Override public void onDestroy()
     {
         this.leaderboardFilterFragment = null;
+        ownRankRequisite = null;
         saveCurrentFilterKey();
         super.onDestroy();
     }

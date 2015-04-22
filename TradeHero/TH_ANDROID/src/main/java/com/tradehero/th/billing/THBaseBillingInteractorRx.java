@@ -18,8 +18,9 @@ import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
 import com.tradehero.th.rx.ReplaceWith;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Provider;
 import rx.Observable;
 import rx.functions.Func1;
@@ -216,32 +217,30 @@ abstract public class THBaseBillingInteractorRx<
         return popErrorAndHandle(super.purchase(purchaseOrder));
     }
 
-    @NonNull protected Observable<ProductInventoryResult<ProductIdentifierType,
-            THProductDetailType>> getDomainDialogResult(
+    @NonNull protected Observable<THProductDetailType> getDomainDialogResult(
             @NonNull final ProductIdentifierDomain domain)
     {
         return getInventory()
-                .toList()
                 .flatMap(
-                        new Func1<List<ProductInventoryResult<ProductIdentifierType, THProductDetailType>>, Observable<? extends ProductInventoryResult<ProductIdentifierType, THProductDetailType>>>()
+                        new Func1<ProductInventoryResult<ProductIdentifierType, THProductDetailType>, Observable<? extends THProductDetailType>>()
                         {
-                            @Override public Observable<? extends ProductInventoryResult<ProductIdentifierType, THProductDetailType>> call(
-                                    List<ProductInventoryResult<ProductIdentifierType, THProductDetailType>> detailList)
+                            @Override public Observable<? extends THProductDetailType> call(
+                                    ProductInventoryResult<ProductIdentifierType, THProductDetailType> result)
                             {
-                                List<ProductInventoryResult<ProductIdentifierType, THProductDetailType>> filtered = new ArrayList<>();
-                                for (ProductInventoryResult<ProductIdentifierType, THProductDetailType> result : detailList)
+                                Map<ProductIdentifierType, THProductDetailType> filtered2 = new HashMap<>();
+                                for (Map.Entry<ProductIdentifierType, THProductDetailType> entry : result.mapped.entrySet())
                                 {
-                                    if (result.detail.getDomain().equals(domain))
+                                    if (entry.getValue().getDomain().equals(domain))
                                     {
-                                        filtered.add(result);
+                                        filtered2.put(entry.getKey(), entry.getValue());
                                     }
                                 }
-                                if (filtered.size() > 0)
+                                if (filtered2.size() > 0)
                                 {
                                     return billingAlertDialogUtil.popBuyDialogAndHandle(
                                             activityProvider.get(),
                                             domain,
-                                            filtered,
+                                            new ProductInventoryResult<>(result.requestCode, filtered2),
                                             null);
                                 }
                                 return Observable.empty();
@@ -258,11 +257,11 @@ abstract public class THBaseBillingInteractorRx<
     {
         return popErrorAndHandle(getDomainDialogResult(domain)
                 .flatMap(
-                        new Func1<ProductInventoryResult<ProductIdentifierType, THProductDetailType>, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
+                        new Func1<THProductDetailType, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
                         {
                             @Override
                             public Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>> call(
-                                    final ProductInventoryResult<ProductIdentifierType, THProductDetailType> selected)
+                                    final THProductDetailType selected)
                             {
                                 return THBaseBillingInteractorRx.this.createPurchaseOrder(selected)
                                         .flatMap(
@@ -273,7 +272,7 @@ abstract public class THBaseBillingInteractorRx<
                                                             THPurchaseOrderType purchaseOrder)
                                                     {
                                                         return billingLogicHolder.purchaseAndClear(
-                                                                selected.requestCode,
+                                                                billingLogicHolder.getUnusedRequestCode(),
                                                                 purchaseOrder);
                                                     }
                                                 });
@@ -291,11 +290,11 @@ abstract public class THBaseBillingInteractorRx<
     {
         return popErrorAndHandle(getDomainDialogResult(domain)
                 .flatMap(
-                        new Func1<ProductInventoryResult<ProductIdentifierType, THProductDetailType>, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
+                        new Func1<THProductDetailType, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
                         {
                             @Override
                             public Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>> call(
-                                    final ProductInventoryResult<ProductIdentifierType, THProductDetailType> selected)
+                                    final THProductDetailType selected)
                             {
                                 return THBaseBillingInteractorRx.this.createPurchaseOrder(selected)
                                         .flatMap(
@@ -306,7 +305,7 @@ abstract public class THBaseBillingInteractorRx<
                                                             THPurchaseOrderType purchaseOrder)
                                                     {
                                                         return billingLogicHolder.purchase(
-                                                                selected.requestCode,
+                                                                billingLogicHolder.getUnusedRequestCode(),
                                                                 purchaseOrder);
                                                     }
                                                 });
@@ -327,11 +326,11 @@ abstract public class THBaseBillingInteractorRx<
     {
         return popErrorAndHandle(getDomainDialogResult(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS)
                 .flatMap(
-                        new Func1<ProductInventoryResult<ProductIdentifierType, THProductDetailType>, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
+                        new Func1<THProductDetailType, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
                         {
                             @Override
                             public Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>> call(
-                                    final ProductInventoryResult<ProductIdentifierType, THProductDetailType> selected)
+                                    final THProductDetailType selected)
                             {
                                 return THBaseBillingInteractorRx.this.createPurchaseOrder(selected, heroId)
                                         .flatMap(
@@ -342,7 +341,7 @@ abstract public class THBaseBillingInteractorRx<
                                                             THPurchaseOrderType purchaseOrder)
                                                     {
                                                         return billingLogicHolder.purchaseAndClear(
-                                                                selected.requestCode,
+                                                                billingLogicHolder.getUnusedRequestCode(),
                                                                 purchaseOrder);
                                                     }
                                                 });
@@ -361,11 +360,11 @@ abstract public class THBaseBillingInteractorRx<
     {
         return popErrorAndHandle(getDomainDialogResult(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS)
                 .flatMap(
-                        new Func1<ProductInventoryResult<ProductIdentifierType, THProductDetailType>, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
+                        new Func1<THProductDetailType, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
                         {
                             @Override
                             public Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>> call(
-                                    final ProductInventoryResult<ProductIdentifierType, THProductDetailType> selected)
+                                    final THProductDetailType selected)
                             {
                                 return THBaseBillingInteractorRx.this.createPurchaseOrder(selected, heroId)
                                         .flatMap(
@@ -376,7 +375,7 @@ abstract public class THBaseBillingInteractorRx<
                                                             THPurchaseOrderType purchaseOrder)
                                                     {
                                                         return billingLogicHolder.purchase(
-                                                                selected.requestCode,
+                                                                billingLogicHolder.getUnusedRequestCode(),
                                                                 purchaseOrder);
                                                     }
                                                 });

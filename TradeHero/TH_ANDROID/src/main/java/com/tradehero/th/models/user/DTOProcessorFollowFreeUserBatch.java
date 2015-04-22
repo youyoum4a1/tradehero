@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import com.tradehero.th.api.social.BatchFollowFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 
@@ -16,11 +15,10 @@ public class DTOProcessorFollowFreeUserBatch extends DTOProcessorUpdateUserProfi
     //<editor-fold desc="Constructors">
     public DTOProcessorFollowFreeUserBatch(
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull HomeContentCacheRx homeContentCache,
             @NonNull UserMessagingRelationshipCacheRx userMessagingRelationshipCache,
             @NonNull BatchFollowFormDTO followFormDTO)
     {
-        super(userProfileCache, homeContentCache);
+        super(userProfileCache);
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.followFormDTO = followFormDTO;
     }

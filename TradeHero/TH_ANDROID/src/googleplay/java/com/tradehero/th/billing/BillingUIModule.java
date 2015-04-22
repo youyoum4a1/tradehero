@@ -1,7 +1,13 @@
 package com.tradehero.th.billing;
 
+import android.app.Activity;
+import android.content.Context;
+import android.os.IBinder;
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BillingInteractorRx;
 import com.tradehero.common.billing.BillingLogicHolderRx;
+import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.billing.googleplay.THBaseIABInteractorRx;
 import com.tradehero.th.billing.googleplay.THBaseIABLogicHolderRx;
 import com.tradehero.th.billing.googleplay.THIABAlertDialogRxUtil;
@@ -23,7 +29,9 @@ import com.tradehero.th.billing.googleplay.tester.THBaseIABBillingAvailableTeste
 import com.tradehero.th.billing.googleplay.tester.THIABBillingAvailableTesterHolderRx;
 import dagger.Module;
 import dagger.Provides;
+import javax.inject.Provider;
 import javax.inject.Singleton;
+import rx.Observable;
 
 @Module(
         complete = false,
@@ -32,6 +40,17 @@ import javax.inject.Singleton;
 )
 public class BillingUIModule
 {
+    @Provides @Singleton Observable<IBinder> provideBillingServiceBinderObservable(@NonNull Provider<Activity> activityProvider)
+    {
+        THToast.show("providing binder observable");
+        return BillingServiceBinderObservable.getServiceBinder(
+                activityProvider.get(),
+                BillingServiceBinderObservable.getBillingBindIntent(),
+                0,
+                Context.BIND_AUTO_CREATE)
+                .cache(1);
+    }
+
     //<editor-fold desc="Action Holders Rx">
     @Provides THIABBillingAvailableTesterHolderRx provideBillingAvailableTesterHolderRx(
             THBaseIABBillingAvailableTesterHolderRx thBaseIABBillingAvailableTesterHolder)

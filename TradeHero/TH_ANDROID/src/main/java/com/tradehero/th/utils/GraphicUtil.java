@@ -262,6 +262,32 @@ public class GraphicUtil
         d.clearColorFilter();
         d.setColorFilter(color, PorterDuff.Mode.SRC_IN);
     }
+
+    public static void removeColorFilter(@NonNull ImageView[] imageViews)
+    {
+        for (ImageView imageView : imageViews)
+        {
+            removeColorFilter(imageView);
+        }
+    }
+
+    public static void removeColorFilter(@NonNull Collection<? extends ImageView> imageViews)
+    {
+        for (ImageView imageView : imageViews)
+        {
+            removeColorFilter(imageView);
+        }
+    }
+
+    public static void removeColorFilter(@NonNull ImageView imageView)
+    {
+        removeColorFilter(imageView.getDrawable());
+    }
+
+    public static void removeColorFilter(@NonNull Drawable d)
+    {
+        d.clearColorFilter();
+    }
     //</editor-fold>
 
     public static StateListDrawable createStateListDrawable(@NonNull Context context, int normal)
@@ -302,11 +328,6 @@ public class GraphicUtil
         return states;
     }
 
-    public static void setBackground(@NonNull View view, int color)
-    {
-        setBackground(view, new ColorDrawable(color));
-    }
-
     @SuppressLint("NewApi")
     public static void setBackground(@NonNull View view, Drawable drawable)
     {
@@ -317,6 +338,15 @@ public class GraphicUtil
         else
         {
             view.setBackgroundDrawable(drawable);
+        }
+    }
+
+    public static void setEvenOddBackground(int position, View toSet)
+    {
+        if (position % 2 == 0) {
+            toSet.setBackgroundResource(R.drawable.basic_lb_even_selector);
+        } else {
+            toSet.setBackgroundResource(R.drawable.basic_lb_odd_selector);
         }
     }
 

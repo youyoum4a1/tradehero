@@ -5,13 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
@@ -35,6 +31,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
+import com.tradehero.th.fragments.discussion.MentionActionButtonsView;
 import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.MessageServiceWrapper;
@@ -74,6 +71,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @InjectView(R.id.private_message_empty) protected TextView emptyHint;
     @InjectView(R.id.post_comment_action_submit) protected TextView buttonSend;
     @InjectView(R.id.post_comment_text) protected EditText messageToSend;
+    @InjectView(R.id.mention_widget) protected MentionActionButtonsView mentionView;
 
     @Nullable private Subscription messageHeaderFetchSubscription;
     private MessageHeaderId messageHeaderId;
@@ -110,6 +108,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
             postWidget.linkWith(MessageType.PRIVATE);
             postWidget.setRecipient(correspondentId);
         }
+        mentionView.setReturnFragmentName(getClass().getName());
     }
 
     @Override public void onStart()

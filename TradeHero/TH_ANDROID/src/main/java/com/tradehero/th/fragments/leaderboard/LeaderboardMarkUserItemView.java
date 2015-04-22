@@ -17,6 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.api.BaseArrayList;
@@ -35,6 +36,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedPercentage;
+import com.tradehero.th.utils.ImageUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -52,7 +54,6 @@ public class LeaderboardMarkUserItemView
         extends RelativeLayout
         implements DTOView<LeaderboardMarkUserItemView.DTO>
 {
-    @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
 
     protected OwnedPortfolioId applicablePortfolioId;
@@ -138,7 +139,6 @@ public class LeaderboardMarkUserItemView
 
     @Override protected void onDetachedFromWindow()
     {
-        picasso.get().cancelRequest(lbmuProfilePicture);
         if (lbmuFoF != null)
         {
             lbmuFoF.setMovementMethod(null);
@@ -188,17 +188,10 @@ public class LeaderboardMarkUserItemView
         }
         if (lbmuProfilePicture != null)
         {
-            if (viewDTO.leaderboardUserDTO.picture != null)
-            {
-                picasso.get()
-                        .load(viewDTO.leaderboardUserDTO.picture)
-                        .into(lbmuProfilePicture);
-            }
-            else
-            {
-                picasso.get().load(R.drawable.superman_facebook)
-                        .into(lbmuProfilePicture);
-            }
+            ImageLoader.getInstance()
+                    .displayImage(viewDTO.leaderboardUserDTO.picture,
+                            lbmuProfilePicture,
+                            ImageUtils.getAvatarImageLoaderOptions());
         }
 
         if (lbmuFollowUser != null)
@@ -296,17 +289,10 @@ public class LeaderboardMarkUserItemView
 
         if (lbmuProfilePicture != null)
         {
-            if (currentUserProfileDTO.picture != null)
-            {
-                picasso.get()
-                        .load(currentUserProfileDTO.picture)
-                        .into(lbmuProfilePicture);
-            }
-            else
-            {
-                picasso.get().load(R.drawable.superman_facebook)
-                        .into(lbmuProfilePicture);
-            }
+            ImageLoader.getInstance()
+                    .displayImage(currentUserProfileDTO.picture,
+                            lbmuProfilePicture,
+                            ImageUtils.getAvatarImageLoaderOptions());
         }
     }
 

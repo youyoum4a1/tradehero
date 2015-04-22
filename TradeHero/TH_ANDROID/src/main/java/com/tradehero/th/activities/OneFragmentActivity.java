@@ -1,6 +1,7 @@
 package com.tradehero.th.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.common.activities.ActivityResultRequester;
+import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -20,13 +23,16 @@ import dagger.Module;
 import dagger.Provides;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+import rx.functions.Action1;
 
 abstract public class OneFragmentActivity extends BaseActivity
 {
     @Inject protected THRouter thRouter;
+    @Inject Set<ActivityResultRequester> activityResultRequesters;
     protected DashboardNavigator navigator;
     @InjectView(R.id.my_toolbar) protected Toolbar toolbar;
 
@@ -100,6 +106,18 @@ abstract public class OneFragmentActivity extends BaseActivity
         {
             navigator.popFragment();
         }
+    }
+
+    @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        CollectionUtils.apply(activityResultRequesters, new Action1<ActivityResultRequester>()
+        {
+            @Override public void call(ActivityResultRequester requester)
+            {
+                requester.onActivityResult(requestCode, resultCode, data);
+            }
+        });
     }
 
     @Module(

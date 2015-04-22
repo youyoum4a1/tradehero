@@ -1,29 +1,24 @@
 package com.tradehero.th.fragments.home;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Pair;
 import com.tradehero.common.widget.NotifyingWebView;
-import com.tradehero.th.api.home.HomeContentDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.utils.Constants;
+import java.util.HashMap;
+import java.util.Map;
 import javax.inject.Inject;
-import rx.Observer;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
+
+import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
+import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
 
 public final class HomeWebView extends NotifyingWebView
 {
     @Inject CurrentUserId currentUserId;
-    @Inject HomeContentCacheRx homeContentCache;
-
-    @Nullable private Subscription homeContentCacheSubscription;
+    @Inject AccountManager accountManager;
 
     //region Constructors
     public HomeWebView(Context context, AttributeSet attrs)
@@ -38,72 +33,26 @@ public final class HomeWebView extends NotifyingWebView
         HierarchyInjector.inject(this);
     }
 
-    @Override public void reload()
-    {
-        forceReloadWebView();
-    }
-
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        forceReloadWebView();
+        reload();
     }
 
-    private void forceReloadWebView()
-    {
-        detachHomeCacheListener();
-        homeContentCacheSubscription = homeContentCache.get(currentUserId.toUserBaseKey())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createHomeContentCacheObserver());
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        detachHomeCacheListener();
-        homeContentCacheSubscription = null;
-        super.onDetachedFromWindow();
-    }
-
-    private void detachHomeCacheListener()
-    {
-        Subscription copy = homeContentCacheSubscription;
-        if (copy != null)
-        {
-            copy.unsubscribe();
-        }
-        homeContentCacheSubscription = null;
-    }
-
-    private void reloadWebView(@NonNull HomeContentDTO homeContentDTO)
+    @Override public void reload()
     {
         String appHomeLink = String.format("%s/%d", Constants.APP_HOME, currentUserId.get());
 
-        loadDataWithBaseURL(Constants.BASE_STATIC_CONTENT_URL, homeContentDTO.content, "text/html", "", appHomeLink);
-    }
-
-    //<editor-fold desc="Listeners">
-    @NonNull private Observer<Pair<UserBaseKey, HomeContentDTO>> createHomeContentCacheObserver()
-    {
-        return new HomeContentCacheObserver();
-    }
-
-    private class HomeContentCacheObserver implements Observer<Pair<UserBaseKey, HomeContentDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, HomeContentDTO> pair)
+        Map<String, String> headers = new HashMap<>();
+        Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
+        if (accounts.length != 0)
         {
-            reloadWebView(pair.second);
-//            dtoCacheUtil.anonymousPrefetches();
-//            dtoCacheUtil.initialPrefetches();
+            String token = accountManager.peekAuthToken(accounts[0], PARAM_AUTHTOKEN_TYPE);
+            if (token != null)
+            {
+                headers.put(Constants.AUTHORIZATION, token);
+            }
         }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            Timber.e(e, "Failed fetching home page for key");
-        }
+        loadUrl(appHomeLink, headers);
     }
-    //</editor-fold>
 }

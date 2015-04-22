@@ -2,7 +2,6 @@ package com.tradehero.th.billing.googleplay.identifier;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
@@ -10,8 +9,8 @@ import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.identifier.BaseIABProductIdentiferFetcherRx;
 import com.tradehero.common.billing.identifier.ProductIdentifierListResult;
 import com.tradehero.th.billing.googleplay.THIABConstants;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import rx.Observable;
 
 public class THBaseIABProductIdentifierFetcherRx
@@ -25,10 +24,9 @@ public class THBaseIABProductIdentifierFetcherRx
     public THBaseIABProductIdentifierFetcherRx(
             int requestCode,
             @NonNull Context context,
-            @NonNull IABExceptionFactory iabExceptionFactory,
-            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
+            @NonNull IABExceptionFactory iabExceptionFactory)
     {
-        super(requestCode, context, iabExceptionFactory, billingServiceBinderObservable);
+        super(requestCode, context, iabExceptionFactory);
     }
     //</editor-fold>
 
@@ -53,22 +51,9 @@ public class THBaseIABProductIdentifierFetcherRx
         subsIABSKUs.add(new IABSKU(THIABConstants.ALERT_UNLIMITED));
 
         inAppIABSKUs.add(new IABSKU(THIABConstants.RESET_PORTFOLIO_0));
-        List<ProductIdentifierListResult<
-                IABSKUListKey,
-                IABSKU,
-                IABSKUList>> results = new ArrayList<>();
-        results.add(createResult(IABSKUListKey.getInApp(), inAppIABSKUs));
-        results.add(createResult(IABSKUListKey.getSubs(), subsIABSKUs));
-        return Observable.from(results);
-    }
-
-    @NonNull private ProductIdentifierListResult<
-            IABSKUListKey,
-            IABSKU,
-            IABSKUList> createResult(
-            @NonNull IABSKUListKey inApp,
-            @NonNull IABSKUList inAppIABSKUs)
-    {
-        return new ProductIdentifierListResult<>(getRequestCode(), inApp, inAppIABSKUs);
+        Map<IABSKUListKey, IABSKUList> mapped = new HashMap<>();
+        mapped.put(IABSKUListKey.getInApp(), inAppIABSKUs);
+        mapped.put(IABSKUListKey.getSubs(), subsIABSKUs);
+        return Observable.just(new ProductIdentifierListResult<>(getRequestCode(), mapped));
     }
 }

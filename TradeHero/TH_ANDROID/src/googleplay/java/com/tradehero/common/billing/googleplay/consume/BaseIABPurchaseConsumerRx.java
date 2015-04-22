@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.BaseIABServiceCaller;
-import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABOrderId;
 import com.tradehero.common.billing.googleplay.IABPurchase;
@@ -35,10 +34,9 @@ abstract public class BaseIABPurchaseConsumerRx<
             int requestCode,
             @NonNull IABPurchaseType purchase,
             @NonNull Context context,
-            @NonNull IABExceptionFactory iabExceptionFactory,
-            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
+            @NonNull IABExceptionFactory iabExceptionFactory)
     {
-        super(requestCode, context, iabExceptionFactory, billingServiceBinderObservable);
+        super(requestCode, context, iabExceptionFactory);
         this.purchase = purchase;
     }
     //</editor-fold>

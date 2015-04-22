@@ -45,7 +45,7 @@ public class SamsungItemListOperatorZip
                 {
                     @Override public Pair<ItemListQueryGroup, List<ItemVo>> call(ItemListQueryGroup t1, List<ItemVo> t2)
                     {
-                        return new Pair<ItemListQueryGroup, List<ItemVo>>(t1, t2);
+                        return new Pair<>(t1, t2);
                     }
                 });
     }

@@ -15,7 +15,6 @@ import com.tradehero.th.models.user.DTOProcessorLogout;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserLogin;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
-import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -36,7 +35,6 @@ import timber.log.Timber;
     @NonNull private final Context context;
     @NonNull private final StringPreference savedPushDeviceIdentifier;
     @NonNull private final Lazy<SystemStatusCache> systemStatusCache;
-    @NonNull private final Lazy<HomeContentCacheRx> homeContentCache;
 
     //<editor-fold desc="Constructors">
     @Inject public SessionServiceWrapper(
@@ -46,8 +44,7 @@ import timber.log.Timber;
             @NonNull DTOCacheUtilImpl dtoCacheUtil,
             @NonNull Context context,
             @NonNull @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier,
-            @NonNull Lazy<SystemStatusCache> systemStatusCache,
-            @NonNull Lazy<HomeContentCacheRx> homeContentCache)
+            @NonNull Lazy<SystemStatusCache> systemStatusCache)
     {
         this.currentUserId = currentUserId;
         this.sessionServiceRx = sessionServiceRx;
@@ -56,7 +53,6 @@ import timber.log.Timber;
         this.context = context;
         this.savedPushDeviceIdentifier = savedPushDeviceIdentifier;
         this.systemStatusCache = systemStatusCache;
-        this.homeContentCache = homeContentCache;
     }
     //</editor-fold>
 
@@ -81,7 +77,6 @@ import timber.log.Timber;
         return new DTOProcessorUserLogin(
                 systemStatusCache.get(),
                 userProfileCache,
-                homeContentCache.get(),
                 currentUserId,
                 dtoCacheUtil);
     }
@@ -153,7 +148,7 @@ import timber.log.Timber;
     @NonNull public Observable<UserProfileDTO> updateDeviceRx()
     {
         return sessionServiceRx.updateDevice(savedPushDeviceIdentifier.get())
-                .map(new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache.get()));
+                .map(new DTOProcessorUpdateUserProfile(userProfileCache));
     }
     //</editor-fold>
 

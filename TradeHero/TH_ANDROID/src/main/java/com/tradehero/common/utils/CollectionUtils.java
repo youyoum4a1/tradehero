@@ -12,7 +12,7 @@ import rx.functions.Func1;
 
 public class CollectionUtils
 {
-    @NonNull public static <T> List<T> filter(@NonNull Collection<T> target, @NonNull Predicate<T> predicate)
+    @NonNull public static <T> List<T> filter(@NonNull Iterable<T> target, @NonNull Predicate<T> predicate)
     {
         List<T> result = new ArrayList<>();
         for (T element: target)
@@ -38,7 +38,7 @@ public class CollectionUtils
         return c;
     }
 
-    public static <T> void apply(@NonNull Collection<T> collection, @NonNull Action1<T> action)
+    public static <T> void apply(@NonNull Iterable<T> collection, @NonNull Action1<T> action)
     {
         for (T element: collection)
         {
@@ -54,7 +54,7 @@ public class CollectionUtils
         }
     }
 
-    @Nullable public static <T> T first(@NonNull Collection<T> collection, @NonNull Predicate<T> predicate)
+    @Nullable public static <T> T first(@NonNull Iterable<T> collection, @NonNull Predicate<T> predicate)
     {
         for (T element: collection)
         {
@@ -66,7 +66,7 @@ public class CollectionUtils
         return null;
     }
 
-    public static <T> boolean contains(@NonNull Collection<T> collection, @NonNull Predicate<T> predicate)
+    public static <T> boolean contains(@NonNull Iterable<T> collection, @NonNull Predicate<T> predicate)
     {
         for (T element: collection)
         {
@@ -78,7 +78,7 @@ public class CollectionUtils
         return false;
     }
 
-    @NonNull public static <S, T> List<S> map(@NonNull List<T> collection, @NonNull Func1<T, S> mapper)
+    @NonNull public static <S, T> List<S> map(@NonNull Iterable<T> collection, @NonNull Func1<T, S> mapper)
     {
         List<S> created = new ArrayList<>();
         for (T element : collection)
@@ -88,7 +88,7 @@ public class CollectionUtils
         return created;
     }
 
-    public static <T> int count(@NonNull List<T> collection, @NonNull Predicate<T> predicate)
+    public static <T> int count(@NonNull Iterable<T> collection, @NonNull Predicate<T> predicate)
     {
         int count = 0;
         for (T element: collection)

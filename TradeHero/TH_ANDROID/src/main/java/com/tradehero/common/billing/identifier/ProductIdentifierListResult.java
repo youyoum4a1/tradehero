@@ -5,6 +5,8 @@ import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.BaseResult;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierListKey;
+import java.util.Collections;
+import java.util.Map;
 
 public class ProductIdentifierListResult<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -12,17 +14,14 @@ public class ProductIdentifierListResult<
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>>
     extends BaseResult
 {
-    @NonNull public final ProductIdentifierListKeyType type;
-    @NonNull public final ProductIdentifierListType productIdentifiers;
+    @NonNull public final Map<ProductIdentifierListKeyType, ProductIdentifierListType> mappedIds;
 
     //<editor-fold desc="Constructors">
     public ProductIdentifierListResult(int requestCode,
-            @NonNull ProductIdentifierListKeyType type,
-            @NonNull ProductIdentifierListType productIdentifiers)
+            @NonNull Map<ProductIdentifierListKeyType, ProductIdentifierListType> mappedIds)
     {
         super(requestCode);
-        this.type = type;
-        this.productIdentifiers = productIdentifiers;
+        this.mappedIds = Collections.unmodifiableMap(mappedIds);
     }
     //</editor-fold>
 }

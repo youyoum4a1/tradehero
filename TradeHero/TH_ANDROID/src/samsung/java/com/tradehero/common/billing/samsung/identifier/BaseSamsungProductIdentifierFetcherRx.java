@@ -75,18 +75,9 @@ abstract public class BaseSamsungProductIdentifierFetcherRx<
             }
             samsungSKUs.get(key).add(createSamsungSku(pair.first.groupId, itemVo.getItemId()));
         }
-        return Observable.from(samsungSKUs.entrySet())
-                .map(new Func1<Map.Entry<SamsungSKUListKeyType, SamsungSKUListType>, ProductIdentifierListResult<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType>>()
-                {
-                    @Override public ProductIdentifierListResult<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType> call(
-                            Map.Entry<SamsungSKUListKeyType, SamsungSKUListType> entry)
-                    {
-                        return new ProductIdentifierListResult<>(
-                                BaseSamsungProductIdentifierFetcherRx.this.getRequestCode(),
-                                entry.getKey(),
-                                entry.getValue());
-                    }
-                });
+        return Observable.just(new ProductIdentifierListResult<>(
+                BaseSamsungProductIdentifierFetcherRx.this.getRequestCode(),
+                samsungSKUs));
     }
 
     @NonNull abstract protected List<ItemListQueryGroup> getItemListQueryGroups();

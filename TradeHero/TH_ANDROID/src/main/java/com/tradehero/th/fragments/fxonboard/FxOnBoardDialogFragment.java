@@ -26,6 +26,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.education.VideoAdapter;
 import com.tradehero.th.fragments.education.VideoDTOUtil;
+import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.VideoServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -173,6 +174,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
     {
         super.onDismiss(dialog);
         userActionTypeBehaviorSubject.onCompleted();
+        TrendingMainFragment.fxDialogShowed = false;
     }
 
     @NonNull public Observable<UserAction> getUserActionTypeObservable()

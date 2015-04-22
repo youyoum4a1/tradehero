@@ -47,29 +47,4 @@ abstract public class BaseIABPurchaseConsumerHolderRx<
             IABSKUType,
             IABOrderIdType,
             IABPurchaseType> createPurchaseConsumer(int requestCode, @NonNull IABPurchaseType purchase);
-
-    @Override public void onDestroy()
-    {
-        for (IABPurchaseConsumerRx<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType> actor : actors.values())
-        {
-            actor.onDestroy();
-        }
-        super.onDestroy();
-    }
-
-    @Override public void forgetRequestCode(int requestCode)
-    {
-        IABPurchaseConsumerRx<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType> actor = actors.get(requestCode);
-        if (actor != null)
-        {
-            actor.onDestroy();
-        }
-        super.forgetRequestCode(requestCode);
-    }
 }

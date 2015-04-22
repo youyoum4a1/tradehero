@@ -3,7 +3,6 @@ package com.tradehero.th.models.user;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -18,13 +17,12 @@ abstract public class AbstractDTOProcessorFollowUser extends DTOProcessorUpdateU
     //<editor-fold desc="Constructors">
     public AbstractDTOProcessorFollowUser(
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull HomeContentCacheRx homeContentCache,
             @NonNull HeroListCacheRx heroListCache,
             @NonNull UserMessagingRelationshipCacheRx userMessagingRelationshipCache,
             @NonNull UserBaseKey followerId,
             @NonNull UserBaseKey heroId)
     {
-        super(userProfileCache, homeContentCache);
+        super(userProfileCache);
         this.heroListCache = heroListCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.followerId = followerId;

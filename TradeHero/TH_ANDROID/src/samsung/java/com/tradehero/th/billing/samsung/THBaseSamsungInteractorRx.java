@@ -3,7 +3,6 @@ package com.tradehero.th.billing.samsung;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.util.Pair;
-import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.common.billing.samsung.SamsungConstants;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;
@@ -83,7 +82,7 @@ public class THBaseSamsungInteractorRx
     }
 
     @NonNull @Override public Observable<THSamsungPurchaseOrder> createPurchaseOrder(
-            @NonNull final ProductInventoryResult<SamsungSKU, THSamsungProductDetail> inventoryResult)
+            @NonNull final THSamsungProductDetail detail)
     {
         return getDefaultPortfolio()
                 .map(new Func1<PortfolioCompactDTO, THSamsungPurchaseOrder>()
@@ -91,15 +90,14 @@ public class THBaseSamsungInteractorRx
                     @Override public THSamsungPurchaseOrder call(PortfolioCompactDTO dto)
                     {
                         return new THSamsungPurchaseOrder(
-                                inventoryResult.id.groupId,
-                                inventoryResult.id.itemId,
+                                detail.getProductIdentifier(),
                                 dto.getOwnedPortfolioId());
                     }
                 });
     }
 
     @NonNull @Override public Observable<THSamsungPurchaseOrder> createPurchaseOrder(
-            @NonNull final ProductInventoryResult<SamsungSKU, THSamsungProductDetail> inventoryResult,
+            @NonNull final THSamsungProductDetail detail,
             @NonNull final UserBaseKey heroId)
     {
         return getDefaultPortfolio()
@@ -108,8 +106,8 @@ public class THBaseSamsungInteractorRx
                     @Override public THSamsungPurchaseOrder call(PortfolioCompactDTO dto)
                     {
                         return new THSamsungPurchaseOrder(
-                                inventoryResult.id.groupId,
-                                inventoryResult.id.itemId,
+                                detail.getProductIdentifier(),
+                                1,
                                 dto.getOwnedPortfolioId(),
                                 heroId);
                     }

@@ -8,7 +8,6 @@ import com.tradehero.th.api.users.SuggestHeroesListType;
 import com.tradehero.th.api.users.SuggestHeroesListTypeNew;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
-import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
@@ -33,8 +32,7 @@ public class UserServiceWrapperStub extends UserServiceWrapper
             @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
             @NonNull Lazy<HeroListCacheRx> heroListCache,
             @NonNull Lazy<ProviderListCacheRx> providerListCache,
-            @NonNull Provider<UserFormDTO.Builder2> userFormBuilderProvider,
-            @NonNull Lazy<HomeContentCacheRx> homeContentCache)
+            @NonNull Provider<UserFormDTO.Builder2> userFormBuilderProvider)
     {
         super(userServiceRx,
                 currentUserId,
@@ -44,8 +42,7 @@ public class UserServiceWrapperStub extends UserServiceWrapper
                 userMessagingRelationshipCache,
                 heroListCache,
                 providerListCache,
-                userFormBuilderProvider,
-                homeContentCache);
+                userFormBuilderProvider);
     }
     //</editor-fold>
 

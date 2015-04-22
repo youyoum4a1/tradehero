@@ -14,6 +14,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
@@ -35,11 +36,7 @@ import timber.log.Timber;
 public class SecurityItemView extends RelativeLayout
         implements DTOView<SecurityCompactDTO>
 {
-    @Inject protected Picasso mPicasso;
-
     @InjectView(R.id.stock_logo) ImageView stockLogo;
-    @InjectView(R.id.icon_watchlist) @Optional ImageView inWatchListIcon;
-    @InjectView(R.id.icon_alert) @Optional ImageView inAlertListIcon;
     @InjectView(R.id.ic_market_close) @Optional ImageView marketCloseIcon;
     @InjectView(R.id.stock_name) TextView stockName;
     @InjectView(R.id.exchange_symbol) TextView exchangeSymbol;
@@ -52,7 +49,6 @@ public class SecurityItemView extends RelativeLayout
     protected SecurityCompactDTO securityCompactDTO;
     protected Map<SecurityId, AlertCompactDTO> alerts;
     protected WatchlistPositionDTOList watchlist;
-    private Target myLogoImageTarget;
 
     //<editor-fold desc="Constructors">
     public SecurityItemView(Context context)
@@ -75,7 +71,6 @@ public class SecurityItemView extends RelativeLayout
     {
         super.onFinishInflate();
         init();
-        myLogoImageTarget = createLogoImageTarget();
     }
 
     protected void init()
@@ -88,27 +83,13 @@ public class SecurityItemView extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
-        if (getMyLogoImageTarget() == null)
-        {
-            myLogoImageTarget = createLogoImageTarget();
-        }
-        if (mPicasso != null)
-        {
-            loadImage();
-        }
+        loadImage();
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        mPicasso.cancelRequest(myLogoImageTarget);
+        clearHandler();
 
-        myLogoImageTarget = null;
-
-        if (mPicasso != null)
-        {
-            clearHandler();
-        }
         if (stockLogo != null)
         {
             stockLogo.setImageDrawable(null);
@@ -266,37 +247,6 @@ public class SecurityItemView extends RelativeLayout
                             ? R.drawable.icn_market_open
                             : R.drawable.icn_market_closed);
         }
-        if (inWatchListIcon != null)
-        {
-            if (watchlist == null || securityCompactDTO == null)
-            {
-                inWatchListIcon.setVisibility(INVISIBLE);
-            }
-            else
-            {
-                inWatchListIcon.setVisibility(VISIBLE);
-                inWatchListIcon.setImageResource(
-                        watchlist.contains(securityCompactDTO.getSecurityId())
-                                ? R.drawable.icn_tile_favorite_on
-                                : R.drawable.icn_tile_favorite_off);
-            }
-        }
-        if (inAlertListIcon != null)
-        {
-            if (alerts == null || securityCompactDTO == null)
-            {
-                inAlertListIcon.setVisibility(View.INVISIBLE);
-            }
-            else
-            {
-                inAlertListIcon.setVisibility(VISIBLE);
-                AlertCompactDTO alert = alerts.get(securityCompactDTO.getSecurityId());
-                inAlertListIcon.setImageResource(
-                        (alert != null && alert.active)
-                        ? R.drawable.icn_tile_alert_on
-                        : R.drawable.icn_tile_alert_off);
-            }
-        }
     }
 
     public void displaySecurityType()
@@ -368,18 +318,13 @@ public class SecurityItemView extends RelativeLayout
         }
     }
 
-    public Target getMyLogoImageTarget()
-    {
-        return this.myLogoImageTarget;
-    }
-
     public void loadImage()
     {
         resetImage();
 
         if (isMyUrlOk())
         {
-            picassoSetupLogoParam(mPicasso.load(securityCompactDTO.imageBlobUrl)).into(getMyLogoImageTarget());
+            ImageLoader.getInstance().displayImage(securityCompactDTO.imageBlobUrl, stockLogo);
         }
         else
         {
@@ -394,8 +339,7 @@ public class SecurityItemView extends RelativeLayout
             try
             {
                 Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
-
-                mPicasso.load(exchange.logoId).into(getMyLogoImageTarget());
+                stockLogo.setImageResource(exchange.logoId);
             } catch (IllegalArgumentException e)
             {
                 Timber.e("Unknown Exchange %s", securityCompactDTO.exchange, e);
@@ -414,41 +358,6 @@ public class SecurityItemView extends RelativeLayout
         {
             stockLogo.setVisibility(View.VISIBLE);
             stockLogo.setImageResource(R.drawable.default_image);
-        }
-    }
-
-    private RequestCreator picassoSetupLogoParam(@NonNull RequestCreator creator)
-    {
-        return creator
-                .resizeDimen(R.dimen.security_logo_width, R.dimen.security_logo_height)
-                .centerInside();
-    }
-
-    protected Target createLogoImageTarget()
-    {
-        return new SecurityItemViewExchangeImageTarget();
-    }
-
-    protected class SecurityItemViewExchangeImageTarget
-            implements Target
-    {
-
-        @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from)
-        {
-            if (stockLogo != null)
-            {
-                stockLogo.setImageBitmap(bitmap);
-            }
-        }
-
-        @Override public void onBitmapFailed(Drawable errorDrawable)
-        {
-            loadDefaultImage();
-        }
-
-        @Override public void onPrepareLoad(Drawable placeHolderDrawable)
-        {
-
         }
     }
 }

@@ -142,19 +142,19 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         switch (type)
         {
-            case 0:
+            case 1:
                 trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getResources());
                 break;
-            case 1:
+            case 2:
                 trendingFilterTypeDTO = new TrendingFilterTypePriceDTO(getResources());
                 break;
-            case 2:
+            case 3:
                 trendingFilterTypeDTO = new TrendingFilterTypeVolumeDTO(getResources());
                 break;
-            case 3:
+            case 4:
                 trendingFilterTypeDTO = new TrendingFilterTypeGenericDTO(getResources());
                 break;
-            case 4:
+            default:
                 trendingFilterTypeDTO = new TrendingFilterTypeGenericDTO(getResources());
                 break;
         }

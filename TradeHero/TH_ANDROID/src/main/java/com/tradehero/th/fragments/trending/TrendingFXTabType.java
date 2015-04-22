@@ -9,7 +9,7 @@ import com.tradehero.th.fragments.position.FXMainPositionListFragment;
 enum TrendingFXTabType
 {
     Portfolio(R.string.portfolio, FXMainPositionListFragment.class),
-    FX(R.string.fx, TrendingFXFragment.class)
+    FX(R.string.currencies, TrendingFXFragment.class)
     ;
 
     @StringRes public final int titleStringResId;

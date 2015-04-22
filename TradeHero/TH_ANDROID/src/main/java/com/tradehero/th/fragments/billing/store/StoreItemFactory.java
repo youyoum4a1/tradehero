@@ -66,10 +66,7 @@ public class StoreItemFactory
                 R.drawable.icn_reset_portfolio,
                 ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO));
 
-        created.add(new StoreItemPromptPurchaseDTO(
-                R.string.store_buy_restore_purchases,
-                R.drawable.settings_recover_purchase,
-                ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS));
+        created.add(new StoreItemRestoreDTO());
 
 //        created.add(new StoreItemTitleDTO(R.string.store_header_manage_purchases));
 //        created.add(new StoreItemHasFurtherDTO(

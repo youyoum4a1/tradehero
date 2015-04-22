@@ -96,8 +96,14 @@
   <color name="yellow_dark">@color/orange</color>
 
   <color name="lb_header_bg">#C9F1FF</color>
+
   <color name="lb_item_even">@android:color/white</color>
+  <color name="lb_item_even_focused">@color/grey</color>
+  <color name="lb_item_even_pressed">@color/darker_grey</color>
+
   <color name="lb_item_odd">#EFEFEF</color>
+  <color name="lb_item_odd_focused">@color/grey</color>
+  <color name="lb_item_odd_pressed">@color/darker_grey</color>
 
   <color name="news_seeking_alpha">#4E0A00</color>
   <color name="news_motley_fool">#89C8FF</color>

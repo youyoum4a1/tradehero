@@ -12,8 +12,10 @@ import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.rx.ItemListQueryGroup;
 import com.tradehero.common.billing.samsung.rx.SamsungItemListOperatorZip;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import rx.Observable;
 import rx.functions.Func1;
@@ -56,19 +58,18 @@ abstract public class BaseSamsungInventoryFetcherRx<
     {
         return new SamsungItemListOperatorZip(context, mode, getItemListQueryGroups())
                 .getItems()
-                .flatMap(new Func1<Pair<ItemListQueryGroup, List<ItemVo>>, Observable<? extends SamsungProductDetailType>>()
+                .flatMap(new Func1<Pair<ItemListQueryGroup, List<ItemVo>>, Observable<? extends Map<SamsungSKUType, SamsungProductDetailType>>>()
                 {
-                    @Override public Observable<? extends SamsungProductDetailType> call(Pair<ItemListQueryGroup, List<ItemVo>> pair)
+                    @Override public Observable<? extends Map<SamsungSKUType, SamsungProductDetailType>> call(Pair<ItemListQueryGroup, List<ItemVo>> pair)
                     {
                         return BaseSamsungInventoryFetcherRx.this.createDetail(pair);
                     }
                 })
-                .map(new Func1<SamsungProductDetailType, ProductInventoryResult<SamsungSKUType, SamsungProductDetailType>>()
+                .map(new Func1<Map<SamsungSKUType, SamsungProductDetailType>, ProductInventoryResult<SamsungSKUType, SamsungProductDetailType>>()
                 {
-                    @Override public ProductInventoryResult<SamsungSKUType, SamsungProductDetailType> call(SamsungProductDetailType detail)
+                    @Override public ProductInventoryResult<SamsungSKUType, SamsungProductDetailType> call(Map<SamsungSKUType, SamsungProductDetailType> detail)
                     {
-                        return new ProductInventoryResult<>(BaseSamsungInventoryFetcherRx.this.getRequestCode(), detail.getProductIdentifier(),
-                                detail);
+                        return new ProductInventoryResult<>(BaseSamsungInventoryFetcherRx.this.getRequestCode(), detail);
                     }
                 });
     }
@@ -85,18 +86,21 @@ abstract public class BaseSamsungInventoryFetcherRx<
 
     @NonNull abstract protected ItemListQueryGroup createItemListQueryGroup(@NonNull SamsungSKUType sku);
 
-    @NonNull protected Observable<SamsungProductDetailType> createDetail(@NonNull final Pair<ItemListQueryGroup, List<ItemVo>> pair)
+    @NonNull protected Observable<Map<SamsungSKUType, SamsungProductDetailType>> createDetail(
+            @NonNull final Pair<ItemListQueryGroup, List<ItemVo>> pair)
     {
-        return Observable.from(pair.second)
-                .map(new Func1<ItemVo, SamsungProductDetailType>()
-                {
-                    @Override public SamsungProductDetailType call(ItemVo itemVo)
-                    {
-                        return BaseSamsungInventoryFetcherRx.this.createSamsungProductDetail(
-                                new SamsungItemGroup(pair.first.groupId),
-                                itemVo);
-                    }
-                });
+        Map<SamsungSKUType, SamsungProductDetailType> created = new HashMap<>();
+        SamsungProductDetailType detail;
+        for (ItemVo itemVo : pair.second)
+        {
+            detail = createSamsungProductDetail(
+                    new SamsungItemGroup(pair.first.groupId),
+                    itemVo);
+            created.put(
+                    detail.getProductIdentifier(),
+                    detail);
+        }
+        return Observable.just(created);
     }
 
     @NonNull abstract protected SamsungProductDetailType createSamsungProductDetail(

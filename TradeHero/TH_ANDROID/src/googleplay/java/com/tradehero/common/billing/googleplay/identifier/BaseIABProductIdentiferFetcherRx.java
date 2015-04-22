@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
 import com.tradehero.common.billing.googleplay.BaseIABServiceCaller;
-import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
@@ -23,10 +22,9 @@ abstract public class BaseIABProductIdentiferFetcherRx<
     public BaseIABProductIdentiferFetcherRx(
             int requestCode,
             @NonNull Context context,
-            @NonNull IABExceptionFactory iabExceptionFactory,
-            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
+            @NonNull IABExceptionFactory iabExceptionFactory)
     {
-        super(requestCode, context, iabExceptionFactory, billingServiceBinderObservable);
+        super(requestCode, context, iabExceptionFactory);
     }
     //</editor-fold>
 }

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -184,58 +185,33 @@ abstract public class THBillingAlertDialogRxUtil<
                         return domainInformer.getDetailsOfDomain(requestCode, domain);
                     }
                 })
-                .toList()
                 .flatMap(
-                        new Func1<List<ProductInventoryResult<ProductIdentifierType, THProductDetailType>>, Observable<? extends THProductDetailType>>()
+                        new Func1<ProductInventoryResult<ProductIdentifierType, THProductDetailType>, Observable<? extends THProductDetailType>>()
                         {
                             @Override public Observable<? extends THProductDetailType> call(
-                                    List<ProductInventoryResult<ProductIdentifierType, THProductDetailType>> productResults)
+                                    ProductInventoryResult<ProductIdentifierType, THProductDetailType> productResults)
                             {
-                                List<THProductDetailType> productDetails = new ArrayList<THProductDetailType>();
-                                for (ProductInventoryResult<ProductIdentifierType, THProductDetailType> result : productResults)
+                                List<THProductDetailType> productDetails = new ArrayList<>();
+                                for (Map.Entry<ProductIdentifierType, THProductDetailType> result : productResults.mapped.entrySet())
                                 {
-                                    productDetails.add(result.detail);
+                                    productDetails.add(result.getValue());
                                 }
                                 return popBuyDialogAndHandle(activityContext, domain, productDetails);
                             }
                         });
     }
 
-    @NonNull public Observable<ProductInventoryResult<ProductIdentifierType, THProductDetailType>> popBuyDialogAndHandle(
+    @NonNull public Observable<THProductDetailType> popBuyDialogAndHandle(
             @NonNull Activity activityContext,
             @NonNull ProductIdentifierDomain domain,
-            @NonNull final List<ProductInventoryResult<ProductIdentifierType, THProductDetailType>> productDetails,
+            @NonNull final ProductInventoryResult<ProductIdentifierType, THProductDetailType> productDetails,
             @Nullable ProductInventoryResult<ProductIdentifierType, THProductDetailType> typeQualifier)
     {
         return popBuyDialog(
                 activityContext,
                 domain,
-                CollectionUtils.map(
-                        productDetails,
-                        new Func1<ProductInventoryResult<ProductIdentifierType, THProductDetailType>, THProductDetailType>()
-                        {
-                            @Override public THProductDetailType call(
-                                    ProductInventoryResult<ProductIdentifierType, THProductDetailType> result)
-                            {
-                                return result.detail;
-                            }
-                        }))
-                .map(new PairGetSecond<DialogInterface, THProductDetailType>())
-                .flatMap(new Func1<THProductDetailType, Observable<? extends ProductInventoryResult<ProductIdentifierType, THProductDetailType>>>()
-                {
-                    @Override public Observable<? extends ProductInventoryResult<ProductIdentifierType, THProductDetailType>> call(
-                            THProductDetailType detail)
-                    {
-                        for (ProductInventoryResult<ProductIdentifierType, THProductDetailType> candidate : productDetails)
-                        {
-                            if (candidate.id.equals(detail.getProductIdentifier()))
-                            {
-                                return Observable.just(candidate);
-                            }
-                        }
-                        return Observable.error(new IllegalStateException("Should have found result for " + detail.getProductIdentifier()));
-                    }
-                });
+                new ArrayList<>(productDetails.mapped.values()))
+                .map(new PairGetSecond<DialogInterface, THProductDetailType>());
     }
 
     @NonNull public Observable<THProductDetailType> popBuyDialogAndHandle(

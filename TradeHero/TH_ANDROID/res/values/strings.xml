@@ -294,6 +294,7 @@
   <string name="favorites">Favorites</string>
   <string name="portfolio">Portfolio</string>
   <string name="fx">FX</string>
+  <string name="currencies">Currencies</string>
 
   <string name="warrants_all">All Warrants</string>
   <string name="fx_onboard_header_title">Virtual Forex On TradeHero</string>

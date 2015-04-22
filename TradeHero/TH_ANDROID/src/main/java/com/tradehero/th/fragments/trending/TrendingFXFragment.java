@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.trending;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import butterknife.InjectView;
-import butterknife.OnClick;
-import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -33,9 +30,7 @@ import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -109,13 +104,6 @@ public class TrendingFXFragment extends TrendingBaseFragment
         return new FXSecurityPagedViewDTOAdapter(getActivity(), R.layout.trending_fx_item);
     }
 
-    @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
-    @OnClick(R.id.btn_enroll)
-    protected void handleBtnEnrollClicked(View view)
-    {
-        checkFXPortfolio();
-    }
-
     private void waitForEnrolled()
     {
         unsubscribe(waitForEnrolledSubscription);
@@ -142,58 +130,6 @@ public class TrendingFXFragment extends TrendingBaseFragment
                             }
                         },
                         new EmptyAction1<Throwable>());
-    }
-
-    private void checkFXPortfolio()
-    {
-        unsubscribe(checkEnrollmentSubscription);
-        checkEnrollmentSubscription = AppObservable.bindFragment(
-                this,
-                userProfileCache.get().get(currentUserId.toUserBaseKey())
-                        .take(1)
-                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<UserProfileDTO>()
-                        {
-                            @Override public void call(UserProfileDTO profileDTO)
-                            {
-                                TrendingFXFragment.this.handleUserProfileForOnBoardReceived(profileDTO);
-                            }
-                        },
-                        new TimberOnErrorAction(""));
-    }
-
-    protected void handleUserProfileForOnBoardReceived(@NonNull UserProfileDTO userProfileDTO)
-    {
-        if (userProfileDTO.fxPortfolio == null && onBoardDialogFragment == null)
-        {
-            onBoardDialogFragment = FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
-            onBoardDialogFragment.getDismissedObservable()
-                    .subscribe(
-                            new Action1<DialogInterface>()
-                            {
-                                @Override public void call(DialogInterface dialog)
-                                {
-                                    onBoardDialogFragment = null;
-                                }
-                            },
-                            new ToastOnErrorAction());
-            onBoardDialogFragment.getUserActionTypeObservable()
-                    .subscribe(
-                            new Action1<FxOnBoardDialogFragment.UserAction>()
-                            {
-                                @Override public void call(FxOnBoardDialogFragment.UserAction action)
-                                {
-                                    if (action.type.equals(FxOnBoardDialogFragment.UserActionType.CANCELLED))
-                                    {
-                                        trendingTabTypeBehaviorSubject.onNext(TrendingTabType.STOCK);
-                                    }
-                                }
-                            },
-                            new TimberOnErrorAction("")
-                    );
-        }
     }
 
     private void fetchFXPrice()
@@ -268,15 +204,6 @@ public class TrendingFXFragment extends TrendingBaseFragment
         }
 
         navigator.get().pushFragment(FXMainFragment.class, args);
-    }
-
-    @Override public void setUserVisibleHint(boolean isVisibleToUser)
-    {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser)
-        {
-            checkFXPortfolio();
-        }
     }
 
     @Override protected void populateArgumentForSearch(@NonNull Bundle args)

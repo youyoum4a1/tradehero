@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import com.tradehero.common.billing.googleplay.BaseIABServiceCaller;
-import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABOrderId;
 import com.tradehero.common.billing.googleplay.IABPurchase;
@@ -45,10 +44,9 @@ abstract public class BaseIABPurchaseFetcherRx<
     public BaseIABPurchaseFetcherRx(
             int requestCode,
             @NonNull Context context,
-            @NonNull IABExceptionFactory iabExceptionFactory,
-            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
+            @NonNull IABExceptionFactory iabExceptionFactory)
     {
-        super(requestCode, context, iabExceptionFactory, billingServiceBinderObservable);
+        super(requestCode, context, iabExceptionFactory);
         purchases = new ArrayList<>();
     }
     //</editor-fold>
