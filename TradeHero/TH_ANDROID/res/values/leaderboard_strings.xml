@@ -78,7 +78,7 @@
 
   <string name="leaderboard_ranks_needed">Move up by %s ranks to win!</string>
 
-  <string name="leaderboard_community_most_skilled">Most Skilled</string>
+  <string name="leaderboard_community_most_skilled">All Time</string>
 
   <string name="leaderboard_type_stocks">Stocks Leaders</string>
   <string name="leaderboard_type_fx">FX Leaders</string>
