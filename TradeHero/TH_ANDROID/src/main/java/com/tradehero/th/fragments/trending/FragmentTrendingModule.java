@@ -12,9 +12,6 @@ import dagger.Module;
                 // Extra Tile needs to know about userProfile data for survey tile element
                 ProviderTileView.class,
                 SurveyTileView.class,
-                ResetPortfolioTileView.class,
-                EarnCreditTileView.class,
-                ExtraCashTileView.class,
         },
         library = true,
         complete = false
