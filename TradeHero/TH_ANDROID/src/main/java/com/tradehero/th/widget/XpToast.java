@@ -221,6 +221,12 @@ public class XpToast extends RelativeLayout
     public void hide()
     {
         cleanUp();
+        hideAndReleaseFlag();
+
+        /*
+        Seems can fix the bug:
+        https://www.pivotaltracker.com/n/projects/559137/stories/91476702
+        
         Animation a = AnimationUtils.loadAnimation(getContext(), R.anim.zoom_out);
         a.setAnimationListener(new Animation.AnimationListener()
         {
@@ -239,6 +245,8 @@ public class XpToast extends RelativeLayout
         });
 
         startAnimation(a);
+        */
+
     }
 
     private void hideAndReleaseFlag()
