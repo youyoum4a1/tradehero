@@ -17,8 +17,7 @@ import dagger.Module;
                         CompetitionZonePortfolioView.class,
                         ProviderVideoListFragment.class,
                         ProviderVideoListItem.class,
-                        ProviderSecurityListFragment.class,
-                        CompetitionWebViewFragment.class
+                        ProviderSecurityListFragment.class
                 },
         complete = false,
         library = true

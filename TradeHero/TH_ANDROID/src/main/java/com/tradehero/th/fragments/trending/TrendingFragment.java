@@ -35,11 +35,6 @@ import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.fragments.web.BaseWebViewFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.models.intent.THIntent;
-import com.tradehero.th.models.intent.THIntentPassedListener;
-import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.models.time.AppTiming;
@@ -85,8 +80,6 @@ public class TrendingFragment extends SecurityListFragment
 
     private ExtraTileAdapter wrapperAdapter;
     private DTOCacheNew.Listener<ProviderListKey, ProviderDTOList> providerListCallback;
-    private BaseWebViewFragment webFragment;
-    private THIntentPassedListener thIntentPassedListener;
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
     private Runnable handleCompetitionRunnable;
 
@@ -117,8 +110,6 @@ public class TrendingFragment extends SecurityListFragment
             this.filterSelectorView.apply(this.trendingFilterTypeDTO);
             this.filterSelectorView.setChangedListener(createTrendingFilterChangedListener());
         }
-
-        thIntentPassedListener = createCompetitionTHIntentPassedListener();
         fetchExchangeList();
     }
 
@@ -183,7 +174,6 @@ public class TrendingFragment extends SecurityListFragment
         handleCompetitionRunnable = null;
         exchangeListTypeCacheListener = null;
         userProfileCacheListener = null;
-        thIntentPassedListener = null;
         providerListCallback = null;
         super.onDestroy();
     }
@@ -369,13 +359,6 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleSurveyItemOnClick()
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-        if (userProfileDTO != null && userProfileDTO.activeSurveyURL != null)
-        {
-            Bundle bundle = new Bundle();
-            WebViewFragment.putUrl(bundle, userProfileDTO.activeSurveyURL);
-            getDashboardNavigator().pushFragment(WebViewFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM, null);
-        }
     }
 
     private void handleResetPortfolioItemOnClick()
@@ -564,34 +547,4 @@ public class TrendingFragment extends SecurityListFragment
     }
     //</editor-fold>
 
-    //<editor-fold desc="Intent Listener">
-    protected THIntentPassedListener createCompetitionTHIntentPassedListener()
-    {
-        return new CompetitionTHIntentPassedListener();
-    }
-
-    protected class CompetitionTHIntentPassedListener implements THIntentPassedListener
-    {
-        @Override public void onIntentPassed(THIntent thIntent)
-        {
-            if (thIntent instanceof ProviderPageIntent)
-            {
-                Timber.d("Intent is ProviderPageIntent");
-                if (webFragment != null)
-                {
-                    Timber.d("Passing on %s", ((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
-                    webFragment.loadUrl(((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
-                }
-                else
-                {
-                    Timber.d("WebFragment is null");
-                }
-            }
-            else
-            {
-                Timber.w("Unhandled intent %s", thIntent);
-            }
-        }
-    }
-    //</editor-fold>
 }

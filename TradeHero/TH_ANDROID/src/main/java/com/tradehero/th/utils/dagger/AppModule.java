@@ -31,7 +31,6 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.authentication.PasswordResetFragment;
-import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
 import com.tradehero.th.fragments.discussion.*;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
@@ -166,8 +165,6 @@ import java.util.Locale;
                         PeopleSearchFragment.class,
 
                         WebViewFragment.class,
-
-                        CompetitionWebViewFragment.class,
 
                         WatchlistEditFragment.class,
                         UserWatchlistPositionCache.class,

@@ -15,7 +15,6 @@ import javax.inject.Singleton;
         injects =
                 {
                         com.tradehero.th.activities.DashboardActivity.class,
-                        com.tradehero.th.fragments.web.THWebViewClient.class,
                 },
         complete = false,
         library = true

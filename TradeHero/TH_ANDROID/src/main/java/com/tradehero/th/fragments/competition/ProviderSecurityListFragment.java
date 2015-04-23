@@ -19,9 +19,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
-import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
-import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.utils.DeviceUtil;
 import org.jetbrains.annotations.NotNull;
@@ -41,9 +39,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     @Inject SecurityItemViewAdapterFactory securityItemViewAdapterFactory;
 
     private DTOCacheNew.Listener<ProviderId, ProviderDTO> providerCacheListener;
-
-    private THIntentPassedListener webViewTHIntentPassedListener;
-    private BaseWebViewFragment webViewFragment;
 
     public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
     {
@@ -67,7 +62,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             this.providerId = getProviderId(getArguments());
         }
         this.providerCacheListener = createProviderCacheListener();
-        this.webViewTHIntentPassedListener = new ProviderSecurityListWebViewTHIntentPassedListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -87,12 +81,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         super.onResume();
         forceInitialLoad();
-        // We came back into view so we have to forget the web fragment
-        if (this.webViewFragment != null)
-        {
-            this.webViewFragment.setThIntentPassedListener(null);
-        }
-        this.webViewFragment = null;
     }
 
     @Override public void onStop()
@@ -110,7 +98,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     @Override public void onDestroy()
     {
         this.providerCacheListener = null;
-        this.webViewTHIntentPassedListener = null;
         super.onDestroy();
     }
 
@@ -223,39 +210,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
-        }
-    }
-
-    private class ProviderSecurityListWebViewTHIntentPassedListener extends CompetitionWebFragmentTHIntentPassedListener
-    {
-        public ProviderSecurityListWebViewTHIntentPassedListener()
-        {
-            super();
-        }
-
-        @Override protected BaseWebViewFragment getApplicableWebViewFragment()
-        {
-            return webViewFragment;
-        }
-
-        @Override protected OwnedPortfolioId getApplicablePortfolioId()
-        {
-            return null;
-        }
-
-        @Override protected ProviderId getProviderId()
-        {
-            return providerId;
-        }
-
-        @Override protected Navigator getNavigator()
-        {
-            return ProviderSecurityListFragment.this.getDashboardNavigator();
-        }
-
-        @Override protected Class<?> getClassToPop()
-        {
-            return ProviderSecurityListFragment.class;
         }
     }
 }
