@@ -13,6 +13,8 @@ import com.tradehero.common.billing.amazon.exception.AmazonPurchaseFailedExcepti
 import com.tradehero.common.billing.amazon.exception.AmazonPurchaseUnsupportedException;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.billing.BaseBillingUtils;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
 import com.tradehero.th.fragments.billing.THAmazonSKUDetailAdapter;
@@ -40,18 +42,15 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         implements AmazonAlertDialogRxUtil
 {
     @NonNull protected final THAmazonPurchaseCacheRx thAmazonPurchaseCache;
-    @NonNull protected final AmazonStoreUtils amazonStoreUtils;
 
     //<editor-fold desc="Constructors">
     @Inject public THAmazonAlertDialogRxUtil(
+            @NonNull CurrentUserId currentUserId,
             @NonNull Analytics analytics,
-            @NonNull VersionUtils versionUtils,
-            @NonNull THAmazonPurchaseCacheRx thAmazonPurchaseCache,
-            @NonNull AmazonStoreUtils amazonStoreUtils)
+            @NonNull THAmazonPurchaseCacheRx thAmazonPurchaseCache)
     {
-        super(analytics, versionUtils);
+        super(currentUserId, analytics);
         this.thAmazonPurchaseCache = thAmazonPurchaseCache;
-        this.amazonStoreUtils = amazonStoreUtils;
     }
     //</editor-fold>
 
@@ -257,7 +256,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     public void sendSupportEmailBillingSandbox(final Context context)
     {
         Intent emailIntent = VersionUtils.getSupportEmailIntent(
-                versionUtils.getSupportEmailTraceParameters(context, true));
+                VersionUtils.getSupportEmailTraceParameters(context, currentUserId, true));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "My Amazon Store in-app purchases are in sandbox mode");
         ActivityUtil.sendSupportEmail(context, emailIntent);
     }
@@ -266,7 +265,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     public void sendSupportEmailRestoreFailed(final Context context, Exception exception)
     {
         context.startActivity(Intent.createChooser(
-                amazonStoreUtils.getSupportPurchaseRestoreEmailIntent(context, exception),
+                BaseBillingUtils.getSupportPurchaseRestoreEmailIntent(context, currentUserId, exception),
                 context.getString(R.string.iap_send_support_email_chooser_title)));
     }
 }

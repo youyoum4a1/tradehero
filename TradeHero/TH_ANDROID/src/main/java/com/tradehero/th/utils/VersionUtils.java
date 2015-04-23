@@ -12,27 +12,17 @@ import android.view.Display;
 import com.tradehero.th.api.users.CurrentUserId;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 
 public class VersionUtils
 {
-    @Inject public static CurrentUserId currentUserId;
-
-    //<editor-fold desc="Constructors">
-    @Inject public VersionUtils(@NonNull CurrentUserId currentUserId)
+    @NonNull public static Intent getSupportEmailIntent(@NonNull Context context, @NonNull CurrentUserId currentUserId)
     {
-        this.currentUserId = currentUserId;
-    }
-    //</editor-fold>
-
-    @NonNull public static Intent getSupportEmailIntent(@NonNull Context context)
-    {
-        return getSupportEmailIntent(context, false);
+        return getSupportEmailIntent(context, currentUserId, false);
     }
 
-    @NonNull public static Intent getSupportEmailIntent(@NonNull Context context, boolean longInfo)
+    @NonNull public static Intent getSupportEmailIntent(@NonNull Context context, @NonNull CurrentUserId currentUserId, boolean longInfo)
     {
-        return getSupportEmailIntent(getSupportEmailTraceParameters(context, longInfo));
+        return getSupportEmailIntent(getSupportEmailTraceParameters(context, currentUserId, longInfo));
     }
 
     @NonNull public static Intent getSupportEmailIntent(@NonNull List<String> infoStrings)
@@ -48,7 +38,10 @@ public class VersionUtils
         return intent;
     }
 
-    @NonNull public static List<String> getSupportEmailTraceParameters(@NonNull Context context, boolean longInfo)
+    @NonNull public static List<String> getSupportEmailTraceParameters(
+            @NonNull Context context,
+            @NonNull CurrentUserId currentUserId,
+            boolean longInfo)
     {
         List<String> parameters = new ArrayList<>();
         parameters.add("TradeHero: " + getAppVersion(context));
@@ -69,25 +62,27 @@ public class VersionUtils
         return parameters;
     }
 
-    @NonNull public List<String> getExceptionStringsAndTraceParameters(
+    @NonNull public static List<String> getExceptionStringsAndTraceParameters(
             @NonNull Context context,
+            @NonNull CurrentUserId currentUserId,
             @NonNull List<Throwable> exceptions)
     {
         List<String> reported = new ArrayList<>();
         for (Throwable exception : exceptions)
         {
-            reported.addAll(getExceptionStringsAndTraceParameters(context, exception));
+            reported.addAll(getExceptionStringsAndTraceParameters(context, currentUserId, exception));
             reported.add("\n\n\n");
         }
         return reported;
     }
 
-    @NonNull public List<String> getExceptionStringsAndTraceParameters(
+    @NonNull public static List<String> getExceptionStringsAndTraceParameters(
             @NonNull Context context,
+            @NonNull CurrentUserId currentUserId,
             @NonNull Throwable exception)
     {
         List<String> reported = getExceptionStrings(context, exception);
-        reported.addAll(getSupportEmailTraceParameters(context, true));
+        reported.addAll(getSupportEmailTraceParameters(context, currentUserId, true));
         return reported;
     }
 

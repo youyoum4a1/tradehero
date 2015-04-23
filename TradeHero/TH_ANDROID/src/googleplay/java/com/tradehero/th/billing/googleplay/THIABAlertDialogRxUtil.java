@@ -14,6 +14,9 @@ import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.common.billing.googleplay.exception.IABResultErrorException;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.billing.BaseBillingUtils;
+import com.tradehero.th.billing.BillingUtils;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
 import com.tradehero.th.fragments.billing.THIABSKUDetailAdapter;
@@ -22,7 +25,6 @@ import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
 import com.tradehero.th.rx.ReplaceWith;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.ActivityUtil;
-import com.tradehero.th.utils.VersionUtils;
 import java.util.HashMap;
 import javax.inject.Inject;
 import rx.Observable;
@@ -40,18 +42,15 @@ public class THIABAlertDialogRxUtil
         THIABPurchase>
 {
     @NonNull protected THIABPurchaseCacheRx thiabPurchaseCache;
-    @NonNull protected GooglePlayUtils googlePlayUtils;
 
     //<editor-fold desc="Constructors">
     @Inject public THIABAlertDialogRxUtil(
+            @NonNull CurrentUserId currentUserId,
             @NonNull Analytics analytics,
-            @NonNull VersionUtils versionUtils,
-            @NonNull THIABPurchaseCacheRx thiabPurchaseCache,
-            @NonNull GooglePlayUtils googlePlayUtils)
+            @NonNull THIABPurchaseCacheRx thiabPurchaseCache)
     {
-        super(analytics, versionUtils);
+        super(currentUserId, analytics);
         this.thiabPurchaseCache = thiabPurchaseCache;
-        this.googlePlayUtils = googlePlayUtils;
     }
     //</editor-fold>
 
@@ -228,7 +227,7 @@ public class THIABAlertDialogRxUtil
     {
         ActivityUtil.sendSupportEmail(
                 context,
-                googlePlayUtils.getSupportPurchaseConsumeEmailIntent(context, exception));
+                BillingUtils.getSupportPurchaseConsumeEmailIntent(context, currentUserId, exception));
     }
     //</editor-fold>
 
@@ -274,7 +273,7 @@ public class THIABAlertDialogRxUtil
     {
         ActivityUtil.sendSupportEmail(
                 context,
-                googlePlayUtils.getSupportAlreadyOwnedIntent(context, exception));
+                BillingUtils.getSupportAlreadyOwnedIntent(context, currentUserId, exception));
     }
     //</editor-fold>
 
@@ -320,7 +319,7 @@ public class THIABAlertDialogRxUtil
     {
         ActivityUtil.sendSupportEmail(
                 context,
-                googlePlayUtils.getSupportDeveloperErrorIntent(context, exception));
+                BillingUtils.getSupportDeveloperErrorIntent(context, currentUserId, exception));
     }
     //</editor-fold>
 
@@ -349,7 +348,7 @@ public class THIABAlertDialogRxUtil
     public void sendSupportEmailRestoreFailed(final Context context, Exception exception)
     {
         context.startActivity(Intent.createChooser(
-                googlePlayUtils.getSupportPurchaseRestoreEmailIntent(context, exception),
+                BaseBillingUtils.getSupportPurchaseRestoreEmailIntent(context, currentUserId, exception),
                 context.getString(R.string.iap_send_support_email_chooser_title)));
     }
 }

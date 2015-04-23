@@ -675,7 +675,7 @@ public final class SettingsFragment extends BasePreferenceFragment
 
     public void handleSendFeedbackClick()
     {
-        startActivity(Intent.createChooser(VersionUtils.getSupportEmailIntent(getActivity()), ""));
+        startActivity(Intent.createChooser(VersionUtils.getSupportEmailIntent(getActivity(), currentUserId), ""));
     }
 
     public void handleFaqClick()
