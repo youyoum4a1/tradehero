@@ -30,6 +30,8 @@ import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.text.DecimalFormat;
 import javax.inject.Inject;
@@ -46,7 +48,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     @Inject Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
-    @Inject DashboardNavigator navigator;
+    @Inject Lazy<DashboardNavigator> navigator;
 
     @InjectView(R.id.gain_indicator) protected ImageView gainIndicator;
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
@@ -55,6 +57,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     @InjectView(R.id.position_percentage) protected TextView gainLossLabel;
     @InjectView(R.id.position_last_amount) protected TextView positionLastAmount;
     @InjectView(R.id.position_watchlist_delete) protected Button deleteButton;
+    @InjectView(R.id.position_watchlist_more) protected Button moreButton;
 
     @Nullable private WatchlistPositionDTO watchlistPositionDTO;
     @NonNull private SubscriptionList subscriptions;
@@ -97,6 +100,11 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         {
             deleteButton.setOnClickListener(createWatchlistItemDeleteClickHandler());
         }
+
+        if (moreButton != null)
+        {
+            moreButton.setOnClickListener(createWatchlistItemMoreButtonClickHandler());
+        }
     }
 
     private OnClickListener createWatchlistItemDeleteClickHandler()
@@ -110,6 +118,22 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
             }
         };
     }
+
+    private OnClickListener createWatchlistItemMoreButtonClickHandler()
+    {
+        return new OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                Bundle args = new Bundle();
+                BuySellStockFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
+                navigator.get().pushFragment(BuySellStockFragment.class, args);
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_More_Tap));
+            }
+        };
+    }
+
+
 
     @Override protected void onDetachedFromWindow()
     {
@@ -337,13 +361,5 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         {
             Timber.e(contextCopy.getString(R.string.watchlist_item_deleted_failed), watchlistPositionDTO.id, e);
         }
-    }
-
-    //TODO: might be used later
-    private void openSecurityProfile()
-    {
-        Bundle args = new Bundle();
-        BuySellStockFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
-        navigator.pushFragment(BuySellStockFragment.class, args);
     }
 }
