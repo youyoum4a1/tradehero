@@ -1090,7 +1090,7 @@ public final class SettingsFragment extends BasePreferenceFragment
 
     protected boolean isMainLogin(@Nullable SocialNetworkEnum socialNetworkEnum)
     {
-        return socialNetworkEnum != null && socialNetworkEnum.isLogin(authToken);
+        return authToken != null && socialNetworkEnum != null && socialNetworkEnum.isLogin(authToken);
     }
 
     protected boolean changeSocialStatus(@Nullable SocialNetworkEnum socialNetworkEnum, boolean enable)

@@ -2,6 +2,7 @@ package com.tradehero.th.widget.validation;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -10,7 +11,7 @@ import javax.inject.Inject;
 
 public class PasswordValidatedText extends ValidatedText
 {
-    @Inject @AuthHeader protected String authToken;
+    @Inject @AuthHeader @Nullable protected String authToken;
 
     //<editor-fold desc="Constructors">
     public PasswordValidatedText(Context context, AttributeSet attrs)
@@ -42,7 +43,9 @@ public class PasswordValidatedText extends ValidatedText
     {
         for (SocialNetworkEnum socialNetworkEnum : SocialNetworkEnum.values())
         {
-            if (!socialNetworkEnum.equals(SocialNetworkEnum.TH) && socialNetworkEnum.isLogin(authToken))
+            if (authToken != null
+                    && !socialNetworkEnum.equals(SocialNetworkEnum.TH)
+                    && socialNetworkEnum.isLogin(authToken))
             {
                 return true;
             }
