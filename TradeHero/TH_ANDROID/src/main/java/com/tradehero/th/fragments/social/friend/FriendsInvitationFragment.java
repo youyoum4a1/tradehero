@@ -32,8 +32,6 @@ import com.tradehero.th.api.social.UserFriendsTwitterDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.auth.AuthenticationProvider;
-import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -43,11 +41,9 @@ import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -71,9 +67,7 @@ public class FriendsInvitationFragment extends BaseFragment
     @Inject CurrentUserId currentUserId;
     SocialFriendHandler socialFriendHandler;
     SocialFriendHandlerFacebook socialFriendHandlerFacebook;
-    @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
-    @Inject Lazy<UserProfileDTOUtil> userProfileDTOUtil;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
     @Inject Lazy<SocialSharer> socialSharerLazy;
@@ -278,7 +272,7 @@ public class FriendsInvitationFragment extends BaseFragment
         UserProfileDTO updatedUserProfileDTO =
                 userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
         return updatedUserProfileDTO != null &&
-                userProfileDTOUtil.get().checkLinkedStatus(updatedUserProfileDTO, socialNetwork);
+                UserProfileDTOUtil.checkLinkedStatus(updatedUserProfileDTO, socialNetwork);
     }
 
     @Override

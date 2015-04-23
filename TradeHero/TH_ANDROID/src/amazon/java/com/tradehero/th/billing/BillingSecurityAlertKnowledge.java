@@ -1,29 +1,20 @@
-package com.tradehero.th.billing.amazon;
+package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.th.api.alert.AlertPlanDTO;
-import com.tradehero.th.billing.SecurityAlertKnowledge;
-import com.tradehero.th.billing.THBillingConstants;
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import com.tradehero.th.billing.amazon.THAmazonConstants;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-@Singleton public class THAmazonSecurityAlertKnowledge extends SecurityAlertKnowledge
+public class BillingSecurityAlertKnowledge extends SecurityAlertKnowledge
 {
-    //<editor-fold desc="Constructors">
-    @Inject public THAmazonSecurityAlertKnowledge()
-    {
-    }
-    //</editor-fold>
-
-    @NonNull @Override public AmazonSKU createFrom(@NonNull AlertPlanDTO alertPlanDTO)
+    @NonNull public static AmazonSKU createFrom(@NonNull AlertPlanDTO alertPlanDTO)
     {
         return new AmazonSKU(alertPlanDTO.productIdentifier);
     }
 
-    @Override @Nullable public AmazonSKU getServerEquivalentSKU(@NonNull ProductIdentifier localSKU)
+    @Nullable public static AmazonSKU getServerEquivalentSKU(@NonNull ProductIdentifier localSKU)
     {
         if (localSKU instanceof AmazonSKU)
         {

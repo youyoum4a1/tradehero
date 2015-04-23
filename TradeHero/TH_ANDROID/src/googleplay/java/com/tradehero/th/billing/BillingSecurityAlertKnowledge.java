@@ -1,29 +1,20 @@
-package com.tradehero.th.billing.googleplay;
+package com.tradehero.th.billing;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.api.alert.AlertPlanDTO;
-import com.tradehero.th.billing.SecurityAlertKnowledge;
-import com.tradehero.th.billing.THBillingConstants;
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import com.tradehero.th.billing.googleplay.THIABConstants;
 
-@Singleton public class THIABSecurityAlertKnowledge extends SecurityAlertKnowledge
+public class BillingSecurityAlertKnowledge extends SecurityAlertKnowledge
 {
-    //<editor-fold desc="Constructors">
-    @Inject public THIABSecurityAlertKnowledge()
-    {
-    }
-    //</editor-fold>
-
-    @NonNull @Override public IABSKU createFrom(@NonNull AlertPlanDTO alertPlanDTO)
+    @NonNull public static IABSKU createFrom(@NonNull AlertPlanDTO alertPlanDTO)
     {
         return new IABSKU(alertPlanDTO.productIdentifier);
     }
 
-    @Override @Nullable public IABSKU getServerEquivalentSKU(@NonNull ProductIdentifier localSKU)
+    @Nullable public static IABSKU getServerEquivalentSKU(@NonNull ProductIdentifier localSKU)
     {
         if (localSKU instanceof IABSKU)
         {

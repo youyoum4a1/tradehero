@@ -73,7 +73,6 @@ public class SendMessageFragment extends BaseFragment
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject Analytics analytics;
-    @Inject UserProfileDTOUtil userProfileDTOUtil;
     @Inject protected MentionTaggedStockHandler mentionTaggedStockHandler;
 
     protected UserProfileDTO currentUserProfileDTO;
@@ -215,7 +214,7 @@ public class SendMessageFragment extends BaseFragment
     protected boolean canSendMessage()
     {
         return currentUserProfileDTO != null
-                && userProfileDTOUtil.getFollowerCountByUserProfile(messageType, currentUserProfileDTO) > 0
+                && UserProfileDTOUtil.getFollowerCountByUserProfile(messageType, currentUserProfileDTO) > 0
                 && inputText != null
                 && !TextUtils.isEmpty(inputText.getText());
     }
@@ -267,7 +266,7 @@ public class SendMessageFragment extends BaseFragment
         else
         {
             followerCountSwitcher.setVisibility(View.VISIBLE);
-            int count = userProfileDTOUtil.getFollowerCountByUserProfile(messageType, currentUserProfileDTO);
+            int count = UserProfileDTOUtil.getFollowerCountByUserProfile(messageType, currentUserProfileDTO);
             if (count == 0)
             {
                 followerCountSwitcher.setDisplayedChildByLayoutId(R.id.no_follower_hint);

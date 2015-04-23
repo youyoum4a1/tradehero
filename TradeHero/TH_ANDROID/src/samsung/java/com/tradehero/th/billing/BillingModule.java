@@ -12,7 +12,6 @@ import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.billing.samsung.ForSamsungBillingMode;
 import com.tradehero.th.billing.samsung.ProcessingPurchase;
 import com.tradehero.th.billing.samsung.THSamsungConstants;
-import com.tradehero.th.billing.samsung.THSamsungSecurityAlertKnowledge;
 import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
 import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCacheRx;
 import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCacheRx;
@@ -67,11 +66,6 @@ public class BillingModule
     @Provides SamsungExceptionFactory provideSamsungExceptionFactory(THSamsungExceptionFactory exceptionFactory)
     {
         return exceptionFactory;
-    }
-
-    @Provides SecurityAlertKnowledge provideSecurityAlertKnowledge(THSamsungSecurityAlertKnowledge thiabSecurityAlertKnowledge)
-    {
-        return thiabSecurityAlertKnowledge;
     }
 
     @Provides @Singleton @ProcessingPurchase

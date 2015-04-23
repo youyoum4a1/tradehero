@@ -5,9 +5,8 @@ import android.support.annotation.Nullable;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.discussion.MessageType;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.billing.SecurityAlertKnowledge;
+import com.tradehero.th.billing.BillingSecurityAlertKnowledge;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import java.util.ArrayList;
@@ -21,22 +20,18 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
     public final static int IS_FREE_FOLLOWER = 1;
     public final static int IS_PREMIUM_FOLLOWER = 2;
 
-    @NonNull protected final SecurityAlertKnowledge securityAlertKnowledge;
     @NonNull protected final TimingIntervalPreference firstShowOnBoardDialogPreference;
 
     //<editor-fold desc="Constructors">
     @Inject public UserProfileDTOUtil(
-            @NonNull SecurityAlertKnowledge securityAlertKnowledge,
             @NonNull @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference)
     {
         super();
-        this.securityAlertKnowledge = securityAlertKnowledge;
         this.firstShowOnBoardDialogPreference = firstShowOnBoardDialogPreference;
     }
     //</editor-fold>
 
-    @NonNull public ArrayList<ProductIdentifier> getSubscribedAlerts(
-            @NonNull UserProfileDTO userProfileDTO)
+    @NonNull public static ArrayList<ProductIdentifier> getSubscribedAlerts(@NonNull UserProfileDTO userProfileDTO)
     {
         ArrayList<ProductIdentifier> subscribedAlerts = new ArrayList<>();
         if (userProfileDTO.userAlertPlans != null)
@@ -49,10 +44,10 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
                         userAlertPlanDTO.alertPlan != null &&
                         userAlertPlanDTO.alertPlan.productIdentifier != null)
                 {
-                    localSKU = securityAlertKnowledge.createFrom(userAlertPlanDTO.alertPlan);
+                    localSKU = BillingSecurityAlertKnowledge.createFrom(userAlertPlanDTO.alertPlan);
                     subscribedAlerts.add(localSKU);
 
-                    serverEquivalent = securityAlertKnowledge.getServerEquivalentSKU(localSKU);
+                    serverEquivalent = BillingSecurityAlertKnowledge.getServerEquivalentSKU(localSKU);
                     if (serverEquivalent != null)
                     {
                         subscribedAlerts.add(serverEquivalent);
@@ -104,7 +99,7 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
         }
     }
 
-    public int getFollowerCountByUserProfile(@NonNull MessageType messageType, @NonNull UserProfileDTO userProfileDTO)
+    public static int getFollowerCountByUserProfile(@NonNull MessageType messageType, @NonNull UserProfileDTO userProfileDTO)
     {
         switch (messageType)
         {
