@@ -145,7 +145,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
 
     private void registerWeChatButton()
     {
-        mBtnShareWeChat.setChecked(initialShareButtonState(SocialNetworkEnum.WB));
+        mBtnShareWeChat.setChecked(initialShareButtonState(SocialNetworkEnum.WECHAT));
         unsubscribeWeChatButton();
         weChatLinkingSubscription = AppObservable.bindFragment(this, ViewObservable.clicks(mBtnShareWeChat, false))
                 .observeOn(AndroidSchedulers.mainThread())
