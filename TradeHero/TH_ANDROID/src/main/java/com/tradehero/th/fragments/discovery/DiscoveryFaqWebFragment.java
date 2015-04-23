@@ -2,13 +2,15 @@ package com.tradehero.th.fragments.discovery;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import javax.inject.Inject;
 
 public class DiscoveryFaqWebFragment extends WebViewFragment
 {
-    @Inject Context doNotRemove;
+    @SuppressWarnings("unused") @Inject Context doNotRemoveOrItFails;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -21,8 +23,9 @@ public class DiscoveryFaqWebFragment extends WebViewFragment
         putUrl(args, getString(R.string.th_faq_url));
     }
 
-    public boolean shouldDisplayTitleInActionBar()
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        return false;
+        super.onCreateOptionsMenu(menu, inflater);
+        setActionBarTitle(R.string.settings_primary_faq);
     }
 }

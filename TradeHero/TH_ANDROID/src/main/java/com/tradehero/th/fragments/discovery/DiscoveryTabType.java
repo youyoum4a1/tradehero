@@ -13,7 +13,6 @@ enum DiscoveryTabType
     LEARNING(R.string.discovery_learning, VideoCategoriesFragment.class, false),
     GAMES(R.string.discovery_games, DiscoveryGameFragment.class, true),
     ARTICLE(R.string.discovery_articles, DiscoveryArticleFragment.class, true),
-    FAQ(R.string.settings_primary_faq, DiscoveryFaqWebFragment.class, false),
     ;
 
     @StringRes public final int titleStringResId;

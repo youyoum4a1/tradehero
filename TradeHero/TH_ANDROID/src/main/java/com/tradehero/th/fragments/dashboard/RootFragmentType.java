@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AdminSettingsActivity;
 import com.tradehero.th.activities.AlertManagerActivity;
+import com.tradehero.th.activities.DiscoveryFaqWebActivity;
 import com.tradehero.th.activities.FriendsInvitationActivity;
 import com.tradehero.th.activities.HomeActivity;
 import com.tradehero.th.activities.SettingsActivity;
@@ -108,6 +109,13 @@ public enum RootFragmentType
             null,
             SettingsActivity.class,
             AnalyticsConstants.TabBar_Settings),
+    FAQ(R.layout.residemenu_text_item,
+            R.string.settings_primary_faq,
+            R.string.dashboard_menu_faq_key,
+            R.color.transparent,
+            null,
+            DiscoveryFaqWebActivity.class,
+            AnalyticsConstants.Settings_FAQ),
     ADMIN_SETTINGS(R.layout.residemenu_text_item,
             R.string.dashboard_admin_settings,
             R.string.dashboard_admin_settings_key,
