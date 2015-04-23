@@ -9,8 +9,8 @@ public enum Exchange
     LSE(R.drawable.square_gb, true),
 
     // United States of America
-    NASDAQ(R.drawable.square_us, false),
-    NYSE(R.drawable.square_us, true),
+    NASDAQ(R.drawable.square_us, true),
+    NYSE(R.drawable.square_us, false),
     OTCBB(R.drawable.square_us, false),
     AMEX(R.drawable.square_us, false),
 
@@ -69,8 +69,8 @@ public enum Exchange
     MYX(R.drawable.square_my, true),
 
     // India
-    NSE(R.drawable.square_in, false),
-    BSE(R.drawable.square_in, true),
+    NSE(R.drawable.square_in, true),
+    BSE(R.drawable.square_in, false),
 
     // Japan
     TSE(R.drawable.square_jp, true);
