@@ -58,7 +58,7 @@ public class XpToast extends RelativeLayout
     public XpToast(@NonNull Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        //Always hidden after inflate
+        //Always hidden after creation
         setVisibility(View.GONE);
         HierarchyInjector.inject(this);
     }
@@ -70,20 +70,15 @@ public class XpToast extends RelativeLayout
         ButterKnife.inject(this);
         if (!isInEditMode())
         {
-            initViews();
-        }
-    }
-
-    private void initViews()
-    {
-        userLevelProgressBar.setPauseDurationWhenLevelUp(getResources().getInteger(R.integer.user_level_pause_on_level_up));
-        xpTextSwitcher.setFactory(new ViewSwitcher.ViewFactory()
-        {
-            @Override public View makeView()
+            userLevelProgressBar.setPauseDurationWhenLevelUp(getResources().getInteger(R.integer.user_level_pause_on_level_up));
+            xpTextSwitcher.setFactory(new ViewSwitcher.ViewFactory()
             {
-                return LayoutInflater.from(XpToast.this.getContext()).inflate(R.layout.layout_xp_toast_text, xpTextSwitcher, false);
-            }
-        });
+                @Override public View makeView()
+                {
+                    return LayoutInflater.from(XpToast.this.getContext()).inflate(R.layout.layout_xp_toast_text, xpTextSwitcher, false);
+                }
+            });
+        }
     }
 
     @Override protected void onAttachedToWindow()
