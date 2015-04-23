@@ -56,7 +56,7 @@ import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogRxUtil;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
-import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
+import com.tradehero.th.fragments.watchlist.MainWatchlistPositionFragment;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.social.FollowRequest;
@@ -597,8 +597,8 @@ public class TimelineFragment extends DashboardFragment
     private void pushWatchlistPositionFragment(OwnedPortfolioId ownedPortfolioId)
     {
         Bundle args = new Bundle();
-        WatchlistPositionFragment.putOwnedPortfolioId(args, ownedPortfolioId);
-        navigator.get().pushFragment(WatchlistPositionFragment.class, args);
+        MainWatchlistPositionFragment.putShowActionBarTitle(args, true);
+        navigator.get().pushFragment(MainWatchlistPositionFragment.class, args);
     }
 
     private void onLoadFinished()

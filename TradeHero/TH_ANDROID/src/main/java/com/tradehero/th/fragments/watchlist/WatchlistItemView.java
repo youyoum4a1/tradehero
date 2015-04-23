@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.metrics.Analytics;
@@ -60,22 +61,24 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     @InjectView(R.id.position_watchlist_more) protected Button moreButton;
 
     @Nullable private WatchlistPositionDTO watchlistPositionDTO;
-    @NonNull private SubscriptionList subscriptions;
+    private SubscriptionList subscriptions;
 
-    public static void putDeletedSecurityId(Intent intent, SecurityId securityId)
+    //<editor-fold desc="Argument Passing">
+    public static void putDeletedSecurityId(@NonNull Intent intent, @NonNull SecurityId securityId)
     {
         intent.putExtra(INTENT_KEY_DELETED_SECURITY_ID, securityId.getArgs());
     }
 
-    public static SecurityId getDeletedSecurityId(Intent intent)
+    @Nullable public static SecurityId getDeletedSecurityId(@NonNull Intent intent)
     {
         SecurityId deleted = null;
-        if (intent != null && intent.hasExtra(INTENT_KEY_DELETED_SECURITY_ID))
+        if (intent.hasExtra(INTENT_KEY_DELETED_SECURITY_ID))
         {
             deleted = new SecurityId(intent.getBundleExtra(INTENT_KEY_DELETED_SECURITY_ID));
         }
         return deleted;
     }
+    //</editor-fold>
 
     //<editor-fold desc="Constructors">
     public WatchlistItemView(Context context, AttributeSet attrs)
@@ -95,79 +98,42 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
-        if (deleteButton != null)
-        {
-            deleteButton.setOnClickListener(createWatchlistItemDeleteClickHandler());
-        }
-
-        if (moreButton != null)
-        {
-            moreButton.setOnClickListener(createWatchlistItemMoreButtonClickHandler());
-        }
+        ButterKnife.inject(this);
     }
-
-    private OnClickListener createWatchlistItemDeleteClickHandler()
-    {
-        return new OnClickListener()
-        {
-            @Override public void onClick(View v)
-            {
-                setEnabledSwipeButtons(false);
-                deleteSelf();
-            }
-        };
-    }
-
-    private OnClickListener createWatchlistItemMoreButtonClickHandler()
-    {
-        return new OnClickListener()
-        {
-            @Override public void onClick(View v)
-            {
-                Bundle args = new Bundle();
-                BuySellStockFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
-                navigator.get().pushFragment(BuySellStockFragment.class, args);
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_More_Tap));
-            }
-        };
-    }
-
-
 
     @Override protected void onDetachedFromWindow()
     {
-        super.onDetachedFromWindow();
-
-        if (deleteButton != null)
-        {
-            deleteButton.setOnClickListener(null);
-        }
-
         subscriptions.unsubscribe();
+        subscriptions = new SubscriptionList();
+        ButterKnife.reset(this);
+        super.onDetachedFromWindow();
     }
 
-    @Override public void display(WatchlistPositionDTO watchlistPosition)
+    @SuppressWarnings("unused")
+    @OnClick(R.id.position_watchlist_delete)
+    public void onDeleteButtonClicked(View v)
     {
-        linkWith(watchlistPosition, true);
+        setEnabledSwipeButtons(false);
+        deleteSelf();
     }
 
-    private void linkWith(WatchlistPositionDTO watchlistPosition, boolean andDisplay)
+    @SuppressWarnings("unused")
+    @OnClick(R.id.position_watchlist_more)
+    public void onMoreButtonClicked(View v)
+    {
+        Bundle args = new Bundle();
+        BuySellStockFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
+        navigator.get().pushFragment(BuySellStockFragment.class, args);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_More_Tap));
+    }
+
+    @Override public void display(@NonNull WatchlistPositionDTO watchlistPosition)
     {
         this.watchlistPositionDTO = watchlistPosition;
-
-        if (watchlistPositionDTO == null)
-        {
-            return;
-        }
-
-        if (andDisplay)
-        {
-            displayStockLogo();
-            displayExchangeSymbol();
-            displayCompanyName();
-            displayLastPrice();
-        }
+        displayStockLogo(watchlistPosition);
+        displayExchangeSymbol(watchlistPosition);
+        displayCompanyName(watchlistPosition);
+        displayLastPrice(watchlistPosition);
     }
 
     protected void setEnabledSwipeButtons(boolean enabled)
@@ -227,10 +193,9 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
             gainLossLabel.setBackgroundColor(Color.WHITE);
             gainIndicator.setVisibility(View.INVISIBLE);
         }
-
     }
 
-    private void displayLastPrice()
+    private void displayLastPrice(@NonNull WatchlistPositionDTO watchlistPositionDTO)
     {
         SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
 
@@ -243,8 +208,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
             }
             // last price
             positionLastAmount.setText(formatLastPrice(securityCompactDTO.currencyDisplay, lastPrice));
-
-
         }
     }
 
@@ -255,7 +218,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
                 new DecimalFormat("#.##").format(lastPrice)));
     }
 
-    private void displayCompanyName()
+    private void displayCompanyName(@NonNull WatchlistPositionDTO watchlistPositionDTO)
     {
         SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
         if (companyName != null)
@@ -271,7 +234,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         }
     }
 
-    private void displayStockLogo()
+    private void displayStockLogo(@NonNull WatchlistPositionDTO watchlistPositionDTO)
     {
         SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
 
@@ -297,7 +260,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         }
     }
 
-    private void displayExchangeSymbol()
+    private void displayExchangeSymbol(@NonNull WatchlistPositionDTO watchlistPositionDTO)
     {
         SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
 
