@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.level.LevelDefDTO;
@@ -81,7 +80,6 @@ public class XpToast extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
         if (!isInEditMode())
         {
             userLevelProgressBar.setUserLevelProgressBarLevelUpListener(this);
@@ -95,13 +93,13 @@ public class XpToast extends RelativeLayout
     @Override protected void onDetachedFromWindow()
     {
         mLevelDefListCacheSubscription.unsubscribe();
+        mLevelDefListCacheSubscription = null;
         if (userLevelProgressBar != null)
         {
             userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
             userLevelProgressBar.setUserLevelProgressBarListener(null);
         }
         isLevelDefError = false;
-        ButterKnife.inject(this);
         super.onDetachedFromWindow();
     }
 
@@ -209,7 +207,6 @@ public class XpToast extends RelativeLayout
         }
     }
 
-    @OnClick(R.id.user_level_progress_bar)
     public void hide()
     {
         cleanUp();
@@ -311,7 +308,6 @@ public class XpToast extends RelativeLayout
     {
         userLevelProgressBar.stopIncrement();
         cleanUp();
-        ButterKnife.reset(this);
     }
 
     private class XPToastLevelDefCacheObserver implements Observer<Pair<LevelDefListId, LevelDefDTOList>>
