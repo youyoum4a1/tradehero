@@ -70,7 +70,6 @@
   <Preference
       android:key="show_typography_examples"
       android:title="Show Typography Examples"
-      android:icon="@drawable/icn_lb_6m"
       />
 
   <Preference

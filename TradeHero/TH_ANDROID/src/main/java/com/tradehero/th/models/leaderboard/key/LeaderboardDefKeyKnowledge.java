@@ -1,11 +1,5 @@
 package com.tradehero.th.models.leaderboard.key;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import javax.inject.Inject;
-
 public class LeaderboardDefKeyKnowledge
 {
     // For fake leaderboard definition, hardcoded on client side
@@ -40,107 +34,9 @@ public class LeaderboardDefKeyKnowledge
     public static final int MONTHS_6 = 285;
     public static final int MOST_SKILLED_ID = 49;
 
-    public static final int[] HAS_FOREX_LEADERBOARDS = new int[] {MOST_SKILLED_ID, DAYS_30, DAYS_90};
+    private static final int[] HAS_FOREX_LEADERBOARDS = new int[] {MOST_SKILLED_ID, DAYS_30, DAYS_90};
 
-    //<editor-fold desc="Constructors">
-    @Inject public LeaderboardDefKeyKnowledge()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @Nullable public Integer getLeaderboardDefIcon(@NonNull LeaderboardDefKey leaderboardDefKey)
-    {
-        switch (leaderboardDefKey.key)
-        {
-            case HERO_ID:
-                return R.drawable.icn_lb_heroes;
-
-            case FOLLOWER_ID:
-                return R.drawable.icn_lb_followers;
-
-            case INVITE_FRIENDS_ID:
-            case FRIEND_ID:
-                return R.drawable.leaderboard_friends;
-
-            case SECTOR_ID:
-                return R.drawable.icn_lb_sectors;
-
-            case EXCHANGE_ID:
-                return R.drawable.icn_lb_exchanges;
-
-            case TOP_TRADERS:
-                return R.drawable.lb_toptraders;
-
-            case CALENDAR_11:
-            case CALENDAR_11_B:
-                return R.drawable.lb_cal_11;
-
-            case CALENDAR_12:
-            case CALENDAR_12_B:
-                return R.drawable.lb_cal_12;
-
-            case CALENDAR_01:
-                return R.drawable.lb_cal_01;
-
-            case CALENDAR_02:
-                return R.drawable.lb_cal_02;
-
-            case CALENDAR_03:
-                return R.drawable.lb_cal_03;
-
-            case CALENDAR_04:
-                return R.drawable.lb_cal_04;
-
-            case CALENDAR_05:
-                return R.drawable.lb_cal_05;
-
-            case CALENDAR_06:
-                return R.drawable.lb_cal_06;
-
-            case CALENDAR_07:
-                return R.drawable.lb_cal_07;
-
-            case CALENDAR_08:
-                return R.drawable.lb_cal_08;
-
-            case CALENDAR_09:
-                return R.drawable.lb_cal_09;
-
-            case CALENDAR_10:
-                return R.drawable.lb_cal_10;
-
-            case QUARTER_4:
-            case QUARTER_4_B:
-                return R.drawable.lb_quarter4;
-
-            case QUARTER_1:
-                return R.drawable.lb_quarter1;
-
-            case QUARTER_2:
-                return R.drawable.lb_quarter2;
-
-            case QUARTER_3:
-                return R.drawable.lb_quarter3;
-
-            case DAYS_30:
-                return R.drawable.icn_lb_30d;
-
-            case DAYS_90:
-                return R.drawable.icn_lb_90d;
-
-            case MOST_SKILLED_ID:
-                return R.drawable.icn_lb_most_skilled;
-
-            case MONTHS_6:
-                return R.drawable.icn_lb_6m;
-
-            default:
-                return null;
-        }
-    }
-
-    public boolean hasForex(int leaderboardId)
+    public static boolean hasForex(int leaderboardId)
     {
         for (int i = 0; i < HAS_FOREX_LEADERBOARDS.length; i++)
         {
