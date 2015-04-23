@@ -213,6 +213,8 @@ public class XpToast extends RelativeLayout
     public void hide()
     {
         cleanUp();
+        hideAndReleaseFlag();
+        /*
         Animation a = AnimationUtils.loadAnimation(getContext(), R.anim.zoom_out);
         a.setAnimationListener(new Animation.AnimationListener()
         {
@@ -229,7 +231,7 @@ public class XpToast extends RelativeLayout
             {
             }
         });
-        startAnimation(a);
+        startAnimation(a);*/
     }
 
     private void hideAndReleaseFlag()
