@@ -75,15 +75,4 @@ import javax.inject.Singleton;
     {
         return new DTOProcessorTradeReceived(ownedPositionId);
     }
-
-    @NotNull public TradeDTO getTrade(@NotNull OwnedTradeId ownedTradeId)
-    {
-        basicCheck(ownedTradeId);
-        return createTradeReceivedProcessor(ownedTradeId).process(
-                this.tradeService.getTrade(
-                        ownedTradeId.userId,
-                        ownedTradeId.portfolioId,
-                        ownedTradeId.positionId,
-                        ownedTradeId.tradeId));
-    }
 }

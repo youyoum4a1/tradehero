@@ -16,12 +16,4 @@ public interface TradeService
             @Path("positionId") int positionId);
     //</editor-fold>
 
-    //<editor-fold desc="Get Single Trade">
-    @GET("/users/{userId}/portfolios/{portfolioId}/positions/{positionId}/trades/{tradeId}")
-    TradeDTO getTrade(
-            @Path("userId") int userId,
-            @Path("portfolioId") int portfolioId,
-            @Path("positionId") int positionId,
-            @Path("tradeId") int tradeId);
-    //</editor-fold>
 }

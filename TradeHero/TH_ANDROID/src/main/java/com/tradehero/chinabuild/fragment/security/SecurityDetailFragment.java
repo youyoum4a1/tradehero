@@ -36,6 +36,7 @@ import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
@@ -65,6 +66,7 @@ import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.InviteFormWeiboDTO;
+import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -119,7 +121,6 @@ import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -382,7 +383,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     //+自选股 已添加
     @Override public void onClickHeadRight0()
     {
-        Timber.d("isInWatchList = " + isInWatchList);
         if (!isInWatchList)
         {
             addSecurityToWatchList();
@@ -433,10 +433,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                     }
                 });
 
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener()
-        {
-            @Override public void onDismiss(DialogInterface dialogInterface)
-            {
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
                 closeWatchSheet();
             }
         });
@@ -469,7 +468,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             }
         } catch (Exception e)
         {
-            Timber.d("setBuySaleButtonVisable error " + e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -513,7 +512,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             @Override public void onError()
             {
                 super.onError();
-                Timber.d("Load chartImage error");
             }
         };
 
@@ -612,7 +610,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         btnNews.setOnClickListener(this);
         llTLComment.setOnClickListener(this);
         llTLPraiseDown.setOnClickListener(this);
-        //llTLShare.setOnClickListener(this);
         llTLPraise.setOnClickListener(this);
         llDisscurssOrNews.setOnClickListener(this);
         imgSecurityTLUserHeader.setOnClickListener(this);
@@ -661,16 +658,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     };
 
-    @Override public void onStop()
-    {
-        super.onStop();
-    }
-
     @Override public void onPause()
     {
         detachSecurityCompactCache();
         destroyFreshQuoteHolder();
-        //querying = false;
         super.onPause();
     }
 
@@ -691,11 +682,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
     }
 
     @Override public void onResume()
@@ -857,21 +843,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             if(quoteDTO==null)return;
             if(quoteDTO.ask!=null&&quoteDTO.ask==0)return;
             if(quoteDTO.bid!=null&&quoteDTO.bid==0)return;
-            linkWith(quoteDTO, true);
+            linkWith(quoteDTO);
         }
     }
 
-    protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
+    protected void linkWith(QuoteDTO quoteDTO)
     {
-        Timber.d("WINDY QuoteDTO get secsess");
         this.quoteDTO = quoteDTO;
 
         setInitialBuySaleQuantityIfCan();
-        if (andDisplay)
-        {
-            // Nothing to do in this class
-            Timber.d("QuoteDTO linkWith quoteDTO.ask = " + quoteDTO.ask + "  quoteDTO.bid" + quoteDTO.bid);
-        }
     }
 
     public Integer getMaxPurchasableShares()
@@ -982,7 +962,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     protected void requestCompetitionPosition()
     {
-        Timber.d("WINDY: requestCompetitionPosition start");
         detachCompetitionPositionCache();
         if (competitionID != 0 && this.securityId != null)
         {
@@ -1071,8 +1050,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
         {
-            //THToast.show(R.string.error_fetch_security_info);
-            Timber.e(error, "Failed to fetch SecurityCompact %s", securityId);
         }
     }
 
@@ -1216,10 +1193,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public void displayQuoto()
-    {
-    }
-
     public void displaySecurityInfo()
     {
         if (securityCompactDTO != null)
@@ -1349,7 +1322,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         {
             if (display)
             {
-                Timber.d("未获取到 portfolioCompactDTO ，不能进行交易");
                 showBuyOrSaleError(ERROR_NO_COMPETITION_PROTFOLIO);
                 return false;
             }
@@ -1418,13 +1390,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         @Override public void onErrorThrown(@NotNull PositionDTOKey key, @NotNull Throwable error)
         {
-            Timber.e("PositionNewCacheListener", key, error);
         }
     }
 
     protected void linkWith(PositionDTOCompact value)
     {
-        Timber.d("WINDY: requestCompetitionPosition success");
         if (value != null)
         {
             PositionDTOCompactList positionDTOCompacts = new PositionDTOCompactList();
@@ -1458,7 +1428,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
         {
-            Timber.e("Error fetching the security position detail %s", key, error);
         }
     }
 
@@ -1481,13 +1450,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
-            Timber.e("Error fetching the user profile %s", key, error);
         }
     }
 
     private void linkWith(SecurityPositionDetailDTO detailDTO, boolean andDisplay)
     {
-        Timber.d("");
         this.securityPositionDetailDTO = detailDTO;
         if (securityPositionDetailDTO != null)
         {
@@ -1553,7 +1520,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
-            Timber.e("Failed to fetch list of watch list items", error);
         }
     }
 
@@ -1562,7 +1528,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         this.watchedList = watchedList;
         if (andDisplay)
         {
-            Timber.d("显示 添加或者删除 自选股 相关");
             if (watchedList != null && securityId != null)
             {
                 isInWatchList = watchedList.contains(securityId);
@@ -1616,7 +1581,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         } catch (NumberFormatException ex)
         {
             THToast.show(getString(R.string.wrong_number_format));
-            Timber.e("Parsing error", ex);
             dismissProgress();
         } catch (Exception ex)
         {
@@ -1691,7 +1655,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         @Override protected void failure(THException ex)
         {
-            Timber.e(ex, "Failed to update watchlist position");
             THToast.show(ex);
             dismissProgress();
         }
@@ -1763,7 +1726,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             AbstractDiscussionCompactDTO dto = discussionCache.get(value.get(0));
             if (dto != null)
             {
-                Timber.d(dto.toString());
                 dtoDiscuss = dto;
                 displayDiscussOrNewsDTO();
             }
@@ -2039,12 +2001,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         @Override public void success(DiscussionDTO discussionDTO, Response response)
         {
-            Timber.d("VoteCallback success");
         }
 
         @Override public void failure(RetrofitError error)
         {
-            Timber.d("VoteCallback failed :" + error.toString());
         }
     }
 
@@ -2093,7 +2053,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         if (securityCompactDTO == null) return;
         if (getAbstractDiscussionCompactDTO() != null)
         {//点击加载更多
-            Timber.d("更多。。。");
             //进入股票相关的更多讨论和资讯中
             Bundle bundle = new Bundle();
             bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_DISCUSS_OR_NEWS_TYPE, indexDiscussOrNews);
@@ -2307,7 +2266,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             detachFetchTrades();
             OwnedPositionId key = positionDTO.getOwnedPositionId();
             tradeListCache.get().register(key, fetchTradesListener);
-            tradeListCache.get().getOrFetchAsync(key);
+            tradeListCache.get().getOrFetchAsync(key, true);
         }
         else
         {
@@ -2325,7 +2284,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         @Override public void onDTOReceived(@NotNull OwnedPositionId key, @NotNull TradeDTOList tradeDTOs)
         {
 
-            linkWith(tradeDTOs, true);
+            linkWith(tradeDTOs);
             onFinish();
         }
 
@@ -2348,9 +2307,14 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public void linkWith(TradeDTOList tradeDTOs, boolean andDisplay)
+    public void linkWith(TradeDTOList tradeDTOs)
     {
-        Timber.d("Tradehero: PositionDetailFragment LinkWith");
+        for(TradeDTO tradeDTO: tradeDTOs){
+            THLog.d("tradeDTO.id : " + tradeDTO.id);
+            THLog.d("tradeDTO.positionId : " + tradeDTO.positionId);
+            THLog.d("tradeDTO.displayTradeQuantity() : " + tradeDTO.displayTradeQuantity());
+            THLog.d("tradeDTO.displayTradeMoney() : " + tradeDTO.displayTradeMoney());
+        }
         this.tradeDTOList = tradeDTOs;
         adapter.setTradeList(tradeDTOList);
     }

@@ -647,6 +647,9 @@ public class PortfolioFragment extends DashboardFragment {
         if (portfolio == null) {
             return;
         }
+        if(tvItemAllAmount==null || tvItemROI == null || tvItemDynamicAmount==null){
+            return;
+        }
         if (portfolio.roiSinceInception != null) {
             THSignedNumber roi = THSignedPercentage.builder(portfolio.roiSinceInception * 100)
                     .withSign()
