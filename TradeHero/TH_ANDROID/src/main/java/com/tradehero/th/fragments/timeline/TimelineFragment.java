@@ -193,7 +193,7 @@ public class TimelineFragment extends DashboardFragment
             //TODO now only one view, userProfileView useless, need cancel, alex
 
             userProfileView.setProfileClickedListener(this);
-            timelineListView.addHeaderView(userProfileView);
+            timelineListView.addHeaderView(userProfileView, null, false);
         }
 
         if (loadingView != null)
