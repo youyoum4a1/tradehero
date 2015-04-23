@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.onboarding;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.view.View;
+import android.view.ViewGroup;
 import com.tradehero.th.adapters.DTOAdapterNew;
 
 public class OnBoardEmptyOrItemAdapter<T> extends DTOAdapterNew<T>
@@ -33,6 +35,15 @@ public class OnBoardEmptyOrItemAdapter<T> extends DTOAdapterNew<T>
             return VIEW_TYPE_EMPTY;
         }
         return super.getItemViewType(position);
+    }
+
+    @Override public View getView(int position, View convertView, ViewGroup viewGroup)
+    {
+        if (super.getCount() == 0) {
+            return inflater.inflate(emptyRes, viewGroup, false);
+        } else {
+            return super.getView(position, convertView, viewGroup);
+        }
     }
 
     @Override public int getViewResId(@SuppressWarnings("UnusedParameters") int position)

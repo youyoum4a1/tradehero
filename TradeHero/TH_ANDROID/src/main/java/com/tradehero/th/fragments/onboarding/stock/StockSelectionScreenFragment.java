@@ -69,7 +69,7 @@ public class StockSelectionScreenFragment extends BaseFragment
         stockAdapter = new OnBoardEmptyOrItemAdapter<>(
                 activity,
                 R.layout.on_board_security_item_view,
-                R.layout.on_board_empty_security);
+                R.layout.on_board_empty_item);
     }
 
     @SuppressLint("InflateParams")

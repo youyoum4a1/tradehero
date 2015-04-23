@@ -64,7 +64,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
         sectorAdapter = new OnBoardEmptyOrItemAdapter<>(
                 getActivity(),
                 R.layout.on_board_sector_item_view,
-                R.layout.on_board_empty_sector);
+                R.layout.on_board_empty_item);
     }
 
     @SuppressLint("InflateParams")

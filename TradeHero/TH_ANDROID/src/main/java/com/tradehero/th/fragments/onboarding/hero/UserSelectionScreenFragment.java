@@ -75,7 +75,7 @@ public class UserSelectionScreenFragment extends BaseFragment
         userAdapter = new OnBoardEmptyOrItemAdapter<>(
                 getActivity(),
                 R.layout.on_board_user_item_view,
-                R.layout.on_board_empty_user);
+                R.layout.on_board_empty_item);
     }
 
     @SuppressLint("InflateParams")
