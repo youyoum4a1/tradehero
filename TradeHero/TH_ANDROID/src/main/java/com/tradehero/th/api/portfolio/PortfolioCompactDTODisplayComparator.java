@@ -22,18 +22,10 @@ public class PortfolioCompactDTODisplayComparator implements Comparator<Portfoli
         }
         else if (lhs.isDefault())
         {
-            if (lhs.assetClass == AssetClass.FX && rhs.isWatchlist)
-            {
-                return 1;
-            }
             return -1;
         }
         else if (rhs.isDefault())
         {
-            if (rhs.assetClass == AssetClass.FX && lhs.isWatchlist)
-            {
-                return -1;
-            }
             return 1;
         }
         else if (lhs.isWatchlist)
