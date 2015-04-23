@@ -6,14 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Pair;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
-import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -39,7 +36,7 @@ import timber.log.Timber;
 public class XpToast extends RelativeLayout
         implements UserLevelProgressBar.UserLevelProgressBarLevelUpListener, UserLevelProgressBar.UserLevelProgressBarListener
 {
-    @InjectView(R.id.xp_toast_text) TextSwitcher xpTextSwitcher;
+    @InjectView(R.id.xp_toast_text) TextView xpTextSwitcher; // TODO reinstate it as a Switcher
     @InjectView(R.id.xp_toast_value) TextView xpValue;
     @InjectView(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
 
@@ -71,13 +68,13 @@ public class XpToast extends RelativeLayout
         if (!isInEditMode())
         {
             userLevelProgressBar.setPauseDurationWhenLevelUp(getResources().getInteger(R.integer.user_level_pause_on_level_up));
-            xpTextSwitcher.setFactory(new ViewSwitcher.ViewFactory()
-            {
-                @Override public View makeView()
-                {
-                    return LayoutInflater.from(XpToast.this.getContext()).inflate(R.layout.layout_xp_toast_text, xpTextSwitcher, false);
-                }
-            });
+            //xpTextSwitcher.setFactory(new ViewSwitcher.ViewFactory()
+            //{
+            //    @Override public View makeView()
+            //    {
+            //        return LayoutInflater.from(XpToast.this.getContext()).inflate(R.layout.layout_xp_toast_text, xpTextSwitcher, false);
+            //    }
+            //});
         }
     }
 
@@ -168,7 +165,7 @@ public class XpToast extends RelativeLayout
             public void onAnimationStart(Animation animation)
             {
                 setVisibility(View.VISIBLE);
-                xpTextSwitcher.reset();
+                //xpTextSwitcher.reset();
             }
 
             @Override

@@ -28,7 +28,7 @@
       tools:text="+ 400 XP"
       />
 
-  <TextSwitcher
+  <TextView
       android:id="@+id/xp_toast_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -38,6 +38,11 @@
       android:layout_marginStart="@dimen/xp_level_toast_horizontal_margin"
       android:layout_toLeftOf="@id/xp_toast_text"
       android:layout_toStartOf="@id/xp_toast_text"
+
+      android:gravity="start|center_vertical"
+      android:textSize="@dimen/text_title"
+      android:textStyle="bold"
+
       android:inAnimation="@anim/push_up_in"
       android:outAnimation="@anim/push_up_out"
       android:minHeight="@dimen/xp_level_toast_min_text_height"
