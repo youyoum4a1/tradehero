@@ -5,14 +5,19 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 public class SocialSharePreferenceHelperNew
 {
     @NonNull private final SocialShareSetPreference socialShareSetPreference;
-    @NonNull private HashMap<SocialNetworkEnum, SocialSharePreferenceDTO> sharePreferencesMap;
+    @NonNull private static Hashtable<SocialNetworkEnum, SocialSharePreferenceDTO> sharePreferencesMap = null;
+
+    private static AtomicBoolean isInitialized = new AtomicBoolean();
 
     //<editor-fold desc="Constructors">
     @Inject public SocialSharePreferenceHelperNew(
@@ -20,7 +25,9 @@ public class SocialSharePreferenceHelperNew
     {
         super();
         this.socialShareSetPreference = socialShareSetPreference;
-        sharePreferencesMap = new HashMap<>();
+        if (!isInitialized.getAndSet(true)) {
+            sharePreferencesMap = new Hashtable<>();
+        }
         load();
     }
     //</editor-fold>
