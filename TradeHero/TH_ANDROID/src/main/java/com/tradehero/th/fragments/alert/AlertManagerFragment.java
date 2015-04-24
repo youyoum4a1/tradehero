@@ -66,7 +66,6 @@ public class AlertManagerFragment extends BaseFragment
     @Inject SystemStatusCache systemStatusCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
     @Inject UserProfileCacheRx userProfileCache;
-    @Inject SecurityAlertKnowledge securityAlertKnowledge;
 
     protected UserProfileDTO currentUserProfile;
     private AlertListItemAdapter alertListItemAdapter;
@@ -297,7 +296,7 @@ public class AlertManagerFragment extends BaseFragment
         {
             int count = currentUserProfile.getUserAlertPlansAlertCount();
             alertPlanCountIcon.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
-            alertPlanCountIcon.setImageResource(securityAlertKnowledge.getStockAlertIcon(count));
+            alertPlanCountIcon.setImageResource(SecurityAlertKnowledge.getStockAlertIcon(count));
         }
     }
 
