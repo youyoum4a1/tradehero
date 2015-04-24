@@ -6,6 +6,7 @@ public class FacebookPermissionsConstants
     public static final String PUBLIC_PROFILE = "public_profile";
 
     public static final String PUBLISH_STREAM = "publish_stream";
+    public static final String PUBLISH_ACTIONS = "publish_actions";
 
     /**
      * To ask for the friends that use the app, with /{user-id}/friends
