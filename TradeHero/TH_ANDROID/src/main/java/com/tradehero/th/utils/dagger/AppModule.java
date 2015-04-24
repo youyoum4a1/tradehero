@@ -317,6 +317,8 @@ import java.util.Locale;
                         ToAnswerQuestionFragment.class,
                         AnswersSummaryFragment.class,
                         StockLearningHistoryFragment.class,
+                        OneQuestionFragment.class,
+                        AnswerQuestionFragment.class,
                         //Stock Learning
 
                         //China Build End
@@ -326,7 +328,7 @@ import java.util.Locale;
                         THUser.class,
                 },
         complete = false,
-        library = true // TODO remove this line
+        library = true
 )
 public class AppModule
 {

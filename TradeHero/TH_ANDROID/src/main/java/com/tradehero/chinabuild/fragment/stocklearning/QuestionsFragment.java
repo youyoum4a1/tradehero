@@ -94,16 +94,16 @@ public class QuestionsFragment extends DashboardFragment {
         if(lastNumber >= QuestionLoader.getLevelMaxNumber(numOfQuestionSet))
         {
             Bundle bundle = new Bundle();
-            bundle.putString(ToAnswerQuestionFragment.KEY_QUESTION_SET_LEVEL, QuestionLoader.getLevelName(numOfQuestionSet));
+            bundle.putString(AnswerQuestionFragment.KEY_QUESTION_SET_LEVEL, QuestionLoader.getLevelName(numOfQuestionSet));
             gotoDashboard(AnswersSummaryFragment.class, bundle);
         }
         else
         {
             Bundle bundle = new Bundle();
-            bundle.putString(ToAnswerQuestionFragment.KEY_QUESTION_SET_TYPE, ToAnswerQuestionFragment.TYPE_QUESTION_SET_NORMAL);
-            bundle.putString(ToAnswerQuestionFragment.KEY_QUESTION_SET_LEVEL, QuestionLoader.getLevelName(numOfQuestionSet));
-            bundle.putInt(ToAnswerQuestionFragment.KEY_QUESTION_CURRENT_ID, lastNumber);
-            gotoDashboard(ToAnswerQuestionFragment.class, bundle);
+            bundle.putString(AnswerQuestionFragment.KEY_QUESTION_SET_TYPE, AnswerQuestionFragment.TYPE_QUESTION_SET_NORMAL);
+            bundle.putString(AnswerQuestionFragment.KEY_QUESTION_SET_LEVEL, QuestionLoader.getLevelName(numOfQuestionSet));
+            bundle.putInt(AnswerQuestionFragment.KEY_QUESTION_CURRENT_ID, lastNumber);
+            gotoDashboard(AnswerQuestionFragment.class, bundle);
         }
     }
 }
