@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.api.alert.AlertCompactDTO;
-import com.tradehero.th.api.article.ArticleInfoDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
@@ -19,7 +18,6 @@ import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.fragments.discovery.ArticleItemView;
 import com.tradehero.th.fragments.news.NewsHeadlineViewLinear;
 import com.tradehero.th.fragments.news.NewsViewLinear;
 import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
@@ -99,26 +97,6 @@ public class AbstractDiscussionCompactItemViewLinearDTOFactory
                     {
                         return new DiscussionItemViewLinear.DTO(
                                 new DiscussionItemViewLinear.Requisite(
-                                        resources,
-                                        prettyTime,
-                                        discussionDTO,
-                                        translateFlags.canTranslate,
-                                        translateFlags.autoTranslate));
-                    }
-                });
-    }
-
-    @NonNull public Observable<AbstractDiscussionCompactItemViewLinear.DTO> createArticleItemViewDTO(
-            @NonNull final ArticleInfoDTO discussionDTO)
-    {
-        return shareTranslationHelper.getTranslateFlags(discussionDTO)
-                .map(new Func1<SocialShareTranslationHelper.TranslateFlags, AbstractDiscussionCompactItemViewLinear.DTO>()
-                {
-                    @Override
-                    public AbstractDiscussionCompactItemViewLinear.DTO call(SocialShareTranslationHelper.TranslateFlags translateFlags)
-                    {
-                        return new ArticleItemView.DTO(
-                                new ArticleItemView.Requisite(
                                         resources,
                                         prettyTime,
                                         discussionDTO,

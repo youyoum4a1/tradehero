@@ -17,15 +17,6 @@ import javax.inject.Singleton;
 
                 RegionalNewsSelectorView.class,
                 RegionalNewsSearchableSelectorView.class,
-
-                DiscoveryGameFragment.class,
-                MiniGameDefItemView.class,
-
-                DiscoveryArticleFragment.class,
-                ArticleItemView.class,
-                ArticleItemViewHolder.class,
-
-                DiscoveryFaqWebFragment.class,
         },
         library = true,
         complete = false
