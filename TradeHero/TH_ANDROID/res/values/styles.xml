@@ -588,10 +588,10 @@
 
 
   <style name="TH.ContentPartnersLogo">
-    <item name="android:minWidth">64dp</item>
-    <item name="android:minHeight">32dp</item>
+    <item name="android:minWidth">@dimen/size_8</item>
+    <item name="android:minHeight">@dimen/size_4</item>
     <item name="android:scaleType">fitCenter</item>
-    <item name="android:padding">2dp</item>
+    <item name="android:padding">@dimen/content_partner_padding</item>
     <item name="android:alpha">1.0</item>
   </style>
 
