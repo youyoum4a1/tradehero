@@ -18,11 +18,7 @@ abstract public class BaseSamsungPurchaserRx<
         SamsungPurchaseOrderType extends SamsungPurchaseOrder<SamsungSKUType>,
         SamsungOrderIdType extends SamsungOrderId,
         SamsungPurchaseType extends SamsungPurchase<SamsungSKUType, SamsungOrderIdType>>
-        extends BaseSamsungActorRx<PurchaseResult<
-        SamsungSKUType,
-        SamsungPurchaseOrderType,
-        SamsungOrderIdType,
-        SamsungPurchaseType>>
+        extends BaseSamsungActorRx
         implements SamsungPurchaserRx<
         SamsungSKUType,
         SamsungPurchaseOrderType,

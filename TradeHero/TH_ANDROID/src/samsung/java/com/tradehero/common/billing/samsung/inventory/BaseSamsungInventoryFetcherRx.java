@@ -26,9 +26,7 @@ import rx.functions.Func1;
 abstract public class BaseSamsungInventoryFetcherRx<
         SamsungSKUType extends SamsungSKU,
         SamsungProductDetailType extends SamsungProductDetail<SamsungSKUType>>
-        extends BaseSamsungActorRx<ProductInventoryResult<
-        SamsungSKUType,
-        SamsungProductDetailType>>
+        extends BaseSamsungActorRx
         implements SamsungInventoryFetcherRx<
         SamsungSKUType,
         SamsungProductDetailType>

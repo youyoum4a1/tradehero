@@ -9,7 +9,7 @@ import rx.Observable;
 import rx.functions.Func1;
 
 abstract public class BaseSamsungBillingAvailableTesterRx
-        extends BaseSamsungActorRx<BillingTestResult>
+        extends BaseSamsungActorRx
         implements SamsungBillingAvailableTesterRx
 {
     //<editor-fold desc="Description">

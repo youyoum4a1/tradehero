@@ -21,10 +21,7 @@ abstract public class BaseSamsungProductIdentifierFetcherRx<
         SamsungSKUListKeyType extends SamsungSKUListKey,
         SamsungSKUType extends SamsungSKU,
         SamsungSKUListType extends BaseSamsungSKUList<SamsungSKUType>>
-        extends BaseSamsungActorRx<ProductIdentifierListResult<
-        SamsungSKUListKeyType,
-        SamsungSKUType,
-        SamsungSKUListType>>
+        extends BaseSamsungActorRx
         implements SamsungProductIdentifierFetcherRx<
         SamsungSKUListKeyType,
         SamsungSKUType,
