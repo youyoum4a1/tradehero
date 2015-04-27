@@ -218,22 +218,22 @@ public class BaseFragment extends Fragment
         }
     }
 
-    protected final void setActionBarTitle(String string)
+    public final void setActionBarTitle(String string)
     {
         actionBarOwnerMixin.setActionBarTitle(string);
     }
 
-    protected final void setActionBarTitle(@StringRes int stringResId)
+    public final void setActionBarTitle(@StringRes int stringResId)
     {
         actionBarOwnerMixin.setActionBarTitle(stringResId);
     }
 
-    protected void setActionBarSubtitle(@StringRes int subTitleResId)
+    public void setActionBarSubtitle(@StringRes int subTitleResId)
     {
         actionBarOwnerMixin.setActionBarSubtitle(subTitleResId);
     }
 
-    protected void setActionBarSubtitle(String subtitle)
+    public void setActionBarSubtitle(String subtitle)
     {
         actionBarOwnerMixin.setActionBarSubtitle(subtitle);
     }
