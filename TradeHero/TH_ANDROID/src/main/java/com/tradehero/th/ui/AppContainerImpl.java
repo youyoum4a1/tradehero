@@ -37,7 +37,7 @@ public class AppContainerImpl implements AppContainer
 
         try
         {
-            resideMenu.setBackground(R.drawable.parallax_bg);
+            resideMenu.setBackground(R.drawable.login_bg_1);
         } catch (OutOfMemoryError e)
         {
             Timber.e(e, "Failed to load parallax_bg");
