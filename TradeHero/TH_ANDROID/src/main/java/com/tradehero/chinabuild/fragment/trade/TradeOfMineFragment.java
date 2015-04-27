@@ -320,7 +320,9 @@ public class TradeOfMineFragment extends DashboardFragment
         {
             MainActivity.setGetPositionDTO(value);
             initPositionSecurity(value);
-            listView.onRefreshComplete();
+            if(listView!=null) {
+                listView.onRefreshComplete();
+            }
         }
 
         @Override public void onDTOReceived(

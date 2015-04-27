@@ -21,7 +21,7 @@ public class SecuritySearchListAdapter extends BaseAdapter
 {
     private Context context;
     private LayoutInflater inflater;
-    private SecurityCompactDTOList securityCompactDTOs;
+    private SecurityCompactDTOList securityCompactDTOs = new SecurityCompactDTOList();
 
     public SecuritySearchListAdapter(Context context, SecurityCompactDTOList list)
     {
@@ -44,16 +44,17 @@ public class SecuritySearchListAdapter extends BaseAdapter
         notifyDataSetChanged();
     }
 
-    public void setSecurityList(ArrayList<SecurityCompactDTO> list)
-    {
+    public void setSecurityList(ArrayList<SecurityCompactDTO> list) {
         if(list ==  null )return;
         this.securityCompactDTOs = new SecurityCompactDTOList();
         this.securityCompactDTOs.addAll(list);
         notifyDataSetChanged();
     }
 
-    public void addItems(SecurityCompactDTOList listAdd)
-    {
+    public void addItems(SecurityCompactDTOList listAdd) {
+        if(listAdd==null){
+            return;
+        }
         this.securityCompactDTOs.addAll(listAdd);
         notifyDataSetChanged();
     }

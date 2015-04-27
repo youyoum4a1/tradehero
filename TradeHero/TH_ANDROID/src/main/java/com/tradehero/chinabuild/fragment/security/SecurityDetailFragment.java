@@ -1354,14 +1354,17 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public void enterBuySale(boolean isBuy)
-    {
+    public void enterBuySale(boolean isBuy) {
 
         if (!isBuyOrSaleValid(isBuy)) return;
         Bundle bundle = new Bundle();
+        if(portfolioCompactDTO!=null&& portfolioCompactDTO.getPortfolioId()!=null) {
+            bundle.putBundle(BuySaleSecurityFragment.KEY_PORTFOLIO_ID, portfolioCompactDTO.getPortfolioId().getArgs());
+        }else{
+            return;
+        }
         bundle.putBundle(BuySaleSecurityFragment.KEY_SECURITY_ID, securityId.getArgs());
         bundle.putBundle(BuySaleSecurityFragment.KEY_QUOTE_DTO, quoteDTO.getArgs());
-        bundle.putBundle(BuySaleSecurityFragment.KEY_PORTFOLIO_ID, portfolioCompactDTO.getPortfolioId().getArgs());
         bundle.putBoolean(BuySaleSecurityFragment.KEY_BUY_OR_SALE, isBuy);
         bundle.putString(BuySaleSecurityFragment.KEY_SECURITY_NAME, securityName);
         bundle.putInt(BuySaleSecurityFragment.KEY_COMPETITION_ID, competitionID);
@@ -1578,12 +1581,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             middleCallbackUpdate = watchlistServiceWrapper.createWatchlistEntry(
                     watchPositionItemForm,
                     createWatchlistUpdateCallback());
-        } catch (NumberFormatException ex)
-        {
+        } catch (NumberFormatException ex) {
             THToast.show(getString(R.string.wrong_number_format));
             dismissProgress();
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
             THToast.show(ex.getMessage());
             dismissProgress();
         }
@@ -2240,8 +2241,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     public void displayPosition(PositionDTO positionDTO)
     {
-        try
-        {
+        try {
             THSignedNumber roi = THSignedPercentage.builder(positionDTO.getROISinceInception() * 100)
                     .withSign()
                     .signTypeArrow()
@@ -2253,9 +2253,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             tvPositionLastTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.latestTradeUtc));
             tvPositionHoldTime.setText(getResources().getString(R.string.position_hold_days,
                     DateUtils.getNumberOfDaysBetweenDates(positionDTO.earliestTradeUtc, positionDTO.getLatestHoldDate())));
-        } catch (Exception e)
-        {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
