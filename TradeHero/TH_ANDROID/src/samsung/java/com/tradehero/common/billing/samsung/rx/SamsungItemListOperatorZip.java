@@ -31,21 +31,19 @@ public class SamsungItemListOperatorZip
     {
         // We probably need to control when each operator is called
         // Ideally, the next operator should be called only when the previous has completed
-        return Observable.zip(
-                Observable.from(queryGroups),
-                Observable.from(queryGroups).flatMap(new Func1<ItemListQueryGroup, Observable<? extends List<ItemVo>>>()
+        return Observable.from(queryGroups)
+                .flatMap(new Func1<ItemListQueryGroup, Observable<Pair<ItemListQueryGroup, List<ItemVo>>>>()
                 {
-                    @Override public Observable<? extends List<ItemVo>> call(ItemListQueryGroup queryGroup)
+                    @Override public Observable<Pair<ItemListQueryGroup, List<ItemVo>>> call(final ItemListQueryGroup queryGroup)
                     {
-                        return Observable.create(
-                                new SamsungItemListOperator(context, mode, queryGroup));
-                    }
-                }),
-                new Func2<ItemListQueryGroup, List<ItemVo>, Pair<ItemListQueryGroup, List<ItemVo>>>()
-                {
-                    @Override public Pair<ItemListQueryGroup, List<ItemVo>> call(ItemListQueryGroup t1, List<ItemVo> t2)
-                    {
-                        return new Pair<>(t1, t2);
+                        return Observable.create(new SamsungItemListOperator(context, mode, queryGroup))
+                                .map(new Func1<List<ItemVo>, Pair<ItemListQueryGroup, List<ItemVo>>>()
+                                {
+                                    @Override public Pair<ItemListQueryGroup, List<ItemVo>> call(List<ItemVo> itemVos)
+                                    {
+                                        return new Pair<>(queryGroup, itemVos);
+                                    }
+                                });
                     }
                 });
     }
