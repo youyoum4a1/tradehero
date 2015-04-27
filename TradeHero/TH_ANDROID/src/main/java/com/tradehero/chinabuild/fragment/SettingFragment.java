@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.igexin.sdk.PushManager;
 import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
@@ -215,9 +216,11 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
         if(THSharePreferenceManager.isNotificationsOn(context)){
             THSharePreferenceManager.setNotificaitonsStatus(context, false);
             mNotificationTB.setBackgroundResource(R.drawable.setting_notificaitons_off);
+            PushManager.getInstance().turnOffPush(context);
         }else{
             THSharePreferenceManager.setNotificaitonsStatus(context, true);
             mNotificationTB.setBackgroundResource(R.drawable.setting_notifications_on);
+            PushManager.getInstance().turnOnPush(context);
         }
     }
 
