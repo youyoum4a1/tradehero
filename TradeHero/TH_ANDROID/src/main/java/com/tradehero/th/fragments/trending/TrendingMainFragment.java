@@ -220,7 +220,8 @@ public class TrendingMainFragment extends DashboardFragment
         {
             tabViewPager.setOffscreenPageLimit(0);
         }
-        pagerSlidingTabStrip.setCustomTabView(lastType.equals(TrendingTabType.STOCK) ? R.layout.th_page_indicator : R.layout.th_tab_indicator, android.R.id.title);
+        pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
+        pagerSlidingTabStrip.setDistributeEvenly(!lastType.equals(TrendingTabType.STOCK));
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
         if (selectedPageIndex != -1) {
