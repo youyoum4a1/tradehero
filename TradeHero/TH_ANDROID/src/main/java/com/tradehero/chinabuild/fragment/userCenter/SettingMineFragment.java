@@ -325,13 +325,14 @@ public class SettingMineFragment extends DashboardFragment {
         }
     }
 
-    protected void linkWithApplicable()
-    {
+    protected void linkWithApplicable() {
         fetchPortfolio();
     }
 
-    private void linkWith(PortfolioCompactDTO cached)
-    {
+    private void linkWith(PortfolioCompactDTO cached) {
+        if(tvAllAmount==null || tvEarning==null){
+            return;
+        }
         if (cached != null)
         {
             String valueString = String.format("%s %,.0f", cached.getNiceCurrency(),

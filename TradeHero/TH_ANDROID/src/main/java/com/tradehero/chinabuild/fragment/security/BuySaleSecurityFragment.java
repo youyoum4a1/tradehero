@@ -444,16 +444,16 @@ public class BuySaleSecurityFragment extends DashboardFragment
         }
     }
 
-    public void setNoTradeHistroy()
-    {
+    public void setNoTradeHistroy() {
         llBuySaleLine8.setVisibility(View.GONE);
         llBuySaleLine9.setVisibility(View.GONE);
     }
 
-    private void updateRate()
-    {
-        if (securityCompactDTO != null)
-        {
+    private void updateRate() {
+        if(tvBuySaleRate==null){
+            return;
+        }
+        if (securityCompactDTO != null) {
             tvBuySaleRate.setText("" + securityCompactDTO.risePercent);
             THSignedNumber roi = THSignedPercentage.builder(securityCompactDTO.risePercent * 100)
                     .withSign()
@@ -895,19 +895,15 @@ public class BuySaleSecurityFragment extends DashboardFragment
         }
     }
 
-    private void onFinish()
-    {
-        if (mTransactionDialog != null)
-        {
+    private void onFinish() {
+        if (mTransactionDialog != null) {
             mTransactionDialog.dismiss();
         }
-        mTransactionDialog.dismiss();
         isSending = false;
     }
 
 
-    private void showBuyDirctlyLoadingDialog()
-    {
+    private void showBuyDirctlyLoadingDialog() {
         mBuyDirectlyDialog = progressDialogUtil.show(BuySaleSecurityFragment.this.getActivity(),
                 R.string.processing, R.string.alert_dialog_please_wait);
         mBuyDirectlyDialog.setCancelable(true);
@@ -921,13 +917,10 @@ public class BuySaleSecurityFragment extends DashboardFragment
         isLoadingBuyDirectly = true;
     }
 
-    private void onFinishBuyDirectlyLoading()
-    {
-        if (mBuyDirectlyDialog != null)
-        {
+    private void onFinishBuyDirectlyLoading() {
+        if (mBuyDirectlyDialog != null) {
             mBuyDirectlyDialog.dismiss();
         }
-        mBuyDirectlyDialog.dismiss();
         isLoadingBuyDirectly = false;
     }
 
@@ -1003,19 +996,21 @@ public class BuySaleSecurityFragment extends DashboardFragment
         getPositionDTOCallback = null;
     }
 
-    public class GetPositionCallback implements Callback<GetPositionsDTO>
-    {
-        @Override public void success(GetPositionsDTO getPositionsDTO, Response response)
-        {
+    public class GetPositionCallback implements Callback<GetPositionsDTO> {
+        @Override public void success(GetPositionsDTO getPositionsDTO, Response response) {
             onFinish();
             MainActivity.setGetPositionDTO(getPositionsDTO);
-            popCurrentFragment();
+            if(getActivity()!=null) {
+                popCurrentFragment();
+            }
         }
 
         @Override public void failure(RetrofitError retrofitError)
         {
             onFinish();
-            popCurrentFragment();
+            if(getActivity()!=null) {
+                popCurrentFragment();
+            }
         }
     }
 

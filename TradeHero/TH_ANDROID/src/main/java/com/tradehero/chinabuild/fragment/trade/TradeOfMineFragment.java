@@ -338,7 +338,9 @@ public class TradeOfMineFragment extends DashboardFragment
                 @NotNull GetPositionsDTOKey key,
                 @NotNull Throwable error)
         {
-            listView.onRefreshComplete();
+            if(listView!=null) {
+                listView.onRefreshComplete();
+            }
         }
     }
 

@@ -37,7 +37,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
     private String currentQuestionLevel = QuestionLoader.LEVEL_ONE;
     private String questionSetType = "";
-    private int currentQuestionIndex = -1;
+    private int beginIndex = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,26 +61,36 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
             }
             if (questionSetType.equals(TYPE_QUESTION_SET_NORMAL)) {
                 currentQuestionLevel = bundle.getString(KEY_QUESTION_SET_LEVEL, QuestionLoader.LEVEL_ONE);
-                currentQuestionIndex = bundle.getInt(KEY_QUESTION_CURRENT_ID, -1);
                 arrayListQuestion = QuestionLoader.getInstance(getActivity()).getQuestionList(currentQuestionLevel);
             }
             if (questionSetType.equals(TYPE_QUESTION_SET_FAILED)) {
                 currentQuestionLevel = bundle.getString(KEY_QUESTION_SET_LEVEL, QuestionLoader.LEVEL_ONE_FAILS);
-                currentQuestionIndex = bundle.getInt(KEY_QUESTION_CURRENT_ID, -1);
+
                 arrayListQuestion = QuestionLoader.getInstance(getActivity()).getQuestionFailsList(currentQuestionLevel);
             }
-
         } else {
             popCurrentFragment();
         }
+        beginIndex = bundle.getInt(KEY_QUESTION_CURRENT_ID, 0);
     }
 
     private void initViewPager(){
         for(Question question : arrayListQuestion){
             OneQuestionFragment fragment = new OneQuestionFragment();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(OneQuestionFragment.KEY_ONE_QUESTION, question);
+            fragment.setArguments(bundle);
             questionFragments.add(fragment);
         }
         questionSetVP.setAdapter(new QuestionsViewPagerAdapter(getActivity().getSupportFragmentManager()));
+        questionSetVP.setOnPageChangeListener(this);
+        refreshHeadView(beginIndex);
+        questionSetVP.setCurrentItem(beginIndex);
+    }
+
+    private void refreshHeadView(int index){
+        String menuTitle = getString(R.string.question_percent, index + 1, arrayListQuestion.size());
+        setHeadViewMiddleMain(menuTitle);
     }
 
     @Override
@@ -95,7 +105,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
     @Override
     public void onPageScrollStateChanged(int i) {
-
+        refreshHeadView(i);
     }
 
     public class QuestionsViewPagerAdapter extends FragmentPagerAdapter {
