@@ -10,7 +10,11 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.utils.Constants;
+import org.xwalk.core.XWalkPreferences;
+import org.xwalk.core.XWalkResourceClient;
 import org.xwalk.core.XWalkView;
+import timber.log.Timber;
 
 public class XWalkWebViewFragment extends BaseFragment
 {
@@ -32,6 +36,12 @@ public class XWalkWebViewFragment extends BaseFragment
         return null;
     }
 
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        XWalkPreferences.setValue(XWalkPreferences.REMOTE_DEBUGGING, !Constants.RELEASE);
+    }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_xwalkwebview, container, false);
@@ -41,6 +51,7 @@ public class XWalkWebViewFragment extends BaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+        xWalkView.setResourceClient(new CustomResourceClient(xWalkView));
 
         xWalkView.load(getLoadingUrl(), null);
     }
@@ -50,27 +61,59 @@ public class XWalkWebViewFragment extends BaseFragment
         return getUrl(getArguments());
     }
 
-
-    @Override public void onPause() {
+    @Override public void onPause()
+    {
         super.onPause();
-        if (xWalkView != null) {
+        if (xWalkView != null)
+        {
             xWalkView.pauseTimers();
             xWalkView.onHide();
         }
     }
 
-    @Override public void onResume() {
+    @Override public void onResume()
+    {
         super.onResume();
-        if (xWalkView != null) {
+        if (xWalkView != null)
+        {
             xWalkView.resumeTimers();
             xWalkView.onShow();
         }
     }
 
-    @Override public void onDestroy() {
+    @Override public void onDestroy()
+    {
         super.onDestroy();
-        if (xWalkView != null) {
+        if (xWalkView != null)
+        {
             xWalkView.onDestroy();
+        }
+    }
+
+    private static class CustomResourceClient extends XWalkResourceClient
+    {
+
+        public CustomResourceClient(XWalkView view)
+        {
+            super(view);
+        }
+
+        @Override public void onLoadStarted(XWalkView view, String url)
+        {
+            super.onLoadStarted(view, url);
+            Timber.d("Start loading: %s", url);
+        }
+
+        @Override public boolean shouldOverrideUrlLoading(XWalkView view, String url)
+        {
+            Timber.d("Override loading: %s", url);
+            return super.shouldOverrideUrlLoading(view, url);
+        }
+
+        @Override public void onLoadFinished(XWalkView view, String url)
+        {
+            super.onLoadFinished(view, url);
+            Timber.d("Finished loading: %s", url);
         }
     }
 }

@@ -67,6 +67,13 @@ public enum RootFragmentType
             null,
             AnalyticsConstants.TabBar_ContestCenter),
     // Side menu
+    POPQUIZ(R.layout.residemenu_text_item,
+            R.string.dashboard_popquiz,
+            R.string.dashboard_popquiz_key,
+            R.color.transparent,
+            null,
+            PopQuizActivity.class,
+            AnalyticsConstants.TabBar_Store),
     HOME(R.layout.residemenu_text_item,
             R.string.dashboard_home,
             R.string.dashboard_home_key,
@@ -101,13 +108,6 @@ public enum RootFragmentType
             R.color.transparent,
             null,
             StoreScreenActivity.class,
-            AnalyticsConstants.TabBar_Store),
-    POPQUIZ(R.layout.residemenu_text_item,
-            R.string.dashboard_popquiz,
-            R.string.dashboard_popquiz_key,
-            R.color.transparent,
-            null,
-            PopQuizActivity.class,
             AnalyticsConstants.TabBar_Store),
     SETTING(R.layout.residemenu_item_settings,
             R.string.dashboard_menu_settings,
@@ -167,7 +167,7 @@ public enum RootFragmentType
                 forResideMenu.add(type);
             }
         }
-        if(!Constants.RELEASE && !Constants.DOGFOOD_BUILD)
+        if(!Constants.RELEASE)
         {
             forResideMenu.remove(POPQUIZ);
         }
