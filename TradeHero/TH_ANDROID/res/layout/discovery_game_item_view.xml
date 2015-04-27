@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.tradehero.th.fragments.discovery.MiniGameDefItemView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/discovery_minigame_item_image_height"
-    android:scaleType="centerCrop"
-    tools:src="@color/red"
-    >
-</com.tradehero.th.fragments.discovery.MiniGameDefItemView>

@@ -252,8 +252,6 @@
   <string name="discovery_discussions">Discussions</string>
   <string name="discovery">Discover</string>
   <string name="discovery_learning">Videos</string>
-  <string name="discovery_games">@string/games</string>
-  <string name="discovery_articles">@string/articles</string>
   <string name="onboard_exchange_title">To Help Get You Started</string>
   <string name="onboard_exchange_summary1">Which exchange are you interested in ?</string>
   <string name="onboard_exchange_summary2">Which sector are you interested in ?</string>
@@ -276,10 +274,6 @@
   <!-- Residemenu -->
   <string name="residemenu_footer_title">Content Partners:</string>
 
-  <!-- Discovery games -->
-  <string name="games">Games</string>
-  <string name="coming_soon">Coming soon!</string>
-  <string name="articles">Articles</string>
   <string name="best_roi">ROI:</string>
   <string name="content_sharing_started">Sharing&#8230;</string>
   <string name="content_shared">Shared!</string>

@@ -139,7 +139,6 @@ public class AnalyticsConstants
     public static final String DiscoverNewsViewed = "DiscoverNewsViewed";//
     public static final String DiscoverDiscussionsViewed = "DiscoverDiscussionsViewed";//
     public static final String AchievementNotificationScreen = "AchievementNotificationScreen";//
-    public static final String GamePlaySummary = "GamePlaySummary";
     public static final String NewsMotleyFool = "NewsMotleyFool";
     public static final String NewsSeekingAlpha = "NewsSeekingAlpha";
     public static final String NewsSecurityScreen = "SecurityScreen";
@@ -171,7 +170,5 @@ public class AnalyticsConstants
     public static final String Level = "Level";//
     public static final String Type = "Type";//
     public static final String InterestedExchange = "InterestedExchange";//
-    public static final String GamePlayed = "GamePlayed";//
-    public static final String TimeInGame = "TimeInGame";//
     public static final String PreviousScreen = "PreviousScreen";//
 }

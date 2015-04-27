@@ -23,9 +23,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
-import com.tradehero.th.api.games.ViralMiniGameDefDTO;
-import com.tradehero.th.api.games.ViralMiniGameDefDTOList;
-import com.tradehero.th.api.games.ViralMiniGameDefListKey;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -35,11 +32,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
-import com.tradehero.th.fragments.games.ViralGamePopupDialogFragment;
 import com.tradehero.th.fragments.position.FXMainPositionListFragment;
-import com.tradehero.th.persistence.games.ViralMiniGameDefListCache;
-import com.tradehero.th.persistence.prefs.ShowViralGameDialog;
-import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
@@ -72,8 +65,6 @@ public class TrendingMainFragment extends DashboardFragment
 
     @InjectView(R.id.pager) ViewPager tabViewPager;
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
-    @Inject @ShowViralGameDialog TimingIntervalPreference showViralGameTimingIntervalPreference;
-    @Inject Lazy<ViralMiniGameDefListCache> viralMiniGameDefListCache;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
     @RouteProperty("pageIndex") int selectedPageIndex = -1;
@@ -83,7 +74,6 @@ public class TrendingMainFragment extends DashboardFragment
 
     private TradingStockPagerAdapter tradingStockPagerAdapter;
     private TradingFXPagerAdapter tradingFXPagerAdapter;
-    private Subscription viralSubscription;
     private boolean fetchedFXPortfolio = false;
     private Observable<UserProfileDTO> userProfileObservable;
     @Nullable private OwnedPortfolioId fxPortfolioId;
@@ -236,36 +226,6 @@ public class TrendingMainFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        if (showViralGameTimingIntervalPreference.isItTime())
-        {
-            viralSubscription = AppObservable.bindFragment(this, viralMiniGameDefListCache.get().get(new ViralMiniGameDefListKey()))
-                    .take(1)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<Pair<ViralMiniGameDefListKey, ViralMiniGameDefDTOList>>()
-                    {
-                        @Override public void onCompleted()
-                        {
-                            // Do nothing.
-                        }
-
-                        @Override public void onError(Throwable e)
-                        {
-                            // Do nothing.
-                        }
-
-                        @Override public void onNext(
-                                Pair<ViralMiniGameDefListKey, ViralMiniGameDefDTOList> viralMiniGameDefListKeyViralMiniGameDefDTOListPair)
-                        {
-                            ViralMiniGameDefDTO viralMiniGameDefDTO =
-                                    viralMiniGameDefListKeyViralMiniGameDefDTOListPair.second.getRandomViralMiniGameDefDTO();
-                            if (viralMiniGameDefDTO != null)
-                            {
-                                ViralGamePopupDialogFragment f = ViralGamePopupDialogFragment.newInstance(viralMiniGameDefDTO.getDTOKey(), true);
-                                f.show(getChildFragmentManager(), ViralGamePopupDialogFragment.class.getName());
-                            }
-                        }
-                    });
-        }
         showToolbarSpinner();
     }
 
@@ -382,7 +342,6 @@ public class TrendingMainFragment extends DashboardFragment
 
     @Override public void onPause()
     {
-        unsubscribe(viralSubscription);
         hideToolbarSpinner();
         super.onPause();
     }

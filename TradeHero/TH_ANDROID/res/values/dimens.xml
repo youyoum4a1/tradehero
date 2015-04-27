@@ -167,5 +167,4 @@
   <dimen name="dashboard_tabhost_height">@dimen/size_6</dimen>
   <dimen name="dashboard_red_dot_dimen">5dp</dimen>
   <dimen name="discovery_news_swipe_indicator_height">24dp</dimen>
-  <dimen name="discovery_minigame_item_image_height">@dimen/size_12</dimen>
 </resources>
