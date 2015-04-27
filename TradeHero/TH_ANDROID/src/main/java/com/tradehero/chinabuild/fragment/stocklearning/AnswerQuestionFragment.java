@@ -8,8 +8,11 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.chinabuild.fragment.stocklearning.question.questionUtils.Question;
 import com.tradehero.chinabuild.fragment.stocklearning.question.questionUtils.QuestionLoader;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 
@@ -38,6 +41,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
     private String currentQuestionLevel = QuestionLoader.LEVEL_ONE;
     private String questionSetType = "";
     private int beginIndex = 0;
+    private int currentIndex = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,12 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
         questionSetVP = (ViewPager) view.findViewById(R.id.viewpager_questions);
         initViewPager();
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        refreshHeadView(beginIndex);
     }
 
     private void initArguments() {
@@ -72,6 +82,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
             popCurrentFragment();
         }
         beginIndex = bundle.getInt(KEY_QUESTION_CURRENT_ID, 0);
+        currentIndex = beginIndex;
     }
 
     private void initViewPager(){
@@ -84,7 +95,6 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
         }
         questionSetVP.setAdapter(new QuestionsViewPagerAdapter(getActivity().getSupportFragmentManager()));
         questionSetVP.setOnPageChangeListener(this);
-        refreshHeadView(beginIndex);
         questionSetVP.setCurrentItem(beginIndex);
     }
 
@@ -95,17 +105,19 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
     @Override
     public void onPageScrolled(int i, float v, int i2) {
-
+        if(currentIndex!=i){
+            currentIndex = i;
+            refreshHeadView(currentIndex);
+        }
     }
 
     @Override
     public void onPageSelected(int i) {
-
     }
 
     @Override
     public void onPageScrollStateChanged(int i) {
-        refreshHeadView(i);
+
     }
 
     public class QuestionsViewPagerAdapter extends FragmentPagerAdapter {

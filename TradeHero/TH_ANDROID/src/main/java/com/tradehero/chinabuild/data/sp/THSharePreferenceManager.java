@@ -243,6 +243,9 @@ public class THSharePreferenceManager {
     public final static String GUIDE_MAIN_TAB_FOUR = "guide_main_tab_four";
 
     public static boolean isGuideAvailable(Context context, String key){
+        if(context==null){
+            return false;
+        }
         SharedPreferences sp = context.getSharedPreferences(TH_SP_GUIDE_NAME, Context.MODE_PRIVATE);
         boolean result = sp.getBoolean(key, true);
         return result;
