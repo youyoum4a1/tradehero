@@ -19,7 +19,6 @@ import javax.inject.Singleton;
                 AlertManagerActivity.class,
                 AuthenticationActivity.class,
                 DashboardActivity.class,
-                DiscoveryFaqWebActivity.class,
                 FacebookShareActivity.class,
                 FriendsInvitationActivity.class,
                 HomeActivity.class,
