@@ -10,7 +10,8 @@ import com.tradehero.common.billing.samsung.SamsungOrderId;
 import com.tradehero.common.billing.samsung.SamsungPurchase;
 import com.tradehero.common.billing.samsung.SamsungPurchaseOrder;
 import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.common.billing.samsung.rx.SamsungPaymentOperator;
+import com.tradehero.common.billing.samsung.rx.PurchaseQueryPackage;
+import com.tradehero.common.billing.samsung.rx.SamsungIapHelperFacade;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -55,8 +56,8 @@ abstract public class BaseSamsungPurchaserRx<
             SamsungPurchaseType>> get()
     {
         SamsungSKUType sku = purchaseOrder.getProductIdentifier();
-        return Observable.create(
-                new SamsungPaymentOperator(
+        return SamsungIapHelperFacade.getPurchase(
+                new PurchaseQueryPackage(
                         context,
                         mode,
                         sku.groupId,

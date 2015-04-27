@@ -11,7 +11,7 @@ import com.tradehero.common.billing.samsung.SamsungOrderId;
 import com.tradehero.common.billing.samsung.SamsungPurchase;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.rx.InboxListQueryGroup;
-import com.tradehero.common.billing.samsung.rx.SamsungInboxOperatorZip;
+import com.tradehero.common.billing.samsung.rx.SamsungIapHelperFacade;
 import java.util.List;
 import rx.Observable;
 import rx.functions.Func1;
@@ -39,8 +39,7 @@ abstract public class BaseSamsungPurchaseFetcherRx<
 
     @NonNull @Override public Observable<PurchaseFetchResult<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType>> get()
     {
-        return new SamsungInboxOperatorZip(context, mode, getInboxListQueryGroups())
-                .getInboxItems()
+        return SamsungIapHelperFacade.getInboxes(context, mode, getInboxListQueryGroups())
                 .flatMap(new Func1<Pair<InboxListQueryGroup, Observable<InboxVo>>, Observable<? extends SamsungPurchaseIncompleteType>>()
                 {
                     @Override public Observable<? extends SamsungPurchaseIncompleteType> call(

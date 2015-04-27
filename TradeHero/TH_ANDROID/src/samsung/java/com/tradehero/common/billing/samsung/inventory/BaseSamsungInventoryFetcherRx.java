@@ -6,12 +6,12 @@ import android.util.Pair;
 import com.sec.android.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
-import com.tradehero.common.billing.samsung.SamsungItemGroup;
 import com.tradehero.common.billing.samsung.SamsungBillingMode;
+import com.tradehero.common.billing.samsung.SamsungItemGroup;
 import com.tradehero.common.billing.samsung.SamsungProductDetail;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.rx.ItemListQueryGroup;
-import com.tradehero.common.billing.samsung.rx.SamsungItemListOperatorZip;
+import com.tradehero.common.billing.samsung.rx.SamsungIapHelperFacade;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,8 +55,7 @@ abstract public class BaseSamsungInventoryFetcherRx<
             SamsungSKUType,
             SamsungProductDetailType>> get()
     {
-        return new SamsungItemListOperatorZip(context, mode, getItemListQueryGroups())
-                .getItems()
+        return SamsungIapHelperFacade.getItems(context, mode, getItemListQueryGroups())
                 .flatMap(new Func1<Pair<ItemListQueryGroup, List<ItemVo>>, Observable<? extends Map<SamsungSKUType, SamsungProductDetailType>>>()
                 {
                     @Override public Observable<? extends Map<SamsungSKUType, SamsungProductDetailType>> call(Pair<ItemListQueryGroup, List<ItemVo>> pair)
