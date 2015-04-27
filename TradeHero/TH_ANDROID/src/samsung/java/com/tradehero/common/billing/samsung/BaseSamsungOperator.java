@@ -7,10 +7,10 @@ import com.sec.android.iap.lib.helper.SamsungIapHelper;
 public class BaseSamsungOperator
 {
     @NonNull protected final Context context;
-    protected final int mode;
+    @SamsungBillingMode protected final int mode;
 
     //<editor-fold desc="Constructors">
-    public BaseSamsungOperator(@NonNull Context context, int mode)
+    public BaseSamsungOperator(@NonNull Context context, @SamsungBillingMode int mode)
     {
         this.context = context;
         this.mode = mode;

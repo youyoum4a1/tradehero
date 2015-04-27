@@ -6,6 +6,7 @@ import android.util.Pair;
 import com.sec.android.iap.lib.vo.InboxVo;
 import com.tradehero.common.billing.purchasefetch.PurchaseFetchResult;
 import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungOrderId;
 import com.tradehero.common.billing.samsung.SamsungPurchase;
 import com.tradehero.common.billing.samsung.SamsungSKU;
@@ -30,7 +31,7 @@ abstract public class BaseSamsungPurchaseFetcherRx<
     public BaseSamsungPurchaseFetcherRx(
             int requestCode,
             @NonNull Context context,
-            int mode)
+            @SamsungBillingMode int mode)
     {
         super(requestCode, context, mode);
     }

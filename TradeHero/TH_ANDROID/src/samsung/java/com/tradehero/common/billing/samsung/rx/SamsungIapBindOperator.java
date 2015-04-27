@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.sec.android.iap.lib.listener.OnIapBindListener;
 import com.tradehero.common.billing.samsung.BaseSamsungOperator;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.exception.SamsungBindException;
 import rx.Observable;
 import rx.Subscriber;
@@ -13,7 +14,7 @@ public class SamsungIapBindOperator extends BaseSamsungOperator
     implements Observable.OnSubscribe<Integer>
 {
     //<editor-fold desc="Constructors">
-    public SamsungIapBindOperator(@NonNull Context context, int mode)
+    public SamsungIapBindOperator(@NonNull Context context, @SamsungBillingMode int mode)
     {
         super(context, mode);
     }

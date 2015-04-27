@@ -7,6 +7,7 @@ import com.sec.android.iap.lib.listener.OnGetItemListener;
 import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.samsung.BaseSamsungOperator;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.exception.SamsungItemListException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class SamsungItemListOperator extends BaseSamsungOperator
     //<editor-fold desc="Constructors">
     public SamsungItemListOperator(
             @NonNull Context context,
-            int mode,
+            @SamsungBillingMode int mode,
             @NonNull ItemListQueryGroup queryGroup)
     {
         this(context,

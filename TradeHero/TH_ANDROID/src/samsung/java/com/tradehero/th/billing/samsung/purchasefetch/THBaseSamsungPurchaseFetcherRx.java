@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.sec.android.iap.lib.vo.InboxVo;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.purchasefetch.BaseSamsungPurchaseFetcherRx;
 import com.tradehero.common.billing.samsung.rx.InboxListQueryGroup;
@@ -40,7 +41,7 @@ public class THBaseSamsungPurchaseFetcherRx
     public THBaseSamsungPurchaseFetcherRx(
             int requestCode,
             @NonNull Context context,
-            int mode,
+            @SamsungBillingMode int mode,
             @NonNull StringSetPreference processingPurchaseStringSet)
     {
         super(requestCode, context, mode);

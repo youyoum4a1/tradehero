@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungOrderId;
 import com.tradehero.common.billing.samsung.SamsungPurchase;
 import com.tradehero.common.billing.samsung.SamsungPurchaseOrder;
@@ -32,7 +33,7 @@ abstract public class BaseSamsungPurchaserRx<
     public BaseSamsungPurchaserRx(
             int requestCode,
             @NonNull Context context,
-            int mode,
+            @SamsungBillingMode int mode,
             @NonNull SamsungPurchaseOrderType purchaseOrder,
             boolean showSucessDialog)
     {

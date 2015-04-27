@@ -3,6 +3,7 @@ package com.tradehero.th.billing.samsung.purchase;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.vo.PurchaseVo;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.purchase.BaseSamsungPurchaserRx;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
@@ -28,7 +29,7 @@ public class THBaseSamsungPurchaserRx
     public THBaseSamsungPurchaserRx(
             int requestCode,
             @NonNull Context context,
-            int mode,
+            @SamsungBillingMode int mode,
             @NonNull THSamsungPurchaseOrder purchaseOrder,
             boolean showSucessDialog,
             @NonNull StringSetPreference processingPurchaseStringSet)

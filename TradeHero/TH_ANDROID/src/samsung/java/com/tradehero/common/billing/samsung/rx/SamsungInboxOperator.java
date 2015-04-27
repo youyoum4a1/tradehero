@@ -7,6 +7,7 @@ import com.sec.android.iap.lib.listener.OnGetInboxListener;
 import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.InboxVo;
 import com.tradehero.common.billing.samsung.BaseSamsungOperator;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.exception.SamsungPurchaseFetchException;
 import java.util.ArrayList;
 import rx.Observable;
@@ -24,7 +25,7 @@ public class SamsungInboxOperator extends BaseSamsungOperator
     //<editor-fold desc="Constructors">
     public SamsungInboxOperator(
             @NonNull Context context,
-            int mode,
+            @SamsungBillingMode int mode,
             @NonNull InboxListQueryGroup queryGroup)
     {
         this(context,

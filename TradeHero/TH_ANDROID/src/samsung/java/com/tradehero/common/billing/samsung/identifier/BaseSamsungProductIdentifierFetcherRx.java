@@ -7,6 +7,7 @@ import com.sec.android.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.identifier.ProductIdentifierListResult;
 import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
 import com.tradehero.common.billing.samsung.BaseSamsungSKUList;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUListKey;
 import com.tradehero.common.billing.samsung.rx.ItemListQueryGroup;
@@ -32,7 +33,7 @@ abstract public class BaseSamsungProductIdentifierFetcherRx<
     public BaseSamsungProductIdentifierFetcherRx(
             int requestCode,
             @NonNull Context context,
-            int mode)
+            @SamsungBillingMode int mode)
     {
         super(requestCode, context, mode);
     }

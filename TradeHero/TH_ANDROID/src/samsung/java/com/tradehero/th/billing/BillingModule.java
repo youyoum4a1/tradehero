@@ -6,10 +6,10 @@ import com.tradehero.common.billing.ProductDetailCacheRx;
 import com.tradehero.common.billing.ProductIdentifierListCacheRx;
 import com.tradehero.common.billing.ProductPurchaseCacheRx;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.exception.SamsungExceptionFactory;
 import com.tradehero.common.billing.samsung.persistence.SamsungPurchaseCacheRx;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
-import com.tradehero.th.billing.samsung.ForSamsungBillingMode;
 import com.tradehero.th.billing.samsung.ProcessingPurchase;
 import com.tradehero.th.billing.samsung.THSamsungConstants;
 import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
@@ -30,7 +30,7 @@ public class BillingModule
 {
     public static final String PREF_PROCESSING_PURCHASES = "SAMSUNG_PROCESSING_PURCHASES";
 
-    @Provides @ForSamsungBillingMode
+    @Provides @SamsungBillingMode
     int provideSamsungBillingMode()
     {
         return THSamsungConstants.PURCHASE_MODE;

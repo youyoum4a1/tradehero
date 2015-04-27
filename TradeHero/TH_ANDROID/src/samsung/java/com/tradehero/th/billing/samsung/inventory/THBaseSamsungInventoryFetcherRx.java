@@ -5,9 +5,11 @@ import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.sec.android.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.samsung.SamsungItemGroup;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.inventory.BaseSamsungInventoryFetcherRx;
 import com.tradehero.common.billing.samsung.rx.ItemListQueryGroup;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.billing.samsung.THSamsungConstants;
 import com.tradehero.th.billing.samsung.THSamsungProductDetail;
 import java.util.List;
@@ -24,7 +26,7 @@ public class THBaseSamsungInventoryFetcherRx
     public THBaseSamsungInventoryFetcherRx(
             int requestCode,
             @NonNull Context context,
-            int mode,
+            @SamsungBillingMode int mode,
             @NonNull List<SamsungSKU> skus)
     {
         super(requestCode, context, mode, skus);
@@ -45,6 +47,7 @@ public class THBaseSamsungInventoryFetcherRx
             @NonNull SamsungItemGroup samsungItemGroup,
             @NonNull ItemVo itemVo)
     {
+        THToast.show("Create detail " + itemVo.getItemId());
         return new THSamsungProductDetail(samsungItemGroup, itemVo);
     }
 }

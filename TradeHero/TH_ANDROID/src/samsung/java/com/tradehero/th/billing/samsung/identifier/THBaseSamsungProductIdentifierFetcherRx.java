@@ -3,11 +3,13 @@ package com.tradehero.th.billing.samsung.identifier;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungSKUListKey;
 import com.tradehero.common.billing.samsung.identifier.BaseSamsungProductIdentifierFetcherRx;
 import com.tradehero.common.billing.samsung.rx.ItemListQueryGroup;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.billing.samsung.THSamsungConstants;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +27,7 @@ public class THBaseSamsungProductIdentifierFetcherRx
     public THBaseSamsungProductIdentifierFetcherRx(
             int requestCode,
             @NonNull Context context,
-            int mode)
+            @SamsungBillingMode int mode)
     {
         super(requestCode,
                 context,
@@ -50,6 +52,7 @@ public class THBaseSamsungProductIdentifierFetcherRx
 
     @Override @NonNull protected SamsungSKU createSamsungSku(String groupId, String itemId)
     {
+        THToast.show("create sku " + itemId);
         return new SamsungSKU(groupId, itemId);
     }
 

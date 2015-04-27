@@ -7,6 +7,7 @@ import com.sec.android.iap.lib.listener.OnPaymentListener;
 import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.samsung.BaseSamsungOperator;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.exception.SamsungPurchaseException;
 import rx.Observable;
 import rx.Subscriber;
@@ -21,7 +22,7 @@ public class SamsungPaymentOperator extends BaseSamsungOperator
     //<editor-fold desc="Constructors">
     public SamsungPaymentOperator(
             @NonNull Context context,
-            int mode,
+            @SamsungBillingMode int mode,
             @NonNull String groupId,
             @NonNull String itemId,
             boolean showSuccessDialog)

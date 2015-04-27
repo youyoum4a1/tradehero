@@ -3,6 +3,7 @@ package com.tradehero.common.billing.samsung.tester;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.rx.SamsungIapBindOperator;
 import com.tradehero.common.billing.tester.BillingTestResult;
 import rx.Observable;
@@ -16,7 +17,7 @@ abstract public class BaseSamsungBillingAvailableTesterRx
     public BaseSamsungBillingAvailableTesterRx(
             int requestCode,
             @NonNull Context context,
-            int mode)
+            @SamsungBillingMode int mode)
     {
         super(requestCode, context, mode);
     }
