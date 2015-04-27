@@ -588,9 +588,11 @@
 
 
   <style name="TH.ContentPartnersLogo">
-    <item name="android:minWidth">60dp</item>
+    <item name="android:minWidth">64dp</item>
+    <item name="android:minHeight">32dp</item>
     <item name="android:scaleType">fitCenter</item>
-    <item name="android:padding">5dp</item>
+    <item name="android:padding">2dp</item>
+    <item name="android:alpha">1.0</item>
   </style>
 
   <style name="TH.ResideMenuSmall">
