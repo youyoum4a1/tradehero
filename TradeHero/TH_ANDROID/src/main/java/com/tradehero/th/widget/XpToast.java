@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.level.LevelDefDTO;
@@ -262,7 +263,15 @@ public class XpToast extends RelativeLayout
         if (context instanceof DashboardActivity)
         {
             LevelUpDialogFragment levelUpDialogFragment = LevelUpDialogFragment.newInstance(fromLevel.getId(), toLevel.getId());
-            levelUpDialogFragment.show(((DashboardActivity) context).getFragmentManager(), LevelUpDialogFragment.class.getName());
+            try
+            {
+                levelUpDialogFragment.show(((DashboardActivity) context).getFragmentManager(), LevelUpDialogFragment.class.getName());
+            }
+            catch (java.lang.IllegalStateException e)
+            {
+                Timber.d(e.toString());
+                THToast.show(e.toString());
+            }
         }
     }
 
