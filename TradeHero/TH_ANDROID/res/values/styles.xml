@@ -132,7 +132,7 @@
 
   <style name="TradeHero.Dashboard.ActionBar.TabText"
       parent="@android:style/Widget.Holo.Light.ActionBar.TabText">
-    <item name="android:textColor">?android:textColorPrimaryInverse</item>
+    <item name="android:textColor">@color/tab_text_selector</item>
     <item name="android:textAllCaps">true</item>
     <item name="android:textSize">@dimen/text_caption</item>
     <item name="android:textStyle">bold</item>
@@ -588,7 +588,7 @@
 
 
   <style name="TH.ContentPartnersLogo">
-    <item name="android:minWidth">80dp</item>
+    <item name="android:minWidth">60dp</item>
     <item name="android:scaleType">fitCenter</item>
     <item name="android:padding">5dp</item>
   </style>
