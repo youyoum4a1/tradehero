@@ -75,11 +75,10 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Actions;
-import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
 public class TrendingStockFragment extends TrendingBaseFragment
-        implements WithTutorial, AdapterView.OnItemSelectedListener
+        implements WithTutorial
 {
     private static final String KEY_EXCHANGE_ID = TrendingMainFragment.class.getName() + ".exchangeId";
     private static final String KEY_TAB_TYPE_ID = TrendingMainFragment.class.getName() + ".tabTypeId";
@@ -154,11 +153,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
         super.onViewCreated(view, savedInstanceState);
         this.listView.setAdapter(wrapperAdapter);
         analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Trade));
-    }
-
-    @Override public void onStart()
-    {
-        super.onStart();
         fetchExchangeList();
         fetchUserProfile();
         fetchProviderList();
@@ -179,7 +173,17 @@ public class TrendingStockFragment extends TrendingBaseFragment
             mExchangeSelection = (ExchangeSpinner) updateCenterIcon.findViewById(R.id.exchange_selection_menu);
             mExchangeSelection.setAdapter(exchangeAdapter);
             mExchangeSelection.setSelectionById(preferredExchangeMarket.get());
-            mExchangeSelection.setOnItemSelectedListener(this);
+            mExchangeSelection.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+            {
+                @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+                {
+                    onExchangeSelected(parent, view, position, id);
+                }
+
+                @Override public void onNothingSelected(AdapterView<?> parent)
+                {
+                }
+            });
         }
     }
 
@@ -211,29 +215,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
         return new ExtraTileAdapterNew(getActivity(), itemViewAdapter);
     }
 
-    private void fetchFilter(TrendingFilterTypeDTO trendingFilterTypeDTO)
-    {
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
-                BehaviorSubject.create(trendingFilterTypeDTO))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<TrendingFilterTypeDTO>()
-                        {
-                            @Override public void call(TrendingFilterTypeDTO trendingFilterTypeDTO1)
-                            {
-                                fetchListByFilter(trendingFilterTypeDTO1);
-                            }
-                        },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable error)
-                            {
-                                TrendingStockFragment.this.onErrorFilter(error);
-                            }
-                        }));
-    }
-
     protected void fetchListByFilter(@NonNull TrendingFilterTypeDTO trendingFilterTypeDTO)
     {
         boolean hasChanged = !trendingFilterTypeDTO.equals(this.trendingFilterTypeDTO);
@@ -258,15 +239,10 @@ public class TrendingStockFragment extends TrendingBaseFragment
         }
     }
 
-    protected void onErrorFilter(@NonNull Throwable e)
-    {
-        Timber.e(e, "Error with filter");
-    }
-
     private void fetchExchangeList()
     {
         ExchangeListType key = new ExchangeListType();
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
                 this,
                 exchangeCompactListCache.getOne(key)
                         .map(new PairGetSecond<ExchangeListType, ExchangeCompactDTOList>()))
@@ -306,7 +282,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchUserProfile()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
@@ -332,7 +308,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchProviderList()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
                 this,
                 providerListCache.get(new ProviderListKey())
                         .map(new PairGetSecond<ProviderListKey, ProviderDTOList>()))
@@ -356,7 +332,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchWatchlist()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
                         this,
                         userWatchlistPositionCache.get(currentUserId.toUserBaseKey()))
                         .observeOn(AndroidSchedulers.mainThread())
@@ -387,7 +363,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     public void fetchAlertCompactList()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
                 this,
                 alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -469,16 +445,11 @@ public class TrendingStockFragment extends TrendingBaseFragment
         }
     }
 
-    @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+    protected void onExchangeSelected(AdapterView<?> parent, View view, int position, long id)
     {
         TrendingFilterTypeDTO newFilterTypeDTO = trendingFilterTypeDTO.getByExchange((ExchangeCompactSpinnerDTO) parent.getItemAtPosition(position));
-        fetchFilter(newFilterTypeDTO);
+        fetchListByFilter(newFilterTypeDTO);
         reportAnalytics();
-    }
-
-    @Override public void onNothingSelected(AdapterView<?> parent)
-    {
-
     }
 
     private void reportAnalytics()
@@ -570,7 +541,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void handleSurveyItemOnClick()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
@@ -595,7 +566,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     private void handleResetPortfolioItemOnClick()
     {
         //noinspection unchecked
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -607,7 +578,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     protected void handleExtraCashItemOnClick()
     {
         //noinspection unchecked
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
                 .observeOn(AndroidSchedulers.mainThread())

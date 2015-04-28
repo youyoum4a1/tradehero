@@ -38,19 +38,15 @@ import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.Constants;
-import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.internal.util.SubscriptionList;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -179,12 +175,8 @@ public class TrendingMainFragment extends DashboardFragment
             {
             }
         });
-    }
 
-    @Override public void onStart()
-    {
-        super.onStart();
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileObservable)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -255,15 +247,11 @@ public class TrendingMainFragment extends DashboardFragment
                 // - wait for enough info
                 // - pop for FX enroll
                 // - just change the tab
-                if (onStopSubscriptions == null)
-                {
-                    onStopSubscriptions = new SubscriptionList();
-                }
                 if (userProfileObservable == null)
                 {
                     initUserProfileObservable();
                 }
-                onStopSubscriptions.add(AppObservable.bindFragment(
+                onDestroyOptionsMenuSubscriptions.add(AppObservable.bindFragment(
                         TrendingMainFragment.this,
                         userProfileObservable)
                         .observeOn(AndroidSchedulers.mainThread())

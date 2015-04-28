@@ -42,6 +42,8 @@ public class BaseFragment extends Fragment
 
     protected ActionBarOwnerMixin actionBarOwnerMixin;
     protected SubscriptionList onStopSubscriptions;
+    protected SubscriptionList onDestroyViewSubscriptions;
+    protected SubscriptionList onDestroyOptionsMenuSubscriptions;
 
     @Inject protected Lazy<DashboardNavigator> navigator;
 
@@ -89,6 +91,12 @@ public class BaseFragment extends Fragment
         setHasOptionsMenu(hasOptionMenu);
     }
 
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        onDestroyViewSubscriptions = new SubscriptionList();
+    }
+
     @Override public void onStart()
     {
         super.onStart();
@@ -110,6 +118,12 @@ public class BaseFragment extends Fragment
         }
     }
 
+    @Override public void onDestroyView()
+    {
+        onDestroyViewSubscriptions.unsubscribe();
+        super.onDestroyView();
+    }
+
     @Override public void onDestroy()
     {
         actionBarOwnerMixin.onDestroy();
@@ -118,6 +132,7 @@ public class BaseFragment extends Fragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        onDestroyOptionsMenuSubscriptions = new SubscriptionList();
         if (!hasOptionMenu)
         {
             return;
@@ -169,6 +184,12 @@ public class BaseFragment extends Fragment
             return handleInfoMenuItemClicked();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        onDestroyOptionsMenuSubscriptions.unsubscribe();
+        super.onDestroyOptionsMenu();
     }
 
     protected boolean handleInfoMenuItemClicked()
