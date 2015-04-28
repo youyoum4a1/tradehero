@@ -247,6 +247,7 @@ public class TrendingMainFragment extends DashboardFragment
                 // - wait for enough info
                 // - pop for FX enroll
                 // - just change the tab
+
                 if (userProfileObservable == null)
                 {
                     initUserProfileObservable();

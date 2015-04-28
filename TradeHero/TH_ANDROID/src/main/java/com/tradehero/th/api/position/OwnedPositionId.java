@@ -5,9 +5,8 @@ import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.trade.TradeDTOListKey;
 
-public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey, TradeDTOListKey, DTO
+public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey, DTO
 {
     public final static String BUNDLE_KEY_POSITION_ID = OwnedPositionId.class.getName() + ".positionId";
 

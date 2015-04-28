@@ -112,16 +112,9 @@ public class AlertManagerFragment extends BaseFragment
     @Override public void onStart()
     {
         super.onStart();
-        onStopSubscriptions = new SubscriptionList();
         fetchSystemStatus();
         fetchUserProfile();
         fetchAlertCompactList();
-    }
-
-    @Override public void onStop()
-    {
-        onStopSubscriptions.unsubscribe();
-        super.onStop();
     }
 
     @Override public void onDestroyView()

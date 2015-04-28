@@ -26,6 +26,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.internal.util.SubscriptionList;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public class BaseFragment extends Fragment
@@ -44,6 +45,7 @@ public class BaseFragment extends Fragment
     protected SubscriptionList onStopSubscriptions;
     protected SubscriptionList onDestroyViewSubscriptions;
     protected SubscriptionList onDestroyOptionsMenuSubscriptions;
+
 
     @Inject protected Lazy<DashboardNavigator> navigator;
 
@@ -133,6 +135,7 @@ public class BaseFragment extends Fragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         onDestroyOptionsMenuSubscriptions = new SubscriptionList();
+
         if (!hasOptionMenu)
         {
             return;

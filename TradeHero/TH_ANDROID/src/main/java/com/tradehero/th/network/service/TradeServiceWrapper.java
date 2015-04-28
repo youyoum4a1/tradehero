@@ -5,7 +5,6 @@ import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
-import com.tradehero.th.api.trade.TradeDTOListKey;
 import com.tradehero.th.models.BaseDTOListProcessor;
 import com.tradehero.th.models.trade.DTOProcessorTradeReceived;
 import javax.inject.Inject;
@@ -54,25 +53,15 @@ import rx.Observable;
     }
 
     //<editor-fold desc="Get Trades List">
-    @NonNull public Observable<TradeDTOList> getTradesRx(@NonNull TradeDTOListKey dtoListKey)
+    @NonNull public Observable<TradeDTOList> getTradesRx(@NonNull OwnedPositionId ownedPositionId)
     {
-        Observable<TradeDTOList> received;
-        if (dtoListKey instanceof OwnedPositionId)
-        {
-            OwnedPositionId ownedPositionId = (OwnedPositionId) dtoListKey;
-            basicCheck(ownedPositionId);
-            received = this.tradeServiceRx.getTrades(
-                    ownedPositionId.userId,
-                    ownedPositionId.portfolioId,
-                    ownedPositionId.positionId)
-                    .map(new BaseDTOListProcessor<TradeDTO, TradeDTOList>(
-                            new DTOProcessorTradeReceived(ownedPositionId)));
-        }
-        else
-        {
-            throw new IllegalArgumentException("Unhandled TradeDTOListKey " + dtoListKey);
-        }
-        return received;
+        basicCheck(ownedPositionId);
+        return this.tradeServiceRx.getTrades(
+                ownedPositionId.userId,
+                ownedPositionId.portfolioId,
+                ownedPositionId.positionId)
+                .map(new BaseDTOListProcessor<TradeDTO, TradeDTOList>(
+                        new DTOProcessorTradeReceived(ownedPositionId)));
     }
     //</editor-fold>
 
