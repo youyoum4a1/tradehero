@@ -759,7 +759,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
                     }
                 });
             }
-            if(!updateAppDialog.isShowing()){
+            if(!updateAppDialog.isShowing()&&MainActivity.this!=null){
                 updateAppDialog.show();
             }
     }
