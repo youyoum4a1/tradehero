@@ -17,7 +17,7 @@ import javax.inject.Provider;
 
 public class PopQuizActivity extends OneFragmentActivity
 {
-    private static final String POPQUIZ_HOME_URL = "https://fb.tradehero.mobi/PopQuizWeb/Home";
+    private static final String POPQUIZ_HOME_URL = "https://fb.tradehero.mobi/PopQuizWeb/Index";
     private static final String POPQUIZ_ACCESS_TOKEN_KEY = "accessToken";
 
     @Inject @ForXWalkFragment Provider<Class> xWalkFragmentProvider;
@@ -49,7 +49,7 @@ public class PopQuizActivity extends OneFragmentActivity
                 try
                 {
                     Method m = xwalk.getDeclaredMethod("putUrl", cArg);
-                    m.invoke(null, args, POPQUIZ_HOME_URL + "?" + POPQUIZ_ACCESS_TOKEN_KEY + "=" + splits[1]);
+                    m.invoke(null, args, POPQUIZ_HOME_URL);
                 } catch (NoSuchMethodException e)
                 {
                     e.printStackTrace();
