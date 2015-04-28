@@ -31,9 +31,7 @@ import rx.subscriptions.Subscriptions;
 
 public class SamsungIapHelperFacade
 {
-    @NonNull private static final Queue<Pair<ItemListQueryPackage, PublishSubject<List<ItemVo>>>> itemQueries = new LinkedBlockingQueue<>();
-    @NonNull private static final Queue<Pair<InboxListQueryPackage, PublishSubject<InboxVo>>> inboxQueries = new LinkedBlockingQueue<>();
-    @NonNull private static final Queue<Pair<PurchaseQueryPackage, PublishSubject<PurchaseVo>>> purchaseQueries = new LinkedBlockingQueue<>();
+    @NonNull private static final Queue<Pair<SamsungQueryPackage, PublishSubject>> queries = new LinkedBlockingQueue<>();
 
     @NonNull public static Observable<Integer> bind(
             @NonNull final Context context,
@@ -97,36 +95,53 @@ public class SamsungIapHelperFacade
             @NonNull final ItemListQueryPackage itemListQueryPackage)
     {
         PublishSubject<List<ItemVo>> subject = PublishSubject.create();
-        itemQueries.add(Pair.create(itemListQueryPackage, subject));
-        getNextItemPackageIfIdle();
+        queries.add(Pair.create((SamsungQueryPackage) itemListQueryPackage, (PublishSubject) subject));
+        getNextQueryPackageIfIdle();
         return subject.share().cache(1);
     }
 
-    private static void getNextItemPackageIfIdle()
+    private static void getNextQueryPackageIfIdle()
     {
-        Pair<ItemListQueryPackage, PublishSubject<List<ItemVo>>> pair = itemQueries.poll();
+        Pair<SamsungQueryPackage, PublishSubject> pair = queries.poll();
 
         if (pair != null)
         {
-            ItemListQueryPackage queryPackage = pair.first;
+            SamsungQueryPackage queryPackage = pair.first;
             Context context = queryPackage.weakContext.get();
             if (context == null)
             {
-                getNextItemPackageIfIdle();
+                getNextQueryPackageIfIdle();
+            }
+            else if (SamsungIapHelper.getInstance(context, queryPackage.mode)
+                    .getOnGetItemListener() != null
+                    || SamsungIapHelper.getInstance(context, queryPackage.mode)
+                    .getOnGetInboxListener() != null
+                    || SamsungIapHelper.getInstance(context, queryPackage.mode)
+                    .getOnPaymentListener() != null)
+            {
+                queries.add(pair);
+            }
+            else if (queryPackage instanceof ItemListQueryPackage)
+            {
+                //noinspection unchecked
+                getItemsPrivate((ItemListQueryPackage) queryPackage)
+                        .subscribe((PublishSubject<List<ItemVo>>) pair.second);
+            }
+            else if (queryPackage instanceof InboxListQueryPackage)
+            {
+                //noinspection unchecked
+                getInboxPrivate((InboxListQueryPackage) pair.first)
+                        .subscribe((PublishSubject<List<InboxVo>>) pair.second);
+            }
+            else if (queryPackage instanceof PurchaseQueryPackage)
+            {
+                //noinspection unchecked
+                getPurchasePrivate((PurchaseQueryPackage) pair.first)
+                        .subscribe((PublishSubject<PurchaseVo>) pair.second);
             }
             else
             {
-                OnGetItemListener currentListener = SamsungIapHelper.getInstance(context, queryPackage.mode)
-                        .getOnGetItemListener();
-                if (currentListener == null)
-                {
-                    getItemsPrivate(pair.first)
-                            .subscribe(pair.second);
-                }
-                else
-                {
-                    itemQueries.add(pair);
-                }
+                throw new IllegalArgumentException("Unhandled " + queryPackage);
             }
         }
     }
@@ -176,7 +191,7 @@ public class SamsungIapHelperFacade
                         {
                             SamsungIapHelper.getInstance(context, itemListQueryPackage.mode)
                                     .setOnGetItemListener(null);
-                            getNextItemPackageIfIdle();
+                            getNextQueryPackageIfIdle();
                         }
                     });
                     subscriber.add(cleanup);
@@ -185,7 +200,7 @@ public class SamsungIapHelperFacade
         });
     }
 
-    @NonNull public static Observable<Pair<InboxListQueryGroup, Observable<InboxVo>>> getInboxes(
+    @NonNull public static Observable<Pair<InboxListQueryGroup, List<InboxVo>>> getInboxes(
             @NonNull Context context,
             @SamsungBillingMode int mode,
             @NonNull final List<InboxListQueryGroup> inboxListQueryGroups)
@@ -196,61 +211,39 @@ public class SamsungIapHelperFacade
             inboxListQueryPackages.add(new InboxListQueryPackage(context, mode, queryGroup));
         }
         return Observable.from(inboxListQueryPackages)
-                .map(new Func1<InboxListQueryPackage, Pair<InboxListQueryGroup, Observable<InboxVo>>>()
+                .flatMap(new Func1<InboxListQueryPackage, Observable<Pair<InboxListQueryGroup, List<InboxVo>>>>()
                 {
-                    @Override public Pair<InboxListQueryGroup, Observable<InboxVo>> call(InboxListQueryPackage inboxListQueryPackage)
+                    @Override public Observable<Pair<InboxListQueryGroup, List<InboxVo>>> call(final InboxListQueryPackage inboxListQueryPackage)
                     {
-                        return Pair.create(
-                                inboxListQueryPackage.inboxListQueryGroup,
-                                getInbox(inboxListQueryPackage));
+                        return getInbox(inboxListQueryPackage)
+                        .map(new Func1<List<InboxVo>, Pair<InboxListQueryGroup, List<InboxVo>>>()
+                        {
+                            @Override public Pair<InboxListQueryGroup, List<InboxVo>> call(List<InboxVo> inboxVos)
+                            {
+                                return Pair.create(
+                                        inboxListQueryPackage.inboxListQueryGroup,
+                                        inboxVos);
+                            }
+                        });
                     }
                 });
     }
 
-    @NonNull public static Observable<InboxVo> getInbox(
+    @NonNull public static Observable<List<InboxVo>> getInbox(
             @NonNull final InboxListQueryPackage inboxListQueryPackage)
     {
-        PublishSubject<InboxVo> subject = PublishSubject.create();
-        inboxQueries.add(Pair.create(inboxListQueryPackage, subject));
-        getNextInboxPackageIfIdle();
+        PublishSubject<List<InboxVo>> subject = PublishSubject.create();
+        queries.add(Pair.create((SamsungQueryPackage) inboxListQueryPackage, (PublishSubject) subject));
+        getNextQueryPackageIfIdle();
         return subject.share().cache();
     }
 
-    private static void getNextInboxPackageIfIdle()
-    {
-        Pair<InboxListQueryPackage, PublishSubject<InboxVo>> pair = inboxQueries.poll();
-
-        if (pair != null)
-        {
-            InboxListQueryPackage queryPackage = pair.first;
-            Context context = queryPackage.weakContext.get();
-            if (context == null)
-            {
-                getNextInboxPackageIfIdle();
-            }
-            else
-            {
-                OnGetInboxListener currentListener = SamsungIapHelper.getInstance(context, queryPackage.mode)
-                        .getOnGetInboxListener();
-                if (currentListener == null)
-                {
-                    getInboxPrivate(pair.first)
-                            .subscribe(pair.second);
-                }
-                else
-                {
-                    inboxQueries.add(pair);
-                }
-            }
-        }
-    }
-
-    @NonNull private static Observable<InboxVo> getInboxPrivate(
+    @NonNull private static Observable<List<InboxVo>> getInboxPrivate(
             @NonNull final InboxListQueryPackage inboxListQueryPackage)
     {
-        return Observable.create(new Observable.OnSubscribe<InboxVo>()
+        return Observable.create(new Observable.OnSubscribe<List<InboxVo>>()
         {
-            @Override public void call(final Subscriber<? super InboxVo> subscriber)
+            @Override public void call(final Subscriber<? super List<InboxVo>> subscriber)
             {
                 final Context context = inboxListQueryPackage.weakContext.get();
                 if (context == null)
@@ -272,10 +265,7 @@ public class SamsungIapHelperFacade
                                         {
                                             if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)
                                             {
-                                                for (InboxVo inboxVo : inboxList)
-                                                {
-                                                    subscriber.onNext(inboxVo);
-                                                }
+                                                subscriber.onNext(inboxList);
                                                 subscriber.onCompleted();
                                             }
                                             else
@@ -292,7 +282,7 @@ public class SamsungIapHelperFacade
                         {
                             SamsungIapHelper.getInstance(context, inboxListQueryPackage.mode)
                                     .setOnGetInboxListener(null);
-                            getNextInboxPackageIfIdle();
+                            getNextQueryPackageIfIdle();
                         }
                     });
                     subscriber.add(cleanup);
@@ -305,38 +295,9 @@ public class SamsungIapHelperFacade
             @NonNull final PurchaseQueryPackage purchaseQueryPackage)
     {
         PublishSubject<PurchaseVo> subject = PublishSubject.create();
-        purchaseQueries.add(Pair.create(purchaseQueryPackage, subject));
-        getNextPurchaseIfIdle();
+        queries.add(Pair.create((SamsungQueryPackage) purchaseQueryPackage, (PublishSubject) subject));
+        getNextQueryPackageIfIdle();
         return subject.share().cache(1);
-    }
-
-    private static void getNextPurchaseIfIdle()
-    {
-        Pair<PurchaseQueryPackage, PublishSubject<PurchaseVo>> pair = purchaseQueries.poll();
-
-        if (pair != null)
-        {
-            PurchaseQueryPackage queryPackage = pair.first;
-            Context context = queryPackage.weakContext.get();
-            if (context == null)
-            {
-                getNextPurchaseIfIdle();
-            }
-            else
-            {
-                OnPaymentListener currentListener = SamsungIapHelper.getInstance(context, queryPackage.mode)
-                        .getOnPaymentListener();
-                if (currentListener == null)
-                {
-                    getPurchasePrivate(pair.first)
-                            .subscribe(pair.second);
-                }
-                else
-                {
-                    purchaseQueries.add(pair);
-                }
-            }
-        }
     }
 
     @NonNull private static Observable<PurchaseVo> getPurchasePrivate(
@@ -383,7 +344,7 @@ public class SamsungIapHelperFacade
                         {
                             SamsungIapHelper.getInstance(context, purchaseQueryPackage.mode)
                                     .setOnPaymentListener(null);
-                            getNextPurchaseIfIdle();
+                            getNextQueryPackageIfIdle();
                         }
                     });
                     subscriber.add(cleanup);

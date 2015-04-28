@@ -5,8 +5,6 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.purchase.BaseSamsungPurchaserHolderRx;
-import com.tradehero.common.persistence.prefs.StringSetPreference;
-import com.tradehero.th.billing.samsung.ProcessingPurchase;
 import com.tradehero.th.billing.samsung.THSamsungOrderId;
 import com.tradehero.th.billing.samsung.THSamsungPurchase;
 import com.tradehero.th.billing.samsung.THSamsungPurchaseOrder;
@@ -24,20 +22,17 @@ public class THBaseSamsungPurchaserHolderRx
     @NonNull protected final Context context;
     @SamsungBillingMode protected final int mode;
     @NonNull protected final THSamsungExceptionFactory samsungExceptionFactory;
-    @NonNull protected final StringSetPreference processingPurchaseStringSet;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseSamsungPurchaserHolderRx(
             @NonNull Context context,
             @SamsungBillingMode int mode,
-            @NonNull THSamsungExceptionFactory samsungExceptionFactory,
-            @NonNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
+            @NonNull THSamsungExceptionFactory samsungExceptionFactory)
     {
         super();
         this.context = context;
         this.mode = mode;
         this.samsungExceptionFactory = samsungExceptionFactory;
-        this.processingPurchaseStringSet = processingPurchaseStringSet;
     }
     //</editor-fold>
 
@@ -50,7 +45,6 @@ public class THBaseSamsungPurchaserHolderRx
                 context,
                 mode,
                 purchaseOrder,
-                true,
-                processingPurchaseStringSet);
+                true);
     }
 }

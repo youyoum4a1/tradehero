@@ -1,7 +1,5 @@
 package com.tradehero.th.billing;
 
-import android.content.SharedPreferences;
-import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.billing.ProductDetailCacheRx;
 import com.tradehero.common.billing.ProductIdentifierListCacheRx;
 import com.tradehero.common.billing.ProductPurchaseCacheRx;
@@ -9,8 +7,6 @@ import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.exception.SamsungExceptionFactory;
 import com.tradehero.common.billing.samsung.persistence.SamsungPurchaseCacheRx;
-import com.tradehero.common.persistence.prefs.StringSetPreference;
-import com.tradehero.th.billing.samsung.ProcessingPurchase;
 import com.tradehero.th.billing.samsung.THSamsungConstants;
 import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
 import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCacheRx;
@@ -18,7 +14,6 @@ import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCacheRx;
 import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCacheRx;
 import dagger.Module;
 import dagger.Provides;
-import java.util.HashSet;
 import javax.inject.Singleton;
 
 @Module(
@@ -28,8 +23,6 @@ import javax.inject.Singleton;
 )
 public class BillingModule
 {
-    public static final String PREF_PROCESSING_PURCHASES = "SAMSUNG_PROCESSING_PURCHASES";
-
     @Provides @SamsungBillingMode
     int provideSamsungBillingMode()
     {
@@ -66,11 +59,5 @@ public class BillingModule
     @Provides SamsungExceptionFactory provideSamsungExceptionFactory(THSamsungExceptionFactory exceptionFactory)
     {
         return exceptionFactory;
-    }
-
-    @Provides @Singleton @ProcessingPurchase
-    StringSetPreference provideProcessingPurchasePreference(@ForApp SharedPreferences sharedPreferences)
-    {
-        return new StringSetPreference(sharedPreferences, PREF_PROCESSING_PURCHASES, new HashSet<String>());
     }
 }

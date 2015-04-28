@@ -19,8 +19,7 @@ import rx.functions.Func1;
 abstract public class BaseSamsungPurchaseFetcherRx<
         SamsungSKUType extends SamsungSKU,
         SamsungOrderIdType extends SamsungOrderId,
-        SamsungPurchaseType extends SamsungPurchase<SamsungSKUType, SamsungOrderIdType>,
-        SamsungPurchaseIncompleteType extends SamsungPurchase<SamsungSKUType, SamsungOrderIdType>>
+        SamsungPurchaseType extends SamsungPurchase<SamsungSKUType, SamsungOrderIdType>>
         extends BaseSamsungActorRx
         implements SamsungPurchaseFetcherRx<
         SamsungSKUType,
@@ -40,37 +39,28 @@ abstract public class BaseSamsungPurchaseFetcherRx<
     @NonNull @Override public Observable<PurchaseFetchResult<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType>> get()
     {
         return SamsungIapHelperFacade.getInboxes(context, mode, getInboxListQueryGroups())
-                .flatMap(new Func1<Pair<InboxListQueryGroup, Observable<InboxVo>>, Observable<? extends SamsungPurchaseIncompleteType>>()
+                .flatMap(new Func1<Pair<InboxListQueryGroup, List<InboxVo>>,
+                        Observable<PurchaseFetchResult<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType>>>()
                 {
-                    @Override public Observable<? extends SamsungPurchaseIncompleteType> call(
-                            final Pair<InboxListQueryGroup, Observable<InboxVo>> pair)
+                    @Override public Observable<PurchaseFetchResult<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType>> call(
+                            final Pair<InboxListQueryGroup, List<InboxVo>> pair)
                     {
-                        return pair.second
-                                .map(new Func1<InboxVo, SamsungPurchaseIncompleteType>()
+                        return Observable.from(pair.second)
+                                .map(new Func1<InboxVo, PurchaseFetchResult<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType>>()
                                 {
-                                    @Override public SamsungPurchaseIncompleteType call(InboxVo inboxVo)
+                                    @Override public PurchaseFetchResult<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType> call(
+                                            InboxVo inboxVo)
                                     {
-                                        return BaseSamsungPurchaseFetcherRx.this.createIncompletePurchase(pair.first, inboxVo);
+                                        return new PurchaseFetchResult<>(
+                                                getRequestCode(),
+                                                createPurchase(pair.first.groupId, inboxVo));
                                     }
                                 });
-                    }
-                })
-                .map(new Func1<SamsungPurchaseIncompleteType, PurchaseFetchResult<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType>>()
-                {
-                    @Override public PurchaseFetchResult<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType> call(SamsungPurchaseIncompleteType incomplete)
-                    {
-                        SamsungPurchaseType purchase = BaseSamsungPurchaseFetcherRx.this.mergeWithSaved(incomplete);
-                        return new PurchaseFetchResult<>(BaseSamsungPurchaseFetcherRx.this.getRequestCode(), purchase);
                     }
                 });
     }
 
+    @NonNull abstract protected SamsungPurchaseType createPurchase(@NonNull String groupId, @NonNull InboxVo inboxVo);
+
     @NonNull abstract protected List<InboxListQueryGroup> getInboxListQueryGroups();
-
-    @NonNull abstract protected SamsungPurchaseIncompleteType createIncompletePurchase(
-            @NonNull InboxListQueryGroup queryGroup,
-            @NonNull InboxVo inboxVo);
-
-    @NonNull abstract protected SamsungPurchaseType mergeWithSaved(
-            @NonNull SamsungPurchaseIncompleteType incomplete);
 }
