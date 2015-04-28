@@ -87,6 +87,7 @@ public class THBaseSamsungLogicHolderRx
         {
             if (details.get(candidate) == null)
             {
+                details.remove(candidate);
                 missing.add(candidate);
             }
         }
@@ -132,6 +133,6 @@ public class THBaseSamsungLogicHolderRx
         return Collections.singletonList(
                 new SamsungSKU(
                         THSamsungConstants.IAP_ITEM_GROUP_ID,
-                        THSamsungConstants.EXTRA_CASH_T0_DATA_1));
+                        "Fake"));
     }
 }
