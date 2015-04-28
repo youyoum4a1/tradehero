@@ -393,7 +393,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             return "";
         }
         return getString(R.string.market_close_hint) + " " +
-                DateUtils.getDurationText(getResources(), duration.days, duration.hours, duration.minutes, duration.seconds);
+                DateUtils.getDurationText(getResources(), duration.days, duration.hours, duration.minutes);
     }
 
     abstract public void displayBuySellPrice();

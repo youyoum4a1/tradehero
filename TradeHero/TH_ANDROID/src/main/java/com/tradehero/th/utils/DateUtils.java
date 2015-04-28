@@ -69,10 +69,11 @@ public class DateUtils
         return requiredFormat.format(date);
     }
 
-    public static String getDurationText(@NonNull Resources resources, int days, int hours, int minutes, int seconds)
+    public static String getDurationText(@NonNull Resources resources, int days, int hours, int minutes)
     {
         Resources sysRes = Resources.getSystem();
 
+        //TODO use plurals
         StringBuilder sb = new StringBuilder();
         int id = 0;
         if (days == 1)
@@ -105,16 +106,6 @@ public class DateUtils
             id = sysRes.getIdentifier("minute", "string", "android");
         }
         sb.append(String.valueOf(minutes)).append(" ").append(resources.getString(id)).append(" ");
-
-        if (seconds > 1)
-        {
-            id = sysRes.getIdentifier("seconds", "string", "android");
-        }
-        else
-        {
-            id = sysRes.getIdentifier("second", "string", "android");
-        }
-        sb.append(String.valueOf(seconds)).append(" ").append(resources.getString(id));
 
         return sb.toString();
     }
