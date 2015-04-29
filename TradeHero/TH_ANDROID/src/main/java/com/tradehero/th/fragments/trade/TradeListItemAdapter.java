@@ -20,6 +20,7 @@ import com.tradehero.th.fragments.trade.view.TradeListItemView.ExpandableTradeIt
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import java.util.ArrayList;
 import java.util.List;
+import org.ocpsoft.prettytime.PrettyTime;
 
 public class TradeListItemAdapter
         extends ArrayAdapter<Object>
@@ -43,7 +44,7 @@ public class TradeListItemAdapter
     }
     //</editor-fold>
 
-    public List<Object> createObjects(PositionDTO positionDTO, SecurityCompactDTO securityCompactDTO, TradeDTOList tradeDTOs)
+    public List<Object> createObjects(PositionDTO positionDTO, SecurityCompactDTO securityCompactDTO, TradeDTOList tradeDTOs, PrettyTime prettyTime)
     {
         List<Object> objects = new ArrayList<>();
 
@@ -65,7 +66,7 @@ public class TradeListItemAdapter
         {
             TradeDTO dto = tradeDTOs.get(i);
             objects.add(
-                    new TradeListItemView.DTO(getContext().getResources(), positionDTO, securityCompactDTO, new ExpandableTradeItem(dto, i == 0)));
+                    new TradeListItemView.DTO(getContext().getResources(), positionDTO, securityCompactDTO, new ExpandableTradeItem(dto, i == 0), prettyTime));
         }
 
         return objects;
@@ -148,6 +149,7 @@ public class TradeListItemAdapter
 
             case ITEM_TYPE_POSITION_SUMMARY:
                 ((PositionView) convertView).display((PositionView.DTO) item);
+                ((PositionView) convertView).showCaret(false);
                 break;
 
             case ITEM_TYPE_TRADE:

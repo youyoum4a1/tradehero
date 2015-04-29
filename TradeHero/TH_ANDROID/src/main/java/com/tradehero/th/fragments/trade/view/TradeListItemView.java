@@ -23,15 +23,9 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.position.PositionDTOUtils;
-import com.tradehero.th.persistence.position.PositionCacheRx;
-import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
-import com.tradehero.th.persistence.security.SecurityIdCache;
-import dagger.Lazy;
 import java.text.DateFormat;
 import java.util.TimeZone;
-import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
-import rx.Subscription;
 
 public class TradeListItemView extends LinearLayout
         implements DTOView<TradeListItemView.DTO>
@@ -52,7 +46,6 @@ public class TradeListItemView extends LinearLayout
     @InjectView(R.id.trade_list_comment) protected TextView commentText;
 
     private DTO tradeItemViewDTO;
-    @Inject PrettyTime prettyTime;
 
     //<editor-fold desc="Constructors">
     public TradeListItemView(Context context)
@@ -78,70 +71,12 @@ public class TradeListItemView extends LinearLayout
         ButterKnife.inject(this);
     }
 
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-        //ButterKnife.inject(this);
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        //ButterKnife.reset(this);
-        super.onDetachedFromWindow();
-    }
-
     @Override public void display(TradeListItemView.DTO dto)
     {
         this.tradeItemViewDTO = dto;
         displayTopSection(dto);
         displayExpandableSection(dto);
     }
-
-    //public void linkWith(TradeListItemAdapter.ExpandableTradeItem item)
-    //{
-    //    this.tradeItem = item;
-    //    if (this.tradeItem != null)
-    //    {
-    //        this.trade = tradeItem.getModel().tradeDTO;
-    //        detachPositionSubscription();
-    //        positionSubscription = positionCache.get().get(tradeItem.getModel().positionDTOKey)
-    //                .observeOn(AndroidSchedulers.mainThread())
-    //                .flatMap(new Func1<Pair<PositionDTOKey, PositionDTO>, Observable<? extends Pair<SecurityIntegerId, SecurityId>>>()
-    //                {
-    //                    @Override public Observable<? extends Pair<SecurityIntegerId, SecurityId>> call(Pair<PositionDTOKey, PositionDTO> pair1)
-    //                    {
-    //                        position = pair1.second;
-    //                        display();
-    //                        return securityIdCache.get().get(pair1.second.getSecurityIntegerId());
-    //                    }
-    //                })
-    //                .flatMap(new Func1<Pair<SecurityIntegerId, SecurityId>, Observable<? extends Pair<SecurityId, SecurityCompactDTO>>>()
-    //                {
-    //                    @Override public Observable<? extends Pair<SecurityId, SecurityCompactDTO>> call(
-    //                            Pair<SecurityIntegerId, SecurityId> pair2)
-    //                    {
-    //                        return securityCache.get().get(pair2.second);
-    //                    }
-    //                })
-    //                .subscribe(
-    //                        new Action1<Pair<SecurityId, SecurityCompactDTO>>()
-    //                        {
-    //                            @Override public void call(Pair<SecurityId, SecurityCompactDTO> pair)
-    //                            {
-    //                                strDisplay = pair.second.currencyDisplay;
-    //                                display();
-    //                            }
-    //                        },
-    //                        new EmptyAction1<Throwable>());
-    //    }
-    //    else
-    //    {
-    //        this.position = null;
-    //        this.trade = null;
-    //    }
-    //
-    //    display();
-    //}
 
     private void displayTopSection(DTO dto)
     {
@@ -175,7 +110,7 @@ public class TradeListItemView extends LinearLayout
     {
         if (dateTextView != null)
         {
-            dateTextView.setText(dto.getTradeDateText(prettyTime));
+            dateTextView.setText(dto.getTradeDateText());
         }
     }
 
@@ -278,172 +213,214 @@ public class TradeListItemView extends LinearLayout
         private final PositionDTO positionDTO;
         private final SecurityCompactDTO securityCompactDTO;
         private ExpandableTradeItem expandableTradeItem;
-        private boolean prettyDate = true;
+        private PrettyTime prettyTime;
+        private boolean isPrettyDate = true;
+        @Nullable Double numberToDisplay;
+        String tradeBought;
+        String currencyDisplay;
+        String prettyDate;
+        String normalDate;
+        String holdingQuantity;
+        String averagePrice;
+        @ViewVisibilityValue int unrealisedPLVisibility;
+        String unrealisedHeader;
+        CharSequence unrealisedValue;
+        String realisedHeader;
+        CharSequence realisedValue;
+        String tradeValue;
+        @ViewVisibilityValue int commentVisibility;
+        String commentText;
 
-        public DTO(Resources resources, PositionDTO positionDTO, SecurityCompactDTO securityCompactDTO, ExpandableTradeItem expandableTradeItem)
+        public DTO(Resources resources, PositionDTO positionDTO, SecurityCompactDTO securityCompactDTO, ExpandableTradeItem expandableTradeItem,
+                PrettyTime prettyTime)
         {
             this.resources = resources;
             this.positionDTO = positionDTO;
             this.securityCompactDTO = securityCompactDTO;
             this.expandableTradeItem = expandableTradeItem;
+            this.prettyTime = prettyTime;
+            init();
         }
 
-        public ExpandableTradeItem getExpandableTradeItem()
-        {
-            return expandableTradeItem;
-        }
-
-        @Nullable private Double getNumberToDisplay()
+        private void init()
         {
             Boolean isClosed = positionDTO.isClosed();
             if (expandableTradeItem.isLastTrade() && isClosed != null && !isClosed)
             {
-                return positionDTO.unrealizedPLRefCcy;
+                numberToDisplay = positionDTO.unrealizedPLRefCcy;
             }
-            return expandableTradeItem.getModel().realizedPLAfterTradeRefCcy;
-        }
+            numberToDisplay = expandableTradeItem.getModel().realizedPLAfterTradeRefCcy;
 
-        public String getTradeBoughtText()
-        {
             int textResId =
                     expandableTradeItem.getModel().quantity >= 0 ? R.string.trade_bought_quantity_verbose : R.string.trade_sold_quantity_verbose;
-            THSignedNumber tradeQuantity = THSignedNumber.builder((double) Math.abs(expandableTradeItem.getModel().quantity))
+            THSignedNumber tradeQuantityL = THSignedNumber.builder((double) Math.abs(expandableTradeItem.getModel().quantity))
                     .withOutSign()
                     .build();
-            THSignedNumber tradeValue = THSignedMoney.builder(expandableTradeItem.getModel().unitPriceRefCcy)
+            THSignedNumber tradeValueL = THSignedMoney.builder(expandableTradeItem.getModel().unitPriceRefCcy)
                     .withOutSign()
                     .currency(getCurrencyDisplay())
                     .build();
-            return resources.getString(
+            tradeBought = resources.getString(
                     textResId,
-                    tradeQuantity.toString(),
-                    tradeValue.toString());
-        }
+                    tradeQuantityL.toString(),
+                    tradeValueL.toString());
 
-        @NonNull
-        private String getCurrencyDisplay()
-        {
             if (securityCompactDTO.currencyDisplay != null)
             {
-                return securityCompactDTO.currencyDisplay;
+                currencyDisplay = securityCompactDTO.currencyDisplay;
             }
-            return positionDTO.getNiceCurrency();
-        }
+            currencyDisplay = positionDTO.getNiceCurrency();
 
-        @NonNull
-        protected String getTradeDateText(PrettyTime prettyTime)
-        {
             if (expandableTradeItem.getModel().dateTime != null)
             {
-                if (prettyDate)
-                {
-                    return prettyTime.format(expandableTradeItem.getModel().dateTime);
-                }
-                else
-                {
-                    DateFormat sdf = DateFormat.getDateTimeInstance();
-                    sdf.setTimeZone(TimeZone.getDefault());
-                    return sdf.format(expandableTradeItem.getModel().dateTime);
-                }
+                prettyDate = this.prettyTime.format(expandableTradeItem.getModel().dateTime);
+                DateFormat sdf = DateFormat.getDateTimeInstance();
+                sdf.setTimeZone(TimeZone.getDefault());
+                normalDate = sdf.format(expandableTradeItem.getModel().dateTime);
             }
             else
             {
-                return "";
+                normalDate = "";
+                prettyDate = "";
             }
-        }
 
-        public void togglePrettyDate()
-        {
-            prettyDate = !prettyDate;
-        }
-
-        protected String getHoldingQuantityText()
-        {
             THSignedNumber tradeQuantityAfterTrade = THSignedNumber
                     .builder((double) Math.abs(expandableTradeItem.getModel().quantityAfterTrade))
                     .withOutSign()
                     .build();
-            return resources.getString(
+            holdingQuantity = resources.getString(
                     expandableTradeItem.isLastTrade() ? R.string.trade_holding_quantity_verbose : R.string.trade_held_quantity_verbose,
                     tradeQuantityAfterTrade.toString());
-        }
 
-        public String getAveragePrice()
-        {
-            return String.format("%s %,.2f", positionDTO.getNiceCurrency(), expandableTradeItem.getModel().averagePriceAfterTradeRefCcy);
-        }
+            averagePrice = String.format("%s %,.2f", positionDTO.getNiceCurrency(), expandableTradeItem.getModel().averagePriceAfterTradeRefCcy);
 
-        @ViewVisibilityValue public int getUnrealisedPLVisibility()
-        {
-            Boolean isOpen = positionDTO.isOpen();
-            return (expandableTradeItem.isLastTrade() && isOpen != null && isOpen) ? VISIBLE : GONE;
-        }
+            unrealisedPLVisibility = (expandableTradeItem.isLastTrade() && isClosed != null && !isClosed) ? VISIBLE : GONE;
 
-        public String getUnrealisedPLValueHeaderText()
-        {
             if (positionDTO.unrealizedPLRefCcy != null && positionDTO.unrealizedPLRefCcy < 0)
             {
-                return resources.getString(R.string.position_unrealised_loss_header);
+                unrealisedHeader = resources.getString(R.string.position_unrealised_loss_header);
             }
             else
             {
-                return resources.getString(R.string.position_unrealised_profit_header);
+                unrealisedHeader = resources.getString(R.string.position_unrealised_profit_header);
             }
-        }
 
-        public CharSequence getUnrealisedPLValueText()
-        {
-            Boolean isOpen = positionDTO.isOpen();
-            if (expandableTradeItem.isLastTrade() && isOpen != null && isOpen)
+            if (expandableTradeItem.isLastTrade() && isClosed != null && !isClosed)
             {
-                return PositionDTOUtils.getUnrealisedPLSpanned(resources, positionDTO);
+                unrealisedValue = PositionDTOUtils.getUnrealisedPLSpanned(resources, positionDTO);
             }
             else
             {
-                return resources.getString(R.string.na);
+                unrealisedValue = resources.getString(R.string.na);
             }
-        }
 
-        public String getRealisedPLValueHeaderText()
-        {
             if (expandableTradeItem.getModel().realizedPLAfterTradeRefCcy < 0)
             {
-                return resources.getString(R.string.position_realised_loss_header);
+                realisedHeader = resources.getString(R.string.position_realised_loss_header);
             }
             else
             {
-                return resources.getString(R.string.position_realised_profit_header);
+                realisedHeader = resources.getString(R.string.position_realised_profit_header);
             }
-        }
 
-        public CharSequence getRealisedPLValueText()
-        {
-            return THSignedMoney
+            realisedValue = THSignedMoney
                     .builder(expandableTradeItem.getModel().realizedPLAfterTradeRefCcy)
                     .withOutSign()
                     .currency(positionDTO.getNiceCurrency())
                     .build()
                     .createSpanned();
+
+            tradeValue = THSignedMoney.builder(expandableTradeItem.getModel().quantity * expandableTradeItem.getModel().unitPriceRefCcy)
+                    .withOutSign()
+                    .currency(getCurrencyDisplay())
+                    .build().toString();
+
+            commentVisibility = expandableTradeItem.getModel().commentText == null ? GONE : VISIBLE;
+            commentText = expandableTradeItem.getModel().commentText;
+        }
+
+        @Nullable private Double getNumberToDisplay()
+        {
+            return numberToDisplay;
+        }
+
+        public String getTradeBoughtText()
+        {
+            return tradeBought;
+        }
+
+        @NonNull
+        private String getCurrencyDisplay()
+        {
+            return currencyDisplay;
+        }
+
+        @NonNull
+        protected String getTradeDateText()
+        {
+            if (isPrettyDate)
+            {
+                return prettyDate;
+            }
+            else
+            {
+                return normalDate;
+            }
+        }
+
+        public void togglePrettyDate()
+        {
+            isPrettyDate = !isPrettyDate;
+        }
+
+        protected String getHoldingQuantityText()
+        {
+            return holdingQuantity;
+        }
+
+        public String getAveragePrice()
+        {
+            return averagePrice;
+        }
+
+        @ViewVisibilityValue public int getUnrealisedPLVisibility()
+        {
+            return unrealisedPLVisibility;
+        }
+
+        public String getUnrealisedPLValueHeaderText()
+        {
+            return unrealisedHeader;
+        }
+
+        public CharSequence getUnrealisedPLValueText()
+        {
+            return unrealisedValue;
+        }
+
+        public String getRealisedPLValueHeaderText()
+        {
+            return realisedHeader;
+        }
+
+        public CharSequence getRealisedPLValueText()
+        {
+            return realisedValue;
         }
 
         protected String getTradeValueText()
         {
-            THSignedNumber tradeValue = THSignedMoney
-                    .builder(expandableTradeItem.getModel().quantity * expandableTradeItem.getModel().unitPriceRefCcy)
-                    .withOutSign()
-                    .currency(getCurrencyDisplay())
-                    .build();
-            return tradeValue.toString();
+            return tradeValue;
         }
 
         @ViewVisibilityValue public int getCommentSectionVisibility()
         {
-            return expandableTradeItem.getModel().commentText == null ? GONE : VISIBLE;
+            return commentVisibility;
         }
 
         public String getCommentText()
         {
-            return expandableTradeItem.getModel().commentText;
+            return commentText;
         }
     }
 

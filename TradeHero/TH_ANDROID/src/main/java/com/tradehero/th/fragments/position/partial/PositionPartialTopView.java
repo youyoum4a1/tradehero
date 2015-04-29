@@ -53,6 +53,7 @@ public class PositionPartialTopView extends LinearLayout
     @InjectView(R.id.company_name) TextView companyName;
     @InjectView(R.id.share_count) TextView shareCount;
     @InjectView(R.id.last_price_container) View lastPriceContainer;
+    @InjectView(R.id.hint_forward) View forwardCaret;
 
     @InjectView(R.id.position_percentage) TextView positionPercent;
     @InjectView(R.id.position_unrealised_pl) TextView positionUnrealisedPL;
@@ -107,6 +108,16 @@ public class PositionPartialTopView extends LinearLayout
         }
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
+    }
+
+    public void hideCaret()
+    {
+        forwardCaret.setVisibility(View.GONE);
+    }
+
+    public void showCaret()
+    {
+        forwardCaret.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.btn_position_close)

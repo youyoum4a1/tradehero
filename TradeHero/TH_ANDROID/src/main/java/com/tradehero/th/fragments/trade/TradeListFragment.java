@@ -33,7 +33,6 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
-import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
@@ -55,10 +54,11 @@ import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
-import java.util.ArrayList;
+import dagger.Lazy;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -67,7 +67,6 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
 public class TradeListFragment extends BasePurchaseManagerFragment
@@ -83,6 +82,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Inject THRouter thRouter;
     @Inject WatchlistPositionCacheRx watchlistPositionCache;
     @Inject Analytics analytics;
+    @Inject Lazy<PrettyTime> prettyTime;
 
     @InjectView(R.id.trade_list) protected ListView tradeListView;
 
@@ -145,11 +145,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         super.onStart();
         fetchAlertList();
         fetchAll();
-        //fetchPosition();
-        //if (positionDTOKey instanceof OwnedPositionId)
-        //{
-        //    fetchTrades((OwnedPositionId) positionDTOKey);
-        //}
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -183,7 +178,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     @Override public void onStop()
     {
-        Timber.d("onStop %s", this);
         unsubscribe(actionDialogSubscription);
         actionDialogSubscription = null;
         super.onStop();
@@ -191,7 +185,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        Timber.d("onDestroyView %s", this);
         tradeListView.setOnScrollListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -199,7 +192,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroy()
     {
-        Timber.d("onDestory %s", this);
         adapter = null;
         super.onDestroy();
     }
@@ -260,7 +252,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                                                     @Override public List<Object> call(SecurityCompactDTO scDTO, TradeDTOList tradeDTOs)
                                                     {
                                                         securityCompactDTO = scDTO;
-                                                        return adapter.createObjects(positionDTOPair.second, scDTO, tradeDTOs);
+                                                        return adapter.createObjects(positionDTOPair.second, scDTO, tradeDTOs, prettyTime.get());
                                                     }
                                                 });
                                     }
@@ -277,116 +269,21 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                                         adapter.addAll(o);
                                         adapter.notifyDataSetChanged();
                                         adapter.setNotifyOnChange(true);
+                                        finishReceivingData();
                                     }
                                 },
                                 new ToastOnErrorAction())
         );
     }
 
-    protected void fetchSimplePage()
+    public void finishReceivingData()
     {
-        //onStopSubscriptions.add(AppObservable.bindFragment(this,));
-    }
-
-    protected void fetchPosition()
-    {
-        //onStopSubscriptions.add(AppObservable.bindFragment(
-        //        this,
-        //        positionCache.get(positionDTOKey)
-        //                .flatMap(new Func1<Pair<PositionDTOKey, PositionDTO>, Observable<Pair<PositionDTO, SecurityCompactDTO>>>()
-        //                {
-        //                    @Override public Observable<Pair<PositionDTO, SecurityCompactDTO>> call(
-        //                            final Pair<PositionDTOKey, PositionDTO> positionPair)
-        //                    {
-        //                        return securityIdCache.getOne(positionPair.second.getSecurityIntegerId())
-        //                                .flatMap(
-        //                                        new Func1<Pair<SecurityIntegerId, SecurityId>, Observable<Pair<SecurityId, SecurityCompactDTO>>>()
-        //                                        {
-        //                                            @Override
-        //                                            public Observable<Pair<SecurityId, SecurityCompactDTO>> call(
-        //                                                    Pair<SecurityIntegerId, SecurityId> securityIntegerIdSecurityIdPair)
-        //                                            {
-        //                                                return securityCompactCache.getOne(securityIntegerIdSecurityIdPair.second);
-        //                                            }
-        //                                        })
-        //                                .map(new Func1<Pair<SecurityId, SecurityCompactDTO>, Pair<PositionDTO, SecurityCompactDTO>>()
-        //                                {
-        //                                    @Override public Pair<PositionDTO, SecurityCompactDTO> call(
-        //                                            Pair<SecurityId, SecurityCompactDTO> securityPair)
-        //                                    {
-        //                                        return Pair.create(positionPair.second, securityPair.second);
-        //                                    }
-        //                                });
-        //                    }
-        //                }))
-        //        .observeOn(AndroidSchedulers.mainThread())
-        //        .subscribe(
-        //                new Action1<Pair<PositionDTO, SecurityCompactDTO>>()
-        //                {
-        //                    @Override public void call(Pair<PositionDTO, SecurityCompactDTO> positionPair)
-        //                    {
-        //                        linkWith(positionPair);
-        //                    }
-        //                },
-        //                new ToastAction<Throwable>(getString(R.string.error_fetch_position_list_info))));
-    }
-
-    public void linkWith(Pair<PositionDTO, SecurityCompactDTO> positionPair)
-    {
-        this.positionDTO = positionPair.first;
-        this.securityCompactDTO = positionPair.second;
-        this.securityId = positionPair.second.getSecurityId();
-        //adapter.setShownPositionDTO(positionPair);
-        //adapter.notifyDataSetChanged();
-        if (!(positionDTOKey instanceof OwnedPositionId))
+        if (securityCompactDTO != null)
         {
-            fetchTrades(positionPair.first.getOwnedPositionId());
+            this.securityId = securityCompactDTO.getSecurityId();
+            getActivity().supportInvalidateOptionsMenu();
+            displayActionBarTitle();
         }
-        getActivity().supportInvalidateOptionsMenu();
-        displayActionBarTitle();
-    }
-
-    protected void fetchTrades(@NonNull OwnedPositionId tradeDTOListKey)
-    {
-        //onStopSubscriptions.add(tradeListCache.get(tradeDTOListKey)
-        //        .map(new Func1<Pair<TradeDTOListKey, TradeDTOList>, List<PositionTradeDTOKey>>()
-        //        {
-        //
-        //            @Override public List<PositionTradeDTOKey> call(Pair<TradeDTOListKey, TradeDTOList> tradeDTOs)
-        //            {
-        //                return TradeListFragment.this.createUnderlyingItems(tradeDTOs.second);
-        //            }
-        //        })
-        //        .observeOn(AndroidSchedulers.mainThread())
-        //        .doOnUnsubscribe(new Action0()
-        //        {
-        //            @Override public void call()
-        //            {
-        //                Timber.d("onUnsubscribe %s", TradeListFragment.this);
-        //            }
-        //        })
-        //        .subscribe(
-        //                new Action1<List<PositionTradeDTOKey>>()
-        //                {
-        //                    @Override public void call(List<PositionTradeDTOKey> tradeList)
-        //                    {
-        //                        Timber.d("onNext %s", TradeListFragment.this);
-        //                        adapter.setUnderlyingItems(tradeList);
-        //                    }
-        //                },
-        //                new ToastAndLogOnErrorAction(
-        //                        getString(R.string.error_fetch_trade_list_info),
-        //                        "Error fetching the list of trades")));
-    }
-
-    protected List<PositionTradeDTOKey> createUnderlyingItems(@NonNull List<TradeDTO> tradeDTOList)
-    {
-        List<PositionTradeDTOKey> created = new ArrayList<>();
-        for (TradeDTO tradeDTO : tradeDTOList)
-        {
-            created.add(new PositionTradeDTOKey(positionDTOKey, tradeDTO));
-        }
-        return created;
     }
 
     public void displayActionBarTitle()
