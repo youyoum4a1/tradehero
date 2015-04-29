@@ -3,7 +3,7 @@ package com.tradehero.chinabuild.fragment.stocklearning;
 /**
  * Created by palmer on 15/3/30.
  */
-public class StockLearningQuestionsItem {
+public class StockLearningSubGroup {
 
     private int id;
     private int lastNumber;

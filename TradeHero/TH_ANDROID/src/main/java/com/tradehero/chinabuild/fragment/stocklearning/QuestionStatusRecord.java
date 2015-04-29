@@ -9,5 +9,6 @@ public class QuestionStatusRecord {
     public String question_choice;
     public int question_status;
     public int user_id;
+    public int question_group_id;
 
 }
