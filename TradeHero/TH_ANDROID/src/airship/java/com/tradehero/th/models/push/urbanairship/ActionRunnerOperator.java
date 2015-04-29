@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.urbanairship.actions.Action;
 import com.urbanairship.actions.ActionArguments;
-import com.urbanairship.actions.ActionCompletionCallback;
 import com.urbanairship.actions.ActionResult;
-import com.urbanairship.actions.ActionRunner;
+import com.urbanairship.actions.ActionRunRequest;
+import com.urbanairship.actions.ActionRunRequestFactory;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -38,21 +38,19 @@ public class ActionRunnerOperator implements Observable.OnSubscribe<ActionResult
 
     @Override public void call(final Subscriber<? super ActionResult> subscriber)
     {
-        ActionCompletionCallback callback = new ActionCompletionCallback()
-        {
-            @Override public void onFinish(ActionResult actionResult)
-            {
-                subscriber.onNext(actionResult);
-                subscriber.onCompleted();
-            }
-        };
         if (action != null)
         {
-            ActionRunner.shared().runAction(action, arguments, callback);
+            ActionRunRequest request = ActionRunRequest.createRequest(action);
+            request.setMetadata(arguments.getMetadata());
+            subscriber.onNext(request.runSync());
+            subscriber.onCompleted();
         }
         else if (actionName != null)
         {
-            ActionRunner.shared().runAction(actionName, arguments, callback);
+            ActionRunRequest request = new ActionRunRequestFactory().createActionRequest(actionName);
+            request.setMetadata(arguments.getMetadata());
+            subscriber.onNext(request.runSync());
+            subscriber.onCompleted();
         }
         else
         {

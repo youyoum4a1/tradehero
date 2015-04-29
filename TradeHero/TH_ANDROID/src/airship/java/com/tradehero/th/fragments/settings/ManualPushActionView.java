@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Pair;
@@ -15,8 +16,11 @@ import com.tradehero.th.R;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.urbanairship.UAirship;
 import com.urbanairship.actions.ActionArguments;
+import com.urbanairship.actions.ActionValue;
+import com.urbanairship.actions.ActionValueException;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
+import timber.log.Timber;
 
 public class ManualPushActionView extends ScrollView
 {
@@ -75,11 +79,19 @@ public class ManualPushActionView extends ScrollView
 
     @Override protected void onDetachedFromWindow()
     {
-        actionArgumentObservable.onNext(Pair.create(
-                actionNameView.getText().toString(),
-                new ActionArguments(
-                        ((SituationDTO) situationSpinner.getSelectedItem()).situation,
-                        argumentView.getText().toString())));
+        try
+        {
+            actionArgumentObservable.onNext(Pair.create(
+                    actionNameView.getText().toString(),
+                    new ActionArguments(
+                            ((SituationDTO) situationSpinner.getSelectedItem()).situation,
+                            ActionValue.wrap(argumentView.getText().toString()),
+                            new Bundle())));
+        } catch (ActionValueException e)
+        {
+            Timber.e(e, "Failed to pass on action value");
+            actionArgumentObservable.onError(e);
+        }
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
