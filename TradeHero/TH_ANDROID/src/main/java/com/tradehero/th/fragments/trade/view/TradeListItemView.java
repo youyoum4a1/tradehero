@@ -19,6 +19,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.trade.TradeDTO;
+import com.tradehero.th.fragments.leaderboard.ExpandingLayout;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -44,6 +45,7 @@ public class TradeListItemView extends LinearLayout
     @InjectView(R.id.trade_value) protected TextView tradeValue;
     @InjectView(R.id.trade_list_comment_section) protected View commentSection;
     @InjectView(R.id.trade_list_comment) protected TextView commentText;
+    @InjectView(R.id.expanding_layout) public ExpandingLayout expandingLayout;
 
     private DTO tradeItemViewDTO;
 
@@ -207,12 +209,13 @@ public class TradeListItemView extends LinearLayout
         }
     }
 
-    public static class DTO
+    public static class DTO extends ExpandableListItem<TradeDTO>
     {
         private Resources resources;
         private final PositionDTO positionDTO;
         private final SecurityCompactDTO securityCompactDTO;
-        private ExpandableTradeItem expandableTradeItem;
+        private final TradeDTO tradeDTO;
+        private final boolean lastTrade;
         private PrettyTime prettyTime;
         private boolean isPrettyDate = true;
         @Nullable Double numberToDisplay;
@@ -231,13 +234,15 @@ public class TradeListItemView extends LinearLayout
         @ViewVisibilityValue int commentVisibility;
         String commentText;
 
-        public DTO(Resources resources, PositionDTO positionDTO, SecurityCompactDTO securityCompactDTO, ExpandableTradeItem expandableTradeItem,
+        public DTO(Resources resources, PositionDTO positionDTO, SecurityCompactDTO securityCompactDTO, TradeDTO tradeDTO, boolean lastTrade,
                 PrettyTime prettyTime)
         {
+            super(tradeDTO);
             this.resources = resources;
             this.positionDTO = positionDTO;
             this.securityCompactDTO = securityCompactDTO;
-            this.expandableTradeItem = expandableTradeItem;
+            this.tradeDTO = tradeDTO;
+            this.lastTrade = lastTrade;
             this.prettyTime = prettyTime;
             init();
         }
@@ -245,18 +250,18 @@ public class TradeListItemView extends LinearLayout
         private void init()
         {
             Boolean isClosed = positionDTO.isClosed();
-            if (expandableTradeItem.isLastTrade() && isClosed != null && !isClosed)
+            if (isLastTrade() && isClosed != null && !isClosed)
             {
                 numberToDisplay = positionDTO.unrealizedPLRefCcy;
             }
-            numberToDisplay = expandableTradeItem.getModel().realizedPLAfterTradeRefCcy;
+            numberToDisplay = tradeDTO.realizedPLAfterTradeRefCcy;
 
             int textResId =
-                    expandableTradeItem.getModel().quantity >= 0 ? R.string.trade_bought_quantity_verbose : R.string.trade_sold_quantity_verbose;
-            THSignedNumber tradeQuantityL = THSignedNumber.builder((double) Math.abs(expandableTradeItem.getModel().quantity))
+                    tradeDTO.quantity >= 0 ? R.string.trade_bought_quantity_verbose : R.string.trade_sold_quantity_verbose;
+            THSignedNumber tradeQuantityL = THSignedNumber.builder((double) Math.abs(tradeDTO.quantity))
                     .withOutSign()
                     .build();
-            THSignedNumber tradeValueL = THSignedMoney.builder(expandableTradeItem.getModel().unitPriceRefCcy)
+            THSignedNumber tradeValueL = THSignedMoney.builder(tradeDTO.unitPriceRefCcy)
                     .withOutSign()
                     .currency(getCurrencyDisplay())
                     .build();
@@ -271,12 +276,12 @@ public class TradeListItemView extends LinearLayout
             }
             currencyDisplay = positionDTO.getNiceCurrency();
 
-            if (expandableTradeItem.getModel().dateTime != null)
+            if (tradeDTO.dateTime != null)
             {
-                prettyDate = this.prettyTime.format(expandableTradeItem.getModel().dateTime);
+                prettyDate = this.prettyTime.format(tradeDTO.dateTime);
                 DateFormat sdf = DateFormat.getDateTimeInstance();
                 sdf.setTimeZone(TimeZone.getDefault());
-                normalDate = sdf.format(expandableTradeItem.getModel().dateTime);
+                normalDate = sdf.format(tradeDTO.dateTime);
             }
             else
             {
@@ -285,16 +290,16 @@ public class TradeListItemView extends LinearLayout
             }
 
             THSignedNumber tradeQuantityAfterTrade = THSignedNumber
-                    .builder((double) Math.abs(expandableTradeItem.getModel().quantityAfterTrade))
+                    .builder((double) Math.abs(tradeDTO.quantityAfterTrade))
                     .withOutSign()
                     .build();
             holdingQuantity = resources.getString(
-                    expandableTradeItem.isLastTrade() ? R.string.trade_holding_quantity_verbose : R.string.trade_held_quantity_verbose,
+                    isLastTrade() ? R.string.trade_holding_quantity_verbose : R.string.trade_held_quantity_verbose,
                     tradeQuantityAfterTrade.toString());
 
-            averagePrice = String.format("%s %,.2f", positionDTO.getNiceCurrency(), expandableTradeItem.getModel().averagePriceAfterTradeRefCcy);
+            averagePrice = String.format("%s %,.2f", positionDTO.getNiceCurrency(), tradeDTO.averagePriceAfterTradeRefCcy);
 
-            unrealisedPLVisibility = (expandableTradeItem.isLastTrade() && isClosed != null && !isClosed) ? VISIBLE : GONE;
+            unrealisedPLVisibility = (isLastTrade() && isClosed != null && !isClosed) ? VISIBLE : GONE;
 
             if (positionDTO.unrealizedPLRefCcy != null && positionDTO.unrealizedPLRefCcy < 0)
             {
@@ -305,7 +310,7 @@ public class TradeListItemView extends LinearLayout
                 unrealisedHeader = resources.getString(R.string.position_unrealised_profit_header);
             }
 
-            if (expandableTradeItem.isLastTrade() && isClosed != null && !isClosed)
+            if (isLastTrade() && isClosed != null && !isClosed)
             {
                 unrealisedValue = PositionDTOUtils.getUnrealisedPLSpanned(resources, positionDTO);
             }
@@ -314,7 +319,7 @@ public class TradeListItemView extends LinearLayout
                 unrealisedValue = resources.getString(R.string.na);
             }
 
-            if (expandableTradeItem.getModel().realizedPLAfterTradeRefCcy < 0)
+            if (tradeDTO.realizedPLAfterTradeRefCcy < 0)
             {
                 realisedHeader = resources.getString(R.string.position_realised_loss_header);
             }
@@ -324,19 +329,24 @@ public class TradeListItemView extends LinearLayout
             }
 
             realisedValue = THSignedMoney
-                    .builder(expandableTradeItem.getModel().realizedPLAfterTradeRefCcy)
+                    .builder(tradeDTO.realizedPLAfterTradeRefCcy)
                     .withOutSign()
                     .currency(positionDTO.getNiceCurrency())
                     .build()
                     .createSpanned();
 
-            tradeValue = THSignedMoney.builder(expandableTradeItem.getModel().quantity * expandableTradeItem.getModel().unitPriceRefCcy)
+            tradeValue = THSignedMoney.builder(tradeDTO.quantity * tradeDTO.unitPriceRefCcy)
                     .withOutSign()
                     .currency(getCurrencyDisplay())
                     .build().toString();
 
-            commentVisibility = expandableTradeItem.getModel().commentText == null ? GONE : VISIBLE;
-            commentText = expandableTradeItem.getModel().commentText;
+            commentVisibility = tradeDTO.commentText == null ? GONE : VISIBLE;
+            commentText = tradeDTO.commentText;
+        }
+
+        public boolean isLastTrade()
+        {
+            return this.lastTrade;
         }
 
         @Nullable private Double getNumberToDisplay()
@@ -421,29 +431,6 @@ public class TradeListItemView extends LinearLayout
         public String getCommentText()
         {
             return commentText;
-        }
-    }
-
-    public static class ExpandableTradeItem extends ExpandableListItem<TradeDTO>
-    {
-        private final boolean lastTrade;
-
-        //<editor-fold desc="Constructors">
-        public ExpandableTradeItem(final TradeDTO key)
-        {
-            this(key, false);
-        }
-
-        public ExpandableTradeItem(final TradeDTO key, final boolean lastTrade)
-        {
-            super(key);
-            this.lastTrade = lastTrade;
-        }
-        //</editor-fold>
-
-        public boolean isLastTrade()
-        {
-            return this.lastTrade;
         }
     }
 }

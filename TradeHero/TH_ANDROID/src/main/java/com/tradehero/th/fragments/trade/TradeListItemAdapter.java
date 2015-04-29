@@ -16,7 +16,6 @@ import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.fragments.position.view.PositionView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
-import com.tradehero.th.fragments.trade.view.TradeListItemView.ExpandableTradeItem;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +65,7 @@ public class TradeListItemAdapter
         {
             TradeDTO dto = tradeDTOs.get(i);
             objects.add(
-                    new TradeListItemView.DTO(getContext().getResources(), positionDTO, securityCompactDTO, new ExpandableTradeItem(dto, i == 0), prettyTime));
+                    new TradeListItemView.DTO(getContext().getResources(), positionDTO, securityCompactDTO, dto, i == 0, prettyTime));
         }
 
         return objects;
@@ -153,8 +152,11 @@ public class TradeListItemAdapter
                 break;
 
             case ITEM_TYPE_TRADE:
-                ((TradeListItemView) convertView).display((TradeListItemView.DTO) item);
-                //toggleExpanded(((TradeListItemView.DTO) item).getExpandableTradeItem(), convertView);
+                TradeListItemView.DTO dto = (TradeListItemView.DTO) item;
+                TradeListItemView tradeListItemView = ((TradeListItemView) convertView);
+                tradeListItemView.display(dto);
+                boolean expanded = dto.isExpanded();
+                tradeListItemView.expandingLayout.expandWithNoAnimation(expanded);
                 break;
             default:
                 throw new IllegalStateException("Unknown ItemType " + itemViewType);
