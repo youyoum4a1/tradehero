@@ -1,4 +1,4 @@
-package com.tradehero.chinabuild.fragment.stocklearning.question.questionUtils;
+package com.tradehero.chinabuild.fragment.stocklearning;
 
 /**
  * Created by palmer on 15/4/27.

@@ -14,11 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.chinabuild.fragment.stocklearning.question.questionUtils.QuestionLoader;
-import com.tradehero.chinabuild.data.sp.QuestionsSharePreferenceManager;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import java.util.ArrayList;
 
 /**
  * Created by palmer on 15/3/31.
@@ -41,7 +38,6 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
 
     private int totalNum = 80;
     private int failedNum = 0;
-    private String currentQuestionLevel = QuestionLoader.LEVEL_ONE;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -67,14 +63,6 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
 
     private void initArgument()
     {
-        Bundle bundle = getArguments();
-        if (bundle != null)
-        {
-            currentQuestionLevel = bundle.getString(ToAnswerQuestionFragment.KEY_QUESTION_SET_LEVEL, QuestionLoader.LEVEL_ONE);
-            totalNum = QuestionLoader.getLevelMaxNumber(currentQuestionLevel);
-            ArrayList arrayList = QuestionsSharePreferenceManager.getWrongQuestions(getActivity(), currentQuestionLevel);
-            failedNum = (arrayList == null ? 0 : arrayList.size());
-        }
     }
 
     @Override
@@ -101,18 +89,10 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
 
     private void gotoFails()
     {
-        Bundle bundle = new Bundle();
-        bundle.putString(ToAnswerQuestionFragment.KEY_QUESTION_SET_TYPE, ToAnswerQuestionFragment.TYPE_QUESTION_SET_FAILED);
-        bundle.putString(ToAnswerQuestionFragment.KEY_QUESTION_SET_LEVEL, QuestionLoader.getLevelFailName(currentQuestionLevel));
-        bundle.putInt(ToAnswerQuestionFragment.KEY_QUESTION_CURRENT_ID, 0);
-        gotoDashboard(ToAnswerQuestionFragment.class, bundle);
     }
 
     private void gotoHistory()
     {
-        Bundle bundle = new Bundle();
-        bundle.putString(ToAnswerQuestionFragment.KEY_QUESTION_SET_LEVEL, currentQuestionLevel);
-        pushFragment(StockLearningHistoryFragment.class, bundle);
     }
 
     private void initSummaryDescriptionResources()

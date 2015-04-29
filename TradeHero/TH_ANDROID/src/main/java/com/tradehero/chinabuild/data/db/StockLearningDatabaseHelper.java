@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import com.tradehero.chinabuild.fragment.stocklearning.question.questionUtils.QuestionStatusRecord;
+import com.tradehero.chinabuild.fragment.stocklearning.QuestionStatusRecord;
 
 import java.util.ArrayList;
 

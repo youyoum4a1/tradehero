@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#ffffff">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="#ffffff">
 
 
     <ImageView android:layout_width="match_parent" android:layout_height="110dp"
                android:id="@+id/imageview_questions_set_bg"
                android:scaleType="fitXY"/>
+    <View android:layout_width="match_parent" android:layout_height="10dp"
+          android:id="@+id/view_divider"/>
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-              android:id="@+id/textview_questions_set_proportion" android:textSize="14sp"
-              android:textColor="#ffffff"
-              android:layout_alignParentRight="true"
-              android:layout_marginBottom="10dp"
-              android:layout_alignBottom="@id/imageview_questions_set_bg"
-              android:layout_marginRight="15dp"/>
-</RelativeLayout>
+</LinearLayout>

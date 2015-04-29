@@ -10,9 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.chinabuild.fragment.stocklearning.question.questionUtils.Question;
-import com.tradehero.chinabuild.fragment.stocklearning.question.questionUtils.QuestionLoader;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 
@@ -38,7 +35,6 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
     public final static String KEY_QUESTION_SET_LEVEL = "key_question_set_level";//第几套题 LEVEL1,2,3
     public final static String KEY_QUESTION_CURRENT_ID = "key_question_current_id";//第几道题开始
 
-    private String currentQuestionLevel = QuestionLoader.LEVEL_ONE;
     private String questionSetType = "";
     private int beginIndex = 0;
     private int currentIndex = 0;
@@ -70,13 +66,8 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
             if (questionSetType.equals(TYPE_QUESTION_SET_ONLY_RESULT)) {
             }
             if (questionSetType.equals(TYPE_QUESTION_SET_NORMAL)) {
-                currentQuestionLevel = bundle.getString(KEY_QUESTION_SET_LEVEL, QuestionLoader.LEVEL_ONE);
-                arrayListQuestion = QuestionLoader.getInstance(getActivity()).getQuestionList(currentQuestionLevel);
             }
             if (questionSetType.equals(TYPE_QUESTION_SET_FAILED)) {
-                currentQuestionLevel = bundle.getString(KEY_QUESTION_SET_LEVEL, QuestionLoader.LEVEL_ONE_FAILS);
-
-                arrayListQuestion = QuestionLoader.getInstance(getActivity()).getQuestionFailsList(currentQuestionLevel);
             }
         } else {
             popCurrentFragment();

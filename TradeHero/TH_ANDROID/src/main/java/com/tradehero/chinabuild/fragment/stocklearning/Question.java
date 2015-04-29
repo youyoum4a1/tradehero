@@ -1,4 +1,4 @@
-package com.tradehero.chinabuild.fragment.stocklearning.question.questionUtils;
+package com.tradehero.chinabuild.fragment.stocklearning;
 
 import com.tradehero.th.utils.StringUtils;
 import java.io.Serializable;

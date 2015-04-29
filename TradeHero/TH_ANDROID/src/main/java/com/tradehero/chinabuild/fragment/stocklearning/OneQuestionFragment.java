@@ -11,9 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.chinabuild.fragment.stocklearning.question.questionUtils.Question;
 import com.tradehero.th.R;
-import com.tradehero.th.utils.DaggerUtils;
 
 /**
  * Created by palmer on 15/4/24.

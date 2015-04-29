@@ -314,7 +314,6 @@ import java.util.Locale;
                         //Stock Learning
                         PublicClassFragment.class,
                         QuestionsFragment.class,
-                        ToAnswerQuestionFragment.class,
                         AnswersSummaryFragment.class,
                         StockLearningHistoryFragment.class,
                         OneQuestionFragment.class,

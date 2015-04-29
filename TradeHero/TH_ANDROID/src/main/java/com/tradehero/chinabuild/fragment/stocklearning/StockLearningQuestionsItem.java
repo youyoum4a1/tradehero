@@ -9,7 +9,6 @@ public class StockLearningQuestionsItem {
     private int lastNumber;
     private int totalNumber;
     private String name;
-    private int bgResId;
 
     public int getId() {
         return id;
@@ -41,13 +40,5 @@ public class StockLearningQuestionsItem {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getBgResId() {
-        return bgResId;
-    }
-
-    public void setBgResId(int bgResId) {
-        this.bgResId = bgResId;
     }
 }
