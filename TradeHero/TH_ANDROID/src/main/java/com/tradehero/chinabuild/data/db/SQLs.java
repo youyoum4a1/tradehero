@@ -23,16 +23,18 @@ public class SQLs {
             + QUESTION_RECORD_USER_ID + "' int NOT NULL  DEFAULT -1 , '"
             + QUESTION_RECORD_GROUP_ID + "' INTEGER NOT NULL  DEFAULT -1)";
 
-
-    public final static String TABLE_QUESTION_GROUP_PROGRESS = "question_group_progress";
-    public final static String QUESTION_GROUP_PROGRESS_GROUP_ID = "question_group_id";
-    public final static String QUESTION_GROUP_PROGRESS_PROGRESS = "question_group_progress";
+    public final static String TABLE_QUESTION_GROUP = "question_group";
+    public final static String QUESTION_GROUP_GROUP_ID = "question_group_id";
+    public final static String QUESTION_GROUP_PROGRESS = "question_group_progress";
+    public final static String QUESTION_GROUP_NAME = "question_group_name";
     public final static String QUESTION_GROUP_PROGRESS_USER_ID = "user_id";
     public final static String SQL_CREATE_TABLE_QUESTION_GROUP_PROGRESS = "CREATE TABLE '"
-            + TABLE_QUESTION_GROUP_PROGRESS + "' ('id' INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , '"
-            + QUESTION_GROUP_PROGRESS_GROUP_ID + "' INTEGER NOT NULL  UNIQUE , '"
-            + QUESTION_GROUP_PROGRESS_PROGRESS + "' INTEGER NOT NULL  , '"
-            + QUESTION_GROUP_PROGRESS_USER_ID + "' INTEGER NOT NULL  DEFAULT -1)";
+            + TABLE_QUESTION_GROUP + "' ('id' INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , '"
+            + QUESTION_GROUP_GROUP_ID + "' INTEGER NOT NULL  UNIQUE , '"
+            + QUESTION_GROUP_PROGRESS + "' INTEGER NOT NULL  , '"
+            + QUESTION_GROUP_PROGRESS_USER_ID + "' INTEGER NOT NULL  DEFAULT -1, '"
+            + QUESTION_GROUP_NAME + "' TEXT)";
+
 
     //Stock Learning
 
