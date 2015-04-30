@@ -189,7 +189,22 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
         return questionGroupProgress;
     }
 
-
+    public ArrayList<QuestionGroupProgress> retrieveQuestionGroupProgress(int user_id){
+        SQLiteDatabase db = getReadableDatabase();
+        ArrayList<QuestionGroupProgress> progresses = new ArrayList();
+        Cursor cursor = db.query(SQLs.TABLE_QUESTION_GROUP_PROGRESS, null, SQLs.QUESTION_GROUP_PROGRESS_USER_ID + " =? ",
+                new String[]{String.valueOf(user_id)}, null, null, null);
+        while (cursor.moveToNext()){
+            QuestionGroupProgress questionGroupProgress = new QuestionGroupProgress();
+            int progress = cursor.getInt(cursor.getColumnIndex(SQLs.QUESTION_GROUP_PROGRESS_PROGRESS));
+            int group_id = cursor.getInt(cursor.getColumnIndex(SQLs.QUESTION_GROUP_PROGRESS_GROUP_ID));
+            questionGroupProgress.question_group_progress = progress;
+            questionGroupProgress.question_group_id = group_id;
+            questionGroupProgress.user_id = user_id;
+            progresses.add(questionGroupProgress);
+        }
+        return progresses;
+    }
 
 
 

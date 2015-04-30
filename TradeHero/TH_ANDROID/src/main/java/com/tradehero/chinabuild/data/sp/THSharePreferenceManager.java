@@ -7,6 +7,8 @@ import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.th.utils.Constants;
 
 /**
+ * SharedPreference for all local data
+ *
  * Created by palmer on 14-10-21.
  */
 public class THSharePreferenceManager {
@@ -16,6 +18,7 @@ public class THSharePreferenceManager {
     private final static String TH_SP_GUIDE_NAME = "th_sp_guide_name";
     private final static String TH_SP_SHARE_ENDPOINT = "th_sp_share_endpoint";
     private final static String TH_SP_GETUI = "th_sp_getui";
+    private final static String TH_SP_STOCK_LEARNING = "th_sp_stock_learning";
 
     //The latest version
     public final static String KEY_APP_NEW_VERSION_DOWNLOAD_URL = "key_app_new_version_download_url";
@@ -292,5 +295,17 @@ public class THSharePreferenceManager {
     public static String getGETUIID(Context context){
         SharedPreferences sp = context.getSharedPreferences(TH_SP_GETUI, Context.MODE_PRIVATE);
         return sp.getString(KEY_GETUI_ID, "");
+    }
+
+    public final static String KEY_STOCK_LEARNING_QUESTION_UPDATE = "key_stock_learning_question_update";
+
+    public static void saveQuestionUpdateTime(Context context, String updateTime){
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_STOCK_LEARNING, Context.MODE_PRIVATE);
+        sp.edit().putString(KEY_STOCK_LEARNING_QUESTION_UPDATE, updateTime).commit();
+    }
+
+    public static String getQuestionUpdateTime(Context context){
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_STOCK_LEARNING, Context.MODE_PRIVATE);
+        return sp.getString(KEY_STOCK_LEARNING_QUESTION_UPDATE, "-1");
     }
 }
