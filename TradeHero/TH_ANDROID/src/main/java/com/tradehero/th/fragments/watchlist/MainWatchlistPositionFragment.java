@@ -128,6 +128,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
             case R.id.position_watchlist_add:
             {
                 Bundle bundle = new Bundle();
+                SecuritySearchWatchlistFragment.putReturnFragment(bundle, getClass());
                 navigator.get().pushFragment(SecuritySearchWatchlistFragment.class, bundle);
                 return true;
             }
