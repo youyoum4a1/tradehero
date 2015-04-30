@@ -3,19 +3,19 @@ package com.tradehero.th.network.service;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.auth.AuthData;
+import com.tradehero.th.fragments.authentication.AuthDataAccountAction;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.DTOProcessorLogout;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserLogin;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
-import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
@@ -29,29 +29,29 @@ import timber.log.Timber;
 @Singleton public class SessionServiceWrapper
 {
     @NonNull private final CurrentUserId currentUserId;
+    @NonNull private final AuthDataAccountAction authDataAccountAction;
     @NonNull private final SessionServiceRx sessionServiceRx;
     @NonNull private final UserProfileCacheRx userProfileCache;
     @NonNull private final DTOCacheUtilImpl dtoCacheUtil;
     @NonNull private final Context context;
-    @NonNull private final StringPreference savedPushDeviceIdentifier;
     @NonNull private final Lazy<SystemStatusCache> systemStatusCache;
 
     //<editor-fold desc="Constructors">
     @Inject public SessionServiceWrapper(
             @NonNull CurrentUserId currentUserId,
+            @NonNull AuthDataAccountAction authDataAccountAction,
             @NonNull SessionServiceRx sessionServiceRx,
             @NonNull UserProfileCacheRx userProfileCache,
             @NonNull DTOCacheUtilImpl dtoCacheUtil,
             @NonNull Context context,
-            @NonNull @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier,
             @NonNull Lazy<SystemStatusCache> systemStatusCache)
     {
         this.currentUserId = currentUserId;
+        this.authDataAccountAction = authDataAccountAction;
         this.sessionServiceRx = sessionServiceRx;
         this.userProfileCache = userProfileCache;
         this.dtoCacheUtil = dtoCacheUtil;
         this.context = context;
-        this.savedPushDeviceIdentifier = savedPushDeviceIdentifier;
         this.systemStatusCache = systemStatusCache;
     }
     //</editor-fold>
@@ -72,12 +72,14 @@ import timber.log.Timber;
     //</editor-fold>
 
     //<editor-fold desc="Login">
-    @NonNull protected DTOProcessorUserLogin createUserLoginProcessor()
+    @NonNull protected DTOProcessorUserLogin createUserLoginProcessor(@NonNull AuthData authData)
     {
         return new DTOProcessorUserLogin(
+                authData,
                 systemStatusCache.get(),
                 userProfileCache,
                 currentUserId,
+                authDataAccountAction,
                 dtoCacheUtil);
     }
 
@@ -86,7 +88,7 @@ import timber.log.Timber;
             @NonNull LoginSignUpFormDTO loginFormDTO)
     {
         return sessionServiceRx.login(authorization, loginFormDTO)
-                .map(createUserLoginProcessor());
+                .map(createUserLoginProcessor(loginFormDTO.authData));
     }
     //</editor-fold>
 
@@ -103,7 +105,7 @@ import timber.log.Timber;
                 userLoginDTOObservable = sessionServiceRx.signupAndLogin(authorizationHeader, loginSignUpFormDTO);
         }
 
-        return userLoginDTOObservable.map(createUserLoginProcessor());
+        return userLoginDTOObservable.map(createUserLoginProcessor(loginSignUpFormDTO.authData));
     }
 
     @NonNull public Observable<UserLoginDTO> signUpAndLoginOrUpdateTokensRx(
@@ -145,9 +147,9 @@ import timber.log.Timber;
     //</editor-fold>
 
     //<editor-fold desc="Update Device">
-    @NonNull public Observable<UserProfileDTO> updateDeviceRx()
+    @NonNull public Observable<UserProfileDTO> updateDeviceRx(@NonNull String deviceId)
     {
-        return sessionServiceRx.updateDevice(savedPushDeviceIdentifier.get())
+        return sessionServiceRx.updateDevice(deviceId)
                 .map(new DTOProcessorUpdateUserProfile(userProfileCache));
     }
     //</editor-fold>

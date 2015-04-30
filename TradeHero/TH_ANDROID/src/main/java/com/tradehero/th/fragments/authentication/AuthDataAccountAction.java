@@ -2,8 +2,7 @@ package com.tradehero.th.fragments.authentication;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.Activity;
-import android.content.Intent;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -18,14 +17,12 @@ import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
 
 public class AuthDataAccountAction implements Action1<Pair<AuthData, UserProfileDTO>>
 {
-    @NonNull private final Activity activity;
     @NonNull private final AccountManager accountManager;
 
     //<editor-fold desc="Constructors">
-    @Inject public AuthDataAccountAction(@NonNull Activity activity, @NonNull AccountManager accountManager)
+    @Inject public AuthDataAccountAction(@NonNull Context context)
     {
-        this.activity = activity;
-        this.accountManager = accountManager;
+        this.accountManager = AccountManager.get(context);
     }
     //</editor-fold>
 
@@ -37,7 +34,6 @@ public class AuthDataAccountAction implements Action1<Pair<AuthData, UserProfile
         {
             accountManager.setAuthToken(account, PARAM_AUTHTOKEN_TYPE, pair.first.getTHToken());
         }
-        finishAuthentication(pair);
     }
 
     @NonNull private Account getOrAddAccount(@NonNull Pair<AuthData, UserProfileDTO> pair)
@@ -56,15 +52,5 @@ public class AuthDataAccountAction implements Action1<Pair<AuthData, UserProfile
             accountManager.setPassword(accounts[0], password);
         }
         return account;
-    }
-
-    private void finishAuthentication(@NonNull Pair<AuthData, UserProfileDTO> pair)
-    {
-        Intent intent = new Intent();
-        intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, pair.second.email);
-        intent.putExtra(AccountManager.KEY_AUTHTOKEN, pair.first.getTHToken());
-        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, PARAM_ACCOUNT_TYPE);
-
-        activity.setResult(Activity.RESULT_OK, intent);
     }
 }

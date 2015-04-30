@@ -65,11 +65,12 @@ import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.ReplaceWith;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction0;
-import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.SocialAlertDialogRxUtil;
@@ -88,7 +89,6 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -105,7 +105,6 @@ public final class SettingsFragment extends BasePreferenceFragment
     @Inject protected SessionServiceWrapper sessionServiceWrapper;
     @Inject @AuthHeader String authHeader;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap;
-    @Inject AccountManager accountManager;
     @Inject @ForPicasso LruCache lruCache;
     @Inject Cache httpCache;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
@@ -122,6 +121,7 @@ public final class SettingsFragment extends BasePreferenceFragment
     protected Subscription userProfileCacheSubscription;
 
     @Inject @AuthHeader protected String authToken;
+    AccountManager accountManager;
     private UserProfileDTO userProfileDTO;
 
     @Nullable protected CheckBoxPreference socialConnectFB;
@@ -138,9 +138,14 @@ public final class SettingsFragment extends BasePreferenceFragment
     @Nullable protected CheckBoxPreference pushNotificationSound;
     @Nullable protected CheckBoxPreference pushNotificationVibrate;
 
-    private ProgressDialog progressDialog;
     private SocialNetworkEnum socialNetworkEnum;
     private CheckBoxPreference checkBoxPreference;
+
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        accountManager = AccountManager.get(activity);
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -217,11 +222,6 @@ public final class SettingsFragment extends BasePreferenceFragment
         {
             subscription.unsubscribe();
         }
-    }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
     }
 
     private void initView()
@@ -396,7 +396,7 @@ public final class SettingsFragment extends BasePreferenceFragment
 
     protected boolean changeStatusEmail(boolean enable)
     {
-        progressDialog = ProgressDialog.show(
+        ProgressDialog progressDialog = ProgressDialog.show(
                 getActivity(),
                 getActivity().getString(R.string.settings_notifications_email_alert_title),
                 getActivity().getString(R.string.settings_notifications_email_alert_message),
@@ -404,29 +404,23 @@ public final class SettingsFragment extends BasePreferenceFragment
         onStopSubscriptions.add(userServiceWrapper.updateProfilePropertyEmailNotificationsRx(
                 currentUserId.toUserBaseKey(), enable)
                 .observeOn(AndroidSchedulers.mainThread())
-                        //                    .finallyDo(progressDialog: :dismiss)
+                .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
                 .subscribe(
                         new Action1<UserProfileDTO>()
                         {
                             @Override public void call(UserProfileDTO profile)
                             {
-                                SettingsFragment.this.onProfileUpdated(profile);
+                                updateStatus(profile);
                             }
                         },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable error)
-                            {
-                                SettingsFragment.this.onProfileUpdateFailed(error);
-                            }
-                        }));
+                        new ToastOnErrorAction()));
 
         return false;
     }
 
     protected boolean changeStatusPush(boolean enable)
     {
-        progressDialog = ProgressDialog.show(
+        ProgressDialog progressDialog = ProgressDialog.show(
                 getActivity(),
                 getString(R.string.settings_notifications_push_alert_title),
                 getString(R.string.settings_notifications_push_alert_message),
@@ -434,22 +428,16 @@ public final class SettingsFragment extends BasePreferenceFragment
         onStopSubscriptions.add(userServiceWrapper.updateProfilePropertyPushNotificationsRx(
                 currentUserId.toUserBaseKey(), enable)
                 .observeOn(AndroidSchedulers.mainThread())
-                        //                    .finallyDo(progressDialog: :dismiss)
+                .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
                 .subscribe(
                         new Action1<UserProfileDTO>()
                         {
                             @Override public void call(UserProfileDTO profile)
                             {
-                                SettingsFragment.this.onProfileUpdated(profile);
+                                updateStatus(profile);
                             }
                         },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable error)
-                            {
-                                SettingsFragment.this.onProfileUpdateFailed(error);
-                            }
-                        }));
+                        new ToastOnErrorAction()));
 
         return false;
     }
@@ -507,26 +495,6 @@ public final class SettingsFragment extends BasePreferenceFragment
         }
     }
 
-    public void onProfileUpdated(@NonNull UserProfileDTO args)
-    {
-        dismissDialog();
-        updateStatus(args);
-    }
-
-    public void onProfileUpdateFailed(@NonNull Throwable e)
-    {
-        dismissDialog();
-        THToast.show(new THException(e));
-    }
-
-    private void dismissDialog()
-    {
-        if (progressDialog != null)
-        {
-            progressDialog.dismiss();
-        }
-    }
-
     private void localizationCustomize()
     {
         if (Constants.TAP_STREAM_TYPE.marketSegment.equals(MarketSegment.CHINA))
@@ -570,7 +538,6 @@ public final class SettingsFragment extends BasePreferenceFragment
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference)
     {
-
         String key = preference.getKey();
         if (!StringUtils.isNullOrEmpty(key))
         {
@@ -808,8 +775,7 @@ public final class SettingsFragment extends BasePreferenceFragment
 
     public void handleClearCacheClick()
     {
-        ProgressDialog progressDialog = null;
-
+        final ProgressDialog progressDialog;
         Context activityContext = getActivity();
         if (activityContext != null)
         {
@@ -819,8 +785,11 @@ public final class SettingsFragment extends BasePreferenceFragment
                     activityContext.getString(R.string.settings_misc_cache_clearing_alert_message),
                     true);
         }
+        else
+        {
+            progressDialog = null;
+        }
 
-        final ProgressDialog finalProgressDialog = progressDialog;
         new DurationMeasurer<>(
                 new Action1<Integer>()
                 {
@@ -837,12 +806,17 @@ public final class SettingsFragment extends BasePreferenceFragment
                 {
                     @Override public void call(Integer ignored)
                     {
-                        SettingsFragment.this.showCacheCleared(finalProgressDialog);
+                        if (progressDialog != null)
+                        {
+                            progressDialog.setTitle(R.string.settings_misc_cache_cleared_alert_title);
+                            progressDialog.setMessage("");
+                        }
                     }
                 })
                 .delay(APPARENT_DURATION.first, APPARENT_DURATION.second, AndroidSchedulers.mainThread())
+                .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
                 .subscribe(
-                        new DismissDialogAction1<Integer>(finalProgressDialog),
+                        new EmptyAction1<Integer>(),
                         new TimberOnErrorAction("Failed to clear cache"));
     }
 
@@ -853,7 +827,7 @@ public final class SettingsFragment extends BasePreferenceFragment
 
     protected void effectSignOut()
     {
-        ProgressDialog progressDialog = null;
+        final ProgressDialog progressDialog;
 
         Activity activityContext = getActivity();
         if (activityContext != null)
@@ -866,29 +840,45 @@ public final class SettingsFragment extends BasePreferenceFragment
             progressDialog.setCancelable(true);
             progressDialog.setCanceledOnTouchOutside(true);
         }
+        else
+        {
+            progressDialog = null;
+        }
 
-        final ProgressDialog finalProgressDialog = progressDialog;
         onStopSubscriptions.add(sessionServiceWrapper.logoutRx()
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new DismissDialogAction0(finalProgressDialog))
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends UserProfileDTO>>()
+                {
+                    @Override public Observable<? extends UserProfileDTO> call(final Throwable throwable)
+                    {
+                        if (progressDialog != null)
+                        {
+                            progressDialog.setTitle(R.string.settings_misc_sign_out_failed);
+                            progressDialog.setMessage("");
+                        }
+                        else
+                        {
+                            THToast.show(new THException(throwable));
+                        }
+                        return Observable.just(0)
+                                .delay(3000, TimeUnit.MILLISECONDS)
+                                .flatMap(new ReplaceWith<Integer, Observable<UserProfileDTO>>(
+                                        Observable.<UserProfileDTO>error(throwable)));
+                    }
+                })
+                .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
                 .subscribe(
                         new Action1<UserProfileDTO>()
                         {
                             @Override public void call(UserProfileDTO profile)
                             {
-                                SettingsFragment.this.onSignedOut(profile, finalProgressDialog);
+                                SettingsFragment.this.onSignedOut(profile);
                             }
                         },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable e)
-                            {
-                                SettingsFragment.this.onSignOutError(e, finalProgressDialog);
-                            }
-                        }));
+                        new TimberOnErrorAction("Failed to sign out")));
     }
 
-    protected void onSignedOut(@SuppressWarnings("UnusedParameters") UserProfileDTO userProfileDTO, @Nullable ProgressDialog progressDialog)
+    protected void onSignedOut(@SuppressWarnings("UnusedParameters") UserProfileDTO userProfileDTO)
     {
         for (Map.Entry<SocialNetworkEnum, AuthenticationProvider> entry : authenticationProviderMap.entrySet())
         {
@@ -906,37 +896,6 @@ public final class SettingsFragment extends BasePreferenceFragment
                 accountManager.removeAccount(account, null, null);
             }
         }
-
-        if (progressDialog != null)
-        {
-            progressDialog.dismiss();
-        }
-    }
-
-    protected void onSignOutError(Throwable e, @Nullable final ProgressDialog progressDialog)
-    {
-        Timber.e(e, "Failed to sign out");
-        if (progressDialog != null)
-        {
-            progressDialog.setTitle(R.string.settings_misc_sign_out_failed);
-            progressDialog.setMessage("");
-            Observable.just(0)
-                    .delay(3000, TimeUnit.MILLISECONDS)
-                    .doOnCompleted(new Action0()
-                    {
-                        @Override public void call()
-                        {
-                            progressDialog.dismiss();
-                        }
-                    })
-                    .subscribe(
-                            new EmptyAction1<Integer>(),
-                            new EmptyAction1<Throwable>());
-        }
-        else
-        {
-            THToast.show(new THException(e));
-        }
     }
 
     private void flushCache()
@@ -948,15 +907,6 @@ public final class SettingsFragment extends BasePreferenceFragment
         } catch (IOException e)
         {
             Timber.e(e, "Failed to evict all in httpCache");
-        }
-    }
-
-    private void showCacheCleared(@Nullable ProgressDialog progressDialog)
-    {
-        if (progressDialog != null)
-        {
-            progressDialog.setTitle(R.string.settings_misc_cache_cleared_alert_title);
-            progressDialog.setMessage("");
         }
     }
 
@@ -1176,7 +1126,8 @@ public final class SettingsFragment extends BasePreferenceFragment
         return socialServiceWrapper.disconnectRx(
                 currentUserId.toUserBaseKey(),
                 new SocialNetworkFormDTO(socialNetworkEnum))
-                .finallyDo(new DismissDialogAction0(progressDialog));
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnUnsubscribe(new DismissDialogAction0(progressDialog));
     }
 
     protected void updateSocialConnectStatus(@NonNull UserProfileDTO userProfileDTO)

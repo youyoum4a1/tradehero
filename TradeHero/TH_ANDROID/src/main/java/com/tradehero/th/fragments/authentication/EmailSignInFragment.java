@@ -71,7 +71,7 @@ public class EmailSignInFragment extends Fragment
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject Provider<LoginSignUpFormDTO.Builder2> loginSignUpFormDTOProvider;
     @Inject SessionServiceWrapper sessionServiceWrapper;
-    @Inject Provider<AuthDataAccountAction> authDataActionProvider;
+    @Inject Provider<ActivityAuthDataAccountAction> authDataActionProvider;
     @Inject THAppsFlyer thAppsFlyer;
 
     @InjectView(R.id.authentication_sign_in_email) ValidatedText email;

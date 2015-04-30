@@ -2,6 +2,7 @@ package com.tradehero.th.api.users;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import com.tradehero.common.annotation.ForUser;
@@ -19,10 +20,10 @@ import rx.subjects.BehaviorSubject;
     @NonNull private final BehaviorSubject<Integer> keyObservable;
 
     //<editor-fold desc="Constructors">
-    @Inject public CurrentUserId(@ForUser SharedPreferences preference, @NonNull AccountManager accountManager)
+    @Inject public CurrentUserId(@ForUser SharedPreferences preference, @NonNull Context context)
     {
         super(preference, PREF_CURRENT_USER_ID_KEY, 0);
-        this.accountManager = accountManager;
+        this.accountManager = AccountManager.get(context);
         keyObservable = BehaviorSubject.create(get());
     }
     //</editor-fold>

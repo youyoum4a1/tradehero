@@ -1,6 +1,5 @@
 package com.tradehero.th.utils.dagger;
 
-import android.accounts.AccountManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -88,11 +87,6 @@ public class AppModule
     @Provides @Singleton THApp provideApplication()
     {
         return THApp;
-    }
-
-    @Provides @Singleton AccountManager provideAccountManager(Context context)
-    {
-        return AccountManager.get(context);
     }
 
     @Provides @Singleton

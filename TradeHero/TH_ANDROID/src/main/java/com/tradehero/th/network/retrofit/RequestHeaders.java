@@ -21,10 +21,9 @@ public class RequestHeaders implements RequestInterceptor
     //<editor-fold desc="Constructors">
     @Inject public RequestHeaders(
             Context context,
-            @LanguageCode String languageCode,
-            AccountManager accountManager)
+            @LanguageCode String languageCode)
     {
-        this.accountManager = accountManager;
+        this.accountManager = AccountManager.get(context);
         this.version = VersionUtils.getVersionId(context);
         this.languageCode = languageCode;
     }

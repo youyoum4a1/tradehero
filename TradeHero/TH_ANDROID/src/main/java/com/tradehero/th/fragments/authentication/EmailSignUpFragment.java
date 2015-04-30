@@ -59,7 +59,7 @@ public class EmailSignUpFragment extends Fragment
     @Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject UserServiceWrapper userServiceWrapper;
-    @Inject AuthDataAccountAction authDataAccountAction;
+    @Inject ActivityAuthDataAccountAction authDataAccountAction;
     @Inject THAppsFlyer thAppsFlyer;
 
     @InjectView(R.id.profile_info) ProfileInfoView profileView;

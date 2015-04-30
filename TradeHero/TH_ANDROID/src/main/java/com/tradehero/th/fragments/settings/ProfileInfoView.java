@@ -94,9 +94,9 @@ public class ProfileInfoView extends LinearLayout
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Inject Provider<UserFormDTO.Builder2> userFormBuilderProvider;
-    @Inject AccountManager accountManager;
     @Inject DashboardNavigator dashboardNavigator;
 
+    @NonNull final AccountManager accountManager;
     private UserProfileDTO userProfileDTO;
     @NonNull protected SubscriptionList subscriptions;
     private File mCurrentPhotoFile;
@@ -109,6 +109,7 @@ public class ProfileInfoView extends LinearLayout
         super(context, attrs);
         HierarchyInjector.inject(this);
         subscriptions = new SubscriptionList();
+        accountManager = AccountManager.get(context);
     }
     //</editor-fold>
 

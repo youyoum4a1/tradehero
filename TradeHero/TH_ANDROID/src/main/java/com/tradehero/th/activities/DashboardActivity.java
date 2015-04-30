@@ -222,7 +222,7 @@ public class DashboardActivity extends BaseActivity
         }
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
-        pushNotificationManager.get().enablePush();
+        //pushNotificationManager.get().enablePush();
 
         initBroadcastReceivers();
 

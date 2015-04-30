@@ -87,7 +87,6 @@ public class NewsHeadlineFragment extends Fragment
     @SuppressWarnings("unused")
     @OnItemClick(R.id.discovery_news_list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-
         NewsItemCompactDTO newsItemDTO = null;
         try
         {

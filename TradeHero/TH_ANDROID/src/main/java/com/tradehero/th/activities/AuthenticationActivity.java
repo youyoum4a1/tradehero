@@ -18,7 +18,7 @@ import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.authentication.AuthDataAccountAction;
+import com.tradehero.th.fragments.authentication.ActivityAuthDataAccountAction;
 import com.tradehero.th.fragments.authentication.GuideAuthenticationFragment;
 import com.tradehero.th.fragments.authentication.OpenDashboardAction;
 import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
@@ -62,7 +62,7 @@ public class AuthenticationActivity extends BaseActivity
     @Inject Provider<LoginSignUpFormDTO.Builder2> authenticationFormBuilderProvider;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject THAppsFlyer thAppsFlyer;
-    @Inject Provider<AuthDataAccountAction> authDataAccountSaveActionProvider;
+    @Inject Provider<ActivityAuthDataAccountAction> authDataAccountSaveActionProvider;
 
     private DashboardNavigator navigator;
     private Subscription socialButtonsSubscription;
