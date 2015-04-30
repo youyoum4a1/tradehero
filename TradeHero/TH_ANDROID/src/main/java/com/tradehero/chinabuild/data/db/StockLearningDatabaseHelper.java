@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import com.tradehero.chinabuild.fragment.stocklearning.QuestionGroupProgress;
 import com.tradehero.chinabuild.fragment.stocklearning.QuestionStatusRecord;
 
 import java.util.ArrayList;
@@ -43,11 +44,10 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
 
     public void insertOrUpdateQuestionRecord(ArrayList<QuestionStatusRecord> sets) {
         SQLiteDatabase db = getWritableDatabase();
-        SQLiteDatabase readeDB = getReadableDatabase();
         try {
             db.beginTransaction();
             for (QuestionStatusRecord questionStatusRecord : sets) {
-                Cursor cursor = readeDB.query(SQLs.TABLE_QUESTION_RECORD, null, SQLs.QUESTION_RECORD_USER_ID + " =? and " + SQLs.QUESTION_RECORD_GROUP_ID + " =? and " + SQLs.QUESTION_RECORD_QUESTION_ID + " =?",
+                Cursor cursor = db.query(SQLs.TABLE_QUESTION_RECORD, null, SQLs.QUESTION_RECORD_USER_ID + " =? and " + SQLs.QUESTION_RECORD_GROUP_ID + " =? and " + SQLs.QUESTION_RECORD_QUESTION_ID + " =?",
                         new String[]{String.valueOf(questionStatusRecord.user_id), String.valueOf(questionStatusRecord.question_group_id), String.valueOf(questionStatusRecord.question_id)}, null, null, null);
                 if (cursor.moveToFirst()) {
                     ContentValues values = new ContentValues();
@@ -64,6 +64,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
                     values.put(SQLs.QUESTION_RECORD_GROUP_ID, questionStatusRecord.question_group_id);
                     db.insert(SQLs.TABLE_QUESTION_RECORD, null, values);
                 }
+                cursor.close();
             }
             db.setTransactionSuccessful();
         } catch (SQLiteException e) {
@@ -76,10 +77,9 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
 
     public void insertQuestionRecord(QuestionStatusRecord questionStatusRecord) {
         SQLiteDatabase db = getWritableDatabase();
-        SQLiteDatabase readeDB = getReadableDatabase();
         try {
             db.beginTransaction();
-            Cursor cursor = readeDB.query(SQLs.TABLE_QUESTION_RECORD, null, SQLs.QUESTION_RECORD_USER_ID + " =? and " + SQLs.QUESTION_RECORD_GROUP_ID + " =? and " + SQLs.QUESTION_RECORD_QUESTION_ID + " =?",
+            Cursor cursor = db.query(SQLs.TABLE_QUESTION_RECORD, null, SQLs.QUESTION_RECORD_USER_ID + " =? and " + SQLs.QUESTION_RECORD_GROUP_ID + " =? and " + SQLs.QUESTION_RECORD_QUESTION_ID + " =?",
                     new String[]{String.valueOf(questionStatusRecord.user_id), String.valueOf(questionStatusRecord.question_group_id), String.valueOf(questionStatusRecord.question_id)}, null, null, null);
             if (cursor.moveToFirst()) {
                 ContentValues values = new ContentValues();
@@ -96,6 +96,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
                 values.put(SQLs.QUESTION_RECORD_GROUP_ID, questionStatusRecord.question_group_id);
                 db.insert(SQLs.TABLE_QUESTION_RECORD, null, values);
             }
+            cursor.close();
             db.setTransactionSuccessful();
         } catch (SQLiteException e) {
             e.printStackTrace();
@@ -110,7 +111,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(SQLs.TABLE_QUESTION_RECORD, null, SQLs.QUESTION_RECORD_USER_ID + " =? and " + SQLs.QUESTION_RECORD_GROUP_ID + " =? and " + SQLs.QUESTION_RECORD_QUESTION_ID + " =?",
                 new String[]{String.valueOf(user_id), String.valueOf(question_group_id), String.valueOf(question_id)}, null, null, null);
-        while (cursor.moveToNext()) {
+        if (cursor.moveToFirst()) {
             questionStatusRecord = new QuestionStatusRecord();
             String question_choice = cursor.getString(cursor.getColumnIndex(SQLs.QUESTION_RECORD_QUESTION_CHOICE));
             int question_status = cursor.getInt(cursor.getColumnIndex(SQLs.QUESTION_RECORD_QUESTION_STATUS));
@@ -120,6 +121,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
             questionStatusRecord.user_id = user_id;
             questionStatusRecord.question_group_id = question_group_id;
         }
+        cursor.close();
         return questionStatusRecord;
     }
 
@@ -140,8 +142,55 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
             questionStatusRecord.question_group_id = question_group_id;
             records.add(questionStatusRecord);
         }
+        cursor.close();
         return records;
     }
+
+    public void insertOrUpdateQuestionGroupProgress(QuestionGroupProgress questionGroupProgress) {
+        SQLiteDatabase db = getWritableDatabase();
+        try {
+            db.beginTransaction();
+            Cursor cursor = db.query(SQLs.TABLE_QUESTION_GROUP_PROGRESS, null, SQLs.QUESTION_GROUP_PROGRESS_USER_ID + " =? and " + SQLs.QUESTION_GROUP_PROGRESS_GROUP_ID + " =? ",
+                    new String[]{String.valueOf(questionGroupProgress.user_id), String.valueOf(questionGroupProgress.question_group_id)}, null, null, null);
+            if (cursor.moveToFirst()) {
+                ContentValues values = new ContentValues();
+                values.put(SQLs.QUESTION_GROUP_PROGRESS_PROGRESS, questionGroupProgress.question_group_progress);
+                db.update(SQLs.TABLE_QUESTION_GROUP_PROGRESS, values, SQLs.QUESTION_GROUP_PROGRESS_USER_ID + " =? and " + SQLs.QUESTION_GROUP_PROGRESS_GROUP_ID + " =? ",
+                        new String[]{String.valueOf(questionGroupProgress.user_id), String.valueOf(questionGroupProgress.question_group_id)});
+            } else {
+                ContentValues values = new ContentValues();
+                values.put(SQLs.QUESTION_GROUP_PROGRESS_PROGRESS, questionGroupProgress.question_group_progress);
+                values.put(SQLs.QUESTION_GROUP_PROGRESS_GROUP_ID, questionGroupProgress.question_group_id);
+                values.put(SQLs.QUESTION_GROUP_PROGRESS_USER_ID, questionGroupProgress.user_id);
+                db.insert(SQLs.TABLE_QUESTION_GROUP_PROGRESS, null, values);
+            }
+            cursor.close();
+            db.setTransactionSuccessful();
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public QuestionGroupProgress retrieveQuestionGroupProgress(int user_id, int question_group_id) {
+        SQLiteDatabase db = getReadableDatabase();
+        QuestionGroupProgress questionGroupProgress = null;
+        Cursor cursor = db.query(SQLs.TABLE_QUESTION_GROUP_PROGRESS, null, SQLs.QUESTION_GROUP_PROGRESS_USER_ID + " =? and " + SQLs.QUESTION_GROUP_PROGRESS_GROUP_ID + " =? ",
+                new String[]{String.valueOf(user_id), String.valueOf(question_group_id)}, null, null, null);
+        if(cursor.moveToFirst()){
+            int progress = cursor.getInt(cursor.getColumnIndex(SQLs.QUESTION_GROUP_PROGRESS_PROGRESS));
+            questionGroupProgress = new QuestionGroupProgress();
+            questionGroupProgress.question_group_id = question_group_id;
+            questionGroupProgress.user_id = user_id;
+            questionGroupProgress.question_group_progress = progress;
+        }
+        return questionGroupProgress;
+    }
+
+
+
 
 
 
