@@ -5,10 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.R;
@@ -17,6 +16,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.BaseFragmentOuterElements;
 import com.tradehero.th.fragments.base.FragmentOuterElements;
+import com.tradehero.th.fragments.onboarding.OnBoardFragment;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Module;
@@ -29,42 +29,43 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 import rx.functions.Action1;
 
-abstract public class OneFragmentActivity extends BaseActivity
-        implements AchievementAcceptor
+public class OnBoardActivity extends BaseActivity
 {
     @Inject protected THRouter thRouter;
     @Inject Set<ActivityResultRequester> activityResultRequesters;
     protected DashboardNavigator navigator;
-    @InjectView(R.id.my_toolbar) protected Toolbar toolbar;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_one_fragment);
+        setContentView(R.layout.activity_on_board);
         ButterKnife.inject(this);
 
-        setSupportActionBar(toolbar);
 
         navigator = new DashboardNavigator(this, R.id.realtabcontent);
 
         if (savedInstanceState == null)
         {
             navigator.pushFragment(
-                    getInitialFragment(),
+                    OnBoardFragment.class,
                     getInitialBundle(),
                     null,
-                    getInitialFragment().getName(),
+                    OnBoardFragment.class.getName(),
                     false);
         }
     }
-
-    @NonNull abstract protected Class<? extends Fragment> getInitialFragment();
 
     @NonNull protected Bundle getInitialBundle()
     {
         Bundle args = new Bundle();
         ActionBarOwnerMixin.putKeyShowHome(args, false);
         return args;
+    }
+
+    @Override public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.on_board_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -81,7 +82,7 @@ abstract public class OneFragmentActivity extends BaseActivity
     @NonNull @Override protected List<Object> getModules()
     {
         List<Object> superModules = new ArrayList<>(super.getModules());
-        superModules.add(new OneFragmentActivityModule());
+        superModules.add(new OnBoardActivityModule());
         return superModules;
     }
 
@@ -119,11 +120,6 @@ abstract public class OneFragmentActivity extends BaseActivity
                 requester.onActivityResult(requestCode, resultCode, data);
             }
         });
-        RouteParams routeParams = getRouteParams(data);
-        if (routeParams != null)
-        {
-            thRouter.open(routeParams.deepLink, routeParams.extras, this);
-        }
     }
 
     @Module(
@@ -135,7 +131,7 @@ abstract public class OneFragmentActivity extends BaseActivity
             complete = false,
             overrides = true
     )
-    public class OneFragmentActivityModule
+    public class OnBoardActivityModule
     {
         @Provides DashboardNavigator provideDashboardNavigator()
         {

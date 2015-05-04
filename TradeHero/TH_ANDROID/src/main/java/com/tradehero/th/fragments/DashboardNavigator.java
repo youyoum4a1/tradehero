@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import com.tradehero.th.activities.BaseActivity;
+import com.tradehero.th.activities.OnBoardActivity;
 import com.tradehero.th.activities.OneFragmentActivity;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
@@ -184,7 +185,8 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         {
             startIntent.putExtras(extras);
         }
-        if (OneFragmentActivity.class.isAssignableFrom(activityClass))
+        if (OneFragmentActivity.class.isAssignableFrom(activityClass)
+                || OnBoardActivity.class.isAssignableFrom(activityClass))
         {
             activity.startActivityForResult(startIntent, BaseActivity.REQUEST_CODE_ROUTE);
         }

@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.onboarding;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,20 +22,17 @@ import com.tradehero.th.api.market.ExchangeCompactSectorListDTO;
 import com.tradehero.th.api.market.MarketRegion;
 import com.tradehero.th.api.market.SectorCompactDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerIdListForm;
 import com.tradehero.th.api.social.BatchFollowFormDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.base.BaseDialogSupportFragment;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.onboarding.exchange.ExchangeSelectionScreenFragment;
 import com.tradehero.th.fragments.onboarding.hero.UserSelectionScreenFragment;
 import com.tradehero.th.fragments.onboarding.last.OnBoardLastFragment;
 import com.tradehero.th.fragments.onboarding.sector.SectorSelectionScreenFragment;
 import com.tradehero.th.fragments.onboarding.stock.StockSelectionScreenFragment;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
@@ -46,16 +41,17 @@ import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
-import com.tradehero.th.utils.route.THRouter;
 import com.viewpagerindicator.PageIndicator;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
+import rx.subscriptions.Subscriptions;
 
-public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
+public class OnBoardFragment extends BaseFragment
 {
     private static final int INDEX_SELECTION_EXCHANGES = 0;
     private static final int INDEX_SELECTION_SECTORS = 1;
@@ -67,7 +63,6 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @Inject @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference;
     @Inject BroadcastUtils broadcastUtils;
-    @Inject THRouter thRouter;
 
     @InjectView(android.R.id.content) ViewPager pager;
     @InjectView(R.id.page_indicator) PageIndicator pageIndicator;
@@ -81,14 +76,7 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
     @NonNull private BehaviorSubject<ExchangeCompactSectorListDTO> exchangeSectorBehavior;
     @NonNull private BehaviorSubject<SecurityCompactDTOList> selectedSecuritiesBehavior;
 
-    public static OnBoardNewDialogFragment showOnBoardDialog(FragmentManager fragmentManager)
-    {
-        OnBoardNewDialogFragment dialogFragment = new OnBoardNewDialogFragment();
-        dialogFragment.show(fragmentManager, OnBoardNewDialogFragment.class.getName());
-        return dialogFragment;
-    }
-
-    public OnBoardNewDialogFragment()
+    public OnBoardFragment()
     {
         fragmentSubscriptions = new Subscription[getTabCount()];
         exchangeSectorBehavior = BehaviorSubject.create();
@@ -97,7 +85,7 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.on_board_new_dialog, container, false);
+        return inflater.inflate(R.layout.on_board_fragment_main, container, false);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -148,17 +136,18 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
         super.onDestroyView();
     }
 
-    @OnClick(android.R.id.closeButton)
-    @Override public void dismiss()
+    @Override public void onDestroy()
     {
-        super.dismiss();
-        firstShowOnBoardDialogPreference.justHandled();
+        broadcastUtils.nextPlease();
+        super.onDestroy();
     }
 
-    @Override public void onDismiss(DialogInterface dialog)
+    @SuppressWarnings("unused")
+    @OnClick(android.R.id.closeButton)
+    protected void closeButtonClicked(View view)
     {
-        super.onDismiss(dialog);
-        broadcastUtils.nextPlease();
+        firstShowOnBoardDialogPreference.justHandled();
+        getActivity().finish();
     }
 
     private int getCurrentIndex()
@@ -410,16 +399,13 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
         OnBoardLastFragment fragment = new OnBoardLastFragment();
         fragment.setSelectedSecuritiesObservable(selectedSecuritiesBehavior.asObservable());
         fragment.setArguments(args);
-        fragmentSubscriptions[INDEX_SELECTION_LAST] = fragment.getFragmentRequestedObservable()
-                .subscribe(new Action1<Pair<SecurityId, Class<? extends DashboardFragment>>>()
-                           {
-                               @Override public void call(Pair<SecurityId, Class<? extends DashboardFragment>> pair)
-                               {
-                                   moveOnToFragment(pair);
-                                   dismiss();
-                               }
-                           }
-                );
+        fragmentSubscriptions[INDEX_SELECTION_LAST] = Subscriptions.create(new Action0()
+        {
+            @Override public void call()
+            {
+                // Nothing
+            }
+        });
         return fragment;
     }
 
@@ -434,18 +420,5 @@ public class OnBoardNewDialogFragment extends BaseDialogSupportFragment
                 .subscribe(
                         new EmptyAction1<WatchlistPositionDTOList>(),
                         new ToastAndLogOnErrorAction("Failed to submit selectedStocks" + selectedStocks));
-    }
-
-    private void moveOnToFragment(Pair<SecurityId, Class<? extends DashboardFragment>> pair)
-    {
-        if (pair.second.equals(BuySellStockFragment.class))
-        {
-            SecurityId securityId = pair.first;
-            thRouter.open("stockSecurity/" + securityId.getExchange() + "/" + securityId.getSecuritySymbol(), getActivity());
-        }
-        else
-        {
-            thRouter.open("trendingstocks/1", getActivity());
-        }
     }
 }

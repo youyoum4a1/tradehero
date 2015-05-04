@@ -68,7 +68,6 @@ import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
-import com.tradehero.th.fragments.onboarding.OnBoardNewDialogFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardingBroadcastSignal;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
@@ -386,7 +385,7 @@ public class DashboardActivity extends BaseActivity
                             @Override public void call(Intent intent)
                             {
                                 isOnboardShown.set(true);
-                                OnBoardNewDialogFragment.showOnBoardDialog(DashboardActivity.this.getSupportFragmentManager());
+                                navigator.launchActivity(OnBoardActivity.class);
                             }
                         },
                         new Action1<Throwable>()

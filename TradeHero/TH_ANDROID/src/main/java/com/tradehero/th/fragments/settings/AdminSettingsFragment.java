@@ -16,6 +16,7 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.OnBoardActivity;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -28,7 +29,6 @@ import com.tradehero.th.fragments.achievement.ForQuestListTestingFragment;
 import com.tradehero.th.fragments.competition.CompetitionPreseasonDialogFragment;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.level.ForXpTestingFragment;
-import com.tradehero.th.fragments.onboarding.OnBoardNewDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
@@ -176,7 +176,7 @@ public class AdminSettingsFragment extends BasePreferenceFragment
         {
             @Override public boolean onPreferenceClick(Preference preference)
             {
-                OnBoardNewDialogFragment.showOnBoardDialog(AdminSettingsFragment.this.getActivity().getSupportFragmentManager());
+                navigator.get().launchActivity(OnBoardActivity.class);
                 return true;
             }
         });
