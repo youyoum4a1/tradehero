@@ -32,7 +32,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQLs.SQL_CREATE_TABLE_QUESTION_RECORD);
-        db.execSQL(SQLs.SQL_CREATE_TABLE_QUESTION_GROUP_PROGRESS);
+        db.execSQL(SQLs.SQL_CREATE_TABLE_QUESTION_GROUP);
     }
 
     @Override
@@ -150,20 +150,21 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         try {
             db.beginTransaction();
-            Cursor cursor = db.query(SQLs.TABLE_QUESTION_GROUP, null, SQLs.QUESTION_GROUP_PROGRESS_USER_ID + " =? and " + SQLs.QUESTION_GROUP_GROUP_ID + " =? ",
+            Cursor cursor = db.query(SQLs.TABLE_QUESTION_GROUP, null, SQLs.QUESTION_GROUP_USER_ID + " =? and " + SQLs.QUESTION_GROUP_GROUP_ID + " =? ",
                     new String[]{String.valueOf(questionGroup.user_id), String.valueOf(questionGroup.question_group_id)}, null, null, null);
             if (cursor.moveToFirst()) {
                 ContentValues values = new ContentValues();
                 values.put(SQLs.QUESTION_GROUP_PROGRESS, questionGroup.question_group_progress);
                 values.put(SQLs.QUESTION_GROUP_NAME, questionGroup.quesitong_group_name);
-                db.update(SQLs.TABLE_QUESTION_GROUP, values, SQLs.QUESTION_GROUP_PROGRESS_USER_ID + " =? and " + SQLs.QUESTION_GROUP_GROUP_ID + " =? ",
+                db.update(SQLs.TABLE_QUESTION_GROUP, values, SQLs.QUESTION_GROUP_USER_ID + " =? and " + SQLs.QUESTION_GROUP_GROUP_ID + " =? ",
                         new String[]{String.valueOf(questionGroup.user_id), String.valueOf(questionGroup.question_group_id)});
             } else {
                 ContentValues values = new ContentValues();
                 values.put(SQLs.QUESTION_GROUP_PROGRESS, questionGroup.question_group_progress);
                 values.put(SQLs.QUESTION_GROUP_GROUP_ID, questionGroup.question_group_id);
-                values.put(SQLs.QUESTION_GROUP_PROGRESS_USER_ID, questionGroup.user_id);
+                values.put(SQLs.QUESTION_GROUP_USER_ID, questionGroup.user_id);
                 values.put(SQLs.QUESTION_GROUP_NAME, questionGroup.quesitong_group_name);
+                values.put(SQLs.QUESTION_GROUP_BELONG, questionGroup.question_belong);
                 db.insert(SQLs.TABLE_QUESTION_GROUP, null, values);
             }
             cursor.close();
@@ -176,45 +177,31 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public QuestionGroup retrieveQuestionGroupProgress(int user_id, int question_group_id) {
+    public ArrayList<QuestionGroup> retrieveQuestionGroup(int user_id){
         SQLiteDatabase db = getReadableDatabase();
-        QuestionGroup questionGroup = null;
-        Cursor cursor = db.query(SQLs.TABLE_QUESTION_GROUP, null, SQLs.QUESTION_GROUP_PROGRESS_USER_ID + " =? and " + SQLs.QUESTION_GROUP_GROUP_ID + " =? ",
-                new String[]{String.valueOf(user_id), String.valueOf(question_group_id)}, null, null, null);
-        if(cursor.moveToFirst()){
-            int progress = cursor.getInt(cursor.getColumnIndex(SQLs.QUESTION_GROUP_PROGRESS));
-            String group_name = cursor.getString(cursor.getColumnIndex(SQLs.QUESTION_GROUP_NAME));
-            questionGroup = new QuestionGroup();
-            questionGroup.question_group_id = question_group_id;
-            questionGroup.user_id = user_id;
-            questionGroup.question_group_progress = progress;
-            questionGroup.quesitong_group_name = group_name;
-        }
-        cursor.close();
-        return questionGroup;
-    }
-
-    public ArrayList<QuestionGroup> retrieveQuestionGroupProgress(int user_id){
-        SQLiteDatabase db = getReadableDatabase();
-        ArrayList<QuestionGroup> progresses = new ArrayList();
-        Cursor cursor = db.query(SQLs.TABLE_QUESTION_GROUP, null, SQLs.QUESTION_GROUP_PROGRESS_USER_ID + " =? ",
+        ArrayList<QuestionGroup> questionGroups = new ArrayList();
+        Cursor cursor = db.query(SQLs.TABLE_QUESTION_GROUP, null, SQLs.QUESTION_GROUP_USER_ID + " =? ",
                 new String[]{String.valueOf(user_id)}, null, null, null);
         while (cursor.moveToNext()){
             QuestionGroup questionGroup = new QuestionGroup();
             int progress = cursor.getInt(cursor.getColumnIndex(SQLs.QUESTION_GROUP_PROGRESS));
             int group_id = cursor.getInt(cursor.getColumnIndex(SQLs.QUESTION_GROUP_GROUP_ID));
             String group_name = cursor.getString(cursor.getColumnIndex(SQLs.QUESTION_GROUP_NAME));
+            int group_belong = cursor.getInt(cursor.getColumnIndex(SQLs.QUESTION_GROUP_BELONG));
             questionGroup.question_group_progress = progress;
             questionGroup.question_group_id = group_id;
             questionGroup.user_id = user_id;
             questionGroup.quesitong_group_name = group_name;
-            progresses.add(questionGroup);
+            questionGroup.question_belong = group_belong;
+            questionGroups.add(questionGroup);
         }
         cursor.close();
-        return progresses;
+        return questionGroups;
     }
 
+    public void insertOrUpdateQuestion(){
 
+    }
 
 
 }

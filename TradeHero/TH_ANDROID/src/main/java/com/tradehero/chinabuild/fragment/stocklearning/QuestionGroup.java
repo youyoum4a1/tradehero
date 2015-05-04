@@ -8,4 +8,5 @@ public class QuestionGroup {
     public int question_group_progress;
     public int user_id;
     public String quesitong_group_name = "";
+    public int question_belong;
 }
