@@ -5,15 +5,19 @@
   <string name="on_board_welcome_title_2">Let\'s get started…</string>
   <string name="on_board_exchange_tap_map_select_exchanges">Tap on the map to select stock exchanges</string>
   <string name="on_board_exchange_selected_max">You cannot select more than %d markets\nUnselect some to select others</string>
+  <string name="on_board_exchange_need_to_select">You need to select at least one exchange</string>
 
   <string name="on_board_sector_title">What are your favorite sectors?</string>
   <string name="on_board_sector_selected_max">You cannot select more than %d sectors\nUnselect some to select others</string>
+  <string name="on_board_sector_need_to_select">You need to select at least one sector</string>
 
   <string name="on_board_user_title">Top Trade Heroes. Follow them!</string>
   <string name="on_board_user_selected_max">You cannot select more than %d heroes\nUnselect some to select others</string>
+  <string name="on_board_user_need_to_select">You need to select at least one hero</string>
 
   <string name="on_board_stock_title">Trending Stocks. Favorite them!</string>
   <string name="on_board_stock_selected_max">You cannot select more than %d stocks\nUnselect some to select others</string>
+  <string name="on_board_stock_need_to_select">You need to select at least one stock</string>
 
   <string name="on_board_last_title_1">Ka-ching!</string>
   <string name="on_board_last_title_2">You now have a budget of</string>

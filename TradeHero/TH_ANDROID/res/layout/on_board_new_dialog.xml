@@ -19,7 +19,7 @@
       app:strokeWidth="0dp"
       />
 
-  <com.tradehero.common.widget.NonSwipeableViewPager
+  <android.support.v4.view.ViewPager
       android:id="@android:id/content"
       android:layout_width="match_parent"
       android:layout_height="match_parent"

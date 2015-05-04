@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.onboarding.sector;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,34 +38,67 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 public class SectorSelectionScreenFragment extends BaseFragment
 {
+    private static final String BUNDLE_KEY_INITIAL_SECTORS = SectorSelectionScreenFragment.class.getName() + ".initialSectors";
     private static final int MAX_SELECTABLE_SECTORS = 3;
 
     @Inject SectorCompactListCacheRx sectorCompactListCache;
 
     @InjectView(android.R.id.list) ListView sectorList;
     @InjectView(android.R.id.button1) View nextButton;
-    @NonNull ArrayAdapter<SelectableSectorDTO> sectorAdapter;
+    ArrayAdapter<SelectableSectorDTO> sectorAdapter;
     @NonNull Map<SectorId, SectorCompactDTO> knownSectors;
     @NonNull Set<SectorId> selectedSectors;
     @NonNull BehaviorSubject<SectorCompactDTOList> selectedSectorsSubject;
+    @NonNull PublishSubject<Boolean> nextClickedSubject;
+
+    public static void putInitialSectors(@NonNull Bundle args, @NonNull List<SectorId> sectorIds)
+    {
+        int[] ids = new int[sectorIds.size()];
+        for (int index = 0; index < sectorIds.size(); index++)
+        {
+            ids[index] = sectorIds.get(index).key;
+        }
+        args.putIntArray(BUNDLE_KEY_INITIAL_SECTORS, ids);
+    }
+
+    @NonNull private static Set<SectorId> getInitialSectors(@NonNull Bundle args)
+    {
+        Set<SectorId> sectorIds = new HashSet<>();
+        if (args.containsKey(BUNDLE_KEY_INITIAL_SECTORS))
+        {
+            for(int id : args.getIntArray(BUNDLE_KEY_INITIAL_SECTORS))
+            {
+                sectorIds.add(new SectorId(id));
+            }
+        }
+        return sectorIds;
+    }
 
     public SectorSelectionScreenFragment()
     {
         knownSectors = new HashMap<>();
         selectedSectors = new HashSet<>();
         selectedSectorsSubject = BehaviorSubject.create();
+        nextClickedSubject = PublishSubject.create();
+    }
+
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        sectorAdapter = new OnBoardEmptyOrItemAdapter<>(
+                activity,
+                R.layout.on_board_sector_item_view,
+                R.layout.on_board_empty_item);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        sectorAdapter = new OnBoardEmptyOrItemAdapter<>(
-                getActivity(),
-                R.layout.on_board_sector_item_view,
-                R.layout.on_board_empty_item);
+        selectedSectors = getInitialSectors(getArguments());
     }
 
     @SuppressLint("InflateParams")
@@ -95,6 +129,12 @@ public class SectorSelectionScreenFragment extends BaseFragment
         super.onDestroyView();
     }
 
+    @Override public void onDetach()
+    {
+        sectorAdapter = null;
+        super.onDetach();
+    }
+
     protected void fetchSectorInfo()
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
@@ -110,7 +150,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
                                 for (SectorCompactDTO sector : pair.second)
                                 {
                                     knownSectors.put(sector.getSectorId(), sector);
-                                    onBoardSectors.add(new SelectableSectorDTO(sector, false));
+                                    onBoardSectors.add(new SelectableSectorDTO(sector, selectedSectors.contains(sector.getSectorId())));
                                 }
                                 sectorAdapter.clear();
                                 sectorAdapter.addAll(onBoardSectors);
@@ -141,6 +181,13 @@ public class SectorSelectionScreenFragment extends BaseFragment
                 selectedSectors.remove(dto.value.getSectorId());
             }
             sectorAdapter.notifyDataSetChanged();
+
+            SectorCompactDTOList selectedDTOs = new SectorCompactDTOList();
+            for (SectorId selected : selectedSectors)
+            {
+                selectedDTOs.add(knownSectors.get(selected));
+            }
+            selectedSectorsSubject.onNext(selectedDTOs);
         }
         displayNextButton();
     }
@@ -154,16 +201,16 @@ public class SectorSelectionScreenFragment extends BaseFragment
     @OnClick(android.R.id.button1)
     protected void onNextClicked(@SuppressWarnings("UnusedParameters") View view)
     {
-        SectorCompactDTOList selectedDTOs = new SectorCompactDTOList();
-        for (SectorId selected : selectedSectors)
-        {
-            selectedDTOs.add(knownSectors.get(selected));
-        }
-        selectedSectorsSubject.onNext(selectedDTOs);
+        nextClickedSubject.onNext(true);
     }
 
     @NonNull public Observable<SectorCompactDTOList> getSelectedSectorsObservable()
     {
         return selectedSectorsSubject.asObservable();
+    }
+
+    @NonNull public Observable<Boolean> getNextClickedObservable()
+    {
+        return nextClickedSubject.asObservable();
     }
 }
