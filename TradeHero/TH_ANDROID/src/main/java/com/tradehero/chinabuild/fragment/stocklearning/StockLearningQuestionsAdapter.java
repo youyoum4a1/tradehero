@@ -18,12 +18,12 @@ public class StockLearningQuestionsAdapter extends BaseExpandableListAdapter {
 
     private String[] parents = new String[]{"LEVEL_A","LEVEL_B","LEVEL_C"};
 
-    private ArrayList<StockLearningSubGroup> levelAItems = new ArrayList();
-    private ArrayList<StockLearningSubGroup> levelBItems = new ArrayList();
-    private ArrayList<StockLearningSubGroup> levelCItems = new ArrayList();
+    private ArrayList<QuestionGroup> levelAItems = new ArrayList();
+    private ArrayList<QuestionGroup> levelBItems = new ArrayList();
+    private ArrayList<QuestionGroup> levelCItems = new ArrayList();
 
-    public StockLearningQuestionsAdapter(Context context, ArrayList<StockLearningSubGroup> levelAItems,
-                                         ArrayList<StockLearningSubGroup> levelBItems, ArrayList<StockLearningSubGroup> levelCItems) {
+    public StockLearningQuestionsAdapter(Context context, ArrayList<QuestionGroup> levelAItems,
+                                         ArrayList<QuestionGroup> levelBItems, ArrayList<QuestionGroup> levelCItems) {
         inflater = LayoutInflater.from(context);
         if (levelAItems != null) {
             this.levelAItems.addAll(levelAItems);
@@ -121,20 +121,20 @@ public class StockLearningQuestionsAdapter extends BaseExpandableListAdapter {
         convertView = inflater.inflate(R.layout.stock_learning_questions_subitem, parent, false);
         TextView nameTV = (TextView)convertView.findViewById(R.id.textview_question_group_name);
         TextView progressTV = (TextView)convertView.findViewById(R.id.textview_question_group_progress);
-        StockLearningSubGroup stockLearningSubGroup = null;
+        QuestionGroup questionGroup = null;
         if(groupPosition==0){
-            stockLearningSubGroup = levelAItems.get(childPosition);
+            questionGroup = levelAItems.get(childPosition);
         }
         if(groupPosition==1){
-            stockLearningSubGroup = levelBItems.get(childPosition);
+            questionGroup = levelBItems.get(childPosition);
         }
         if(groupPosition==2){
-            stockLearningSubGroup = levelCItems.get(childPosition);
+            questionGroup = levelCItems.get(childPosition);
         }
-        if(stockLearningSubGroup !=null){
-            nameTV.setText(stockLearningSubGroup.getName());
-            int current = stockLearningSubGroup.getLastNumber()+1;
-            progressTV.setText(current + "/" + stockLearningSubGroup.getTotalNumber());
+        if(questionGroup !=null){
+            nameTV.setText(questionGroup.name);
+            int current = 10;
+            progressTV.setText(current + "/" + 100);
         }
         return convertView;
     }

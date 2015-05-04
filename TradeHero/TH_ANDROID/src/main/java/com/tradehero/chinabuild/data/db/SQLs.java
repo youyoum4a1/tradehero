@@ -46,6 +46,7 @@ public class SQLs {
     public final static String QUESTION_CHOICE_D = "question_choice_d";
     public final static String QUESTION_ANSWERS = "question_answers";
     public final static String QUESTION_IMAGE_URL = "question_image_url";
+    public final static String QUESTION_DESCRIPTION = "question_description";
     public final static String SQL_CREATE_TABLE_QUESTION = "CREATE TABLE '"
             + TABLE_QUESTION + "' ('id' INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , '"
             + QUESTION_QUESTION_ID + "' INTEGER NOT NULL  UNIQUE , '"
@@ -55,7 +56,8 @@ public class SQLs {
             + QUESTION_CHOICE_C + "' TEXT, '"
             + QUESTION_CHOICE_D + "' TEXT, '"
             + QUESTION_ANSWERS + "' TEXT, '"
-            + QUESTION_IMAGE_URL + "' TEXT)";
+            + QUESTION_IMAGE_URL + "' TEXT, '"
+            + QUESTION_DESCRIPTION + "' TEXT)";
     //Stock Learning
 
 }

@@ -5,6 +5,7 @@ import com.tradehero.chinabuild.data.FollowStockForm;
 import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.chinabuild.data.RecommendItems;
 import com.tradehero.chinabuild.data.VideoDTOList;
+import com.tradehero.chinabuild.fragment.stocklearning.QuestionDTO;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.HeroDTOList;
@@ -520,5 +521,10 @@ import retrofit.client.Response;
     //Download videos
     public void downloadVideoList(@NotNull Callback<VideoDTOList> callback){
         userServiceAsync.downloadVideoList(callback);
+    }
+
+    //Download questions
+    public void downloadQuestions(int updatedAtTicks, Callback<QuestionDTO> callback){
+        userServiceAsync.downloadQuestions(updatedAtTicks, callback);
     }
 }
