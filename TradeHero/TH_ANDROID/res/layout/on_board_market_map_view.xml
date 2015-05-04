@@ -29,7 +29,7 @@
       />
 
   <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:alpha="0"
       app:hitBoxRegion="NORTH_AMERICA"
@@ -38,7 +38,7 @@
       />
 
   <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:alpha="0"
       app:hitBoxRegion="EUROPE"
@@ -47,7 +47,7 @@
       />
 
   <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:alpha="0"
       app:hitBoxRegion="INDIA"
@@ -56,7 +56,7 @@
       />
 
   <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:alpha="0"
       app:hitBoxRegion="SOUTH_EAST_ASIA"
@@ -65,7 +65,7 @@
       />
 
   <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:alpha="0"
       app:hitBoxRegion="EAST_ASIA"
@@ -74,7 +74,7 @@
       />
 
   <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:alpha="0"
       app:hitBoxRegion="AUSTRALIA"
