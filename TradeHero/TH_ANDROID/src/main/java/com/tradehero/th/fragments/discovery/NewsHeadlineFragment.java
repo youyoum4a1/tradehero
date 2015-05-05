@@ -101,7 +101,7 @@ public class NewsHeadlineFragment extends Fragment
             Bundle bundle = new Bundle();
             NewsWebFragment.putPreviousScreen(bundle, newsType.analyticsName);
             NewsWebFragment.putUrl(bundle, newsItemDTO.url);
-            NewsWebFragment.putNewsID(bundle, newsItemDTO.id);
+            NewsWebFragment.putNewsId(bundle, newsItemDTO.id);
             navigator.get().pushFragment(NewsWebFragment.class, bundle);
         }
     }
