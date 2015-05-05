@@ -524,7 +524,7 @@ import retrofit.client.Response;
     }
 
     //Download questions
-    public void downloadQuestions(int updatedAtTicks, Callback<QuestionDTO> callback){
+    public void downloadQuestions(long updatedAtTicks, Callback<QuestionDTO> callback){
         userServiceAsync.downloadQuestions(updatedAtTicks, callback);
     }
 }

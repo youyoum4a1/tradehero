@@ -16,7 +16,7 @@ public class StockLearningQuestionsAdapter extends BaseExpandableListAdapter {
 
     private LayoutInflater inflater;
 
-    private String[] parents = new String[]{"LEVEL_A","LEVEL_B","LEVEL_C"};
+    private String[] parents = new String[]{"1","2","3"};
 
     private ArrayList<QuestionGroup> levelAItems = new ArrayList();
     private ArrayList<QuestionGroup> levelBItems = new ArrayList();
@@ -34,6 +34,23 @@ public class StockLearningQuestionsAdapter extends BaseExpandableListAdapter {
         if (levelCItems != null) {
             this.levelCItems.addAll(levelCItems);
         }
+    }
+
+    public void setItems(ArrayList<QuestionGroup> levelAItems,
+                         ArrayList<QuestionGroup> levelBItems, ArrayList<QuestionGroup> levelCItems){
+        this.levelCItems.clear();
+        this.levelAItems.clear();
+        this.levelBItems.clear();
+        if (levelAItems != null) {
+            this.levelAItems.addAll(levelAItems);
+        }
+        if (levelBItems != null) {
+            this.levelBItems.addAll(levelBItems);
+        }
+        if (levelCItems != null) {
+            this.levelCItems.addAll(levelCItems);
+        }
+        notifyDataSetChanged();
     }
 
     @Override
@@ -133,7 +150,10 @@ public class StockLearningQuestionsAdapter extends BaseExpandableListAdapter {
         }
         if(questionGroup !=null){
             nameTV.setText(questionGroup.name);
-            int current = 10;
+            int current = questionGroup.question_group_progress;
+            if(current<0){
+                current = 0;
+            }
             progressTV.setText(current + "/" + 100);
         }
         return convertView;
