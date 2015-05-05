@@ -49,6 +49,11 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+        }
+    }
+
     buildTypes {
         debug {
             minifyEnabled false
@@ -56,9 +61,17 @@ android {
             applicationIdSuffix '.dev'
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles 'proguard/proguard-android.txt'
+            zipAlignEnabled true
+            shrinkResources false
+            signingConfig signingConfigs.release
         }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
     }
 
     packagingOptions {
@@ -71,6 +84,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    compile 'com.nineoldandroids:library:2.4.0'
     compile('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
         exclude group: 'com.nineoldandroids', module: 'library'
         exclude group: 'com.android.support', module: 'appcompat-v7'
@@ -115,4 +129,23 @@ dependencies {
     compile('com.localytics.android:library:3.1.0') {
         exclude group: 'com.google.android', module: 'support-v4'
     }
+
+    File propFile = file('signing.properties');
+    if (propFile.exists()) {
+        def Properties props = new Properties()
+        props.load(new FileInputStream(propFile))
+
+        if (props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
+                props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+            android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+            android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+            android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+            android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+        } else {
+            android.buildTypes.release.signingConfig = null
+        }
+    } else {
+        android.buildTypes.release.signingConfig = null
+    }
+
 }

@@ -133,6 +133,7 @@
 -dontwarn com.baidu.**
 -dontwarn com.bea.**
 -dontwarn org.simpleframework.xml.**
+-dontwarn com.actionbarsherlock.internal.**
 
 -dontwarn com.urbanairship.richpush.RichPushMessageJavaScript
 
