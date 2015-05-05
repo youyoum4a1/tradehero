@@ -24,9 +24,13 @@ import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.market.MarketRegion;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +46,7 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -55,6 +60,8 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     private static final String MAP_ITEM_DTO = "map";
 
     @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCacheRx userProfileCache;
 
     MarketRegionSwitcherView mapHeaderSwitcherView;
     @InjectView(android.R.id.list) ListView exchangeList;
@@ -172,15 +179,27 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                exchangeCompactListCache.get(new ExchangeListType(MAX_TOP_STOCKS)))
+                Observable.combineLatest(
+                        userProfileCache.getOne(currentUserId.toUserBaseKey()),
+                        exchangeCompactListCache.get(new ExchangeListType(MAX_TOP_STOCKS)),
+                        new Func2<Pair<UserBaseKey, UserProfileDTO>, Pair<ExchangeListType, ExchangeCompactDTOList>, ExchangeCompactDTOList>()
+                        {
+                            @Override public ExchangeCompactDTOList call(
+                                    Pair<UserBaseKey, UserProfileDTO> profilePair,
+                                    Pair<ExchangeListType, ExchangeCompactDTOList> exchangesPair)
+                            {
+                                mapHeaderSwitcherView.setCurrentUserProfile(profilePair.second);
+                                return exchangesPair.second;
+                            }
+                        }))
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<Pair<ExchangeListType, ExchangeCompactDTOList>, Observable<MarketRegion>>()
+                .flatMap(new Func1<ExchangeCompactDTOList, Observable<MarketRegion>>()
                 {
-                    @Override public Observable<MarketRegion> call(Pair<ExchangeListType, ExchangeCompactDTOList> pair)
+                    @Override public Observable<MarketRegion> call(ExchangeCompactDTOList exchanges)
                     {
-                        filedExchangeIds = ExchangeCompactDTOUtil.filePerRegion(pair.second);
+                        filedExchangeIds = ExchangeCompactDTOUtil.filePerRegion(exchanges);
                         mapHeaderSwitcherView.enable(filedExchangeIds.keySet());
-                        for (ExchangeCompactDTO exchange : pair.second)
+                        for (ExchangeCompactDTO exchange : exchanges)
                         {
                             knownExchanges.put(exchange.getExchangeIntegerId(), exchange);
                         }
