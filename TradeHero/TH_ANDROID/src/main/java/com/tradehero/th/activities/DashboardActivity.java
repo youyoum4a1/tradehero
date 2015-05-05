@@ -30,7 +30,7 @@ import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.utils.*;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.widget.GuideView;
 import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
@@ -163,13 +163,11 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Override protected void onResume()
     {
         super.onResume();
-        analytics.openSession();
         guideRL.setVisibility(View.GONE);
     }
 
     @Override protected void onPause()
     {
-        analytics.closeSession();
         super.onPause();
     }
 

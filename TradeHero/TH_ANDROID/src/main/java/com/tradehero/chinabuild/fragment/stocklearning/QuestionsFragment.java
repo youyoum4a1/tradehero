@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 
 import javax.inject.Inject;
 import java.util.ArrayList;

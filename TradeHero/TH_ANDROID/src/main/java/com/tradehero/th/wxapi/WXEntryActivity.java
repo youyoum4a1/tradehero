@@ -34,7 +34,7 @@ import com.tradehero.th.network.service.WeChatServiceWrapper;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NetworkUtils;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
@@ -237,7 +237,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                     reportWeChatSuccessShareToServer();
                     sendTackMessage();
                     try{
-                        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.SHARE_WECHAT_SUCCESSFULLY));
+                        analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.SHARE_WECHAT_SUCCESSFULLY));
                     }catch (Exception e){
                         e.printStackTrace();
                     }

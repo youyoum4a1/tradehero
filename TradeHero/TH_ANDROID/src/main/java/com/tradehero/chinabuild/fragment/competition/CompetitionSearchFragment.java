@@ -58,7 +58,6 @@ public class CompetitionSearchFragment extends DashboardFragment
     @InjectView(R.id.tvSearch) TextView tvSearch;
     @InjectView(R.id.edtSearchInput) EditText tvSearchInput;
     @InjectView(R.id.btn_search_x) Button btnSearch_x;
-    @InjectView(R.id.listSearch) SecurityListView listSearch;
     @InjectView(R.id.textview_security_searchresult)TextView tvResult;
 
     private String searchNoResult;

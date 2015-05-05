@@ -1,5 +1,7 @@
 package com.tradehero.th.utils.metrics.events;
 
+import com.tradehero.metrics.AnalyticsEvent;
+
 /** This event is incomplete **/
 public abstract class ProviderEvent extends AnalyticsEvent
 {

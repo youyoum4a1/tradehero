@@ -20,7 +20,7 @@ import com.tradehero.th.adapters.NewsItemAdapter;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.NewsServiceWrapper;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.TradeHeroProgressBar;
@@ -83,7 +83,7 @@ public class DiscoveryNewsFragment extends DashboardFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 NewsDTO newsDTO = newsDTOList.get(position-1);
                 if(newsDTO!=null){
-                    analytics.addEventAuto(new MethodEvent(AnalyticsConstants.DISCOVERY_NEWS_ITEM, String.valueOf(position)));
+                    analytics.addEvent(new MethodEvent(AnalyticsConstants.DISCOVERY_NEWS_ITEM, String.valueOf(position)));
                     Bundle bundle = new Bundle();
                     bundle.putLong(NewsDetailFragment.KEY_BUNDLE_NEWS_ID, newsDTO.id);
                     bundle.putString(NewsDetailFragment.KEY_BUNDLE_NEWS_TITLE, newsDTO.title);

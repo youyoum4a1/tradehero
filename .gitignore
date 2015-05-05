@@ -11,6 +11,7 @@
 # generated files
 bin/
 gen/
+build/
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -75,3 +76,4 @@ th_android.properties
 **/proguard_logs
 
 TradeHero/TH_ANDROID/assets/crashlytics-build.properties
+.gradle/

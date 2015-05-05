@@ -33,7 +33,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.adapters.CompetitionListAdapter;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.TradeHeroProgressBar;

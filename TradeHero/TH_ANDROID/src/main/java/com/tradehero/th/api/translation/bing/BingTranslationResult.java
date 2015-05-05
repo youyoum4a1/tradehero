@@ -2,14 +2,12 @@ package com.tradehero.th.api.translation.bing;
 
 import com.tradehero.th.R;
 import com.tradehero.th.api.translation.TranslationResult;
-import org.simpleframework.xml.Text;
 
 public class BingTranslationResult extends TranslationResult
 {
     private String fromLanguageCode;
     private String languageCode;
 
-    @Text()
     private String content;
 
     public String getFromLanguageCode()

@@ -40,7 +40,7 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.StringUtils;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.MarkdownTextView;
@@ -584,7 +584,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     {
         if (userId >= 0)
         {
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_PERSON));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_PERSON));
             Bundle bundle = new Bundle();
             bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
             if (getNavigator() != null)

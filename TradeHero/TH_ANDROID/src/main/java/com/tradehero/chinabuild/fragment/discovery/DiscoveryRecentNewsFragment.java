@@ -27,7 +27,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.TradeHeroProgressBar;
@@ -122,17 +122,17 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
             {
                 TimelineItemDTO dto = (TimelineItemDTO) adapter.getItem(position);
                 enterTimeLineDetail(dto);
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.BUTTON_DISCOVERY_LATEST, String.valueOf(position)));
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.BUTTON_DISCOVERY_LATEST, String.valueOf(position)));
             }
 
             @Override public void OnTimeLinePraiseClicked(int position)
             {
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_PRAISE));
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_PRAISE));
             }
 
             @Override public void OnTimeLinePraiseDownClicked(int position)
             {
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_PRAISE_DOWN));
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_PRAISE_DOWN));
             }
 
             @Override public void OnTimeLineCommentsClicked(int position)

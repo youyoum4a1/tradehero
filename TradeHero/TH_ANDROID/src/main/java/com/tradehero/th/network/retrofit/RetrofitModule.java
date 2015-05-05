@@ -125,7 +125,7 @@ public class RetrofitModule
     @Provides @Singleton TranslationServiceBing provideBingTranslationService(RestAdapter.Builder builder)
     {
         return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
-                .setConverter(new CustomXmlConverter())
+                .setConverter(null)
                 .build().create(TranslationServiceBing.class);
     }
 

@@ -58,7 +58,7 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
@@ -194,7 +194,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         //Guide View
         initGuideView();
 
-        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_STOCK));
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_STOCK));
 
 
         //Download number of days login continually.
@@ -227,26 +227,26 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         switch (id)
         {
             case R.id.llTabTrade:
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_TRADE));
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_TRADE));
                 setTabCurrent(TAB_TRADE);
                 recordShowedGuideOfMainTab(0);
                 break;
             case R.id.llTabStockGod:
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_STOCK));
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_STOCK));
                 setTabCurrent(TAB_STOCKGOD);
                 break;
             case R.id.llTabDiscovery:
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_DISCOVERY));
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_DISCOVERY));
                 setTabCurrent(TAB_DISCOVERY);
                 recordShowedGuideOfMainTab(2);
                 break;
             case R.id.llTabLearning:
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_LEARNING));
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_LEARNING));
                 setTabCurrent(TAB_LEARNING);
                 recordShowedGuideOfMainTab(3);
                 break;
             case R.id.llTabCompetition:
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_COMPETITION));
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_COMPETITION));
                 setTabCurrent(TAB_COMPETITION);
                 recordShowedGuideOfMainTab(4);
                 break;
@@ -317,12 +317,10 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @Override protected void onResume()
     {
         super.onResume();
-        analytics.openSession();
     }
 
     @Override protected void onPause()
     {
-        analytics.closeSession();
         super.onPause();
     }
 
