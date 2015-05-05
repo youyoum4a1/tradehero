@@ -63,7 +63,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
 
             if (isCurrentUser)
             {
-                Boolean containsFx = containsFx(items);
+                Boolean containsFx = containsMainFx(items);
                 if (containsFx != null && !containsFx)
                 {
                     ownPortfolios.add(new DummyFxDisplayablePortfolioDTO());
@@ -133,7 +133,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
         return true;
     }
 
-    @Nullable protected Boolean containsFx(@NonNull List<DisplayablePortfolioDTO> items)
+    @Nullable protected Boolean containsMainFx(@NonNull List<DisplayablePortfolioDTO> items)
     {
         boolean value = false;
         for (DisplayablePortfolioDTO displayablePortfolio : items)
@@ -143,7 +143,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
             {
                 return null;
             }
-            if (displayablePortfolio.portfolioDTO.isFx())
+            if (displayablePortfolio.portfolioDTO.isFx() && displayablePortfolio.portfolioDTO.isDefault())
             {
                 value = true;
             }
