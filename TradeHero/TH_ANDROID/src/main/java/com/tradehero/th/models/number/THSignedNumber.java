@@ -21,6 +21,8 @@ import org.oshkimaadziig.george.androidutils.SpanFormatter;
 public class THSignedNumber
 {
     public static final int DESIRED_RELEVANT_DIGIT_COUNT = 4;
+    public static final boolean DEFAULT_USE_000_SUFFIX = false;
+    public static final boolean DEFAULT_USE_000_LONG_SUFFIX = true;
 
     //<editor-fold desc="Constants">
     public static final int TYPE_SIGN_ARROW = 0;
@@ -38,6 +40,8 @@ public class THSignedNumber
     private final int signType;
     private final Double value;
     private final int relevantDigitCount;
+    private final boolean use000Suffix;
+    private final boolean use000LongSuffix;
     @ColorRes private final int fallbackColorResId;
     private final boolean defaultColorForBackground;
     private String formattedNumber;
@@ -60,6 +64,8 @@ public class THSignedNumber
         private boolean withSign = WITH_SIGN;
         private int signType = TYPE_SIGN_MINUS_ONLY;
         private int relevantDigitCount = DESIRED_RELEVANT_DIGIT_COUNT;
+        private boolean use000Suffix = DEFAULT_USE_000_SUFFIX;
+        private boolean use000LongSuffix = DEFAULT_USE_000_LONG_SUFFIX;
         public boolean useDefaultColor = DO_NOT_USE_DEFAULT_COLOR;
         @ColorRes private Integer fallbackColorResId = R.color.text_primary;
         @Nullable @ColorRes private Integer signColorResId;
@@ -168,6 +174,30 @@ public class THSignedNumber
             return self();
         }
 
+        public BuilderType with000Suffix()
+        {
+            this.use000Suffix = true;
+            return self();
+        }
+
+        public BuilderType without000Suffix()
+        {
+            this.use000Suffix = false;
+            return self();
+        }
+
+        public BuilderType useLongSuffix()
+        {
+            this.use000LongSuffix = true;
+            return self();
+        }
+
+        public BuilderType useShortSuffix()
+        {
+            this.use000LongSuffix = false;
+            return self();
+        }
+
         public BuilderType format(String format)
         {
             this.format = format;
@@ -207,6 +237,8 @@ public class THSignedNumber
         this.signType = builder.signType;
         this.value = builder.value;
         this.relevantDigitCount = builder.relevantDigitCount;
+        this.use000Suffix = builder.use000Suffix;
+        this.use000LongSuffix = builder.use000LongSuffix;
         this.useDefaultColor = builder.useDefaultColor;
         this.boldSign = builder.boldSign;
         this.boldValue = builder.boldValue;
@@ -228,7 +260,7 @@ public class THSignedNumber
     }
     //</editor-fold>
 
-    protected int getColorResId()
+    @ColorRes protected int getColorResId()
     {
         if (colorResId == null)
         {
@@ -242,7 +274,7 @@ public class THSignedNumber
         return getColor(getColorResId());
     }
 
-    protected int getColor(int colorResId)
+    protected int getColor(@ColorRes int colorResId)
     {
         return THApp.context().getResources().getColor(colorResId);
     }
@@ -271,7 +303,7 @@ public class THSignedNumber
         return result;
     }
 
-    protected Spanned getSpannedSign()
+    @NonNull protected Spanned getSpannedSign()
     {
         if (signSpanBuilder == null)
         {
@@ -284,7 +316,7 @@ public class THSignedNumber
         return signSpanBuilder;
     }
 
-    protected Spanned getSpannedValue()
+    @NonNull protected Spanned getSpannedValue()
     {
         if (valueSpanBuilder == null)
         {
@@ -293,7 +325,7 @@ public class THSignedNumber
         return valueSpanBuilder;
     }
 
-    protected Spanned initSpanned(String text, boolean bold, Integer colorResId)
+    @NonNull protected Spanned initSpanned(@NonNull String text, boolean bold, @Nullable Integer colorResId)
     {
         SpannableStringBuilder signSpanBuilder = new SpannableStringBuilder(text);
         if (bold)
@@ -318,7 +350,7 @@ public class THSignedNumber
         return signSpanBuilder;
     }
 
-    protected CharSequence getCombinedSpan()
+    @NonNull protected CharSequence getCombinedSpan()
     {
         return TextUtils.concat(getSpannedSign(), getSpannedValue());
     }
@@ -330,11 +362,26 @@ public class THSignedNumber
 
     protected String createPlainNumber()
     {
-        int precision = getPrecisionFromNumber();
-
-        DecimalFormat df = new DecimalFormat(getStringFormat(precision).toString());
-        String formatted = df.format(Math.abs(value));
-        return removeTrailingZeros(formatted);
+        int precision;
+        DecimalFormat df;
+        String formatted;
+        if (use000Suffix)
+        {
+            Suffix000 suffix = Suffix000.from(value);
+            precision = getPrecisionFromNumber(value / suffix.divisor, relevantDigitCount);
+            df = new DecimalFormat(getStringFormat(precision).toString());
+            formatted = df.format(Math.abs(value / suffix.divisor));
+            formatted = removeTrailingZeros(formatted);
+            formatted += THApp.context().getString(use000LongSuffix ? suffix.suffixResLong : suffix.suffixRes);
+        }
+        else
+        {
+            precision = getPrecisionFromNumber();
+            df = new DecimalFormat(getStringFormat(precision).toString());
+            formatted = df.format(Math.abs(value));
+            formatted = removeTrailingZeros(formatted);
+        }
+        return formatted;
     }
 
     public static String removeTrailingZeros(@NonNull String formattedNumber)
