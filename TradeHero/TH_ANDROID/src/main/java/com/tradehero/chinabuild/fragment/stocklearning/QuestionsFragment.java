@@ -22,9 +22,9 @@ public class QuestionsFragment extends DashboardFragment {
 
     private ExpandableListView questionsLV;
 
-    private ArrayList<StockLearningSubGroup> levelAItems = new ArrayList();
-    private ArrayList<StockLearningSubGroup> levelBItems = new ArrayList();
-    private ArrayList<StockLearningSubGroup> levelCItems = new ArrayList();
+    private ArrayList<QuestionGroup> levelAItems = new ArrayList();
+    private ArrayList<QuestionGroup> levelBItems = new ArrayList();
+    private ArrayList<QuestionGroup> levelCItems = new ArrayList();
 
     private StockLearningQuestionsAdapter stockLearningQuestionsAdapter;
 
@@ -80,25 +80,19 @@ public class QuestionsFragment extends DashboardFragment {
 
     private void initAdapater(){
         for(int num=0;num<5;num++){
-            StockLearningSubGroup stockLearningSubGroup = new StockLearningSubGroup();
-            stockLearningSubGroup.setName("Test S");
-            stockLearningSubGroup.setLastNumber(10);
-            stockLearningSubGroup.setTotalNumber(100);
-            levelAItems.add(stockLearningSubGroup);
+            QuestionGroup questionGroup = new QuestionGroup();
+            questionGroup.name = "Test S";
+            levelAItems.add(questionGroup);
         }
         for(int num=0;num<5;num++){
-            StockLearningSubGroup stockLearningSubGroup = new StockLearningSubGroup();
-            stockLearningSubGroup.setName("Test T");
-            stockLearningSubGroup.setLastNumber(10);
-            stockLearningSubGroup.setTotalNumber(100);
-            levelBItems.add(stockLearningSubGroup);
+            QuestionGroup questionGroup = new QuestionGroup();
+            questionGroup.name = "Test T";
+            levelBItems.add(questionGroup);
         }
         for(int num=0;num<5;num++){
-            StockLearningSubGroup stockLearningSubGroup = new StockLearningSubGroup();
-            stockLearningSubGroup.setName("Test X");
-            stockLearningSubGroup.setLastNumber(10);
-            stockLearningSubGroup.setTotalNumber(100);
-            levelCItems.add(stockLearningSubGroup);
+            QuestionGroup questionGroup = new QuestionGroup();
+            questionGroup.name = "Test X";
+            levelCItems.add(questionGroup);
         }
         stockLearningQuestionsAdapter = new StockLearningQuestionsAdapter(getActivity(), levelAItems, levelBItems, levelCItems);
     }

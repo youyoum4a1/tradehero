@@ -5,6 +5,7 @@ import com.tradehero.chinabuild.data.FollowStockForm;
 import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.chinabuild.data.RecommendItems;
 import com.tradehero.chinabuild.data.VideoDTOList;
+import com.tradehero.chinabuild.fragment.stocklearning.QuestionDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -211,5 +212,7 @@ interface UserServiceAsync
     void downloadVideoList(Callback<VideoDTOList> cb);
     //</editor-fold>
 
+    @GET("/stockQuestions/download")
+    void downloadQuestions(@Part("updatedAtTicks")int updatedAtTicks, Callback<QuestionDTO> questionDTOCallback);
 
 }

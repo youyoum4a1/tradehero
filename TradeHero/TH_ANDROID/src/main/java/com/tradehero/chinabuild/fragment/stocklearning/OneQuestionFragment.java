@@ -70,16 +70,16 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
             dLL.setVisibility(View.GONE);
 
         }
-        questionTitleTV.setText(question.getQTitle());
-        aTV.setText(question.getQAnswerOne());
-        bTV.setText(question.getQAnswerTwo());
+        questionTitleTV.setText(question.content);
+        aTV.setText(question.option1);
+        bTV.setText(question.option2);
         int choiceType = question.getChoiceType();
         if (choiceType == Question.MULTICHOISE)
         {
             cLL.setVisibility(View.VISIBLE);
             dLL.setVisibility(View.VISIBLE);
-            cTV.setText(question.getQAnswerThree());
-            dTV.setText(question.getQAnswerFour());
+            cTV.setText(question.option3);
+            dTV.setText(question.option4);
         }
         else if (choiceType == Question.JUDGECHOISE)
         {
@@ -90,8 +90,8 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
         {
             cLL.setVisibility(View.VISIBLE);
             dLL.setVisibility(View.VISIBLE);
-            cTV.setText(question.getQAnswerThree());
-            dTV.setText(question.getQAnswerFour());
+            cTV.setText(question.option3);
+            dTV.setText(question.option4);
         }
     }
 
