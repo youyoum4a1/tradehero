@@ -180,7 +180,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
             {
                 selectedSectors.remove(dto.value.getSectorId());
             }
-            sectorAdapter.notifyDataSetChanged();
+            ((OnBoardSectorItemView) view).display(dto);
 
             SectorCompactDTOList selectedDTOs = new SectorCompactDTOList();
             for (SectorId selected : selectedSectors)

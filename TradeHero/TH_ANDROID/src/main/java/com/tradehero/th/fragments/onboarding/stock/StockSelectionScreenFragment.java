@@ -221,7 +221,7 @@ public class StockSelectionScreenFragment extends BaseFragment
             {
                 selectedStocks.remove(dto.value.getSecurityId());
             }
-            stockAdapter.notifyDataSetChanged();
+            ((OnBoardStockItemView) view).display(dto);
 
             SecurityCompactDTOList selectedDTOs = new SecurityCompactDTOList();
             for (SecurityId selected : selectedStocks)
