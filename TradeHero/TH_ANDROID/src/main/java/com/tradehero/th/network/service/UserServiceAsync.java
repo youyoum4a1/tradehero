@@ -213,6 +213,6 @@ interface UserServiceAsync
     //</editor-fold>
 
     @GET("/stockQuestions/download")
-    void downloadQuestions(@Part("updatedAtTicks")int updatedAtTicks, Callback<QuestionDTO> questionDTOCallback);
+    void downloadQuestions(@Query("updatedAtTicks")long updatedAtTicks, Callback<QuestionDTO> questionDTOCallback);
 
 }

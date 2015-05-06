@@ -64,8 +64,7 @@ public class DiscoveryLearningFragment extends DashboardFragment
     private TextView numberTimelinesHeadTV;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new UserTimeLineAdapter(getActivity(), TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_LEARNING);
         adapter.isShowHeadAndName = true;

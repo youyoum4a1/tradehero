@@ -8,7 +8,7 @@ import com.tradehero.th.utils.Constants;
 
 /**
  * SharedPreference for all local data
- *
+ * <p>
  * Created by palmer on 14-10-21.
  */
 public class THSharePreferenceManager {
@@ -119,7 +119,7 @@ public class THSharePreferenceManager {
     }
 
     public static boolean isShareDialogMoreThanFifteenAvailable(int userId, Context context) {
-        if(isMoreThanFifteenShowed){
+        if (isMoreThanFifteenShowed) {
             return false;
         }
         SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
@@ -146,7 +146,7 @@ public class THSharePreferenceManager {
     }
 
     public static boolean isShareDialogMoreThanTwentyFiveAvailable(int userId, Context context) {
-        if(isMoreThanTwentyShowed){
+        if (isMoreThanTwentyShowed) {
             return false;
         }
         SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
@@ -174,7 +174,7 @@ public class THSharePreferenceManager {
     }
 
     public static boolean isShareDialogFANSMoreThanNineAvailable(int userId, Context context) {
-        if(FansMoreThanNineShowed){
+        if (FansMoreThanNineShowed) {
             return false;
         }
         SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
@@ -189,7 +189,7 @@ public class THSharePreferenceManager {
         return true;
     }
 
-    public static void recordShareDialogLoginContinually(int userId, boolean isConfirm, Context context){
+    public static void recordShareDialogLoginContinually(int userId, boolean isConfirm, Context context) {
         SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
         if (isConfirm) {
             sp.edit().putInt(userId + "true" + LOGIN_CONTINUALLY, 1).commit();
@@ -200,8 +200,8 @@ public class THSharePreferenceManager {
         }
     }
 
-    public static boolean isShareDialogLoginContinually(int userId, Context context){
-        if(isLoginContinuallyShowed){
+    public static boolean isShareDialogLoginContinually(int userId, Context context) {
+        if (isLoginContinuallyShowed) {
             return false;
         }
         SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
@@ -216,18 +216,18 @@ public class THSharePreferenceManager {
         return true;
     }
 
-    public static boolean isRecommendedStock(int userId, Context context){
+    public static boolean isRecommendedStock(int userId, Context context) {
         SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
         boolean result = sp.getBoolean(userId + RECOMMEND_STOCK_GOD, false);
         return result;
     }
 
-    public static void setRecommendedStock(int userId, Context context){
+    public static void setRecommendedStock(int userId, Context context) {
         SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
         sp.edit().putBoolean(userId + RECOMMEND_STOCK_GOD, true).commit();
     }
 
-    public static void clearDialogShowedRecord(){
+    public static void clearDialogShowedRecord() {
         THSharePreferenceManager.isMoreThanFifteenShowed = false;
         THSharePreferenceManager.isMoreThanTwentyShowed = false;
         THSharePreferenceManager.FansMoreThanNineShowed = false;
@@ -240,13 +240,13 @@ public class THSharePreferenceManager {
     public final static String GUIDE_COMPETITION = "guide_competition";
     public final static String GUIDE_COMPETITION_INTRO_EDIT = "guide_competition_intro_edit";
     public final static String GUIDE_STOCK_BUY = "guide_stock_buy";
-    public final static String GUIDE_MAIN_TAB_ZERO= "guide_main_tab_zero";
+    public final static String GUIDE_MAIN_TAB_ZERO = "guide_main_tab_zero";
     public final static String GUIDE_MAIN_TAB_TWO = "guide_main_tab_two";
     public final static String GUIDE_MAIN_TAB_THREE = "guide_main_tab_three";
     public final static String GUIDE_MAIN_TAB_FOUR = "guide_main_tab_four";
 
-    public static boolean isGuideAvailable(Context context, String key){
-        if(context==null){
+    public static boolean isGuideAvailable(Context context, String key) {
+        if (context == null) {
             return false;
         }
         SharedPreferences sp = context.getSharedPreferences(TH_SP_GUIDE_NAME, Context.MODE_PRIVATE);
@@ -254,7 +254,7 @@ public class THSharePreferenceManager {
         return result;
     }
 
-    public static void setGuideShowed(Context context, String key){
+    public static void setGuideShowed(Context context, String key) {
         SharedPreferences sp = context.getSharedPreferences(TH_SP_GUIDE_NAME, Context.MODE_PRIVATE);
         sp.edit().putBoolean(key, false).commit();
     }
@@ -262,23 +262,24 @@ public class THSharePreferenceManager {
     //Share End Point
     public final static String KEY_SHARE_ENDPOINT = "key_share_end_point";
 
-    public static String getShareEndPoint(Context context){
+    public static String getShareEndPoint(Context context) {
         SharedPreferences sp = context.getSharedPreferences(TH_SP_SHARE_ENDPOINT, Context.MODE_PRIVATE);
         String endPoint = sp.getString(KEY_SHARE_ENDPOINT, Constants.DEFAULT_SHARE_ENDPOINT);
         return endPoint;
     }
 
-    public static void setShareEndpoint(Context context, String endPoint){
+    public static void setShareEndpoint(Context context, String endPoint) {
         SharedPreferences sp = context.getSharedPreferences(TH_SP_SHARE_ENDPOINT, Context.MODE_PRIVATE);
         sp.edit().putString(endPoint, Constants.DEFAULT_SHARE_ENDPOINT).commit();
     }
 
     //Only first login jump to leaderboard
     private final static String KEY_FIRST_LOGIN_SUCCESS = "key_first_login_success";
-    public static boolean isFirstLoginSuccess(Context context, int userId){
+
+    public static boolean isFirstLoginSuccess(Context context, int userId) {
         SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
         boolean isFirstLogin = sp.getBoolean(KEY_FIRST_LOGIN_SUCCESS + userId, true);
-        if(isFirstLogin){
+        if (isFirstLogin) {
             sp.edit().putBoolean(KEY_FIRST_LOGIN_SUCCESS + userId, false).commit();
         }
         return isFirstLogin;
@@ -287,25 +288,28 @@ public class THSharePreferenceManager {
 
     public final static String KEY_GETUI_ID = "key_getui_id";
 
-    public static void saveGETUIID(Context context, String getui_id){
+    public static void saveGETUIID(Context context, String getui_id) {
         SharedPreferences sp = context.getSharedPreferences(TH_SP_GETUI, Context.MODE_PRIVATE);
         sp.edit().putString(KEY_GETUI_ID, getui_id).commit();
     }
 
-    public static String getGETUIID(Context context){
+    public static String getGETUIID(Context context) {
         SharedPreferences sp = context.getSharedPreferences(TH_SP_GETUI, Context.MODE_PRIVATE);
         return sp.getString(KEY_GETUI_ID, "");
     }
 
     public final static String KEY_STOCK_LEARNING_QUESTION_UPDATE = "key_stock_learning_question_update";
 
-    public static void saveQuestionUpdateTime(Context context, String updateTime){
+    public static void saveQuestionUpdateTime(Context context, long updateTime, int user_id) {
+        if (updateTime < 0) {
+            return;
+        }
         SharedPreferences sp = context.getSharedPreferences(TH_SP_STOCK_LEARNING, Context.MODE_PRIVATE);
-        sp.edit().putString(KEY_STOCK_LEARNING_QUESTION_UPDATE, updateTime).commit();
+        sp.edit().putLong(KEY_STOCK_LEARNING_QUESTION_UPDATE + user_id, updateTime).commit();
     }
 
-    public static String getQuestionUpdateTime(Context context){
+    public static long getQuestionUpdateTime(Context context, int user_id) {
         SharedPreferences sp = context.getSharedPreferences(TH_SP_STOCK_LEARNING, Context.MODE_PRIVATE);
-        return sp.getString(KEY_STOCK_LEARNING_QUESTION_UPDATE, "-1");
+        return sp.getLong(KEY_STOCK_LEARNING_QUESTION_UPDATE + user_id, -1);
     }
 }

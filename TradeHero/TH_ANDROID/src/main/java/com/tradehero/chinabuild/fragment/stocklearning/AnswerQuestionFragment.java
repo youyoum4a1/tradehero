@@ -1,6 +1,8 @@
 package com.tradehero.chinabuild.fragment.stocklearning;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,9 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 
 /**
@@ -22,22 +28,23 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
     private ViewPager questionSetVP;
 
+    public final static String KEY_QUESTION_GROUP_TYPE = "key_question_group_type";
+    public final static String TYPE_NORMAL = "type_normal";
+    public final static String TYPE_ERROR = "type_error";
+    public final static String TYPE_ONLY_ONE = "type_only_one";
+    public final static String KEY_QUESTION_GROUP= "key_question_group";
+    public final static String KEY_QUESTION= "key_question";
+
+    private String type = "";
+    private QuestionGroup questionGroup = null;
+
     private ArrayList<Fragment> questionFragments = new ArrayList();
-    private ArrayList<Question> arrayListQuestion = new ArrayList();
+    private ArrayList<Question> questions = new ArrayList();
 
+    private int beginIndex = 1;
+    private int currentIndex = 1;
 
-    public final static String KEY_QUESTION_SET_TYPE = "key_question_set_type";
-    public final static String TYPE_QUESTION_SET_NORMAL = "type_question_set_normal";//正常题库答题
-    public final static String TYPE_QUESTION_SET_FAILED = "type_question_set_failed";//错题库
-    public final static String TYPE_QUESTION_SET_ONLY_RESULT = "type_question_set_only_result";//查看历史单道题
-    public final static String KEY_QUESTION = "key_question";
-
-    public final static String KEY_QUESTION_SET_LEVEL = "key_question_set_level";//第几套题 LEVEL1,2,3
-    public final static String KEY_QUESTION_CURRENT_ID = "key_question_current_id";//第几道题开始
-
-    private String questionSetType = "";
-    private int beginIndex = 0;
-    private int currentIndex = 0;
+    @Inject CurrentUserId currentUserId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,7 +56,8 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stock_learning_question_set, container, false);
         questionSetVP = (ViewPager) view.findViewById(R.id.viewpager_questions);
-        initViewPager();
+        InitDataHandler handler = new InitDataHandler();
+        handler.sendEmptyMessageDelayed(-1, 200);
         return view;
     }
 
@@ -61,24 +69,30 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
     private void initArguments() {
         Bundle bundle = getArguments();
-        if (bundle.containsKey(KEY_QUESTION_SET_TYPE)) {
-            questionSetType = bundle.getString(KEY_QUESTION_SET_TYPE);
-            if (questionSetType.equals(TYPE_QUESTION_SET_ONLY_RESULT)) {
-            }
-            if (questionSetType.equals(TYPE_QUESTION_SET_NORMAL)) {
-            }
-            if (questionSetType.equals(TYPE_QUESTION_SET_FAILED)) {
-            }
-        } else {
-            popCurrentFragment();
+        if(bundle.containsKey(KEY_QUESTION)){
+           return;
         }
-        beginIndex = bundle.getInt(KEY_QUESTION_CURRENT_ID, 0);
-        currentIndex = beginIndex;
+        if(bundle.containsKey(KEY_QUESTION_GROUP)){
+            questionGroup = (QuestionGroup)bundle.getSerializable(KEY_QUESTION_GROUP);
+            if(questionGroup==null || getActivity()==null){
+                popCurrentFragment();
+            }
+            type = bundle.getString(KEY_QUESTION_GROUP_TYPE);
+            if(type.equals("")){
+                popCurrentFragment();
+            }
+            if(type.equals(TYPE_NORMAL)){
+                THLog.d("aaaaaa");
+                StockLearningDatabaseHelper dbHelper = new StockLearningDatabaseHelper(getActivity());
+                questions = dbHelper.retrieveQuestions(questionGroup.id);
+            }
+        }
     }
 
     private void initViewPager(){
-        for(Question question : arrayListQuestion){
+        for(Question question : questions){
             OneQuestionFragment fragment = new OneQuestionFragment();
+            THLog.d(question.toString());
             Bundle bundle = new Bundle();
             bundle.putSerializable(OneQuestionFragment.KEY_ONE_QUESTION, question);
             fragment.setArguments(bundle);
@@ -90,7 +104,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
     }
 
     private void refreshHeadView(int index){
-        String menuTitle = getString(R.string.question_percent, index + 1, arrayListQuestion.size());
+        String menuTitle = getString(R.string.question_percent, index + 1, questions.size());
         setHeadViewMiddleMain(menuTitle);
     }
 
@@ -125,6 +139,17 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
         @Override
         public int getCount() {
             return questionFragments.size();
+        }
+    }
+
+    public class InitDataHandler extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if(questionSetVP == null){
+                return;
+            }
+            initViewPager();
         }
     }
 }

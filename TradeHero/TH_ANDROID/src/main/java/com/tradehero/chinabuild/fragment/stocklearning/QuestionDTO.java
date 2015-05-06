@@ -8,7 +8,7 @@ import com.tradehero.common.persistence.DTO;
 public class QuestionDTO implements DTO{
 
     public Question[] questions;
-    public QuestionGroup subcategories;
-    public QuestionCategory categories;
+    public QuestionGroup[] subcategories;
+    public QuestionCategory[] categories;
 
 }

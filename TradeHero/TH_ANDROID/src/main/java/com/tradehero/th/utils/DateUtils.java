@@ -1,7 +1,10 @@
 package com.tradehero.th.utils;
 
 import android.content.res.Resources;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;

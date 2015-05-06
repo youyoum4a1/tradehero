@@ -35,5 +35,14 @@ public class Question implements Serializable{
     }
 
 
+    @Override
+    public String toString(){
+        StringBuffer stringBuffer = new StringBuffer("id: ");
+        stringBuffer.append(id).append(" content: ").append(content).append(" option1: ").append(option1)
+                .append(" option2: ").append(option2).append(" option3: ").append(option3)
+                .append(" option4: ").append(option4).append(" answer: ").append(answer)
+                .append(" subcategory: ").append(subcategory).append(" imageUrl: ").append(imageUrl);
+        return stringBuffer.toString();
+    }
 }
 
