@@ -193,6 +193,7 @@ public class SecurityCompactDTO implements DTO
         {
             return null;
         }
+        String timeTillNextExchangeOpen = this.timeTillNextExchangeOpen;
         int lastIndex = timeTillNextExchangeOpen.lastIndexOf(":");
         int seconds = (int) Float.parseFloat(timeTillNextExchangeOpen.substring(lastIndex + 1));
         timeTillNextExchangeOpen = timeTillNextExchangeOpen.substring(0, lastIndex);

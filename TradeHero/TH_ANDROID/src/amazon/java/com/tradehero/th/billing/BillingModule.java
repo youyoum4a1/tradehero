@@ -10,7 +10,6 @@ import com.tradehero.common.billing.amazon.exception.AmazonExceptionFactory;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.billing.amazon.ProcessingPurchase;
-import com.tradehero.th.billing.amazon.THAmazonSecurityAlertKnowledge;
 import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
 import com.tradehero.th.persistence.billing.AmazonSKUListCacheRx;
 import com.tradehero.th.persistence.billing.THAmazonProductDetailCacheRx;
@@ -59,11 +58,6 @@ public class BillingModule
     @Provides AmazonExceptionFactory provideAmazonExceptionFactory(THAmazonExceptionFactory exceptionFactory)
     {
         return exceptionFactory;
-    }
-
-    @Provides SecurityAlertKnowledge provideSecurityAlertKnowledge(THAmazonSecurityAlertKnowledge thAmazonSecurityAlertKnowledge)
-    {
-        return thAmazonSecurityAlertKnowledge;
     }
 
     @Provides @Singleton @ProcessingPurchase StringSetPreference provideProcessingPurchasePreference(@ForApp SharedPreferences sharedPreferences)

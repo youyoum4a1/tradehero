@@ -35,7 +35,7 @@
         app:delayValidationByMilliSec="500"
         />
 
-    <com.tradehero.th.widget.validation.ValidatedText
+    <com.tradehero.th.widget.validation.PasswordValidatedText
         android:id="@+id/authentication_sign_up_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

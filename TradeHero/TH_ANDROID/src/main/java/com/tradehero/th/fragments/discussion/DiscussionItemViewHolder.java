@@ -23,15 +23,15 @@ public class DiscussionItemViewHolder
     }
 
     //<editor-fold desc="Display Methods">
-    @NonNull @Override protected RequestCreator createUserPicassoRequest()
+    @NonNull @Override protected String getUserAvatarURL()
     {
         if (viewDTO != null
                 && ((DiscussionDTO) viewDTO.discussionDTO).user != null
                 && ((DiscussionDTO) viewDTO.discussionDTO).user.picture != null)
         {
-            return picasso.load(((DiscussionDTO) viewDTO.discussionDTO).user.picture);
+            return ((DiscussionDTO) viewDTO.discussionDTO).user.picture;
         }
-        return super.createUserPicassoRequest();
+        return null;
     }
     //</editor-fold>
 

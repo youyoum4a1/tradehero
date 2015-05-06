@@ -12,38 +12,25 @@ import timber.log.Timber;
 
 abstract public class ProductDetailCacheRx<
             ProductIdentifierType extends ProductIdentifier,
-            ProductDetailsType extends ProductDetail<ProductIdentifierType>,
-            ProductTunerType extends ProductDetailTuner<ProductIdentifierType, ProductDetailsType>>
+            ProductDetailsType extends ProductDetail<ProductIdentifierType>>
         extends BaseDTOCacheRx<ProductIdentifierType, ProductDetailsType>
 {
     private static final int DEFAULT_MAX_SIZE = 200;
     public static int latest = 0;
 
-    @NonNull protected final ProductTunerType detailsTuner;
     protected int me = latest++;
 
     //<editor-fold desc="Constructors">
-    public ProductDetailCacheRx(
-            @NonNull ProductTunerType detailsTuner,
-            @NonNull DTOCacheUtilRx dtoCacheUtil)
+    public ProductDetailCacheRx(@NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        this(DEFAULT_MAX_SIZE, detailsTuner, dtoCacheUtil);
+        this(DEFAULT_MAX_SIZE, dtoCacheUtil);
     }
 
-    public ProductDetailCacheRx(int defaultMaxSize,
-            @NonNull ProductTunerType detailsTuner,
-            @NonNull DTOCacheUtilRx dtoCacheUtil)
+    public ProductDetailCacheRx(int defaultMaxSize, @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(defaultMaxSize, dtoCacheUtil);
-        this.detailsTuner = detailsTuner;
     }
     //</editor-fold>
-
-    @Override public void onNext(@NonNull ProductIdentifierType key, @NonNull ProductDetailsType value)
-    {
-        detailsTuner.fineTune(value);
-        super.onNext(key, value);
-    }
 
     public void onNext(Map<ProductIdentifierType, ProductDetailsType> inventory)
     {

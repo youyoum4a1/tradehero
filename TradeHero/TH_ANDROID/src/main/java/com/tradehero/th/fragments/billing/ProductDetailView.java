@@ -1,11 +1,12 @@
 package com.tradehero.th.fragments.billing;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -17,16 +18,8 @@ abstract public class ProductDetailView<
         extends RelativeLayout
         implements DTOView<ProductDetailType>
 {
-    public static final int BG_COLOR_DISABLED_RES_ID = R.color.grey;
-    public static final int BG_COLOR_ENABLED_RES_ID = R.color.darker_grey;
-
-    protected RadioButton hintSelected;
-    protected View priceAndText;
-    protected TextView skuPrice;
-    protected TextView deliverableText;
-
-    protected boolean selected;
-    protected ProductDetailType skuDetails;
+    @InjectView(R.id.sku_price) protected TextView skuPrice;
+    @InjectView(R.id.text_deliverable) protected TextView deliverableText;
 
     //<editor-fold desc="Constructors">
     public ProductDetailView(Context context)
@@ -48,80 +41,25 @@ abstract public class ProductDetailView<
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        initViews();
-    }
-
-    protected void initViews()
-    {
-        hintSelected = (RadioButton) findViewById(R.id.selected_hint);
-        priceAndText = findViewById(R.id.price_and_text);
-        skuPrice = (TextView) findViewById(R.id.sku_price);
-        deliverableText = (TextView) findViewById(R.id.text_deliverable);
+        ButterKnife.inject(this);
     }
 
     public void setEnabled(boolean enabled)
     {
         super.setEnabled(enabled);
-        displayHintEnabled();
+        setAlpha(enabled ? 1 : 0.5f);
     }
 
-    public boolean isSelected()
-    {
-        return selected;
-    }
-
-    public void setSelected(boolean selected)
-    {
-        this.selected = selected;
-        displayHintSelected();
-    }
-
-    @Override public void display(ProductDetailType productDetail)
-    {
-        this.skuDetails = productDetail;
-        display();
-    }
-
-    public void display()
-    {
-        displayHintEnabled();
-        displayHintSelected();
-        displayPrice();
-        displayDeliverableText();
-    }
-
-    protected void displayHintEnabled()
-    {
-        setBackgroundColor(getResources().getColor(isEnabled() ? BG_COLOR_ENABLED_RES_ID : BG_COLOR_DISABLED_RES_ID));
-    }
-
-    protected void displayHintSelected()
-    {
-        if (hintSelected != null)
-        {
-            hintSelected.setChecked(selected);
-        }
-    }
-
-    protected void displayPrice()
+    @Override public void display(@NonNull ProductDetailType productDetail)
     {
         if (skuPrice != null)
         {
-            if (skuDetails != null)
-            {
-                skuPrice.setText(skuDetails.getPriceText());
-            }
+            skuPrice.setText(productDetail.getPriceText());
         }
-    }
 
-    protected void displayDeliverableText()
-    {
         if (deliverableText != null)
         {
-            if (skuDetails != null)
-            {
-                deliverableText.setText(skuDetails.getDescription());
-            }
+            deliverableText.setText(productDetail.getDescription());
         }
     }
 }

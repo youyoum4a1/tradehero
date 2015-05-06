@@ -26,6 +26,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.internal.util.SubscriptionList;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public class BaseFragment extends Fragment
@@ -42,6 +43,9 @@ public class BaseFragment extends Fragment
 
     protected ActionBarOwnerMixin actionBarOwnerMixin;
     protected SubscriptionList onStopSubscriptions;
+    protected SubscriptionList onDestroyViewSubscriptions;
+    protected SubscriptionList onDestroyOptionsMenuSubscriptions;
+
 
     @Inject protected Lazy<DashboardNavigator> navigator;
 
@@ -89,6 +93,12 @@ public class BaseFragment extends Fragment
         setHasOptionsMenu(hasOptionMenu);
     }
 
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        onDestroyViewSubscriptions = new SubscriptionList();
+    }
+
     @Override public void onStart()
     {
         super.onStart();
@@ -110,6 +120,12 @@ public class BaseFragment extends Fragment
         }
     }
 
+    @Override public void onDestroyView()
+    {
+        onDestroyViewSubscriptions.unsubscribe();
+        super.onDestroyView();
+    }
+
     @Override public void onDestroy()
     {
         actionBarOwnerMixin.onDestroy();
@@ -118,6 +134,8 @@ public class BaseFragment extends Fragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        onDestroyOptionsMenuSubscriptions = new SubscriptionList();
+
         if (!hasOptionMenu)
         {
             return;
@@ -171,6 +189,12 @@ public class BaseFragment extends Fragment
         return super.onOptionsItemSelected(item);
     }
 
+    @Override public void onDestroyOptionsMenu()
+    {
+        onDestroyOptionsMenuSubscriptions.unsubscribe();
+        super.onDestroyOptionsMenu();
+    }
+
     protected boolean handleInfoMenuItemClicked()
     {
         if (this instanceof WithTutorial)
@@ -218,22 +242,22 @@ public class BaseFragment extends Fragment
         }
     }
 
-    protected final void setActionBarTitle(String string)
+    public final void setActionBarTitle(String string)
     {
         actionBarOwnerMixin.setActionBarTitle(string);
     }
 
-    protected final void setActionBarTitle(@StringRes int stringResId)
+    public final void setActionBarTitle(@StringRes int stringResId)
     {
         actionBarOwnerMixin.setActionBarTitle(stringResId);
     }
 
-    protected void setActionBarSubtitle(@StringRes int subTitleResId)
+    public void setActionBarSubtitle(@StringRes int subTitleResId)
     {
         actionBarOwnerMixin.setActionBarSubtitle(subTitleResId);
     }
 
-    protected void setActionBarSubtitle(String subtitle)
+    public void setActionBarSubtitle(String subtitle)
     {
         actionBarOwnerMixin.setActionBarSubtitle(subtitle);
     }

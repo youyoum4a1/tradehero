@@ -252,8 +252,6 @@
   <string name="discovery_discussions">Discussions</string>
   <string name="discovery">Discover</string>
   <string name="discovery_learning">Videos</string>
-  <string name="discovery_games">@string/games</string>
-  <string name="discovery_articles">@string/articles</string>
   <string name="onboard_exchange_title">To Help Get You Started</string>
   <string name="onboard_exchange_summary1">Which exchange are you interested in ?</string>
   <string name="onboard_exchange_summary2">Which sector are you interested in ?</string>
@@ -276,25 +274,21 @@
   <!-- Residemenu -->
   <string name="residemenu_footer_title">Content Partners:</string>
 
-  <!-- Discovery games -->
-  <string name="games">Games</string>
-  <string name="coming_soon">Coming soon!</string>
-  <string name="articles">Articles</string>
   <string name="best_roi">ROI:</string>
   <string name="content_sharing_started">Sharing&#8230;</string>
   <string name="content_shared">Shared!</string>
   <string name="retry">Retry</string>
 
   <string name="stocks">Stocks</string>
-  <string name="stocks_main">Stocks-Main</string>
+  <string name="stocks_main">My Stocks</string>
   <string name="trending">Trending</string>
   <string name="price">Price</string>
   <string name="volume">Volume</string>
   <string name="all">All</string>
   <string name="favorites">Favorites</string>
-  <string name="portfolio">Portfolio</string>
+  <string name="my_fx">My FX</string>
   <string name="fx">FX</string>
-  <string name="currencies">Currencies</string>
+  <string name="trade_fx">Trade FX</string>
 
   <string name="warrants_all">All Warrants</string>
   <string name="fx_onboard_header_title">Virtual Forex On TradeHero</string>

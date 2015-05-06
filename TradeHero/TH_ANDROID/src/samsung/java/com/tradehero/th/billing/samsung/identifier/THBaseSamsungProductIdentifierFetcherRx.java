@@ -3,6 +3,7 @@ package com.tradehero.th.billing.samsung.identifier;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungSKUListKey;
@@ -25,7 +26,7 @@ public class THBaseSamsungProductIdentifierFetcherRx
     public THBaseSamsungProductIdentifierFetcherRx(
             int requestCode,
             @NonNull Context context,
-            int mode)
+            @SamsungBillingMode int mode)
     {
         super(requestCode,
                 context,

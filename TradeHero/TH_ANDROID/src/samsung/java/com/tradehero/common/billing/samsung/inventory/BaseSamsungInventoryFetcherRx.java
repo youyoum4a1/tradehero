@@ -6,11 +6,12 @@ import android.util.Pair;
 import com.sec.android.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungItemGroup;
 import com.tradehero.common.billing.samsung.SamsungProductDetail;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.rx.ItemListQueryGroup;
-import com.tradehero.common.billing.samsung.rx.SamsungItemListOperatorZip;
+import com.tradehero.common.billing.samsung.rx.SamsungIapHelperFacade;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,9 +27,7 @@ import rx.functions.Func1;
 abstract public class BaseSamsungInventoryFetcherRx<
         SamsungSKUType extends SamsungSKU,
         SamsungProductDetailType extends SamsungProductDetail<SamsungSKUType>>
-        extends BaseSamsungActorRx<ProductInventoryResult<
-        SamsungSKUType,
-        SamsungProductDetailType>>
+        extends BaseSamsungActorRx
         implements SamsungInventoryFetcherRx<
         SamsungSKUType,
         SamsungProductDetailType>
@@ -39,7 +38,7 @@ abstract public class BaseSamsungInventoryFetcherRx<
     public BaseSamsungInventoryFetcherRx(
             int requestCode,
             @NonNull Context context,
-            int mode,
+            @SamsungBillingMode int mode,
             @NonNull List<SamsungSKUType> skus)
     {
         super(requestCode, context, mode);
@@ -56,8 +55,7 @@ abstract public class BaseSamsungInventoryFetcherRx<
             SamsungSKUType,
             SamsungProductDetailType>> get()
     {
-        return new SamsungItemListOperatorZip(context, mode, getItemListQueryGroups())
-                .getItems()
+        return SamsungIapHelperFacade.getItems(context, mode, getItemListQueryGroups())
                 .flatMap(new Func1<Pair<ItemListQueryGroup, List<ItemVo>>, Observable<? extends Map<SamsungSKUType, SamsungProductDetailType>>>()
                 {
                     @Override public Observable<? extends Map<SamsungSKUType, SamsungProductDetailType>> call(Pair<ItemListQueryGroup, List<ItemVo>> pair)

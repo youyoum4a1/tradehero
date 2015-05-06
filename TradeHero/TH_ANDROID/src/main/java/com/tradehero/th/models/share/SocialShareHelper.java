@@ -101,6 +101,12 @@ public class SocialShareHelper
         return Observable.error(new IllegalStateException("Unhandled UserAction " + userAction));
     }
 
+    @NonNull public Observable<Boolean> canShare(@NonNull SocialNetworkEnum socialNetwork)
+    {
+        return ((SocialAuthenticationProvider) authenticationProviders.get(socialNetwork))
+                .canShare(activityHolder.get());
+    }
+
     @NonNull public Observable<SocialShareResult> share(@NonNull final SocialShareFormDTO socialShareFormDTO)
     {
         return socialSharerProvider.get().share(socialShareFormDTO)
@@ -164,9 +170,14 @@ public class SocialShareHelper
                 R.string.authentication_connecting_to,
                 activityHolder.get().getString(socialNetwork.nameResId)));
         progressDialog.show();
+        return socialLink(socialNetwork)
+                .finallyDo(new DismissDialogAction0(progressDialog));
+    }
+
+    @NonNull public Observable<UserProfileDTO> socialLink(@NonNull SocialNetworkEnum socialNetwork)
+    {
         AuthenticationProvider socialAuthenticationProvider = authenticationProviders.get(socialNetwork);
         return ((SocialAuthenticationProvider) socialAuthenticationProvider)
-                .socialLink(activityHolder.get())
-                .finallyDo(new DismissDialogAction0(progressDialog));
+                .socialLink(activityHolder.get());
     }
 }

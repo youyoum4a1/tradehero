@@ -36,7 +36,6 @@ public class THBaseAmazonLogicHolderRx
             AmazonSKU,
             AmazonSKUList,
             THAmazonProductDetail,
-            THAmazonProductDetailTuner,
             THAmazonPurchaseOrder,
             THAmazonOrderId,
             THAmazonPurchase>

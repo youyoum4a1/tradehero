@@ -87,15 +87,21 @@ public class NewsHeadlineFragment extends Fragment
     @SuppressWarnings("unused")
     @OnItemClick(R.id.discovery_news_list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        NewsItemCompactDTO newsItemDTO =
-                (NewsItemCompactDTO) ((NewsHeadlineViewLinear.DTO) parent.getItemAtPosition(position)).viewHolderDTO.discussionDTO;
+        NewsItemCompactDTO newsItemDTO = null;
+        try
+        {
+            newsItemDTO = (NewsItemCompactDTO) ((NewsHeadlineViewLinear.DTO) parent.getItemAtPosition(position)).viewHolderDTO.discussionDTO;
+        } catch (Exception e)
+        {
+            Timber.e(e, "Error:" + parent.getItemAtPosition(position));
+        }
 
-        if (newsItemDTO.url != null)
+        if ((newsItemDTO != null) && (newsItemDTO.url != null))
         {
             Bundle bundle = new Bundle();
             NewsWebFragment.putPreviousScreen(bundle, newsType.analyticsName);
             NewsWebFragment.putUrl(bundle, newsItemDTO.url);
-            NewsWebFragment.putNewsID(bundle, newsItemDTO.id);
+            NewsWebFragment.putNewsId(bundle, newsItemDTO.id);
             navigator.get().pushFragment(NewsWebFragment.class, bundle);
         }
     }

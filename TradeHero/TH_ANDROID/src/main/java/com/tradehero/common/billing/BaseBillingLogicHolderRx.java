@@ -30,7 +30,6 @@ abstract public class BaseBillingLogicHolderRx<
         ProductIdentifierType extends ProductIdentifier,
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
-        ProductTunerType extends ProductDetailTuner<ProductIdentifierType, ProductDetailType>,
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>>
@@ -47,7 +46,7 @@ abstract public class BaseBillingLogicHolderRx<
 
     @NonNull protected final ProductIdentifierListCacheRx<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType>
             productIdentifierCache;
-    @NonNull protected final ProductDetailCacheRx<ProductIdentifierType, ProductDetailType, ProductTunerType> productDetailCache;
+    @NonNull protected final ProductDetailCacheRx<ProductIdentifierType, ProductDetailType> productDetailCache;
     @NonNull protected final ProductPurchaseCacheRx<ProductIdentifierType, OrderIdType, ProductPurchaseType> purchaseCache;
     @NonNull protected final BillingAvailableTesterHolderRx billingAvailableTesterHolder;
     @NonNull protected final ProductIdentifierFetcherHolderRx<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType>
@@ -62,7 +61,7 @@ abstract public class BaseBillingLogicHolderRx<
     public BaseBillingLogicHolderRx(
             @NonNull
             ProductIdentifierListCacheRx<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache,
-            @NonNull ProductDetailCacheRx<ProductIdentifierType, ProductDetailType, ProductTunerType> productDetailCache,
+            @NonNull ProductDetailCacheRx<ProductIdentifierType, ProductDetailType> productDetailCache,
             @NonNull ProductPurchaseCacheRx<ProductIdentifierType, OrderIdType, ProductPurchaseType> purchaseCache,
             @NonNull BillingAvailableTesterHolderRx billingAvailableTesterHolder,
             @NonNull

@@ -13,11 +13,13 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForExtraTileBackground;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 public final class SurveyTileView extends ImageView
 {
@@ -57,16 +59,24 @@ public final class SurveyTileView extends ImageView
         super.onAttachedToWindow();
 
         // Coz this view's content will never change
-        if (userProfileDTO == null )
+        if (!isInEditMode() && userProfileDTO == null)
         {
             detachUserProfileCache();
-            userProfileCacheSubscription = userProfileCache.get().get(currentUserId.toUserBaseKey())
+            userProfileCacheSubscription = userProfileCache.get().getOne(currentUserId.toUserBaseKey())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(createUserProfileCacheObserver());
+                    .subscribe(
+                            new Action1<Pair<UserBaseKey, UserProfileDTO>>()
+                            {
+                                @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
+                                {
+                                    linkWith(pair.second);
+                                }
+                            },
+                            new TimberOnErrorAction("Failed to load user profile for survey tile"));
         }
         else
         {
-            linkWith(userProfileDTO, true);
+            linkWith(userProfileDTO);
         }
     }
 
@@ -86,37 +96,14 @@ public final class SurveyTileView extends ImageView
         userProfileCacheSubscription = null;
     }
 
-    private void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    private void linkWith(UserProfileDTO userProfileDTO)
     {
         this.userProfileDTO = userProfileDTO;
-
-        if (andDisplay)
-        {
-            picasso.get()
-                    .load(userProfileDTO.activeSurveyImageURL)
-                    .placeholder(R.drawable.white_rounded_background_xml)
-                    .transform(backgroundTransformation)
-                    .fit()
-                    .into(this);
-        }
-    }
-
-    private Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
-    {
-        return new Observer<Pair<UserBaseKey,UserProfileDTO>>()
-        {
-            @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-            {
-                linkWith(pair.second, true);
-            }
-
-            @Override public void onCompleted()
-            {
-            }
-
-            @Override public void onError(Throwable e)
-            {
-            }
-        };
+        picasso.get()
+                .load(userProfileDTO.activeSurveyImageURL)
+                .placeholder(R.drawable.white_rounded_background_xml)
+                //.transform(backgroundTransformation)
+                .fit()
+                .into(this);
     }
 }

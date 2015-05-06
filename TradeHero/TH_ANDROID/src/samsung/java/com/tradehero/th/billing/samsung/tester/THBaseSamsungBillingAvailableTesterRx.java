@@ -2,6 +2,7 @@ package com.tradehero.th.billing.samsung.tester;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.tester.BaseSamsungBillingAvailableTesterRx;
 
 public class THBaseSamsungBillingAvailableTesterRx
@@ -12,7 +13,7 @@ public class THBaseSamsungBillingAvailableTesterRx
     public THBaseSamsungBillingAvailableTesterRx(
             int requestCode,
             @NonNull Context context,
-            int mode)
+            @SamsungBillingMode int mode)
     {
         super(requestCode, context, mode);
     }

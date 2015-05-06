@@ -16,7 +16,7 @@ import dagger.Module;
                 FragmentOnBoardStockModule.class,
         },
         injects = {
-                OnBoardNewDialogFragment.class,
+                OnBoardFragment.class,
         },
         library = true,
         complete = false

@@ -19,7 +19,6 @@ public class DashboardTabHost extends TabHost
         implements DashboardNavigator.DashboardFragmentWatcher, MovableBottom
 {
     private final Collection<RootFragmentType> bottomBarFragmentTypes = RootFragmentType.forBottomBar();
-    private final Collection<RootFragmentType> slideFragmentTypes = RootFragmentType.forResideMenu();
     private Animation slideInAnimation;
     private Animation slideOutAnimation;
     private OnMovableBottomTranslateListener onTranslateListener;

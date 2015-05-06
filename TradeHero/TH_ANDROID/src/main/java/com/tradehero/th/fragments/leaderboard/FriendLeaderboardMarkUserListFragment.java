@@ -3,8 +3,6 @@ package com.tradehero.th.fragments.leaderboard;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,11 +53,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
             listView.setEmptyView(inflateEmptyView(inflater, container));
         }
         return view;
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        //block super class
     }
 
     @Override public void onStart()

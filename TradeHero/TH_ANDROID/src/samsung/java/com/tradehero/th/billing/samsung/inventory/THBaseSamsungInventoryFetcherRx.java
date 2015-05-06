@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.sec.android.iap.lib.vo.ItemVo;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungItemGroup;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.inventory.BaseSamsungInventoryFetcherRx;
@@ -24,7 +25,7 @@ public class THBaseSamsungInventoryFetcherRx
     public THBaseSamsungInventoryFetcherRx(
             int requestCode,
             @NonNull Context context,
-            int mode,
+            @SamsungBillingMode int mode,
             @NonNull List<SamsungSKU> skus)
     {
         super(requestCode, context, mode, skus);

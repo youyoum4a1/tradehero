@@ -63,10 +63,9 @@ public class DiscoveryMainFragment extends DashboardFragment
         }
 
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
+        pagerSlidingTabStrip.setDistributeEvenly(true);
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
-
-        displayNewIcon();
 
         beginTime = System.currentTimeMillis();
         oldPageItem = 0;
@@ -90,18 +89,6 @@ public class DiscoveryMainFragment extends DashboardFragment
             {
             }
         });
-    }
-
-    private void displayNewIcon()
-    {
-        for (int i = 0; i < discoveryPagerAdapter.getCount(); i++)
-        {
-            if (discoveryPagerAdapter.isNew(i))
-            {
-                THTabView tabView = (THTabView) ((ViewGroup)pagerSlidingTabStrip.getTabStrip()).getChildAt(i);
-                tabView.setIcon(R.drawable.icn_new_discover);
-            }
-        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -166,11 +153,6 @@ public class DiscoveryMainFragment extends DashboardFragment
         @Override public int getCount()
         {
             return DiscoveryTabType.values().length;
-        }
-
-        public boolean isNew(int position)
-        {
-            return DiscoveryTabType.values()[position].isNew;
         }
     }
 }

@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.home;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import com.tradehero.common.widget.NotifyingWebView;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -18,12 +19,13 @@ import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
 public final class HomeWebView extends NotifyingWebView
 {
     @Inject CurrentUserId currentUserId;
-    @Inject AccountManager accountManager;
+    @NonNull final AccountManager accountManager;
 
     //region Constructors
     public HomeWebView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        accountManager = AccountManager.get(context);
     }
     //endregion
 

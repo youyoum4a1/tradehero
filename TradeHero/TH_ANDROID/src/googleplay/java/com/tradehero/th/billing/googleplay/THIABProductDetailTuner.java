@@ -1,41 +1,26 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.common.billing.googleplay.IABSKU;
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THProductDetailTuner;
-
-import javax.inject.Inject;
-
 import timber.log.Timber;
 
-public class THIABProductDetailTuner implements THProductDetailTuner<IABSKU, THIABProductDetail>
+public class THIABProductDetailTuner
 {
-    //<editor-fold desc="Constructors">
-    @Inject public THIABProductDetailTuner()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @Override public void fineTune(THIABProductDetail productDetails)
+    public static void fineTune(@NonNull THIABProductDetail productDetails)
     {
         switch (productDetails.getProductIdentifier().identifier)
         {
             case THIABConstants.EXTRA_CASH_T0_KEY:
-                productDetails.iconResId = R.drawable.cash_1;
+                productDetails.iconResId = R.drawable.icn_th_dollars;
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR;
                 break;
             case THIABConstants.EXTRA_CASH_T1_KEY:
-                productDetails.iconResId = R.drawable.cash_2;
-                productDetails.hasRibbon = true;
-                productDetails.iconRibbonResId = R.drawable.ribbon_cash_disc10;
+                productDetails.iconResId = R.drawable.icn_th_dollars_50k;
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR;
                 break;
             case THIABConstants.EXTRA_CASH_T2_KEY:
-                productDetails.iconResId = R.drawable.cash_3;
-                productDetails.hasRibbon = true;
-                productDetails.iconRibbonResId = R.drawable.ribbon_cash_best;
+                productDetails.iconResId = R.drawable.icn_th_dollars_100k;
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR;
                 break;
 
@@ -45,7 +30,7 @@ public class THIABProductDetailTuner implements THProductDetailTuner<IABSKU, THI
                 break;
 
             case THIABConstants.CREDIT_1:
-                productDetails.iconResId = R.drawable.credit_1;
+                productDetails.iconResId = R.drawable.icn_follow_credits;
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS;
                 break;
 
@@ -55,34 +40,25 @@ public class THIABProductDetailTuner implements THProductDetailTuner<IABSKU, THI
             //    break;
 
             case THIABConstants.CREDIT_10:
-                productDetails.iconResId = R.drawable.credit_5;
-                productDetails.hasRibbon = true;
-                productDetails.iconRibbonResId = R.drawable.ribbon_cash_disc5;
+                productDetails.iconResId = R.drawable.icn_follow_credits_10;
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS;
                 break;
 
             case THIABConstants.CREDIT_20:
-                productDetails.iconResId = R.drawable.credit_10;
-                productDetails.hasRibbon = true;
-                productDetails.iconRibbonResId = R.drawable.ribbon_cc_best;
+                productDetails.iconResId = R.drawable.icn_follow_credits_20;
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS;
                 break;
 
             case THIABConstants.ALERT_1:
                 productDetails.iconResId = R.drawable.buy_alerts_2;
-                productDetails.hasRibbon = false;
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_STOCK_ALERTS;
                 break;
             case THIABConstants.ALERT_5:
                 productDetails.iconResId = R.drawable.buy_alerts_5;
-                productDetails.hasRibbon = true;
-                productDetails.iconRibbonResId = R.drawable.ribbon_cash_disc10;
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_STOCK_ALERTS;
                 break;
             case THIABConstants.ALERT_UNLIMITED:
                 productDetails.iconResId = R.drawable.buy_alerts_infinite;
-                productDetails.hasRibbon = true;
-                productDetails.iconRibbonResId = R.drawable.ribbon_buy_alerts_best;
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_STOCK_ALERTS;
                 break;
 

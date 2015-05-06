@@ -3,6 +3,7 @@ package com.tradehero.common.billing.samsung.tester;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.tester.BaseBillingAvailableTesterHolderRx;
 
 abstract public class BaseSamsungBillingAvailableTesterHolderRx
@@ -10,10 +11,10 @@ abstract public class BaseSamsungBillingAvailableTesterHolderRx
         implements SamsungBillingAvailableTesterHolderRx
 {
     @NonNull protected final Context context;
-    protected final int mode;
+    @SamsungBillingMode protected final int mode;
 
     //<editor-fold desc="Constructors">
-    public BaseSamsungBillingAvailableTesterHolderRx(@NonNull Context context, int mode)
+    public BaseSamsungBillingAvailableTesterHolderRx(@NonNull Context context, @SamsungBillingMode int mode)
     {
         this.context = context;
         this.mode = mode;

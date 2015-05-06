@@ -4,16 +4,16 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseRequestCodeActor;
 
-abstract public class BaseSamsungActorRx<ResultType> extends BaseRequestCodeActor
+abstract public class BaseSamsungActorRx extends BaseRequestCodeActor
 {
     @NonNull protected final Context context;
-    protected final int mode;
+    @SamsungBillingMode protected final int mode;
 
     //<editor-fold desc="Constructors">
     public BaseSamsungActorRx(
             int requestCode,
             @NonNull Context context,
-            int mode)
+            @SamsungBillingMode int mode)
     {
         super(requestCode);
         this.context = context;

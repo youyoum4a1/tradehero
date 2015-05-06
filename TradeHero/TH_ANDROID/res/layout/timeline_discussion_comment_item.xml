@@ -24,7 +24,7 @@
         android:layout_height="@dimen/big_image_w_h"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/layout_oval_gray"
+        android:scaleType="centerCrop"
         android:src="@drawable/avatar"
         android:contentDescription="@null"/>
 

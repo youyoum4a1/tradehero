@@ -147,7 +147,9 @@ public class SettingsProfileFragment extends BaseFragment
                                 {
                                     if (!areFieldsValid)
                                     {
-                                        THToast.show(R.string.validation_please_correct);
+                                        // Don't show the toast message, because we've already shown
+                                        // invalid sign in profile view
+                                        // THToast.show(R.string.validation_please_correct);
                                         return Observable.empty();
                                     }
                                     else

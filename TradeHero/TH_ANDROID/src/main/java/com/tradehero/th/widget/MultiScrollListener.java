@@ -3,6 +3,7 @@ package com.tradehero.th.widget;
 import android.widget.AbsListView;
 import com.tradehero.common.utils.CollectionUtils;
 import rx.functions.Action1;
+import timber.log.Timber;
 
 public class MultiScrollListener implements AbsListView.OnScrollListener
 {
@@ -39,7 +40,15 @@ public class MultiScrollListener implements AbsListView.OnScrollListener
             {
                 if (onScrollListener != null)
                 {
-                    onScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+                    try
+                    {
+                        onScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+                    }
+                    catch (Exception e)
+                    {
+                        //Catch the NPE https://www.pivotaltracker.com/n/projects/559137/stories/93074886
+                        Timber.e(e, "Error");
+                    }
                 }
             }
         });

@@ -1,7 +1,9 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
@@ -14,11 +16,9 @@ public class THIABProductDetail
         extends BaseIABProductDetail
         implements THProductDetail<IABSKU>
 {
-    int iconResId;
+    @DrawableRes int iconResId;
     boolean hasFurtherDetails = false;
-    int furtherDetailsResId = R.string.na;
-    boolean hasRibbon = false;
-    int iconRibbonResId = R.drawable.default_image;
+    @StringRes int furtherDetailsResId = R.string.na;
     ProductIdentifierDomain domain;
 
     //<editor-fold desc="Constructors">
@@ -38,7 +38,7 @@ public class THIABProductDetail
     }
     //</editor-fold>
 
-    @Override public int getIconResId()
+    @DrawableRes @Override public int getIconResId()
     {
         return iconResId;
     }
@@ -48,19 +48,9 @@ public class THIABProductDetail
         return hasFurtherDetails;
     }
 
-    @Override public int getFurtherDetailsResId()
+    @StringRes @Override public int getFurtherDetailsResId()
     {
         return furtherDetailsResId;
-    }
-
-    @Override public boolean getHasRibbon()
-    {
-        return hasRibbon;
-    }
-
-    @Override public int getIconRibbonResId()
-    {
-        return iconRibbonResId;
     }
 
     @Override public ProductIdentifierDomain getDomain()

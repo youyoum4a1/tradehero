@@ -138,8 +138,6 @@
   <string name="discovery_discussions">การสนทนา</string>
   <string name="discovery">ค้นพบ</string>
   <string name="discovery_learning">ศูนย์การเรียนรู้</string>
-  <string name="discovery_games">@string/games</string>
-  <string name="discovery_articles">@string/articles</string>
   <string name="onboard_exchange_title">เพื่อช่วยคุณในตอนเริ่มต้น</string>
   <string name="onboard_exchange_summary1">คุณสนใจในตลาดหุ้นใด ?</string>
   <string name="onboard_exchange_summary2">คุณสนใจในกลุ่มธุรกิจใด ?</string>
@@ -159,10 +157,6 @@
   <!-- Residemenu -->
   <string name="residemenu_footer_title">หุ้นส่วนด้านเนื้อหา:</string>
 
-  <!-- Discovery games -->
-  <string name="games">เกมส์</string>
-  <string name="coming_soon">เร็วๆนี้!</string>
-  <string name="articles">บทความ</string>
   <string name="best_roi">ผลตอบแทนจากเงินลงทุน (ROI):</string>
   <string name="content_sharing_started">กำลังแชร์…</string>
   <string name="content_shared">แชร์แล้ว!</string>

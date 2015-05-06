@@ -6,7 +6,6 @@ import com.tradehero.common.billing.ProductPurchaseCacheRx;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCacheRx;
-import com.tradehero.th.billing.googleplay.THIABSecurityAlertKnowledge;
 import com.tradehero.th.billing.googleplay.exception.THIABExceptionFactory;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCacheRx;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCacheRx;
@@ -54,10 +53,5 @@ public class BillingModule
     @Provides IABExceptionFactory provideIABExceptionFactory(THIABExceptionFactory exceptionFactory)
     {
         return exceptionFactory;
-    }
-
-    @Provides SecurityAlertKnowledge provideSecurityAlertKnowledge(THIABSecurityAlertKnowledge thiabSecurityAlertKnowledge)
-    {
-        return thiabSecurityAlertKnowledge;
     }
 }

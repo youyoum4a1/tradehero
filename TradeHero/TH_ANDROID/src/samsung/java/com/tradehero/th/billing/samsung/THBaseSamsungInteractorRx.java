@@ -65,8 +65,7 @@ public class THBaseSamsungInteractorRx
 
     @NonNull protected Observable<PortfolioCompactDTO> getDefaultPortfolio()
     {
-        return portfolioCompactListCache.get(currentUserId.toUserBaseKey())
-                .take(1)
+        return portfolioCompactListCache.getOne(currentUserId.toUserBaseKey())
                 .flatMap(new Func1<Pair<UserBaseKey, PortfolioCompactDTOList>, Observable<? extends PortfolioCompactDTO>>()
                 {
                     @Override public Observable<? extends PortfolioCompactDTO> call(Pair<UserBaseKey, PortfolioCompactDTOList> pair)

@@ -47,6 +47,7 @@ import com.tradehero.th.widget.validation.DisplayNameValidatedText;
 import com.tradehero.th.widget.validation.DisplayNameValidator;
 import com.tradehero.th.widget.validation.MatchingPasswordText;
 import com.tradehero.th.widget.validation.PasswordConfirmTextValidator;
+import com.tradehero.th.widget.validation.PasswordValidatedText;
 import com.tradehero.th.widget.validation.TextValidator;
 import com.tradehero.th.widget.validation.ValidatedText;
 import com.tradehero.th.widget.validation.ValidatedView;
@@ -78,7 +79,7 @@ public class ProfileInfoView extends LinearLayout
 
     @InjectView(R.id.authentication_sign_up_email) ValidatedText email;
     TextValidator emailValidator;
-    @InjectView(R.id.authentication_sign_up_password) ValidatedText password;
+    @InjectView(R.id.authentication_sign_up_password) PasswordValidatedText password;
     TextValidator passwordValidator;
     @InjectView(R.id.authentication_sign_up_confirm_password) MatchingPasswordText confirmPassword;
     PasswordConfirmTextValidator confirmPasswordValidator;
@@ -93,9 +94,9 @@ public class ProfileInfoView extends LinearLayout
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Inject Provider<UserFormDTO.Builder2> userFormBuilderProvider;
-    @Inject AccountManager accountManager;
     @Inject DashboardNavigator dashboardNavigator;
 
+    @NonNull final AccountManager accountManager;
     private UserProfileDTO userProfileDTO;
     @NonNull protected SubscriptionList subscriptions;
     private File mCurrentPhotoFile;
@@ -108,6 +109,7 @@ public class ProfileInfoView extends LinearLayout
         super(context, attrs);
         HierarchyInjector.inject(this);
         subscriptions = new SubscriptionList();
+        accountManager = AccountManager.get(context);
     }
     //</editor-fold>
 

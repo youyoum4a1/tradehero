@@ -195,6 +195,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment
         {
             NewsWebFragment.putUrl(bundle, news.url);
             NewsWebFragment.putPreviousScreen(bundle, AnalyticsConstants.NewsSecurityScreen);
+            NewsWebFragment.putNewsId(bundle, news.id);
             navigator.get().pushFragment(NewsWebFragment.class, bundle);
         }
         else

@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.samsung;
 
+import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.samsung.BaseSamsungProductDetail;
 import com.tradehero.common.billing.samsung.SamsungItemGroup;
@@ -7,7 +8,6 @@ import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THProductDetail;
-import android.support.annotation.NonNull;
 
 public class THSamsungProductDetail
         extends BaseSamsungProductDetail<SamsungSKU>
@@ -16,8 +16,6 @@ public class THSamsungProductDetail
     public int iconResId;
     public boolean hasFurtherDetails = false;
     public int furtherDetailsResId = R.string.na;
-    public boolean hasRibbon = false;
-    public int iconRibbonResId = R.drawable.default_image;
     public ProductIdentifierDomain domain;
 
     //<editor-fold desc="Constructors">
@@ -55,16 +53,6 @@ public class THSamsungProductDetail
     @Override public int getFurtherDetailsResId()
     {
         return furtherDetailsResId;
-    }
-
-    @Override public boolean getHasRibbon()
-    {
-        return hasRibbon;
-    }
-
-    @Override public int getIconRibbonResId()
-    {
-        return iconRibbonResId;
     }
 
     @Override public ProductIdentifierDomain getDomain()

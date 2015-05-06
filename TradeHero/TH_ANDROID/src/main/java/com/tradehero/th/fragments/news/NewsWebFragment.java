@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.DisplayMetrics;
@@ -63,7 +64,7 @@ public class NewsWebFragment extends WebViewFragment
     @Inject FragmentOuterElements fragmentElements;
 
     private String previousScreen;
-    private int newsID;
+    private int newsId;
     private long beginTime;
 
     static DecimalFormat PRICE_FORMAT = new DecimalFormat("#.##");
@@ -79,25 +80,21 @@ public class NewsWebFragment extends WebViewFragment
         bundle.putString(BUNDLE_KEY_PREVIOUS_SCREEN, previousScreen);
     }
 
-    public static void putNewsID(Bundle bundle, Integer id)
+    public static void putNewsId(@NonNull Bundle bundle, int id)
     {
-        if (id == null)
-        {
-            return;
-        }
         bundle.putInt(BUNDLE_KEY_NEWS_ID, id);
     }
 
-    private int getNewsID()
+    private int getNewsId()
     {
-        if (getArguments() != null)
+        if (!getArguments().containsKey(BUNDLE_KEY_NEWS_ID))
         {
-            return getArguments().getInt(BUNDLE_KEY_NEWS_ID, 0);
+            throw new IllegalArgumentException("Missing news id");
         }
-        return 0;
+        return getArguments().getInt(BUNDLE_KEY_NEWS_ID);
     }
 
-    private String getPreviousScreenFromBundle()
+    @Nullable private String getPreviousScreenFromBundle()
     {
         if (getArguments() != null)
         {
@@ -110,7 +107,7 @@ public class NewsWebFragment extends WebViewFragment
     {
         super.onCreate(savedInstanceState);
         previousScreen = getPreviousScreenFromBundle();
-        newsID = getNewsID();
+        newsId = getNewsId();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -158,7 +155,7 @@ public class NewsWebFragment extends WebViewFragment
         });
 
         subscription = AppObservable.bindFragment(this,
-                newsServiceWrapper.getSecurityNewsDetailRx(new NewsItemDTOKey(newsID))
+                newsServiceWrapper.getSecurityNewsDetailRx(new NewsItemDTOKey(newsId))
                         .flatMap(new Func1<NewsItemDTO, Observable<Map<SecurityIntegerId, SecurityCompactDTO>>>()
                         {
                             @Override public Observable<Map<SecurityIntegerId, SecurityCompactDTO>> call(NewsItemDTO newsItemDTO)

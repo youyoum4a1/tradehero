@@ -54,7 +54,8 @@ public class WarrantCompetitionPagerFragment extends DashboardFragment
 
         pager.setAdapter(new WarrantPagerAdapter(getChildFragmentManager()));
         slidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
-        slidingTabLayout.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
+        slidingTabLayout.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
+        slidingTabLayout.setDistributeEvenly(true);
         slidingTabLayout.setViewPager(pager);
     }
 

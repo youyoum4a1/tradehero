@@ -170,6 +170,11 @@ public class PostCommentView extends RelativeLayout
         {
             THToast.show(R.string.error_not_enough_information);
         }
+        if (commentText != null)
+        {
+            // This is HACK to force frame redraws and see the XpToast animations go through.
+            commentText.requestFocus();
+        }
     }
 
     protected boolean validate()

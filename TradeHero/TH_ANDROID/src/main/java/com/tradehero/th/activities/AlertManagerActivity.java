@@ -7,7 +7,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 
 public class AlertManagerActivity extends OneFragmentActivity
-    implements AchievementAcceptor
 {
     @NonNull @Override protected Class<? extends Fragment> getInitialFragment()
     {

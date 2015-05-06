@@ -7,10 +7,11 @@ import com.sec.android.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.identifier.ProductIdentifierListResult;
 import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
 import com.tradehero.common.billing.samsung.BaseSamsungSKUList;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUListKey;
 import com.tradehero.common.billing.samsung.rx.ItemListQueryGroup;
-import com.tradehero.common.billing.samsung.rx.SamsungItemListOperatorZip;
+import com.tradehero.common.billing.samsung.rx.SamsungIapHelperFacade;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +22,7 @@ abstract public class BaseSamsungProductIdentifierFetcherRx<
         SamsungSKUListKeyType extends SamsungSKUListKey,
         SamsungSKUType extends SamsungSKU,
         SamsungSKUListType extends BaseSamsungSKUList<SamsungSKUType>>
-        extends BaseSamsungActorRx<ProductIdentifierListResult<
-        SamsungSKUListKeyType,
-        SamsungSKUType,
-        SamsungSKUListType>>
+        extends BaseSamsungActorRx
         implements SamsungProductIdentifierFetcherRx<
         SamsungSKUListKeyType,
         SamsungSKUType,
@@ -35,7 +33,7 @@ abstract public class BaseSamsungProductIdentifierFetcherRx<
     public BaseSamsungProductIdentifierFetcherRx(
             int requestCode,
             @NonNull Context context,
-            int mode)
+            @SamsungBillingMode int mode)
     {
         super(requestCode, context, mode);
     }
@@ -46,8 +44,7 @@ abstract public class BaseSamsungProductIdentifierFetcherRx<
             SamsungSKUType,
             SamsungSKUListType>> get()
     {
-        return new SamsungItemListOperatorZip(context, mode, getItemListQueryGroups())
-                .getItems()
+        return SamsungIapHelperFacade.getItems(context, mode, getItemListQueryGroups())
                 .flatMap(
                         new Func1<Pair<ItemListQueryGroup, List<ItemVo>>, Observable<? extends ProductIdentifierListResult<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType>>>()
                         {

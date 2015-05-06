@@ -6,17 +6,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Pair;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
-import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.level.LevelDefDTO;
@@ -39,7 +36,7 @@ import timber.log.Timber;
 public class XpToast extends RelativeLayout
         implements UserLevelProgressBar.UserLevelProgressBarLevelUpListener, UserLevelProgressBar.UserLevelProgressBarListener
 {
-    @InjectView(R.id.xp_toast_text) TextSwitcher xpTextSwitcher;
+    @InjectView(R.id.xp_toast_text) TextView xpTextSwitcher; // TODO reinstate it as a Switcher
     @InjectView(R.id.xp_toast_value) TextView xpValue;
     @InjectView(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
 
@@ -58,7 +55,7 @@ public class XpToast extends RelativeLayout
     public XpToast(@NonNull Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        //Always hidden after inflate
+        //Always hidden after creation
         setVisibility(View.GONE);
         HierarchyInjector.inject(this);
     }
@@ -70,26 +67,20 @@ public class XpToast extends RelativeLayout
         ButterKnife.inject(this);
         if (!isInEditMode())
         {
-            initViews();
+            userLevelProgressBar.setPauseDurationWhenLevelUp(getResources().getInteger(R.integer.user_level_pause_on_level_up));
+            //xpTextSwitcher.setFactory(new ViewSwitcher.ViewFactory()
+            //{
+            //    @Override public View makeView()
+            //    {
+            //        return LayoutInflater.from(XpToast.this.getContext()).inflate(R.layout.layout_xp_toast_text, xpTextSwitcher, false);
+            //    }
+            //});
         }
-    }
-
-    private void initViews()
-    {
-        userLevelProgressBar.setPauseDurationWhenLevelUp(getResources().getInteger(R.integer.user_level_pause_on_level_up));
-        xpTextSwitcher.setFactory(new ViewSwitcher.ViewFactory()
-        {
-            @Override public View makeView()
-            {
-                return LayoutInflater.from(XpToast.this.getContext()).inflate(R.layout.layout_xp_toast_text, xpTextSwitcher, false);
-            }
-        });
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
         if (!isInEditMode())
         {
             userLevelProgressBar.setUserLevelProgressBarLevelUpListener(this);
@@ -103,13 +94,13 @@ public class XpToast extends RelativeLayout
     @Override protected void onDetachedFromWindow()
     {
         mLevelDefListCacheSubscription.unsubscribe();
+        mLevelDefListCacheSubscription = null;
         if (userLevelProgressBar != null)
         {
             userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
             userLevelProgressBar.setUserLevelProgressBarListener(null);
         }
         isLevelDefError = false;
-        ButterKnife.inject(this);
         super.onDetachedFromWindow();
     }
 
@@ -173,7 +164,7 @@ public class XpToast extends RelativeLayout
             public void onAnimationStart(Animation animation)
             {
                 setVisibility(View.VISIBLE);
-                xpTextSwitcher.reset();
+                //xpTextSwitcher.reset();
             }
 
             @Override
@@ -217,10 +208,11 @@ public class XpToast extends RelativeLayout
         }
     }
 
-    @OnClick(R.id.user_level_progress_bar)
     public void hide()
     {
         cleanUp();
+        hideAndReleaseFlag();
+        /*
         Animation a = AnimationUtils.loadAnimation(getContext(), R.anim.zoom_out);
         a.setAnimationListener(new Animation.AnimationListener()
         {
@@ -237,8 +229,7 @@ public class XpToast extends RelativeLayout
             {
             }
         });
-
-        startAnimation(a);
+        startAnimation(a);*/
     }
 
     private void hideAndReleaseFlag()
@@ -272,7 +263,15 @@ public class XpToast extends RelativeLayout
         if (context instanceof DashboardActivity)
         {
             LevelUpDialogFragment levelUpDialogFragment = LevelUpDialogFragment.newInstance(fromLevel.getId(), toLevel.getId());
-            levelUpDialogFragment.show(((DashboardActivity) context).getFragmentManager(), LevelUpDialogFragment.class.getName());
+            try
+            {
+                levelUpDialogFragment.show(((DashboardActivity) context).getFragmentManager(), LevelUpDialogFragment.class.getName());
+            }
+            catch (java.lang.IllegalStateException e)
+            {
+                Timber.d(e.toString());
+                THToast.show(e.toString());
+            }
         }
     }
 
@@ -318,7 +317,6 @@ public class XpToast extends RelativeLayout
     {
         userLevelProgressBar.stopIncrement();
         cleanUp();
-        ButterKnife.reset(this);
     }
 
     private class XPToastLevelDefCacheObserver implements Observer<Pair<LevelDefListId, LevelDefDTOList>>

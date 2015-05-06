@@ -10,7 +10,7 @@ import com.tradehero.th.billing.samsung.THSamsungProductDetailTuner;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-@Singleton @UserCache public class THSamsungProductDetailCacheRx extends ProductDetailCacheRx<SamsungSKU, THSamsungProductDetail, THSamsungProductDetailTuner>
+@Singleton @UserCache public class THSamsungProductDetailCacheRx extends ProductDetailCacheRx<SamsungSKU, THSamsungProductDetail>
 {
     private static final int DEFAULT_MAX_SIZE = 200;
 
@@ -18,17 +18,17 @@ import javax.inject.Singleton;
 
     //<editor-fold desc="Constructors">
     @Inject public THSamsungProductDetailCacheRx(
-            @NonNull THSamsungProductDetailTuner thSamsungProductDetailTuner,
             @NonNull SamsungSKUListCacheRx samsungSKUListCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE, thSamsungProductDetailTuner, dtoCacheUtil);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.samsungSKUListCache = samsungSKUListCache;
     }
     //</editor-fold>
 
     @Override public void onNext(@NonNull SamsungSKU key, @NonNull THSamsungProductDetail value)
     {
+        THSamsungProductDetailTuner.fineTune(value);
         samsungSKUListCache.onNext(value);
         super.onNext(key, value);
     }

@@ -11,26 +11,17 @@ import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 public class TrendingFilterTypeGenericDTO extends TrendingFilterTypeDTO
 {
     public static final int DEFAULT_TITLE_RES_ID = R.string.trending_filter_all_title;
-    public static final int DEFAULT_ICON_RES_ID = 0;
-    public static final int DEFAULT_DESCRIPTION_RES_ID = R.string.trending_filter_all_description;
     public static final String TRACK_EVENT_SYMBOL = "All Securities";
 
     //<editor-fold desc="Constructors">
     public TrendingFilterTypeGenericDTO(@NonNull Resources resources)
     {
-        super(resources,
-                DEFAULT_TITLE_RES_ID,
-                DEFAULT_ICON_RES_ID,
-                DEFAULT_DESCRIPTION_RES_ID);
+        super(resources, DEFAULT_TITLE_RES_ID);
     }
 
     public TrendingFilterTypeGenericDTO(@NonNull ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO)
     {
-        super(
-                DEFAULT_TITLE_RES_ID,
-                DEFAULT_ICON_RES_ID,
-                DEFAULT_DESCRIPTION_RES_ID,
-                exchangeCompactSpinnerDTO);
+        super(DEFAULT_TITLE_RES_ID, exchangeCompactSpinnerDTO);
     }
     //</editor-fold>
 

@@ -72,17 +72,15 @@ public class FXMainPositionListFragment extends BasePurchaseManagerFragment
         fxPortfolioId = getMainFXPortfolioId(getArguments());
     }
 
-
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.tabbed_position_fragment, container, false);
-        ButterKnife.inject(this, view);
-        initViews();
-        return view;
+        return inflater.inflate(R.layout.tabbed_position_fragment, container, false);
     }
 
-    private void initViews()
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
         tabViewPager.setAdapter(new TabbedPositionPageAdapter(getChildFragmentManager()));
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));

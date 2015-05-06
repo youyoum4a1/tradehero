@@ -66,7 +66,12 @@ public class FXMainFragment extends BuySellFragment
     @RouteProperty("exchange") String exchange;
     @RouteProperty("symbol") String symbol;
 
-    private static int getCloseAttribute(@NonNull Bundle args)
+    public static void putCloseAttribute(@NonNull Bundle args, int units)
+    {
+        args.putInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, units);
+    }
+
+    private int getCloseAttribute(@NonNull Bundle args)
     {
         return args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
     }

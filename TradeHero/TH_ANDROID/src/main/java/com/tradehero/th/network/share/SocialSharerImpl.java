@@ -8,6 +8,7 @@ import android.util.Pair;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -17,6 +18,7 @@ import com.tradehero.th.network.share.dto.SharedSuccessful;
 import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.wxapi.WXEntryActivity;
+import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
@@ -50,40 +52,55 @@ public class SocialSharerImpl implements SocialSharer
         return userProfileCache.getOne(currentUserId.toUserBaseKey())
                 .flatMap(new Func1<Pair<UserBaseKey, UserProfileDTO>, Observable<? extends SocialShareResult>>()
                 {
-                    @Override public Observable<? extends SocialShareResult> call(Pair<UserBaseKey, UserProfileDTO> pair)
+                    @Override public Observable<? extends SocialShareResult> call(final Pair<UserBaseKey, UserProfileDTO> pair)
                     {
-                        SocialShareVerifier.CanShareType shareType = socialShareVerifier.canShare(pair.second, shareFormDTO);
-                        switch (shareType)
-                        {
-                            case TRY_AND_SEE:
-                            case YES:
-                                if (shareFormDTO instanceof WeChatDTO)
+                        return socialShareVerifier.canShare(pair.second, shareFormDTO)
+                                .flatMap(new Func1<SocialShareVerifier.CanShareType, Observable<SocialShareResult>>()
                                 {
-                                    activity.startActivity(SocialSharerImpl.this.createWeChatIntent(activity, (WeChatDTO) shareFormDTO));
-                                    return Observable.just((SocialShareResult) new SharedSuccessful(shareFormDTO, new SocialShareResultDTO()
+                                    @Override public Observable<SocialShareResult> call(SocialShareVerifier.CanShareType shareType)
                                     {
-                                    })); // TODO perhaps wait for a return
-                                }
-                                return socialShareServiceWrapper.shareRx(shareFormDTO)
-                                        .map(new Func1<SocialShareResultDTO, SocialShareResult>()
+                                        switch (shareType)
                                         {
-                                            @Override public SocialShareResult call(SocialShareResultDTO result)
-                                            {
-                                                return new SharedSuccessful(shareFormDTO, result);
-                                            }
-                                        });
+                                            case TRY_AND_SEE:
+                                            case YES:
+                                                if (shareFormDTO instanceof WeChatDTO)
+                                                {
+                                                    activity.startActivity(
+                                                            SocialSharerImpl.this.createWeChatIntent(activity, (WeChatDTO) shareFormDTO));
+                                                    return Observable.just(
+                                                            (SocialShareResult) new SharedSuccessful(shareFormDTO, new SocialShareResultDTO()
+                                                            {
+                                                            })); // TODO perhaps wait for a return
+                                                }
+                                                return socialShareServiceWrapper.shareRx(shareFormDTO)
+                                                        .map(new Func1<SocialShareResultDTO, SocialShareResult>()
+                                                        {
+                                                            @Override public SocialShareResult call(SocialShareResultDTO result)
+                                                            {
+                                                                return new SharedSuccessful(shareFormDTO, result);
+                                                            }
+                                                        });
 
-                            case NO:
-                                return Observable.error(new CannotShareException("Cannot share this"));
+                                            case NO:
+                                                return Observable.error(new CannotShareException("Cannot share this"));
 
-                            case NEED_AUTH:
-                                return Observable.just((SocialShareResult) new ConnectRequired(
-                                        shareFormDTO,
-                                        socialShareVerifier.getNeedAuthSocialNetworks(
-                                                pair.second,
-                                                shareFormDTO)));
-                        }
-                        return Observable.error(new IllegalArgumentException("Unhandled ShareType." + shareType));
+                                            case NEED_AUTH:
+                                                return socialShareVerifier.getNeedAuthSocialNetworks(
+                                                        pair.second,
+                                                        shareFormDTO)
+                                                        .map(new Func1<List<SocialNetworkEnum>, SocialShareResult>()
+                                                        {
+                                                            @Override public SocialShareResult call(List<SocialNetworkEnum> socialNetworkEnums)
+                                                            {
+                                                                return new ConnectRequired(
+                                                                        shareFormDTO,
+                                                                        socialNetworkEnums);
+                                                            }
+                                                        });
+                                        }
+                                        return Observable.error(new IllegalArgumentException("Unhandled ShareType." + shareType));
+                                    }
+                                });
                     }
                 });
     }

@@ -37,6 +37,8 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
     private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = TabbedPositionListFragment.class.getName() + ".showPositionDtoKey";
     private static final String BUNDLE_KEY_SHOWN_USER_ID_BUNDLE = TabbedPositionListFragment.class.getName() + ".userBaseKey";
     private static final String BUNDLE_KEY_IS_FX = TabbedPositionListFragment.class.getName() + "isFX";
+    private static final String BUNDLE_KEY_POSITION_TYPE = TabbedPositionListFragment.class.getName() + "position.type";
+
     private static final String BUNDLE_KEY_PROVIDER_ID = TabbedPositionListFragment.class + ".providerId";
     private static final boolean DEFAULT_IS_FX = false;
     private static final String LEADERBOARD_DEF_TIME_RESTRICTED = "LEADERBOARD_DEF_TIME_RESTRICTED";
@@ -57,6 +59,8 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
     boolean isFX;
 
     ProviderId providerId;
+
+    private int selectedTabIndex;
 
     public enum TabType
     {
@@ -104,6 +108,16 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
         args.putBoolean(BUNDLE_KEY_IS_FX, assetClass == AssetClass.FX);
     }
 
+    public static void putPositionType(@NonNull Bundle args, String positionType)
+    {
+        args.putString(BUNDLE_KEY_POSITION_TYPE, positionType);
+    }
+
+    private String getPositionType(@NonNull Bundle args)
+    {
+        return args.getString(BUNDLE_KEY_POSITION_TYPE, TabType.LONG.name());
+    }
+
     private boolean isFX(@NonNull Bundle args)
     {
         return args.getBoolean(BUNDLE_KEY_IS_FX, DEFAULT_IS_FX);
@@ -144,7 +158,7 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
         return args.getBoolean(LEADERBOARD_DEF_TIME_RESTRICTED, DEFAULT_IS_TIME_RESTRICTED);
     }
 
-    public static void putLeaderboardPeriodStartString(@NonNull Bundle args,@NonNull String periodStartString)
+    public static void putLeaderboardPeriodStartString(@NonNull Bundle args, @NonNull String periodStartString)
     {
         args.putString(LEADERBOARD_PERIOD_START_STRING, periodStartString);
     }
@@ -177,6 +191,18 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
         }
         isFX = isFX(args);
         providerId = getProviderId(args);
+        if (isFX)
+        {
+            String type = getPositionType(args);
+            try
+            {
+                selectedTabIndex = TabType.valueOf(type).ordinal();
+            }
+            catch (Exception e)
+            {
+                selectedTabIndex = 0;
+            }
+        }
     }
 
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -194,6 +220,10 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabStrip.setDistributeEvenly(true);
         pagerSlidingTabStrip.setViewPager(tabViewPager);
+        if (isFX)
+        {
+            tabViewPager.setCurrentItem(selectedTabIndex);
+        }
     }
 
     private class TabbedPositionPageAdapter extends FragmentPagerAdapter

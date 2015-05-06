@@ -36,16 +36,17 @@ public class TimelineDiscussionFragment extends AbstractDiscussionFragment
         setActionBarTitle(R.string.discussion);
     }
 
-    @Override public void onResume()
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
-        super.onResume();
+        super.onViewCreated(view, savedInstanceState);
         fragmentElements.getMovableBottom().animateHide();
+        postCommentView.animate().translationYBy(fragmentElements.getMovableBottom().getHeight()).start();
     }
 
-    @Override public void onPause()
+    @Override public void onDestroyView()
     {
-        super.onPause();
         fragmentElements.getMovableBottom().animateShow();
+        super.onDestroyView();
     }
 
     @NonNull @Override protected DiscussionSetAdapter createDiscussionListAdapter()

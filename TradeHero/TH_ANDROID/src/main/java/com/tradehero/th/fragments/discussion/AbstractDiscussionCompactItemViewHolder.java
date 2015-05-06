@@ -62,7 +62,6 @@ public class AbstractDiscussionCompactItemViewHolder
     @InjectView(R.id.discussion_translate_notice) @Optional protected TextView translateNotice;
     @InjectView(R.id.discussion_translate_notice_image) @Optional protected ImageView translateNoticeImage;
 
-    @Inject protected PrettyTime prettyTime;
     @Inject protected SocialShareTranslationHelper socialShareHelper;
 
     protected boolean downVote;

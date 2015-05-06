@@ -72,6 +72,16 @@
     <item name="android:textColor">@color/text_primary_inverse</item>
   </style>
 
+  <style name="TH.FX_CLOSE"
+      parent="TH.Btn_Buy_Sell">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_weight">0</item>
+    <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
+    <item name="android:minWidth">@dimen/size_10</item>
+    <item name="android:background">@drawable/red_rounded_button_selector</item>
+  </style>
+
   <style name="TH.Btn_Time_Span"
       parent="TH.Btn_Bar_Base">
     <item name="android:textColor">@color/text_secondary</item>
@@ -122,7 +132,7 @@
 
   <style name="TradeHero.Dashboard.ActionBar.TabText"
       parent="@android:style/Widget.Holo.Light.ActionBar.TabText">
-    <item name="android:textColor">?android:textColorPrimaryInverse</item>
+    <item name="android:textColor">@color/tab_text_selector</item>
     <item name="android:textAllCaps">true</item>
     <item name="android:textSize">@dimen/text_caption</item>
     <item name="android:textStyle">bold</item>
@@ -578,9 +588,11 @@
 
 
   <style name="TH.ContentPartnersLogo">
-    <item name="android:minWidth">80dp</item>
+    <item name="android:minWidth">@dimen/size_8</item>
+    <item name="android:minHeight">@dimen/size_4</item>
     <item name="android:scaleType">fitCenter</item>
-    <item name="android:padding">5dp</item>
+    <item name="android:padding">@dimen/content_partner_padding</item>
+    <item name="android:alpha">1.0</item>
   </style>
 
   <style name="TH.ResideMenuSmall">

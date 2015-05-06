@@ -42,8 +42,6 @@ public class PreferenceModule
     private static final String PREF_SHOW_ASK_FOR_INVITE_FLAG = "PREF_SHOW_ASK_FOR_INVITE_FLAG";
     private static final String PREF_SHOW_ASK_FOR_INVITE_TIMES_FLAG = "PREF_SHOW_ASK_FOR_INVITE_TIMES_FLAG";
     private static final String PREF_SHOW_MARKET_CLOSED = "PREF_SHOW_MARKET_CLOSED";
-    private static final String PREF_SHOW_VIRAL_GAME = "PREF_SHOW_VIRAL_GAME";
-    private static final String PREF_SHOW_VIRAL_GAME_TIMES = "PREF_SHOW_VIRAL_GAME_TIMES";
     private static final String PREF_PREFERRED_EXCHANGE_MARKET = "PREF_PREFERRED_EXCHANGE_MARKET";
     private static final String PREF_IS_VISITED_REFERRAL_CODE_SETTINGS_FLAG = "PREF_IS_VISITED_REFERRAL_CODE_SETTINGS_FLAG";
     private static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SAVED_SOCIAL_SHARE_FLAG";
@@ -135,19 +133,9 @@ public class PreferenceModule
         return new TimingIntervalPreference(sharedPreferences, PREF_SHOW_MARKET_CLOSED, 30 * TimingIntervalPreference.MINUTE);
     }
 
-    @Provides @Singleton @ShowViralGameDialog TimingIntervalPreference provideShowViralGameDialogTimingPreference(@ForUser SharedPreferences sharedPreferences)
-    {
-        return new TimingIntervalPreference(sharedPreferences, PREF_SHOW_VIRAL_GAME, 5 * TimingIntervalPreference.MINUTE);
-    }
-
     @Provides @Singleton @PreferredExchangeMarket ExchangeMarketPreference providePreferredExchangeMarketPreference(@ForUser SharedPreferences sharedPreferences)
     {
         return new ExchangeMarketPreference(sharedPreferences, PREF_PREFERRED_EXCHANGE_MARKET);
-    }
-
-    @Provides @Singleton @AutoShowViralGameDialogTimes IntPreference provideAutoShowViralGameDialogTimes(@ForUser SharedPreferences sharedPreferences)
-    {
-        return new IntPreference(sharedPreferences, PREF_SHOW_VIRAL_GAME_TIMES, 0);
     }
 
     @Provides @Singleton @IsVisitedReferralCodeSettings BooleanPreference provideIsVisitedReferralCodeSettingsPreference(
@@ -166,9 +154,10 @@ public class PreferenceModule
         return new BooleanPreference(sharedPreferences, PREF_IS_FX_SHOWN_FLAG, false);
     }
 
-    @Provides @AuthHeader String provideAuthenticationHeader(final AccountManager accountManager)
+    @Provides @AuthHeader String provideAuthenticationHeader(final Context context)
     {
         Account[] accounts = null;
+        AccountManager accountManager = AccountManager.get(context);
         try
         {
             accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);

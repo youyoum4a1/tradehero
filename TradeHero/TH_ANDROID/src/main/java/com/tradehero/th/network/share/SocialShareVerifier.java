@@ -1,5 +1,6 @@
 package com.tradehero.th.network.share;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
@@ -7,10 +8,13 @@ import com.tradehero.th.api.social.HasSocialNetworkEnum;
 import com.tradehero.th.api.social.HasSocialNetworkEnumList;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import java.util.ArrayList;
+import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Provider;
+import rx.Observable;
+import rx.functions.Func1;
 
 public class SocialShareVerifier
 {
@@ -22,20 +26,27 @@ public class SocialShareVerifier
         TRY_AND_SEE,
     }
 
+    @NonNull private final FacebookAuthenticationProvider facebookAuthenticationProvider;
+    @NonNull private final Provider<Activity> activityProvider;
+
     //<editor-fold desc="Constructors">
-    @Inject public SocialShareVerifier()
+    @Inject public SocialShareVerifier(
+            @NonNull FacebookAuthenticationProvider facebookAuthenticationProvider,
+            @NonNull Provider<Activity> activityProvider)
     {
         super();
+        this.facebookAuthenticationProvider = facebookAuthenticationProvider;
+        this.activityProvider = activityProvider;
     }
     //</editor-fold>
 
-    @NonNull public CanShareType canShare(
+    @NonNull public Observable<CanShareType> canShare(
             @NonNull UserProfileCompactDTO currentUserProfile,
             @NonNull SocialShareFormDTO toShare)
     {
         if (toShare instanceof WeChatDTO)
         {
-            return CanShareType.TRY_AND_SEE;
+            return Observable.just(CanShareType.TRY_AND_SEE);
         }
         if (toShare instanceof HasSocialNetworkEnum)
         {
@@ -48,64 +59,88 @@ public class SocialShareVerifier
         throw new IllegalStateException("Unhandled type " + toShare.getClass().getName());
     }
 
-    @NonNull protected CanShareType canShare(
+    @NonNull protected Observable<CanShareType> canShare(
             @NonNull UserProfileCompactDTO currentUserProfile,
             @NonNull HasSocialNetworkEnum hasSocialNetworkEnum)
     {
         SocialNetworkEnum socialNetwork = hasSocialNetworkEnum.getSocialNetworkEnum();
         if (socialNetwork == null)
         {
-            return CanShareType.NO;
+            return Observable.just(CanShareType.NO);
         }
         return canShare(currentUserProfile, socialNetwork);
     }
 
-    @NonNull protected CanShareType canShare(
-            @NonNull UserProfileCompactDTO currentUserProfile,
+    @NonNull protected Observable<CanShareType> canShare(
+            @NonNull final UserProfileCompactDTO currentUserProfile,
             @NonNull HasSocialNetworkEnumList hasSocialNetworkEnumList)
     {
-        CanShareType canShare;
-        for (SocialNetworkEnum socialNetworkEnum : hasSocialNetworkEnumList.getSocialNetworkEnumList())
-        {
-            canShare = canShare(currentUserProfile, socialNetworkEnum);
-            if (canShare != CanShareType.YES)
-            {
-                return canShare;
-            }
-        }
-        return CanShareType.YES;
+        return Observable.from(hasSocialNetworkEnumList.getSocialNetworkEnumList())
+                .flatMap(new Func1<SocialNetworkEnum, Observable<CanShareType>>()
+                {
+                    @Override public Observable<CanShareType> call(SocialNetworkEnum socialNetworkEnum)
+                    {
+                        return canShare(currentUserProfile, socialNetworkEnum);
+                    }
+                })
+                .toList()
+                .map(new Func1<List<CanShareType>, CanShareType>()
+                {
+                    @Override public CanShareType call(List<CanShareType> canShareTypes)
+                    {
+                        for (CanShareType canShare : canShareTypes)
+                        {
+                            if (canShare != CanShareType.YES)
+                            {
+                                return canShare;
+                            }
+                        }
+                        return CanShareType.YES;
+                    }
+                });
     }
 
-    @NonNull protected CanShareType canShare(
+    @NonNull protected Observable<CanShareType> canShare(
             @NonNull UserProfileCompactDTO currentUserProfile,
             @NonNull SocialNetworkEnum socialNetworkEnum)
     {
         switch (socialNetworkEnum)
         {
             case FB:
-                return currentUserProfile.fbLinked ? CanShareType.YES : CanShareType.NEED_AUTH;
+                if (!currentUserProfile.fbLinked)
+                {
+                    return Observable.just(CanShareType.NEED_AUTH);
+                }
+                return facebookAuthenticationProvider.canShare(activityProvider.get())
+                        .map(new Func1<Boolean, CanShareType>()
+                        {
+                            @Override public CanShareType call(Boolean aBoolean)
+                            {
+                                return aBoolean ? CanShareType.YES : CanShareType.NEED_AUTH;
+                            }
+                        });
 
             case LN:
-                return currentUserProfile.liLinked ? CanShareType.YES : CanShareType.NEED_AUTH;
+                return Observable.just(currentUserProfile.liLinked ? CanShareType.YES : CanShareType.NEED_AUTH);
 
             case TW:
-                return currentUserProfile.twLinked ? CanShareType.YES : CanShareType.NEED_AUTH;
+                return Observable.just(currentUserProfile.twLinked ? CanShareType.YES : CanShareType.NEED_AUTH);
 
             case WECHAT:
-                throw new IllegalStateException("WeChat is not shared like this");
+                return Observable.error(new IllegalStateException("WeChat is not shared like this"));
 
             case WB:
-                return currentUserProfile.wbLinked ? CanShareType.YES : CanShareType.NEED_AUTH;
+                return Observable.just(currentUserProfile.wbLinked ? CanShareType.YES : CanShareType.NEED_AUTH);
 
             case TH:
-                throw new IllegalStateException("There is no sharing to TH");
+                return Observable.error(new IllegalStateException("There is no sharing to TH"));
 
             default:
-                throw new IllegalArgumentException("Unhandled SocialNetworkEnum." + socialNetworkEnum)    ;
+                return Observable.error(new IllegalArgumentException("Unhandled SocialNetworkEnum." + socialNetworkEnum));
         }
     }
 
-    @NonNull public List<SocialNetworkEnum> getNeedAuthSocialNetworks(
+    @NonNull public Observable<List<SocialNetworkEnum>> getNeedAuthSocialNetworks(
             @NonNull UserProfileCompactDTO currentUserProfile,
             @NonNull SocialShareFormDTO toShare)
     {
@@ -121,21 +156,32 @@ public class SocialShareVerifier
                     currentUserProfile,
                     ((HasSocialNetworkEnumList) toShare).getSocialNetworkEnumList());
         }
-        throw new IllegalStateException("Unhandled type " + toShare.getClass().getName());
+        return Observable.error(new IllegalStateException("Unhandled type " + toShare.getClass().getName()));
     }
 
-    @NonNull public List<SocialNetworkEnum> getNeedAuthSocialNetworks(
-            @NonNull UserProfileCompactDTO currentUserProfile,
+    @NonNull public Observable<List<SocialNetworkEnum>> getNeedAuthSocialNetworks(
+            @NonNull final UserProfileCompactDTO currentUserProfile,
             @NonNull List<SocialNetworkEnum> candidates)
     {
-        List<SocialNetworkEnum> needAuth = new ArrayList<>();
-        for (SocialNetworkEnum candidate : candidates)
-        {
-            if (canShare(currentUserProfile, candidate).equals(CanShareType.NEED_AUTH))
-            {
-                needAuth.add(candidate);
-            }
-        }
-        return needAuth;
+        return Observable.from(candidates)
+                .flatMap(new Func1<SocialNetworkEnum, Observable<SocialNetworkEnum>>()
+                {
+                    @Override public Observable<SocialNetworkEnum> call(final SocialNetworkEnum candidate)
+                    {
+                        return canShare(currentUserProfile, candidate)
+                                .flatMap(new Func1<CanShareType, Observable<SocialNetworkEnum>>()
+                                {
+                                    @Override public Observable<SocialNetworkEnum> call(CanShareType canShare)
+                                    {
+                                        if (canShare.equals(CanShareType.NEED_AUTH))
+                                        {
+                                            return Observable.just(candidate);
+                                        }
+                                        return Observable.empty();
+                                    }
+                                });
+                    }
+                })
+                .toList();
     }
 }

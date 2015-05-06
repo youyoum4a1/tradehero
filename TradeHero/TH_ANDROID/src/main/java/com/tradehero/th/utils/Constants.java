@@ -12,7 +12,7 @@ public class Constants
 
     public static final boolean DOGFOOD_BUILD = false;
 
-    public static final boolean PICASSO_DEBUG = !RELEASE;
+    public static final boolean PICASSO_DEBUG = DOGFOOD_BUILD;
 
     public static final int COMMON_ITEM_PER_PAGE = RELEASE ? 42 : 20;
 

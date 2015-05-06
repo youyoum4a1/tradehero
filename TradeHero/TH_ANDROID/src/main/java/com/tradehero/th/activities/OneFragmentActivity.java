@@ -30,6 +30,7 @@ import javax.inject.Singleton;
 import rx.functions.Action1;
 
 abstract public class OneFragmentActivity extends BaseActivity
+        implements AchievementAcceptor
 {
     @Inject protected THRouter thRouter;
     @Inject Set<ActivityResultRequester> activityResultRequesters;
@@ -118,6 +119,11 @@ abstract public class OneFragmentActivity extends BaseActivity
                 requester.onActivityResult(requestCode, resultCode, data);
             }
         });
+        RouteParams routeParams = getRouteParams(data);
+        if (routeParams != null)
+        {
+            thRouter.open(routeParams.deepLink, routeParams.extras, this);
+        }
     }
 
     @Module(

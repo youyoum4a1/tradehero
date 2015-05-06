@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.TabHost;
@@ -68,10 +66,8 @@ import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
-import com.tradehero.th.fragments.games.GameWebViewFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
-import com.tradehero.th.fragments.onboarding.OnBoardNewDialogFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardingBroadcastSignal;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
@@ -225,7 +221,7 @@ public class DashboardActivity extends BaseActivity
         }
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
-        pushNotificationManager.get().enablePush();
+        //pushNotificationManager.get().enablePush();
 
         initBroadcastReceivers();
 
@@ -389,7 +385,7 @@ public class DashboardActivity extends BaseActivity
                             @Override public void call(Intent intent)
                             {
                                 isOnboardShown.set(true);
-                                OnBoardNewDialogFragment.showOnBoardDialog(DashboardActivity.this.getSupportFragmentManager());
+                                navigator.launchActivity(OnBoardActivity.class);
                             }
                         },
                         new Action1<Throwable>()
@@ -723,7 +719,6 @@ public class DashboardActivity extends BaseActivity
                     HomeFragment.class,
                     ProviderVideoListFragment.class,
                     WebViewFragment.class,
-                    GameWebViewFragment.class,
                     DiscoveryMainFragment.class,
                     FacebookShareActivity.class
 

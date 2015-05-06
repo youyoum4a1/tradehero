@@ -8,25 +8,25 @@
       android:id="@+id/title"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_centerVertical="true"
-      android:layout_alignParentLeft="true"
-      android:layout_marginLeft="@dimen/margin_small" android:layout_weight="0"/>
+      android:layout_gravity="center_vertical"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_weight="0"/>
 
   <ImageView android:id="@+id/gain_indicator"
       android:layout_width="@dimen/size_1"
       android:layout_height="@dimen/size_1"
-      android:layout_centerVertical="true"
       android:layout_marginRight="@dimen/margin_small"
       android:layout_marginEnd="@dimen/margin_small"
       android:layout_weight="0"
+      android:layout_gravity="center_vertical"
       android:src="@drawable/indicator_down"/>
 
   <ImageView
       android:id="@+id/stock_logo"
       android:layout_width="@dimen/medium_image_w_h"
       android:layout_height="@dimen/medium_image_w_h"
+      android:layout_gravity="center_vertical"
       android:scaleType="fitCenter"
-      android:layout_centerVertical="true"
       android:contentDescription="@null"
       tools:src="@drawable/superman_facebook"
       android:layout_weight="0"
@@ -38,7 +38,7 @@
   <RelativeLayout
       android:id="@+id/first_part"
       android:layout_width="0dp"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
       android:layout_weight="1"
       android:layout_marginLeft="@dimen/margin_small"
       android:layout_marginRight="@dimen/margin_small"
@@ -48,6 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_centerVertical="true"
         >
 
       <TextView
@@ -86,12 +87,13 @@
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:layout_weight="0"
-      android:layout_marginRight="@dimen/margin_small"
-      android:layout_marginEnd="@dimen/margin_small">
+      android:layout_marginRight="4dp"
+      android:layout_marginEnd="4dp">
   <LinearLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:gravity="right|end"
+      android:layout_centerVertical="true"
       android:orientation="vertical">
     <TextView
         android:id="@+id/position_percentage"
@@ -100,7 +102,7 @@
         android:maxLines="1"
         style="@style/TH.UserROI"
         tools:text="5.8%"
-        tools:visibility="visible"
+        tools:visibility="gone"
         />
     <LinearLayout
         android:id="@+id/last_price_container"
@@ -108,6 +110,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="end"
+        tools:visibility="gone"
         >
 
       <TextView
@@ -136,8 +139,18 @@
         android:id="@+id/position_unrealised_pl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         style="@style/TH.UserROI"
         tools:text="-US$ 0.2465"
+        />
+    <TextView
+        android:id="@+id/btn_position_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        style="@style/TH.FX_CLOSE"
+        android:text="@string/security_close"
         />
   </LinearLayout>
 

@@ -22,7 +22,7 @@ public enum MarketRegion
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @NonNull @JsonCreator static MarketRegion create(int candidateCode)
+    @NonNull @JsonCreator public static MarketRegion create(int candidateCode)
     {
         for (MarketRegion candidate : values())
         {

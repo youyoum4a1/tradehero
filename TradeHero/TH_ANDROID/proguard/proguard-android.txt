@@ -187,6 +187,7 @@
 # Keep fields that are called by reflection
 -keep public class * extends com.tradehero.common.persistence.DTO {
   public <fields>;
+  protected <fields>;
 }
 
 # Keep constructors that are called by reflection

@@ -1,15 +1,12 @@
 package com.tradehero.th.billing;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.annotation.DrawableRes;
 import com.tradehero.common.billing.BillingConstants;
-import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
-import com.tradehero.th.api.alert.AlertPlanDTO;
 
-public abstract class SecurityAlertKnowledge
+public class SecurityAlertKnowledge
 {
-    public int getStockAlertIcon(int count)
+    @DrawableRes public static int getStockAlertIcon(int count)
     {
         if (count == 0)
         {
@@ -36,8 +33,4 @@ public abstract class SecurityAlertKnowledge
             throw new IllegalArgumentException("Unexpected count " + count);
         }
     }
-
-    @NonNull public abstract ProductIdentifier createFrom(@NonNull AlertPlanDTO alertPlanDTO);
-
-    @Nullable public abstract ProductIdentifier getServerEquivalentSKU(@NonNull ProductIdentifier localProductId);
 }

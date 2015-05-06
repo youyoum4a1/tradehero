@@ -2,11 +2,9 @@ package com.tradehero.th.billing.samsung.purchase;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.purchase.BaseSamsungPurchaserHolderRx;
-import com.tradehero.common.persistence.prefs.StringSetPreference;
-import com.tradehero.th.billing.samsung.ForSamsungBillingMode;
-import com.tradehero.th.billing.samsung.ProcessingPurchase;
 import com.tradehero.th.billing.samsung.THSamsungOrderId;
 import com.tradehero.th.billing.samsung.THSamsungPurchase;
 import com.tradehero.th.billing.samsung.THSamsungPurchaseOrder;
@@ -22,22 +20,19 @@ public class THBaseSamsungPurchaserHolderRx
         implements THSamsungPurchaserHolderRx
 {
     @NonNull protected final Context context;
-    protected final int mode;
+    @SamsungBillingMode protected final int mode;
     @NonNull protected final THSamsungExceptionFactory samsungExceptionFactory;
-    @NonNull protected final StringSetPreference processingPurchaseStringSet;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseSamsungPurchaserHolderRx(
             @NonNull Context context,
-            @ForSamsungBillingMode int mode,
-            @NonNull THSamsungExceptionFactory samsungExceptionFactory,
-            @NonNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
+            @SamsungBillingMode int mode,
+            @NonNull THSamsungExceptionFactory samsungExceptionFactory)
     {
         super();
         this.context = context;
         this.mode = mode;
         this.samsungExceptionFactory = samsungExceptionFactory;
-        this.processingPurchaseStringSet = processingPurchaseStringSet;
     }
     //</editor-fold>
 
@@ -50,7 +45,6 @@ public class THBaseSamsungPurchaserHolderRx
                 context,
                 mode,
                 purchaseOrder,
-                true,
-                processingPurchaseStringSet);
+                true);
     }
 }

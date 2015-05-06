@@ -1,42 +1,41 @@
 package com.tradehero.th.fragments.onboarding.last;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Gallery;
 import butterknife.ButterKnife;
-import butterknife.InjectViews;
+import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.security.SecurityItemView;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.trending.TrendingMainFragment;
-import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.subjects.BehaviorSubject;
 
 public class OnBoardLastFragment extends BaseFragment
 {
-    @Inject SecurityCompactListCacheRx securityCompactListCache;
-
-    @InjectViews({R.id.stock_1, R.id.stock_2, R.id.stock_3}) SecurityItemView[] stocks;
-    @NonNull BehaviorSubject<Class<? extends DashboardFragment>> fragmentRequestedBehavior;
+    @Inject THRouter thRouter;
+    @InjectView(R.id.favorite_gallery) Gallery favoriteGallery;
     Observable<SecurityCompactDTOList> selectedSecuritiesObservable;
 
-    public OnBoardLastFragment()
+    private OnBoardFavoriteAdapter favoriteAdapter;
+
+    @Override public void onAttach(Activity activity)
     {
-        fragmentRequestedBehavior = BehaviorSubject.create();
+        super.onAttach(activity);
+        favoriteAdapter = new OnBoardFavoriteAdapter(activity);
     }
 
     @SuppressLint("InflateParams")
@@ -49,6 +48,7 @@ public class OnBoardLastFragment extends BaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+        favoriteGallery.setAdapter(favoriteAdapter);
     }
 
     @Override public void onStart()
@@ -63,12 +63,13 @@ public class OnBoardLastFragment extends BaseFragment
         super.onDestroyView();
     }
 
-    @NonNull public Observable<Class<? extends DashboardFragment>> getFragmentRequestedObservable()
+    @Override public void onDetach()
     {
-        return fragmentRequestedBehavior.asObservable();
+        favoriteAdapter = null;
+        super.onDetach();
     }
 
-    public void setSelectedSecuritiessObservable(@NonNull Observable<SecurityCompactDTOList> selectedSecuritiesObservable)
+    public void setSelectedSecuritiesObservable(@NonNull Observable<SecurityCompactDTOList> selectedSecuritiesObservable)
     {
         this.selectedSecuritiesObservable = selectedSecuritiesObservable;
     }
@@ -84,10 +85,12 @@ public class OnBoardLastFragment extends BaseFragment
                         {
                             @Override public void call(SecurityCompactDTOList list)
                             {
-                                for (int index = 0; index < Math.min(list.size(), stocks.length); index++)
+                                favoriteAdapter.clear();
+                                favoriteAdapter.appendTail(list);
+                                favoriteAdapter.notifyDataSetChanged();
+                                if (list.size() > 1)
                                 {
-                                    stocks[index].display(list.get(index));
-                                    stocks[index].setVisibility(View.VISIBLE);
+                                    favoriteGallery.setSelection(1);
                                 }
                             }
                         },
@@ -98,13 +101,14 @@ public class OnBoardLastFragment extends BaseFragment
     @OnClick(android.R.id.button1)
     protected void buySharesButtonClicked(View view)
     {
-        fragmentRequestedBehavior.onNext(TrendingMainFragment.class);
+        SecurityId id = favoriteAdapter.getItem(favoriteGallery.getSelectedItemPosition()).getSecurityId();
+        thRouter.open("stockSecurity/" +  id.getExchange() + "/" + id.getSecuritySymbol(), getActivity());
     }
 
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
     @OnClick(android.R.id.button2)
     protected void buySharesLaterButtonClicked(View view)
     {
-        fragmentRequestedBehavior.onNext(MeTimelineFragment.class);
+        thRouter.open("user/me", getActivity());
     }
 }

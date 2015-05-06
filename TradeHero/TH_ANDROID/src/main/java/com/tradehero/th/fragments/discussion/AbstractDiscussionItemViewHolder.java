@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.res.Resources;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
@@ -20,6 +22,7 @@ import com.tradehero.th.models.discussion.PlayerUserAction;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.models.discussion.UserDiscussionActionFactory;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.utils.ImageUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -34,8 +37,6 @@ public class AbstractDiscussionItemViewHolder
     @InjectView(R.id.discussion_stub_content) @Optional protected MarkdownTextView stubContent;
     @InjectView(R.id.discussion_user_picture) @Optional ImageView discussionUserPicture;
     @InjectView(R.id.user_profile_name) @Optional TextView userProfileName;
-
-    @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation discussionUserPictureTransformation;
 
     //<editor-fold desc="Constructors">
@@ -44,15 +45,6 @@ public class AbstractDiscussionItemViewHolder
         super();
     }
     //</editor-fold>
-
-    @Override public void onDetachedFromWindow()
-    {
-        if (discussionUserPicture != null)
-        {
-            picasso.cancelRequest(discussionUserPicture);
-        }
-        super.onDetachedFromWindow();
-    }
 
     @Override public void display(@NonNull AbstractDiscussionCompactItemViewHolder.DTO parentViewDto)
     {
@@ -72,10 +64,10 @@ public class AbstractDiscussionItemViewHolder
         }
         if (discussionUserPicture != null)
         {
-            picasso.cancelRequest(discussionUserPicture);
-            createUserPicassoRequest()
-                    .transform(discussionUserPictureTransformation)
-                    .into(discussionUserPicture);
+            ImageLoader.getInstance()
+                    .displayImage(getUserAvatarURL(),
+                            discussionUserPicture,
+                            ImageUtils.getAvatarImageLoaderOptions());
         }
         if (userProfileName != null)
         {
@@ -105,9 +97,9 @@ public class AbstractDiscussionItemViewHolder
                         }));
     }
 
-    @NonNull protected RequestCreator createUserPicassoRequest()
+    @NonNull protected String getUserAvatarURL()
     {
-        return picasso.load(R.drawable.superman_facebook);
+        return null;
     }
 
     @SuppressWarnings("UnusedDeclaration")

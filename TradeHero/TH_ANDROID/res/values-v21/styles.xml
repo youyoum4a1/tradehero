@@ -4,7 +4,6 @@
       parent="Base.TradeHero">
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowActionBarOverlay">false</item>
-    <item name="android:fitsSystemWindows">true</item>
     <item name="android:windowDrawsSystemBarBackgrounds">false</item>
   </style>
 </resources>

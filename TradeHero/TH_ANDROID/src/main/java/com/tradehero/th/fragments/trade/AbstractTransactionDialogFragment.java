@@ -1061,7 +1061,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private boolean canSetValue()
     {
-        return getPriceCcy() != null && getPriceCcy() > 0;
+        return (getPriceCcy() != null) && (getPriceCcy() > 0) && (mTransactionQuantity == 0);
     }
 
     protected void setPrice(double price)

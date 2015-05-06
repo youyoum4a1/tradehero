@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.facebook.FacebookPermissionsConstants;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionDefaultAudience;
@@ -14,10 +15,13 @@ import com.facebook.android.Facebook;
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.social.facebook.FacebookRequestOperator;
 import com.tradehero.common.social.facebook.SubscriberCallback;
+import com.tradehero.th.api.auth.AccessTokenForm;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.network.service.SocialLinker;
 import com.tradehero.th.network.share.SocialConstants;
+import com.tradehero.th.rx.ReplaceWith;
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -65,7 +69,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
 
         this.baseActivity = new WeakReference<>(null);
         this.activityCode = 32665;
-        this.permissions = permissions;
+        this.permissions = new ArrayList<>(permissions);
 
         this.applicationId = SocialConstants.FACEBOOK_APP_ID;
 
@@ -114,9 +118,14 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
 
     @Override public Observable<AuthData> createAuthDataObservable(Activity activity)
     {
+        return createAuthDataObservable(activity, permissions);
+    }
+
+    @NonNull public Observable<AuthData> createAuthDataObservable(Activity activity, @Nullable List<String> permissions)
+    {
         final Bundle parameters = new Bundle();
         parameters.putString("fields", "id");
-        return createSessionObservable(activity)
+        return createSessionObservable(activity, permissions)
                 .flatMap(new Func1<Session, Observable<? extends AuthData>>()
                 {
                     @Override public Observable<? extends AuthData> call(final Session session)
@@ -140,9 +149,42 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
                 });
     }
 
-    public Observable<Session> createSessionObservable(Activity activity)
+    @NonNull public Observable<Session> createSessionObservable(@NonNull Activity activity)
+    {
+        return createSessionObservable(activity, permissions);
+    }
+
+    @NonNull public Observable<Session> createSessionObservable(@NonNull Activity activity, @Nullable List<String> permissions)
     {
         return Observable.create(new FacebookAuthenticationSubscribe(activity, permissions));
+    }
+
+    @NonNull @Override public Observable<UserProfileDTO> socialLink(@NonNull Activity activity)
+    {
+        List<String> permissions = new ArrayList<>(this.permissions);
+        permissions.add(FacebookPermissionsConstants.PUBLISH_ACTIONS);
+        return logIn(activity)
+                .flatMap(new ReplaceWith<AuthData, Observable<AuthData>>(createAuthDataObservable(activity, permissions)))
+                .flatMap(new Func1<AuthData, Observable<? extends UserProfileDTO>>()
+                {
+                    @Override public Observable<? extends UserProfileDTO> call(AuthData authData)
+                    {
+                        return socialLinker.link(new AccessTokenForm(authData));
+                    }
+                });
+
+    }
+
+    @NonNull @Override public Observable<Boolean> canShare(@NonNull Activity activity)
+    {
+        return createSessionObservable(activity, permissions)
+                .map(new Func1<Session, Boolean>()
+                {
+                    @Override public Boolean call(Session session)
+                    {
+                        return session.getPermissions().contains(FacebookPermissionsConstants.PUBLISH_ACTIONS);
+                    }
+                });
     }
 
     @Override public void logout()

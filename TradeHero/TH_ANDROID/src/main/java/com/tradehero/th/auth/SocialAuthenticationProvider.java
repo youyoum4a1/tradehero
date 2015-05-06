@@ -49,6 +49,11 @@ public abstract class SocialAuthenticationProvider implements AuthenticationProv
         return cachedObservable;
     }
 
+    @NonNull public Observable<Boolean> canShare(@NonNull Activity activity)
+    {
+        return Observable.just(true);
+    }
+
     protected abstract Observable<AuthData> createAuthDataObservable(Activity activity);
 
     protected void clearCachedObservables()
@@ -56,8 +61,7 @@ public abstract class SocialAuthenticationProvider implements AuthenticationProv
         cachedObservables.clear();
     }
 
-    @NonNull public Observable<UserProfileDTO> socialLink(
-            @NonNull Activity activity)
+    @NonNull public Observable<UserProfileDTO> socialLink(@NonNull Activity activity)
     {
         return logIn(activity)
                 .flatMap(new Func1<AuthData, Observable<? extends UserProfileDTO>>()

@@ -5,11 +5,13 @@ import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
+import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungOrderId;
 import com.tradehero.common.billing.samsung.SamsungPurchase;
 import com.tradehero.common.billing.samsung.SamsungPurchaseOrder;
 import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.common.billing.samsung.rx.SamsungPaymentOperator;
+import com.tradehero.common.billing.samsung.rx.PurchaseQueryPackage;
+import com.tradehero.common.billing.samsung.rx.SamsungIapHelperFacade;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -18,11 +20,7 @@ abstract public class BaseSamsungPurchaserRx<
         SamsungPurchaseOrderType extends SamsungPurchaseOrder<SamsungSKUType>,
         SamsungOrderIdType extends SamsungOrderId,
         SamsungPurchaseType extends SamsungPurchase<SamsungSKUType, SamsungOrderIdType>>
-        extends BaseSamsungActorRx<PurchaseResult<
-        SamsungSKUType,
-        SamsungPurchaseOrderType,
-        SamsungOrderIdType,
-        SamsungPurchaseType>>
+        extends BaseSamsungActorRx
         implements SamsungPurchaserRx<
         SamsungSKUType,
         SamsungPurchaseOrderType,
@@ -36,7 +34,7 @@ abstract public class BaseSamsungPurchaserRx<
     public BaseSamsungPurchaserRx(
             int requestCode,
             @NonNull Context context,
-            int mode,
+            @SamsungBillingMode int mode,
             @NonNull SamsungPurchaseOrderType purchaseOrder,
             boolean showSucessDialog)
     {
@@ -58,8 +56,8 @@ abstract public class BaseSamsungPurchaserRx<
             SamsungPurchaseType>> get()
     {
         SamsungSKUType sku = purchaseOrder.getProductIdentifier();
-        return Observable.create(
-                new SamsungPaymentOperator(
+        return SamsungIapHelperFacade.getPurchase(
+                new PurchaseQueryPackage(
                         context,
                         mode,
                         sku.groupId,

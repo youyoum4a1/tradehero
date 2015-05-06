@@ -22,6 +22,7 @@ import javax.inject.Singleton;
                 FacebookShareActivity.class,
                 FriendsInvitationActivity.class,
                 HomeActivity.class,
+                OnBoardActivity.class,
                 PrivateDiscussionActivity.class,
                 SettingsActivity.class,
                 PopQuizActivity.class,

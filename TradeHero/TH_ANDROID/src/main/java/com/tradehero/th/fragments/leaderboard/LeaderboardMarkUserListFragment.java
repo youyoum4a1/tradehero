@@ -162,6 +162,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        super.onCreateOptionsMenu(menu, inflater);
         MenuItem item = menu.findItem(R.id.button_leaderboard_filter);
         displayFilterIcon(item);
     }

@@ -8,13 +8,13 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.billing.BaseBillingUtils;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
 import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCacheRx;
 import com.tradehero.th.fragments.billing.THSamsungSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THSamsungStoreProductDetailView;
-import com.tradehero.th.utils.ActivityUtil;
-import com.tradehero.th.utils.VersionUtils;
 import java.util.HashMap;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -29,18 +29,15 @@ public class THSamsungAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         THSamsungPurchase>
 {
     @NonNull protected final THSamsungPurchaseCacheRx thSamsungPurchaseCache;
-    @NonNull protected final SamsungStoreUtils samsungStoreUtils;
 
     //<editor-fold desc="Constructors">
     @Inject public THSamsungAlertDialogRxUtil(
+            @NonNull CurrentUserId currentUserId,
             @NonNull Analytics analytics,
-            @NonNull VersionUtils versionUtils,
-            @NonNull THSamsungPurchaseCacheRx thSamsungPurchaseCache,
-            @NonNull SamsungStoreUtils samsungStoreUtils)
+            @NonNull THSamsungPurchaseCacheRx thSamsungPurchaseCache)
     {
-        super(analytics, versionUtils);
+        super(currentUserId, analytics);
         this.thSamsungPurchaseCache = thSamsungPurchaseCache;
-        this.samsungStoreUtils = samsungStoreUtils;
     }
     //</editor-fold>
 
@@ -67,7 +64,7 @@ public class THSamsungAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     public void sendSupportEmailRestoreFailed(final Context context, Exception exception)
     {
         context.startActivity(Intent.createChooser(
-                samsungStoreUtils.getSupportPurchaseRestoreEmailIntent(context, exception),
+                BaseBillingUtils.getSupportPurchaseRestoreEmailIntent(context, currentUserId, exception),
                 context.getString(R.string.iap_send_support_email_chooser_title)));
     }
 }

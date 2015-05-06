@@ -62,6 +62,21 @@ public class PositionView extends LinearLayout
         }
     }
 
+    public void showCaret(boolean show)
+    {
+        if (topView != null)
+        {
+            if (show)
+            {
+                topView.showCaret();
+            }
+            else
+            {
+                topView.hideCaret();
+            }
+        }
+    }
+
     public static class DTO
     {
         @NonNull public final PositionPartialTopView.DTO topViewDTO;

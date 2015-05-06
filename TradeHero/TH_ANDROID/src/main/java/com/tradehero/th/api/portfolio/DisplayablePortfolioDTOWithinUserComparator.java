@@ -16,16 +16,8 @@ public class DisplayablePortfolioDTOWithinUserComparator implements Comparator<D
     }
     //</editor-fold>
 
-    @Override public int compare(DisplayablePortfolioDTO lhs, DisplayablePortfolioDTO rhs)
+    @Override public int compare(@NonNull DisplayablePortfolioDTO lhs, @NonNull DisplayablePortfolioDTO rhs)
     {
-        if (lhs == null)
-        {
-            return rhs == null ? 0 : 1;
-        }
-        else if (rhs == null)
-        {
-            return -1;
-        }
         if (lhs.portfolioDTO != null && rhs.portfolioDTO != null)
         {
             int portfolioComp = this.portfolioCompactDTODisplayComparator.compare(lhs.portfolioDTO, rhs.portfolioDTO);

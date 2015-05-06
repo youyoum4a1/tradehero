@@ -18,63 +18,26 @@ public class THSamsungPurchaseOrder
     @NonNull OwnedPortfolioId applicablePortfolioId;
     @Nullable protected UserBaseKey userToFollow;
 
-    //<editor-fold desc="Constructors">
     public THSamsungPurchaseOrder(
-            @NonNull String groupId,
-            @NonNull String itemId,
-            @NonNull OwnedPortfolioId applicablePortfolioId)
-    {
-        this(groupId, itemId, 1, applicablePortfolioId);
-    }
-
-    public THSamsungPurchaseOrder(
-            @NonNull String groupId,
-            @NonNull String itemId,
-            @NonNull OwnedPortfolioId applicablePortfolioId,
-            @Nullable UserBaseKey userToFollow)
-    {
-        this(groupId, itemId, 1, applicablePortfolioId, userToFollow);
-    }
-
-    public THSamsungPurchaseOrder(
-            @NonNull String groupId,
-            @NonNull String itemId,
-            int quantity,
-            @NonNull OwnedPortfolioId applicablePortfolioId)
-    {
-        this(new SamsungSKU(groupId, itemId), quantity, applicablePortfolioId);
-    }
-
-    public THSamsungPurchaseOrder(
-            @NonNull String groupId,
-            @NonNull String itemId,
-            int quantity,
-            @NonNull OwnedPortfolioId applicablePortfolioId,
-            @Nullable UserBaseKey userToFollow)
-    {
-        this(new SamsungSKU(groupId, itemId), quantity, applicablePortfolioId, userToFollow);
-    }
-
-    public THSamsungPurchaseOrder(
-            @NonNull SamsungSKU productIdentifier,
-            @NonNull OwnedPortfolioId applicablePortfolioId)
+            SamsungSKU productIdentifier,
+            OwnedPortfolioId applicablePortfolioId)
     {
         this(productIdentifier, 1, applicablePortfolioId);
     }
 
     public THSamsungPurchaseOrder(
-            @NonNull SamsungSKU productIdentifier,
+            SamsungSKU productIdentifier,
             int quantity,
-            @NonNull OwnedPortfolioId applicablePortfolioId)
+            OwnedPortfolioId applicablePortfolioId)
     {
         this(productIdentifier, quantity, applicablePortfolioId, null);
     }
 
     public THSamsungPurchaseOrder(
-            @NonNull SamsungSKU productIdentifier,
+            SamsungSKU productIdentifier,
             int quantity,
-            @NonNull OwnedPortfolioId applicablePortfolioId,
-            @Nullable UserBaseKey userToFollow)
+            OwnedPortfolioId applicablePortfolioId,
+            UserBaseKey userToFollow)
     {
         this.productIdentifier = productIdentifier;
         this.quantity = quantity;

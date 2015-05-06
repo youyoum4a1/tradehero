@@ -41,9 +41,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 public class StockSelectionScreenFragment extends BaseFragment
 {
+    private static final String BUNDLE_KEY_INITIAL_STOCKS = StockSelectionScreenFragment.class.getName() + ".initialStocks";
     private static final int MAX_SELECTABLE_SECURITIES = 10;
 
     @Inject SecurityCompactListCacheRx securityCompactListCache;
@@ -54,13 +56,44 @@ public class StockSelectionScreenFragment extends BaseFragment
     @NonNull Map<SecurityId, SecurityCompactDTO> knownStocks;
     @NonNull Set<SecurityId> selectedStocks;
     @NonNull BehaviorSubject<SecurityCompactDTOList> selectedStocksSubject;
+    @NonNull PublishSubject<Boolean> nextClickedSubject;
     Observable<ExchangeCompactSectorListDTO> selectedExchangesSectorsObservable;
+
+    public static void putInitialStocks(@NonNull Bundle args, @NonNull List<SecurityId> securityIds)
+    {
+        String[] ids = new String[securityIds.size() * 2];
+        for (int index = 0; index < securityIds.size(); index++)
+        {
+            ids[2 * index] = securityIds.get(index).getExchange();
+            ids[2 * index + 1] = securityIds.get(index).getSecuritySymbol();
+        }
+        args.putStringArray(BUNDLE_KEY_INITIAL_STOCKS, ids);
+    }
+
+    @NonNull private static List<SecurityId> getInitialStocks(@NonNull Bundle args)
+    {
+        List<SecurityId> initialStocks = new ArrayList<>();
+        String exchange;
+        String symbol;
+        if (args.containsKey(BUNDLE_KEY_INITIAL_STOCKS))
+        {
+            String[] values = args.getStringArray(BUNDLE_KEY_INITIAL_STOCKS);
+            for (int index = 0; index < values.length / 2; index++)
+            {
+                exchange = values[2 * index];
+                symbol = values[2 * index + 1];
+                initialStocks.add(new SecurityId(exchange, symbol));
+            }
+        }
+        return initialStocks;
+    }
 
     public StockSelectionScreenFragment()
     {
         knownStocks = new HashMap<>();
         selectedStocks = new HashSet<>();
         selectedStocksSubject = BehaviorSubject.create();
+        nextClickedSubject = PublishSubject.create();
     }
 
     @Override public void onAttach(Activity activity)
@@ -69,7 +102,13 @@ public class StockSelectionScreenFragment extends BaseFragment
         stockAdapter = new OnBoardEmptyOrItemAdapter<>(
                 activity,
                 R.layout.on_board_security_item_view,
-                R.layout.on_board_empty_security);
+                R.layout.on_board_empty_item);
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        selectedStocks.addAll(getInitialStocks(getArguments()));
     }
 
     @SuppressLint("InflateParams")
@@ -125,20 +164,37 @@ public class StockSelectionScreenFragment extends BaseFragment
                                 .map(new PairGetSecond<SecurityListType, SecurityCompactDTOList>());
                     }
                 }))
+                .map(new Func1<SecurityCompactDTOList, List<SelectableSecurityDTO>>()
+                {
+                    @Override public List<SelectableSecurityDTO> call(SecurityCompactDTOList stockList)
+                    {
+                        List<SelectableSecurityDTO> onBoardStocks = new ArrayList<>();
+                        Set<SecurityId> validIds = new HashSet<>();
+                        for (SecurityCompactDTO security : stockList)
+                        {
+                            knownStocks.put(security.getSecurityId(), security);
+                            onBoardStocks.add(new SelectableSecurityDTO(security, selectedStocks.contains(security.getSecurityId())));
+                            // Make sure we do not keep stale stock ids
+                            if (selectedStocks.contains(security.getSecurityId()))
+                            {
+                                validIds.add(security.getSecurityId());
+                            }
+                        }
+                        selectedStocks = validIds;
+                        return onBoardStocks;
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<SecurityCompactDTOList>()
+                        new Action1<List<SelectableSecurityDTO>>()
                         {
-                            @Override public void call(SecurityCompactDTOList stockList)
+                            @Override public void call(List<SelectableSecurityDTO> stockList)
                             {
-                                List<SelectableSecurityDTO> onBoardStocks = new ArrayList<>();
-                                for (SecurityCompactDTO security : stockList)
-                                {
-                                    knownStocks.put(security.getSecurityId(), security);
-                                    onBoardStocks.add(new SelectableSecurityDTO(security, false));
-                                }
+                                stockAdapter.setNotifyOnChange(false);
                                 stockAdapter.clear();
-                                stockAdapter.addAll(onBoardStocks);
+                                stockAdapter.addAll(stockList);
+                                stockAdapter.setNotifyOnChange(true);
+                                stockAdapter.notifyDataSetChanged();
                             }
                         },
                         new ToastAndLogOnErrorAction("Failed to load securities")));
@@ -166,6 +222,13 @@ public class StockSelectionScreenFragment extends BaseFragment
                 selectedStocks.remove(dto.value.getSecurityId());
             }
             stockAdapter.notifyDataSetChanged();
+
+            SecurityCompactDTOList selectedDTOs = new SecurityCompactDTOList();
+            for (SecurityId selected : selectedStocks)
+            {
+                selectedDTOs.add(knownStocks.get(selected));
+            }
+            selectedStocksSubject.onNext(selectedDTOs);
         }
         displayNextButton();
     }
@@ -179,16 +242,16 @@ public class StockSelectionScreenFragment extends BaseFragment
     @OnClick(android.R.id.button1)
     protected void onNextClicked(@SuppressWarnings("UnusedParameters") View view)
     {
-        SecurityCompactDTOList selectedDTOs = new SecurityCompactDTOList();
-        for (SecurityId selected : selectedStocks)
-        {
-            selectedDTOs.add(knownStocks.get(selected));
-        }
-        selectedStocksSubject.onNext(selectedDTOs);
+        nextClickedSubject.onNext(true);
     }
 
     @NonNull public Observable<SecurityCompactDTOList> getSelectedStocksObservable()
     {
         return selectedStocksSubject.asObservable();
+    }
+
+    @NonNull public Observable<Boolean> getNextClickedObservable()
+    {
+        return nextClickedSubject.asObservable();
     }
 }

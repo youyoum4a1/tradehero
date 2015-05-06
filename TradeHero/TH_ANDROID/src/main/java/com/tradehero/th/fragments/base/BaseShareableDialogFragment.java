@@ -145,9 +145,19 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
 
     private void registerWeChatButton()
     {
-        mBtnShareWeChat.setChecked(initialShareButtonState(SocialNetworkEnum.WB));
         unsubscribeWeChatButton();
-        weChatLinkingSubscription = AppObservable.bindFragment(this, ViewObservable.clicks(mBtnShareWeChat, false))
+        weChatLinkingSubscription = AppObservable.bindFragment(
+                this,
+                initialShareButtonState(SocialNetworkEnum.WECHAT)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .flatMap(new Func1<Boolean, Observable<OnClickEvent>>()
+                        {
+                            @Override public Observable<OnClickEvent> call(Boolean checked)
+                            {
+                                mBtnShareWeChat.setChecked(checked);
+                                return ViewObservable.clicks(mBtnShareWeChat, false);
+                            }
+                        }))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<OnClickEvent>()
@@ -175,29 +185,53 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
 
     private void registerSocialButtons()
     {
-        for (SocialLinkToggleButton toggleButton : socialLinkingButtons)
-        {
-            if (toggleButton != null)
-            {
-                toggleButton.setChecked(initialShareButtonState(toggleButton.getSocialNetworkEnum()));
-            }
-        }
         unsubscribeSocialLinkingButtons();
         socialLinkingSubscription = AppObservable.bindFragment(
                 this,
-                createCheckedLinkingObservable()
+                Observable.from(socialLinkingButtons) // For initial status
+                        .flatMap(new Func1<SocialLinkToggleButton, Observable<?>>()
+                        {
+                            @Override public Observable<?> call(final SocialLinkToggleButton toggleButton)
+                            {
+                                return initialShareButtonState(toggleButton.getSocialNetworkEnum())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .map(new Func1<Boolean, Boolean>()
+                                        {
+                                            @Override public Boolean call(Boolean checked)
+                                            {
+                                                toggleButton.setChecked(checked);
+                                                return checked;
+                                            }
+                                        });
+                            }
+                        })
+                        .toList()
+                        .flatMap(new Func1<List<Object>, Observable<SocialLinkToggleButton>>()
+                        {
+                            @Override public Observable<SocialLinkToggleButton> call(List<Object> objects)
+                            {
+                                return createCheckedLinkingObservable();
+                            }
+                        }) // For updates
                         .flatMap(new Func1<SocialLinkToggleButton, Observable<? extends Pair<SocialLinkToggleButton, UserProfileDTO>>>()
                         {
                             @Override public Observable<? extends Pair<SocialLinkToggleButton, UserProfileDTO>> call(
-                                    SocialLinkToggleButton socialLinkToggleButton)
+                                    final SocialLinkToggleButton socialLinkToggleButton)
                             {
                                 final SocialNetworkEnum socialNetwork = socialLinkToggleButton.getSocialNetworkEnum();
-                                Boolean socialLinked = BaseShareableDialogFragment.this.isSocialLinked(socialNetwork);
-                                if (socialLinked != null && socialLinked)
-                                {
-                                    return Observable.just(Pair.create(socialLinkToggleButton, userProfileDTO));
-                                }
-                                return BaseShareableDialogFragment.this.createSocialAuthObservable(socialLinkToggleButton, socialNetwork);
+                                return isSocialLinked(socialNetwork)
+                                        .flatMap(new Func1<Boolean, Observable<Pair<SocialLinkToggleButton, UserProfileDTO>>>()
+                                        {
+                                            @Override public Observable<Pair<SocialLinkToggleButton, UserProfileDTO>> call(Boolean socialLinked)
+                                            {
+                                                if (socialLinked != null && socialLinked)
+                                                {
+                                                    return Observable.just(Pair.create(socialLinkToggleButton, userProfileDTO));
+                                                }
+                                                return BaseShareableDialogFragment.this.createSocialAuthObservable(socialLinkToggleButton,
+                                                        socialNetwork);
+                                            }
+                                        });
                             }
                         }))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -205,7 +239,6 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                 {
                     @Override public void call()
                     {
-                        AlertDialogUtil.dismissProgressDialog();
                         registerSocialButtons();
                     }
                 })
@@ -229,7 +262,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                 );
     }
 
-    protected Observable<SocialLinkToggleButton> createCheckedLinkingObservable()
+    @NonNull protected Observable<SocialLinkToggleButton> createCheckedLinkingObservable()
     {
         return ViewArrayObservable.clicks(socialLinkingButtons, false)
                 .flatMap(new Func1<OnClickEvent, Observable<SocialLinkToggleButton>>()
@@ -250,7 +283,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                 });
     }
 
-    protected Observable<Pair<SocialLinkToggleButton, UserProfileDTO>> createSocialAuthObservable(
+    @NonNull protected Observable<Pair<SocialLinkToggleButton, UserProfileDTO>> createSocialAuthObservable(
             @NonNull final SocialLinkToggleButton socialLinkToggleButton,
             @NonNull final SocialNetworkEnum socialNetwork)
     {
@@ -272,27 +305,47 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     }
     //</editor-fold>
 
-    protected boolean initialShareButtonState(@NonNull SocialNetworkEnum socialNetworkEnum)
+    @NonNull protected Observable<Boolean> initialShareButtonState(@NonNull final SocialNetworkEnum socialNetworkEnum)
     {
-        return socialSharePreferenceHelperNew.isShareEnabled(
-                socialNetworkEnum,
-                isSocialLinkedOr(socialNetworkEnum, false));
+        return isSocialLinkedOr(socialNetworkEnum, false)
+                .map(new Func1<Boolean, Boolean>()
+                {
+                    @Override public Boolean call(Boolean isLinked)
+                    {
+                        return socialSharePreferenceHelperNew.isShareEnabled(
+                                socialNetworkEnum,
+                                isLinked);
+                    }
+                });
     }
 
-    public boolean isSocialLinkedOr(SocialNetworkEnum socialNetwork, boolean orElse)
+    @NonNull public Observable<Boolean> isSocialLinkedOr(SocialNetworkEnum socialNetwork, final boolean orElse)
     {
-        Boolean socialLinked = isSocialLinked(socialNetwork);
-        return socialLinked != null ? socialLinked : orElse;
+        return isSocialLinked(socialNetwork)
+                .map(new Func1<Boolean, Boolean>()
+                {
+                    @Override public Boolean call(Boolean socialLinked)
+                    {
+                        return socialLinked != null ? socialLinked : orElse;
+                    }
+                });
     }
 
-    @Nullable public Boolean isSocialLinked(SocialNetworkEnum socialNetwork)
+    @NonNull public Observable<Boolean> isSocialLinked(final SocialNetworkEnum socialNetwork)
     {
-        UserProfileDTO userProfileCopy = userProfileDTO;
+        final UserProfileDTO userProfileCopy = userProfileDTO;
         if (socialNetwork == SocialNetworkEnum.WECHAT || userProfileCopy == null)
         {
-            return null;
+            return Observable.just(null);
         }
-        return UserProfileDTOUtil.checkLinkedStatus(userProfileCopy, socialNetwork);
+        return socialShareHelper.canShare(socialNetwork)
+                .map(new Func1<Boolean, Boolean>()
+                {
+                    @Override public Boolean call(Boolean canShare)
+                    {
+                        return canShare && UserProfileDTOUtil.checkLinkedStatus(userProfileCopy, socialNetwork);
+                    }
+                });
     }
 
     public void setPublishEnable(@NonNull SocialNetworkEnum socialNetwork)
@@ -309,7 +362,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
 
     protected boolean shareForTransaction(@NonNull SocialNetworkEnum socialNetworkEnum)
     {
-        return socialSharePreferenceHelperNew.isShareEnabled(socialNetworkEnum, isSocialLinkedOr(socialNetworkEnum, true));
+        return socialSharePreferenceHelperNew.isShareEnabled(socialNetworkEnum, false);
     }
 
     protected void saveShareSettings()

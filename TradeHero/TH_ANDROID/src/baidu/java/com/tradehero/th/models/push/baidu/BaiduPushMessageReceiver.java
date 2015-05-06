@@ -140,7 +140,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
         BaiduDeviceMode deviceMode = new BaiduDeviceMode(channelId, userId, appId);
         savedPushDeviceIdentifier.set(deviceMode.token);
-        sessionServiceWrapper.updateDeviceRx()
+        sessionServiceWrapper.updateDeviceRx(deviceMode.token)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new UpdateDeviceIdentifierObserver());
     }

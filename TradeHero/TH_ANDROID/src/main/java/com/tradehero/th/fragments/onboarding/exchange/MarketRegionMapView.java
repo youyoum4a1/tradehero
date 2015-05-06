@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class MarketRegionMapView extends FrameLayout
@@ -30,7 +30,8 @@ public class MarketRegionMapView extends FrameLayout
     @InjectView(R.id.back_image) ImageView backImage;
     @InjectView(R.id.front_image) ImageView frontImage;
     @NonNull private Map<MarketRegion, MapHitBoxView> feedbackHitBoxes;
-    @NonNull private BehaviorSubject<MarketRegion> marketRegionClickedBehavior;
+    @NonNull private PublishSubject<MarketRegion> marketRegionClickedBehavior;
+    @NonNull private PublishSubject<Boolean> switchClickedBehavior;
     @Nullable Bitmap mapBitmap;
     int imW;
     int imH;
@@ -39,14 +40,16 @@ public class MarketRegionMapView extends FrameLayout
     public MarketRegionMapView(Context context)
     {
         super(context);
-        this.marketRegionClickedBehavior = BehaviorSubject.create();
+        this.marketRegionClickedBehavior = PublishSubject.create();
+        this.switchClickedBehavior = PublishSubject.create();
         this.feedbackHitBoxes = new HashMap<>();
     }
 
     public MarketRegionMapView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        this.marketRegionClickedBehavior = BehaviorSubject.create();
+        this.marketRegionClickedBehavior = PublishSubject.create();
+        this.switchClickedBehavior = PublishSubject.create();
         this.feedbackHitBoxes = new HashMap<>();
     }
     //</editor-fold>
@@ -118,6 +121,10 @@ public class MarketRegionMapView extends FrameLayout
             showClicked(hitBoxView);
             return false;
         }
+        else
+        {
+            switchClickedBehavior.onNext(true);
+        }
         return true;
     }
 
@@ -132,5 +139,10 @@ public class MarketRegionMapView extends FrameLayout
     @NonNull public Observable<MarketRegion> getMarketRegionClickedObservable()
     {
         return marketRegionClickedBehavior.asObservable();
+    }
+
+    @NonNull public Observable<Boolean> getSwitchClickedObservable()
+    {
+        return switchClickedBehavior.asObservable();
     }
 }

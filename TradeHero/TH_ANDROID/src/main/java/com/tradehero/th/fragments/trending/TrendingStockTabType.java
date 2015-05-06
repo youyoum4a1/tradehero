@@ -7,7 +7,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.position.StocksMainPositionListFragment;
 import com.tradehero.th.fragments.watchlist.MainWatchlistPositionFragment;
 
-enum TrendingStockTabType
+public enum TrendingStockTabType
 {
     StocksMain(R.string.stocks_main, StocksMainPositionListFragment.class),
     Trending(R.string.trending, TrendingStockFragment.class),
@@ -29,4 +29,9 @@ enum TrendingStockTabType
         this.fragmentClass = fragmentClass;
     }
     //</editor-fold>
+
+    @NonNull public static TrendingStockTabType getDefault()
+    {
+        return TrendingStockTabType.StocksMain;
+    }
 }

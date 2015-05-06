@@ -73,7 +73,7 @@ public class ProviderTileView extends ImageView
             {
                 picasso.get().load(tileImage)
                         .placeholder(R.drawable.white_rounded_background_xml)
-                        .transform(backgroundTransformation)
+                        //.transform(backgroundTransformation)
                         .fit()
                         .into(this);
             }
@@ -83,7 +83,7 @@ public class ProviderTileView extends ImageView
             //if (getHeight() > 0 && getWidth() > 0)
             {
                 picasso.get().load(R.drawable.white_rounded_background_xml)
-                        .transform(backgroundTransformation)
+                        //.transform(backgroundTransformation)
                         .fit()
                         .into(this);
             }

@@ -159,14 +159,5 @@ public class RetrofitProtectedModule
                 .build()
                 .create(HomeServiceRx.class);
     }
-
-    @Provides @Singleton MiniGameServiceRx provideGameServiceRx(RestAdapter adapter)
-    {
-        return adapter.create(MiniGameServiceRx.class);
-    }
-    @Provides @Singleton ArticleServiceRx provideArticleServiceRx(RestAdapter adapter)
-    {
-        return adapter.create(ArticleServiceRx.class);
-    }
     //</editor-fold>
 }

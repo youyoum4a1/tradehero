@@ -24,6 +24,7 @@
         android:layout_alignParentTop="true"
         android:padding="1dp"
         android:contentDescription="@null"
+        android:scaleType="centerCrop"
         tools:src="@drawable/superman_facebook"
         />
 

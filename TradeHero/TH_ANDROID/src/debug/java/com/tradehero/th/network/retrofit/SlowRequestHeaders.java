@@ -1,6 +1,5 @@
 package com.tradehero.th.network.retrofit;
 
-import android.accounts.AccountManager;
 import android.content.Context;
 import com.tradehero.th.persistence.prefs.LanguageCode;
 import javax.inject.Inject;
@@ -12,10 +11,9 @@ public class SlowRequestHeaders extends RequestHeaders
 
     @Inject public SlowRequestHeaders(
             Context context,
-            @LanguageCode String languageCode,
-            AccountManager accountManager)
+            @LanguageCode String languageCode)
     {
-        super(context, languageCode, accountManager);
+        super(context, languageCode);
     }
 
     @Override public void intercept(RequestFacade request)

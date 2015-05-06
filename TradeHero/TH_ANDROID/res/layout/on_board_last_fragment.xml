@@ -53,60 +53,15 @@
         android:layout_weight="0"
         />
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    <Gallery
+        android:id="@+id/favorite_gallery"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/size_3"
-        >
-
-      <com.tradehero.th.fragments.security.SecurityItemView
-          android:id="@+id/stock_3"
-          android:layout_width="@dimen/on_board_last_stock_width"
-          android:layout_height="@dimen/on_board_last_stock_height"
-          android:padding="@dimen/margin_xsmall"
-          android:background="@drawable/grid_item_bg"
-          android:layout_alignParentLeft="true"
-          android:layout_alignParentStart="true"
-          android:alpha="0.5"
-          android:visibility="invisible"
-          tools:visibility="visible"
-          >
-
-        <include layout="@layout/trending_security_item_inner"/>
-
-      </com.tradehero.th.fragments.security.SecurityItemView>
-
-      <com.tradehero.th.fragments.security.SecurityItemView
-          android:id="@+id/stock_2"
-          android:layout_width="@dimen/on_board_last_stock_width"
-          android:layout_height="@dimen/on_board_last_stock_height"
-          android:padding="@dimen/margin_xsmall"
-          android:background="@drawable/grid_item_bg"
-          android:layout_alignParentRight="true"
-          android:layout_alignParentEnd="true"
-          android:alpha="0.5"
-          android:visibility="invisible"
-          tools:visibility="visible"
-          >
-
-        <include layout="@layout/trending_security_item_inner"/>
-
-      </com.tradehero.th.fragments.security.SecurityItemView>
-
-      <com.tradehero.th.fragments.security.SecurityItemView
-          android:id="@+id/stock_1"
-          android:layout_width="@dimen/on_board_last_stock_width"
-          android:layout_height="@dimen/on_board_last_stock_height"
-          android:padding="@dimen/margin_xsmall"
-          android:background="@drawable/grid_item_bg"
-          android:layout_centerInParent="true"
-          >
-
-        <include layout="@layout/trending_security_item_inner"/>
-
-      </com.tradehero.th.fragments.security.SecurityItemView>
-
-    </RelativeLayout>
+        android:minHeight="@dimen/size_18"
+        android:animationDuration="@android:integer/config_mediumAnimTime"
+        android:spacing="@dimen/size_1">
+    </Gallery>
 
     <View
         android:layout_width="match_parent"

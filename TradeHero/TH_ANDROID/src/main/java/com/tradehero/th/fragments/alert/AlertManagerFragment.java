@@ -66,7 +66,6 @@ public class AlertManagerFragment extends BaseFragment
     @Inject SystemStatusCache systemStatusCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
     @Inject UserProfileCacheRx userProfileCache;
-    @Inject SecurityAlertKnowledge securityAlertKnowledge;
 
     protected UserProfileDTO currentUserProfile;
     private AlertListItemAdapter alertListItemAdapter;
@@ -113,16 +112,9 @@ public class AlertManagerFragment extends BaseFragment
     @Override public void onStart()
     {
         super.onStart();
-        onStopSubscriptions = new SubscriptionList();
         fetchSystemStatus();
         fetchUserProfile();
         fetchAlertCompactList();
-    }
-
-    @Override public void onStop()
-    {
-        onStopSubscriptions.unsubscribe();
-        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -297,7 +289,7 @@ public class AlertManagerFragment extends BaseFragment
         {
             int count = currentUserProfile.getUserAlertPlansAlertCount();
             alertPlanCountIcon.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
-            alertPlanCountIcon.setImageResource(securityAlertKnowledge.getStockAlertIcon(count));
+            alertPlanCountIcon.setImageResource(SecurityAlertKnowledge.getStockAlertIcon(count));
         }
     }
 

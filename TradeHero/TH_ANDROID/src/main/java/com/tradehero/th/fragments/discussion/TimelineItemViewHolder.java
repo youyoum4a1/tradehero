@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.picasso.RequestCreator;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.graphics.AbstractSequentialTransformation;
@@ -39,12 +40,6 @@ public class TimelineItemViewHolder
     }
     // </editor-fold>
 
-    @Override public void onDetachedFromWindow()
-    {
-        picasso.cancelRequest(vendorImage);
-        super.onDetachedFromWindow();
-    }
-
     @NonNull @Override public Observable<UserDiscussionAction> getUserActionObservable()
     {
         return super.getUserActionObservable()
@@ -73,16 +68,7 @@ public class TimelineItemViewHolder
         {
             vendorImage.setContentDescription(dto.vendorImageDescription);
             vendorImage.setVisibility(dto.vendorImageVisibility);
-            if (dto.vendorImageUrl != null)
-            {
-                picasso.load(dto.vendorImageUrl)
-                        .transform(dto.vendorImageTransformation)
-                        .into(vendorImage);
-            }
-            else
-            {
-                picasso.cancelRequest(vendorImage);
-            }
+            ImageLoader.getInstance().displayImage(dto.vendorImageUrl, vendorImage);
         }
         if (watchlistIndicator != null)
         {
@@ -90,13 +76,13 @@ public class TimelineItemViewHolder
         }
     }
 
-    @NonNull @Override protected RequestCreator createUserPicassoRequest()
+    @NonNull @Override protected String getUserAvatarURL()
     {
         if (viewDTO != null && ((DTO) viewDTO).pictureUrl != null)
         {
-            return picasso.load(((DTO) viewDTO).pictureUrl);
+            return ((DTO) viewDTO).pictureUrl;
         }
-        return super.createUserPicassoRequest();
+        return null;
     }
 
     @SuppressWarnings("UnusedDeclaration")
