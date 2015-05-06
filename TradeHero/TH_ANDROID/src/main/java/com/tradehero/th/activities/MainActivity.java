@@ -420,25 +420,21 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
 
     private void gotoGetTimesContinuallyLogin()
     {
-        userServiceWrapper.get().isLoginThreeTimesContinually(currentUserId.toUserBaseKey().key, new ContinuousLoginCallback());
-    }
+        userServiceWrapper.get().isLoginThreeTimesContinually(currentUserId.toUserBaseKey().key, new Callback<LoginContinuallyTimesDTO>() {
 
-    private class ContinuousLoginCallback implements Callback<LoginContinuallyTimesDTO>
-    {
-
-        @Override
-        public void success(LoginContinuallyTimesDTO dto, Response response)
-        {
-            if (dto != null)
+            @Override public void success(LoginContinuallyTimesDTO loginContinuallyTimesDTO, Response response)
             {
-                THSharePreferenceManager.Login_Continuous_Time = dto.continuousCount;
+                if (loginContinuallyTimesDTO != null)
+                {
+                    THSharePreferenceManager.Login_Continuous_Time = loginContinuallyTimesDTO.continuousCount;
+                }
             }
-        }
 
-        @Override
-        public void failure(RetrofitError retrofitError)
-        {
-        }
+            @Override public void failure(RetrofitError error)
+            {
+
+            }
+        });
     }
 
     //Init Guide View
