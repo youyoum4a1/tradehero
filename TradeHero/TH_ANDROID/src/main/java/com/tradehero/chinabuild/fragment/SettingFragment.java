@@ -170,26 +170,22 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
         userServiceWrapper.get().downloadAppVersionInfo(new THCallback<AppInfoDTO>() {
             @Override
             protected void success(AppInfoDTO appInfoDTO, THResponse thResponse) {
-                {
-                    if(appInfoDTO==null){
-                        return;
-                    }
-                    boolean suggestUpdate = appInfoDTO.isSuggestUpgrade();
-                    boolean forceUpdate = appInfoDTO.isForceUpgrade();
-                    String url = appInfoDTO.getLatestVersionDownloadUrl();
-                    THSharePreferenceManager.saveUpdateAppUrlLastestVersionCode(getActivity(), url, suggestUpdate,forceUpdate);
-                    if(mVersionLayout==null||mNewVersionImageView==null||mVersionCode==null){
-                        return;
-                    }
-                    if(suggestUpdate){
-                        mVersionLayout.setClickable(true);
-                        mNewVersionImageView.setVisibility(View.VISIBLE);
-                        mVersionCode.setVisibility(View.GONE);
-                    }else{
-                        mVersionLayout.setClickable(false);
-                        mNewVersionImageView.setVisibility(View.GONE);
-                        mVersionCode.setVisibility(View.VISIBLE);
-                    }
+                if (appInfoDTO == null)  {
+                    return;
+                }
+                boolean suggestUpdate = appInfoDTO.isSuggestUpgrade();
+                THSharePreferenceManager.saveUpdateAppUrlLastestVersionCode(getActivity(), appInfoDTO.getLatestVersionDownloadUrl(), suggestUpdate, appInfoDTO.isForceUpgrade());
+                if (mVersionLayout == null || mNewVersionImageView == null || mVersionCode == null) {
+                    return;
+                }
+                if (suggestUpdate) {
+                    mVersionLayout.setClickable(true);
+                    mNewVersionImageView.setVisibility(View.VISIBLE);
+                    mVersionCode.setVisibility(View.GONE);
+                } else {
+                    mVersionLayout.setClickable(false);
+                    mNewVersionImageView.setVisibility(View.GONE);
+                    mVersionCode.setVisibility(View.VISIBLE);
                 }
             }
 
