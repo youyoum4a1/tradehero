@@ -1,10 +1,11 @@
 package com.tradehero.th.utils;
 
+import com.tradehero.th.BuildConfig;
 import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
 
 public class Constants {
     // build constants
-    public static final boolean RELEASE = false;
+    public static final boolean RELEASE = !BuildConfig.DEBUG;
 
     public static final boolean DOGFOOD_BUILD = false;
 

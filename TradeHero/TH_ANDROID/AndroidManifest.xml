@@ -192,7 +192,7 @@
         <provider
                 android:process=":pushservice"
                 android:name="com.igexin.download.DownloadProvider"
-                android:authorities="downloads.com.tradehero.th"	/>
+                android:authorities="downloads.${applicationId}"	/>
         <!-- android:authorities="downloads.第三方包名" -->
 
         <activity android:name="com.igexin.getuiext.activity.GetuiExtActivity"
