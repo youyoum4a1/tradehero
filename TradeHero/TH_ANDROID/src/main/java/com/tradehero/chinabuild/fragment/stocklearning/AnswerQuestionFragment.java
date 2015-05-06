@@ -82,7 +82,6 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
                 popCurrentFragment();
             }
             if(type.equals(TYPE_NORMAL)){
-                THLog.d("aaaaaa");
                 StockLearningDatabaseHelper dbHelper = new StockLearningDatabaseHelper(getActivity());
                 questions = dbHelper.retrieveQuestions(questionGroup.id);
             }

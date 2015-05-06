@@ -564,7 +564,6 @@
 
     <string name="question_percent">%1$d／%2$d</string>
     <string name="question_status_show_answer">查看答案</string>
-    <string name="question_status_next_question">下一题</string>
     <string name="question_status_complete">答题结束</string>
     <string name="question_summary">答题小结</string>
 

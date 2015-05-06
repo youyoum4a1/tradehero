@@ -108,7 +108,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"/>
       <Button android:layout_width="0dp" android:layout_height="wrap_content"
-          android:id="@+id/button_next_question"
+          android:id="@+id/button_answer_question"
           android:textColor="@color/white"
           android:layout_weight="4"
           android:gravity="center"
