@@ -504,6 +504,9 @@ public class TrendingStockFragment extends TrendingBaseFragment
             case FromProvider:
                 handleProviderTileOnClick((ProviderTileView) view);
                 break;
+            case PopQuiz:
+                //TODO
+                break;
         }
     }
 

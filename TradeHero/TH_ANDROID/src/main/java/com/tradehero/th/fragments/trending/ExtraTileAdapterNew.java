@@ -220,7 +220,7 @@ public class ExtraTileAdapterNew extends BaseAdapter
 
     protected void putFirstExtraTilePosition()
     {
-        this.extraTiles.put(random.nextInt(EXTRA_TILE_RANGE), getRandomisedTile());
+        this.extraTiles.put(random.nextInt(EXTRA_TILE_RANGE), TileType.PopQuiz);
     }
 
     protected int getMaxExtraTilePosition()

@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trending;
 
+import android.support.annotation.LayoutRes;
 import com.tradehero.th.R;
 
 public enum TileType
@@ -9,18 +10,19 @@ public enum TileType
     ExtraCash(R.layout.tile_extra_cash),
     ResetPortfolio(R.layout.tile_reset_portfolio),
     Survey(R.layout.tile_survey),
-    FromProvider(R.layout.tile_from_provider);
+    FromProvider(R.layout.tile_from_provider),
+    PopQuiz(R.layout.tile_extra_popquiz);
 
     private final boolean extra;
-    private final int layoutResourceId;
+    @LayoutRes private final int layoutResourceId;
     private final boolean enable;
 
-    TileType(int layoutResourceId)
+    TileType(@LayoutRes int layoutResourceId)
     {
         this(layoutResourceId, true);
     }
 
-    TileType(int layoutResourceId, boolean extra)
+    TileType(@LayoutRes int layoutResourceId, boolean extra)
     {
         this(layoutResourceId, extra, true);
     }
@@ -31,7 +33,7 @@ public enum TileType
      * @param extra whether this tile is kind of extra or not (security item, or normal tile is not)
      * @param enable whether this tile is enable (clickable, react to user interaction)
      */
-    TileType(int layoutResourceId, boolean extra, boolean enable)
+    TileType(@LayoutRes int layoutResourceId, boolean extra, boolean enable)
     {
         this.layoutResourceId = layoutResourceId;
         this.extra = extra;
