@@ -20,6 +20,7 @@ public class ExchangeCompactDTO implements DTO, WithMarketCap, WithTopSecurities
     @SuppressWarnings("NullableProblems") @NonNull public String countryCode;
     @Nullable public String imageUrl;
     public double sumMarketCap;
+    public String currencyIso;
     @Nullable public String desc;
     @SuppressWarnings("NullableProblems") @NonNull public MarketRegion region;
     public boolean isInternal;

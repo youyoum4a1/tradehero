@@ -137,7 +137,10 @@ public class OnBoardExchangeItemView extends OnBoardSelectableViewLinear<Exchang
             {
                 marketCapView.setText(getResources().getString(
                         R.string.exchange_market_cap_abbreviated,
-                        THSignedMoney.builder(dto.getSumMarketCap()).with000Suffix().build().toString()));
+                        THSignedMoney.builder(dto.getSumMarketCap())
+                                .with000Suffix()
+                                .currency(dto.currencyIso)
+                                .build().toString()));
             }
         }
 
