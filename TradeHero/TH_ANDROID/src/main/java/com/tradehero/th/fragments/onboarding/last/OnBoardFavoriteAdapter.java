@@ -7,9 +7,9 @@ import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.security.SecurityItemView;
 
-public class OnoardFavoriteAdapter extends ViewDTOSetAdapter<SecurityCompactDTO, SecurityItemView>
+public class OnBoardFavoriteAdapter extends ViewDTOSetAdapter<SecurityCompactDTO, SecurityItemView>
 {
-    public OnoardFavoriteAdapter(@NonNull Context context)
+    public OnBoardFavoriteAdapter(@NonNull Context context)
     {
         super(context);
     }

@@ -30,12 +30,12 @@ public class OnBoardLastFragment extends BaseFragment
     @InjectView(R.id.favorite_gallery) Gallery favoriteGallery;
     Observable<SecurityCompactDTOList> selectedSecuritiesObservable;
 
-    private OnoardFavoriteAdapter favoriteAdapter;
+    private OnBoardFavoriteAdapter favoriteAdapter;
 
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        favoriteAdapter = new OnoardFavoriteAdapter(activity);
+        favoriteAdapter = new OnBoardFavoriteAdapter(activity);
     }
 
     @SuppressLint("InflateParams")
