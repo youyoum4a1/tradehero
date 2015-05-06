@@ -2,13 +2,53 @@ package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView;
-import com.tradehero.chinabuild.*;
-import com.tradehero.chinabuild.dialog.*;
-import com.tradehero.chinabuild.fragment.*;
-import com.tradehero.chinabuild.fragment.competition.*;
-import com.tradehero.chinabuild.fragment.discovery.*;
+import com.tradehero.chinabuild.MainTabFragmentCompetition;
+import com.tradehero.chinabuild.MainTabFragmentDiscovery;
+import com.tradehero.chinabuild.MainTabFragmentLearning;
+import com.tradehero.chinabuild.MainTabFragmentStockGod;
+import com.tradehero.chinabuild.MainTabFragmentTrade;
+import com.tradehero.chinabuild.dialog.SecurityDetailDialogLayout;
+import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
+import com.tradehero.chinabuild.dialog.TimeLineCommentDialogLayout;
+import com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout;
+import com.tradehero.chinabuild.dialog.TimeLineReportDialogLayout;
+import com.tradehero.chinabuild.fragment.BindEmailSignUpFragment;
+import com.tradehero.chinabuild.fragment.BindGuestUserFragment;
+import com.tradehero.chinabuild.fragment.InputInviteCodeFragment;
+import com.tradehero.chinabuild.fragment.InviteFriendsFragment;
+import com.tradehero.chinabuild.fragment.LoginSuggestDialogFragment;
+import com.tradehero.chinabuild.fragment.MyEditAccountFragment;
+import com.tradehero.chinabuild.fragment.MyEditNameFragment;
+import com.tradehero.chinabuild.fragment.MyProfileFragment;
+import com.tradehero.chinabuild.fragment.MySocialFragment;
+import com.tradehero.chinabuild.fragment.SettingFragment;
+import com.tradehero.chinabuild.fragment.SettingsAboutUsFragment;
+import com.tradehero.chinabuild.fragment.ShareDialogFragment;
+import com.tradehero.chinabuild.fragment.ShareSellDialogFragment;
+import com.tradehero.chinabuild.fragment.competition.CompetitionCollegeFragment;
+import com.tradehero.chinabuild.fragment.competition.CompetitionCreateFragment;
+import com.tradehero.chinabuild.fragment.competition.CompetitionDetailFragment;
+import com.tradehero.chinabuild.fragment.competition.CompetitionDiscussFragment;
+import com.tradehero.chinabuild.fragment.competition.CompetitionDiscussionSendFragment;
+import com.tradehero.chinabuild.fragment.competition.CompetitionMainFragment;
+import com.tradehero.chinabuild.fragment.competition.CompetitionMineFragment;
+import com.tradehero.chinabuild.fragment.competition.CompetitionSearchFragment;
+import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
+import com.tradehero.chinabuild.fragment.competition.CompetitionsFragment;
+import com.tradehero.chinabuild.fragment.discovery.DiscoveryEssentialFragment;
+import com.tradehero.chinabuild.fragment.discovery.DiscoveryLearningFragment;
+import com.tradehero.chinabuild.fragment.discovery.DiscoveryNewsFragment;
+import com.tradehero.chinabuild.fragment.discovery.DiscoveryRecentNewsFragment;
+import com.tradehero.chinabuild.fragment.discovery.DiscoveryRewardFragment;
+import com.tradehero.chinabuild.fragment.discovery.DiscoverySquareFragment;
+import com.tradehero.chinabuild.fragment.discovery.DiscoveryStockGodNewsFragment;
+import com.tradehero.chinabuild.fragment.discovery.NewsDetailFragment;
 import com.tradehero.chinabuild.fragment.leaderboard.StockGodListBaseFragment;
-import com.tradehero.chinabuild.fragment.message.*;
+import com.tradehero.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
+import com.tradehero.chinabuild.fragment.message.DiscussSendFragment;
+import com.tradehero.chinabuild.fragment.message.NotificationFragment;
+import com.tradehero.chinabuild.fragment.message.SecurityDiscussSendFragment;
+import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PositionDetailFragment;
 import com.tradehero.chinabuild.fragment.search.SearchFragment;
@@ -17,14 +57,44 @@ import com.tradehero.chinabuild.fragment.security.BasePurchaseManagerFragment;
 import com.tradehero.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDiscussOrNewsFragment;
-import com.tradehero.chinabuild.fragment.stocklearning.*;
-import com.tradehero.chinabuild.fragment.trade.*;
-import com.tradehero.chinabuild.fragment.userCenter.*;
+import com.tradehero.chinabuild.fragment.stocklearning.AnswerQuestionFragment;
+import com.tradehero.chinabuild.fragment.stocklearning.AnswersSummaryFragment;
+import com.tradehero.chinabuild.fragment.stocklearning.OneQuestionFragment;
+import com.tradehero.chinabuild.fragment.stocklearning.PublicClassFragment;
+import com.tradehero.chinabuild.fragment.stocklearning.QuestionsFragment;
+import com.tradehero.chinabuild.fragment.stocklearning.StockLearningHistoryFragment;
+import com.tradehero.chinabuild.fragment.trade.TradeOfChinaConceptFragment;
+import com.tradehero.chinabuild.fragment.trade.TradeOfHotHoldFragment;
+import com.tradehero.chinabuild.fragment.trade.TradeOfMineFragment;
+import com.tradehero.chinabuild.fragment.trade.TradeOfRisePercentFragment;
+import com.tradehero.chinabuild.fragment.trade.TradeOfTypeBaseFragment;
+import com.tradehero.chinabuild.fragment.userCenter.MyMainPage;
+import com.tradehero.chinabuild.fragment.userCenter.MyMainSubPage;
+import com.tradehero.chinabuild.fragment.userCenter.SettingMineFragment;
+import com.tradehero.chinabuild.fragment.userCenter.UserAccountPage;
+import com.tradehero.chinabuild.fragment.userCenter.UserFansListFragment;
+import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
+import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.activities.GuideActivity;
-import com.tradehero.th.adapters.*;
+import com.tradehero.th.adapters.CNPersonTradePositionListAdapter;
+import com.tradehero.th.adapters.CompetitionListAdapter;
+import com.tradehero.th.adapters.LeaderboardListAdapter;
+import com.tradehero.th.adapters.MyTradePositionListAdapter;
+import com.tradehero.th.adapters.NewsItemAdapter;
+import com.tradehero.th.adapters.NotificationListAdapter;
+import com.tradehero.th.adapters.PositionTradeListAdapter;
+import com.tradehero.th.adapters.SearchUserListAdapter;
+import com.tradehero.th.adapters.SecurityListAdapter;
+import com.tradehero.th.adapters.SecuritySearchListAdapter;
+import com.tradehero.th.adapters.SecurityTimeLineDiscussOrNewsAdapter;
+import com.tradehero.th.adapters.TimeLineBaseAdapter;
+import com.tradehero.th.adapters.TimeLineDetailDiscussSecItem;
+import com.tradehero.th.adapters.UserFriendsListAdapter;
+import com.tradehero.th.adapters.UserTimeLineAdapter;
+import com.tradehero.th.adapters.VideoGridAdapter;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
@@ -34,9 +104,24 @@ import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.PasswordResetFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
-import com.tradehero.th.fragments.discussion.*;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
+import com.tradehero.th.fragments.discussion.DiscussionItemViewHolder;
+import com.tradehero.th.fragments.discussion.DiscussionItemViewLinear;
+import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
+import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
+import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
+import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
-import com.tradehero.th.fragments.news.*;
+import com.tradehero.th.fragments.news.NewsDialogLayout;
+import com.tradehero.th.fragments.news.NewsHeadlineFragment;
+import com.tradehero.th.fragments.news.NewsHeadlineViewLinear;
+import com.tradehero.th.fragments.news.NewsItemCompactViewHolder;
+import com.tradehero.th.fragments.news.NewsItemViewHolder;
+import com.tradehero.th.fragments.news.NewsViewLinear;
+import com.tradehero.th.fragments.news.ShareDialogLayout;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
@@ -45,14 +130,32 @@ import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriod
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
-import com.tradehero.th.fragments.security.*;
+import com.tradehero.th.fragments.security.SecurityActionListLinear;
+import com.tradehero.th.fragments.security.SecurityItemView;
+import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
+import com.tradehero.th.fragments.security.SecuritySearchFragment;
+import com.tradehero.th.fragments.security.SecuritySearchProviderFragment;
+import com.tradehero.th.fragments.security.StockInfoFragment;
+import com.tradehero.th.fragments.security.StockInfoValueFragment;
+import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
+import com.tradehero.th.fragments.security.WarrantSecurityItemView;
+import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentWeibo;
-import com.tradehero.th.fragments.social.message.*;
+import com.tradehero.th.fragments.social.message.AbstractPrivateMessageFragment;
+import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
+import com.tradehero.th.fragments.social.message.PrivateDiscussionView;
+import com.tradehero.th.fragments.social.message.PrivateMessageBubbleViewLinear;
+import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
-import com.tradehero.th.fragments.trade.*;
+import com.tradehero.th.fragments.trade.AbstractTransactionDialogFragment;
+import com.tradehero.th.fragments.trade.BuyDialogFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.FreshQuoteHolder;
+import com.tradehero.th.fragments.trade.SellDialogFragment;
+import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
@@ -60,7 +163,6 @@ import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.watchlist.WatchlistItemView;
 import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
-import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
@@ -85,9 +187,8 @@ import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Module;
 import dagger.Provides;
-
-import javax.inject.Singleton;
 import java.util.Locale;
+import javax.inject.Singleton;
 
 @Module(
         includes = {
@@ -118,7 +219,6 @@ import java.util.Locale;
                         SecurityListPagedLoader.class,
                         SecuritySearchFragment.class,
                         SearchUniteFragment.class,
-                        SecuritySearchWatchlistFragment.class,
                         SecuritySearchProviderFragment.class,
                         MacquarieSecurityListPagedLoader.class,
                         SecurityItemViewAdapter.class,
@@ -167,10 +267,7 @@ import java.util.Locale;
                         PeopleSearchFragment.class,
 
                         WebViewFragment.class,
-
-                        WatchlistEditFragment.class,
                         UserWatchlistPositionCache.class,
-                        WatchlistPositionFragment.class,
                         WatchlistItemView.class,
                         WatchlistPortfolioHeaderView.class,
 
