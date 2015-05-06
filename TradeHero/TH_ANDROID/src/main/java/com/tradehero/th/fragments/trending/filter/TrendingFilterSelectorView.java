@@ -16,7 +16,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.events.TrendingFilterEvent;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;

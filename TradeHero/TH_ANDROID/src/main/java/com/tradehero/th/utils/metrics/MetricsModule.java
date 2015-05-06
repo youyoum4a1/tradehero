@@ -5,27 +5,21 @@ import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Config;
 import com.tapstream.sdk.Tapstream;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.base.Application;
-import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
-import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.metrics.localytics.ForLocalytics;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsAdapter;
-import com.tradehero.th.utils.metrics.talkingdata.TalkingDataAdapter;
 import dagger.Module;
 import dagger.Provides;
-
-import javax.inject.Singleton;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import javax.inject.Singleton;
+
+import static com.tradehero.th.utils.Constants.DOGFOOD_BUILD;
+import static com.tradehero.th.utils.Constants.LOCALYTICS_APP_KEY_DEBUG;
+import static com.tradehero.th.utils.Constants.LOCALYTICS_APP_KEY_RELEASE;
+import static com.tradehero.th.utils.Constants.RELEASE;
 
 @Module(
-        injects = {
-                SignInFragment.class,
-                EmailSignUpFragment.class,
-        },
         library = true,
         complete = false
 )
@@ -35,14 +29,13 @@ public class MetricsModule
     private static final String TAPSTREAM_APP_NAME = "tradehero";
     private static final String MAT_APP_ID = "19686";
     private static final String MAT_APP_KEY = "c65b99d5b751944e3637593edd04ce01";
+    private static final String LOCALYTICS_KEY =
+            RELEASE ? (DOGFOOD_BUILD ? LOCALYTICS_APP_KEY_DEBUG : LOCALYTICS_APP_KEY_RELEASE) : null;
+    public static final boolean LOCALYTICS_PUSH_ENABLED = RELEASE;
+    public static final String APP_FLYER_KEY = "pEuxjZE2GpyRXXwFjHHRRU";
 
     @Deprecated
-    public static final String TD_APP_ID_KEY = "5991FF8EFB8EFF717C206FCCF9C969A8";
-
-    @Provides @ForLocalytics String provideLocalyticsAppKey()
-    {
-        return Constants.RELEASE ? Constants.LOCALYTICS_APP_KEY_RELEASE : Constants.LOCALYTICS_APP_KEY_DEBUG;
-    }
+    public static final String TD_APP_ID_KEY = RELEASE ? "5991FF8EFB8EFF717C206FCCF9C969A8" : null;
 
     @Provides(type = Provides.Type.SET_VALUES) @ForAnalytics Set<String> provideAnalyticsPredefineDimensions()
     {
@@ -51,11 +44,12 @@ public class MetricsModule
         return predefinedDimensions;
     }
 
-    @Deprecated
-    @Provides @ForLocalytics List<String> provideLocalyticsPredefineDimensions() {
-        return Arrays.asList(
-                Constants.TAP_STREAM_TYPE.name()
-        );
+    @Provides @Singleton public Analytics provideAnalytics(Context context)
+    {
+        return Analytics.with(Application.context())
+                .withLocalytics(LOCALYTICS_KEY)
+                .withTalkingData(TD_APP_ID_KEY, Constants.TAP_STREAM_TYPE.name())
+                .build();
     }
 
     // TapStream
@@ -81,17 +75,5 @@ public class MetricsModule
         mobileAppTrackerInstance.setPackageName(context.getPackageName() + "." + Constants.TAP_STREAM_TYPE.name());
         mobileAppTrackerInstance.setDebugMode(!Constants.RELEASE);
         return mobileAppTrackerInstance;
-    }
-
-    @Provides(type = Provides.Type.SET)
-    public AnalyticsAdapter provideTalkingDataAdapter(TalkingDataAdapter talkingDataAdapter)
-    {
-        return talkingDataAdapter;
-    }
-
-    @Provides(type = Provides.Type.SET)
-    public AnalyticsAdapter provideLocalyticsAdapter(LocalyticsAdapter localyticsAdapter)
-    {
-        return localyticsAdapter;
     }
 }

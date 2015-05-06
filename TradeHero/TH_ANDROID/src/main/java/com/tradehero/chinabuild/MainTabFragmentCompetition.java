@@ -19,7 +19,7 @@ import com.tradehero.chinabuild.fragment.competition.CompetitionMineFragment;
 import com.tradehero.chinabuild.fragment.competition.CompetitionsFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUniteFragment;
 import com.tradehero.th.R;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
@@ -59,7 +59,7 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
         Bundle bundle =  new Bundle();
         bundle.putInt(SearchUniteFragment.BUNDLE_DEFAULT_TAB_PAGE,SearchUniteFragment.TAB_SEARCH_COMPETITION);
         gotoDashboard(SearchUniteFragment.class.getName(),bundle);
-        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_COMPETITION_DETAIL_SEARCH));
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_COMPETITION_DETAIL_SEARCH));
     }
 
     private void InitView()
@@ -127,6 +127,6 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
             gotoDashboard(CompetitionCreateFragment.class.getName());
         }
 
-        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_COMPETITION_DETAIL_CREATE));
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_COMPETITION_DETAIL_CREATE));
     }
 }

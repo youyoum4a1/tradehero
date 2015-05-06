@@ -34,7 +34,7 @@ import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.EmailSignUtils;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import retrofit.Callback;
@@ -111,7 +111,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.SIGN_UP,AnalyticsConstants.BUTTON_LOGIN_REGISTER));
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.SIGN_UP,AnalyticsConstants.BUTTON_LOGIN_REGISTER));
         DaggerUtils.inject(this);
     }
 

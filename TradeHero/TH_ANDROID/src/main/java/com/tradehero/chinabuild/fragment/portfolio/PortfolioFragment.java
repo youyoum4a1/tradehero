@@ -52,7 +52,7 @@ import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.prefs.BindGuestUser;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
@@ -157,7 +157,7 @@ public class PortfolioFragment extends DashboardFragment {
         if (portfolioUserKey != 0) {
             if (isNeedShowMainPage) {
                 setHeadViewRight0("TA的主页");
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_PORTFOLIO_MAIN_PAGE));
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_PORTFOLIO_MAIN_PAGE));
             }
         }
 
@@ -169,7 +169,7 @@ public class PortfolioFragment extends DashboardFragment {
 
         if (portfolio_type == PORTFOLIO_TYPE_MINE) {
             setHeadViewRight0("去比赛");
-            analytics.addEventAuto(
+            analytics.addEvent(
                     new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_PORTFOLIO_GOTO_COMPETITION));
         }
     }
@@ -187,7 +187,7 @@ public class PortfolioFragment extends DashboardFragment {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position) {
                 PositionInterface item = adapter.getItem((int) position);
                 dealSecurityItem(item);
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.BUTTON_PORTFOLIO_POSITION_CLICKED, "" + position));
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.BUTTON_PORTFOLIO_POSITION_CLICKED, "" + position));
             }
         });
         listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
@@ -253,7 +253,7 @@ public class PortfolioFragment extends DashboardFragment {
                 return;
             }
 
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_PORTFOLIO_FOLLOW_USER));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_PORTFOLIO_FOLLOW_USER));
             freeFollow(showUserBaseKey);
         }
     }

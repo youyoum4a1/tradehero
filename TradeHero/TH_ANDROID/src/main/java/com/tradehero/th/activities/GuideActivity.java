@@ -38,7 +38,7 @@ import com.tradehero.th.models.user.auth.DeviceCredentialsDTO;
 import com.tradehero.th.persistence.prefs.DiviceID;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import retrofit.RetrofitError;
@@ -99,13 +99,10 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
         {
             Timber.e(e, null);
         }
-
-        analytics.openSession();
     }
 
     @Override protected void onPause()
     {
-        analytics.closeSession();
         super.onPause();
     }
 
@@ -223,13 +220,13 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
         {
             case R.id.guide_screen_fast_login:
                 if(viewpager!=null){
-                    analytics.addEventAuto(new MethodEvent(AnalyticsConstants.SIGN_IN_ANONYMOUS, String.valueOf(viewpager.getCurrentItem())));
+                    analytics.addEvent(new MethodEvent(AnalyticsConstants.SIGN_IN_ANONYMOUS, String.valueOf(viewpager.getCurrentItem())));
                 }
                 authenticateWithDevice();
                 break;
             case R.id.guide_screen_login:
                 if(viewpager!=null){
-                    analytics.addEventAuto(new MethodEvent(AnalyticsConstants.SIGN_IN_ACCOUNT, String.valueOf(viewpager.getCurrentItem())));
+                    analytics.addEvent(new MethodEvent(AnalyticsConstants.SIGN_IN_ACCOUNT, String.valueOf(viewpager.getCurrentItem())));
                 }
                 ActivityHelper.launchAuthentication(this);
                 break;

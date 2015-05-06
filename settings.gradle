@@ -1,0 +1,2 @@
+include ':app'
+project(':app').projectDir = new File('TradeHero/TH_ANDROID')

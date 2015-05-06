@@ -20,7 +20,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 
@@ -42,7 +42,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
-        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_OFFICAL));
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_OFFICAL));
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -144,12 +144,12 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
                     if (isValidPhoneNumber(email.getText()))
                     {
-                        analytics.addEventAuto(
+                        analytics.addEvent(
                                 new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_TELNUMBER));
                     }
                     else
                     {
-                        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_EMAIL));
+                        analytics.addEvent(new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_EMAIL));
                     }
                 }
                 break;

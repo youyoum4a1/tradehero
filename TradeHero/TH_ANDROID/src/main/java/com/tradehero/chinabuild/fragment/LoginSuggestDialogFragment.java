@@ -12,7 +12,7 @@ import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 
@@ -54,7 +54,7 @@ public class LoginSuggestDialogFragment extends BaseDialogFragment {
 
     @OnClick(R.id.textview_suggest_cancel)
     public void gotoCancel() {
-        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ANONYMOUS_TO_REAL_ACCOUNT_CANCEL));
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ANONYMOUS_TO_REAL_ACCOUNT_CANCEL));
         dismiss();
     }
 
@@ -64,7 +64,7 @@ public class LoginSuggestDialogFragment extends BaseDialogFragment {
 
     @OnClick(R.id.textview_suggest_signin)
     public void gotoSignIn() {
-        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ANONYMOUS_TO_REAL_ACCOUNT_CONFIRM));
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ANONYMOUS_TO_REAL_ACCOUNT_CONFIRM));
         Intent gotoAuthenticationIntent = new Intent(getActivity(), AuthenticationActivity.class);
         getActivity().startActivity(gotoAuthenticationIntent);
         getActivity().finish();

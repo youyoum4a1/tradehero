@@ -18,7 +18,7 @@ import com.tradehero.chinabuild.fragment.discovery.DiscoveryStockGodNewsFragment
 import com.tradehero.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.th.R;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
@@ -66,11 +66,11 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
     @Override
     public void onPageScrolled(int i, float v, int i2) {
         if(i == 0){
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_SQUARE));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_SQUARE));
             return;
         }
         if(i == 1){
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_GOD));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_GOD));
             return;
         }
     }

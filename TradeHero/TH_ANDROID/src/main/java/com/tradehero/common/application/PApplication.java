@@ -1,9 +1,8 @@
 package com.tradehero.common.application;
 
-import android.app.Application;
 import android.content.Context;
 
-public class PApplication extends Application
+public class PApplication extends android.app.Application
 {
     private static Context context;
 

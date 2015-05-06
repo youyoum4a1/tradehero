@@ -35,7 +35,7 @@ import com.tradehero.th.persistence.prefs.ShareDialogAfterScoreKey;
 import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
@@ -110,11 +110,11 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.settings_score:
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.SETTING_SCORE));
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.SETTING_SCORE));
                 showAppOnMarket();
                 break;
             case R.id.settings_faq:
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.SETTING_FAQ));
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.SETTING_FAQ));
                 Uri uri = Uri.parse("http://cn.tradehero.mobi/help/");
                 Intent it = new Intent(Intent.ACTION_VIEW, uri);
                 try {
@@ -134,7 +134,7 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
                 gotoDownloadAppPage();
                 break;
             case R.id.relativelayout_setting_notification:
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.SETTING_NOTIFICAITONS_ON_OFF));
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.SETTING_NOTIFICAITONS_ON_OFF));
                 gotoSetNotifications();
                 break;
             case R.id.settings_send_feedback:

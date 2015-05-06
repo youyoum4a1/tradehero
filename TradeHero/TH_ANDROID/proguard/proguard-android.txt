@@ -47,6 +47,14 @@
 -keepclassmembers enum * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
+    @com.fasterxml.jackson.annotation.JsonCreator public static ** **(**);
+    ** **();
+    *;
+    final ** **();
+    @com.fasterxml.jackson.annotation.@JsonValue ** **();
+    @com.fasterxml.jackson.annotation.@JsonValue final ** **();
+    @com.fasterxml.jackson.annotation.@JsonValue @android.support.annotation.NonNull ** **();
+    @com.fasterxml.jackson.annotation.@JsonValue @android.support.annotation.NonNull final ** **();
 }
 
 -keep class * implements android.os.Parcelable {
@@ -69,7 +77,13 @@
 # ButterKnife
 -dontwarn butterknife.internal.**
 -keep class **$$ViewInjector { *; }
--keepnames class * { @butterknife.InjectView *;}
+-keep class butterknife.** { *; }
+-keepclasseswithmembernames class * {
+    @butterknife.* <fields>;
+}
+-keepclasseswithmembernames class * {
+    @butterknife.* <methods>;
+}
 
 # Dagger
 # http://stackoverflow.com/a/18177491/37020
@@ -117,7 +131,6 @@
 
 -assumenosideeffects class com.tradehero.common.utils.THLog { *; }
 
--keep class !com.tradehero.** { *; }
 -dontwarn java.nio.files.**
 -dontwarn okio.**
 -dontwarn com.tencent.**
@@ -132,27 +145,37 @@
 -dontwarn org.hamcrest.**
 -dontwarn com.baidu.**
 -dontwarn com.bea.**
--dontwarn org.simpleframework.xml.**
+-dontwarn rx.internal.**
+-dontwarn com.actionbarsherlock.internal.**
 
--dontwarn com.urbanairship.richpush.RichPushMessageJavaScript
+# UrbanAirship -->
+-keepnames class * implements android.os.Parcelable {
+  public static final ** CREATOR;
+}
+
+
+## Required for the Javascript Interface
+-keepclassmembers class com.urbanairship.js.UAJavascriptInterface {
+   public *;
+}
+
+## Autopilot
+-keep public class * extends com.urbanairship.Autopilot
 
 # msgpack is used by urbanairship
 -dontwarn org.msgpack.**
+# UrbanAirship <--
 
+#Retrofit Services
+-keep class retrofit.http.** { *; } # Keep the annotations
+-keep class ** { @retrofit.http.** *; } # Keep the annotated services
 
 # Jackson introspect
+-keep class com.fasterxml.jackson.** { *; }
 -keep public class com.tradehero.th.api.** {
   public void set*(***);
   public *** get*();
 }
--keep interface com.tradehero.th.network.service.** { *; }
--keep public class com.tradehero.th.billing.** { *; }
--keep public class com.tradehero.th.fragments.social.friend.** { *; }
--keep public class com.tradehero.common.billing.** { *; }
--keep public class com.tradehero.th.api.discussion.** { *; }
--keep public class com.tradehero.th.api.pagination.** { *; }
--keep public class com.tradehero.th.api.timeline.** { *; }
--keep public class com.tradehero.th.models.graphics.** { *; }
 
 # We actually use public field instead of getter and setter for it.
 -keep public class com.tradehero.th.api.** {
@@ -162,6 +185,7 @@
 # Keep fields that are called by reflection
 -keep public class * extends com.tradehero.common.persistence.DTO {
   public <fields>;
+  protected <fields>;
 }
 
 # Keep constructors that are called by reflection
@@ -170,3 +194,6 @@
 }
 
 -keep @org.junit.runner.RunWith public class *
+
+# Retrolambda
+-dontwarn java.lang.invoke.**

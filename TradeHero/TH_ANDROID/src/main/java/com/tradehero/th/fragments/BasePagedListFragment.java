@@ -20,7 +20,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedArrayDTOAdapterNew;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.route.THRouter;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;

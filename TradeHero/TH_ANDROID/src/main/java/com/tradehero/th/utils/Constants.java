@@ -4,7 +4,7 @@ import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
 
 public class Constants {
     // build constants
-    public static final boolean RELEASE = true;
+    public static final boolean RELEASE = false;
 
     public static final boolean DOGFOOD_BUILD = false;
 

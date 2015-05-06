@@ -1,5 +1,6 @@
 package com.tradehero.th.utils.metrics.events;
 
+import com.tradehero.metrics.AnalyticsEvent;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.Map;

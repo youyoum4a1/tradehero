@@ -1,5 +1,6 @@
 package com.tradehero.th.utils.metrics.events;
 
+import com.tradehero.metrics.AnalyticsEvent;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import java.util.Map;

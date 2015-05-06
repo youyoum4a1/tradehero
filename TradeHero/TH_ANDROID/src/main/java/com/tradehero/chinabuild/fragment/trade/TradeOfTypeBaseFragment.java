@@ -30,7 +30,7 @@ import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.TradeHeroProgressBar;
@@ -95,11 +95,11 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
 
         if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD)
         {
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_HOLD_PARTIES));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_HOLD_PARTIES));
         }
         if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_RISE_PERCENT)
         {
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_RISE_PARTIES));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_RISE_PARTIES));
         }
 
         tradehero_blue = getActivity().getResources().getColor(R.color.tradehero_blue);
@@ -386,11 +386,11 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     {
         if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD)
         {
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_HOLD_PARTIES));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_HOLD_PARTIES));
         }
         if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_RISE_PERCENT)
         {
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_RISE_PARTIES));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_RISE_PARTIES));
         }
 
         if (adapterSecurity != null && adapterSecurity.getCount() == 0 || currentSelection != position)

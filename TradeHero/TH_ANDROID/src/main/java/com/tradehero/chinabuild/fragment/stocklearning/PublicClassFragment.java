@@ -16,7 +16,7 @@ import com.tradehero.th.activities.VideoPlayActivity;
 import com.tradehero.th.adapters.VideoGridAdapter;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.TradeHeroProgressBar;
@@ -72,7 +72,7 @@ public class PublicClassFragment extends DashboardFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 VideoDTO videoDTO = videoGridAdapter.getItem(position);
                 playVideo(videoDTO);
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.VIDEO_SELECT, String.valueOf(position)));
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.VIDEO_SELECT, String.valueOf(position)));
             }
         });
     }

@@ -35,7 +35,7 @@ import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.*;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.wxapi.WXEntryActivity;
@@ -118,7 +118,6 @@ public class AuthenticationActivity extends DashboardActivity
     @Override protected void onResume()
     {
         super.onResume();
-        analytics.openSession();
         getWeChatAccessToken();
         isClickedWeChat = false;
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, filter);
@@ -130,8 +129,6 @@ public class AuthenticationActivity extends DashboardActivity
         {
             progressDialog.dismiss();
         }
-
-        analytics.closeSession();
 
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
@@ -278,14 +275,14 @@ public class AuthenticationActivity extends DashboardActivity
      */
     public void authenticateWithWeibo()
     {
-        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_WEIBO));
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_WEIBO));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_weibo);
         weiboUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.BUTTON_LOGIN_WEIBO));
     }
 
     public void authenticateWithQQ()
     {
-        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_QQ));
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.SIGN_IN, AnalyticsConstants.BUTTON_LOGIN_QQ));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_qq);
         qqUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.BUTTON_LOGIN_QQ));
     }

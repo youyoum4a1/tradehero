@@ -1,0 +1,151 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url 'http://download.crashlytics.com/maven' }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.1.1'
+        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+    }
+}
+apply plugin: 'com.android.application'
+apply plugin: 'crashlytics'
+
+repositories {
+    jcenter()
+    maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
+    maven { url 'https://github.com/TradeHero/TH_MAVEN/raw/master' }
+    maven { url 'http://download.crashlytics.com/maven' }
+}
+
+android {
+    compileOptions {
+      sourceCompatibility JavaVersion.VERSION_1_7
+      targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    compileSdkVersion 21
+    buildToolsVersion "22.0.1"
+
+    dexOptions {
+        jumboMode = true
+        javaMaxHeapSize "4g"
+    }
+
+    defaultConfig {
+        applicationId "com.tradehero.th"
+        minSdkVersion 14
+        targetSdkVersion 21
+        versionCode 10006
+        versionName "3.6.3"
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src/main/java']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+    }
+
+    signingConfigs {
+        release {
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFile 'proguard/proguard-android-fast.txt'
+            applicationIdSuffix '.dev'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles 'proguard/proguard-android.txt'
+            zipAlignEnabled true
+            shrinkResources false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
+        exclude group: 'com.nineoldandroids', module: 'library'
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+    }
+    compile('se.emilsjolander:stickylistheaders:2.5.2@aar') {
+        exclude group: 'com.google.android', module: 'support-v4'
+    }
+
+    compile('com.squareup.picasso:picasso:2.5.2') {
+        exclude group: "com.squareup.okhttp", module: "okhttp"
+        exclude group: "com.squareup.okhttp", module: "okhttp-urlconnection"
+    }
+    compile 'com.squareup.okhttp:okhttp:2.3.0'
+    compile('com.squareup.okhttp:okhttp-urlconnection:2.3.0') {
+        exclude group: "com.squareup.okhttp", module: "okhttp"
+    }
+    compile('com.squareup.retrofit:retrofit:1.9.0') {
+        exclude module: 'gson'
+        exclude module: 'rxjava'
+    }
+    compile('com.squareup.retrofit:converter-jackson:1.9.0') {
+        exclude module: 'gson'
+        exclude group: 'com.squareup.retrofit', module: 'retrofit'
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+    }
+
+    compile('com.jakewharton:butterknife:6.1.1.TH-SNAPSHOT') {
+        exclude group: 'se.emilsjolander', module: 'stickylistheaders'
+    }
+
+    compile 'com.tradehero:metrics:2.1.1-SNAPSHOT'
+
+    compile 'com.squareup.dagger:dagger:1.2.2'
+    provided 'com.squareup.dagger:dagger-compiler:1.2.2'
+    compile 'org.jetbrains:annotations:13.0'
+    compile 'com.jakewharton.timber:timber:2.5.1'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.4.0' // 2.5.0 ?
+    compile 'com.tradehero.route:route:0.2-SNAPSHOT'
+    compile 'org.ocpsoft.prettytime:prettytime:3.2.7.Final'
+    compile 'commons-codec:commons-codec:1.10'
+    compile 'com.crashlytics.android:crashlytics:1.+'
+    compile('com.localytics.android:library:3.1.0') {
+        exclude group: 'com.google.android', module: 'support-v4'
+    }
+
+    File propFile = file('signing.properties');
+    if (propFile.exists()) {
+        def Properties props = new Properties()
+        props.load(new FileInputStream(propFile))
+
+        if (props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
+                props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+            android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+            android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+            android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+            android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+        } else {
+            android.buildTypes.release.signingConfig = null
+        }
+    } else {
+        android.buildTypes.release.signingConfig = null
+    }
+
+}

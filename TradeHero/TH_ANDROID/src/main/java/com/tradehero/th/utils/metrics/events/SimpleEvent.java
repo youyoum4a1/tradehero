@@ -1,5 +1,7 @@
 package com.tradehero.th.utils.metrics.events;
 
+import com.tradehero.metrics.AnalyticsEvent;
+
 /** Event that identify itself by only event name **/
 public final class SimpleEvent extends AnalyticsEvent
 {
