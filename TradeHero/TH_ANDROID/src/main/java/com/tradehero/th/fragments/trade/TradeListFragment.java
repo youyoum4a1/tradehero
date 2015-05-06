@@ -228,31 +228,61 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(this,
                         positionCache.get(positionDTOKey)
-                                .flatMap(new Func1<Pair<PositionDTOKey, PositionDTO>, Observable<List<Object>>>()
+                                .map(new Func1<Pair<PositionDTOKey, PositionDTO>, PositionDTO>()
                                 {
-                                    @Override public Observable<List<Object>> call(final Pair<PositionDTOKey, PositionDTO> positionDTOPair)
+                                    @Override public PositionDTO call(Pair<PositionDTOKey, PositionDTO> positionDTOKeyPositionDTOPair)
                                     {
-                                        positionDTO = positionDTOPair.second;
+                                        positionDTO = positionDTOKeyPositionDTOPair.second;
+                                        return positionDTOKeyPositionDTOPair.second;
+                                    }
+                                })
+                                .startWith(positionDTO != null ? Observable.just(positionDTO) : Observable.<PositionDTO>empty())
+                                .distinctUntilChanged()
+                                .flatMap(new Func1<PositionDTO, Observable<List<Object>>>()
+                                {
+                                    @Override public Observable<List<Object>> call(final PositionDTO pDTO)
+                                    {
                                         return Observable.combineLatest(
-                                                securityIdCache.getOne(positionDTOPair.second.getSecurityIntegerId())
-                                                        .flatMap(new Func1<Pair<SecurityIntegerId, SecurityId>, Observable<SecurityCompactDTO>>()
+                                                Observable.just(pDTO.getSecurityIntegerId())
+                                                        .distinctUntilChanged()
+                                                        .flatMap(new Func1<SecurityIntegerId, Observable<SecurityId>>()
+                                                        {
+                                                            @Override public Observable<SecurityId> call(SecurityIntegerId securityIntegerId)
+                                                            {
+                                                                return securityIdCache.get(pDTO.getSecurityIntegerId())
+                                                                        .map(new PairGetSecond<SecurityIntegerId, SecurityId>());
+                                                            }
+                                                        })
+                                                        .startWith(securityId != null ? Observable.just(securityId) : Observable.<SecurityId>empty())
+                                                        .flatMap(new Func1<SecurityId, Observable<SecurityCompactDTO>>()
                                                         {
                                                             @Override
                                                             public Observable<SecurityCompactDTO> call(
-                                                                    Pair<SecurityIntegerId, SecurityId> securityIdPair)
+                                                                    SecurityId securityId)
                                                             {
-                                                                return securityCompactCache.getOne(securityIdPair.second)
-                                                                        .map(new PairGetSecond<SecurityId, SecurityCompactDTO>());
+                                                                return securityCompactCache.get(securityId)
+                                                                        .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
+                                                                        .startWith(securityCompactDTO != null ? Observable.just(securityCompactDTO)
+                                                                                : Observable.<SecurityCompactDTO>empty());
                                                             }
                                                         }),
-                                                tradeListCache.get(positionDTOPair.second.getOwnedPositionId())
-                                                        .map(new PairGetSecond<OwnedPositionId, TradeDTOList>()),
+                                                Observable.just(pDTO.getOwnedPositionId())
+                                                        .distinctUntilChanged()
+                                                        .flatMap(new Func1<OwnedPositionId, Observable<TradeDTOList>>()
+                                                        {
+                                                            @Override public Observable<TradeDTOList> call(OwnedPositionId ownedPositionId)
+                                                            {
+                                                                return tradeListCache.getOne(ownedPositionId)
+                                                                        .map(new PairGetSecond<OwnedPositionId, TradeDTOList>());
+                                                            }
+                                                        }),
+
                                                 new Func2<SecurityCompactDTO, TradeDTOList, List<Object>>()
                                                 {
                                                     @Override public List<Object> call(SecurityCompactDTO scDTO, TradeDTOList tradeDTOs)
                                                     {
                                                         securityCompactDTO = scDTO;
-                                                        return adapter.createObjects(positionDTOPair.second, scDTO, tradeDTOs, prettyTime.get());
+                                                        return adapter.createObjects(pDTO, scDTO, tradeDTOs, prettyTime.get());
                                                     }
                                                 });
                                     }
