@@ -103,22 +103,28 @@ public class OnBoardFragment extends BaseFragment
         pageIndicator.setViewPager(pager, getCurrentIndex());
         pageIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
         {
+            @Nullable Integer errorMessage;
+
             @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
             {
-                Integer errorMessage = getTabAllowedErrorMessage(position);
+                errorMessage = getTabAllowedErrorMessage(position);
                 if (errorMessage != null)
                 {
-                    THToast.show(errorMessage);
                     pager.setCurrentItem(position - 1);
                 }
             }
 
             @Override public void onPageSelected(int position)
             {
-                Integer errorMessage = getTabAllowedErrorMessage(position);
+                Integer newErrorMessage = getTabAllowedErrorMessage(position);
+                if (newErrorMessage != null)
+                {
+                    errorMessage = newErrorMessage;
+                }
                 if (errorMessage != null)
                 {
                     THToast.show(errorMessage);
+                    errorMessage = null;
                     pager.setCurrentItem(position - 1);
                 }
             }
