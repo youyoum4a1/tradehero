@@ -80,7 +80,7 @@
         tools:text="+87%"
         />
 
-    <include layout="@layout/user_statistic_small"/>
+    <include layout="@layout/user_statistic_gauge_only"/>
 
   </LinearLayout>
 
