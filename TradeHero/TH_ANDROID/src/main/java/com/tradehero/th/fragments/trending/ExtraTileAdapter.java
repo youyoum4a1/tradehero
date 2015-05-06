@@ -134,7 +134,7 @@ public class ExtraTileAdapter extends BaseAdapter
             return wrappedAdapter.getItem(position);
         }
 
-        Timber.d("getItem return null, extraTilesMarker=%s, ", extraTilesMarker);
+        Timber.d("getItem return null, extraTilesMarker=%s, ", (Object[]) extraTilesMarker);
         return null;
     }
 
