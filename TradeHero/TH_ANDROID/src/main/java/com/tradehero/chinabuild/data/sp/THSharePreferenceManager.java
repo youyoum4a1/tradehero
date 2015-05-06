@@ -300,16 +300,16 @@ public class THSharePreferenceManager {
 
     public final static String KEY_STOCK_LEARNING_QUESTION_UPDATE = "key_stock_learning_question_update";
 
-    public static void saveQuestionUpdateTime(Context context, long updateTime) {
+    public static void saveQuestionUpdateTime(Context context, long updateTime, int user_id) {
         if (updateTime < 0) {
             return;
         }
         SharedPreferences sp = context.getSharedPreferences(TH_SP_STOCK_LEARNING, Context.MODE_PRIVATE);
-        sp.edit().putLong(KEY_STOCK_LEARNING_QUESTION_UPDATE, updateTime).commit();
+        sp.edit().putLong(KEY_STOCK_LEARNING_QUESTION_UPDATE + user_id, updateTime).commit();
     }
 
-    public static long getQuestionUpdateTime(Context context) {
+    public static long getQuestionUpdateTime(Context context, int user_id) {
         SharedPreferences sp = context.getSharedPreferences(TH_SP_STOCK_LEARNING, Context.MODE_PRIVATE);
-        return sp.getLong(KEY_STOCK_LEARNING_QUESTION_UPDATE, -1);
+        return sp.getLong(KEY_STOCK_LEARNING_QUESTION_UPDATE + user_id, -1);
     }
 }

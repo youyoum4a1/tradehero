@@ -78,7 +78,7 @@ public class StockLearningQuestionsAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public Object getChild(int i, int i1) {
+    public QuestionGroup getChild(int i, int i1) {
         if (i == 0) {
             return levelAItems.get(i1);
         }
@@ -161,6 +161,6 @@ public class StockLearningQuestionsAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean isChildSelectable(int i, int i1) {
-        return false;
+        return true;
     }
 }

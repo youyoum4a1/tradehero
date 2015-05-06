@@ -9,11 +9,13 @@ public class QuestionCategory {
     public String name;
     public int count;
     public String updatedAtUtc;
+    public long updatedAtTicks;
 
     @Override
     public String toString() {
         StringBuffer stringBuffer = new StringBuffer("id: ");
-        stringBuffer.append(id).append(" name: ").append(name).append(" count: ").append(count).append(" updatedAtUtc: ").append(updatedAtUtc);
+        stringBuffer.append(id).append(" name: ").append(name).append(" count: ").append(count)
+                .append(" updatedAtUtc: ").append(updatedAtUtc).append(" updatedAtTicks: ").append(updatedAtTicks);
         return stringBuffer.toString();
     }
 

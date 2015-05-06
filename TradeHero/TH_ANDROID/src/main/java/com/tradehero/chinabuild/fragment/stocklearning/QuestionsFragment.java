@@ -6,11 +6,9 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -30,11 +28,7 @@ import java.util.ArrayList;
  * Created by palmer on 15/3/27.
  */
 public class QuestionsFragment extends DashboardFragment {
-
-
     private ExpandableListView questionsLV;
-
-    private final long one_day = 86400000;
 
     private ArrayList<QuestionGroup> levelAItems = new ArrayList();
     private ArrayList<QuestionGroup> levelBItems = new ArrayList();
@@ -42,12 +36,9 @@ public class QuestionsFragment extends DashboardFragment {
 
     private StockLearningQuestionsAdapter stockLearningQuestionsAdapter;
 
-    @Inject
-    Analytics analytics;
-    @Inject
-    protected UserServiceWrapper userServiceWrapper;
-    @Inject
-    CurrentUserId currentUserId;
+    @Inject Analytics analytics;
+    @Inject protected UserServiceWrapper userServiceWrapper;
+    @Inject CurrentUserId currentUserId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,6 +93,9 @@ public class QuestionsFragment extends DashboardFragment {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int groupPosition, int childPosition, long l) {
                 if(stockLearningQuestionsAdapter!=null){
+
+                    QuestionGroup questionGroup = stockLearningQuestionsAdapter.getChild(groupPosition, childPosition);
+                    jumpToAnswerQuestion(questionGroup);
                 }
                 return false;
             }
@@ -113,7 +107,7 @@ public class QuestionsFragment extends DashboardFragment {
         if (getActivity() == null) {
             return;
         }
-        long updatedAtTicks = THSharePreferenceManager.getQuestionUpdateTime(getActivity());
+        long updatedAtTicks = THSharePreferenceManager.getQuestionUpdateTime(getActivity(), currentUserId.get());
         userServiceWrapper.downloadQuestions(updatedAtTicks, new Callback<QuestionDTO>() {
             @Override
             public void success(QuestionDTO questionDTO, Response response) {
@@ -126,15 +120,16 @@ public class QuestionsFragment extends DashboardFragment {
                 }
                 StockLearningDatabaseHelper dbHelper = new StockLearningDatabaseHelper(getActivity());
                 int user_id = currentUserId.get();
+
                 if (categories != null) {
-                    long updateTime = THSharePreferenceManager.getQuestionUpdateTime(getActivity());
+                    long updateTime = THSharePreferenceManager.getQuestionUpdateTime(getActivity(), currentUserId.get());
                     for (QuestionCategory questionCategory : categories) {
-                        long currentUpdateTime = -1;
+                        long currentUpdateTime = questionCategory.updatedAtTicks;
                         if (updateTime < currentUpdateTime) {
                             updateTime = currentUpdateTime;
                         }
                     }
-                    THSharePreferenceManager.saveQuestionUpdateTime(getActivity(), updateTime);
+                    THSharePreferenceManager.saveQuestionUpdateTime(getActivity(), updateTime, currentUserId.get());
                 }
                 QuestionGroup[] groups = questionDTO.subcategories;
                 if (groups != null) {
@@ -142,7 +137,7 @@ public class QuestionsFragment extends DashboardFragment {
                 }
                 Question[] questions = questionDTO.questions;
                 if (questions != null) {
-                    dbHelper.insertQuestions(user_id, questions);
+                    dbHelper.insertQuestions(questions);
                 }
                 retrieveDatas();
             }
@@ -150,7 +145,7 @@ public class QuestionsFragment extends DashboardFragment {
             @Override
             public void failure(RetrofitError retrofitError) {
                 THException exception = new THException(retrofitError);
-                THLog.d(exception.toString());
+                exception.printStackTrace();
             }
         });
     }
@@ -162,6 +157,9 @@ public class QuestionsFragment extends DashboardFragment {
         StockLearningDatabaseHelper dbHelper = new StockLearningDatabaseHelper(getActivity());
         int user_id = currentUserId.get();
         ArrayList<QuestionGroup> questionGroups = dbHelper.retrieveQuestionGroup(user_id);
+        levelAItems.clear();
+        levelBItems.clear();
+        levelCItems.clear();
         for (QuestionGroup questionGroup : questionGroups) {
             int categoryId = questionGroup.categoryId;
             switch (categoryId) {
@@ -185,5 +183,12 @@ public class QuestionsFragment extends DashboardFragment {
             super.handleMessage(msg);
             retrieveDatas();
         }
+    }
+
+    private void jumpToAnswerQuestion(QuestionGroup questionGroup){
+        Bundle bundle =  new Bundle();
+        bundle.putString(AnswerQuestionFragment.KEY_QUESTION_GROUP_TYPE, AnswerQuestionFragment.TYPE_NORMAL);
+        bundle.putSerializable(AnswerQuestionFragment.KEY_QUESTION_GROUP, questionGroup);
+        gotoDashboard(AnswerQuestionFragment.class.getName(), bundle);
     }
 }

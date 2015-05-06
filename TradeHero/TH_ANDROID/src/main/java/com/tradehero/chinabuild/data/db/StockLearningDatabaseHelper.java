@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.tradehero.chinabuild.fragment.stocklearning.Question;
 import com.tradehero.chinabuild.fragment.stocklearning.QuestionGroup;
 import com.tradehero.chinabuild.fragment.stocklearning.QuestionStatusRecord;
+import com.tradehero.common.utils.THLog;
 
 import java.util.ArrayList;
 
@@ -233,7 +234,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
         return questionGroups;
     }
 
-    public void insertQuestions(int user_id, Question[] questions){
+    public void insertQuestions(Question[] questions){
         if(questions == null || questions.length<=0){
             return;
         }
@@ -255,7 +256,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
                 values.put(SQLs.QUESTION_CHOICE_D, question.option4);
                 values.put(SQLs.QUESTION_ANSWERS, question.answer);
                 values.put(SQLs.QUESTION_IMAGE_URL, question.imageUrl);
-                db.insert(SQLs.TABLE_QUESTION_RECORD, null, values);
+                db.insert(SQLs.TABLE_QUESTION, null, values);
             }
             db.setTransactionSuccessful();
         }catch (SQLiteException e){
@@ -269,6 +270,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<Question> retrieveQuestions(int group_id){
         ArrayList<Question> questions = new ArrayList();
         SQLiteDatabase db = getReadableDatabase();
+        THLog.d("question group id ");
         Cursor cursor = db.query(SQLs.TABLE_QUESTION, null, SQLs.QUESTION_QUESTION_GROUP_ID + " =? ", new String[]{String.valueOf(group_id)}, null, null, null);
         while (cursor.moveToNext()){
             Question question = new Question();

@@ -1,9 +1,11 @@
 package com.tradehero.chinabuild.fragment.stocklearning;
 
+import java.io.Serializable;
+
 /**
  * Created by palmer on 15/4/29.
  */
-public class QuestionGroup {
+public class QuestionGroup implements Serializable{
     public int id;
     public int question_group_progress;
     public String name = "";
