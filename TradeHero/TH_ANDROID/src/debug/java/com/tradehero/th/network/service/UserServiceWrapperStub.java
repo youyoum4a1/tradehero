@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
@@ -24,6 +25,7 @@ public class UserServiceWrapperStub extends UserServiceWrapper
 {
     //<editor-fold desc="Constructors">
     @Inject public UserServiceWrapperStub(
+            @NonNull Context context,
             @NonNull UserServiceRx userServiceRx,
             @NonNull CurrentUserId currentUserId,
             @NonNull DTOCacheUtilImpl dtoCacheUtil,
@@ -34,7 +36,8 @@ public class UserServiceWrapperStub extends UserServiceWrapper
             @NonNull Lazy<ProviderListCacheRx> providerListCache,
             @NonNull Provider<UserFormDTO.Builder2> userFormBuilderProvider)
     {
-        super(userServiceRx,
+        super(context,
+                userServiceRx,
                 currentUserId,
                 dtoCacheUtil,
                 userProfileCache,
