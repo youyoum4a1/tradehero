@@ -351,6 +351,7 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
         if(getActivity()!=null) {
             getActivity().finish();
         }
+        bundle.putSerializable(AnswersSummaryFragment.KEY_QUESTION_GROUP, questionGroup);
         gotoDashboard(AnswersSummaryFragment.class.getName(), bundle);
     }
 

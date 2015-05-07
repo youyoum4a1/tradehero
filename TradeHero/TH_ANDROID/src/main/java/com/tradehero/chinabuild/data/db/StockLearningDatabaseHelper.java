@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.tradehero.chinabuild.fragment.stocklearning.Question;
 import com.tradehero.chinabuild.fragment.stocklearning.QuestionGroup;
 import com.tradehero.chinabuild.fragment.stocklearning.QuestionStatusRecord;
+import com.tradehero.common.utils.THLog;
 
 import java.util.ArrayList;
 
@@ -93,7 +94,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
                 ContentValues values = new ContentValues();
                 values.put(SQLs.QUESTION_RECORD_QUESTION_ID, questionStatusRecord.question_id);
                 values.put(SQLs.QUESTION_RECORD_QUESTION_CHOICE, questionStatusRecord.question_choice);
-                values.put(SQLs.QUESTION_RECORD_QUESTION_STATUS, questionStatusRecord.question_status);
+                values.put(SQLs.QUESTION_RECORD_QUESTION_STATUS, -1);
                 values.put(SQLs.QUESTION_RECORD_USER_ID, questionStatusRecord.user_id);
                 values.put(SQLs.QUESTION_RECORD_GROUP_ID, questionStatusRecord.question_group_id);
                 db.insert(SQLs.TABLE_QUESTION_RECORD, null, values);
@@ -111,6 +112,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
     public QuestionStatusRecord retrieveQuestionRecord(int question_id, int user_id, int question_group_id) {
         QuestionStatusRecord questionStatusRecord = null;
         SQLiteDatabase db = getReadableDatabase();
+        THLog.d(user_id + "  " + question_group_id + " " + question_id);
         Cursor cursor = db.query(SQLs.TABLE_QUESTION_RECORD, null, SQLs.QUESTION_RECORD_USER_ID + " =? and " + SQLs.QUESTION_RECORD_GROUP_ID + " =? and " + SQLs.QUESTION_RECORD_QUESTION_ID + " =?",
                 new String[]{String.valueOf(user_id), String.valueOf(question_group_id), String.valueOf(question_id)}, null, null, null);
         if (cursor.moveToFirst()) {
@@ -128,6 +130,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<QuestionStatusRecord> retrieveQuestionRecords(int user_id, int question_group_id) {
+        THLog.d(user_id + "  " + question_group_id);
         ArrayList<QuestionStatusRecord> records = new ArrayList();
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(SQLs.TABLE_QUESTION_RECORD, null, SQLs.QUESTION_RECORD_USER_ID + " =? and " + SQLs.QUESTION_RECORD_GROUP_ID + " =? ",
@@ -286,6 +289,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
             String optionD = cursor.getString(cursor.getColumnIndex(SQLs.QUESTION_CHOICE_D));
             String answer = cursor.getString(cursor.getColumnIndex(SQLs.QUESTION_ANSWERS));
             String imageUrl = cursor.getString(cursor.getColumnIndex(SQLs.QUESTION_IMAGE_URL));
+            int questionGroupId = cursor.getInt(cursor.getColumnIndex(SQLs.QUESTION_QUESTION_GROUP_ID));
             question.content = content;
             question.id = question_id;
             question.option1 = optionA;
@@ -294,6 +298,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
             question.option4 = optionD;
             question.imageUrl = imageUrl;
             question.answer = answer;
+            question.subcategory = questionGroupId;
             questions.add(question);
         }
         cursor.close();

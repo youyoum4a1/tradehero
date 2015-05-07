@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -45,6 +46,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
 
     private QuestionGroup questionGroup;
     private ArrayList<QuestionStatusRecord> questionStatusRecords = new ArrayList();
+    private ArrayList<Question> reAnswerQuestions = new ArrayList();
     private ArrayList<Question> questions = new ArrayList();
 
     public final static String KEY_QUESTION_GROUP = "key_question_group";
@@ -109,6 +111,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
     }
 
     private void gotoFails() {
+
     }
 
     private void gotoHistory() {
@@ -163,7 +166,29 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
             }
             StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
             questionStatusRecords = stockLearningDatabaseHelper.retrieveQuestionRecords(currentUserId.get(), questionGroup.id);
-
+            reAnswerQuestions.clear();
+            THLog.d("questionStatusRecords " + questionStatusRecords.size());
+            for(Question question: questions){
+                boolean isAnswered = false;
+                for(QuestionStatusRecord questionStatusRecord: questionStatusRecords){
+                    THLog.d("question_id " + question.id + " questionStatusRecord.question_id " + questionStatusRecord.question_id);
+                    if(questionStatusRecord.question_id == question.id){
+                        //THLog.d(question.toString());
+                        //THLog.d(questionStatusRecord.toString());
+                        isAnswered = true;
+                        if(!questionStatusRecord.question_choice.toLowerCase().equals(question.answer.toLowerCase())){
+                            reAnswerQuestions.add(question);
+                            break;
+                        }
+                    }
+                }
+                if(!isAnswered){
+                    reAnswerQuestions.add(question);
+                }
+            }
+            refreshSummary(questions.size(), reAnswerQuestions.size());
+            StockLearningQuestionManager.getInstance().clearReAnswerQuestions();
+            StockLearningQuestionManager.getInstance().setReAnswerQuestions(reAnswerQuestions);
         }
     }
 }
