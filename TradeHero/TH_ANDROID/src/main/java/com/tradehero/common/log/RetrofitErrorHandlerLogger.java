@@ -1,5 +1,6 @@
 package com.tradehero.common.log;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.common.utils.RetrofitHelper;
@@ -22,15 +23,15 @@ import timber.log.Timber;
 public class RetrofitErrorHandlerLogger implements ErrorHandler
 {
     @NonNull final Lazy<RetrofitHelper> retrofitHelper;
-    @NonNull final Lazy<LocalBroadcastManager> localBroadcastManager;
+    @NonNull final LocalBroadcastManager localBroadcastManager;
 
     //<editor-fold desc="Constructors">
     @Inject public RetrofitErrorHandlerLogger(
-            @NonNull Lazy<RetrofitHelper> retrofitHelper,
-            @NonNull Lazy<LocalBroadcastManager> localBroadcastManager)
+            @NonNull Context context,
+            @NonNull Lazy<RetrofitHelper> retrofitHelper)
     {
+        this.localBroadcastManager = LocalBroadcastManager.getInstance(context);
         this.retrofitHelper = retrofitHelper;
-        this.localBroadcastManager = localBroadcastManager;
     }
     //</editor-fold>
 
@@ -84,12 +85,12 @@ public class RetrofitErrorHandlerLogger implements ErrorHandler
                     {
                         case OutDatedVersion:
                             THToast.show(R.string.upgrade_needed);
-                            localBroadcastManager.get().sendBroadcast(ActivityUtil.getIntentUpgrade());
+                            localBroadcastManager.sendBroadcast(ActivityUtil.getIntentUpgrade());
                             return;
 
                         case ExpiredSocialToken:
                             THToast.show(R.string.please_update_token_description);
-                            localBroadcastManager.get().sendBroadcast(ActivityUtil.getIntentSocialToken());
+                            localBroadcastManager.sendBroadcast(ActivityUtil.getIntentSocialToken());
                             return;
                     }
                 }

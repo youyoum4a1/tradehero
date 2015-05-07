@@ -44,12 +44,13 @@ public class ObjectMapperWrapperTest extends BaseApiTestClass
     private InputStream positionDTOBody2Stream;
     private InputStream leaderboardDefDTOStream;
 
-    @Inject LocalBroadcastManager localBroadcastManager;
+    LocalBroadcastManager localBroadcastManager;
 
     @Before
     public void setUp() throws IOException
     {
         TestTHApp.staticInject(this);
+        localBroadcastManager = LocalBroadcastManager.getInstance(TestTHApp.context());
         positionDTOBody1Stream = PositionDTO.class.getResourceAsStream(getPackagePath() + "/position/GetPositionsDTOWithAchievementBody1.json");
         positionDTOBody2Stream = PositionDTO.class.getResourceAsStream(getPackagePath() + "/position/GetPositionsDTOWithoutAchievementBody1.json");
         leaderboardDefDTOStream = LeaderboardDefDTO.class.getResourceAsStream(getPackagePath() + "/leaderboard/def/LeaderboardDefDTOListBody1.json");

@@ -3,7 +3,6 @@ package com.tradehero.th.utils.dagger;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.FlavorModule;
 import com.tradehero.th.BuildTypeModule;
 import com.tradehero.th.api.ObjectMapperWrapper;
@@ -83,12 +82,6 @@ public class AppModule
     @Provides @Singleton THApp provideApplication()
     {
         return THApp;
-    }
-
-    @Provides @Singleton
-    LocalBroadcastManager providesLocalBroadcastReceiver(Context context)
-    {
-        return LocalBroadcastManager.getInstance(context);
     }
 
     @Provides @Singleton ConnectivityManager provideConnectivityManager(Context context) {

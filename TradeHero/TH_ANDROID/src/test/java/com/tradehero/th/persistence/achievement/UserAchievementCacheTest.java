@@ -25,12 +25,13 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class UserAchievementCacheTest
 {
     @Inject UserAchievementCacheRx userAchievementCache;
-    @Inject LocalBroadcastManager localBroadcastManager;
+    LocalBroadcastManager localBroadcastManager;
 
     @Before
     public void setUp()
     {
         TestTHApp.staticInject(this);
+        localBroadcastManager = LocalBroadcastManager.getInstance(TestTHApp.context());
     }
 
     @Test

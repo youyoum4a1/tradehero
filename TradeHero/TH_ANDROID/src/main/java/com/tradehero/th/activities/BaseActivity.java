@@ -28,7 +28,6 @@ import dagger.Provides;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
-import javax.inject.Inject;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -42,7 +41,7 @@ public class BaseActivity extends ActionBarActivity
     private AccountManager accountManager;
     private Injector newInjector;
 
-    @Inject protected LocalBroadcastManager localBroadcastManager;
+    protected LocalBroadcastManager localBroadcastManager;
     BroadcastReceiver upgradeRequiredBroadcastListener;
     BroadcastReceiver socialTokenBroadcastListener;
 
@@ -77,6 +76,7 @@ public class BaseActivity extends ActionBarActivity
         Timber.d("Activity created");
 
         accountManager = AccountManager.get(this);
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
         upgradeRequiredBroadcastListener = new UpgradeRequiredListener();
         socialTokenBroadcastListener = new SocialTokenListener();
     }
