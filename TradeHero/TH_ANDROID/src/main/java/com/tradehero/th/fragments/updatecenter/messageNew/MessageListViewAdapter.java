@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.updatecenter.messageNew;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,15 +20,20 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 public class MessageListViewAdapter extends BaseSwipeAdapter
 {
-    private Picasso picasso;
-    private PrettyTime prettyTime;
-    private Context mContext;
-    private Transformation userPhotoTransformation;
-    private OnMessageItemClicked onMessageItemClicked;
+    @NonNull private Picasso picasso;
+    @NonNull private PrettyTime prettyTime;
+    @NonNull private Context mContext;
+    @NonNull private Transformation userPhotoTransformation;
+    @Nullable private OnMessageItemClicked onMessageItemClicked;
 
     private List<MessageHeaderDTO> messageHeaderDTOs;
 
-    public MessageListViewAdapter(Context mContext, PrettyTime prettyTime, Picasso picasso, Transformation userPhotoTransformation)
+    //<editor-fold desc="Constructors">
+    public MessageListViewAdapter(
+            @NonNull Context mContext,
+            @NonNull PrettyTime prettyTime,
+            @NonNull Picasso picasso,
+            @NonNull Transformation userPhotoTransformation)
     {
         this.mContext = mContext;
         this.picasso = picasso;
@@ -34,8 +41,9 @@ public class MessageListViewAdapter extends BaseSwipeAdapter
         this.userPhotoTransformation = userPhotoTransformation;
         messageHeaderDTOs = new ArrayList<>();
     }
+    //</editor-fold>
 
-    public void setOnMessageItemClicked(OnMessageItemClicked messageItemClicked)
+    public void setOnMessageItemClicked(@Nullable OnMessageItemClicked messageItemClicked)
     {
         this.onMessageItemClicked = messageItemClicked;
     }
@@ -110,16 +118,19 @@ public class MessageListViewAdapter extends BaseSwipeAdapter
                 }
             });
 
-            imgIcon.setOnClickListener(new View.OnClickListener()
+            if (imgIcon != null)
             {
-                @Override public void onClick(View v)
+                imgIcon.setOnClickListener(new View.OnClickListener()
                 {
-                    if (onMessageItemClicked != null)
+                    @Override public void onClick(View v)
                     {
-                        onMessageItemClicked.clickedItemUser(position);
+                        if (onMessageItemClicked != null)
+                        {
+                            onMessageItemClicked.clickedItemUser(position);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -169,11 +180,11 @@ public class MessageListViewAdapter extends BaseSwipeAdapter
         this.messageHeaderDTOs.remove(messageHeaderDTO);
     }
 
-    public static interface OnMessageItemClicked
+    public interface OnMessageItemClicked
     {
-        public void clickedItemUser(int position);
+        void clickedItemUser(int position);
 
-        public void clickedItemDelete(int position);
+        void clickedItemDelete(int position);
     }
 
 }

@@ -39,17 +39,16 @@ import rx.functions.Func3;
 public class AbstractDiscussionCompactItemViewLinearDTOFactory
 {
     @NonNull private final Resources resources;
-    @NonNull private final PrettyTime prettyTime;
     @NonNull private final CurrentUserId currentUserId;
     @NonNull private final SocialShareTranslationHelper shareTranslationHelper;
     @NonNull private final UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @NonNull private final AlertCompactListCacheRx alertCompactListCache;
     @NonNull private final SecurityMultiFetchAssistant securityMultiFetchAssistant;
+    @NonNull private final PrettyTime prettyTime;
 
     //<editor-fold desc="Constructors">
     @Inject public AbstractDiscussionCompactItemViewLinearDTOFactory(
             @NonNull Context context,
-            @NonNull PrettyTime prettyTime,
             @NonNull CurrentUserId currentUserId,
             @NonNull SocialShareTranslationHelper shareTranslationHelper,
             @NonNull UserWatchlistPositionCacheRx userWatchlistPositionCache,
@@ -57,12 +56,12 @@ public class AbstractDiscussionCompactItemViewLinearDTOFactory
             @NonNull SecurityMultiFetchAssistant securityMultiFetchAssistant)
     {
         this.resources = context.getResources();
-        this.prettyTime = prettyTime;
         this.currentUserId = currentUserId;
         this.shareTranslationHelper = shareTranslationHelper;
         this.userWatchlistPositionCache = userWatchlistPositionCache;
         this.alertCompactListCache = alertCompactListCache;
         this.securityMultiFetchAssistant = securityMultiFetchAssistant;
+        this.prettyTime = new PrettyTime();
     }
     //</editor-fold>
 

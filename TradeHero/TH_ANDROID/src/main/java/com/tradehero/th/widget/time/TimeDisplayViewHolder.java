@@ -2,6 +2,7 @@ package com.tradehero.th.widget.time;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.TextView;
@@ -32,10 +33,10 @@ public class TimeDisplayViewHolder
     @NonNull protected final PrettyTime prettyTime;
 
     //<editor-fold desc="Constructors">
-    @Inject public TimeDisplayViewHolder(@NonNull Context context, @NonNull PrettyTime prettyTime)
+    @Inject public TimeDisplayViewHolder(@NonNull Context context)
     {
         this.context = context;
-        this.prettyTime = prettyTime;
+        this.prettyTime = new PrettyTime();
         registerTimeUnits();
     }
     //</editor-fold>
@@ -51,7 +52,7 @@ public class TimeDisplayViewHolder
         prettyTime.registerUnit(new TimeUnitMilliSecondInSecond(), new TimeFormatFloor());
     }
 
-    public void fetchViews(View view)
+    public void fetchViews(@Nullable View view)
     {
         if (view != null)
         {
@@ -59,13 +60,13 @@ public class TimeDisplayViewHolder
         }
     }
 
-    public void showDuration(Date then)
+    public void showDuration(@NonNull Date then)
     {
         prettyTime.setReference(new Date());
         display(new TimeDTO(prettyTime, then));
     }
 
-    public void display(TimeDTO timeDTO)
+    public void display(@NonNull TimeDTO timeDTO)
     {
         displayDayCount(timeDTO.days);
         displayHourCount(timeDTO.hours);
@@ -132,7 +133,7 @@ public class TimeDisplayViewHolder
         long minutes;
         long seconds;
 
-        public TimeDTO(PrettyTime prettyTime, Date then)
+        public TimeDTO(@NonNull PrettyTime prettyTime, @NonNull Date then)
         {
             this();
             populate(prettyTime, then);
@@ -146,7 +147,7 @@ public class TimeDisplayViewHolder
             this.seconds = 0;
         }
 
-        public void populate(PrettyTime prettyTime, Date then)
+        public void populate(@NonNull PrettyTime prettyTime, @NonNull Date then)
         {
             for (Duration duration: prettyTime.calculatePreciseDuration(then))
             {
