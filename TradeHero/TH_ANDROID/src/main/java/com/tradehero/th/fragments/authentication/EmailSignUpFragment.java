@@ -60,7 +60,6 @@ public class EmailSignUpFragment extends Fragment
     @Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject UserServiceWrapper userServiceWrapper;
-    @Inject THAppsFlyer thAppsFlyer;
 
     @InjectView(R.id.profile_info) ProfileInfoView profileView;
     @InjectView(R.id.authentication_sign_up_email) EditText emailEditText;
@@ -229,7 +228,7 @@ public class EmailSignUpFragment extends Fragment
                 {
                     @Override public void call(Pair<AuthData, UserProfileDTO> pair)
                     {
-                        thAppsFlyer.sendTrackingWithEvent(AppsFlyerConstants.REGISTRATION_EMAIL);
+                        THAppsFlyer.sendTrackingWithEvent(getActivity(), AppsFlyerConstants.REGISTRATION_EMAIL);
                         AuthDataUtil.saveAccountAndResult(getActivity(), pair.first, pair.second.email);
                         ActivityHelper.launchDashboard(getActivity());
                     }

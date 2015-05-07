@@ -73,7 +73,6 @@ public class EmailSignInFragment extends Fragment
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject Provider<LoginSignUpFormDTO.Builder2> loginSignUpFormDTOProvider;
     @Inject SessionServiceWrapper sessionServiceWrapper;
-    @Inject THAppsFlyer thAppsFlyer;
 
     @InjectView(R.id.authentication_sign_in_email) ValidatedText email;
     TextValidator emailValidator;
@@ -171,7 +170,7 @@ public class EmailSignInFragment extends Fragment
                 {
                     @Override public void call(Pair<AuthData, UserProfileDTO> pair)
                     {
-                        thAppsFlyer.sendTrackingWithEvent(AppsFlyerConstants.REGISTRATION_EMAIL);
+                        THAppsFlyer.sendTrackingWithEvent(getActivity(), AppsFlyerConstants.REGISTRATION_EMAIL);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())

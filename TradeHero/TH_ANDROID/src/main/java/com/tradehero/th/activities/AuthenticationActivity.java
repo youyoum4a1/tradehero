@@ -60,7 +60,6 @@ public class AuthenticationActivity extends BaseActivity
     @Inject @SocialAuth Set<ActivityResultRequester> activityResultRequesters;
     @Inject Provider<LoginSignUpFormDTO.Builder2> authenticationFormBuilderProvider;
     @Inject SessionServiceWrapper sessionServiceWrapper;
-    @Inject THAppsFlyer thAppsFlyer;
 
     private DashboardNavigator navigator;
     private Subscription socialButtonsSubscription;
@@ -302,8 +301,10 @@ public class AuthenticationActivity extends BaseActivity
 
     protected void trackSocialRegistration(@NonNull SocialNetworkEnum socialNetworkEnum)
     {
-        thAppsFlyer.sendTrackingWithEvent(
-                String.format(AppsFlyerConstants.REGISTRATION_SOCIAL, socialNetworkEnum.name()));
+        THAppsFlyer.sendTrackingWithEvent(
+                this,
+                String.format(AppsFlyerConstants.REGISTRATION_SOCIAL,
+                        socialNetworkEnum.name()));
     }
 
     @Module(

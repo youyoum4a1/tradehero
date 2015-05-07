@@ -21,7 +21,6 @@ import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.network.share.SocialNetworkAppModule;
 import com.tradehero.th.persistence.PersistenceModule;
 import com.tradehero.th.persistence.prefs.LanguageCode;
-import com.tradehero.th.utils.metrics.MetricsBuildTypeModule;
 import com.tradehero.th.utils.metrics.MetricsModule;
 import dagger.Module;
 import dagger.Provides;
@@ -36,7 +35,6 @@ import javax.inject.Singleton;
                 GraphicModule.class,
                 NetworkModule.class,
                 MetricsModule.class,
-                MetricsBuildTypeModule.class,
                 ModelsModule.class,
                 PersistenceModule.class,
                 ChartModule.class,
