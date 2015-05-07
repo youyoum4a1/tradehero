@@ -13,13 +13,21 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.*;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TabHost;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.igexin.sdk.PushManager;
-import com.tradehero.chinabuild.*;
+import com.tradehero.chinabuild.MainTabFragmentCompetition;
+import com.tradehero.chinabuild.MainTabFragmentDiscovery;
+import com.tradehero.chinabuild.MainTabFragmentLearning;
+import com.tradehero.chinabuild.MainTabFragmentStockGod;
+import com.tradehero.chinabuild.MainTabFragmentTrade;
 import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
@@ -28,6 +36,7 @@ import com.tradehero.chinabuild.fragment.discovery.DiscoverySquareFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.PositionDTO;
@@ -43,7 +52,6 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.PositionServiceWrapper;
@@ -51,23 +59,19 @@ import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.ShareServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.BindGuestUser;
-import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
 
 public class MainActivity extends SherlockFragmentActivity implements DashboardNavigatorActivity
 {
@@ -76,9 +80,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
-    @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
-    @Inject DeviceTokenHelper deviceTokenHelper;
-    @Inject SystemStatusCache systemStatusCache;
     @Inject Analytics analytics;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Inject @BindGuestUser BooleanPreference mBindGuestUserPreference;
@@ -88,12 +89,8 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionFetchListener;
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
 
-    @InjectView(R.id.llMainTab) LinearLayout llMainTab;
     @InjectView(R.id.llTabTrade) LinearLayout llTabTrade;
     @InjectView(R.id.llTabStockGod) LinearLayout llTabStockGod;
-    @InjectView(R.id.llTabDiscovery) LinearLayout llTabDiscovery;
-    @InjectView(R.id.llTabCompetition) LinearLayout llTabCompetition;
-    @InjectView(R.id.llTabLearning) LinearLayout llTabMe;
     @InjectView(R.id.linearlayout_guide) LinearLayout guideView;
 
     @InjectView(R.id.imgTabMenu0) ImageView imgTabMenu0;
@@ -179,23 +176,29 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
 
         DiscoverySquareFragment.SHOW_ADVERTISEMENT = true;
 
-
         //Download TradeHero Version
         gotoDownloadAppInfo();
         ShareDialogFragment.isDialogShowing = true;
 
-        userProfileCacheListener = createUserProfileFetchListener();
-        userWatchlistPositionFetchListener = createWatchlistListener();
-        fetchUserProfile(false);
+        userProfileCacheListener = new UserProfileFetchListener();
+        userWatchlistPositionFetchListener = new WatchlistPositionFragmentSecurityIdListCacheListener();
+        userProfileCache.get().unregister(userProfileCacheListener);
+        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey(), false);
 
         //enable baidu push
         mBindGuestUserPreference.set(false);
 
         //Guide View
-        initGuideView();
+        guideView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismissGuideView();
+            }
+        });
+        displayGuideOfMainTab();
 
         analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_STOCK));
-
 
         //Download number of days login continually.
         gotoGetTimesContinuallyLogin();
@@ -213,13 +216,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         updateGETUIID();
     }
 
-    public void fetchUserProfile(boolean force)
-    {
-        detachUserProfileCache();
-        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey(), force);
-    }
-
     @OnClick({R.id.llTabTrade, R.id.llTabStockGod, R.id.llTabDiscovery, R.id.llTabCompetition, R.id.llTabLearning})
     public void OnClickTabMenu(View view)
     {
@@ -227,28 +223,28 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         switch (id)
         {
             case R.id.llTabTrade:
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_TRADE));
                 setTabCurrent(TAB_TRADE);
                 recordShowedGuideOfMainTab(0);
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_TRADE));
                 break;
             case R.id.llTabStockGod:
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_STOCK));
                 setTabCurrent(TAB_STOCKGOD);
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_STOCK));
                 break;
             case R.id.llTabDiscovery:
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_DISCOVERY));
                 setTabCurrent(TAB_DISCOVERY);
                 recordShowedGuideOfMainTab(2);
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_DISCOVERY));
                 break;
             case R.id.llTabLearning:
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_LEARNING));
                 setTabCurrent(TAB_LEARNING);
                 recordShowedGuideOfMainTab(3);
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_LEARNING));
                 break;
             case R.id.llTabCompetition:
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_COMPETITION));
                 setTabCurrent(TAB_COMPETITION);
                 recordShowedGuideOfMainTab(4);
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_COMPETITION));
                 break;
         }
     }
@@ -257,28 +253,24 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         if (index != currentTab) {
             currentTab = index;
             frg_tabHost.setCurrentTab(currentTab);
-            setTabViewAsChecked();
+
+            imgTabMenu0.setBackgroundResource(currentTab == TAB_TRADE ? R.drawable.tab_menu0_active : R.drawable.tab_menu0_normal);
+            imgTabMenu1.setBackgroundResource(currentTab == TAB_STOCKGOD ? R.drawable.tab_menu1_active : R.drawable.tab_menu1_normal);
+            imgTabMenu2.setBackgroundResource(currentTab == TAB_DISCOVERY ? R.drawable.tab_menu2_active : R.drawable.tab_menu2_normal);
+            imgTabMenu3.setBackgroundResource(currentTab == TAB_LEARNING ? R.drawable.tab_menu3_active : R.drawable.tab_menu3_normal);
+            imgTabMenu4.setBackgroundResource(currentTab == TAB_COMPETITION ? R.drawable.tab_menu5_active : R.drawable.tab_menu5_normal);
+
+            tvTabMenu0.setTextColor(currentTab == TAB_TRADE ? getResources().getColor(R.color.main_tab_text_color_active)
+                    : getResources().getColor(R.color.main_tab_text_color_default));
+            tvTabMenu1.setTextColor(currentTab == TAB_STOCKGOD ? getResources().getColor(R.color.main_tab_text_color_active)
+                    : getResources().getColor(R.color.main_tab_text_color_default));
+            tvTabMenu2.setTextColor(currentTab == TAB_DISCOVERY ? getResources().getColor(R.color.main_tab_text_color_active)
+                    : getResources().getColor(R.color.main_tab_text_color_default));
+            tvTabMenu3.setTextColor(currentTab == TAB_LEARNING ? getResources().getColor(R.color.main_tab_text_color_active)
+                    : getResources().getColor(R.color.main_tab_text_color_default));
+            tvTabMenu4.setTextColor(currentTab == TAB_COMPETITION ? getResources().getColor(R.color.main_tab_text_color_active)
+                    : getResources().getColor(R.color.main_tab_text_color_default));
         }
-    }
-
-    public void setTabViewAsChecked() {
-
-        imgTabMenu0.setBackgroundResource(currentTab == TAB_TRADE ? R.drawable.tab_menu0_active : R.drawable.tab_menu0_normal);
-        imgTabMenu1.setBackgroundResource(currentTab == TAB_STOCKGOD ? R.drawable.tab_menu1_active : R.drawable.tab_menu1_normal);
-        imgTabMenu2.setBackgroundResource(currentTab == TAB_DISCOVERY ? R.drawable.tab_menu2_active : R.drawable.tab_menu2_normal);
-        imgTabMenu3.setBackgroundResource(currentTab == TAB_LEARNING ? R.drawable.tab_menu3_active : R.drawable.tab_menu3_normal);
-        imgTabMenu4.setBackgroundResource(currentTab == TAB_COMPETITION ? R.drawable.tab_menu5_active : R.drawable.tab_menu5_normal);
-
-        tvTabMenu0.setTextColor(currentTab == TAB_TRADE ? getResources().getColor(R.color.main_tab_text_color_active)
-                : getResources().getColor(R.color.main_tab_text_color_default));
-        tvTabMenu1.setTextColor(currentTab == TAB_STOCKGOD ? getResources().getColor(R.color.main_tab_text_color_active)
-                : getResources().getColor(R.color.main_tab_text_color_default));
-        tvTabMenu2.setTextColor(currentTab == TAB_DISCOVERY ? getResources().getColor(R.color.main_tab_text_color_active)
-                : getResources().getColor(R.color.main_tab_text_color_default));
-        tvTabMenu3.setTextColor(currentTab == TAB_LEARNING ? getResources().getColor(R.color.main_tab_text_color_active)
-                : getResources().getColor(R.color.main_tab_text_color_default));
-        tvTabMenu4.setTextColor(currentTab == TAB_COMPETITION ? getResources().getColor(R.color.main_tab_text_color_active)
-                : getResources().getColor(R.color.main_tab_text_color_default));
     }
 
     private void tabInit()
@@ -309,28 +301,13 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         }
     }
 
-    private void detachUserProfileCache()
-    {
-        userProfileCache.get().unregister(userProfileCacheListener);
-    }
-
-    @Override protected void onResume()
-    {
-        super.onResume();
-    }
-
-    @Override protected void onPause()
-    {
-        super.onPause();
-    }
-
     @Override protected void onDestroy()
     {
         if (currentActivityHolder != null)
         {
             currentActivityHolder.unsetActivity(this);
         }
-        detachUserProfileCache();
+        userProfileCache.get().unregister(userProfileCacheListener);
         userProfileCacheListener = null;
         super.onDestroy();
     }
@@ -339,11 +316,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     {
         super.onActivityResult(requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
-    }
-
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
-    {
-        return new UserProfileFetchListener();
     }
 
     @Override public DashboardNavigator getDashboardNavigator()
@@ -435,18 +407,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
 
             }
         });
-    }
-
-    //Init Guide View
-    public void initGuideView()
-    {
-        guideView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismissGuideView();
-            }
-        });
-        displayGuideOfMainTab();
     }
 
     private void dismissGuideView()
@@ -576,21 +536,27 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         }
     }
 
-    private void detachGetPositionMiddleCallback()
+    protected void getPositionDirectly(@NotNull UserBaseKey heroId)
     {
         if (getPositionDTOCallback != null)
         {
             getPositionDTOCallback.setPrimaryCallback(null);
         }
         getPositionDTOCallback = null;
-    }
+        getPositionDTOCallback = positionServiceWrapper.get()
+                        .getPositionsDirect(heroId.key, 1, 20, new Callback<GetPositionsDTO>() {
 
-    protected void getPositionDirectly(@NotNull UserBaseKey heroId)
-    {
-        detachGetPositionMiddleCallback();
-        getPositionDTOCallback =
-                positionServiceWrapper.get()
-                        .getPositionsDirect(heroId.key, 1, 20,  new GetPositionCallback());
+                            @Override public void success(GetPositionsDTO getPositionsDTO, Response response)
+                            {
+                                setGetPositionDTO(getPositionsDTO);
+                                MainActivity.getPositionsDTO = getPositionsDTO;
+                            }
+
+                            @Override public void failure(RetrofitError error)
+                            {
+
+                            }
+                        });
     }
 
     public static PositionDTOKey getSecurityPositionDTOKey(SecurityId securityId)
@@ -616,25 +582,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         MainActivity.getPositionsDTO = getPositionsDTO;
     }
 
-    public class GetPositionCallback implements Callback<GetPositionsDTO>
-    {
-        @Override public void success(GetPositionsDTO getPositionsDTO, Response response)
-        {
-            setGetPositionDTO(getPositionsDTO);
-            MainActivity.getPositionsDTO = getPositionsDTO;
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-
-        }
-    }
-
-    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> createWatchlistListener()
-    {
-        return new WatchlistPositionFragmentSecurityIdListCacheListener();
-    }
-
     protected class WatchlistPositionFragmentSecurityIdListCacheListener implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
     {
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
@@ -652,14 +599,9 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         }
     }
 
-    protected void detachUserWatchlistFetchTask()
-    {
-        userWatchlistPositionCache.unregister(userWatchlistPositionFetchListener);
-    }
-
     protected void fetchWatchPositionList(boolean force)
     {
-        detachUserWatchlistFetchTask();
+        userWatchlistPositionCache.unregister(userWatchlistPositionFetchListener);
         userWatchlistPositionCache.register(currentUserId.toUserBaseKey(), userWatchlistPositionFetchListener);
         userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey(), force);
     }
@@ -711,51 +653,51 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         });
     }
 
-    private void showUpdateDialog(){
-            if(updateAppDialog==null){
-                updateAppDialog = new Dialog(this);
-                updateAppDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                updateAppDialog.setCanceledOnTouchOutside(false);
-                updateAppDialog.setCancelable(false);
-                updateAppDialog.setContentView(R.layout.share_dialog_layout);
-                dialogOKBtn = (TextView)updateAppDialog.findViewById(R.id.btn_ok);
-                dialogCancelBtn = (TextView)updateAppDialog.findViewById(R.id.btn_cancel);
-                dialogTitleATV = (TextView)updateAppDialog.findViewById(R.id.title);
-                dialogTitleATV.setText(getResources().getString(R.string.app_update_hint));
-                dialogTitleBTV = (TextView)updateAppDialog.findViewById(R.id.title2);
-                final AppInfoDTO dto = THSharePreferenceManager.getAppVersionInfo(this);
-                if(dto.isForceUpgrade()){
-                    dialogTitleBTV.setText(getResources().getString(R.string.app_update_force_update));
-                }else {
-                    dialogTitleBTV.setVisibility(View.GONE);
-                }
-                dialogOKBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ShareDialogFragment.isDialogShowing = false;
-                        String url = dto.getLatestVersionDownloadUrl();
-                        if(dto.isForceUpgrade()||dto.isSuggestUpgrade()) {
-                            downloadApp(url);
-                        }else {
-                            updateAppDialog.dismiss();
-                        }
-                    }
-                });
-
-                dialogCancelBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+    private void showUpdateDialog() {
+        if (updateAppDialog==null) {
+            updateAppDialog = new Dialog(this);
+            updateAppDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            updateAppDialog.setCanceledOnTouchOutside(false);
+            updateAppDialog.setCancelable(false);
+            updateAppDialog.setContentView(R.layout.share_dialog_layout);
+            dialogOKBtn = (TextView)updateAppDialog.findViewById(R.id.btn_ok);
+            dialogCancelBtn = (TextView)updateAppDialog.findViewById(R.id.btn_cancel);
+            dialogTitleATV = (TextView)updateAppDialog.findViewById(R.id.title);
+            dialogTitleATV.setText(getResources().getString(R.string.app_update_hint));
+            dialogTitleBTV = (TextView)updateAppDialog.findViewById(R.id.title2);
+            final AppInfoDTO dto = THSharePreferenceManager.getAppVersionInfo(this);
+            if(dto.isForceUpgrade()){
+                dialogTitleBTV.setText(getResources().getString(R.string.app_update_force_update));
+            }else {
+                dialogTitleBTV.setVisibility(View.GONE);
+            }
+            dialogOKBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ShareDialogFragment.isDialogShowing = false;
+                    String url = dto.getLatestVersionDownloadUrl();
+                    if (dto.isForceUpgrade() || dto.isSuggestUpgrade()) {
+                        downloadApp(url);
+                    }else {
                         updateAppDialog.dismiss();
-                        ShareDialogFragment.isDialogShowing = false;
-                        if(dto.isForceUpgrade()){
-                            finish();
-                        }
                     }
-                });
-            }
-            if(!updateAppDialog.isShowing()&&MainActivity.this!=null){
-                updateAppDialog.show();
-            }
+                }
+            });
+
+            dialogCancelBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    updateAppDialog.dismiss();
+                    ShareDialogFragment.isDialogShowing = false;
+                    if (dto.isForceUpgrade()) {
+                        finish();
+                    }
+                }
+            });
+        }
+        if (!updateAppDialog.isShowing() && MainActivity.this != null) {
+            updateAppDialog.show();
+        }
     }
 
     private void downloadApp(String url){
@@ -766,9 +708,9 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         finish();
     }
 
-    private void updateGETUIID(){
+    private void updateGETUIID() {
         final String getuiid = THSharePreferenceManager.getGETUIID(this);
-        if(getuiid.equals("")){
+        if (getuiid.equals("")) {
             return;
         }
         sessionServiceWrapper.updateDevice(getuiid, new Callback() {
