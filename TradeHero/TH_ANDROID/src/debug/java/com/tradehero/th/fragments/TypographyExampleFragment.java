@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 public class TypographyExampleFragment extends BaseFragment
 {
-    @Inject Context doNotRemoveOrItFails;
+    @SuppressWarnings("unused") @Inject Context doNotRemoveOrItFails;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
