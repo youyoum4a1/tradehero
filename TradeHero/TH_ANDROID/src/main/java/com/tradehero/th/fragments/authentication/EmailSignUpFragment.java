@@ -18,11 +18,13 @@ import butterknife.Optional;
 import com.tradehero.common.fragment.ActivityResultDTO;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
+import com.tradehero.th.auth.AuthDataUtil;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -47,7 +49,6 @@ import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -59,7 +60,6 @@ public class EmailSignUpFragment extends Fragment
     @Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject UserServiceWrapper userServiceWrapper;
-    @Inject ActivityAuthDataAccountAction authDataAccountAction;
     @Inject THAppsFlyer thAppsFlyer;
 
     @InjectView(R.id.profile_info) ProfileInfoView profileView;
@@ -196,6 +196,7 @@ public class EmailSignUpFragment extends Fragment
     protected Observable<Pair<AuthData, UserProfileDTO>> getSignUpObservable()
     {
         return ViewObservable.clicks(signUpButton, false)
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<OnClickEvent, Observable<? extends UserFormDTO>>()
                 {
                     @Override public Observable<? extends UserFormDTO> call(OnClickEvent view1)
@@ -212,30 +213,27 @@ public class EmailSignUpFragment extends Fragment
                                 EmailSignUpFragment.this.getString(R.string.authentication_connecting_tradehero_only), true);
 
                         final AuthData authData = new AuthData(userFormDTO.email, userFormDTO.password);
-                        final Observable<UserProfileDTO> profileDTOObservable =
-                                userServiceWrapper.signUpWithEmailRx(authData.getTHToken(), userFormDTO);
-                        return Observable.zip(Observable.just(authData), profileDTOObservable,
-                                new Func2<AuthData, UserProfileDTO, Pair<AuthData, UserProfileDTO>>()
+                        return userServiceWrapper.signUpWithEmailRx(authData, userFormDTO)
+                                .map(new Func1<UserProfileDTO, Pair<AuthData, UserProfileDTO>>()
                                 {
-                                    @Override public Pair<AuthData, UserProfileDTO> call(AuthData t1, UserProfileDTO t2)
+                                    @Override public Pair<AuthData, UserProfileDTO> call(UserProfileDTO userProfileDTO)
                                     {
-                                        return Pair.create(t1, t2);
+                                        return Pair.create(authData, userProfileDTO);
                                     }
                                 })
                                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog));
                     }
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
                 {
                     @Override public void call(Pair<AuthData, UserProfileDTO> pair)
                     {
                         thAppsFlyer.sendTrackingWithEvent(AppsFlyerConstants.REGISTRATION_EMAIL);
+                        AuthDataUtil.saveAccountAndResult(getActivity(), pair.first, pair.second.email);
+                        ActivityHelper.launchDashboard(getActivity());
                     }
                 })
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(authDataAccountAction)
-                .doOnNext(new OpenDashboardAction(getActivity()))
                 .doOnError(new ToastOnErrorAction())
                 .retry();
     }

@@ -15,12 +15,11 @@ import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
+import com.tradehero.th.auth.AuthDataUtil;
 import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.authentication.ActivityAuthDataAccountAction;
 import com.tradehero.th.fragments.authentication.GuideAuthenticationFragment;
-import com.tradehero.th.fragments.authentication.OpenDashboardAction;
 import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
@@ -62,7 +61,6 @@ public class AuthenticationActivity extends BaseActivity
     @Inject Provider<LoginSignUpFormDTO.Builder2> authenticationFormBuilderProvider;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject THAppsFlyer thAppsFlyer;
-    @Inject Provider<ActivityAuthDataAccountAction> authDataAccountSaveActionProvider;
 
     private DashboardNavigator navigator;
     private Subscription socialButtonsSubscription;
@@ -172,8 +170,23 @@ public class AuthenticationActivity extends BaseActivity
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
-                .doOnNext(authDataAccountSaveActionProvider.get())
-                .doOnNext(new OpenDashboardAction(this))
+                .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
+                {
+                    @Override public void call(Pair<AuthData, UserProfileDTO> authDataUserProfileDTOPair)
+                    {
+                        AuthDataUtil.saveAccountAndResult(
+                                AuthenticationActivity.this,
+                                authDataUserProfileDTOPair.first,
+                                authDataUserProfileDTOPair.second.email);
+                    }
+                })
+                .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
+                {
+                    @Override public void call(Pair<AuthData, UserProfileDTO> authDataUserProfileDTOPair)
+                    {
+                        ActivityHelper.launchDashboard(AuthenticationActivity.this);
+                    }
+                })
                 ;
     }
 
