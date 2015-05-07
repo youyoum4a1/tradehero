@@ -45,8 +45,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
     private int currentIndex = 0;
 
-    @Inject
-    CurrentUserId currentUserId;
+    @Inject CurrentUserId currentUserId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

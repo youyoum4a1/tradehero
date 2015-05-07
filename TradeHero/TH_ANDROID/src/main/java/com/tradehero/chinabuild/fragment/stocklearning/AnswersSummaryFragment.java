@@ -1,6 +1,8 @@
 package com.tradehero.chinabuild.fragment.stocklearning;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -14,8 +16,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
 
 /**
  * Created by palmer on 15/3/31.
@@ -36,20 +43,23 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
     private int descSizeA;
     private int descSizeB;
 
-    private int totalNum = 80;
-    private int failedNum = 0;
+    private QuestionGroup questionGroup;
+    private ArrayList<QuestionStatusRecord> questionStatusRecords = new ArrayList();
+    private ArrayList<Question> questions = new ArrayList();
+
+    public final static String KEY_QUESTION_GROUP = "key_question_group";
+
+    @Inject CurrentUserId currentUserId;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initArgument();
         initSummaryDescriptionResources();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stock_learning_summary, container, false);
         summaryDescTV = (TextView) view.findViewById(R.id.textview_answers_summary_desc);
         resultIV = (ImageView) view.findViewById(R.id.imageview_stocklearning_result);
@@ -57,27 +67,27 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
         historyBtn.setOnClickListener(this);
         errorsBtn = (Button) view.findViewById(R.id.button_errors);
         errorsBtn.setOnClickListener(this);
-        refreshSummary(totalNum, failedNum);
+        errorsBtn.setEnabled(false);
         return view;
     }
 
-    private void initArgument()
-    {
+    @Override
+    public void onResume(){
+        super.onResume();
+        RefreshSummaryHandler refreshSummaryHandler = new RefreshSummaryHandler();
+        refreshSummaryHandler.sendEmptyMessageDelayed(-1, 200);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain(R.string.question_summary);
     }
 
     @Override
-    public void onClick(View view)
-    {
+    public void onClick(View view) {
         int viewId = view.getId();
-        switch (viewId)
-        {
+        switch (viewId) {
             case R.id.button_errors:
                 gotoFails();
                 break;
@@ -87,16 +97,24 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
         }
     }
 
-    private void gotoFails()
-    {
+    private void initArgument() {
+        Bundle bundle = getArguments();
+        questionGroup = (QuestionGroup)bundle.getSerializable(KEY_QUESTION_GROUP);
+        if(questionGroup==null){
+            popCurrentFragment();
+        } else {
+            StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
+            questions = stockLearningDatabaseHelper.retrieveQuestions(questionGroup.id);
+        }
     }
 
-    private void gotoHistory()
-    {
+    private void gotoFails() {
     }
 
-    private void initSummaryDescriptionResources()
-    {
+    private void gotoHistory() {
+    }
+
+    private void initSummaryDescriptionResources() {
         descriptionSummaryA = getActivity().getResources().getString(R.string.stock_learning_summary_a);
         descriptionSummaryB = getActivity().getResources().getString(R.string.stock_learning_summary_b);
         descriptionSummaryColorA = getActivity().getResources().getColor(R.color.stock_learning_summary_success_color);
@@ -105,8 +123,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
         descSizeB = (int) getActivity().getResources().getDimension(R.dimen.stock_learning_summary_des_size_b);
     }
 
-    private void refreshSummary(int totalNumber, int wrongNumber)
-    {
+    private void refreshSummary(int totalNumber, int failedNum) {
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
 
         String descAStr = String.format(descriptionSummaryA, totalNumber);
@@ -114,7 +131,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
         descA.setSpan(new ForegroundColorSpan(descriptionSummaryColorA), 0, descAStr.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         descA.setSpan(new AbsoluteSizeSpan(descSizeA), 0, descAStr.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        String descBStr = String.valueOf(wrongNumber);
+        String descBStr = String.valueOf(failedNum);
         SpannableString descB = new SpannableString(descBStr);
         descB.setSpan(new ForegroundColorSpan(descriptionSummaryColorB), 0, descBStr.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         descB.setSpan(new AbsoluteSizeSpan(descSizeB), 0, descBStr.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -127,15 +144,26 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
         spannableStringBuilder.append(descA).append(descB).append(descC);
         summaryDescTV.setText(spannableStringBuilder);
 
-        if (failedNum > 0)
-        {
+        if (failedNum > 0) {
             resultIV.setBackgroundResource(R.drawable.stock_learning_question_result_failed);
             errorsBtn.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+            errorsBtn.setEnabled(true);
+        } else {
             resultIV.setBackgroundResource(R.drawable.stock_learning_question_result_success);
             errorsBtn.setVisibility(View.GONE);
+        }
+    }
+
+    public class RefreshSummaryHandler extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if(getActivity()==null){
+                return;
+            }
+            StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
+            questionStatusRecords = stockLearningDatabaseHelper.retrieveQuestionRecords(currentUserId.get(), questionGroup.id);
+
         }
     }
 }
