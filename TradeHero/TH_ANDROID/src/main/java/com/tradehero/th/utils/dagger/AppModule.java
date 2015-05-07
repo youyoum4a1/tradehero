@@ -5,7 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.FlavorModule;
-import com.tradehero.th.BuildTypeModule;
 import com.tradehero.th.activities.ActivityAppModule;
 import com.tradehero.th.api.ObjectMapperWrapper;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -42,7 +41,6 @@ import javax.inject.Singleton;
                 BillingModule.class,
                 SocialNetworkAppModule.class,
                 PushModule.class,
-                BuildTypeModule.class
         },
         injects =
                 {
