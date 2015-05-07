@@ -37,8 +37,9 @@
       android:layout_gravity="center_horizontal"
       android:scaleType="fitCenter"
       android:alpha="0"
-      app:hitBoxRegion="NORTH_AMERICA"
+      app:region="NORTH_AMERICA"
       app:hitBoxImage="@drawable/hitbox_us_full"
+      app:alphaSelected="@dimen/on_board_alpha_hit_box_selected"
       tools:alpha="0.5"
       />
 
@@ -48,8 +49,9 @@
       android:layout_gravity="center_horizontal"
       android:scaleType="fitCenter"
       android:alpha="0"
-      app:hitBoxRegion="EUROPE"
+      app:region="EUROPE"
       app:hitBoxImage="@drawable/hitbox_europe_full"
+      app:alphaSelected="@dimen/on_board_alpha_hit_box_selected"
       tools:alpha="0.5"
       />
 
@@ -59,8 +61,9 @@
       android:layout_gravity="center_horizontal"
       android:scaleType="fitCenter"
       android:alpha="0"
-      app:hitBoxRegion="INDIA"
+      app:region="INDIA"
       app:hitBoxImage="@drawable/hitbox_india_full"
+      app:alphaSelected="@dimen/on_board_alpha_hit_box_selected"
       tools:alpha="0.5"
       />
 
@@ -70,8 +73,9 @@
       android:layout_gravity="center_horizontal"
       android:scaleType="fitCenter"
       android:alpha="0"
-      app:hitBoxRegion="SOUTH_EAST_ASIA"
+      app:region="SOUTH_EAST_ASIA"
       app:hitBoxImage="@drawable/hitbox_sea_full"
+      app:alphaSelected="@dimen/on_board_alpha_hit_box_selected"
       tools:alpha="0.5"
       />
 
@@ -81,8 +85,9 @@
       android:layout_gravity="center_horizontal"
       android:scaleType="fitCenter"
       android:alpha="0"
-      app:hitBoxRegion="EAST_ASIA"
+      app:region="EAST_ASIA"
       app:hitBoxImage="@drawable/hitbox_eastasia_full"
+      app:alphaSelected="@dimen/on_board_alpha_hit_box_selected"
       tools:alpha="0.5"
       />
 
@@ -92,8 +97,9 @@
       android:layout_gravity="center_horizontal"
       android:scaleType="fitCenter"
       android:alpha="0"
-      app:hitBoxRegion="AUSTRALIA"
+      app:region="AUSTRALIA"
       app:hitBoxImage="@drawable/hitbox_australia_full"
+      app:alphaSelected="@dimen/on_board_alpha_hit_box_selected"
       tools:alpha="0.5"
       />
 

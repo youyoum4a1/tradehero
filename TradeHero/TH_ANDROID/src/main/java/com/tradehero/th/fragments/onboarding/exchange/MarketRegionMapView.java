@@ -68,7 +68,7 @@ public class MarketRegionMapView extends FrameLayout
                 if (child instanceof  MapHitBoxView)
                 {
                     ((MapHitBoxView) child).loadImage();
-                    feedbackHitBoxes.put(((MapHitBoxView) child).sizeParams.region, (MapHitBoxView) child);
+                    feedbackHitBoxes.put(((MapHitBoxView) child).params.region, (MapHitBoxView) child);
                 }
             } catch (OutOfMemoryError e)
             {
@@ -118,6 +118,14 @@ public class MarketRegionMapView extends FrameLayout
             {
                 hitBoxView = frontImage;
             }
+            for (MapHitBoxView candidate : feedbackHitBoxes.values())
+            {
+                if (candidate != hitBoxView)
+                {
+                    candidate.animate().cancel();
+                    candidate.setSelected(false);
+                }
+            }
             showClicked(hitBoxView);
             return false;
         }
@@ -130,8 +138,9 @@ public class MarketRegionMapView extends FrameLayout
 
     private void showClicked(@NonNull View hitBoxView)
     {
+        float targetAlpha = (hitBoxView instanceof MapHitBoxView) ? ((MapHitBoxView) hitBoxView).params.alphaSelected : 0f;
         hitBoxView.setAlpha(ON_CLICK_ALPHA);
-        hitBoxView.animate().alpha(0f)
+        hitBoxView.animate().alpha(targetAlpha)
                 .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
                 .start();
     }

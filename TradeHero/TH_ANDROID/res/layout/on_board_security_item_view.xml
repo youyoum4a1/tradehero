@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/basic_white_selector"
-    app:alphaUnSelected="0.9"
+    app:alphaUnSelected="@dimen/on_board_alpha_unselected"
     >
 
   <com.tradehero.th.fragments.security.SecurityItemView
