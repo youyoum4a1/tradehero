@@ -17,9 +17,9 @@ import javax.inject.Inject;
 
 public class DeviceTokenHelper
 {
-    @NotNull @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier;
+    StringPreference savedPushDeviceIdentifier;
     @NotNull Context context;
-    static @DiviceID StringPreference mDeviceIDStringPreference;
+    static StringPreference mDeviceIDStringPreference;
     static CurrentActivityHolder currentActivityHolder;
 
     //<editor-fold desc="Constructors">

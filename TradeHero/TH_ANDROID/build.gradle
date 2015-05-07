@@ -8,6 +8,16 @@ buildscript {
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
     }
 }
+
+File versionFile = file('version.properties');
+def Properties versionProps = new Properties()
+versionProps.load(new FileInputStream(versionFile))
+
+project.ext.versionMajor = Integer.parseInt((String) versionProps['VERSION_MAJOR'])
+project.ext.versionMinor = Integer.parseInt((String) versionProps['VERSION_MINOR'])
+project.ext.versionPatch = Integer.parseInt((String) versionProps['VERSION_PATCH'])
+project.ext.versionBuild = Integer.parseInt((String) versionProps['VERSION_BUILD'])
+
 apply plugin: 'com.android.application'
 apply plugin: 'crashlytics'
 
@@ -36,8 +46,9 @@ android {
         applicationId "com.tradehero.th"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 10006
-        versionName "3.6.3"
+
+        versionCode project.ext.versionBuild
+        versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
     }
 
     sourceSets {
@@ -51,6 +62,10 @@ android {
 
     signingConfigs {
         release {
+            keyAlias 'tradehero'
+            keyPassword 'password99__**01'
+            storeFile file('../../tradehero_android_release_key.keystore')
+            storePassword 'password99__**01'
         }
     }
 
@@ -82,7 +97,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile 'com.nineoldandroids:library:2.4.0'
     compile('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
@@ -92,7 +107,6 @@ dependencies {
     compile('se.emilsjolander:stickylistheaders:2.5.2@aar') {
         exclude group: 'com.google.android', module: 'support-v4'
     }
-
     compile('com.squareup.picasso:picasso:2.5.2') {
         exclude group: "com.squareup.okhttp", module: "okhttp"
         exclude group: "com.squareup.okhttp", module: "okhttp-urlconnection"
@@ -110,18 +124,16 @@ dependencies {
         exclude group: 'com.squareup.retrofit', module: 'retrofit'
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
     }
-
     compile('com.jakewharton:butterknife:6.1.1.TH-SNAPSHOT') {
         exclude group: 'se.emilsjolander', module: 'stickylistheaders'
     }
-
     compile 'com.tradehero:metrics:2.1.1-SNAPSHOT'
-
     compile 'com.squareup.dagger:dagger:1.2.2'
     provided 'com.squareup.dagger:dagger-compiler:1.2.2'
     compile 'org.jetbrains:annotations:13.0'
     compile 'com.jakewharton.timber:timber:2.5.1'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.4.0' // 2.5.0 ?
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.4.0'
+    // 2.5.0 ?
     compile 'com.tradehero.route:route:0.2-SNAPSHOT'
     compile 'org.ocpsoft.prettytime:prettytime:3.2.7.Final'
     compile 'commons-codec:commons-codec:1.10'
@@ -129,8 +141,7 @@ dependencies {
     compile('com.localytics.android:library:3.1.0') {
         exclude group: 'com.google.android', module: 'support-v4'
     }
-
-    File propFile = file('signing.properties');
+    File propFile = file('signing.properties')
     if (propFile.exists()) {
         def Properties props = new Properties()
         props.load(new FileInputStream(propFile))
@@ -147,5 +158,4 @@ dependencies {
     } else {
         android.buildTypes.release.signingConfig = null
     }
-
 }
