@@ -26,7 +26,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.internal.util.SubscriptionList;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public class BaseFragment extends Fragment
@@ -191,7 +190,11 @@ public class BaseFragment extends Fragment
 
     @Override public void onDestroyOptionsMenu()
     {
-        onDestroyOptionsMenuSubscriptions.unsubscribe();
+        if (onDestroyOptionsMenuSubscriptions != null)
+        // We need this test as it appears some SDKs call destroy before calling create
+        {
+            onDestroyOptionsMenuSubscriptions.unsubscribe();
+        }
         super.onDestroyOptionsMenu();
     }
 
