@@ -24,7 +24,6 @@ import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.dagger.AppModule;
-import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import java.lang.ref.WeakReference;
@@ -49,7 +48,6 @@ public class BaseActivity extends ActionBarActivity
     BroadcastReceiver upgradeRequiredBroadcastListener;
     @Inject @ForSocialToken IntentFilter socialTokenIntentFilter;
     BroadcastReceiver socialTokenBroadcastListener;
-    @Inject Lazy<MarketUtil> marketUtil;
 
     private WeakReference<Toolbar> toolbarRef;
 
@@ -180,7 +178,7 @@ public class BaseActivity extends ActionBarActivity
                                 if (event.isPositive())
                                 {
                                     THToast.show(R.string.update_guide);
-                                    marketUtil.get().showAppOnMarket(BaseActivity.this);
+                                    MarketUtil.showAppOnMarket(BaseActivity.this);
                                     finish();
                                 }
                             }

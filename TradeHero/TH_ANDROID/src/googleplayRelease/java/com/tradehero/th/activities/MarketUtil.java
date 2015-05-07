@@ -6,22 +6,14 @@ import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import javax.inject.Inject;
 import timber.log.Timber;
 
-public class GooglePlayMarketUtil extends GooglePlayMarketUtilBase
+public class MarketUtil extends GooglePlayMarketUtilBase
 {
     // Google PlayStore
     public static final int REQUEST_CODE_UPDATE_PLAY_SERVICE = 43;
 
-    //<editor-fold desc="Constructors">
-    @Inject public GooglePlayMarketUtil()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @Override public void testMarketValid(@NonNull Activity activity)
+    public static void testMarketValid(@NonNull Activity activity)
     {
         int result = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
         if (result != ConnectionResult.SUCCESS)
