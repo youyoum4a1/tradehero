@@ -29,13 +29,15 @@ public class SQLs {
     public final static String QUESTION_GROUP_NAME = "question_group_name";
     public final static String QUESTION_GROUP_USER_ID = "user_id";
     public final static String QUESTION_GROUP_BELONG = "question_group_belong";
+    public final static String QUESTION_GROUP_COUNT = "question_group_count";
     public final static String SQL_CREATE_TABLE_QUESTION_GROUP = "CREATE TABLE '"
             + TABLE_QUESTION_GROUP + "' ('id' INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , '"
-            + QUESTION_GROUP_GROUP_ID + "' INTEGER NOT NULL  UNIQUE , '"
+            + QUESTION_GROUP_GROUP_ID + "' INTEGER NOT NULL  , '"
             + QUESTION_GROUP_PROGRESS + "' INTEGER NOT NULL  , '"
             + QUESTION_GROUP_USER_ID + "' INTEGER NOT NULL  DEFAULT -1, '"
             + QUESTION_GROUP_NAME + "' TEXT, '"
-            + QUESTION_GROUP_BELONG + "' INTEGER NOT NULL  DEFAULT -1)";
+            + QUESTION_GROUP_BELONG + "' INTEGER NOT NULL  DEFAULT -1, '"
+            + QUESTION_GROUP_COUNT + "' INTEGER NOT NULL  DEFAULT 20)";
 
     public final static String TABLE_QUESTION = "question";
     public final static String QUESTION_QUESTION_ID = "question_id";

@@ -51,10 +51,15 @@ public class QuestionsFragment extends DashboardFragment {
         View view = inflater.inflate(R.layout.stock_learning_questions, container, false);
         questionsLV = (ExpandableListView) view.findViewById(R.id.listview_stock_learning_category);
         initQuestionsLV();
-        RetrieveDataHandler handler = new RetrieveDataHandler();
-        handler.sendEmptyMessageDelayed(-1, 200);
         downloadQuestions();
         return view;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        RetrieveDataHandler handler = new RetrieveDataHandler();
+        handler.sendEmptyMessageDelayed(-1, 200);
     }
 
     private void initQuestionsLV() {
@@ -139,7 +144,7 @@ public class QuestionsFragment extends DashboardFragment {
                 if (questions != null) {
                     dbHelper.insertQuestions(questions);
                 }
-                retrieveDatas();
+                retrieveData();
             }
 
             @Override
@@ -150,7 +155,7 @@ public class QuestionsFragment extends DashboardFragment {
         });
     }
 
-    private void retrieveDatas() {
+    private void retrieveData() {
         if (getActivity() == null) {
             return;
         }
@@ -181,7 +186,7 @@ public class QuestionsFragment extends DashboardFragment {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            retrieveDatas();
+            retrieveData();
         }
     }
 

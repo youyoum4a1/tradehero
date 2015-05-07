@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.tradehero.chinabuild.fragment.stocklearning.Question;
 import com.tradehero.chinabuild.fragment.stocklearning.QuestionGroup;
 import com.tradehero.chinabuild.fragment.stocklearning.QuestionStatusRecord;
-import com.tradehero.common.utils.THLog;
 
 import java.util.ArrayList;
 
@@ -159,6 +158,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
                 ContentValues values = new ContentValues();
                 values.put(SQLs.QUESTION_GROUP_PROGRESS, questionGroup.question_group_progress);
                 values.put(SQLs.QUESTION_GROUP_NAME, questionGroup.name);
+                values.put(SQLs.QUESTION_GROUP_COUNT, questionGroup.count);
                 db.update(SQLs.TABLE_QUESTION_GROUP, values, SQLs.QUESTION_GROUP_USER_ID + " =? and " + SQLs.QUESTION_GROUP_GROUP_ID + " =? ",
                         new String[]{String.valueOf(user_id), String.valueOf(questionGroup.id)});
             } else {
@@ -168,6 +168,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
                 values.put(SQLs.QUESTION_GROUP_USER_ID, user_id);
                 values.put(SQLs.QUESTION_GROUP_NAME, questionGroup.name);
                 values.put(SQLs.QUESTION_GROUP_BELONG, questionGroup.categoryId);
+                values.put(SQLs.QUESTION_GROUP_COUNT, questionGroup.count);
                 db.insert(SQLs.TABLE_QUESTION_GROUP, null, values);
             }
             cursor.close();
@@ -191,6 +192,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
                     ContentValues values = new ContentValues();
                     values.put(SQLs.QUESTION_GROUP_PROGRESS, questionGroup.question_group_progress);
                     values.put(SQLs.QUESTION_GROUP_NAME, questionGroup.name);
+                    values.put(SQLs.QUESTION_GROUP_COUNT, questionGroup.count);
                     db.update(SQLs.TABLE_QUESTION_GROUP, values, SQLs.QUESTION_GROUP_USER_ID + " =? and " + SQLs.QUESTION_GROUP_GROUP_ID + " =? ",
                             new String[]{String.valueOf(user_id), String.valueOf(questionGroup.id)});
                 } else {
@@ -200,6 +202,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
                     values.put(SQLs.QUESTION_GROUP_USER_ID, user_id);
                     values.put(SQLs.QUESTION_GROUP_NAME, questionGroup.name);
                     values.put(SQLs.QUESTION_GROUP_BELONG, questionGroup.categoryId);
+                    values.put(SQLs.QUESTION_GROUP_COUNT, questionGroup.count);
                     db.insert(SQLs.TABLE_QUESTION_GROUP, null, values);
                 }
                 cursor.close();
@@ -224,8 +227,10 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
             int group_id = cursor.getInt(cursor.getColumnIndex(SQLs.QUESTION_GROUP_GROUP_ID));
             String group_name = cursor.getString(cursor.getColumnIndex(SQLs.QUESTION_GROUP_NAME));
             int group_belong = cursor.getInt(cursor.getColumnIndex(SQLs.QUESTION_GROUP_BELONG));
+            int group_count = cursor.getInt(cursor.getColumnIndex(SQLs.QUESTION_GROUP_COUNT));
             questionGroup.question_group_progress = progress;
             questionGroup.id = group_id;
+            questionGroup.count = group_count;
             questionGroup.name = group_name;
             questionGroup.categoryId = group_belong;
             questionGroups.add(questionGroup);
@@ -270,7 +275,6 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<Question> retrieveQuestions(int group_id){
         ArrayList<Question> questions = new ArrayList();
         SQLiteDatabase db = getReadableDatabase();
-        THLog.d("question group id ");
         Cursor cursor = db.query(SQLs.TABLE_QUESTION, null, SQLs.QUESTION_QUESTION_GROUP_ID + " =? ", new String[]{String.valueOf(group_id)}, null, null, null);
         while (cursor.moveToNext()){
             Question question = new Question();

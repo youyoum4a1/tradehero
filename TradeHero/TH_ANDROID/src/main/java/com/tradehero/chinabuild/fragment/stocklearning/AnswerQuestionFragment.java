@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
@@ -19,6 +20,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 
 import javax.inject.Inject;
+
 import java.util.ArrayList;
 
 /**
@@ -32,8 +34,8 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
     public final static String TYPE_NORMAL = "type_normal";
     public final static String TYPE_ERROR = "type_error";
     public final static String TYPE_ONLY_ONE = "type_only_one";
-    public final static String KEY_QUESTION_GROUP= "key_question_group";
-    public final static String KEY_QUESTION= "key_question";
+    public final static String KEY_QUESTION_GROUP = "key_question_group";
+    public final static String KEY_QUESTION = "key_question";
 
     private String type = "";
     private QuestionGroup questionGroup = null;
@@ -41,10 +43,10 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
     private ArrayList<Fragment> questionFragments = new ArrayList();
     private ArrayList<Question> questions = new ArrayList();
 
-    private int beginIndex = 1;
-    private int currentIndex = 1;
+    private int currentIndex = 0;
 
-    @Inject CurrentUserId currentUserId;
+    @Inject
+    CurrentUserId currentUserId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,52 +66,62 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        refreshHeadView(beginIndex);
+        refreshHeadView(0);
     }
 
     private void initArguments() {
         Bundle bundle = getArguments();
-        if(bundle.containsKey(KEY_QUESTION)){
-           return;
+        if (bundle.containsKey(KEY_QUESTION)) {
+            return;
         }
-        if(bundle.containsKey(KEY_QUESTION_GROUP)){
-            questionGroup = (QuestionGroup)bundle.getSerializable(KEY_QUESTION_GROUP);
-            if(questionGroup==null || getActivity()==null){
+        if (bundle.containsKey(KEY_QUESTION_GROUP)) {
+            questionGroup = (QuestionGroup) bundle.getSerializable(KEY_QUESTION_GROUP);
+            if (questionGroup == null || getActivity() == null) {
                 popCurrentFragment();
             }
             type = bundle.getString(KEY_QUESTION_GROUP_TYPE);
-            if(type.equals("")){
+            if (type.equals("")) {
                 popCurrentFragment();
             }
-            if(type.equals(TYPE_NORMAL)){
+            if (type.equals(TYPE_NORMAL)) {
                 StockLearningDatabaseHelper dbHelper = new StockLearningDatabaseHelper(getActivity());
                 questions = dbHelper.retrieveQuestions(questionGroup.id);
             }
         }
     }
 
-    private void initViewPager(){
-        for(Question question : questions){
+    private void initViewPager() {
+        int questionSize = questions.size();
+        for (int num = 0; num < questionSize; num++) {
+            Question question = questions.get(num);
             OneQuestionFragment fragment = new OneQuestionFragment();
             THLog.d(question.toString());
             Bundle bundle = new Bundle();
             bundle.putSerializable(OneQuestionFragment.KEY_ONE_QUESTION, question);
+            bundle.putInt(OneQuestionFragment.KEY_USER_ID, currentUserId.get());
+            if (num == (questionSize - 1)) {
+                bundle.putBoolean(OneQuestionFragment.KEY_FINAL_QUESTION, true);
+            } else {
+                bundle.putBoolean(OneQuestionFragment.KEY_FINAL_QUESTION, false);
+            }
+            bundle.putSerializable(OneQuestionFragment.KEY_QUESTION_GROUP, questionGroup);
+            bundle.putInt(OneQuestionFragment.KEY_QUESTION_INDEX, num + 1);
             fragment.setArguments(bundle);
             questionFragments.add(fragment);
         }
         questionSetVP.setAdapter(new QuestionsViewPagerAdapter(getActivity().getSupportFragmentManager()));
         questionSetVP.setOnPageChangeListener(this);
-        questionSetVP.setCurrentItem(beginIndex);
+        questionSetVP.setCurrentItem(questionGroup.question_group_progress - 1);
     }
 
-    private void refreshHeadView(int index){
+    private void refreshHeadView(int index) {
         String menuTitle = getString(R.string.question_percent, index + 1, questions.size());
         setHeadViewMiddleMain(menuTitle);
     }
 
     @Override
     public void onPageScrolled(int i, float v, int i2) {
-        if(currentIndex!=i){
+        if (currentIndex != i) {
             currentIndex = i;
             refreshHeadView(currentIndex);
         }
@@ -126,7 +138,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
     public class QuestionsViewPagerAdapter extends FragmentPagerAdapter {
 
-        public QuestionsViewPagerAdapter(FragmentManager fragmentManager){
+        public QuestionsViewPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
 
@@ -141,11 +153,11 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
         }
     }
 
-    public class InitDataHandler extends Handler{
+    public class InitDataHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if(questionSetVP == null){
+            if (questionSetVP == null) {
                 return;
             }
             initViewPager();

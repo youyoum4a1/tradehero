@@ -13,6 +13,7 @@
             android:fadingEdge="none"
             android:dividerHeight="0px"
             android:divider="@null"
+            android:listSelector="@drawable/listview_item_selector"
             android:layout_marginTop="10dp"
             android:background="@color/bg_fragment"
             android:layout_width="fill_parent"
