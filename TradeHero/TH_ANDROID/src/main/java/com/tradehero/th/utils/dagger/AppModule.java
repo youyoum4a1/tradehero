@@ -6,7 +6,6 @@ import android.net.NetworkInfo;
 import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.FlavorModule;
 import com.tradehero.th.BuildTypeModule;
-import com.tradehero.th.activities.ActivityAppModule;
 import com.tradehero.th.api.ObjectMapperWrapper;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.THApp;
@@ -29,7 +28,6 @@ import javax.inject.Singleton;
 
 @Module(
         includes = {
-                ActivityAppModule.class,
                 FlavorModule.class,
                 CacheModule.class,
                 GraphicModule.class,

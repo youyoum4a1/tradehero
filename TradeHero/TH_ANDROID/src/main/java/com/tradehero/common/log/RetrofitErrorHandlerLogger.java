@@ -1,13 +1,11 @@
 package com.tradehero.common.log;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.common.utils.RetrofitHelper;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.ForSocialToken;
-import com.tradehero.th.activities.ForUpgrade;
+import com.tradehero.th.activities.ActivityUtil;
 import com.tradehero.th.api.http.ResponseErrorCode;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.utils.Constants;
@@ -15,7 +13,6 @@ import dagger.Lazy;
 import java.net.SocketTimeoutException;
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import retrofit.ErrorHandler;
 import retrofit.RetrofitError;
 import retrofit.client.Header;
@@ -26,20 +23,14 @@ public class RetrofitErrorHandlerLogger implements ErrorHandler
 {
     @NonNull final Lazy<RetrofitHelper> retrofitHelper;
     @NonNull final Lazy<LocalBroadcastManager> localBroadcastManager;
-    @NonNull final Provider<Intent> upgradeIntentProvider;
-    @NonNull final Provider<Intent> socialTokenIntentProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public RetrofitErrorHandlerLogger(
             @NonNull Lazy<RetrofitHelper> retrofitHelper,
-            @NonNull Lazy<LocalBroadcastManager> localBroadcastManager,
-            @NonNull @ForUpgrade Provider<Intent> upgradeIntentProvider,
-            @NonNull @ForSocialToken Provider<Intent> socialTokenIntentProvider)
+            @NonNull Lazy<LocalBroadcastManager> localBroadcastManager)
     {
         this.retrofitHelper = retrofitHelper;
         this.localBroadcastManager = localBroadcastManager;
-        this.upgradeIntentProvider = upgradeIntentProvider;
-        this.socialTokenIntentProvider = socialTokenIntentProvider;
     }
     //</editor-fold>
 
@@ -93,12 +84,12 @@ public class RetrofitErrorHandlerLogger implements ErrorHandler
                     {
                         case OutDatedVersion:
                             THToast.show(R.string.upgrade_needed);
-                            localBroadcastManager.get().sendBroadcast(upgradeIntentProvider.get());
+                            localBroadcastManager.get().sendBroadcast(ActivityUtil.getIntentUpgrade());
                             return;
 
                         case ExpiredSocialToken:
                             THToast.show(R.string.please_update_token_description);
-                            localBroadcastManager.get().sendBroadcast(socialTokenIntentProvider.get());
+                            localBroadcastManager.get().sendBroadcast(ActivityUtil.getIntentSocialToken());
                             return;
                     }
                 }

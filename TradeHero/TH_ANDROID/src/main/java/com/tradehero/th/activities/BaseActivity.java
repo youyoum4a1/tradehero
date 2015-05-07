@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -44,9 +43,7 @@ public class BaseActivity extends ActionBarActivity
     private Injector newInjector;
 
     @Inject protected LocalBroadcastManager localBroadcastManager;
-    @Inject @ForUpgrade IntentFilter upgradeIntentFilter;
     BroadcastReceiver upgradeRequiredBroadcastListener;
-    @Inject @ForSocialToken IntentFilter socialTokenIntentFilter;
     BroadcastReceiver socialTokenBroadcastListener;
 
     private WeakReference<Toolbar> toolbarRef;
@@ -104,8 +101,8 @@ public class BaseActivity extends ActionBarActivity
         {
             accountManager.addOnAccountsUpdatedListener(this, null, true);
         }
-        localBroadcastManager.registerReceiver(upgradeRequiredBroadcastListener, upgradeIntentFilter);
-        localBroadcastManager.registerReceiver(socialTokenBroadcastListener, socialTokenIntentFilter);
+        localBroadcastManager.registerReceiver(upgradeRequiredBroadcastListener, ActivityUtil.getIntentFilterUpgrade());
+        localBroadcastManager.registerReceiver(socialTokenBroadcastListener, ActivityUtil.getIntentFilterSocialToken());
     }
 
     @Override protected void onPause()
