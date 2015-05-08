@@ -24,6 +24,7 @@ import timber.log.Timber;
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
     @InjectView(R.id.profile_screen_user_detail_top) @Optional protected View profileTop;
+    @InjectView(R.id.portfolio_title) @Optional protected TextView portfolioTitle;
     @InjectView(R.id.txt_total_wealth) @Optional protected TextView totalWealth;
     @InjectView(R.id.txt_additional_cash) @Optional protected TextView additionalCash;
     @InjectView(R.id.txt_cash_on_hand) @Optional protected TextView cashOnHand;
@@ -69,6 +70,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @Override public void display(final UserProfileDTO dto)
     {
         super.display(dto);
+        displayPortfolioTitle();
         displayTotalWealth();
         displayAdditionalCash();
         displayCashOnHand();
@@ -83,6 +85,21 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         if (userStatisticView != null && userStatisticsDto != null)
         {
             userStatisticView.display(userStatisticsDto);
+        }
+    }
+
+    protected void displayPortfolioTitle()
+    {
+        if (portfolioTitle != null)
+        {
+            if (userProfileDTO != null && userProfileDTO.portfolio != null)
+            {
+                portfolioTitle.setText(userProfileDTO.portfolio.title);
+            }
+            else
+            {
+                portfolioTitle.setText(R.string.na);
+            }
         }
     }
 
@@ -223,8 +240,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                     userStatisticView.setVisibility(View.VISIBLE);
                     userStatisticsDto = new UserStatisticView.DTO(THApp.context().getResources(), leaderboardUserDTO, userProfileDTO.mostSkilledLbmu);
                 }
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 Timber.d("initUserStaticView error:" + e.toString());
                 if (userStatisticView != null)
