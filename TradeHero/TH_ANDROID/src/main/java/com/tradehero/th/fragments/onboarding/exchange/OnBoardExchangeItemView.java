@@ -27,8 +27,8 @@ public class OnBoardExchangeItemView extends OnBoardSelectableViewLinear<Exchang
 
     @InjectView(android.R.id.icon) ImageView flagImage;
     @InjectView(android.R.id.icon1) ImageView logoImage;
-    @InjectView(android.R.id.text1) TextView shortNameView;
-    @InjectView(android.R.id.text2) TextView nameView;
+    @InjectView(android.R.id.text1) TextView nameView;
+    @InjectView(android.R.id.text2) TextView shortNameView;
     @InjectView(R.id.top_stock_list) TopStockListView topStockListView;
 
     @NonNull private final Transformation whiteTransformation;

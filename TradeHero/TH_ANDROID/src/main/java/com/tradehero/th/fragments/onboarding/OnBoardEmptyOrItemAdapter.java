@@ -39,9 +39,12 @@ public class OnBoardEmptyOrItemAdapter<T> extends DTOAdapterNew<T>
 
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-        if (super.getCount() == 0) {
+        if (super.getCount() == 0)
+        {
             return inflater.inflate(emptyRes, viewGroup, false);
-        } else {
+        }
+        else
+        {
             return super.getView(position, convertView, viewGroup);
         }
     }

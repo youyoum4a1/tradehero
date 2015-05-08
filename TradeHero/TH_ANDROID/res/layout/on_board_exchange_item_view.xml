@@ -53,16 +53,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-      <TextView
-          android:id="@android:id/text1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
-          android:layout_alignParentStart="true"
-          style="@style/TH.Subhead"
-          tools:text="NYSE"
-          />
-
       <ImageView
           android:id="@android:id/icon2"
           android:layout_width="@dimen/size_3"
@@ -74,18 +64,30 @@
 
       <TextView
           android:id="@android:id/text2"
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_toRightOf="@android:id/text1"
-          android:layout_toEndOf="@android:id/text1"
           android:layout_toLeftOf="@android:id/icon2"
           android:layout_toStartOf="@android:id/icon2"
           android:ellipsize="end"
-          android:gravity="end"
+          android:gravity="end|center_vertical"
           android:lines="1"
           style="@style/TH.Caption"
-          tools:text="New York Stock Exchange"
+          tools:text="NYSE"
           />
+
+        <TextView
+            android:id="@android:id/text1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@android:id/text2"
+            android:layout_toStartOf="@android:id/text2"
+            style="@style/TH.Subhead"
+            android:lines="1"
+            android:ellipsize="end"
+            tools:text="NY Stock Exchange"
+            />
 
     </RelativeLayout>
 
