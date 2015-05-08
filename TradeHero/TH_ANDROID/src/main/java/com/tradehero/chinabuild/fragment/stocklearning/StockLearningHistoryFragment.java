@@ -1,6 +1,8 @@
 package com.tradehero.chinabuild.fragment.stocklearning;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,17 +10,28 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 
 /**
  * Created by palmer on 15/3/31.
  */
-public class StockLearningHistoryFragment extends DashboardFragment
-{
+public class StockLearningHistoryFragment extends DashboardFragment {
     private ListView historyLV;
     private StockLearningAnswersHistoryAdapter adapter;
+
+    private ArrayList<Question> questions = new ArrayList();
+    private ArrayList<QuestionStatusRecord> records = new ArrayList();
+
+    @Inject CurrentUserId currentUserId;
+
+    private QuestionGroup questionGroup;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,40 +51,58 @@ public class StockLearningHistoryFragment extends DashboardFragment
         refreshHistoryData();
         historyLV = (ListView) view.findViewById(R.id.listview_answers_history);
         historyLV.setAdapter(adapter);
-        historyLV.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
+        historyLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long i)
-            {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long i) {
                 gotoHistory(adapter.getItem(position));
             }
         });
-
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        RefreshQuestionHandler handler = new RefreshQuestionHandler();
+        handler.sendEmptyMessageDelayed(-1, 200);
+    }
+
     public void initArgument() {
+        Bundle bundle = getArguments();
+        questionGroup = (QuestionGroup) bundle.getSerializable(AnswersSummaryFragment.KEY_QUESTION_GROUP);
+        if (questionGroup == null) {
+            popCurrentFragment();
+        }
     }
 
-    //返回历史题数据，包含错误标记
-    public ArrayList<Question> getHistoryQuestionList() {
-        return null;
-    }
-
-    //返回错误答题数据，不做错误标记
-    public ArrayList<Question> getErrorQuestionList() {
-        return null;
-    }
-
-    //Test Data
     private void refreshHistoryData() {
-        if (adapter == null)
-        {
+        if (adapter == null) {
             adapter = new StockLearningAnswersHistoryAdapter(getActivity());
-            adapter.setQuestionItems(getHistoryQuestionList());
         }
     }
 
     private void gotoHistory(Question question) {
+        Bundle bundle = new Bundle();
+        bundle.putString(AnswerQuestionFragment.KEY_QUESTION_GROUP_TYPE, AnswerQuestionFragment.TYPE_ONLY_ONE);
+        bundle.putSerializable(AnswerQuestionFragment.KEY_QUESTION_GROUP, questionGroup);
+        bundle.putSerializable(AnswerQuestionFragment.KEY_QUESTION, question);
+        THLog.d("question " + question.id + " group " + questionGroup.id);
+        pushFragment(AnswerQuestionFragment.class, bundle);
+    }
+
+    public class RefreshQuestionHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (getActivity() == null) {
+                return;
+            }
+            StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
+            records = stockLearningDatabaseHelper.retrieveQuestionRecords(currentUserId.get(), questionGroup.id);
+            questions = stockLearningDatabaseHelper.retrieveQuestions(questionGroup.id);
+            if(adapter!=null){
+                adapter.setQuestionItems(questions, records);
+            }
+        }
     }
 }

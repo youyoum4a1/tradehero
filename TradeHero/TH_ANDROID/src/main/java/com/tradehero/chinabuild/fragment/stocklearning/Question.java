@@ -18,7 +18,6 @@ public class Question implements Serializable{
 	public String option4 = "";
 	public String answer = "";
 	public int subcategory;
-    public boolean isError;
     public String imageUrl;
 
     public int getChoiceType()

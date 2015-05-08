@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -28,8 +27,7 @@ import java.util.ArrayList;
 /**
  * Created by palmer on 15/3/31.
  */
-public class AnswersSummaryFragment extends DashboardFragment implements View.OnClickListener
-{
+public class AnswersSummaryFragment extends DashboardFragment implements View.OnClickListener {
 
     private TextView summaryDescTV;
     private Button historyBtn;
@@ -74,7 +72,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         RefreshSummaryHandler refreshSummaryHandler = new RefreshSummaryHandler();
         refreshSummaryHandler.sendEmptyMessageDelayed(-1, 200);
@@ -101,8 +99,8 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
 
     private void initArgument() {
         Bundle bundle = getArguments();
-        questionGroup = (QuestionGroup)bundle.getSerializable(KEY_QUESTION_GROUP);
-        if(questionGroup==null){
+        questionGroup = (QuestionGroup) bundle.getSerializable(KEY_QUESTION_GROUP);
+        if (questionGroup == null) {
             popCurrentFragment();
         } else {
             StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
@@ -111,10 +109,16 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
     }
 
     private void gotoFails() {
-
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(AnswerQuestionFragment.KEY_QUESTION_GROUP, questionGroup);
+        bundle.putString(AnswerQuestionFragment.KEY_QUESTION_GROUP_TYPE, AnswerQuestionFragment.TYPE_ERROR);
+        pushFragment(AnswerQuestionFragment.class, bundle);
     }
 
     private void gotoHistory() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(AnswerQuestionFragment.KEY_QUESTION_GROUP, questionGroup);
+        pushFragment(StockLearningHistoryFragment.class, bundle);
     }
 
     private void initSummaryDescriptionResources() {
@@ -157,32 +161,28 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
         }
     }
 
-    public class RefreshSummaryHandler extends Handler{
+    public class RefreshSummaryHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if(getActivity()==null){
+            if (getActivity() == null) {
                 return;
             }
             StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
             questionStatusRecords = stockLearningDatabaseHelper.retrieveQuestionRecords(currentUserId.get(), questionGroup.id);
             reAnswerQuestions.clear();
-            THLog.d("questionStatusRecords " + questionStatusRecords.size());
-            for(Question question: questions){
+            for (Question question : questions) {
                 boolean isAnswered = false;
-                for(QuestionStatusRecord questionStatusRecord: questionStatusRecords){
-                    THLog.d("question_id " + question.id + " questionStatusRecord.question_id " + questionStatusRecord.question_id);
-                    if(questionStatusRecord.question_id == question.id){
-                        //THLog.d(question.toString());
-                        //THLog.d(questionStatusRecord.toString());
+                for (QuestionStatusRecord questionStatusRecord : questionStatusRecords) {
+                    if (questionStatusRecord.question_id == question.id) {
                         isAnswered = true;
-                        if(!questionStatusRecord.question_choice.toLowerCase().equals(question.answer.toLowerCase())){
+                        if (!questionStatusRecord.question_choice.toLowerCase().equals(question.answer.toLowerCase())) {
                             reAnswerQuestions.add(question);
                             break;
                         }
                     }
                 }
-                if(!isAnswered){
+                if (!isAnswered) {
                     reAnswerQuestions.add(question);
                 }
             }

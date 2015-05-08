@@ -98,9 +98,12 @@ public class QuestionsFragment extends DashboardFragment {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int groupPosition, int childPosition, long l) {
                 if(stockLearningQuestionsAdapter!=null){
-
                     QuestionGroup questionGroup = stockLearningQuestionsAdapter.getChild(groupPosition, childPosition);
-                    jumpToAnswerQuestion(questionGroup);
+                    if(questionGroup.question_group_progress == questionGroup.count){
+                        jumpToSummaryFragment(questionGroup);
+                    }else {
+                        jumpToAnswerQuestion(questionGroup);
+                    }
                 }
                 return false;
             }
@@ -195,5 +198,11 @@ public class QuestionsFragment extends DashboardFragment {
         bundle.putString(AnswerQuestionFragment.KEY_QUESTION_GROUP_TYPE, AnswerQuestionFragment.TYPE_NORMAL);
         bundle.putSerializable(AnswerQuestionFragment.KEY_QUESTION_GROUP, questionGroup);
         gotoDashboard(AnswerQuestionFragment.class.getName(), bundle);
+    }
+
+    private void jumpToSummaryFragment(QuestionGroup questionGroup){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(AnswersSummaryFragment.KEY_QUESTION_GROUP, questionGroup);
+        gotoDashboard(AnswersSummaryFragment.class.getName(), bundle);
     }
 }

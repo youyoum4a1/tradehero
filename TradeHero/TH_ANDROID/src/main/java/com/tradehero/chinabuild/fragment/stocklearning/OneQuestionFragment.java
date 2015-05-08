@@ -12,14 +12,11 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.fragments.DashboardNavigator;
 
 import com.tradehero.th.fragments.base.DashboardFragment;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by palmer on 15/4/24.
@@ -46,14 +43,11 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
     private QuestionStatusRecord questionStatusRecord;
     private QuestionGroup questionGroup;
     private int user_id = -1;
-    private boolean isOnlyResult = false;
-    private boolean isReAnswerCompleted = false;
     private boolean isFinalQuestion = false;
     private int choiceType;
     private int index;
 
     public static String KEY_ONE_QUESTION = "key_one_question";
-    public static String KEY_ONLY_RESULT = "key_only_result";
     public static String KEY_USER_ID = "key_user_id";
     public static String KEY_FINAL_QUESTION = "key_final_question";
     public static String KEY_QUESTION_GROUP = "key_question_group";
@@ -64,6 +58,10 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
     private boolean isCSelected = false;
     private boolean isDSelected = false;
 
+    private String type = "";
+
+    private View view;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +70,14 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.stock_learning_to_answer, container, false);
+        if(view != null){
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null) {
+                parent.removeView(view);
+            }
+            return view;
+        }
+        view = inflater.inflate(R.layout.stock_learning_to_answer, container, false);
         ButterKnife.inject(this, view);
         refreshView();
         aLL.setOnClickListener(this);
@@ -129,16 +134,20 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
         Bundle bundle = getArguments();
         user_id = bundle.getInt(KEY_USER_ID);
         question = (Question) bundle.getSerializable(KEY_ONE_QUESTION);
-        isOnlyResult = bundle.getBoolean(KEY_ONLY_RESULT, false);
         isFinalQuestion = bundle.getBoolean(KEY_FINAL_QUESTION, false);
-        questionGroup = (QuestionGroup)bundle.getSerializable(KEY_QUESTION_GROUP);
+        questionGroup = (QuestionGroup) bundle.getSerializable(KEY_QUESTION_GROUP);
         index = bundle.getInt(KEY_QUESTION_INDEX, 1);
+        type = bundle.getString(AnswerQuestionFragment.KEY_QUESTION_GROUP_TYPE, "");
+        if (type.equals("")) {
+            getActivity().finish();
+        }
+        THLog.d("b question " + question.id + " group " + questionGroup.id);
     }
 
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
-        switch(viewId){
+        switch (viewId) {
             case R.id.linearlayout_question_choice_a:
                 selectOneChoice(1);
                 break;
@@ -157,21 +166,21 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private void submitAnswer(){
+    private void submitAnswer() {
         String answer = "";
-        if(isASelected){
+        if (isASelected) {
             answer = answer + "a";
         }
-        if(isBSelected){
+        if (isBSelected) {
             answer = answer + "b";
         }
-        if(isCSelected){
+        if (isCSelected) {
             answer = answer + "c";
         }
-        if(isDSelected){
+        if (isDSelected) {
             answer = answer + "d";
         }
-        if(answer.equals("")){
+        if (answer.equals("")) {
             return;
         }
         StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
@@ -181,23 +190,28 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
         questionStatusRecord.question_group_id = question.subcategory;
         questionStatusRecord.user_id = user_id;
         stockLearningDatabaseHelper.insertQuestionRecord(questionStatusRecord);
-        if(questionGroup!=null){
-            questionGroup.question_group_progress = index;
-            stockLearningDatabaseHelper.insertOrUpdateQuestionGroup(questionGroup, user_id);
+        if (type.equals(AnswerQuestionFragment.TYPE_NORMAL)) {
+            if (questionGroup != null) {
+                questionGroup.question_group_progress = index;
+                stockLearningDatabaseHelper.insertOrUpdateQuestionGroup(questionGroup, user_id);
+            }
+        }
+        if (type.equals(AnswerQuestionFragment.TYPE_ERROR)) {
+            StockLearningQuestionManager.getInstance().removeReAnswerQuestion(question.id);
         }
         refreshAnswerViews();
-        if(isFinalQuestion){
+        if (isFinalQuestion) {
             jumpToSummaryFragment();
         }
     }
 
-    private void selectOneChoice(int index){
-        if(choiceType == Question.JUDGECHOISE || choiceType == Question.ONECHOICE){
-            switch (index){
+    private void selectOneChoice(int index) {
+        if (choiceType == Question.JUDGECHOISE || choiceType == Question.ONECHOICE) {
+            switch (index) {
                 case 1:
-                    if(isASelected){
+                    if (isASelected) {
                         isASelected = false;
-                    }else{
+                    } else {
                         isASelected = true;
                         isBSelected = false;
                         isCSelected = false;
@@ -205,9 +219,9 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
                     }
                     break;
                 case 2:
-                    if(isBSelected){
+                    if (isBSelected) {
                         isBSelected = false;
-                    }else{
+                    } else {
                         isASelected = false;
                         isBSelected = true;
                         isCSelected = false;
@@ -215,9 +229,9 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
                     }
                     break;
                 case 3:
-                    if(isCSelected){
+                    if (isCSelected) {
                         isCSelected = false;
-                    }else{
+                    } else {
                         isASelected = false;
                         isBSelected = false;
                         isCSelected = true;
@@ -225,9 +239,9 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
                     }
                     break;
                 case 4:
-                    if(isDSelected){
+                    if (isDSelected) {
                         isDSelected = false;
-                    }else{
+                    } else {
                         isASelected = false;
                         isBSelected = false;
                         isCSelected = false;
@@ -235,66 +249,66 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
                     }
                     break;
             }
-        }else if(choiceType == Question.MULTICHOISE){
-            switch (index){
+        } else if (choiceType == Question.MULTICHOISE) {
+            switch (index) {
                 case 1:
-                    if(isASelected){
+                    if (isASelected) {
                         isASelected = false;
-                    }else{
+                    } else {
                         isASelected = true;
                     }
                     break;
                 case 2:
-                    if(isBSelected){
+                    if (isBSelected) {
                         isBSelected = false;
-                    }else{
+                    } else {
                         isBSelected = true;
                     }
                     break;
                 case 3:
-                    if(isCSelected){
+                    if (isCSelected) {
                         isCSelected = false;
-                    }else{
+                    } else {
                         isCSelected = true;
                     }
                     break;
                 case 4:
-                    if(isDSelected){
+                    if (isDSelected) {
                         isDSelected = false;
-                    }else{
+                    } else {
                         isDSelected = true;
                     }
                     break;
             }
         }
-        if(isASelected){
+        if (isASelected) {
             aIV.setBackgroundResource(R.drawable.question_item_selected);
-        }else {
+        } else {
             aIV.setBackgroundResource(R.drawable.question_item_default_choice_tag);
         }
-        if(isBSelected){
+        if (isBSelected) {
             bIV.setBackgroundResource(R.drawable.question_item_selected);
-        }else {
+        } else {
             bIV.setBackgroundResource(R.drawable.question_item_default_choice_tag);
         }
-        if(isCSelected){
+        if (isCSelected) {
             cIV.setBackgroundResource(R.drawable.question_item_selected);
-        }else {
+        } else {
             cIV.setBackgroundResource(R.drawable.question_item_default_choice_tag);
         }
-        if(isDSelected){
+        if (isDSelected) {
             dIV.setBackgroundResource(R.drawable.question_item_selected);
-        }else {
+        } else {
             dIV.setBackgroundResource(R.drawable.question_item_default_choice_tag);
         }
         refreshAnswerBtn();
     }
 
-    private void refreshAnswerBtn(){
-        if(isASelected || isBSelected || isCSelected || isDSelected){
+    private void refreshAnswerBtn() {
+        if (isASelected || isBSelected || isCSelected || isDSelected) {
             answerBtn.setEnabled(true);
 
-        }else{
+        } else {
             answerBtn.setEnabled(false);
         }
     }
@@ -303,7 +317,24 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
         if (question != null) {
             StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
             questionStatusRecord = stockLearningDatabaseHelper.retrieveQuestionRecord(question.id, user_id, question.subcategory);
-            if (questionStatusRecord == null) {
+            if (type.equals(AnswerQuestionFragment.TYPE_ERROR)) {
+                if (StockLearningQuestionManager.getInstance().isNeedReAnswer(question.id)) {
+                    aLL.setClickable(true);
+                    bLL.setClickable(true);
+                    cLL.setClickable(true);
+                    dLL.setClickable(true);
+                    answerBtn.setVisibility(View.VISIBLE);
+                    answerBtn.setEnabled(true);
+                } else {
+                    if (questionStatusRecord == null && getActivity() != null) {
+                        getActivity().finish();
+                    } else {
+                        displayResult();
+                    }
+                }
+                return;
+            }
+            if (questionStatusRecord == null && !type.equals(AnswerQuestionFragment.TYPE_ONLY_ONE)) {
                 aLL.setClickable(true);
                 bLL.setClickable(true);
                 cLL.setClickable(true);
@@ -311,44 +342,53 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
                 answerBtn.setVisibility(View.VISIBLE);
                 answerBtn.setEnabled(false);
             } else {
-                aLL.setClickable(false);
-                bLL.setClickable(false);
-                cLL.setClickable(false);
-                dLL.setClickable(false);
-                answerBtn.setVisibility(View.GONE);
-                String userAnswer = questionStatusRecord.question_choice.toLowerCase();
-                String rightAnswer = question.answer.toLowerCase();
-                if(userAnswer.contains("a")){
-                    aIV.setBackgroundResource(R.drawable.question_item_wrong);
-                }
-                if(userAnswer.contains("b")){
-                    bIV.setBackgroundResource(R.drawable.question_item_wrong);
-                }
-                if(userAnswer.contains("c")){
-                    cIV.setBackgroundResource(R.drawable.question_item_wrong);
-                }
-                if(userAnswer.contains("d")){
-                    dIV.setBackgroundResource(R.drawable.question_item_wrong);
-                }
-                if(rightAnswer.contains("a")){
-                    aIV.setBackgroundResource(R.drawable.question_item_right);
-                }
-                if(rightAnswer.contains("b")){
-                    bIV.setBackgroundResource(R.drawable.question_item_right);
-                }
-                if(rightAnswer.contains("c")){
-                    cIV.setBackgroundResource(R.drawable.question_item_right);
-                }
-                if(rightAnswer.contains("d")){
-                    dIV.setBackgroundResource(R.drawable.question_item_right);
-                }
+                displayResult();
             }
         }
     }
 
-    private void jumpToSummaryFragment(){
+    private void displayResult() {
+        aLL.setClickable(false);
+        bLL.setClickable(false);
+        cLL.setClickable(false);
+        dLL.setClickable(false);
+        answerBtn.setVisibility(View.GONE);
+        String userAnswer = "";
+        if(questionStatusRecord==null){
+            userAnswer = "";
+        }else {
+            userAnswer = questionStatusRecord.question_choice.toLowerCase();
+        }
+        String rightAnswer = question.answer.toLowerCase();
+        if (userAnswer.contains("a")) {
+            aIV.setBackgroundResource(R.drawable.question_item_wrong);
+        }
+        if (userAnswer.contains("b")) {
+            bIV.setBackgroundResource(R.drawable.question_item_wrong);
+        }
+        if (userAnswer.contains("c")) {
+            cIV.setBackgroundResource(R.drawable.question_item_wrong);
+        }
+        if (userAnswer.contains("d")) {
+            dIV.setBackgroundResource(R.drawable.question_item_wrong);
+        }
+        if (rightAnswer.contains("a")) {
+            aIV.setBackgroundResource(R.drawable.question_item_right);
+        }
+        if (rightAnswer.contains("b")) {
+            bIV.setBackgroundResource(R.drawable.question_item_right);
+        }
+        if (rightAnswer.contains("c")) {
+            cIV.setBackgroundResource(R.drawable.question_item_right);
+        }
+        if (rightAnswer.contains("d")) {
+            dIV.setBackgroundResource(R.drawable.question_item_right);
+        }
+    }
+
+    private void jumpToSummaryFragment() {
         Bundle bundle = new Bundle();
-        if(getActivity()!=null) {
+        if (getActivity() != null) {
             getActivity().finish();
         }
         bundle.putSerializable(AnswersSummaryFragment.KEY_QUESTION_GROUP, questionGroup);

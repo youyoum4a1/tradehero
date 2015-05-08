@@ -6,6 +6,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,10 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
     @Inject CurrentUserId currentUserId;
 
+    private QuestionsViewPagerAdapter adapter;
+
+    private View view;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +60,14 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.stock_learning_question_set, container, false);
+        if(view != null){
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null) {
+                parent.removeView(view);
+            }
+            return view;
+        }
+        view = inflater.inflate(R.layout.stock_learning_question_set, container, false);
         questionSetVP = (ViewPager) view.findViewById(R.id.viewpager_questions);
         InitDataHandler handler = new InitDataHandler();
         handler.sendEmptyMessageDelayed(-1, 200);
@@ -70,9 +82,6 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
     private void initArguments() {
         Bundle bundle = getArguments();
-        if (bundle.containsKey(KEY_QUESTION)) {
-            return;
-        }
         if (bundle.containsKey(KEY_QUESTION_GROUP)) {
             questionGroup = (QuestionGroup) bundle.getSerializable(KEY_QUESTION_GROUP);
             if (questionGroup == null || getActivity() == null) {
@@ -86,15 +95,27 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
                 StockLearningDatabaseHelper dbHelper = new StockLearningDatabaseHelper(getActivity());
                 questions = dbHelper.retrieveQuestions(questionGroup.id);
             }
+            if (type.equals(TYPE_ERROR)) {
+                questions = StockLearningQuestionManager.getInstance().getReAnswerQuestions();
+            }
+            if (type.equals(TYPE_ONLY_ONE)) {
+                Question question = (Question) bundle.getSerializable(KEY_QUESTION);
+                if (question == null) {
+                    popCurrentFragment();
+                    return;
+                }
+                questions.clear();
+                questions.add(question);
+            }
         }
     }
 
     private void initViewPager() {
         int questionSize = questions.size();
+        questionFragments.clear();
         for (int num = 0; num < questionSize; num++) {
             Question question = questions.get(num);
             OneQuestionFragment fragment = new OneQuestionFragment();
-            THLog.d(question.toString());
             Bundle bundle = new Bundle();
             bundle.putSerializable(OneQuestionFragment.KEY_ONE_QUESTION, question);
             bundle.putInt(OneQuestionFragment.KEY_USER_ID, currentUserId.get());
@@ -105,12 +126,23 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
             }
             bundle.putSerializable(OneQuestionFragment.KEY_QUESTION_GROUP, questionGroup);
             bundle.putInt(OneQuestionFragment.KEY_QUESTION_INDEX, num + 1);
+            bundle.putString(KEY_QUESTION_GROUP_TYPE, type);
+            THLog.d("a question " + question.id + " group " + questionGroup.id);
             fragment.setArguments(bundle);
             questionFragments.add(fragment);
         }
-        questionSetVP.setAdapter(new QuestionsViewPagerAdapter(getActivity().getSupportFragmentManager()));
+        if(adapter==null){
+            adapter = new QuestionsViewPagerAdapter(getActivity().getSupportFragmentManager());
+        }
+        questionSetVP.setAdapter(adapter);
         questionSetVP.setOnPageChangeListener(this);
-        questionSetVP.setCurrentItem(questionGroup.question_group_progress - 1);
+        if (type.equals(TYPE_ERROR) || type.equals(TYPE_ONLY_ONE)) {
+            questionSetVP.setCurrentItem(0);
+        }
+        if (type.equals(TYPE_NORMAL)) {
+            questionSetVP.setCurrentItem(questionGroup.question_group_progress - 1);
+        }
+
     }
 
     private void refreshHeadView(int index) {
@@ -135,7 +167,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
     }
 
-    public class QuestionsViewPagerAdapter extends FragmentPagerAdapter {
+    public class QuestionsViewPagerAdapter extends FragmentStatePagerAdapter {
 
         public QuestionsViewPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
@@ -143,11 +175,13 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
         @Override
         public Fragment getItem(int i) {
+
             return questionFragments.get(i);
         }
 
         @Override
         public int getCount() {
+            THLog.d("size " + questionFragments.size());
             return questionFragments.size();
         }
     }
