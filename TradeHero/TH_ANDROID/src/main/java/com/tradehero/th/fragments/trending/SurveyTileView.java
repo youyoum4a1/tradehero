@@ -16,7 +16,6 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import dagger.Lazy;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;

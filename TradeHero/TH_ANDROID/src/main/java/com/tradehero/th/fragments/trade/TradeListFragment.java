@@ -55,7 +55,6 @@ import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
