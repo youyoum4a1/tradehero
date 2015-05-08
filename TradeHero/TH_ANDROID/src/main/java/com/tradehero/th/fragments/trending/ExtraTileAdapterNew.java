@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.WrapperListAdapter;
+import com.tradehero.th.fragments.games.popquiz.PopQuizGameFragmentUtil;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
@@ -208,7 +209,8 @@ public class ExtraTileAdapterNew extends BaseAdapter
     {
         return !tileType.equals(TileType.Normal)
                 && (isSurveyEnabled || !tileType.equals(TileType.Survey))
-                && (isProviderEnabled || !tileType.equals(TileType.FromProvider));
+                && (isProviderEnabled || !tileType.equals(TileType.FromProvider))
+                && (PopQuizGameFragmentUtil.isPopQuizEnabled() || !tileType.equals(TileType.PopQuiz));
     }
 
     public void clearExtraTiles()
@@ -220,7 +222,7 @@ public class ExtraTileAdapterNew extends BaseAdapter
 
     protected void putFirstExtraTilePosition()
     {
-        this.extraTiles.put(random.nextInt(EXTRA_TILE_RANGE), TileType.PopQuiz);
+        this.extraTiles.put(random.nextInt(EXTRA_TILE_RANGE), PopQuizGameFragmentUtil.isPopQuizEnabled() ? TileType.PopQuiz : getRandomisedTile());
     }
 
     protected int getMaxExtraTilePosition()

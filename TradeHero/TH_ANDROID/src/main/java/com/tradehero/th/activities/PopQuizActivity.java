@@ -47,15 +47,9 @@ public class PopQuizActivity extends OneFragmentActivity
                 {
                     Method m = xwalk.getDeclaredMethod("putUrl", cArg);
                     m.invoke(null, args, POPQUIZ_HOME_URL);
-                } catch (NoSuchMethodException e)
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
                 {
                     e.printStackTrace();
-                } catch (InvocationTargetException e1)
-                {
-                    e1.printStackTrace();
-                } catch (IllegalAccessException e2)
-                {
-                    e2.printStackTrace();
                 }
             }
         }

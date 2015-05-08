@@ -40,6 +40,8 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.tradehero.th.fragments.games.popquiz.PopQuizGameFragmentUtil;
 import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
@@ -505,7 +507,10 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 handleProviderTileOnClick((ProviderTileView) view);
                 break;
             case PopQuiz:
-                //TODO
+                if(PopQuizGameFragmentUtil.isPopQuizEnabled())
+                {
+                    navigator.get().launchTabActivity(RootFragmentType.POPQUIZ);
+                }
                 break;
         }
     }
