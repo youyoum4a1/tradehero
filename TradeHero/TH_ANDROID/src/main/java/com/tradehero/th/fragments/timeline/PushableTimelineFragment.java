@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.View;
 import com.tradehero.route.Routable;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import javax.inject.Inject;
 
@@ -35,13 +34,10 @@ public class PushableTimelineFragment extends TimelineFragment
         super.onPrepareOptionsMenu(menu);
     }
 
-    @Override protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    @Override protected void linkWith(@NonNull UserProfileDTO userProfileDTO)
     {
-        super.linkWith(userProfileDTO, andDisplay);
-        if (andDisplay)
-        {
-            displayActionBarTitle();
-        }
+        super.linkWith(userProfileDTO);
+        displayActionBarTitle();
     }
 
     /**
