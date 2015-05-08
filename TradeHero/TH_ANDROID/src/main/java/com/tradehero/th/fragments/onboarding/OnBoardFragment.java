@@ -37,7 +37,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
-import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
@@ -45,9 +45,11 @@ import com.viewpagerindicator.PageIndicator;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subscriptions.Subscriptions;
 
@@ -126,6 +128,11 @@ public class OnBoardFragment extends BaseFragment
                     THToast.show(errorMessage);
                     errorMessage = null;
                     pager.setCurrentItem(position - 1);
+                }
+                else if (position == INDEX_SELECTION_LAST)
+                {
+                    firstShowOnBoardDialogPreference.justHandled();
+                    submitActions();
                 }
             }
 
@@ -264,33 +271,41 @@ public class OnBoardFragment extends BaseFragment
         }
         fragment.setArguments(args);
         fragmentSubscriptions[INDEX_SELECTION_EXCHANGES] = fragment.getMarketRegionClickedObservable()
+                .subscribeOn(Schedulers.computation())
+                .startWith(selectedRegion)
                 .flatMap(new Func1<MarketRegion, Observable<ExchangeCompactDTOList>>()
                 {
                     @Override public Observable<ExchangeCompactDTOList> call(MarketRegion marketRegion)
                     {
                         selectedRegion = marketRegion;
-                        return fragment.getSelectedExchangesObservable();
+                        return marketRegion == null
+                                ? Observable.<ExchangeCompactDTOList>empty()
+                                : fragment.getSelectedExchangesObservable()
+                                        .subscribeOn(Schedulers.computation())
+                                        .startWith(selectedExchanges);
                     }
                 })
                 .flatMap(new Func1<ExchangeCompactDTOList, Observable<Boolean>>()
                 {
-                    @Override public Observable<Boolean> call(ExchangeCompactDTOList exchangeDTOs)
+                    @Override public Observable<Boolean> call(final ExchangeCompactDTOList exchangeDTOs)
                     {
                         selectedExchanges = exchangeDTOs;
-                        return fragment.getNextClickedObservable();
+                        return fragment.getNextClickedObservable()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnNext(new Action1<Boolean>()
+                                {
+                                    @Override public void call(Boolean forward)
+                                    {
+                                        if (forward && exchangeDTOs != null && exchangeDTOs.size() > 0)
+                                        {
+                                            pager.setCurrentItem(INDEX_SELECTION_SECTORS, true);
+                                        }
+                                    }
+                                });
                     }
                 })
                 .subscribe(
-                        new Action1<Boolean>()
-                        {
-                            @Override public void call(Boolean clicked)
-                            {
-                                if (clicked)
-                                {
-                                    pager.setCurrentItem(INDEX_SELECTION_SECTORS, true);
-                                }
-                            }
-                        },
+                        new TimberAction1<Boolean>("Moved to sectors page"),
                         new TimberOnErrorAction("Failed to collect exchange compacts"));
         return fragment;
     }
@@ -304,29 +319,37 @@ public class OnBoardFragment extends BaseFragment
         }
         fragment.setArguments(args);
         fragmentSubscriptions[INDEX_SELECTION_SECTORS] = fragment.getSelectedSectorsObservable()
+                .subscribeOn(Schedulers.computation())
+                .startWith(new SectorCompactDTOList())
                 .flatMap(new Func1<SectorCompactDTOList, Observable<Boolean>>()
                 {
-                    @Override public Observable<Boolean> call(SectorCompactDTOList sectorDTOs)
+                    @Override public Observable<Boolean> call(final SectorCompactDTOList sectorDTOs)
                     {
                         selectedSectors = sectorDTOs;
                         if (sectorDTOs.size() > 0)
                         {
                             exchangeSectorBehavior.onNext(new ExchangeCompactSectorListDTO(selectedExchanges, sectorDTOs));
                         }
-                        return fragment.getNextClickedObservable();
+                        return fragment.getNextClickedObservable()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnNext(new Action1<Boolean>()
+                                {
+                                    @Override public void call(Boolean forward)
+                                    {
+                                        if (!forward)
+                                        {
+                                            pager.setCurrentItem(INDEX_SELECTION_EXCHANGES, true);
+                                        }
+                                        else if (sectorDTOs.size() > 0)
+                                        {
+                                            pager.setCurrentItem(INDEX_SELECTION_HEROES, true);
+                                        }
+                                    }
+                                });
                     }
                 })
                 .subscribe(
-                        new Action1<Boolean>()
-                        {
-                            @Override public void call(Boolean clicked)
-                            {
-                                if (clicked)
-                                {
-                                    pager.setCurrentItem(INDEX_SELECTION_HEROES, true);
-                                }
-                            }
-                        },
+                        new TimberAction1<Boolean>("Sector selection button"),
                         new TimberOnErrorAction("Failed to collect sectors"));
         return fragment;
     }
@@ -341,25 +364,33 @@ public class OnBoardFragment extends BaseFragment
         }
         fragment.setArguments(args);
         fragmentSubscriptions[INDEX_SELECTION_HEROES] = fragment.getSelectedUsersObservable()
+                .subscribeOn(Schedulers.computation())
+                .startWith(new LeaderboardUserDTOList())
                 .flatMap(new Func1<LeaderboardUserDTOList, Observable<Boolean>>()
                 {
-                    @Override public Observable<Boolean> call(LeaderboardUserDTOList leaderboardUserDTOs)
+                    @Override public Observable<Boolean> call(final LeaderboardUserDTOList leaderboardUserDTOs)
                     {
                         selectedHeroes = leaderboardUserDTOs;
-                        return fragment.getNextClickedObservable();
+                        return fragment.getNextClickedObservable()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnNext(new Action1<Boolean>()
+                                {
+                                    @Override public void call(Boolean forward)
+                                    {
+                                        if (!forward)
+                                        {
+                                            pager.setCurrentItem(INDEX_SELECTION_SECTORS, true);
+                                        }
+                                        else if (leaderboardUserDTOs.size() > 0)
+                                        {
+                                            pager.setCurrentItem(INDEX_SELECTION_WATCHLIST, true);
+                                        }
+                                    }
+                                });
                     }
                 })
                 .subscribe(
-                        new Action1<Boolean>()
-                        {
-                            @Override public void call(Boolean clicked)
-                            {
-                                if (clicked)
-                                {
-                                    pager.setCurrentItem(INDEX_SELECTION_WATCHLIST, true);
-                                }
-                            }
-                        },
+                        new TimberAction1<Boolean>("Heroes selection button"),
                         new TimberOnErrorAction("Failed to collect heroes"));
         return fragment;
     }
@@ -374,28 +405,34 @@ public class OnBoardFragment extends BaseFragment
         }
         fragment.setArguments(args);
         fragmentSubscriptions[INDEX_SELECTION_WATCHLIST] = fragment.getSelectedStocksObservable()
+                .subscribeOn(Schedulers.computation())
+                .startWith(new SecurityCompactDTOList())
                 .flatMap(new Func1<SecurityCompactDTOList, Observable<Boolean>>()
                 {
                     @Override public Observable<Boolean> call(SecurityCompactDTOList securityCompactDTOs)
                     {
                         selectedStocks = securityCompactDTOs;
                         selectedSecuritiesBehavior.onNext(securityCompactDTOs);
-                        return fragment.getNextClickedObservable();
+                        return fragment.getNextClickedObservable()
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnNext(new Action1<Boolean>()
+                                {
+                                    @Override public void call(Boolean forward)
+                                    {
+                                        if (!forward)
+                                        {
+                                            pager.setCurrentItem(INDEX_SELECTION_HEROES, true);
+                                        }
+                                        else
+                                        {
+                                            pager.setCurrentItem(INDEX_SELECTION_LAST, true);
+                                        }
+                                    }
+                                });
                     }
                 })
                 .subscribe(
-                        new Action1<Boolean>()
-                        {
-                            @Override public void call(Boolean clicked)
-                            {
-                                if (clicked)
-                                {
-                                    pager.setCurrentItem(INDEX_SELECTION_LAST);
-                                    submitActions();
-                                    firstShowOnBoardDialogPreference.justHandled();
-                                }
-                            }
-                        },
+                        new TimberAction1<Boolean>("Stocks selection button"),
                         new ToastAndLogOnErrorAction("Failed to get selected stocks"));
         return fragment;
     }
@@ -419,12 +456,12 @@ public class OnBoardFragment extends BaseFragment
     {
         userServiceWrapper.followBatchFreeRx(new BatchFollowFormDTO(selectedHeroes, null))
                 .subscribe(
-                        new EmptyAction1<UserProfileDTO>(),
+                        new TimberAction1<UserProfileDTO>("Submitted selectedHeroes"),
                         new ToastAndLogOnErrorAction("Failed to submit selectedHeroes " + selectedHeroes));
 
         watchlistServiceWrapper.batchCreateRx(new SecurityIntegerIdListForm(selectedStocks, null))
                 .subscribe(
-                        new EmptyAction1<WatchlistPositionDTOList>(),
+                        new TimberAction1<WatchlistPositionDTOList>("Submitted selectedStocks"),
                         new ToastAndLogOnErrorAction("Failed to submit selectedStocks" + selectedStocks));
     }
 }

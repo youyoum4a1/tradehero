@@ -214,6 +214,7 @@ public class UserSelectionScreenFragment extends BaseFragment
                                 userAdapter.addAll(onBoardUsers);
                                 userAdapter.notifyDataSetChanged();
                                 userAdapter.setNotifyOnChange(true);
+                                informSelectedHeroes();
                             }
                         },
                         new ToastAndLogOnErrorAction("Failed to load exchanges")));
@@ -223,7 +224,6 @@ public class UserSelectionScreenFragment extends BaseFragment
     @OnItemClick(android.R.id.list)
     protected void onUserClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        nextButton.setVisibility(View.VISIBLE);
         OnBoardUserItemView.DTO dto = (OnBoardUserItemView.DTO) parent.getItemAtPosition(position);
         if (!dto.selected && selectedUsers.size() >= MAX_SELECTABLE_USERS)
         {
@@ -242,19 +242,31 @@ public class UserSelectionScreenFragment extends BaseFragment
             }
             ((OnBoardUserItemView) view).display(dto);
 
-            LeaderboardUserDTOList selectedDTOs = new LeaderboardUserDTOList();
-            for (UserBaseKey selected : selectedUsers)
-            {
-                selectedDTOs.add(knownUsers.get(selected));
-            }
-            selectedUsersSubject.onNext(selectedDTOs);
+            informSelectedHeroes();
         }
         displayNextButton();
+    }
+
+    protected void informSelectedHeroes()
+    {
+        LeaderboardUserDTOList selectedDTOs = new LeaderboardUserDTOList();
+        for (UserBaseKey selected : selectedUsers)
+        {
+            selectedDTOs.add(knownUsers.get(selected));
+        }
+        selectedUsersSubject.onNext(selectedDTOs);
     }
 
     protected void displayNextButton()
     {
         nextButton.setEnabled(selectedUsers.size() > 0);
+    }
+
+    @SuppressWarnings("unused")
+    @OnClick(android.R.id.button2)
+    protected void onBackClicked(View view)
+    {
+        nextClickedSubject.onNext(false);
     }
 
     @SuppressWarnings("UnusedDeclaration")

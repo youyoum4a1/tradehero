@@ -65,6 +65,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
 
     MarketRegionSwitcherView mapHeaderSwitcherView;
     @InjectView(android.R.id.list) ListView exchangeList;
+    @InjectView(android.R.id.button2) View backButton;
     @InjectView(android.R.id.button1) View nextButton;
     ArrayAdapter<SelectableExchangeDTO> exchangeAdapter;
     @Nullable MarketRegion initialRegion;
@@ -154,6 +155,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
         exchangeList.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.on_board_started_header, null), "title", false);
         exchangeList.addHeaderView(mapHeaderSwitcherView, MAP_ITEM_DTO, true);
         exchangeList.setAdapter(exchangeAdapter);
+        backButton.setVisibility(View.GONE);
         displayNextButton();
     }
 
@@ -181,7 +183,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
                 this,
                 Observable.combineLatest(
                         userProfileCache.getOne(currentUserId.toUserBaseKey()),
-                        exchangeCompactListCache.get(new ExchangeListType(MAX_TOP_STOCKS)),
+                        exchangeCompactListCache.getOne(new ExchangeListType(MAX_TOP_STOCKS)),
                         new Func2<Pair<UserBaseKey, UserProfileDTO>, Pair<ExchangeListType, ExchangeCompactDTOList>, ExchangeCompactDTOList>()
                         {
                             @Override public ExchangeCompactDTOList call(
@@ -256,7 +258,6 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     @OnItemClick(android.R.id.list)
     protected void onExchangeClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        nextButton.setVisibility(View.VISIBLE);
         Object item = parent.getItemAtPosition(position);
         //noinspection StatementWithEmptyBody
         if (item.equals(MAP_ITEM_DTO))
@@ -296,7 +297,12 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
 
     protected void displayNextButton()
     {
-        nextButton.setEnabled(selectedExchanges.size() > 0);
+        boolean hasItems = selectedExchanges.size() > 0;
+        if (hasItems)
+        {
+            nextButton.setVisibility(View.VISIBLE);
+        }
+        nextButton.setEnabled(hasItems);
     }
 
     @SuppressWarnings("UnusedDeclaration")

@@ -195,6 +195,7 @@ public class StockSelectionScreenFragment extends BaseFragment
                                 stockAdapter.addAll(stockList);
                                 stockAdapter.setNotifyOnChange(true);
                                 stockAdapter.notifyDataSetChanged();
+                                informSelectedStocks();
                             }
                         },
                         new ToastAndLogOnErrorAction("Failed to load securities")));
@@ -204,7 +205,6 @@ public class StockSelectionScreenFragment extends BaseFragment
     @OnItemClick(android.R.id.list)
     protected void onSecurityClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        nextButton.setVisibility(View.VISIBLE);
         SelectableSecurityDTO dto = (SelectableSecurityDTO) parent.getItemAtPosition(position);
         if (!dto.selected && selectedStocks.size() >= MAX_SELECTABLE_SECURITIES)
         {
@@ -223,19 +223,31 @@ public class StockSelectionScreenFragment extends BaseFragment
             }
             ((OnBoardStockItemView) view).display(dto);
 
-            SecurityCompactDTOList selectedDTOs = new SecurityCompactDTOList();
-            for (SecurityId selected : selectedStocks)
-            {
-                selectedDTOs.add(knownStocks.get(selected));
-            }
-            selectedStocksSubject.onNext(selectedDTOs);
+            informSelectedStocks();
         }
         displayNextButton();
+    }
+
+    protected void informSelectedStocks()
+    {
+        SecurityCompactDTOList selectedDTOs = new SecurityCompactDTOList();
+        for (SecurityId selected : selectedStocks)
+        {
+            selectedDTOs.add(knownStocks.get(selected));
+        }
+        selectedStocksSubject.onNext(selectedDTOs);
     }
 
     protected void displayNextButton()
     {
         nextButton.setEnabled(selectedStocks.size() > 0);
+    }
+
+    @SuppressWarnings("unused")
+    @OnClick(android.R.id.button2)
+    protected void onBackClicked(View view)
+    {
+        nextClickedSubject.onNext(false);
     }
 
     @SuppressWarnings("UnusedDeclaration")

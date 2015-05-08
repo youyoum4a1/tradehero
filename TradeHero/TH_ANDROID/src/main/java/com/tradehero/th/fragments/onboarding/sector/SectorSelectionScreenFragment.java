@@ -154,6 +154,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
                                 }
                                 sectorAdapter.clear();
                                 sectorAdapter.addAll(onBoardSectors);
+                                informSelectedSectors();
                             }
                         },
                         new ToastAndLogOnErrorAction("Failed to load sectors")));
@@ -163,7 +164,6 @@ public class SectorSelectionScreenFragment extends BaseFragment
     @OnItemClick(android.R.id.list)
     protected void onSectorClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        nextButton.setVisibility(View.VISIBLE);
         SelectableSectorDTO dto = (SelectableSectorDTO) parent.getItemAtPosition(position);
         if (!dto.selected && selectedSectors.size() >= MAX_SELECTABLE_SECTORS)
         {
@@ -182,19 +182,31 @@ public class SectorSelectionScreenFragment extends BaseFragment
             }
             ((OnBoardSectorItemView) view).display(dto);
 
-            SectorCompactDTOList selectedDTOs = new SectorCompactDTOList();
-            for (SectorId selected : selectedSectors)
-            {
-                selectedDTOs.add(knownSectors.get(selected));
-            }
-            selectedSectorsSubject.onNext(selectedDTOs);
+            informSelectedSectors();
         }
         displayNextButton();
+    }
+
+    protected void informSelectedSectors()
+    {
+        SectorCompactDTOList selectedDTOs = new SectorCompactDTOList();
+        for (SectorId selected : selectedSectors)
+        {
+            selectedDTOs.add(knownSectors.get(selected));
+        }
+        selectedSectorsSubject.onNext(selectedDTOs);
     }
 
     protected void displayNextButton()
     {
         nextButton.setEnabled(selectedSectors.size() > 0);
+    }
+
+    @SuppressWarnings("unused")
+    @OnClick(android.R.id.button2)
+    protected void onBackClicked(View view)
+    {
+        nextClickedSubject.onNext(false);
     }
 
     @SuppressWarnings("UnusedDeclaration")
