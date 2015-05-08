@@ -121,7 +121,7 @@ public class TimeLineDetailDialogLayout extends LinearLayout {
         deleteTimeLineTV.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(menuClickListener!=null){
+                if (menuClickListener!=null) {
                     menuClickListener.onDeleteTimeLineClick();
                 }
             }
