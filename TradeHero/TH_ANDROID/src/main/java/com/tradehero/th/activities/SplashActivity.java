@@ -41,7 +41,6 @@ public class SplashActivity extends BaseActivity
 
     @Inject Lazy<Api> tapStream;
     @Inject MobileAppTracker mobileAppTracker;
-    @Inject THAppsFlyer thAppsFlyer;
     @Inject Analytics analytics;
     @Inject @AuthHeader String authToken;
     @Inject CurrentUserId currentUserId;
@@ -84,8 +83,8 @@ public class SplashActivity extends BaseActivity
         mobileAppTracker.setReferralSources(this);
         mobileAppTracker.measureSession();
 
-        thAppsFlyer.setAppsFlyerKey(MetricsModule.APP_FLYER_KEY);
-        thAppsFlyer.sendTracking();
+        THAppsFlyer.setAppsFlyerKey(this, MetricsModule.APP_FLYER_KEY);
+        THAppsFlyer.sendTracking(this);
 
         if (!Constants.RELEASE)
         {

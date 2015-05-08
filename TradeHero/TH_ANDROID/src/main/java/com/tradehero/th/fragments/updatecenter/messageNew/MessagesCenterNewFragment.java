@@ -70,7 +70,6 @@ public class MessagesCenterNewFragment extends BaseFragment
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
     @Inject Picasso picasso;
-    @Inject PrettyTime prettyTime;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Nullable private MessageListKey nextMoreRecentMessageListKey;
 
@@ -130,7 +129,7 @@ public class MessagesCenterNewFragment extends BaseFragment
         ButterKnife.inject(this, view);
         if (listAdapter == null)
         {
-            listAdapter = new MessageListViewAdapter(getActivity(), prettyTime, picasso, userPhotoTransformation);
+            listAdapter = new MessageListViewAdapter(getActivity(), new PrettyTime(), picasso, userPhotoTransformation);
             nextMoreRecentMessageListKey = new MessageListKey(MessageListKey.FIRST_PAGE);
         }
 

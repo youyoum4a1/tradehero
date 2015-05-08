@@ -158,10 +158,6 @@ public class AppContainerImpl implements AppContainer
         {
             LayoutInflater inflater = LayoutInflater.from(context);
             created = inflater.inflate(tabType.viewResId, null);
-            if (created instanceof TextResideMenuItem)
-            {
-                ((TextResideMenuItem) created).setTitle(tabType.stringResId);
-            }
         }
         else
         {

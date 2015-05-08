@@ -1,19 +1,7 @@
 package com.tradehero.th;
 
 import com.tradehero.th.fragments.DebugFragmentModule;
-import com.tradehero.th.fragments.ForKChartFragment;
-import com.tradehero.th.fragments.ForTypographyFragment;
-import com.tradehero.th.fragments.TestKChartsFragment;
-import com.tradehero.th.fragments.TypographyExampleFragment;
-import com.tradehero.th.fragments.achievement.AchievementListTestingFragment;
-import com.tradehero.th.fragments.achievement.ForAchievementListTestingFragment;
-import com.tradehero.th.fragments.achievement.ForQuestListTestingFragment;
-import com.tradehero.th.fragments.achievement.QuestListTestingFragment;
-import com.tradehero.th.fragments.level.ForXpTestingFragment;
-import com.tradehero.th.fragments.level.XpTestingFragment;
-import com.tradehero.th.fragments.games.popquiz.ForXWalkFragment;
 import dagger.Module;
-import dagger.Provides;
 
 @Module(
         includes = {
@@ -24,35 +12,7 @@ import dagger.Provides;
         library = true,
         overrides = true
 )
-public class BuildTypeUIModule implements BuildTypeUIModuleExpectation
+public class BuildTypeUIModule
 {
-    @Provides @ForAchievementListTestingFragment @Override public Class provideAchievementListTestingFragmentClass()
-    {
-        return AchievementListTestingFragment.class;
-    }
 
-    @Provides @ForQuestListTestingFragment @Override public Class provideQuestListTestingFragmentClass()
-    {
-        return QuestListTestingFragment.class;
-    }
-
-    @Provides @ForXpTestingFragment @Override public Class provideXpTestingFragmentClass()
-    {
-        return XpTestingFragment.class;
-    }
-
-    @Provides @ForTypographyFragment @Override public Class provideTypographyExampleFragment()
-    {
-        return TypographyExampleFragment.class;
-    }
-
-    @Provides @ForKChartFragment @Override public Class provideKChartExampleFragment()
-    {
-        return TestKChartsFragment.class;
-    }
-
-    @Provides @ForXWalkFragment @Override public Class provideXWalkFragment()
-    {
-        return null;
-    }
 }

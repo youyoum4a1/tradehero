@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/size_2"
     android:layout_height="@dimen/size_2"
-    android:layout_marginRight="@dimen/size_1"
+    android:paddingRight="@dimen/size_2"
     tools:src="@drawable/square_ua"
     />

@@ -160,7 +160,6 @@ public class DashboardActivity extends BaseActivity
     @Inject @IsFxShown BooleanPreference isFxShown;
     @Inject Set<ActivityResultRequester> activityResultRequesters;
     @Inject @ForAnalytics Lazy<DashboardNavigator.DashboardFragmentWatcher> analyticsReporter;
-    @Inject THAppsFlyer thAppsFlyer;
     @Inject ProviderUtil providerUtil;
 
     @Inject Lazy<ProviderListCacheRx> providerListCache;
@@ -368,7 +367,7 @@ public class DashboardActivity extends BaseActivity
     {
         super.onStart();
         systemStatusCache.get(new SystemStatusKey());
-        thAppsFlyer.sendTracking();
+        THAppsFlyer.sendTracking(this);
     }
 
     @Override protected void onResume()

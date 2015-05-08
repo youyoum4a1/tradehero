@@ -211,12 +211,7 @@ public class TradeListItemView extends LinearLayout
 
     public static class DTO extends ExpandableListItem<TradeDTO>
     {
-        private Resources resources;
-        private final PositionDTO positionDTO;
-        private final SecurityCompactDTO securityCompactDTO;
-        private final TradeDTO tradeDTO;
         private final boolean lastTrade;
-        private PrettyTime prettyTime;
         private boolean isPrettyDate = true;
         @Nullable Double numberToDisplay;
         String tradeBought;
@@ -234,21 +229,17 @@ public class TradeListItemView extends LinearLayout
         @ViewVisibilityValue int commentVisibility;
         String commentText;
 
-        public DTO(Resources resources, PositionDTO positionDTO, SecurityCompactDTO securityCompactDTO, TradeDTO tradeDTO, boolean lastTrade,
-                PrettyTime prettyTime)
+        public DTO(
+                @NonNull Resources resources,
+                @NonNull PositionDTO positionDTO,
+                @NonNull SecurityCompactDTO securityCompactDTO,
+                @NonNull TradeDTO tradeDTO,
+                boolean lastTrade,
+                @NonNull PrettyTime prettyTime)
         {
             super(tradeDTO);
-            this.resources = resources;
-            this.positionDTO = positionDTO;
-            this.securityCompactDTO = securityCompactDTO;
-            this.tradeDTO = tradeDTO;
             this.lastTrade = lastTrade;
-            this.prettyTime = prettyTime;
-            init();
-        }
 
-        private void init()
-        {
             Boolean isClosed = positionDTO.isClosed();
             if (isLastTrade() && isClosed != null && !isClosed)
             {
@@ -278,7 +269,7 @@ public class TradeListItemView extends LinearLayout
 
             if (tradeDTO.dateTime != null)
             {
-                prettyDate = this.prettyTime.format(tradeDTO.dateTime);
+                prettyDate = prettyTime.format(tradeDTO.dateTime);
                 DateFormat sdf = DateFormat.getDateTimeInstance();
                 sdf.setTimeZone(TimeZone.getDefault());
                 normalDate = sdf.format(tradeDTO.dateTime);

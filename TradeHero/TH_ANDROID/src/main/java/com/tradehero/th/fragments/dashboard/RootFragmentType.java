@@ -18,6 +18,7 @@ import com.tradehero.th.activities.StoreScreenActivity;
 import com.tradehero.th.activities.UpdateCenterActivity;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
+import com.tradehero.th.fragments.games.popquiz.PopQuizGameFragmentUtil;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
@@ -67,59 +68,59 @@ public enum RootFragmentType
             null,
             AnalyticsConstants.TabBar_ContestCenter),
     // Side menu
-    POPQUIZ(R.layout.residemenu_text_item,
+    POPQUIZ(R.layout.tab_indicator_holo,
             R.string.dashboard_popquiz,
             R.string.dashboard_popquiz_key,
-            R.color.transparent,
+            R.drawable.popquiz_logo,
             null,
             PopQuizActivity.class,
             AnalyticsConstants.TabBar_Store),
-    HOME(R.layout.residemenu_text_item,
+    HOME(R.layout.tab_indicator_holo,
             R.string.dashboard_home,
             R.string.dashboard_home_key,
-            R.color.transparent,
+            R.drawable.icn_side_menu_home,
             null,
             HomeActivity.class,
             AnalyticsConstants.TabBar_Home),
     UPDATE_CENTER(R.layout.residemenu_item_update_center,
             R.string.dashboard_message_center,
             R.string.dashboard_message_center_key,
-            R.color.transparent,
+            R.drawable.icn_side_menu_inbox,
             null,
             UpdateCenterActivity.class,
             AnalyticsConstants.TabBar_UpdateCenter),
-    ALERTS(R.layout.residemenu_text_item,
+    ALERTS(R.layout.tab_indicator_holo,
             R.string.dashboard_alerts,
             R.string.dashboard_alerts_key,
-            R.color.transparent,
+            R.drawable.icn_side_menu_alerts,
             null,
             AlertManagerActivity.class,
             AnalyticsConstants.TabBar_Alerts),
-    FRIEND_REFERRAL(R.layout.residemenu_text_item,
+    FRIEND_REFERRAL(R.layout.tab_indicator_holo,
             R.string.dashboard_referral,
             R.string.dashboard_referral_key,
-            R.color.transparent,
+            R.drawable.icn_side_menu_refer,
             null,
             FriendsInvitationActivity.class,
             AnalyticsConstants.TabBar_FriendReferral),
-    STORE(R.layout.residemenu_text_item,
+    STORE(R.layout.tab_indicator_holo,
             R.string.dashboard_store,
             R.string.dashboard_store_key,
-            R.color.transparent,
+            R.drawable.icn_side_menu_store,
             null,
             StoreScreenActivity.class,
             AnalyticsConstants.TabBar_Store),
     SETTING(R.layout.residemenu_item_settings,
             R.string.dashboard_menu_settings,
             R.string.dashboard_menu_settings_key,
-            R.color.transparent,
+            R.drawable.icn_side_menu_settings,
             null,
             SettingsActivity.class,
             AnalyticsConstants.TabBar_Settings),
-    ADMIN_SETTINGS(R.layout.residemenu_text_item,
+    ADMIN_SETTINGS(R.layout.tab_indicator_holo,
             R.string.dashboard_admin_settings,
             R.string.dashboard_admin_settings_key,
-            R.color.transparent,
+            R.drawable.icn_side_menu_settings,
             null,
             AdminSettingsActivity.class,
             AnalyticsConstants.TabBar_AdminSettings);
@@ -160,14 +161,14 @@ public enum RootFragmentType
     @NonNull public static Collection<RootFragmentType> forResideMenu()
     {
         List<RootFragmentType> forResideMenu = new ArrayList<>();
-        for (RootFragmentType type: values())
+        for (RootFragmentType type : values())
         {
             if (type.activityClass != null)
             {
                 forResideMenu.add(type);
             }
         }
-        if(!Constants.RELEASE)
+        if (PopQuizGameFragmentUtil.getXwalkFragment() == null)
         {
             forResideMenu.remove(POPQUIZ);
         }
@@ -181,7 +182,7 @@ public enum RootFragmentType
     @NonNull public static Collection<RootFragmentType> forBottomBar()
     {
         List<RootFragmentType> forBottomBar = new ArrayList<>();
-        for (RootFragmentType type: values())
+        for (RootFragmentType type : values())
         {
             if (type.fragmentClass != null)
             {

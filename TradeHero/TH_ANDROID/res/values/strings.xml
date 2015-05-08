@@ -280,12 +280,12 @@
   <string name="retry">Retry</string>
 
   <string name="stocks">Stocks</string>
-  <string name="stocks_main">My Stocks</string>
-  <string name="trending">Trending</string>
-  <string name="price">Price</string>
-  <string name="volume">Volume</string>
-  <string name="all">All</string>
-  <string name="favorites">Favorites</string>
+  <string name="trending_tab_stocks_main">My Stocks</string>
+  <string name="trending_tab_trending">Trending</string>
+  <string name="trending_tab_price">Price Action</string>
+  <string name="trending_tab_volume">Unusual Volumes</string>
+  <string name="trending_tab_all">All</string>
+  <string name="trending_tab_favorites">Favorites</string>
   <string name="my_fx">My FX</string>
   <string name="fx">FX</string>
   <string name="trade_fx">Trade FX</string>

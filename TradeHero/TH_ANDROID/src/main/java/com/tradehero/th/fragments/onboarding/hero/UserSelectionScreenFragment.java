@@ -240,7 +240,7 @@ public class UserSelectionScreenFragment extends BaseFragment
             {
                 selectedUsers.remove(dto.value.getBaseKey());
             }
-            userAdapter.notifyDataSetChanged();
+            ((OnBoardUserItemView) view).display(dto);
 
             LeaderboardUserDTOList selectedDTOs = new LeaderboardUserDTOList();
             for (UserBaseKey selected : selectedUsers)

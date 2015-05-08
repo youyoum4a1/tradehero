@@ -281,7 +281,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
                 {
                     selectedExchanges.remove(dto.value.getExchangeIntegerId());
                 }
-                exchangeAdapter.notifyDataSetChanged();
+                ((OnBoardExchangeItemView) view).display(dto);
 
                 ExchangeCompactDTOList selectedDTOs = new ExchangeCompactDTOList();
                 for (ExchangeIntegerId selected : selectedExchanges)

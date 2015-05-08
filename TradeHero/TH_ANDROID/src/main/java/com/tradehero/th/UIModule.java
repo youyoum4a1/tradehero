@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Singleton;
-import org.ocpsoft.prettytime.PrettyTime;
 
 @Module(
         includes = {
@@ -47,11 +46,6 @@ import org.ocpsoft.prettytime.PrettyTime;
 )
 public class UIModule
 {
-    @Provides PrettyTime providePrettyTime()
-    {
-        return new PrettyTime();
-    }
-
     @Provides @Singleton ViewWrapper provideViewWrapper()
     {
         return ViewWrapper.DEFAULT;

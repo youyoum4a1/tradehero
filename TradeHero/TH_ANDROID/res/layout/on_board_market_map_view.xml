@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/market_map_selector"
     android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
     tools:background="@color/light_blue_focused"
     >
@@ -16,6 +16,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
+      android:scaleType="fitCenter"
       tools:src="@drawable/map"
       />
 
@@ -23,6 +24,8 @@
       android:id="@+id/front_image"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:scaleType="fitCenter"
       android:alpha="0"
       tools:src="@drawable/map_hitboxes"
       tools:alpha="0"
@@ -31,54 +34,72 @@
   <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:scaleType="fitCenter"
       android:alpha="0"
-      app:hitBoxRegion="NORTH_AMERICA"
+      app:region="NORTH_AMERICA"
       app:hitBoxImage="@drawable/hitbox_us_full"
+      app:alphaSelected="@dimen/on_board_alpha_hit_box_selected"
       tools:alpha="0.5"
       />
 
   <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:scaleType="fitCenter"
       android:alpha="0"
-      app:hitBoxRegion="EUROPE"
+      app:region="EUROPE"
       app:hitBoxImage="@drawable/hitbox_europe_full"
+      app:alphaSelected="@dimen/on_board_alpha_hit_box_selected"
       tools:alpha="0.5"
       />
 
   <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:scaleType="fitCenter"
       android:alpha="0"
-      app:hitBoxRegion="INDIA"
+      app:region="INDIA"
       app:hitBoxImage="@drawable/hitbox_india_full"
+      app:alphaSelected="@dimen/on_board_alpha_hit_box_selected"
       tools:alpha="0.5"
       />
 
   <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:scaleType="fitCenter"
       android:alpha="0"
-      app:hitBoxRegion="SOUTH_EAST_ASIA"
+      app:region="SOUTH_EAST_ASIA"
       app:hitBoxImage="@drawable/hitbox_sea_full"
+      app:alphaSelected="@dimen/on_board_alpha_hit_box_selected"
       tools:alpha="0.5"
       />
 
   <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:scaleType="fitCenter"
       android:alpha="0"
-      app:hitBoxRegion="EAST_ASIA"
+      app:region="EAST_ASIA"
       app:hitBoxImage="@drawable/hitbox_eastasia_full"
+      app:alphaSelected="@dimen/on_board_alpha_hit_box_selected"
       tools:alpha="0.5"
       />
 
   <com.tradehero.th.fragments.onboarding.exchange.MapHitBoxView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:scaleType="fitCenter"
       android:alpha="0"
-      app:hitBoxRegion="AUSTRALIA"
+      app:region="AUSTRALIA"
       app:hitBoxImage="@drawable/hitbox_australia_full"
+      app:alphaSelected="@dimen/on_board_alpha_hit_box_selected"
       tools:alpha="0.5"
       />
 

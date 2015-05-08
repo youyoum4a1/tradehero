@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/size_1"
     android:background="@drawable/basic_white_selector"
-    app:alphaUnSelected="0.9"
+    app:alphaUnSelected="@dimen/on_board_alpha_unselected"
     >
 
   <com.squareup.widgets.AspectRatioImageView

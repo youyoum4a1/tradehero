@@ -35,14 +35,14 @@ public class NotificationItemView
     @InjectView(R.id.discussion_time) TextView notificationTime;
     @InjectView(R.id.notification_unread_flag) ImageView notificationUnreadFlag;
 
-    @Inject PrettyTime prettyTime;
-    @Inject Picasso picasso;
-    @Inject @ForUserPhoto Transformation userPhotoTransformation;
+    @Inject DashboardNavigator navigator;
     @Inject THRouter thRouter;
     @Inject CurrentUserId currentUserId;
+    @Inject Picasso picasso;
+    @Inject @ForUserPhoto Transformation userPhotoTransformation;
 
+    PrettyTime prettyTime;
     private NotificationDTO notificationDTO;
-    @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -70,6 +70,7 @@ public class NotificationItemView
 
         ButterKnife.inject(this);
         HierarchyInjector.inject(this);
+        prettyTime = new PrettyTime();
     }
 
     @Override protected void onAttachedToWindow()
@@ -85,7 +86,8 @@ public class NotificationItemView
         super.onDetachedFromWindow();
     }
 
-    @OnClick(R.id.notification_user_picture) void onUserProfileClicked()
+    @SuppressWarnings("unused")
+    @OnClick(R.id.notification_user_picture) void onUserProfileClicked(View ignored)
     {
         Bundle bundle = new Bundle();
         if (notificationDTO != null && notificationDTO.referencedUserId != null)

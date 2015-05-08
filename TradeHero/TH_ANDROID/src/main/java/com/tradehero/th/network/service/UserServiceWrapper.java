@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.BaseResponseDTO;
@@ -36,6 +37,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
+import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.models.user.DTOProcessorFollowFreeUser;
 import com.tradehero.th.models.user.DTOProcessorFollowFreeUserBatch;
 import com.tradehero.th.models.user.DTOProcessorFollowPremiumUser;
@@ -61,6 +63,7 @@ import rx.functions.Func1;
 
 @Singleton public class UserServiceWrapper
 {
+    @NonNull private final Context context;
     @NonNull private final UserServiceRx userServiceRx;
     @NonNull private final Provider<UserFormDTO.Builder2> userFormBuilderProvider;
     @NonNull private final CurrentUserId currentUserId;
@@ -73,6 +76,7 @@ import rx.functions.Func1;
 
     //<editor-fold desc="Constructors">
     @Inject public UserServiceWrapper(
+            @NonNull Context context,
             @NonNull UserServiceRx userServiceRx,
             @NonNull CurrentUserId currentUserId,
             @NonNull DTOCacheUtilImpl dtoCacheUtil,
@@ -83,6 +87,7 @@ import rx.functions.Func1;
             @NonNull Lazy<ProviderListCacheRx> providerListCache,
             @NonNull Provider<UserFormDTO.Builder2> userFormBuilderProvider)
     {
+        this.context = context;
         this.currentUserId = currentUserId;
         this.dtoCacheUtil = dtoCacheUtil;
         this.userProfileCache = userProfileCache;
@@ -97,14 +102,14 @@ import rx.functions.Func1;
 
     //<editor-fold desc="Sign-Up With Email">
     @NonNull public Observable<UserProfileDTO> signUpWithEmailRx(
-            String authorization,
+            AuthData authData,
             UserFormDTO userFormDTO)
     {
         Observable<UserProfileDTO> created;
         if (userFormDTO.profilePicture == null)
         {
             created = userServiceRx.signUpWithEmail(
-                    authorization,
+                    authData.getTHToken(),
                     userFormDTO.biography,
                     userFormDTO.deviceToken,
                     userFormDTO.displayName,
@@ -123,7 +128,7 @@ import rx.functions.Func1;
         else
         {
             created = userServiceRx.signUpWithEmail(
-                    authorization,
+                    authData.getTHToken(),
                     userFormDTO.biography,
                     userFormDTO.deviceToken,
                     userFormDTO.displayName,
@@ -142,8 +147,10 @@ import rx.functions.Func1;
         }
 
         return created.map(new DTOProcessorSignInUpUserProfile(
+                context,
                 userProfileCache.get(),
                 currentUserId,
+                authData,
                 dtoCacheUtil));
     }
     //</editor-fold>

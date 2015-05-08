@@ -1,5 +1,6 @@
 package com.tradehero.th.utils.broadcast;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import java.util.ArrayDeque;
@@ -14,9 +15,9 @@ import javax.inject.Singleton;
     @NonNull private final AtomicBoolean isProcessing = new AtomicBoolean(false);
 
     //<editor-fold desc="Constructors">
-    @Inject public BroadcastUtils(@NonNull LocalBroadcastManager localBroadcastManager)
+    @Inject public BroadcastUtils(@NonNull Context context)
     {
-        this.localBroadcastManager = localBroadcastManager;
+        this.localBroadcastManager = LocalBroadcastManager.getInstance(context);
     }
     //</editor-fold>
 

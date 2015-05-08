@@ -10,7 +10,6 @@ import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
-import com.tradehero.th.fragments.authentication.AuthDataAccountAction;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.DTOProcessorLogout;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
@@ -29,7 +28,6 @@ import timber.log.Timber;
 @Singleton public class SessionServiceWrapper
 {
     @NonNull private final CurrentUserId currentUserId;
-    @NonNull private final AuthDataAccountAction authDataAccountAction;
     @NonNull private final SessionServiceRx sessionServiceRx;
     @NonNull private final UserProfileCacheRx userProfileCache;
     @NonNull private final DTOCacheUtilImpl dtoCacheUtil;
@@ -39,7 +37,6 @@ import timber.log.Timber;
     //<editor-fold desc="Constructors">
     @Inject public SessionServiceWrapper(
             @NonNull CurrentUserId currentUserId,
-            @NonNull AuthDataAccountAction authDataAccountAction,
             @NonNull SessionServiceRx sessionServiceRx,
             @NonNull UserProfileCacheRx userProfileCache,
             @NonNull DTOCacheUtilImpl dtoCacheUtil,
@@ -47,7 +44,6 @@ import timber.log.Timber;
             @NonNull Lazy<SystemStatusCache> systemStatusCache)
     {
         this.currentUserId = currentUserId;
-        this.authDataAccountAction = authDataAccountAction;
         this.sessionServiceRx = sessionServiceRx;
         this.userProfileCache = userProfileCache;
         this.dtoCacheUtil = dtoCacheUtil;
@@ -79,7 +75,7 @@ import timber.log.Timber;
                 systemStatusCache.get(),
                 userProfileCache,
                 currentUserId,
-                authDataAccountAction,
+                context,
                 dtoCacheUtil);
     }
 

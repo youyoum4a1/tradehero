@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -82,7 +83,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Inject THRouter thRouter;
     @Inject WatchlistPositionCacheRx watchlistPositionCache;
     @Inject Analytics analytics;
-    @Inject Lazy<PrettyTime> prettyTime;
 
     @InjectView(R.id.trade_list) protected ListView tradeListView;
 
@@ -90,6 +90,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @RouteProperty("portfolioId") Integer routePortfolioId;
     @RouteProperty("positionId") Integer routePositionId;
 
+    @NonNull final PrettyTime prettyTime;
     @NonNull protected PositionDTOKey positionDTOKey;
     @Nullable protected PositionDTO positionDTO;
     @Nullable protected Map<SecurityId, AlertCompactDTO> mappedAlerts;
@@ -112,6 +113,17 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         return PositionDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE));
     }
 
+    public TradeListFragment()
+    {
+        this.prettyTime = new PrettyTime();
+    }
+
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        adapter = new TradeListItemAdapter(activity);
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -124,7 +136,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         {
             positionDTOKey = getPositionDTOKey(getArguments());
         }
-        adapter = createAdapter();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -190,15 +201,10 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
+    @Override public void onDetach()
     {
         adapter = null;
-        super.onDestroy();
-    }
-
-    protected TradeListItemAdapter createAdapter()
-    {
-        return new TradeListItemAdapter(getActivity());
+        super.onDetach();
     }
 
     protected void fetchAlertList()
@@ -282,7 +288,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                                                     @Override public List<Object> call(SecurityCompactDTO scDTO, TradeDTOList tradeDTOs)
                                                     {
                                                         securityCompactDTO = scDTO;
-                                                        return adapter.createObjects(pDTO, scDTO, tradeDTOs, prettyTime.get());
+                                                        return adapter.createObjects(pDTO, scDTO, tradeDTOs, prettyTime);
                                                     }
                                                 });
                                     }

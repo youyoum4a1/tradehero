@@ -13,6 +13,7 @@ import com.tradehero.common.billing.amazon.exception.AmazonPurchaseFailedExcepti
 import com.tradehero.common.billing.amazon.exception.AmazonPurchaseUnsupportedException;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.ActivityUtil;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.BaseBillingUtils;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -22,7 +23,6 @@ import com.tradehero.th.fragments.billing.THAmazonStoreProductDetailView;
 import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
 import com.tradehero.th.rx.dialog.AlertDialogButtonHandler;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.VersionUtils;
 import java.util.HashMap;
 import javax.inject.Inject;

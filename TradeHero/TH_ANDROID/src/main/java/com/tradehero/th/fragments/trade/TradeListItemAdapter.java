@@ -37,13 +37,17 @@ public class TradeListItemAdapter
     @LayoutRes public static final int LAYOUT_RES_ID_POSITION_IN_PERIOD_CLOSED = R.layout.position_closed_in_period;
 
     //<editor-fold desc="Constructors">
-    public TradeListItemAdapter(final Context context)
+    public TradeListItemAdapter(@NonNull final Context context)
     {
         super(context, LAYOUT_RES_ID_ITEM_TRADE);
     }
     //</editor-fold>
 
-    public List<Object> createObjects(PositionDTO positionDTO, SecurityCompactDTO securityCompactDTO, TradeDTOList tradeDTOs, PrettyTime prettyTime)
+    @NonNull public List<Object> createObjects(
+            @NonNull PositionDTO positionDTO,
+            @NonNull SecurityCompactDTO securityCompactDTO,
+            @NonNull TradeDTOList tradeDTOs,
+            @NonNull PrettyTime prettyTime)
     {
         List<Object> objects = new ArrayList<>();
 

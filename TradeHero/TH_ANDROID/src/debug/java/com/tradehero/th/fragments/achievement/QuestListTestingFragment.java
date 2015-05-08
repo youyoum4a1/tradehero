@@ -63,6 +63,7 @@ public class QuestListTestingFragment extends BaseFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         swipeRefreshLayout.setEnabled(false);
+        listView.addHeaderView(createHeaderView());
         initAdapter();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -71,7 +72,6 @@ public class QuestListTestingFragment extends BaseFragment
                 QuestListTestingFragment.this.onItemClick(parent, view1, position, id);
             }
         });
-        listView.addHeaderView(createHeaderView());
     }
 
     @SuppressWarnings("UnusedParameters")
