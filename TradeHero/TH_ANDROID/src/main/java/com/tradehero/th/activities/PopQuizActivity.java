@@ -8,25 +8,22 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
-import com.tradehero.th.fragments.games.popquiz.ForXWalkFragment;
+import com.tradehero.th.fragments.games.popquiz.PopQuizGameFragmentUtil;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 public class PopQuizActivity extends OneFragmentActivity
 {
     private static final String POPQUIZ_HOME_URL = "https://fb.tradehero.mobi/PopQuizWeb/Index";
     private static final String POPQUIZ_ACCESS_TOKEN_KEY = "accessToken";
 
-    @Inject @ForXWalkFragment Provider<Class> xWalkFragmentProvider;
-
     @Inject @AuthHeader String thAuthHeader;
 
     @NonNull @Override protected Class<? extends Fragment> getInitialFragment()
     {
-        return xWalkFragmentProvider.get();
+        return PopQuizGameFragmentUtil.getXwalkFragment();
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
@@ -42,7 +39,7 @@ public class PopQuizActivity extends OneFragmentActivity
         if (thAuthHeader.startsWith(SocialNetworkEnum.FB.getAuthHeader()))
         {
             String[] splits = thAuthHeader.split(" ");
-            Class<? extends Fragment> xwalk = xWalkFragmentProvider.get();
+            Class<? extends Fragment> xwalk = PopQuizGameFragmentUtil.getXwalkFragment();
             if (xwalk != null)
             {
                 Class[] cArg = new Class[] {Bundle.class, String.class};

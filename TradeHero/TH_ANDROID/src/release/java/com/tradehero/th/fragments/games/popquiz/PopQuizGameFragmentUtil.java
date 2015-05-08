@@ -6,6 +6,6 @@ public class PopQuizGameFragmentUtil
 {
     @Nullable public static Class getXwalkFragment()
     {
-        return null;
+        return XWalkWebViewFragment.class;
     }
 }

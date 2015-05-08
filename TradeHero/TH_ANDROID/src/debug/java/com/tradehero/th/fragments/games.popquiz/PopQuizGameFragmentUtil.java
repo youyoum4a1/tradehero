@@ -1,8 +1,11 @@
 package com.tradehero.th.fragments.games.popquiz;
 
-/**
- * Created by malvin on 5/8/15.
- */
+import android.support.annotation.Nullable;
+
 public class PopQuizGameFragmentUtil
 {
+    @Nullable public static Class getXwalkFragment()
+    {
+        return null;
+    }
 }
