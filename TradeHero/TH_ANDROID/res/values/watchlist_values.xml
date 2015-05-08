@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <color name="watchlist_button_color">@color/yellow_dark</color>
+
+</resources>
