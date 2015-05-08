@@ -3,10 +3,11 @@ package com.tradehero.th.activities;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import com.actionbarsherlock.app.SherlockActivity;
+
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.crashlytics.android.Crashlytics;
 import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
@@ -17,59 +18,49 @@ import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.retrofit.RequestHeaders;
 import com.tradehero.th.network.service.SessionServiceWrapper;
-import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.prefs.FirstLaunch;
 import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.MetricsModule;
-import dagger.Lazy;
-import retrofit.RetrofitError;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import java.util.Timer;
-import java.util.TimerTask;
 
-public class SplashActivity extends SherlockActivity
-{
-    private Timer timerToShiftActivity;
-    private AsyncTask<Void, Void, Void> initialAsyncTask;
-    @Inject SessionServiceWrapper sessionServiceWrapper;
-    @Inject RequestHeaders requestHeaders;
-    @Inject Provider<LoginFormDTO> loginFormDTOProvider;
-    @Inject @FirstLaunch BooleanPreference firstLaunchPreference;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
+import retrofit.RetrofitError;
 
-    @Inject MainCredentialsPreference mainCredentialsPreference;
+public class SplashActivity extends SherlockFragmentActivity {
     @Inject Lazy<Api> tapStream;
     @Inject MobileAppTracker mobileAppTracker;
     @Inject CurrentActivityHolder currentActivityHolder;
-    @Inject DTOCacheUtil dtoCacheUtil;
     @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
     @InjectView(R.id.tips) TextView mTipsText;
 
-    private int userId = -1;
+    private static final String TAG_TASK_FRAGMENT = "auth.task.fragment";
+    TaskFragment taskFragment;
 
-    @Override protected void onCreate(Bundle savedInstanceState)
-    {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         AppTiming.splashCreate = System.currentTimeMillis();
         super.onCreate(savedInstanceState);
 
-        if (Constants.RELEASE)
-        {
+        if (Constants.RELEASE) {
             Crashlytics.start(this);
         }
         setContentView(R.layout.splash_screen);
 
         TextView appVersion = (TextView) findViewById(R.id.app_version);
-        if (appVersion != null)
-        {
+        if (appVersion != null) {
             appVersion.setText(VersionUtils.getAppVersion(this));
         }
 
@@ -77,33 +68,23 @@ public class SplashActivity extends SherlockActivity
         ButterKnife.inject(this);
         currentActivityHolder.setCurrentActivity(this);
         mShareDialogKeyPreference.set(true);
-        if (mTipsText != null)
-        {
+        if (mTipsText != null) {
             String[] sa = getResources().getStringArray(R.array.loading_page_tips);
-            mTipsText.setText(sa[(int)Math.floor(Math.random()*10)]);
+            mTipsText.setText(sa[(int) Math.floor(Math.random() * 10)]);
         }
+
+        FragmentManager fm = getSupportFragmentManager();
+        taskFragment = (TaskFragment) fm.findFragmentByTag(TAG_TASK_FRAGMENT);
+        if (taskFragment == null) {
+            taskFragment = new TaskFragment();
+            fm.beginTransaction().add(taskFragment, TAG_TASK_FRAGMENT).commit();
+        }
+
     }
 
-    @Override protected void onResume()
-    {
+    @Override
+    protected void onResume() {
         super.onResume();
-
-        initialAsyncTask = new AsyncTask<Void, Void, Void>()
-        {
-            @Override protected Void doInBackground(Void... params)
-            {
-                initialisation();
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid)
-            {
-                super.onPostExecute(aVoid);
-            }
-        };
-        initialAsyncTask.execute();
-
         tapStream.get().fireEvent(new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
 
         mobileAppTracker.setReferralSources(this);
@@ -111,78 +92,87 @@ public class SplashActivity extends SherlockActivity
 
         TCAgent.init(getApplicationContext(), MetricsModule.TD_APP_ID_KEY, Constants.TAP_STREAM_TYPE.name());
 
-        if (!Constants.RELEASE)
-        {
+        if (!Constants.RELEASE) {
             VersionUtils.logScreenMeasurements(this);
         }
     }
 
-    protected void initialisation()
-    {
-        if (firstLaunchPreference.get())
-        {
-            ActivityHelper.launchGuide(SplashActivity.this);
-            firstLaunchPreference.set(false);
-            finish();
+    public static class TaskFragment extends BaseFragment {
+        @Inject @FirstLaunch BooleanPreference firstLaunchPreference;
+        @Inject SessionServiceWrapper sessionServiceWrapper;
+        @Inject MainCredentialsPreference mainCredentialsPreference;
+        @Inject RequestHeaders requestHeaders;
+        @Inject Provider<LoginFormDTO> loginFormDTOProvider;
+        private int userId = -1;
+
+        private static final int STATUS_FIRST_LAUNCH = 1;
+        private static final int STATUS_AUTH_OK = 2;
+        private static final int STATUS_AUTH_NO = 3;
+
+        AsyncTask<Void, Void, Integer> task;
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setRetainInstance(true);
+            task = new AuthAsyncTask();
+            task.execute();
         }
-        else
-        {
-            boolean canLoad = canLoadApp();
-            if (canLoad)
-            {
-                if(userId<=0 || THSharePreferenceManager.isRecommendedStock(userId, this)){
-                    ActivityHelper.launchMainActivity(SplashActivity.this);
-                }else{
-                    Intent intent = new Intent(SplashActivity.this, RecommendStocksActivity.class);
-                    intent.putExtra(RecommendStocksActivity.LOGIN_USER_ID, userId);
-                    startActivity(intent);
-                }
-                finish();
+
+        void handleTaskResult(int result) {
+            if (getActivity() == null) {
+                return;
             }
-            else
-            {
-                timerToShiftActivity = new Timer();
-                timerToShiftActivity.schedule(new TimerTask()
-                {
-                    public void run()
-                    {
-                        timerToShiftActivity.cancel();
-                        ActivityHelper.launchAuthentication(SplashActivity.this);
-                        finish();
+            switch (result) {
+                case STATUS_FIRST_LAUNCH:
+                    ActivityHelper.presentFromActivity(getActivity(), GuideActivity.class);
+                    firstLaunchPreference.set(false);
+                    break;
+                case STATUS_AUTH_OK:
+                    if (userId <= 0 || THSharePreferenceManager.isRecommendedStock(userId, getActivity())) {
+                        THSharePreferenceManager.clearDialogShowedRecord();
+                        ActivityHelper.presentFromActivity(getActivity(), MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP, null);
+                    } else {
+                        Bundle args = new Bundle();
+                        args.putInt(RecommendStocksActivity.LOGIN_USER_ID, userId);
+                        ActivityHelper.presentFromActivity(getActivity(), RecommendStocksActivity.class, 0, args);
                     }
-                }, 1500);
+                    break;
+                case STATUS_AUTH_NO:
+                    ActivityHelper.presentFromActivity(getActivity(), AuthenticationActivity.class);
+                    break;
             }
+            getActivity().finish();
         }
-    }
 
-    public boolean canLoadApp()
-    {
-        CredentialsDTO credentialsDTO = mainCredentialsPreference.getCredentials();
-        boolean canLoad = credentialsDTO != null;
-        if (canLoad)
-        {
-            try
-            {
-                UserLoginDTO userLoginDTO = sessionServiceWrapper.login(
-                        requestHeaders.createTypedAuthParameters(credentialsDTO),
-                        loginFormDTOProvider.get());
-                canLoad = userLoginDTO != null && userLoginDTO.profileDTO != null;
-                userId = userLoginDTO.profileDTO.id;
-            }
-            catch (RetrofitError retrofitError)
-            {
-                canLoad = false;
-                if (retrofitError.isNetworkError())
-                {
+        private class AuthAsyncTask extends AsyncTask<Void, Void, Integer> {
+
+            @Override
+            protected Integer doInBackground(Void... params) {
+                CredentialsDTO credentialsDTO = mainCredentialsPreference.getCredentials();
+                if (credentialsDTO != null) {
+                    try {
+                        UserLoginDTO userLoginDTO = sessionServiceWrapper.login(
+                                requestHeaders.createTypedAuthParameters(credentialsDTO),
+                                loginFormDTOProvider.get());
+                        if (userLoginDTO != null && userLoginDTO.profileDTO != null) {
+                            userId = userLoginDTO.profileDTO.id;
+                            return STATUS_AUTH_OK;
+                        }
+                    } catch (RetrofitError retrofitError) {
+                        return STATUS_AUTH_NO;
+                    }
                 }
+                return STATUS_AUTH_NO;
+            }
+
+            @Override
+            protected void onPostExecute(Integer result) {
+                handleTaskResult(result);
             }
         }
-        return canLoad;
+
     }
 
-    @Override protected void onDestroy()
-    {
-        initialAsyncTask = null;
-        super.onDestroy();
-    }
+
 }

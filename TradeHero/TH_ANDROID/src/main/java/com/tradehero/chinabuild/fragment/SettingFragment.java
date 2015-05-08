@@ -23,6 +23,7 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
+import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
@@ -125,7 +126,8 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
                 break;
             case R.id.settings_logout:
                 THUser.clearCurrentUser();
-                ActivityHelper.launchAuthentication(getActivity());
+                ActivityHelper.presentFromActivity(getActivity(), AuthenticationActivity.class);
+                getActivity().finish();
                 break;
             case R.id.settings_about:
                 goToFragment(SettingsAboutUsFragment.class);

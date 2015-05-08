@@ -228,7 +228,8 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
                 if(viewpager!=null){
                     analytics.addEvent(new MethodEvent(AnalyticsConstants.SIGN_IN_ACCOUNT, String.valueOf(viewpager.getCurrentItem())));
                 }
-                ActivityHelper.launchAuthentication(this);
+                ActivityHelper.presentFromActivity(this, AuthenticationActivity.class);
+                finish();
                 break;
         }
     }

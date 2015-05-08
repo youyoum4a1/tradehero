@@ -132,7 +132,8 @@ public class DashboardActivity extends SherlockFragmentActivity
             return;
         }
         if(getNavigator().getCurrentFragment() instanceof SignInFragment){
-            ActivityHelper.launchGuide(this);
+            ActivityHelper.presentFromActivity(this, GuideActivity.class);
+            finish();
             return;
         }
         Fragment fragment = getNavigator().getCurrentFragment();

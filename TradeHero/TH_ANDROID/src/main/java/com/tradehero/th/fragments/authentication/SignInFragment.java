@@ -8,6 +8,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
+import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.metrics.Analytics;
 
@@ -59,6 +60,7 @@ public class SignInFragment extends SignInOrUpFragment
 
     @Override public void onClickHeadLeft()
     {
-        ActivityHelper.launchGuide(getActivity());
+        ActivityHelper.presentFromActivity(getActivity(), GuideActivity.class);
+        getActivity().finish();
     }
 }

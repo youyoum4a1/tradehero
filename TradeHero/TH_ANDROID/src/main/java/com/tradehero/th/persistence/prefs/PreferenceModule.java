@@ -26,6 +26,7 @@ import java.util.HashSet;
 @Module(
         injects = {
                 SplashActivity.class,
+                SplashActivity.TaskFragment.class,
         },
         complete = false,
         library = true

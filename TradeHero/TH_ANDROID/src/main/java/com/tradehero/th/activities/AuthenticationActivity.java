@@ -407,7 +407,8 @@ public class AuthenticationActivity extends DashboardActivity
         }
         if (currentFragment instanceof SignInFragment)
         {
-            ActivityHelper.launchGuide(this);
+            ActivityHelper.presentFromActivity(this, GuideActivity.class);
+            finish();
             return;
         }
         if (currentFragment instanceof EmailSignInOrUpFragment)
