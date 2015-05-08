@@ -54,6 +54,8 @@ import rx.subjects.PublishSubject;
 public class ExchangeSelectionScreenFragment extends BaseFragment
 {
     private static final String BUNDLE_KEY_INITIAL_REGION = ExchangeSelectionScreenFragment.class.getName() + ".initialRegion";
+    private static final String BUNDLE_KEY_HAD_INITIAL_SELECTED_EXCHANGE =
+            ExchangeSelectionScreenFragment.class.getName() + ".hadInitialSelectedExchange";
     private static final String BUNDLE_KEY_INITIAL_EXCHANGES = ExchangeSelectionScreenFragment.class.getName() + ".initialExchanges";
     private static final int MAX_SELECTABLE_EXCHANGES = 3;
     private static final int MAX_TOP_STOCKS = 6;
@@ -69,6 +71,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     @InjectView(android.R.id.button1) View nextButton;
     ArrayAdapter<SelectableExchangeDTO> exchangeAdapter;
     @Nullable MarketRegion initialRegion;
+    boolean hadInitialExchangeSelected;
     @NonNull Map<MarketRegion, List<ExchangeIntegerId>> filedExchangeIds;
     @NonNull Map<ExchangeIntegerId, ExchangeCompactDTO> knownExchanges;
     @NonNull Set<ExchangeIntegerId> selectedExchanges;
@@ -76,9 +79,25 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     @NonNull BehaviorSubject<ExchangeCompactDTOList> selectedExchangesSubject;
     @NonNull PublishSubject<Boolean> nextClickedSubject;
 
-    public static void putInitialRegion(@NonNull Bundle args, @NonNull MarketRegion initialRegion)
+    public static void putRequisites(@NonNull Bundle args,
+            @Nullable MarketRegion initialRegion,
+            boolean hadAutoSelectedExchange,
+            @Nullable List<ExchangeIntegerId> initialExchangeIds)
     {
-        args.putInt(BUNDLE_KEY_INITIAL_REGION, initialRegion.code);
+        if (initialRegion != null)
+        {
+            args.putInt(BUNDLE_KEY_INITIAL_REGION, initialRegion.code);
+        }
+        args.putBoolean(BUNDLE_KEY_HAD_INITIAL_SELECTED_EXCHANGE, hadAutoSelectedExchange);
+        if (initialExchangeIds != null)
+        {
+            int[] list = new int[initialExchangeIds.size()];
+            for (int index = 0; index < initialExchangeIds.size(); index++)
+            {
+                list[index] = initialExchangeIds.get(index).key;
+            }
+            args.putIntArray(BUNDLE_KEY_INITIAL_EXCHANGES, list);
+        }
     }
 
     @Nullable private static MarketRegion getInitialRegion(@NonNull Bundle args)
@@ -90,14 +109,9 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
         return null;
     }
 
-    public static void putInitialExchanges(@NonNull Bundle args, @NonNull List<ExchangeIntegerId> initialExchangeIds)
+    private static boolean getHadInitialExchangeSelected(@NonNull Bundle args)
     {
-        int[] list = new int[initialExchangeIds.size()];
-        for (int index = 0; index < initialExchangeIds.size(); index++)
-        {
-            list[index] = initialExchangeIds.get(index).key;
-        }
-        args.putIntArray(BUNDLE_KEY_INITIAL_EXCHANGES, list);
+        return args.getBoolean(BUNDLE_KEY_HAD_INITIAL_SELECTED_EXCHANGE);
     }
 
     @NonNull private static Set<ExchangeIntegerId> getInitialExchanges(@NonNull Bundle args)
@@ -137,6 +151,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     {
         super.onCreate(savedInstanceState);
         initialRegion = getInitialRegion(getArguments());
+        hadInitialExchangeSelected = getHadInitialExchangeSelected(getArguments());
         selectedExchanges = getInitialExchanges(getArguments());
     }
 
@@ -245,12 +260,16 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     @NonNull List<SelectableExchangeDTO> createSelectables(@NonNull Collection<ExchangeIntegerId> toShow)
     {
         List<SelectableExchangeDTO> dtos = new ArrayList<>();
+        int index = 0;
         for (ExchangeIntegerId exchangeId : toShow)
         {
             dtos.add(new SelectableExchangeDTO(
                     knownExchanges.get(exchangeId),
-                    selectedExchanges.contains(exchangeId)));
+                    (!hadInitialExchangeSelected && index == 0) ||
+                            selectedExchanges.contains(exchangeId)));
+            index++;
         }
+        hadInitialExchangeSelected = true;
         return dtos;
     }
 

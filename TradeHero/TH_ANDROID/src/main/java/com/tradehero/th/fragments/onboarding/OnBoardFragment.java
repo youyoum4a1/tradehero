@@ -70,6 +70,7 @@ public class OnBoardFragment extends BaseFragment
     @InjectView(R.id.page_indicator) PageIndicator pageIndicator;
 
     private MarketRegion selectedRegion;
+    private boolean hadAutoSelectedExchange;
     private ExchangeCompactDTOList selectedExchanges;
     private SectorCompactDTOList selectedSectors;
     private LeaderboardUserDTOList selectedHeroes;
@@ -138,7 +139,6 @@ public class OnBoardFragment extends BaseFragment
 
             @Override public void onPageScrollStateChanged(int state)
             {
-
             }
         });
     }
@@ -261,14 +261,10 @@ public class OnBoardFragment extends BaseFragment
     @NonNull private Fragment getExchangeSelectionFragment(@NonNull Bundle args)
     {
         final ExchangeSelectionScreenFragment fragment = new ExchangeSelectionScreenFragment();
-        if (selectedRegion != null)
-        {
-            ExchangeSelectionScreenFragment.putInitialRegion(args, selectedRegion);
-        }
-        if (selectedExchanges != null)
-        {
-            ExchangeSelectionScreenFragment.putInitialExchanges(args, selectedExchanges.getExchangeIds());
-        }
+        ExchangeSelectionScreenFragment.putRequisites(args,
+                selectedRegion,
+                hadAutoSelectedExchange,
+                selectedExchanges != null ? selectedExchanges.getExchangeIds() : null);
         fragment.setArguments(args);
         fragmentSubscriptions[INDEX_SELECTION_EXCHANGES] = fragment.getMarketRegionClickedObservable()
                 .subscribeOn(Schedulers.computation())
@@ -278,6 +274,7 @@ public class OnBoardFragment extends BaseFragment
                     @Override public Observable<ExchangeCompactDTOList> call(MarketRegion marketRegion)
                     {
                         selectedRegion = marketRegion;
+                        hadAutoSelectedExchange = true;
                         return marketRegion == null
                                 ? Observable.<ExchangeCompactDTOList>empty()
                                 : fragment.getSelectedExchangesObservable()
