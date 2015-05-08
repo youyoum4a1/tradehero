@@ -27,6 +27,7 @@ import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
 import com.tradehero.th.persistence.market.SectorCompactListCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,12 +38,15 @@ import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public class SectorSelectionScreenFragment extends BaseFragment
 {
     private static final String BUNDLE_KEY_INITIAL_SECTORS = SectorSelectionScreenFragment.class.getName() + ".initialSectors";
+    private static final String BUNDLE_KEY_HAD_INITIAL_SELECTED_SECTOR =
+            SectorSelectionScreenFragment.class.getName() + ".hadInitialSelectedSector";
     private static final int MAX_SELECTABLE_SECTORS = 3;
 
     @Inject SectorCompactListCacheRx sectorCompactListCache;
@@ -51,18 +55,30 @@ public class SectorSelectionScreenFragment extends BaseFragment
     @InjectView(android.R.id.button1) View nextButton;
     ArrayAdapter<SelectableSectorDTO> sectorAdapter;
     @NonNull Map<SectorId, SectorCompactDTO> knownSectors;
+    boolean hadInitialExchangeSelected;
     @NonNull Set<SectorId> selectedSectors;
     @NonNull BehaviorSubject<SectorCompactDTOList> selectedSectorsSubject;
     @NonNull PublishSubject<Boolean> nextClickedSubject;
 
-    public static void putInitialSectors(@NonNull Bundle args, @NonNull List<SectorId> sectorIds)
+    public static void putRequisites(@NonNull Bundle args,
+            boolean hadInitialExchangeSelected,
+            @Nullable List<SectorId> sectorIds)
     {
-        int[] ids = new int[sectorIds.size()];
-        for (int index = 0; index < sectorIds.size(); index++)
+        args.putBoolean(BUNDLE_KEY_HAD_INITIAL_SELECTED_SECTOR, hadInitialExchangeSelected);
+        if (sectorIds != null)
         {
-            ids[index] = sectorIds.get(index).key;
+            int[] ids = new int[sectorIds.size()];
+            for (int index = 0; index < sectorIds.size(); index++)
+            {
+                ids[index] = sectorIds.get(index).key;
+            }
+            args.putIntArray(BUNDLE_KEY_INITIAL_SECTORS, ids);
         }
-        args.putIntArray(BUNDLE_KEY_INITIAL_SECTORS, ids);
+    }
+
+    private static boolean getHadInitialSelectedSector(@NonNull Bundle args)
+    {
+        return args.getBoolean(BUNDLE_KEY_HAD_INITIAL_SELECTED_SECTOR);
     }
 
     @NonNull private static Set<SectorId> getInitialSectors(@NonNull Bundle args)
@@ -98,6 +114,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        hadInitialExchangeSelected = getHadInitialSelectedSector(getArguments());
         selectedSectors = getInitialSectors(getArguments());
     }
 
@@ -140,24 +157,50 @@ public class SectorSelectionScreenFragment extends BaseFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 sectorCompactListCache.getOne(new SectorListType()))
+                .map(new Func1<Pair<SectorListType,SectorCompactDTOList>, List<SelectableSectorDTO>>()
+                {
+                    @Override public List<SelectableSectorDTO> call(Pair<SectorListType, SectorCompactDTOList> pair)
+                    {
+                        return createSelectables(pair.second);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<Pair<SectorListType, SectorCompactDTOList>>()
+                        new Action1<List<SelectableSectorDTO>>()
                         {
-                            @Override public void call(Pair<SectorListType, SectorCompactDTOList> pair)
+                            @Override public void call(List<SelectableSectorDTO> onBoardSectors)
                             {
-                                List<SelectableSectorDTO> onBoardSectors = new ArrayList<>();
-                                for (SectorCompactDTO sector : pair.second)
-                                {
-                                    knownSectors.put(sector.getSectorId(), sector);
-                                    onBoardSectors.add(new SelectableSectorDTO(sector, selectedSectors.contains(sector.getSectorId())));
-                                }
+                                sectorAdapter.setNotifyOnChange(false);
                                 sectorAdapter.clear();
                                 sectorAdapter.addAll(onBoardSectors);
+                                sectorAdapter.notifyDataSetChanged();
+                                sectorAdapter.setNotifyOnChange(true);
+                                displayNextButton();
                                 informSelectedSectors();
                             }
                         },
                         new ToastAndLogOnErrorAction("Failed to load sectors")));
+    }
+
+    @NonNull List<SelectableSectorDTO> createSelectables(@NonNull Collection<SectorCompactDTO> sectors)
+    {
+        List<SelectableSectorDTO> onBoardSectors = new ArrayList<>();
+        int count = MAX_SELECTABLE_SECTORS;
+        for (SectorCompactDTO sector : sectors)
+        {
+            knownSectors.put(sector.getSectorId(), sector);
+            if (!hadInitialExchangeSelected && count > 0)
+            {
+                selectedSectors.add(sector.getSectorId());
+            }
+            onBoardSectors.add(new SelectableSectorDTO(sector, selectedSectors.contains(sector.getSectorId())));
+            count--;
+        }
+        if (sectors.size() > 0)
+        {
+            hadInitialExchangeSelected = true;
+        }
+        return onBoardSectors;
     }
 
     @SuppressWarnings("UnusedDeclaration")

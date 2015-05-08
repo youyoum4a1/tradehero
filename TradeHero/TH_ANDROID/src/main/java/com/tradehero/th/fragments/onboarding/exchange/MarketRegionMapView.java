@@ -112,21 +112,7 @@ public class MarketRegionMapView extends FrameLayout
         MarketRegion candidateRegion = MarketRegionDisplayUtil.getBestApproxMarketRegion(getResources(), pixel, HALF_CUBE_APPROXIMATION);
         if (candidateRegion != null && !candidateRegion.equals(MarketRegion.OTHER))
         {
-            marketRegionClickedBehavior.onNext(candidateRegion);
-            View hitBoxView = feedbackHitBoxes.get(candidateRegion);
-            if (hitBoxView == null)
-            {
-                hitBoxView = frontImage;
-            }
-            for (MapHitBoxView candidate : feedbackHitBoxes.values())
-            {
-                if (candidate != hitBoxView)
-                {
-                    candidate.animate().cancel();
-                    candidate.setSelected(false);
-                }
-            }
-            showClicked(hitBoxView);
+            showClicked(candidateRegion);
             return false;
         }
         else
@@ -134,6 +120,25 @@ public class MarketRegionMapView extends FrameLayout
             switchClickedBehavior.onNext(true);
         }
         return true;
+    }
+
+    public void showClicked(@NonNull MarketRegion candidateRegion)
+    {
+        marketRegionClickedBehavior.onNext(candidateRegion);
+        View hitBoxView = feedbackHitBoxes.get(candidateRegion);
+        if (hitBoxView == null)
+        {
+            hitBoxView = frontImage;
+        }
+        for (MapHitBoxView candidate : feedbackHitBoxes.values())
+        {
+            if (candidate != hitBoxView)
+            {
+                candidate.animate().cancel();
+                candidate.setSelected(false);
+            }
+        }
+        showClicked(hitBoxView);
     }
 
     private void showClicked(@NonNull View hitBoxView)

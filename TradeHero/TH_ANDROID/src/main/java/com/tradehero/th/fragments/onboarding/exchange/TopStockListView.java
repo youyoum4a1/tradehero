@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
+import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.SecuritySuperCompactDTO;
 import com.tradehero.th.api.market.SecuritySuperCompactDTOList;
@@ -22,24 +24,28 @@ public class TopStockListView extends LinearLayout
 
     @Inject Picasso picasso;
     @LayoutRes private final int topStockRes;
+    @NonNull private final Transformation whiteTransformation;
 
     //<editor-fold desc="Constructors">
     public TopStockListView(Context context)
     {
         super(context);
         topStockRes = DEFAULT_RES_TOP_STOCK_LOGO;
+        whiteTransformation = new WhiteToTransparentTransformation();
     }
 
     public TopStockListView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         topStockRes = getTopStockLayoutRes(context, attrs);
+        whiteTransformation = new WhiteToTransparentTransformation();
     }
 
     public TopStockListView(Context context, AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
         topStockRes = getTopStockLayoutRes(context, attrs);
+        whiteTransformation = new WhiteToTransparentTransformation();
     }
     //</editor-fold>
 
@@ -68,6 +74,7 @@ public class TopStockListView extends LinearLayout
                 {
                     ImageView imageView = (ImageView) LayoutInflater.from(getContext()).inflate(topStockRes, null);
                     picasso.load(compactDTO.blobRef)
+                            .transform(whiteTransformation)
                             .resizeDimen(R.dimen.size_10, R.dimen.size_3)
                             .centerInside()
                             .into(imageView);

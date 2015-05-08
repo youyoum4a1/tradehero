@@ -220,6 +220,10 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
                         {
                             knownExchanges.put(exchange.getExchangeIntegerId(), exchange);
                         }
+                        if (initialRegion != null)
+                        {
+                            mapHeaderSwitcherView.showClicked(initialRegion);
+                        }
                         return mapHeaderSwitcherView.getMarketRegionClickedObservable()
                                 .startWith(initialRegion == null ? Observable.<MarketRegion>empty() : Observable.just(initialRegion));
                     }
@@ -253,6 +257,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
                                 exchangeAdapter.setNotifyOnChange(true);
                                 exchangeAdapter.notifyDataSetChanged();
                                 displayNextButton();
+                                informSelectedExchanges();
                             }
                         },
                         new ToastAndLogOnErrorAction("Failed to load exchanges or register map clicks")));
@@ -261,21 +266,17 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     @NonNull List<SelectableExchangeDTO> createSelectables(@NonNull Collection<ExchangeIntegerId> toShow)
     {
         List<SelectableExchangeDTO> dtos = new ArrayList<>();
-        int index = 0;
         for (ExchangeIntegerId exchangeId : toShow)
         {
-            boolean toSelect = (!hadInitialExchangeSelected && index == 0) ||
-                    selectedExchanges.contains(exchangeId);
-            if (toSelect)
+            if (!hadInitialExchangeSelected)
             {
+                hadInitialExchangeSelected = true;
                 selectedExchanges.add(exchangeId);
             }
             dtos.add(new SelectableExchangeDTO(
                     knownExchanges.get(exchangeId),
-                    toSelect));
-            index++;
+                    selectedExchanges.contains(exchangeId)));
         }
-        hadInitialExchangeSelected = true;
         return dtos;
     }
 
@@ -309,15 +310,20 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
                 }
                 ((OnBoardExchangeItemView) view).display(dto);
 
-                ExchangeCompactDTOList selectedDTOs = new ExchangeCompactDTOList();
-                for (ExchangeIntegerId selected : selectedExchanges)
-                {
-                    selectedDTOs.add(knownExchanges.get(selected));
-                }
-                selectedExchangesSubject.onNext(selectedDTOs);
+                informSelectedExchanges();
             }
         }
         displayNextButton();
+    }
+
+    protected void informSelectedExchanges()
+    {
+        ExchangeCompactDTOList selectedDTOs = new ExchangeCompactDTOList();
+        for (ExchangeIntegerId selected : selectedExchanges)
+        {
+            selectedDTOs.add(knownExchanges.get(selected));
+        }
+        selectedExchangesSubject.onNext(selectedDTOs);
     }
 
     protected void displayNextButton()

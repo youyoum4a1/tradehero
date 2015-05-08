@@ -68,6 +68,17 @@ public class MarketRegionButtonView extends TableLayout
         return regionViews;
     }
 
+    public void showClicked(@NonNull MarketRegion marketRegion)
+    {
+        for (MarketRegionView view : getRegionViews())
+        {
+            if (view.params.region.equals(marketRegion))
+            {
+                view.setSelected(true);
+            }
+        }
+    }
+
     public void enable(@NonNull Collection<? extends MarketRegion> enabledRegions)
     {
         for (MarketRegionView view : getRegionViews())

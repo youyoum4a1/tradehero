@@ -10,7 +10,9 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 import com.tradehero.common.api.SelectableDTO;
+import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
@@ -29,20 +31,25 @@ public class OnBoardExchangeItemView extends OnBoardSelectableViewLinear<Exchang
     @InjectView(android.R.id.text2) TextView nameView;
     @InjectView(R.id.top_stock_list) TopStockListView topStockListView;
 
+    @NonNull private final Transformation whiteTransformation;
+
     //<editor-fold desc="Constructors">
     public OnBoardExchangeItemView(Context context)
     {
         super(context);
+        whiteTransformation = new WhiteToTransparentTransformation();
     }
 
     public OnBoardExchangeItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        whiteTransformation = new WhiteToTransparentTransformation();
     }
 
     public OnBoardExchangeItemView(Context context, AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
+        whiteTransformation = new WhiteToTransparentTransformation();
     }
     //</editor-fold>
 
@@ -95,6 +102,7 @@ public class OnBoardExchangeItemView extends OnBoardSelectableViewLinear<Exchang
             else
             {
                 picasso.load(dto.imageUrl)
+                        .transform(whiteTransformation)
                         .into(logoImage);
             }
         }

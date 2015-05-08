@@ -49,6 +49,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subscriptions.Subscriptions;
@@ -72,17 +73,20 @@ public class OnBoardFragment extends BaseFragment
     private MarketRegion selectedRegion;
     private boolean hadAutoSelectedExchange;
     private ExchangeCompactDTOList selectedExchanges;
+    private boolean hadAutoSelectedSector;
     private SectorCompactDTOList selectedSectors;
     private LeaderboardUserDTOList selectedHeroes;
     private SecurityCompactDTOList selectedStocks;
     @NonNull private final Subscription[] fragmentSubscriptions;
-    @NonNull private BehaviorSubject<ExchangeCompactSectorListDTO> exchangeSectorBehavior;
+    @NonNull private final BehaviorSubject<ExchangeCompactDTOList> selectedExchangesSubject;
+    @NonNull private final BehaviorSubject<SectorCompactDTOList> selectedSectorsSubject;
     @NonNull private BehaviorSubject<SecurityCompactDTOList> selectedSecuritiesBehavior;
 
     public OnBoardFragment()
     {
         fragmentSubscriptions = new Subscription[getTabCount()];
-        exchangeSectorBehavior = BehaviorSubject.create();
+        selectedExchangesSubject = BehaviorSubject.create();
+        selectedSectorsSubject = BehaviorSubject.create();
         selectedSecuritiesBehavior = BehaviorSubject.create();
     }
 
@@ -274,12 +278,12 @@ public class OnBoardFragment extends BaseFragment
                     @Override public Observable<ExchangeCompactDTOList> call(MarketRegion marketRegion)
                     {
                         selectedRegion = marketRegion;
-                        hadAutoSelectedExchange = true;
+                        hadAutoSelectedExchange = marketRegion != null;
                         return marketRegion == null
                                 ? Observable.<ExchangeCompactDTOList>empty()
                                 : fragment.getSelectedExchangesObservable()
                                         .subscribeOn(Schedulers.computation())
-                                        .startWith(selectedExchanges);
+                                        .startWith(selectedExchanges == null ? new ExchangeCompactDTOList() : selectedExchanges);
                     }
                 })
                 .flatMap(new Func1<ExchangeCompactDTOList, Observable<Boolean>>()
@@ -287,13 +291,17 @@ public class OnBoardFragment extends BaseFragment
                     @Override public Observable<Boolean> call(final ExchangeCompactDTOList exchangeDTOs)
                     {
                         selectedExchanges = exchangeDTOs;
+                        if (exchangeDTOs.size() > 0)
+                        {
+                            selectedExchangesSubject.onNext(exchangeDTOs);
+                        }
                         return fragment.getNextClickedObservable()
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnNext(new Action1<Boolean>()
                                 {
                                     @Override public void call(Boolean forward)
                                     {
-                                        if (forward && exchangeDTOs != null && exchangeDTOs.size() > 0)
+                                        if (forward && exchangeDTOs.size() > 0)
                                         {
                                             pager.setCurrentItem(INDEX_SELECTION_SECTORS, true);
                                         }
@@ -310,14 +318,13 @@ public class OnBoardFragment extends BaseFragment
     @NonNull private Fragment getSectorSelectionFragment(@NonNull Bundle args)
     {
         final SectorSelectionScreenFragment fragment = new SectorSelectionScreenFragment();
-        if (selectedSectors != null)
-        {
-            SectorSelectionScreenFragment.putInitialSectors(args, selectedSectors.getSectorIds());
-        }
+        SectorSelectionScreenFragment.putRequisites(args,
+                hadAutoSelectedSector,
+                selectedSectors != null ? selectedSectors.getSectorIds() : null);
         fragment.setArguments(args);
         fragmentSubscriptions[INDEX_SELECTION_SECTORS] = fragment.getSelectedSectorsObservable()
                 .subscribeOn(Schedulers.computation())
-                .startWith(new SectorCompactDTOList())
+                .startWith(selectedSectors == null ? new SectorCompactDTOList() : selectedSectors)
                 .flatMap(new Func1<SectorCompactDTOList, Observable<Boolean>>()
                 {
                     @Override public Observable<Boolean> call(final SectorCompactDTOList sectorDTOs)
@@ -325,7 +332,8 @@ public class OnBoardFragment extends BaseFragment
                         selectedSectors = sectorDTOs;
                         if (sectorDTOs.size() > 0)
                         {
-                            exchangeSectorBehavior.onNext(new ExchangeCompactSectorListDTO(selectedExchanges, sectorDTOs));
+                            hadAutoSelectedSector = true;
+                            selectedSectorsSubject.onNext(sectorDTOs);
                         }
                         return fragment.getNextClickedObservable()
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -354,7 +362,7 @@ public class OnBoardFragment extends BaseFragment
     @NonNull private Fragment getHeroSelectionFragment(@NonNull Bundle args)
     {
         final UserSelectionScreenFragment fragment = new UserSelectionScreenFragment();
-        fragment.setSelectedExchangesSectorsObservable(exchangeSectorBehavior.asObservable());
+        fragment.setSelectedExchangesSectorsObservable(getExchangeCompactSectorObservable());
         if (selectedHeroes != null)
         {
             UserSelectionScreenFragment.putInitialHeroes(args, selectedHeroes);
@@ -395,7 +403,7 @@ public class OnBoardFragment extends BaseFragment
     @NonNull private Fragment getStockSelectionFragment(@NonNull Bundle args)
     {
         final StockSelectionScreenFragment fragment = new StockSelectionScreenFragment();
-        fragment.setSelectedExchangesSectorsObservable(exchangeSectorBehavior.asObservable());
+        fragment.setSelectedExchangesSectorsObservable(getExchangeCompactSectorObservable());
         if (selectedStocks != null)
         {
             StockSelectionScreenFragment.putInitialStocks(args, selectedStocks.getSecurityIds());
@@ -432,6 +440,21 @@ public class OnBoardFragment extends BaseFragment
                         new TimberAction1<Boolean>("Stocks selection button"),
                         new ToastAndLogOnErrorAction("Failed to get selected stocks"));
         return fragment;
+    }
+
+    @NonNull private Observable<ExchangeCompactSectorListDTO> getExchangeCompactSectorObservable()
+    {
+        return Observable.combineLatest(
+                selectedExchangesSubject,
+                selectedSectorsSubject,
+                new Func2<ExchangeCompactDTOList, SectorCompactDTOList, ExchangeCompactSectorListDTO>()
+                {
+                    @Override
+                    public ExchangeCompactSectorListDTO call(ExchangeCompactDTOList exchangeCompactDTOs, SectorCompactDTOList sectorCompactDTOs)
+                    {
+                        return new ExchangeCompactSectorListDTO(exchangeCompactDTOs, sectorCompactDTOs);
+                    }
+                });
     }
 
     @NonNull private Fragment getLastFragment(@NonNull Bundle args)

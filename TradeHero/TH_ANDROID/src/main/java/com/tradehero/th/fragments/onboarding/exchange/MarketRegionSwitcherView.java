@@ -105,6 +105,12 @@ public class MarketRegionSwitcherView extends ViewSwitcher
         this.currentUserProfile = currentUserProfile;
     }
 
+    public void showClicked(@NonNull MarketRegion marketRegion)
+    {
+        mapView.showClicked(marketRegion);
+        buttonView.showClicked(marketRegion);
+    }
+
     @NonNull public Observable<MarketRegion> getMarketRegionClickedObservable()
     {
         return clickedMarketRegionBehavior.asObservable();
