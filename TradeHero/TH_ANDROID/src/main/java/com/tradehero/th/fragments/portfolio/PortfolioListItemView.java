@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.portfolio;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -191,7 +192,9 @@ public class PortfolioListItemView extends RelativeLayout
         TextView descriptionCopy = this.description;
         if (descriptionCopy != null)
         {
-            descriptionCopy.setText(getDescription());
+            String descriptionText = getDescription();
+            descriptionCopy.setText(descriptionText);
+            description.setVisibility(TextUtils.isEmpty(descriptionText) ? GONE : VISIBLE);
         }
     }
 
