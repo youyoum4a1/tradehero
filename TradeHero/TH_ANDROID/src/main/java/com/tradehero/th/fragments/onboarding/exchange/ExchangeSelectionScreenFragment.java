@@ -252,6 +252,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
                                 exchangeAdapter.addAll(dtos);
                                 exchangeAdapter.setNotifyOnChange(true);
                                 exchangeAdapter.notifyDataSetChanged();
+                                displayNextButton();
                             }
                         },
                         new ToastAndLogOnErrorAction("Failed to load exchanges or register map clicks")));
@@ -263,10 +264,15 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
         int index = 0;
         for (ExchangeIntegerId exchangeId : toShow)
         {
+            boolean toSelect = (!hadInitialExchangeSelected && index == 0) ||
+                    selectedExchanges.contains(exchangeId);
+            if (toSelect)
+            {
+                selectedExchanges.add(exchangeId);
+            }
             dtos.add(new SelectableExchangeDTO(
                     knownExchanges.get(exchangeId),
-                    (!hadInitialExchangeSelected && index == 0) ||
-                            selectedExchanges.contains(exchangeId)));
+                    toSelect));
             index++;
         }
         hadInitialExchangeSelected = true;
