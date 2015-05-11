@@ -331,7 +331,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         TransactionFormDTO transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
         assertThat(transactionFormDTO.publishToLi).isEqualTo(false);
         assertThat(btnLinkedIn.isChecked()).isEqualTo(false);
-        assertThat(abstractTransactionDialogFragment.isSocialLinked(SocialNetworkEnum.LN)).isEqualTo(false);
+        assertThat(abstractTransactionDialogFragment.isSocialLinked(SocialNetworkEnum.LN).toBlocking().first()).isEqualTo(false);
 
         UserProfileDTO newUserProfileDTO = userProfileCache.getCachedValue(currentUserId.toUserBaseKey());
         newUserProfileDTO.liLinked = true;
