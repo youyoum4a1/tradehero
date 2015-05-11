@@ -11,7 +11,6 @@ import android.widget.ListView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -86,7 +85,6 @@ public class StockLearningHistoryFragment extends DashboardFragment {
         bundle.putString(AnswerQuestionFragment.KEY_QUESTION_GROUP_TYPE, AnswerQuestionFragment.TYPE_ONLY_ONE);
         bundle.putSerializable(AnswerQuestionFragment.KEY_QUESTION_GROUP, questionGroup);
         bundle.putSerializable(AnswerQuestionFragment.KEY_QUESTION, question);
-        THLog.d("question " + question.id + " group " + questionGroup.id);
         pushFragment(AnswerQuestionFragment.class, bundle);
     }
 

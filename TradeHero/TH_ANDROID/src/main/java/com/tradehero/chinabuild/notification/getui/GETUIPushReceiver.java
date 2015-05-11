@@ -7,7 +7,6 @@ import android.os.Bundle;
 import com.igexin.sdk.PushConsts;
 import com.igexin.sdk.PushManager;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.utils.Constants;
 
 
@@ -19,7 +18,6 @@ public class GETUIPushReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
-        THLog.d("GetuiSdk onReceive() action=" + bundle.getInt("action"));
         switch (bundle.getInt(PushConsts.CMD_ACTION)) {
 
             case PushConsts.GET_MSG_DATA:
@@ -35,7 +33,6 @@ public class GETUIPushReceiver extends BroadcastReceiver {
 
                 if (payload != null) {
                     String data = new String(payload);
-                    THLog.d("GetuiSdk Got Payload:" + data);
                 }
                 break;
             case PushConsts.GET_CLIENTID:
@@ -51,11 +48,6 @@ public class GETUIPushReceiver extends BroadcastReceiver {
                 String resultA = bundle.getString("result");
                 long timestamp = bundle.getLong("timestamp");
 
-                THLog.d("appid = " + appid);
-                THLog.d("taskid = " + taskidA);
-                THLog.d("actionid = " + actionid);
-                THLog.d("result = " + resultA);
-                THLog.d("timestamp = " + timestamp);
                 break;
             default:
                 break;

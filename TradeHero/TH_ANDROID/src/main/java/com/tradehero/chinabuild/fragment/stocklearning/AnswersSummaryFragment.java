@@ -75,7 +75,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
     public void onResume() {
         super.onResume();
         RefreshSummaryHandler refreshSummaryHandler = new RefreshSummaryHandler();
-        refreshSummaryHandler.sendEmptyMessageDelayed(-1, 200);
+        refreshSummaryHandler.sendEmptyMessage(-1);
     }
 
     @Override

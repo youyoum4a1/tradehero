@@ -1,11 +1,8 @@
 package com.tradehero.chinabuild.fragment.stocklearning;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -15,7 +12,6 @@ import android.view.ViewGroup;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -69,8 +65,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
         }
         view = inflater.inflate(R.layout.stock_learning_question_set, container, false);
         questionSetVP = (ViewPager) view.findViewById(R.id.viewpager_questions);
-        InitDataHandler handler = new InitDataHandler();
-        handler.sendEmptyMessageDelayed(-1, 200);
+        initViewPager();
         return view;
     }
 
@@ -127,7 +122,6 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
             bundle.putSerializable(OneQuestionFragment.KEY_QUESTION_GROUP, questionGroup);
             bundle.putInt(OneQuestionFragment.KEY_QUESTION_INDEX, num + 1);
             bundle.putString(KEY_QUESTION_GROUP_TYPE, type);
-            THLog.d("a question " + question.id + " group " + questionGroup.id);
             fragment.setArguments(bundle);
             questionFragments.add(fragment);
         }
@@ -181,19 +175,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
         @Override
         public int getCount() {
-            THLog.d("size " + questionFragments.size());
             return questionFragments.size();
-        }
-    }
-
-    public class InitDataHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (questionSetVP == null) {
-                return;
-            }
-            initViewPager();
         }
     }
 }

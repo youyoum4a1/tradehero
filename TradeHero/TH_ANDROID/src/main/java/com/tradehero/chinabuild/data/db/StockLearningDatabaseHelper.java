@@ -9,8 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.tradehero.chinabuild.fragment.stocklearning.Question;
 import com.tradehero.chinabuild.fragment.stocklearning.QuestionGroup;
 import com.tradehero.chinabuild.fragment.stocklearning.QuestionStatusRecord;
-import com.tradehero.common.utils.THLog;
-
 import java.util.ArrayList;
 
 /**
@@ -42,39 +40,6 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (newVersion > oldVersion) {
 
-        }
-    }
-
-    public void insertOrUpdateQuestionRecord(ArrayList<QuestionStatusRecord> sets) {
-        SQLiteDatabase db = getWritableDatabase();
-        try {
-            db.beginTransaction();
-            for (QuestionStatusRecord questionStatusRecord : sets) {
-                Cursor cursor = db.query(SQLs.TABLE_QUESTION_RECORD, null, SQLs.QUESTION_RECORD_USER_ID + " =? and " + SQLs.QUESTION_RECORD_GROUP_ID + " =? and " + SQLs.QUESTION_RECORD_QUESTION_ID + " =?",
-                        new String[]{String.valueOf(questionStatusRecord.user_id), String.valueOf(questionStatusRecord.question_group_id), String.valueOf(questionStatusRecord.question_id)}, null, null, null);
-                if (cursor.moveToFirst()) {
-                    ContentValues values = new ContentValues();
-                    values.put(SQLs.QUESTION_RECORD_QUESTION_CHOICE, questionStatusRecord.question_choice);
-                    values.put(SQLs.QUESTION_RECORD_QUESTION_STATUS, questionStatusRecord.question_status);
-                    db.update(SQLs.TABLE_QUESTION_RECORD, values, SQLs.QUESTION_RECORD_USER_ID + " =? and " + SQLs.QUESTION_RECORD_GROUP_ID + " =? and " + SQLs.QUESTION_RECORD_QUESTION_ID + " =?",
-                            new String[]{String.valueOf(questionStatusRecord.user_id), String.valueOf(questionStatusRecord.question_group_id), String.valueOf(questionStatusRecord.question_id)});
-                } else {
-                    ContentValues values = new ContentValues();
-                    values.put(SQLs.QUESTION_RECORD_QUESTION_ID, questionStatusRecord.question_id);
-                    values.put(SQLs.QUESTION_RECORD_QUESTION_CHOICE, questionStatusRecord.question_choice);
-                    values.put(SQLs.QUESTION_RECORD_QUESTION_STATUS, questionStatusRecord.question_status);
-                    values.put(SQLs.QUESTION_RECORD_USER_ID, questionStatusRecord.user_id);
-                    values.put(SQLs.QUESTION_RECORD_GROUP_ID, questionStatusRecord.question_group_id);
-                    db.insert(SQLs.TABLE_QUESTION_RECORD, null, values);
-                }
-                cursor.close();
-            }
-            db.setTransactionSuccessful();
-        } catch (SQLiteException e) {
-            e.printStackTrace();
-        } finally {
-            db.endTransaction();
-            db.close();
         }
     }
 
@@ -112,7 +77,6 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
     public QuestionStatusRecord retrieveQuestionRecord(int question_id, int user_id, int question_group_id) {
         QuestionStatusRecord questionStatusRecord = null;
         SQLiteDatabase db = getReadableDatabase();
-        THLog.d(user_id + "  " + question_group_id + " " + question_id);
         Cursor cursor = db.query(SQLs.TABLE_QUESTION_RECORD, null, SQLs.QUESTION_RECORD_USER_ID + " =? and " + SQLs.QUESTION_RECORD_GROUP_ID + " =? and " + SQLs.QUESTION_RECORD_QUESTION_ID + " =?",
                 new String[]{String.valueOf(user_id), String.valueOf(question_group_id), String.valueOf(question_id)}, null, null, null);
         if (cursor.moveToFirst()) {
@@ -130,7 +94,6 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<QuestionStatusRecord> retrieveQuestionRecords(int user_id, int question_group_id) {
-        THLog.d(user_id + "  " + question_group_id);
         ArrayList<QuestionStatusRecord> records = new ArrayList();
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(SQLs.TABLE_QUESTION_RECORD, null, SQLs.QUESTION_RECORD_USER_ID + " =? and " + SQLs.QUESTION_RECORD_GROUP_ID + " =? ",

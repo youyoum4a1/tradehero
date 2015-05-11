@@ -12,7 +12,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 
@@ -141,7 +140,6 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
         if (type.equals("")) {
             getActivity().finish();
         }
-        THLog.d("b question " + question.id + " group " + questionGroup.id);
     }
 
     @Override
