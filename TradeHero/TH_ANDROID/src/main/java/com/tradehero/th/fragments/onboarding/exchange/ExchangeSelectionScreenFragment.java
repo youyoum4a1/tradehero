@@ -18,6 +18,7 @@ import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
@@ -28,7 +29,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
@@ -141,10 +141,9 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        exchangeAdapter = new OnBoardEmptyOrItemAdapter<>(
+        exchangeAdapter = new DTOAdapterNew<>(
                 activity,
-                R.layout.on_board_exchange_item_view,
-                R.layout.on_board_empty_exchange);
+                R.layout.on_board_exchange_item_view);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -318,6 +317,8 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
 
     protected void informSelectedExchanges()
     {
+        mapHeaderSwitcherView.setSelectedExchanges(selectedExchanges);
+
         ExchangeCompactDTOList selectedDTOs = new ExchangeCompactDTOList();
         for (ExchangeIntegerId selected : selectedExchanges)
         {

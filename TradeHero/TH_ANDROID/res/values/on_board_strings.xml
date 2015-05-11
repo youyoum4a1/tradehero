@@ -3,7 +3,8 @@
 
   <string name="on_board_welcome_title">Welcome to TradeHero!</string>
   <string name="on_board_welcome_title_2">Let\'s get started…</string>
-  <string name="on_board_exchange_tap_map_select_exchanges">Tap on the map to select stock exchanges</string>
+  <string name="on_board_exchange_tap_map_select_exchanges">Tap on the map to see the list of stock exchanges</string>
+  <string name="on_board_exchange_tap_list_select_exchanges">Tap to select at least one exchange</string>
   <string name="on_board_exchange_selected_max">You cannot select more than %d markets\nUnselect some to select others</string>
   <string name="on_board_exchange_need_to_select">You need to select at least one exchange</string>
 
