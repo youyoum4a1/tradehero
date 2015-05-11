@@ -29,7 +29,7 @@ public class StockLearningQuestionManager {
     }
 
     public void setReAnswerQuestions(ArrayList<Question> reAnswerQuestions) {
-        this.reAnswerQuestions = reAnswerQuestions;
+        this.reAnswerQuestions.addAll(reAnswerQuestions);
     }
 
     public void removeReAnswerQuestion(int question_id) {

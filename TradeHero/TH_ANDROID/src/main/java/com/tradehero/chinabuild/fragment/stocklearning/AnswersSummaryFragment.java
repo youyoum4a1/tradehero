@@ -1,8 +1,6 @@
 package com.tradehero.chinabuild.fragment.stocklearning;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -74,8 +72,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
     @Override
     public void onResume() {
         super.onResume();
-        RefreshSummaryHandler refreshSummaryHandler = new RefreshSummaryHandler();
-        refreshSummaryHandler.sendEmptyMessage(-1);
+        refreshSummaryHandler();
     }
 
     @Override
@@ -161,34 +158,27 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
         }
     }
 
-    public class RefreshSummaryHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (getActivity() == null) {
-                return;
-            }
-            StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
-            questionStatusRecords = stockLearningDatabaseHelper.retrieveQuestionRecords(currentUserId.get(), questionGroup.id);
-            reAnswerQuestions.clear();
-            for (Question question : questions) {
-                boolean isAnswered = false;
-                for (QuestionStatusRecord questionStatusRecord : questionStatusRecords) {
-                    if (questionStatusRecord.question_id == question.id) {
-                        isAnswered = true;
-                        if (!questionStatusRecord.question_choice.toLowerCase().equals(question.answer.toLowerCase())) {
-                            reAnswerQuestions.add(question);
-                            break;
-                        }
+    public void refreshSummaryHandler(){
+        StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
+        questionStatusRecords = stockLearningDatabaseHelper.retrieveQuestionRecords(currentUserId.get(), questionGroup.id);
+        reAnswerQuestions.clear();
+        for (Question question : questions) {
+            boolean isAnswered = false;
+            for (QuestionStatusRecord questionStatusRecord : questionStatusRecords) {
+                if (questionStatusRecord.question_id == question.id) {
+                    isAnswered = true;
+                    if (!questionStatusRecord.question_choice.toLowerCase().equals(question.answer.toLowerCase())) {
+                        reAnswerQuestions.add(question);
+                        break;
                     }
                 }
-                if (!isAnswered) {
-                    reAnswerQuestions.add(question);
-                }
             }
-            refreshSummary(questions.size(), reAnswerQuestions.size());
-            StockLearningQuestionManager.getInstance().clearReAnswerQuestions();
-            StockLearningQuestionManager.getInstance().setReAnswerQuestions(reAnswerQuestions);
+            if (!isAnswered) {
+                reAnswerQuestions.add(question);
+            }
         }
+        refreshSummary(questions.size(), reAnswerQuestions.size());
+        StockLearningQuestionManager.getInstance().clearReAnswerQuestions();
+        StockLearningQuestionManager.getInstance().setReAnswerQuestions(reAnswerQuestions);
     }
 }

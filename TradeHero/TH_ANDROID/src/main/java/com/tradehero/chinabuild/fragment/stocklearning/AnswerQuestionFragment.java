@@ -49,12 +49,6 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
     private View view;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initArguments();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(view != null){
             ViewGroup parent = (ViewGroup) view.getParent();
@@ -64,6 +58,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
             return view;
         }
         view = inflater.inflate(R.layout.stock_learning_question_set, container, false);
+        initArguments();
         questionSetVP = (ViewPager) view.findViewById(R.id.viewpager_questions);
         initViewPager();
         return view;
