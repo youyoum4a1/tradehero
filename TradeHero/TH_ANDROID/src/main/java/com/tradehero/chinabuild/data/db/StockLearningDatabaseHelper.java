@@ -215,8 +215,6 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
             for(Question question: questions) {
                 db.delete(SQLs.TABLE_QUESTION, SQLs.QUESTION_GROUP_GROUP_ID + " =? and " + SQLs.QUESTION_QUESTION_ID + " =? ",
                         new String[]{String.valueOf(question.subcategory), String.valueOf(question.id)});
-                db.delete(SQLs.TABLE_QUESTION_RECORD, SQLs.QUESTION_RECORD_GROUP_ID + " =? and " + SQLs.QUESTION_RECORD_QUESTION_ID + " =? ",
-                        new String[]{String.valueOf(question.subcategory), String.valueOf(question.id)});
                 ContentValues values = new ContentValues();
                 values.put(SQLs.QUESTION_DESCRIPTION, question.content);
                 values.put(SQLs.QUESTION_QUESTION_ID, question.id);
