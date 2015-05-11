@@ -72,7 +72,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
     @Override
     public void onResume() {
         super.onResume();
-        refreshSummaryHandler();
+        refreshSummary();
     }
 
     @Override
@@ -109,6 +109,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
         Bundle bundle = new Bundle();
         bundle.putSerializable(AnswerQuestionFragment.KEY_QUESTION_GROUP, questionGroup);
         bundle.putString(AnswerQuestionFragment.KEY_QUESTION_GROUP_TYPE, AnswerQuestionFragment.TYPE_ERROR);
+        bundle.putInt(AnswerQuestionFragment.KEY_ERROR_QUESTION_SIZE, StockLearningQuestionManager.getInstance().getReAnswerQuestions().size());
         pushFragment(AnswerQuestionFragment.class, bundle);
     }
 
@@ -158,7 +159,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
         }
     }
 
-    public void refreshSummaryHandler(){
+    public void refreshSummary(){
         StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
         questionStatusRecords = stockLearningDatabaseHelper.retrieveQuestionRecords(currentUserId.get(), questionGroup.id);
         reAnswerQuestions.clear();

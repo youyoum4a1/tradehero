@@ -33,6 +33,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
     public final static String TYPE_ONLY_ONE = "type_only_one";
     public final static String KEY_QUESTION_GROUP = "key_question_group";
     public final static String KEY_QUESTION = "key_question";
+    public final static String KEY_ERROR_QUESTION_SIZE = "key_error_question_size";
 
     private String type = "";
     private QuestionGroup questionGroup = null;
@@ -47,6 +48,8 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
     private QuestionsViewPagerAdapter adapter;
 
     private View view;
+
+    private int errorQuesTotal = -1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,7 +70,12 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        refreshHeadView(0);
+        if (type.equals(TYPE_ERROR) || type.equals(TYPE_ONLY_ONE)) {
+            refreshHeadView(0);
+        }
+        if (type.equals(TYPE_NORMAL) && questionGroup!=null) {
+            refreshHeadView(questionGroup.question_group_progress - 1);
+        }
     }
 
     private void initArguments() {
@@ -87,6 +95,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
             }
             if (type.equals(TYPE_ERROR)) {
                 questions = StockLearningQuestionManager.getInstance().getReAnswerQuestions();
+                errorQuesTotal = bundle.getInt(KEY_ERROR_QUESTION_SIZE, 1);
             }
             if (type.equals(TYPE_ONLY_ONE)) {
                 Question question = (Question) bundle.getSerializable(KEY_QUESTION);
@@ -121,7 +130,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
             questionFragments.add(fragment);
         }
         if(adapter==null){
-            adapter = new QuestionsViewPagerAdapter(getActivity().getSupportFragmentManager());
+            adapter = new QuestionsViewPagerAdapter();
         }
         questionSetVP.setAdapter(adapter);
         questionSetVP.setOnPageChangeListener(this);
@@ -135,7 +144,13 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
     }
 
     private void refreshHeadView(int index) {
-        String menuTitle = getString(R.string.question_percent, index + 1, questions.size());
+        int size = 1;
+        if (type.equals(TYPE_ERROR)) {
+            size = errorQuesTotal;
+        }else{
+            size = questions.size();
+        }
+        String menuTitle = getString(R.string.question_percent, index + 1, size);
         setHeadViewMiddleMain(menuTitle);
     }
 
@@ -158,8 +173,8 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
     public class QuestionsViewPagerAdapter extends FragmentStatePagerAdapter {
 
-        public QuestionsViewPagerAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
+        public QuestionsViewPagerAdapter() {
+            super(getChildFragmentManager());
         }
 
         @Override
