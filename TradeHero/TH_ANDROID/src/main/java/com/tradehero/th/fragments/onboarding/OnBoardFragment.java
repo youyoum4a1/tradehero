@@ -170,25 +170,25 @@ public class OnBoardFragment extends BaseFragment
     private int getCurrentIndex()
     {
         int index;
-        if (selectedStocks != null)
+        if (selectedExchanges == null || selectedExchanges.size() == 0)
         {
-            index = INDEX_SELECTION_LAST;
+            index = INDEX_SELECTION_EXCHANGES;
         }
-        else if (selectedHeroes != null)
-        {
-            index = INDEX_SELECTION_WATCHLIST;
-        }
-        else if (selectedSectors != null)
-        {
-            index = INDEX_SELECTION_HEROES;
-        }
-        else if (selectedExchanges != null)
+        else if (selectedSectors == null || selectedSectors.size() == 0)
         {
             index = INDEX_SELECTION_SECTORS;
         }
+        else if (selectedHeroes == null || selectedHeroes.size() == 0)
+        {
+            index = INDEX_SELECTION_HEROES;
+        }
+        else if (selectedStocks == null || selectedStocks.size() == 0)
+        {
+            index = INDEX_SELECTION_WATCHLIST;
+        }
         else
         {
-            index = INDEX_SELECTION_EXCHANGES;
+            index = INDEX_SELECTION_LAST;
         }
         return index;
     }
