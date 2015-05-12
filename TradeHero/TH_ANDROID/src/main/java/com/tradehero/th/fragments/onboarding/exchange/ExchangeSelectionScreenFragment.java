@@ -34,12 +34,14 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
@@ -264,17 +266,25 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
 
     @NonNull List<SelectableExchangeDTO> createSelectables(@NonNull Collection<ExchangeIntegerId> toShow)
     {
-        List<SelectableExchangeDTO> dtos = new ArrayList<>();
+        Set<ExchangeCompactDTO> toShowDtos = new TreeSet<>(new DesirableExchangeComparator());
         for (ExchangeIntegerId exchangeId : toShow)
         {
+            toShowDtos.add(knownExchanges.get(exchangeId));
+        }
+
+        List<SelectableExchangeDTO> dtos = new ArrayList<>();
+        ExchangeIntegerId id;
+        for (ExchangeCompactDTO exchangeCompactDTO : toShowDtos)
+        {
+            id = exchangeCompactDTO.getExchangeIntegerId();
             if (!hadInitialExchangeSelected)
             {
                 hadInitialExchangeSelected = true;
-                selectedExchanges.add(exchangeId);
+                selectedExchanges.add(id);
             }
             dtos.add(new SelectableExchangeDTO(
-                    knownExchanges.get(exchangeId),
-                    selectedExchanges.contains(exchangeId)));
+                    knownExchanges.get(id),
+                    selectedExchanges.contains(id)));
         }
         return dtos;
     }
@@ -357,5 +367,45 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     @NonNull public Observable<Boolean> getNextClickedObservable()
     {
         return nextClickedSubject.asObservable();
+    }
+
+    private class DesirableExchangeComparator implements Comparator<ExchangeCompactDTO>
+    {
+        @Override public int compare(ExchangeCompactDTO lhs, ExchangeCompactDTO rhs)
+        {
+            if (lhs == rhs)
+            {
+                return 0;
+            }
+            boolean lSelected = selectedExchanges.contains(lhs.getExchangeIntegerId());
+            boolean rSelected = selectedExchanges.contains(rhs.getExchangeIntegerId());
+            if (lSelected && !rSelected)
+            {
+                return -1;
+            }
+            else if (!lSelected && rSelected)
+            {
+                return 1;
+            }
+
+            if (lhs.onBoardScore != null && rhs.onBoardScore != null)
+            {
+                int scoreComp = lhs.onBoardScore.compareTo(rhs.onBoardScore);
+                if (scoreComp != 0)
+                {
+                    return scoreComp;
+                }
+            }
+            else if (lhs.onBoardScore != null)
+            {
+                return -1;
+            }
+            else if (rhs.onBoardScore != null)
+            {
+                return 1;
+            }
+
+            return Integer.valueOf(lhs.id).compareTo(rhs.id);
+        }
     }
 }
