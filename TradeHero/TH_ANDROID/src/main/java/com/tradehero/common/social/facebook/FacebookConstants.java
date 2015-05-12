@@ -1,8 +1,10 @@
 package com.tradehero.common.social.facebook;
 
+import com.facebook.FacebookPermissionsConstants;
+
 public class FacebookConstants
 {
-    public static final String PERMISSION_FRIENDS = "user_friends";
+    public static final String PERMISSION_FRIENDS = FacebookPermissionsConstants.USER_FRIENDS;
     public static final String API_INVITABLE_FRIENDS = "/me/invitable_friends";
 
     // Example "/me/invitable_friends?fields=name,picture.width(300)"
