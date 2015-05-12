@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <color name="watchlist_button_color">@color/yellow_dark</color>
+  <color name="watchlist_button_color">#F1C40F</color>
 
 </resources>

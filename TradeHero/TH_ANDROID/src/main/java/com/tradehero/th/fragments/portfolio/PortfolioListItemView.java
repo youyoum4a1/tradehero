@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.portfolio;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -13,6 +15,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -29,6 +32,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedPercentage;
+import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.Subscription;
@@ -78,6 +82,10 @@ public class PortfolioListItemView extends RelativeLayout
         if (this.userIcon != null)
         {
             this.userIcon.setOnClickListener(null);
+        }
+        if (portfolioImage != null)
+        {
+            picasso.cancelRequest(portfolioImage);
         }
         super.onDetachedFromWindow();
     }
@@ -130,9 +138,29 @@ public class PortfolioListItemView extends RelativeLayout
         {
             if (displayablePortfolioDTO != null && displayablePortfolioDTO.portfolioDTO != null)
             {
-                PortfolioDTO portfolioDTO = displayablePortfolioDTO.portfolioDTO;
+                final PortfolioDTO portfolioDTO = displayablePortfolioDTO.portfolioDTO;
                 int imageResId = PortfolioCompactDTOUtil.getIconResId(portfolioDTO);
-                picasso.load(imageResId).into(portfolioImage);
+                picasso.load(imageResId)
+                        .into(new Target()
+                        {
+                            @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from)
+                            {
+                                portfolioImage.setImageBitmap(bitmap);
+                                Integer colorResId = PortfolioCompactDTOUtil.getIconTintResId(portfolioDTO);
+                                if (colorResId != null)
+                                {
+                                    GraphicUtil.applyColorFilter(portfolioImage,
+                                            getResources().getColor(colorResId));
+                                }}
+
+                            @Override public void onBitmapFailed(Drawable errorDrawable)
+                            {
+                            }
+
+                            @Override public void onPrepareLoad(Drawable placeHolderDrawable)
+                            {
+                            }
+                        });
             }
         }
     }
