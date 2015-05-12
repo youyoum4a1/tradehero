@@ -9,22 +9,26 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import com.actionbarsherlock.view.Menu;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Exchange;
@@ -64,22 +68,26 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
-import dagger.Lazy;
-import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
-import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Set;
 import java.util.TreeSet;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import dagger.Lazy;
+import timber.log.Timber;
 
 @Routable("security/:securityRawInfo")
 public class BuySellFragment extends AbstractBuySellFragment
         implements ViewPager.OnPageChangeListener,
-        WithTutorial
-{
+        WithTutorial {
     public static final String EVENT_CHART_IMAGE_CLICKED = BuySellFragment.class.getName() + ".chartButtonClicked";
     private static final String BUNDLE_KEY_SELECTED_PAGE_INDEX = ".selectedPage";
 
@@ -151,24 +159,22 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject Analytics analytics;
     private AbstractTransactionDialogFragment abstractTransactionDialogFragment;
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         chartImageButtonClickReceiver = createImageButtonClickBroadcastReceiver();
         userWatchlistPositionCacheFetchListener = createUserWatchlistCacheListener();
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
-    {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        if (desiredArguments == null)
-        {
+        if (desiredArguments == null) {
             desiredArguments = getArguments();
         }
-        if (savedInstanceState != null)
-        {
+        if (savedInstanceState != null) {
             selectedPageIndex = savedInstanceState.getInt(BUNDLE_KEY_SELECTED_PAGE_INDEX);
         }
 
@@ -177,38 +183,33 @@ public class BuySellFragment extends AbstractBuySellFragment
         return view;
     }
 
-    @Override protected void initViews(View view)
-    {
+    @Override
+    protected void initViews(View view) {
         super.initViews(view);
         ButterKnife.inject(this, view);
 
-        if (mQuoteRefreshProgressBar != null)
-        {
+        if (mQuoteRefreshProgressBar != null) {
             mQuoteRefreshProgressBar.setMax(
                     (int) (MILLISEC_QUOTE_REFRESH / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
             mQuoteRefreshProgressBar.setProgress(mQuoteRefreshProgressBar.getMax());
         }
 
-        if (mSelectedPortfolio != null)
-        {
+        if (mSelectedPortfolio != null) {
             mPortfolioSelectorMenu = new PopupMenu(getActivity(), mSelectedPortfolio);
             mPortfolioSelectorMenu.setOnMenuItemClickListener(
-                    new PopupMenu.OnMenuItemClickListener()
-                    {
-                        @Override public boolean onMenuItemClick(android.view.MenuItem menuItem)
-                        {
+                    new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(android.view.MenuItem menuItem) {
                             return selectDifferentPortfolio(menuItem);
                         }
                     });
         }
 
-        if (bottomViewPagerAdapter == null)
-        {
+        if (bottomViewPagerAdapter == null) {
             bottomViewPagerAdapter =
                     new BuySellBottomStockPagerAdapter(((Fragment) this).getChildFragmentManager());
         }
-        if (mBottomViewPager != null)
-        {
+        if (mBottomViewPager != null) {
             mBottomViewPager.setAdapter(bottomViewPagerAdapter);
             mBottomViewPager.setOnPageChangeListener(this);
         }
@@ -218,8 +219,8 @@ public class BuySellFragment extends AbstractBuySellFragment
         mBuySellBtnContainer.setVisibility(View.GONE);
     }
 
-    @Override public void onSaveInstanceState(Bundle outState)
-    {
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         progressDialogUtil.dismiss(getActivity());
         detachWatchlistFetchTask();
@@ -228,37 +229,37 @@ public class BuySellFragment extends AbstractBuySellFragment
         outState.putInt(BUNDLE_KEY_SELECTED_PAGE_INDEX, selectedPageIndex);
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @Override public void onPrepareOptionsMenu(Menu menu)
-    {
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
         displayActionBarElements();
     }
 
-    @Override public void onDestroyOptionsMenu()
-    {
+    @Override
+    public void onDestroyOptionsMenu() {
         super.onDestroyOptionsMenu();
     }
 
-    @Override public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item)
-    {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
     //</editor-fold>
 
-    @Override public void onStart()
-    {
+    @Override
+    public void onStart() {
         super.onStart();
         analytics.fireEvent(new ChartTimeEvent(securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
     }
 
-    @Override public void onResume()
-    {
+    @Override
+    public void onResume() {
         super.onResume();
 
         LocalBroadcastManager.getInstance(getActivity())
@@ -267,31 +268,29 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         mBottomViewPager.setCurrentItem(selectedPageIndex);
 
-        if (abstractTransactionDialogFragment != null && abstractTransactionDialogFragment.getDialog() != null)
-        {
+        if (abstractTransactionDialogFragment != null && abstractTransactionDialogFragment.getDialog() != null) {
             abstractTransactionDialogFragment.populateComment();
             abstractTransactionDialogFragment.getDialog().show();
         }
     }
 
-    @Override public void onPause()
-    {
+    @Override
+    public void onPause() {
         LocalBroadcastManager.getInstance(getActivity())
                 .unregisterReceiver(chartImageButtonClickReceiver);
         selectedPageIndex = mBottomViewPager.getCurrentItem();
         super.onPause();
     }
 
-    @Override public void onDestroyView()
-    {
+    @Override
+    public void onDestroyView() {
         detachSocialLinkHelper();
         detachWatchlistFetchTask();
         detachBuySellMiddleCallback();
 
         mSelectedPortfolio = null;
 
-        if (mPortfolioSelectorMenu != null)
-        {
+        if (mPortfolioSelectorMenu != null) {
             mPortfolioSelectorMenu.setOnMenuItemClickListener(null);
         }
         mPortfolioSelectorMenu = null;
@@ -306,53 +305,47 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
-    {
+    @Override
+    public void onDestroy() {
         userWatchlistPositionCacheFetchListener = null;
         chartImageButtonClickReceiver = null;
         super.onDestroy();
     }
 
-    protected void detachSocialLinkHelper()
-    {
-        if (socialLinkHelper != null)
-        {
+    protected void detachSocialLinkHelper() {
+        if (socialLinkHelper != null) {
             socialLinkHelper.setSocialLinkingCallback(null);
         }
         socialLinkHelper = null;
     }
 
-    protected void detachWatchlistFetchTask()
-    {
+    protected void detachWatchlistFetchTask() {
         userWatchlistPositionCache.unregister(userWatchlistPositionCacheFetchListener);
     }
 
-    @Override public void linkWith(SecurityId securityId, boolean andDisplay)
-    {
+    @Override
+    public void linkWith(SecurityId securityId, boolean andDisplay) {
         super.linkWith(securityId, andDisplay);
 
         fetchWatchlist();
 
-        if (andDisplay)
-        {
+        if (andDisplay) {
             displayWatchlistButton();
         }
     }
 
-    public void fetchWatchlist()
-    {
+    public void fetchWatchlist() {
         detachWatchlistFetchTask();
         userWatchlistPositionCache.register(currentUserId.toUserBaseKey(), userWatchlistPositionCacheFetchListener);
         userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
-    {
+    @Override
+    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay) {
         super.linkWith(securityCompactDTO, andDisplay);
         buildUsedMenuPortfolios();
 
-        if (andDisplay)
-        {
+        if (andDisplay) {
             displaySelectedPortfolioContainer();
             displayPortfolioSelectorMenu();
             displaySelectedPortfolio();
@@ -364,16 +357,15 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    @Override public void linkWith(final SecurityPositionDetailDTO securityPositionDetailDTO,
-            boolean andDisplay)
-    {
+    @Override
+    public void linkWith(final SecurityPositionDetailDTO securityPositionDetailDTO,
+                         boolean andDisplay) {
         super.linkWith(securityPositionDetailDTO, andDisplay);
 
         buildUsedMenuPortfolios();
         setInitialSellQuantityIfCan();
 
-        if (andDisplay)
-        {
+        if (andDisplay) {
             displaySelectedPortfolioContainer();
             displayPortfolioSelectorMenu();
             displaySelectedPortfolio();
@@ -383,32 +375,28 @@ public class BuySellFragment extends AbstractBuySellFragment
     }
 
     @Override
-    public void linkWith(final PositionDTOCompactList positionDTOCompacts, boolean andDisplay)
-    {
+    public void linkWith(final PositionDTOCompactList positionDTOCompacts, boolean andDisplay) {
         super.linkWith(positionDTOCompacts, andDisplay);
-        if (andDisplay)
-        {
+        if (andDisplay) {
 
         }
     }
 
-    @Override public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
-    {
+    @Override
+    public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay) {
         super.linkWith(userProfileDTO, andDisplay);
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
-        if (andDisplay)
-        {
+        if (andDisplay) {
         }
     }
 
-    @Override protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
-    {
+    @Override
+    protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay) {
         super.linkWith(quoteDTO, andDisplay);
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
-        if (andDisplay)
-        {
+        if (andDisplay) {
             displayAsOf();
             displayBuySellPrice();
             displayBuySellContainer();
@@ -417,53 +405,42 @@ public class BuySellFragment extends AbstractBuySellFragment
     }
 
     protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId,
-            boolean andDisplay)
-    {
+                                      boolean andDisplay) {
     }
 
-    @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
-    {
+    @Override
+    protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay) {
         super.linkWith(portfolioCompactDTO, andDisplay);
         clampBuyQuantity(andDisplay);
         clampSellQuantity(andDisplay);
-        if (andDisplay)
-        {
+        if (andDisplay) {
             // TODO max purchasable shares
             displayBuySellPrice();
         }
     }
 
-    protected void linkWithWatchlist(WatchlistPositionDTOList watchedList, boolean andDisplay)
-    {
+    protected void linkWithWatchlist(WatchlistPositionDTOList watchedList, boolean andDisplay) {
         this.watchedList = watchedList;
-        if (andDisplay)
-        {
+        if (andDisplay) {
             displayWatchlistButton();
         }
     }
 
-    protected void setInitialBuyQuantityIfCan()
-    {
-        if (mBuyQuantity == null)
-        {
+    protected void setInitialBuyQuantityIfCan() {
+        if (mBuyQuantity == null) {
             Integer maxPurchasableShares = getMaxPurchasableShares();
-            if (maxPurchasableShares != null)
-            {
+            if (maxPurchasableShares != null) {
                 linkWithBuyQuantity((int) Math.ceil(((double) maxPurchasableShares) / 2), true);
             }
         }
     }
 
-    protected void setInitialSellQuantityIfCan()
-    {
-        if (mSellQuantity == null)
-        {
+    protected void setInitialSellQuantityIfCan() {
+        if (mSellQuantity == null) {
             Integer maxSellableShares = getMaxSellableShares();
-            if (maxSellableShares != null)
-            {
+            if (maxSellableShares != null) {
                 linkWithSellQuantity(maxSellableShares, true);
-                if (maxSellableShares == 0)
-                {
+                if (maxSellableShares == 0) {
                     setTransactionTypeBuy(true);
                 }
             }
@@ -471,8 +448,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     }
 
     //<editor-fold desc="Display Methods"> //hide switch portfolios for temp
-    protected void buildUsedMenuPortfolios()
-    {
+    protected void buildUsedMenuPortfolios() {
         Set<MenuOwnedPortfolioId> newMenus = new TreeSet<>();
 
         MenuOwnedPortfolioIdList menus = menuOwnedPortfolioIdFactory.createPortfolioMenus(
@@ -483,14 +459,12 @@ public class BuySellFragment extends AbstractBuySellFragment
         usedMenuOwnedPortfolioIds = newMenus;
     }
 
-    public void display()
-    {
+    public void display() {
         displayActionBarElements();
         displayPageElements();
     }
 
-    public void displayPageElements()
-    {
+    public void displayPageElements() {
         displaySelectedPortfolioContainer();
         displayPortfolioSelectorMenu();
         displaySelectedPortfolio();
@@ -501,25 +475,19 @@ public class BuySellFragment extends AbstractBuySellFragment
         loadStockLogo();
     }
 
-    public void displaySelectedPortfolioContainer()
-    {
-        if (mSelectedPortfolioContainer != null)
-        {
+    public void displaySelectedPortfolioContainer() {
+        if (mSelectedPortfolioContainer != null) {
             mSelectedPortfolioContainer.setVisibility(
                     usedMenuOwnedPortfolioIds != null && usedMenuOwnedPortfolioIds.size() > 1
                             ? View.VISIBLE : View.GONE);
         }
     }
 
-    public void displayPortfolioSelectorMenu()
-    {
-        if (mPortfolioSelectorMenu != null)
-        {
+    public void displayPortfolioSelectorMenu() {
+        if (mPortfolioSelectorMenu != null) {
             mPortfolioSelectorMenu.getMenu().clear();
-            if (usedMenuOwnedPortfolioIds != null)
-            {
-                for (MenuOwnedPortfolioId menuOwnedPortfolioId : usedMenuOwnedPortfolioIds)
-                {
+            if (usedMenuOwnedPortfolioIds != null) {
+                for (MenuOwnedPortfolioId menuOwnedPortfolioId : usedMenuOwnedPortfolioIds) {
                     mPortfolioSelectorMenu.getMenu()
                             .add(Menu.NONE, Menu.NONE, Menu.NONE, menuOwnedPortfolioId);
                 }
@@ -527,26 +495,21 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    public void displaySelectedPortfolio()
-    {
+    public void displaySelectedPortfolio() {
     }
 
-    public void displayBottomViewPager()
-    {
+    public void displayBottomViewPager() {
         BuySellBottomStockPagerAdapter adapter = bottomViewPagerAdapter;
-        if (adapter != null)
-        {
+        if (adapter != null) {
             adapter.linkWith(securityId);
             adapter.notifyDataSetChanged();
         }
     }
 
-    public void displayStockName()
-    {
+    public void displayStockName() {
         updateStockAndSymbol();
 
-        if (mMarketClosedIcon != null)
-        {
+        if (mMarketClosedIcon != null) {
             boolean marketIsOpen = securityCompactDTO == null
                     || securityCompactDTO.marketOpen == null
                     || securityCompactDTO.marketOpen;
@@ -554,51 +517,38 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    public void updateStockAndSymbol()
-    {
+    public void updateStockAndSymbol() {
         String title = "";
         String symbol = "";
-        if (securityCompactDTO != null)
-        {
+        if (securityCompactDTO != null) {
             title = securityCompactDTO.name;
             symbol = securityCompactDTO.getExchangeSymbol();
         }
         setActionBarTitle(getString(R.string.security_action_bar_title, title, symbol));
     }
 
-    public void displayBuySellPrice()
-    {
-        if (mBuyPrice != null)
-        {
+    public void displayBuySellPrice() {
+        if (mBuyPrice != null) {
             String display = securityCompactDTO == null ? "-" : securityCompactDTO.getCurrencyDisplay();
             String bPrice;
             String sPrice;
             THSignedNumber bthSignedNumber;
             THSignedNumber sthSignedNumber;
-            if (quoteDTO == null)
-            {
+            if (quoteDTO == null) {
                 return;
-            }
-            else
-            {
-                if (quoteDTO.ask == null)
-                {
+            } else {
+                if (quoteDTO.ask == null) {
                     bPrice = getString(R.string.buy_sell_ask_price_not_available);
-                }
-                else
-                {
+                } else {
                     bthSignedNumber = THSignedNumber.builder(quoteDTO.ask)
                             .withOutSign()
                             .build();
                     bPrice = bthSignedNumber.toString();
                 }
 
-                if (quoteDTO.bid == null)
-                {
+                if (quoteDTO.bid == null) {
                     sPrice = getString(R.string.buy_sell_bid_price_not_available);
-                }
-                else
-                {
+                } else {
                     sthSignedNumber = THSignedNumber.builder(quoteDTO.bid)
                             .withOutSign()
                             .build();
@@ -612,22 +562,15 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    public void displayAsOf()
-    {
-        if (mVpriceAsOf != null)
-        {
+    public void displayAsOf() {
+        if (mVpriceAsOf != null) {
             String text;
-            if (quoteDTO != null && quoteDTO.asOfUtc != null)
-            {
+            if (quoteDTO != null && quoteDTO.asOfUtc != null) {
                 text = DateUtils.getFormattedDate(getResources(), quoteDTO.asOfUtc);
-            }
-            else if (securityCompactDTO != null
-                    && securityCompactDTO.lastPriceDateAndTimeUtc != null)
-            {
+            } else if (securityCompactDTO != null
+                    && securityCompactDTO.lastPriceDateAndTimeUtc != null) {
                 text = DateUtils.getFormattedDate(getResources(), securityCompactDTO.lastPriceDateAndTimeUtc);
-            }
-            else
-            {
+            } else {
                 text = "";
             }
             mVpriceAsOf.setText(
@@ -635,15 +578,12 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    public void displayActionBarElements()
-    {
+    public void displayActionBarElements() {
         displayBuySellSwitch();
     }
 
-    public void displayBuySellContainer()
-    {
-        if (mBuySellBtnContainer.getVisibility() == View.GONE)
-        {
+    public void displayBuySellContainer() {
+        if (mBuySellBtnContainer.getVisibility() == View.GONE) {
             Animation slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_from_bottom);
             slideIn.setFillAfter(true);
             mBuySellBtnContainer.setVisibility(View.VISIBLE);
@@ -651,26 +591,19 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    public void displayBuySellSwitch()
-    {
+    public void displayBuySellSwitch() {
     }
 
-    public void displayTriggerButton()
-    {
+    public void displayTriggerButton() {
 
     }
 
-    public void displayWatchlistButton()
-    {
-        if (mBtnAddWatchlist != null)
-        {
-            if (securityId == null || watchedList == null)
-            {
+    public void displayWatchlistButton() {
+        if (mBtnAddWatchlist != null) {
+            if (securityId == null || watchedList == null) {
                 // TODO show disabled
                 mBtnAddWatchlist.setEnabled(false);
-            }
-            else
-            {
+            } else {
                 mBtnAddWatchlist.setEnabled(true);
                 mBtnAddWatchlist.setText(watchedList.contains(securityId) ?
                         R.string.watchlist_edit_title :
@@ -679,171 +612,129 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    public void loadStockLogo()
-    {
-        if (mStockLogo != null)
-        {
-            if (mStockBgLogo != null)
-            {
+    public void loadStockLogo() {
+        if (mStockLogo != null) {
+            if (mStockBgLogo != null) {
                 mStockBgLogo.setVisibility(View.INVISIBLE);
             }
-            if (isMyUrlOk())
-            {
+            if (isMyUrlOk()) {
                 picasso.load(securityCompactDTO.imageBlobUrl)
                         .transform(foregroundTransformation)
-                        .into(mStockLogo, new Callback()
-                        {
-                            @Override public void onSuccess()
-                            {
+                        .into(mStockLogo, new Callback() {
+                            @Override
+                            public void onSuccess() {
                                 loadStockBgLogoDelayed();
                             }
 
-                            @Override public void onError()
-                            {
+                            @Override
+                            public void onError() {
                                 loadStockLogoExchange();
                             }
                         });
-            }
-            else
-            {
+            } else {
                 loadStockLogoExchange();
             }
-        }
-        else
-        {
+        } else {
             loadStockBgLogoDelayed();
         }
     }
 
-    public void loadStockLogoExchange()
-    {
-        if (mStockLogo != null)
-        {
-            if (securityCompactDTO != null && securityCompactDTO.exchange != null)
-            {
-                try
-                {
+    public void loadStockLogoExchange() {
+        if (mStockLogo != null) {
+            if (securityCompactDTO != null && securityCompactDTO.exchange != null) {
+                try {
                     Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
                     mStockLogo.setImageResource(exchange.logoId);
                     loadStockBgLogoDelayed();
-                } catch (IllegalArgumentException e)
-                {
+                } catch (IllegalArgumentException e) {
                     Timber.e("Unknown Exchange %s", securityCompactDTO.exchange, e);
                     loadStockLogoDefault();
-                } catch (OutOfMemoryError e)
-                {
+                } catch (OutOfMemoryError e) {
                     Timber.e(e, securityCompactDTO.exchange);
                     loadStockLogoDefault();
                 }
-            }
-            else
-            {
+            } else {
                 loadStockLogoDefault();
             }
-        }
-        else
-        {
+        } else {
             loadStockBgLogoDelayed();
         }
     }
 
-    public void loadStockLogoDefault()
-    {
-        if (mStockLogo != null)
-        {
+    public void loadStockLogoDefault() {
+        if (mStockLogo != null) {
             mStockLogo.setImageResource(R.drawable.default_image);
         }
         loadStockBgLogoDelayed();
     }
 
-    public void loadStockBgLogoDelayed()
-    {
+    public void loadStockBgLogoDelayed() {
         View rootView = getView();
-        if (rootView != null)
-        {
-            rootView.postDelayed(new Runnable()
-            {
-                @Override public void run()
-                {
+        if (rootView != null) {
+            rootView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
                     loadStockBgLogo();
                 }
             }, MS_DELAY_FOR_BG_IMAGE);
         }
     }
 
-    public void loadStockBgLogo()
-    {
-        if (mStockBgLogo != null)
-        {
-            if (isMyUrlOk())
-            {
+    public void loadStockBgLogo() {
+        if (mStockBgLogo != null) {
+            if (isMyUrlOk()) {
                 RequestCreator requestCreator = picasso.load(securityCompactDTO.imageBlobUrl)
                         .transform(backgroundTransformation);
-                resizeBackground(requestCreator, mStockBgLogo, new Callback()
-                {
-                    @Override public void onSuccess()
-                    {
-                        if (mStockBgLogo != null)
-                        {
+                resizeBackground(requestCreator, mStockBgLogo, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        if (mStockBgLogo != null) {
                             mStockBgLogo.setVisibility(View.VISIBLE);
                         }
                     }
 
-                    @Override public void onError()
-                    {
+                    @Override
+                    public void onError() {
                         loadStockBgLogoExchange();
                     }
                 });
-            }
-            else
-            {
+            } else {
                 loadStockBgLogoExchange();
             }
         }
     }
 
-    public void loadStockBgLogoExchange()
-    {
-        if (mStockBgLogo != null)
-        {
-            if (securityCompactDTO != null && securityCompactDTO.exchange != null)
-            {
-                try
-                {
+    public void loadStockBgLogoExchange() {
+        if (mStockBgLogo != null) {
+            if (securityCompactDTO != null && securityCompactDTO.exchange != null) {
+                try {
                     Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
                     RequestCreator requestCreator = picasso.load(exchange.logoId)
                             .transform(backgroundTransformation);
                     resizeBackground(requestCreator, mStockBgLogo, null);
                     mStockBgLogo.setVisibility(View.VISIBLE);
-                } catch (IllegalArgumentException e)
-                {
+                } catch (IllegalArgumentException e) {
                     loadStockBgLogoDefault();
                 }
-            }
-            else
-            {
+            } else {
                 loadStockBgLogoDefault();
             }
         }
     }
 
-    public void loadStockBgLogoDefault()
-    {
-        if (mStockBgLogo != null)
-        {
+    public void loadStockBgLogoDefault() {
+        if (mStockBgLogo != null) {
             mStockBgLogo.setImageResource(R.drawable.default_image);
         }
     }
 
     protected void resizeBackground(RequestCreator requestCreator, ImageView imageView,
-            Callback callback)
-    {
+                                    Callback callback) {
         //int width = mInfoFrame.getWidth();
         //int height = mInfoFrame.getHeight();
         int width = mStockBgLogo.getWidth();
         int height = mStockBgLogo.getHeight();
-        if (width > 0 && height > 0)
-        {
+        if (width > 0 && height > 0) {
             requestCreator.resize(width, height)
                     .centerCrop()
                     .into(imageView, callback);
@@ -851,65 +742,56 @@ public class BuySellFragment extends AbstractBuySellFragment
     }
     //</editor-fold>
 
-    public boolean isMyUrlOk()
-    {
+    public boolean isMyUrlOk() {
         return (securityCompactDTO != null) && isUrlOk(securityCompactDTO.imageBlobUrl);
     }
 
-    public static boolean isUrlOk(String url)
-    {
+    public static boolean isUrlOk(String url) {
         return (url != null) && (url.length() > 0);
     }
 
-    @Override public void setTransactionTypeBuy(boolean transactionTypeBuy)
-    {
+    @Override
+    public void setTransactionTypeBuy(boolean transactionTypeBuy) {
         super.setTransactionTypeBuy(transactionTypeBuy);
         displayBuySellSwitch();
     }
 
-    @Override protected void setRefreshingQuote(boolean refreshingQuote)
-    {
+    @Override
+    protected void setRefreshingQuote(boolean refreshingQuote) {
         super.setRefreshingQuote(refreshingQuote);
     }
 
-    @Override protected void prepareFreshQuoteHolder()
-    {
+    @Override
+    protected void prepareFreshQuoteHolder() {
         super.prepareFreshQuoteHolder();
         freshQuoteHolder.identifier = "BuySellFragment";
     }
 
     @OnClick(R.id.btn_add_trigger)
-    protected void handleBtnAddTriggerClicked(){}
+    protected void handleBtnAddTriggerClicked() {
+    }
 
 
     @OnClick(R.id.btn_add_watch_list)
-    protected void handleBtnWatchlistClicked()
-    {
-        if (securityId != null)
-        {
+    protected void handleBtnWatchlistClicked() {
+        if (securityId != null) {
             Bundle args = new Bundle();
             WatchlistEditFragment.putSecurityId(args, securityId);
             getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args);
-        }
-        else
-        {
+        } else {
             THToast.show(R.string.watchlist_not_enough_info);
         }
     }
 
     @OnClick(R.id.portfolio_selector_container)
-    protected void showPortfolioSelector()
-    {
-        if (mPortfolioSelectorMenu != null)
-        {
+    protected void showPortfolioSelector() {
+        if (mPortfolioSelectorMenu != null) {
             mPortfolioSelectorMenu.show();
         }
     }
 
-    private boolean selectDifferentPortfolio(MenuItem menuItem)
-    {
-        if (mSelectedPortfolio != null)
-        {
+    private boolean selectDifferentPortfolio(MenuItem menuItem) {
+        if (mSelectedPortfolio != null) {
             mSelectedPortfolio.setText(menuItem.getTitle());
         }
 
@@ -918,11 +800,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     }
 
     @OnClick({R.id.btn_buy, R.id.btn_sell})
-    protected void handleBuySellButtonsClicked(View view)
-    {
+    protected void handleBuySellButtonsClicked(View view) {
         trackBuyClickEvent();
-        switch (view.getId())
-        {
+        switch (view.getId()) {
             case R.id.btn_buy:
                 isTransactionTypeBuy = true;
                 break;
@@ -936,58 +816,47 @@ public class BuySellFragment extends AbstractBuySellFragment
     }
 
     @OnClick(R.id.market_closed_icon)
-    protected void handleMarketClosedIconClicked()
-    {
+    protected void handleMarketClosedIconClicked() {
         notifyMarketClosed();
     }
 
     @OnClick(R.id.info)
-    public void handleTabInfoClicked()
-    {
-        if (mBottomViewPager != null)
-        {
+    public void handleTabInfoClicked() {
+        if (mBottomViewPager != null) {
             mBottomViewPager.setCurrentItem(0, true);
         }
     }
 
     @OnClick(R.id.discussions)
-    public void handleDiscussionsTabClicked()
-    {
-        if (mBottomViewPager != null)
-        {
+    public void handleDiscussionsTabClicked() {
+        if (mBottomViewPager != null) {
             mBottomViewPager.setCurrentItem(1, true);
         }
     }
 
     @OnClick(R.id.news)
-    public void handleNewsTabClicked()
-    {
-        if (mBottomViewPager != null)
-        {
+    public void handleNewsTabClicked() {
+        if (mBottomViewPager != null) {
             mBottomViewPager.setCurrentItem(2, true);
         }
     }
 
     //<editor-fold desc="Interface Creators">
-    private Callback createLogoReadyCallback()
-    {
-        return new Callback()
-        {
-            @Override public void onError()
-            {
+    private Callback createLogoReadyCallback() {
+        return new Callback() {
+            @Override
+            public void onError() {
                 loadBg();
             }
 
-            @Override public void onSuccess()
-            {
+            @Override
+            public void onSuccess() {
                 loadBg();
             }
 
-            public void loadBg()
-            {
+            public void loadBg() {
                 if (mStockBgLogo != null && BuySellFragment.isUrlOk(
-                        (String) mStockBgLogo.getTag(R.string.image_url)))
-                {
+                        (String) mStockBgLogo.getTag(R.string.image_url))) {
                     Timber.i("Loading Bg for %s", mStockBgLogo.getTag(R.string.image_url));
                     picasso.load((String) mStockBgLogo.getTag(R.string.image_url))
                             .placeholder(R.drawable.default_image)
@@ -996,12 +865,9 @@ public class BuySellFragment extends AbstractBuySellFragment
                             .centerInside()
                             .transform(foregroundTransformation)
                             .into(mStockBgLogo);
-                }
-                else if (mStockBgLogo != null && securityCompactDTO != null)
-                {
+                } else if (mStockBgLogo != null && securityCompactDTO != null) {
                     int logoId = securityCompactDTO.getExchangeLogoId();
-                    if (logoId != 0)
-                    {
+                    if (logoId != 0) {
                         picasso.load(logoId)
                                 .resize(mStockBgLogo.getWidth(), mStockBgLogo.getHeight())
                                 .centerCrop()
@@ -1013,30 +879,23 @@ public class BuySellFragment extends AbstractBuySellFragment
         };
     }
 
-    public void showBuySellDialog()
-    {
+    public void showBuySellDialog() {
     }
 
-    public void shareToWeChat()
-    {
+    public void shareToWeChat() {
         //TODO Move this!
-        if (socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.WECHAT, DEFAULT_IS_SHARED_TO_WECHAT))
-        {
+        if (socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.WECHAT, DEFAULT_IS_SHARED_TO_WECHAT)) {
             WeChatDTO weChatDTO = new WeChatDTO();
             weChatDTO.id = securityCompactDTO.id;
             weChatDTO.type = WeChatMessageType.Trade;
-            if (isMyUrlOk())
-            {
+            if (isMyUrlOk()) {
                 weChatDTO.imageURL = securityCompactDTO.imageBlobUrl;
             }
-            if (isTransactionTypeBuy)
-            {
+            if (isTransactionTypeBuy) {
                 weChatDTO.title = getString(R.string.buy_sell_switch_buy) + " "
                         + securityCompactDTO.name + " " + abstractTransactionDialogFragment.getQuantityString() + getString(
                         R.string.buy_sell_share_count) + " @" + quoteDTO.ask;
-            }
-            else
-            {
+            } else {
                 weChatDTO.title = getString(R.string.buy_sell_switch_sell) + " "
                         + securityCompactDTO.name + " " + abstractTransactionDialogFragment.getQuantityString() + getString(
                         R.string.buy_sell_share_count) + " @" + quoteDTO.bid;
@@ -1045,96 +904,80 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    private void detachBuySellMiddleCallback()
-    {
-        if (buySellMiddleCallback != null)
-        {
+    private void detachBuySellMiddleCallback() {
+        if (buySellMiddleCallback != null) {
             buySellMiddleCallback.setPrimaryCallback(null);
         }
         buySellMiddleCallback = null;
     }
 
-    private void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
-    {
-        if (securityPositionDetailDTO != null && securityPositionDetailDTO.portfolio != null)
-        {
+    private void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO) {
+        if (securityPositionDetailDTO != null && securityPositionDetailDTO.portfolio != null) {
             pushPortfolioFragment(new OwnedPortfolioId(
                     currentUserId.get(),
                     securityPositionDetailDTO.portfolio.id));
-        }
-        else
-        {
+        } else {
             pushPortfolioFragment();
         }
     }
 
-    private void pushPortfolioFragment()
-    {
+    private void pushPortfolioFragment() {
     }
 
-    protected interface PushPortfolioFragmentRunnable
-    {
+    protected interface PushPortfolioFragmentRunnable {
         void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO);
     }
 
-    private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId)
-    {
+    private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId) {
     }
 
-    private void trackBuyClickEvent()
-    {
+    private void trackBuyClickEvent() {
         analytics.fireEvent(new BuySellEvent(isTransactionTypeBuy, securityId));
     }
 
-    private void pushStockInfoFragmentIn()
-    {
+    private void pushStockInfoFragmentIn() {
         Bundle args = new Bundle();
         args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, this.securityId.getArgs());
-        if (providerId != null)
-        {
+        if (providerId != null) {
             args.putBundle(StockInfoFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE,
                     providerId.getArgs());
         }
         getDashboardNavigator().pushFragment(StockInfoFragment.class, args);
     }
 
-    private BroadcastReceiver createImageButtonClickBroadcastReceiver()
-    {
-        return new BroadcastReceiver()
-        {
-            @Override public void onReceive(Context context, Intent intent)
-            {
+    private BroadcastReceiver createImageButtonClickBroadcastReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
                 pushStockInfoFragmentIn();
             }
         };
     }
 
-    @Override protected FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener()
-    {
+    @Override
+    protected FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener() {
         return new BuySellFreshQuoteListener();
     }
 
-    @Override public int getTutorialLayout()
-    {
+    @Override
+    public int getTutorialLayout() {
         return R.layout.tutorial_buy_sell;
     }
 
     @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
-    {
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
     }
 
-    @Override public void onPageSelected(int position)
-    {
+    @Override
+    public void onPageSelected(int position) {
         selectPage(position);
     }
 
-    @Override public void onPageScrollStateChanged(int state)
-    {
+    @Override
+    public void onPageScrollStateChanged(int state) {
     }
 
-    public void selectPage(int position)
-    {
+    public void selectPage(int position) {
         selectedPageIndex = position;
         mInfoTextView.setEnabled(position != 0);
         mDiscussTextView.setEnabled(position != 1);
@@ -1147,34 +990,29 @@ public class BuySellFragment extends AbstractBuySellFragment
                 position == 2 ? R.color.white : R.color.btn_twitter_color_end));
     }
 
-    protected class BuySellFreshQuoteListener extends AbstractBuySellFreshQuoteListener
-    {
-        @Override public void onMilliSecToRefreshQuote(long milliSecToRefresh)
-        {
-            if (mQuoteRefreshProgressBar != null)
-            {
+    protected class BuySellFreshQuoteListener extends AbstractBuySellFreshQuoteListener {
+        @Override
+        public void onMilliSecToRefreshQuote(long milliSecToRefresh) {
+            if (mQuoteRefreshProgressBar != null) {
                 mQuoteRefreshProgressBar.setProgress(
                         (int) (milliSecToRefresh / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
             }
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> createUserWatchlistCacheListener()
-    {
+    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> createUserWatchlistCacheListener() {
         return new BuySellUserWatchlistCacheListener();
     }
 
     protected class BuySellUserWatchlistCacheListener
-            implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
-    {
+            implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> {
         @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
-        {
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value) {
             linkWithWatchlist(value, true);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-        {
+        @Override
+        public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error) {
             Timber.e("Failed to fetch list of watch list items", error);
             THToast.show(R.string.error_fetch_portfolio_list_info);
         }

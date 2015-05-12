@@ -102,7 +102,7 @@ public class DiscussionView extends FrameLayout
         if (attrs != null)
         {
             TypedArray styled = context.obtainStyledAttributes(attrs, R.styleable.DiscussionView);
-            listItemLayout = styled.getResourceId(R.styleable.DiscussionView_listItemLayout, 0);
+            listItemLayout = styled.getResourceId(R.styleable.DiscussionView_listItemLayoutTH, 0);
             setTopicLayout(styled.getResourceId(R.styleable.DiscussionView_topicLayout, 0));
             styled.recycle();
 

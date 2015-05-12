@@ -6,16 +6,102 @@
     android:background="@color/dashboard_background_color"
     >
 
-  <FrameLayout
-      android:id="@+id/realtabcontent"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:paddingLeft="0dp"
-      android:paddingRight="0dp">
-  </FrameLayout>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/th_toolbar"
+        style="@style/TradeHero.Dashboard.ActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:minHeight="@dimen/toolbar_height">
 
-  <com.tradehero.th.widget.GuideView android:id="@+id/guideview_guide_view"  android:layout_width="match_parent" android:layout_height="match_parent"
-          android:visibility="gone"/>
+        <RelativeLayout
+            android:id="@+id/rlCustomHeadView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/tradehero_blue"
+            android:visibility="visible"
+            >
+
+            <TextView
+                android:id="@+id/tvHeadLeft"
+                android:layout_width="@dimen/tab_main_indicator_height"
+                android:layout_height="@dimen/tab_main_indicator_height"
+                android:layout_centerVertical="true"
+                android:background="@drawable/icon_return_xml"
+                android:textColor="@color/white"
+                android:visibility="visible"
+                >
+            </TextView>
+
+
+            <TextView
+                android:id="@+id/tvHeadRight0"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/basic_transparent_selector"
+                android:gravity="center"
+                android:paddingLeft="@dimen/margin_small"
+                android:paddingRight="@dimen/margin_small"
+                android:textColor="@color/white"
+                android:visibility="gone">
+            </TextView>
+
+            <TextView
+                android:id="@+id/tvHeadRight1"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginRight="@dimen/margin_xsmall"
+                android:layout_toLeftOf="@id/tvHeadRight0"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:visibility="gone">
+            </TextView>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvHeadMiddleMain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:visibility="gone">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tvHeadMiddleSub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:visibility="gone">
+                </TextView>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <FrameLayout
+        android:id="@+id/realtabcontent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/th_toolbar"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp">
+    </FrameLayout>
+
+    <com.tradehero.th.widget.GuideView
+        android:id="@+id/guideview_guide_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 
 </RelativeLayout>
 

@@ -4,10 +4,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.crashlytics.android.Crashlytics;
 import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
@@ -39,7 +38,7 @@ import butterknife.InjectView;
 import dagger.Lazy;
 import retrofit.RetrofitError;
 
-public class SplashActivity extends SherlockFragmentActivity {
+public class SplashActivity extends AppCompatActivity {
     @Inject Lazy<Api> tapStream;
     @Inject MobileAppTracker mobileAppTracker;
     @Inject CurrentActivityHolder currentActivityHolder;
