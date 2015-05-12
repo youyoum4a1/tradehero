@@ -2,16 +2,17 @@ package com.tradehero.chinabuild.fragment.stocklearning;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.RelativeLayout;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
+import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 public class AnswerQuestionFragment extends DashboardFragment implements ViewPager.OnPageChangeListener {
 
     private ViewPager questionSetVP;
+    private RelativeLayout guideRL;
 
     public final static String KEY_QUESTION_GROUP_TYPE = "key_question_group_type";
     public final static String TYPE_NORMAL = "type_normal";
@@ -43,7 +45,8 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
     private int currentIndex = 0;
 
-    @Inject CurrentUserId currentUserId;
+    @Inject
+    CurrentUserId currentUserId;
 
     private QuestionsViewPagerAdapter adapter;
 
@@ -53,7 +56,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(view != null){
+        if (view != null) {
             ViewGroup parent = (ViewGroup) view.getParent();
             if (parent != null) {
                 parent.removeView(view);
@@ -63,6 +66,17 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
         view = inflater.inflate(R.layout.stock_learning_question_set, container, false);
         initArguments();
         questionSetVP = (ViewPager) view.findViewById(R.id.viewpager_questions);
+        guideRL = (RelativeLayout) view.findViewById(R.id.relativelayout_guide_stock_learning_question);
+        if (THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_STOCK_LEARNING_QUESTION)) {
+            guideRL.setVisibility(View.VISIBLE);
+            guideRL.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    guideRL.setVisibility(View.GONE);
+                    THSharePreferenceManager.setGuideShowed(getActivity(), THSharePreferenceManager.GUIDE_STOCK_LEARNING_QUESTION);
+                }
+            });
+        }
         initViewPager();
         return view;
     }
@@ -73,7 +87,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
         if (type.equals(TYPE_ERROR) || type.equals(TYPE_ONLY_ONE)) {
             refreshHeadView(0);
         }
-        if (type.equals(TYPE_NORMAL) && questionGroup!=null) {
+        if (type.equals(TYPE_NORMAL) && questionGroup != null) {
             refreshHeadView(questionGroup.question_group_progress - 1);
         }
     }
@@ -129,7 +143,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
             fragment.setArguments(bundle);
             questionFragments.add(fragment);
         }
-        if(adapter==null){
+        if (adapter == null) {
             adapter = new QuestionsViewPagerAdapter();
         }
         questionSetVP.setAdapter(adapter);
@@ -147,8 +161,11 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
         int size = 1;
         if (type.equals(TYPE_ERROR)) {
             size = errorQuesTotal;
-        }else{
+        } else {
             size = questions.size();
+        }
+        if (index < 0) {
+            index = 0;
         }
         String menuTitle = getString(R.string.question_percent, index + 1, size);
         setHeadViewMiddleMain(menuTitle);
@@ -164,6 +181,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
     @Override
     public void onPageSelected(int i) {
+
     }
 
     @Override
@@ -179,7 +197,6 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
         @Override
         public Fragment getItem(int i) {
-
             return questionFragments.get(i);
         }
 

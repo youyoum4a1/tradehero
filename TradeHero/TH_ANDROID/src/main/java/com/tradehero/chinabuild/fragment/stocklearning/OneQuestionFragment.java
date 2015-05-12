@@ -322,7 +322,7 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
                     cLL.setClickable(true);
                     dLL.setClickable(true);
                     answerBtn.setVisibility(View.VISIBLE);
-                    answerBtn.setEnabled(true);
+                    answerBtn.setEnabled(false);
                 } else {
                     if (questionStatusRecord == null && getActivity() != null) {
                         getActivity().finish();
