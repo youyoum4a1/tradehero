@@ -91,23 +91,40 @@ public class AlertCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, Al
                 {
                     @Override public Map<SecurityId, AlertCompactDTO> call(final Pair<UserBaseKey, AlertCompactDTOList> pair)
                     {
-                        final Map<SecurityId, AlertCompactDTO> securitiesWithAlerts = new HashMap<>();
-                        CollectionUtils.apply(pair.second, new Action1<AlertCompactDTO>()
-                        {
-                            @Override public void call(AlertCompactDTO alertCompactDTO)
-                            {
-                                if (alertCompactDTO.security != null)
-                                {
-                                    securitiesWithAlerts.put(alertCompactDTO.security.getSecurityId(), alertCompactDTO);
-                                }
-                                else
-                                {
-                                    Timber.d("populate: AlertId %s had a null alertCompact of securityCompact", alertCompactDTO);
-                                }
-                            }
-                        });
-                        return securitiesWithAlerts;
+                        return map(pair);
                     }
                 });
+    }
+
+    @NonNull public Observable<Map<SecurityId, AlertCompactDTO>> getOneSecurityMappedAlerts(@NonNull UserBaseKey userBaseKey)
+    {
+        return getOne(userBaseKey)
+                .map(new Func1<Pair<UserBaseKey, AlertCompactDTOList>, Map<SecurityId, AlertCompactDTO>>()
+                {
+                    @Override public Map<SecurityId, AlertCompactDTO> call(final Pair<UserBaseKey, AlertCompactDTOList> pair)
+                    {
+                        return map(pair);
+                    }
+                });
+    }
+
+    @NonNull private static Map<SecurityId, AlertCompactDTO> map(@NonNull final Pair<UserBaseKey, AlertCompactDTOList> pair)
+    {
+        final Map<SecurityId, AlertCompactDTO> securitiesWithAlerts = new HashMap<>();
+        CollectionUtils.apply(pair.second, new Action1<AlertCompactDTO>()
+        {
+            @Override public void call(AlertCompactDTO alertCompactDTO)
+            {
+                if (alertCompactDTO.security != null)
+                {
+                    securitiesWithAlerts.put(alertCompactDTO.security.getSecurityId(), alertCompactDTO);
+                }
+                else
+                {
+                    Timber.d("populate: AlertId %s had a null alertCompact of securityCompact", alertCompactDTO);
+                }
+            }
+        });
+        return securitiesWithAlerts;
     }
 }

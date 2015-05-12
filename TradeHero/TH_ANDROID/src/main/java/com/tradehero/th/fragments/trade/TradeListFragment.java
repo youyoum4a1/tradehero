@@ -210,7 +210,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
+                alertCompactListCache.getOneSecurityMappedAlerts(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Map<SecurityId, AlertCompactDTO>>()
@@ -254,18 +254,19 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                                                         {
                                                             @Override public Observable<SecurityId> call(SecurityIntegerId securityIntegerId)
                                                             {
-                                                                return securityIdCache.get(pDTO.getSecurityIntegerId())
+                                                                return securityIdCache.getOne(pDTO.getSecurityIntegerId())
                                                                         .map(new PairGetSecond<SecurityIntegerId, SecurityId>());
                                                             }
                                                         })
                                                         .startWith(securityId != null ? Observable.just(securityId) : Observable.<SecurityId>empty())
+                                                        .distinctUntilChanged()
                                                         .flatMap(new Func1<SecurityId, Observable<SecurityCompactDTO>>()
                                                         {
                                                             @Override
                                                             public Observable<SecurityCompactDTO> call(
                                                                     SecurityId securityId)
                                                             {
-                                                                return securityCompactCache.get(securityId)
+                                                                return securityCompactCache.getOne(securityId)
                                                                         .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
                                                                         .startWith(securityCompactDTO != null ? Observable.just(securityCompactDTO)
                                                                                 : Observable.<SecurityCompactDTO>empty());
@@ -277,7 +278,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                                                         {
                                                             @Override public Observable<TradeDTOList> call(OwnedPositionId ownedPositionId)
                                                             {
-                                                                return tradeListCache.getOne(ownedPositionId)
+                                                                return tradeListCache.get(ownedPositionId)
                                                                         .map(new PairGetSecond<OwnedPositionId, TradeDTOList>());
                                                             }
                                                         }),

@@ -183,7 +183,7 @@ public class AbstractDiscussionCompactItemViewLinearDTOFactory
                 shareTranslationHelper.getTranslateFlags(discussionDTO),
                 userWatchlistPositionCache.getOne(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, WatchlistPositionDTOList>()),
-                alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()),
+                alertCompactListCache.getOneSecurityMappedAlerts(currentUserId.toUserBaseKey()),
                 new Func3<SocialShareTranslationHelper.TranslateFlags,
                         WatchlistPositionDTOList,
                         Map<SecurityId, AlertCompactDTO>,
@@ -210,7 +210,7 @@ public class AbstractDiscussionCompactItemViewLinearDTOFactory
         return Observable.zip(
                 userWatchlistPositionCache.getOne(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, WatchlistPositionDTOList>()),
-                alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()),
+                alertCompactListCache.getOneSecurityMappedAlerts(currentUserId.toUserBaseKey()),
                 new Func2<WatchlistPositionDTOList, Map<SecurityId, AlertCompactDTO>,
                         Pair<WatchlistPositionDTOList, Map<SecurityId, AlertCompactDTO>>>()
                 {

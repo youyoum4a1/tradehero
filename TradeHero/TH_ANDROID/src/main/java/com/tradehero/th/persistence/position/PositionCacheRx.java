@@ -65,7 +65,7 @@ public class PositionCacheRx extends BaseFetchDTOCacheRx<PositionDTOKey, Positio
         {
             throw new IllegalArgumentException("Unhandled PositionDTOKey " + key);
         }
-        return getPositionsCache.get().get(getPositionsDTOKey)
+        return getPositionsCache.get().getOne(getPositionsDTOKey)
                 .flatMap(new Func1<Pair<GetPositionsDTOKey, GetPositionsDTO>, Observable<PositionDTO>>()
                 {
                     @Override public Observable<PositionDTO> call(Pair<GetPositionsDTOKey, GetPositionsDTO> pair)
