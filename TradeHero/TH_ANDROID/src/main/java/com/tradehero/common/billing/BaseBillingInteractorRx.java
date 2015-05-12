@@ -1,5 +1,6 @@
 package com.tradehero.common.billing;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.identifier.ProductIdentifierListResult;
@@ -211,8 +212,8 @@ abstract public class BaseBillingInteractorRx<
     }
     //</editor-fold>
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
-        billingLogicHolder.onActivityResult(requestCode, resultCode, data);
+        billingLogicHolder.onActivityResult(activity, requestCode, resultCode, data);
     }
 }

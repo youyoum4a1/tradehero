@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.googleplay.tester;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -29,7 +30,7 @@ public class THBaseIABBillingAvailableTesterHolderRx
         return new THBaseIABBillingAvailableTesterRx(requestCode, context, iabExceptionFactory);
     }
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
         // Nothing to do
     }

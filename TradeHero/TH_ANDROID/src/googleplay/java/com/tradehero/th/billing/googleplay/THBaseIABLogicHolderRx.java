@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
@@ -140,9 +141,9 @@ public class THBaseIABLogicHolderRx
     }
     //</editor-fold>
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
-        super.onActivityResult(requestCode, resultCode, data);
-        purchaseConsumerHolder.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(activity, requestCode, resultCode, data);
+        purchaseConsumerHolder.onActivityResult(activity, requestCode, resultCode, data);
     }
 }

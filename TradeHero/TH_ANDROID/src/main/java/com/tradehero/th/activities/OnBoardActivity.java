@@ -117,7 +117,7 @@ public class OnBoardActivity extends BaseActivity
         {
             @Override public void call(ActivityResultRequester requester)
             {
-                requester.onActivityResult(requestCode, resultCode, data);
+                requester.onActivityResult(OnBoardActivity.this, requestCode, resultCode, data);
             }
         });
     }

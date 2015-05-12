@@ -114,7 +114,7 @@ public class AuthenticationActivity extends BaseActivity
         {
             @Override public void call(ActivityResultRequester requester)
             {
-                requester.onActivityResult(requestCode, resultCode, data);
+                requester.onActivityResult(AuthenticationActivity.this, requestCode, resultCode, data);
             }
         });
     }

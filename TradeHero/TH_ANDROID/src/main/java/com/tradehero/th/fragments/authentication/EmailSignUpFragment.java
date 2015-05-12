@@ -108,7 +108,9 @@ public class EmailSignUpFragment extends Fragment
         ActivityResultDTO copy = receivedActivityResult;
         if (copy != null)
         {
-            profileView.onActivityResult(copy.requestCode,
+            profileView.onActivityResult(
+                    copy.activity,
+                    copy.requestCode,
                     copy.resultCode,
                     copy.data);
             receivedActivityResult = null;
@@ -129,11 +131,11 @@ public class EmailSignUpFragment extends Fragment
         super.onActivityResult(requestCode, resultCode, data);
         if (profileView != null)
         {
-            profileView.onActivityResult(requestCode, resultCode, data);
+            profileView.onActivityResult(getActivity(), requestCode, resultCode, data);
         }
         else
         {
-            receivedActivityResult = new ActivityResultDTO(requestCode, resultCode, data);
+            receivedActivityResult = new ActivityResultDTO(getActivity(), requestCode, resultCode, data);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.googleplay.consumer;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -37,7 +38,7 @@ public class THBaseIABPurchaseConsumerHolderRx
         return new THBaseIABPurchaseConsumerRx(requestCode, purchase, context, iabExceptionFactory);
     }
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
         // Nothing to do
     }

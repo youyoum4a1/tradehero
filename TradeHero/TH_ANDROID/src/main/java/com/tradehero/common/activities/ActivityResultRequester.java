@@ -1,9 +1,11 @@
 package com.tradehero.common.activities;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 
 public interface ActivityResultRequester
 {
     // TODO consider using ActivityResultDTO ?
-    void onActivityResult(int requestCode, int resultCode, Intent data);
+    void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data);
 }

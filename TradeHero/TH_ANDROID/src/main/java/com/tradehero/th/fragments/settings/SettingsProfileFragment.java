@@ -102,7 +102,7 @@ public class SettingsProfileFragment extends BaseFragment
         super.onActivityResult(requestCode, resultCode, data);
         if (profileView != null)
         {
-            profileView.onActivityResult(requestCode, resultCode, data);
+            profileView.onActivityResult(getActivity(), requestCode, resultCode, data);
         }
     }
 

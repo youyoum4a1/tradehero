@@ -472,7 +472,7 @@ public class ProfileInfoView extends LinearLayout
         }
     }
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
 
         if (requestCode == REQUEST_GALLERY && resultCode == Activity.RESULT_OK

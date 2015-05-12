@@ -79,11 +79,10 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
         }
     }
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
-        Activity activity = this.baseActivity.get();
         Session activeSession = Session.getActiveSession();
-        if (activity != null && activeSession != null)
+        if (activeSession != null)
         {
             activeSession.onActivityResult(activity, requestCode, resultCode, data);
         }

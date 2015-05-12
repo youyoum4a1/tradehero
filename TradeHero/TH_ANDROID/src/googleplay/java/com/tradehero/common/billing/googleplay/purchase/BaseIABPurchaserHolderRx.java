@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.googleplay.purchase;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.IABOrderId;
@@ -35,13 +36,13 @@ abstract public class BaseIABPurchaserHolderRx<
     @NonNull @Override abstract protected IABPurchaserRx<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType> createPurchaser(
             int requestCode, @NonNull IABPurchaseOrderType purchaseOrder);
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
         Timber.d("onActivityResult requestCode: " + requestCode + ", resultCode: " + resultCode);
         IABPurchaserRx iabPurchaser = (IABPurchaserRx) actors.get(requestCode);
         if (iabPurchaser != null)
         {
-            iabPurchaser.onActivityResult(requestCode, resultCode, data);
+            iabPurchaser.onActivityResult(activity, requestCode, resultCode, data);
         }
         else
         {

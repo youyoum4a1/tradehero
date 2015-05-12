@@ -1,5 +1,6 @@
 package com.tradehero.common.billing;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.identifier.ProductIdentifierFetcherHolderRx;
@@ -471,12 +472,12 @@ abstract public class BaseBillingLogicHolderRx<
     }
     //</editor-fold>
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
-        billingAvailableTesterHolder.onActivityResult(requestCode, resultCode, data);
-        productIdentifierFetcherHolder.onActivityResult(requestCode, resultCode, data);
-        inventoryFetcherHolder.onActivityResult(requestCode, resultCode, data);
-        purchaseFetcherHolder.onActivityResult(requestCode, resultCode, data);
-        purchaserHolder.onActivityResult(requestCode, resultCode, data);
+        billingAvailableTesterHolder.onActivityResult(activity, requestCode, resultCode, data);
+        productIdentifierFetcherHolder.onActivityResult(activity, requestCode, resultCode, data);
+        inventoryFetcherHolder.onActivityResult(activity, requestCode, resultCode, data);
+        purchaseFetcherHolder.onActivityResult(activity, requestCode, resultCode, data);
+        purchaserHolder.onActivityResult(activity, requestCode, resultCode, data);
     }
 }

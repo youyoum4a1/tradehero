@@ -614,7 +614,7 @@ public class DashboardActivity extends BaseActivity
         {
             @Override public void call(ActivityResultRequester requester)
             {
-                requester.onActivityResult(requestCode, resultCode, data);
+                requester.onActivityResult(DashboardActivity.this, requestCode, resultCode, data);
             }
         });
         RouteParams routeParams = getRouteParams(data);

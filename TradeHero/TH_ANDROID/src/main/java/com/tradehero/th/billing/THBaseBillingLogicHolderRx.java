@@ -1,5 +1,6 @@
 package com.tradehero.th.billing;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseBillingLogicHolderRx;
@@ -269,9 +270,9 @@ abstract public class THBaseBillingLogicHolderRx<
                 });
     }
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
-        super.onActivityResult(requestCode, resultCode, data);
-        purchaseReporterHolder.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(activity, requestCode, resultCode, data);
+        purchaseReporterHolder.onActivityResult(activity, requestCode, resultCode, data);
     }
 }
