@@ -49,6 +49,14 @@ android {
 
         versionCode project.ext.versionBuild
         versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
+
+        buildConfigField "int", "DISTRIBUTION", distId
+
+        applicationVariants.all { variant ->
+            variant.outputs.each { output ->
+                output.outputFile = new File(outputRoot, "tradehero-" + variant.baseName + "-" + distName +".apk")
+            }
+        }
     }
 
     sourceSets {

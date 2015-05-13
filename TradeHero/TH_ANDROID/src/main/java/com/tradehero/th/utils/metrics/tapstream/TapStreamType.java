@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public enum TapStreamType
 {
+    //BEGIN_ENUM - Please do not remove this line. It's used by the release build script.
     GooglePlay(0, MarketSegment.ROW, PushProvider.URBAN_AIRSHIP, R.string.tap_stream_type_google_install, R.string.tap_stream_type_google_open),
     Baidu(1, MarketSegment.CHINA, PushProvider.GETUI, R.string.tap_stream_type_baidu_install, R.string.tap_stream_type_baidu_open),
     Tencent(2, MarketSegment.CHINA, PushProvider.GETUI, R.string.tap_stream_type_tencent_install, R.string.tap_stream_type_tencent_open),
@@ -78,7 +79,10 @@ public enum TapStreamType
 
     Offical(100, MarketSegment.CHINA, PushProvider.GETUI, R.string.tap_stream_type_offical_install, R.string.tap_stream_type_offical_open),
     Test(101, MarketSegment.CHINA, PushProvider.GETUI, R.string.tap_stream_type_test_install, R.string.tap_stream_type_test_open),
+    //END_ENUM - Please do not remove this line. It's used by the release build script.
     ;
+
+
 
     public final int type;
     @NotNull public final MarketSegment marketSegment;
