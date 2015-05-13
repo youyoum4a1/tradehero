@@ -15,9 +15,12 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -48,6 +51,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
     public final static String KEY_QUESTION_GROUP = "key_question_group";
 
     @Inject CurrentUserId currentUserId;
+    @Inject Analytics analytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -111,12 +115,14 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
         bundle.putString(AnswerQuestionFragment.KEY_QUESTION_GROUP_TYPE, AnswerQuestionFragment.TYPE_ERROR);
         bundle.putInt(AnswerQuestionFragment.KEY_ERROR_QUESTION_SIZE, StockLearningQuestionManager.getInstance().getReAnswerQuestions().size());
         pushFragment(AnswerQuestionFragment.class, bundle);
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.QUESTION_REANSWER_QUESTION, questionGroup.id + ": " + questionGroup.name));
     }
 
     private void gotoHistory() {
         Bundle bundle = new Bundle();
         bundle.putSerializable(AnswerQuestionFragment.KEY_QUESTION_GROUP, questionGroup);
         pushFragment(StockLearningHistoryFragment.class, bundle);
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.QUESTION_HISTORY, questionGroup.id + ": " + questionGroup.name));
     }
 
     private void initSummaryDescriptionResources() {

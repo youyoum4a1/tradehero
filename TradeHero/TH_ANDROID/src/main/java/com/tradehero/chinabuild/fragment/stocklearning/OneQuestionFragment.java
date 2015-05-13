@@ -1,5 +1,6 @@
 package com.tradehero.chinabuild.fragment.stocklearning;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,10 +13,16 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
+
+import javax.inject.Inject;
 
 /**
  * Created by palmer on 15/4/24.
@@ -60,6 +67,14 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
     private String type = "";
 
     private View view;
+
+    @Inject Analytics analytics;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        DaggerUtils.inject(this);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -198,8 +213,10 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
             StockLearningQuestionManager.getInstance().removeReAnswerQuestion(question.id);
         }
         refreshAnswerViews();
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.QUESTION_CHECK_QUESTION_RESULT, questionGroup.id + ": " + questionGroup.name));
         if (isFinalQuestion) {
             jumpToSummaryFragment();
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.ONE_QUESTION_CATEGORY_COMPLETED, questionGroup.id + ": " + questionGroup.name));
         }
     }
 

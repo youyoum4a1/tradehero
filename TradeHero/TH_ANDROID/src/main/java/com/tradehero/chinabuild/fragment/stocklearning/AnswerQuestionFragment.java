@@ -13,9 +13,12 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 
 import javax.inject.Inject;
 
@@ -45,8 +48,8 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
 
     private int currentIndex = 0;
 
-    @Inject
-    CurrentUserId currentUserId;
+    @Inject CurrentUserId currentUserId;
+    @Inject Analytics analytics;
 
     private QuestionsViewPagerAdapter adapter;
 
@@ -176,6 +179,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
         if (currentIndex != i) {
             currentIndex = i;
             refreshHeadView(currentIndex);
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.QUESTION_NEXT_QUESTION, questionGroup.id + ": " + questionGroup.name));
         }
     }
 

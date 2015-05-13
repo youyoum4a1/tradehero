@@ -15,6 +15,9 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -68,6 +71,7 @@ public class QuestionsFragment extends DashboardFragment {
         questionsLV.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int i) {
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.QUESTION_CATEGORY_SELECT, "Question Category: " + i));
                 if (i == 0) {
                     if (questionsLV.isGroupExpanded(1)) {
                         questionsLV.collapseGroup(1);
@@ -99,6 +103,7 @@ public class QuestionsFragment extends DashboardFragment {
             public boolean onChildClick(ExpandableListView expandableListView, View view, int groupPosition, int childPosition, long l) {
                 if(stockLearningQuestionsAdapter!=null){
                     QuestionGroup questionGroup = stockLearningQuestionsAdapter.getChild(groupPosition, childPosition);
+                    analytics.addEvent(new MethodEvent(AnalyticsConstants.QUESTION_SUBCATEGORY_SELECT, questionGroup.id + ": " + questionGroup.name));
                     if(questionGroup.question_group_progress == questionGroup.count){
                         jumpToSummaryFragment(questionGroup);
                     }else {
