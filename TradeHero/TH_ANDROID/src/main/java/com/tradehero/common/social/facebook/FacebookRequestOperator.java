@@ -10,6 +10,7 @@ import com.facebook.Response;
 import com.facebook.Session;
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.internal.Assertions;
 import timber.log.Timber;
 
 /**
@@ -36,6 +37,7 @@ public class FacebookRequestOperator implements Observable.OnSubscribe<Response>
 
     @Override public void call(final Subscriber<? super Response> subscriber)
     {
+        Assertions.assertUiThread();
         Request request = new Request(
                 session,
                 graphPath,

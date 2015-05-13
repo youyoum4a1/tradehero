@@ -1,6 +1,6 @@
 package com.tradehero.common.social.facebook;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.SessionState;
@@ -8,39 +8,34 @@ import rx.Subscriber;
 
 public class SubscriberCallback implements Session.StatusCallback
 {
-    @Nullable private Subscriber<? super Session> subscriber;
+    @NonNull private Subscriber<? super Session> subscriber;
 
     //<editor-fold desc="Constructors">
-    public SubscriberCallback(@Nullable Subscriber<? super Session> subscriber)
+    public SubscriberCallback(@NonNull Subscriber<? super Session> subscriber)
     {
         this.subscriber = subscriber;
     }
     //</editor-fold>
 
-    public void setSubscriber(@Nullable Subscriber<? super Session> subscriber)
-    {
-        this.subscriber = subscriber;
-    }
-
     @Override public void call(Session session, SessionState state, Exception exception)
     {
-        Subscriber<? super Session> subscriberCopy= subscriber;
-        if (state == SessionState.OPENING || subscriberCopy == null)
+        if (state == SessionState.OPENING)
         {
+            // We have to wait a return on onActivityResult().
             return;
         }
         if (state.isOpened())
         {
-            subscriberCopy.onNext(session);
-            subscriberCopy.onCompleted();
+            subscriber.onNext(session);
+            subscriber.onCompleted();
         }
         else if (exception != null)
         {
-            subscriberCopy.onError(exception);
+            subscriber.onError(exception);
         }
         else
         {
-            subscriberCopy.onError(new FacebookOperationCanceledException("Action has been canceled"));
+            subscriber.onError(new FacebookOperationCanceledException("Action has been canceled"));
         }
     }
 }
