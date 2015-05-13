@@ -13,8 +13,8 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
@@ -95,6 +95,7 @@ public class SettingMineFragment extends DashboardFragment {
         userProfileCacheListener = createUserProfileFetchListener();
         portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
         fetchUserProfile();
+        setHasOptionsMenu(true);
     }
 
     @Override

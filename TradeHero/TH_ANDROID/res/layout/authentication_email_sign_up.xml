@@ -5,7 +5,6 @@
         android:id="@+id/sign_up_form_wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/tab_main_indicator_height"
         android:orientation="vertical"
         android:clickable="true"
         android:focusable="true"
@@ -23,7 +22,7 @@
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_xmedium"
                     android:background="@color/white"
                     android:orientation="vertical">
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -54,7 +53,7 @@
                 <View
                         android:id="@+id/register_line"
                         android:layout_width="match_parent"
-                        android:layout_height="1px"
+                        android:layout_height="1dp"
                         android:layout_marginLeft="15dp"
                         android:background="#bfbfbf"/>
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"

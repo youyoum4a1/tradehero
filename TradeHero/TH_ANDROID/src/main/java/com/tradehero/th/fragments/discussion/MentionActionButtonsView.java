@@ -4,19 +4,21 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.DaggerUtils;
+
 import javax.inject.Inject;
 
-public class MentionActionButtonsView extends LinearLayout
-{
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
+public class MentionActionButtonsView extends LinearLayout {
     private static final String SECURITY_TAG_FORMAT = "[$%s](tradehero://security/%d_%s)";
     private static final String MENTIONED_FORMAT = "<@@%s,%d@>";
 
@@ -26,53 +28,47 @@ public class MentionActionButtonsView extends LinearLayout
     @InjectView(R.id.btn_security_tag) TextView mSecurityTag;
 
     //<editor-fold desc="Constructors">
-    public MentionActionButtonsView(Context context)
-    {
+    public MentionActionButtonsView(Context context) {
         super(context);
     }
 
-    public MentionActionButtonsView(Context context, AttributeSet attrs)
-    {
+    public MentionActionButtonsView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public MentionActionButtonsView(Context context, AttributeSet attrs, int defStyle)
-    {
+    public MentionActionButtonsView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
     //</editor-fold>
 
-    @Override protected void onFinishInflate()
-    {
+    @Override
+    protected void onFinishInflate() {
         super.onFinishInflate();
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
     }
 
-    @Override protected void onDetachedFromWindow()
-    {
+    @Override
+    protected void onDetachedFromWindow() {
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
-    @Override protected void onAttachedToWindow()
-    {
+    @Override
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
     }
 
-    protected Navigator getNavigator()
-    {
-        return ((NavigatorActivity) getContext()).getNavigator();
+    protected Navigator getNavigator() {
+        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }
 
     //<editor-fold desc="To be used in future, we should encapsulate searching for people and stock within this view, instead of doing it in the parent fragment">
-    public static interface OnMentionListener
-    {
+    public static interface OnMentionListener {
         void onMentioned(UserBaseKey userBaseKey);
     }
 
-    public static interface OnSecurityTaggedListener
-    {
+    public static interface OnSecurityTaggedListener {
         void onTagged(SecurityId securityId);
     }
     //</editor-fold>

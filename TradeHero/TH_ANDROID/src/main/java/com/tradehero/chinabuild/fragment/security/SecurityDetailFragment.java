@@ -17,8 +17,8 @@ import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -691,10 +691,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         fetchWatchlist();
         super.onResume();
 
-        if (THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_STOCK_BUY))
-        {
+        //if (THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_STOCK_BUY))
+        //{
             showGuideView();
-        }
+        //}
 
         getTradeTabDetail();
     }

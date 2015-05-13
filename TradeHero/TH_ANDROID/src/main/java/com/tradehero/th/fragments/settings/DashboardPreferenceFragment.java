@@ -2,49 +2,45 @@ package com.tradehero.th.fragments.settings;
 
 import android.os.Bundle;
 import android.support.v4.preference.PreferenceFragment;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import com.tradehero.th.R;
+import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
+
 import org.jetbrains.annotations.NotNull;
 
-public class DashboardPreferenceFragment extends PreferenceFragment
-{
+public class DashboardPreferenceFragment extends PreferenceFragment {
     private static final String BUNDLE_KEY_SHOW_HOME_AS_UP = DashboardPreferenceFragment.class.getName() + ".show_home_as_up";
 
     private static final boolean DEFAULT_SHOW_HOME_AS_UP = true;
 
 
-    public static void putKeyShowHomeAsUp(@NotNull Bundle args, @NotNull Boolean showAsUp)
-    {
+    public static void putKeyShowHomeAsUp(@NotNull Bundle args, @NotNull Boolean showAsUp) {
         args.putBoolean(BUNDLE_KEY_SHOW_HOME_AS_UP, showAsUp);
     }
 
-    protected static boolean getKeyShowHomeAsUp(Bundle args)
-    {
-        if (args == null)
-        {
+    protected static boolean getKeyShowHomeAsUp(Bundle args) {
+        if (args == null) {
             return DEFAULT_SHOW_HOME_AS_UP;
         }
         return args.getBoolean(BUNDLE_KEY_SHOW_HOME_AS_UP, DEFAULT_SHOW_HOME_AS_UP);
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (shouldShowHomeAsUp())
-        {
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (shouldShowHomeAsUp()) {
             actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
                     | ActionBar.DISPLAY_SHOW_TITLE
                     | ActionBar.DISPLAY_SHOW_HOME);
-        }
-        else
-        {
+        } else {
             actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
                     | ActionBar.DISPLAY_SHOW_HOME
                     | ActionBar.DISPLAY_USE_LOGO);
@@ -53,13 +49,11 @@ public class DashboardPreferenceFragment extends PreferenceFragment
         actionBar.setHomeButtonEnabled(true);
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
-                if (shouldShowHomeAsUp())
-                {
+                if (shouldShowHomeAsUp()) {
                     getNavigator().popFragment();
                 }
                 return true;
@@ -67,13 +61,11 @@ public class DashboardPreferenceFragment extends PreferenceFragment
         return super.onOptionsItemSelected(item);
     }
 
-    protected boolean shouldShowHomeAsUp()
-    {
+    protected boolean shouldShowHomeAsUp() {
         return getKeyShowHomeAsUp(getArguments());
     }
 
-    protected Navigator getNavigator()
-    {
-        return ((NavigatorActivity) getActivity()).getNavigator();
+    protected Navigator getNavigator() {
+        return ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
     }
 }

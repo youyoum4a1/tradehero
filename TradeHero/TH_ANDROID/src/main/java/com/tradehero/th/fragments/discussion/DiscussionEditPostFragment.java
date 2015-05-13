@@ -10,9 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
+
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.common.text.Span;
@@ -44,16 +42,20 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import dagger.Lazy;
+
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-import javax.inject.Inject;
-
-public class DiscussionEditPostFragment extends DashboardFragment
-{
+public class DiscussionEditPostFragment extends DashboardFragment {
     private static final String SECURITY_TAG_FORMAT = "[$%s](tradehero://security/%d_%s)";
     private static final String MENTIONED_FORMAT = "<@@%s,%d@>";
 
@@ -78,29 +80,28 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private HasSelectedItem selectionFragment;
     private DiscussionKey discussionKey;
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_discussion_edit_post, container, false);
         ButterKnife.inject(this, view);
         initView();
         return view;
     }
 
-    protected void initView()
-    {
+    protected void initView() {
         discussionEditTextWatcher = new DiscussionEditTextWatcher();
         discussionPostContent.addTextChangedListener(discussionEditTextWatcher);
         DeviceUtil.showKeyboardDelayed(discussionPostContent);
     }
 
-    @Override public void onDestroyOptionsMenu()
-    {
+    @Override
+    public void onDestroyOptionsMenu() {
         setActionBarSubtitle(null);
         super.onDestroyOptionsMenu();
     }
 
-    @Override public void onDestroyView()
-    {
+    @Override
+    public void onDestroyView() {
         unsetDiscussionEditMiddleCallback();
         discussionPostContent.removeTextChangedListener(discussionEditTextWatcher);
 
@@ -108,14 +109,14 @@ public class DiscussionEditPostFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    @Override public void onSaveInstanceState(Bundle outState)
-    {
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         unsetDiscussionEditMiddleCallback();
     }
 
-    @Override public void onDetach()
-    {
+    @Override
+    public void onDetach() {
         selectionFragment = null;
         setActionBarSubtitle(null);
         super.onDetach();
@@ -124,36 +125,30 @@ public class DiscussionEditPostFragment extends DashboardFragment
     //<editor-fold desc="View's events handling">
     // TODO following views' events should be handled inside DiscussionPostActionButtonsView
     @OnClick(R.id.btn_security_tag)
-    void onSecurityButtonClicked()
-    {
+    void onSecurityButtonClicked() {
         Bundle bundle = new Bundle();
         bundle.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT, this.getClass().getName());
         selectionFragment = getDashboardNavigator().pushFragment(SecuritySearchFragment.class, bundle);
     }
 
     @OnClick(R.id.btn_mention)
-    void onMentionButtonClicked()
-    {
+    void onMentionButtonClicked() {
         Bundle bundle = new Bundle();
         bundle.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT, this.getClass().getName());
         selectionFragment = getDashboardNavigator().pushFragment(PeopleSearchFragment.class, bundle);
     }
     //</editor-fold>
 
-    private boolean validate()
-    {
+    private boolean validate() {
         boolean notEmptyText = validateNotEmptyText();
-        if (!notEmptyText)
-        {
+        if (!notEmptyText) {
             THToast.show(R.string.error_discussion_empty_post);
         }
         return notEmptyText;
     }
 
-    protected void postDiscussion()
-    {
-        if (validate())
-        {
+    protected void postDiscussion() {
+        if (validate()) {
             DiscussionFormDTO discussionFormDTO = buildDiscussionFormDTO();
             if (discussionFormDTO == null) return;
 
@@ -166,14 +161,11 @@ public class DiscussionEditPostFragment extends DashboardFragment
         }
     }
 
-    protected DiscussionFormDTO buildDiscussionFormDTO()
-    {
+    protected DiscussionFormDTO buildDiscussionFormDTO() {
         DiscussionType discussionType = getDiscussionType();
-        if (discussionType != null)
-        {
+        if (discussionType != null) {
             DiscussionFormDTO discussionFormDTO = discussionFormDTOFactory.createEmpty(discussionType);
-            if (discussionKey != null)
-            {
+            if (discussionKey != null) {
                 discussionFormDTO.inReplyToId = discussionKey.id;
             }
             discussionFormDTO.text = unSpanText(discussionPostContent.getText()).toString();
@@ -183,57 +175,47 @@ public class DiscussionEditPostFragment extends DashboardFragment
         return null;
     }
 
-    protected DiscussionType getDiscussionType()
-    {
-        if (discussionKey != null)
-        {
+    protected DiscussionType getDiscussionType() {
+        if (discussionKey != null) {
             return discussionKey.getType();
         }
         return null;
     }
 
-    private void unsetDiscussionEditMiddleCallback()
-    {
-        if (discussionEditMiddleCallback != null)
-        {
+    private void unsetDiscussionEditMiddleCallback() {
+        if (discussionEditMiddleCallback != null) {
             discussionEditMiddleCallback.setPrimaryCallback(null);
         }
         discussionEditMiddleCallback = null;
     }
 
-    private boolean validateNotEmptyText()
-    {
+    private boolean validateNotEmptyText() {
         // wow
         return !discussionPostContent.getText().toString().trim().isEmpty();
     }
 
-    @Override public void onResume()
-    {
+    @Override
+    public void onResume() {
         super.onResume();
         Bundle args = getArguments();
-        if (args != null)
-        {
-            if (args.containsKey(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE))
-            {
+        if (args != null) {
+            if (args.containsKey(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE)) {
                 DiscussionKey discussionKey = discussionKeyFactory.fromBundle(args.getBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE));
                 linkWith(discussionKey, true);
             }
         }
 
-        if (selectionFragment != null)
-        {
+        if (selectionFragment != null) {
             @Nullable Object extraInput = selectionFragment.getSelectedItem();
             handleExtraInput(extraInput);
         }
     }
 
-    private void handleExtraInput(@Nullable Object extraInput)
-    {
+    private void handleExtraInput(@Nullable Object extraInput) {
         String extraText = "";
         Editable editable = discussionPostContent.getText();
 
-        if (extraInput instanceof SecurityCompactDTO)
-        {
+        if (extraInput instanceof SecurityCompactDTO) {
             SecurityCompactDTO taggedSecurity = (SecurityCompactDTO) extraInput;
 
             String exchangeSymbol = taggedSecurity.getExchangeSymbol();
@@ -241,15 +223,13 @@ public class DiscussionEditPostFragment extends DashboardFragment
             extraText = String.format(SECURITY_TAG_FORMAT, exchangeSymbol, taggedSecurity.id, exchangeSymbolUrl);
         }
 
-        if (extraInput instanceof UserBaseKey)
-        {
+        if (extraInput instanceof UserBaseKey) {
             UserSearchResultDTO mentionedUserProfileDTO = userSearchResultCache.get((UserBaseKey) extraInput);
             extraText = String.format(MENTIONED_FORMAT, mentionedUserProfileDTO.userthDisplayName, mentionedUserProfileDTO.userId);
         }
 
         String nonMarkUpText = extraText;
-        if (!editable.toString().isEmpty())
-        {
+        if (!editable.toString().isEmpty()) {
             int start = discussionPostContent.getSelectionStart();
             int end = discussionPostContent.getSelectionEnd();
             editable = editable.replace(start, end, extraText);
@@ -259,15 +239,13 @@ public class DiscussionEditPostFragment extends DashboardFragment
         discussionPostContent.setSelection(discussionPostContent.length());
     }
 
-    protected static Editable unSpanText(Editable editable)
-    {
+    protected static Editable unSpanText(Editable editable) {
         // keep editable unchange
         SpannableStringBuilder editableCopy = new SpannableStringBuilder(editable);
         Span[] spans = editableCopy.getSpans(0, editableCopy.length(), Span.class);
 
         // replace all span string with its original text
-        for (int i = spans.length - 1; i >= 0; --i)
-        {
+        for (int i = spans.length - 1; i >= 0; --i) {
             Span span = spans[i];
             int spanStart = editableCopy.getSpanStart(span);
             int spanEnd = editableCopy.getSpanEnd(span);
@@ -277,76 +255,65 @@ public class DiscussionEditPostFragment extends DashboardFragment
         return editableCopy;
     }
 
-    private void linkWith(DiscussionKey discussionKey, boolean andDisplay)
-    {
+    private void linkWith(DiscussionKey discussionKey, boolean andDisplay) {
         this.discussionKey = discussionKey;
         AbstractDiscussionCompactDTO abstractDiscussionDTO = discussionCache.get(discussionKey);
         linkWith(abstractDiscussionDTO, andDisplay);
     }
 
-    private void linkWith(AbstractDiscussionCompactDTO abstractDiscussionCompactDTO, boolean andDisplay)
-    {
+    private void linkWith(AbstractDiscussionCompactDTO abstractDiscussionCompactDTO, boolean andDisplay) {
         // TODO question, should we subclass this to have a NewsEditPostFragment?
-        if (abstractDiscussionCompactDTO instanceof NewsItemDTO)
-        {
+        if (abstractDiscussionCompactDTO instanceof NewsItemDTO) {
             linkWith((NewsItemDTO) abstractDiscussionCompactDTO, andDisplay);
         }
     }
 
-    private void linkWith(NewsItemDTO newsItemDTO, boolean andDisplay)
-    {
-        if (andDisplay)
-        {
+    private void linkWith(NewsItemDTO newsItemDTO, boolean andDisplay) {
+        if (andDisplay) {
             setActionBarSubtitle(getString(R.string.discussion_edit_post_subtitle, newsItemDTO.title));
-            if(getSherlockActivity() != null)
-            {
-                getSherlockActivity().invalidateOptionsMenu();
+            if (getActivity() != null) {
+                getActivity().invalidateOptionsMenu();
             }
         }
     }
 
-    private class SecurityDiscussionEditCallback implements Callback<DiscussionDTO>
-    {
-        @Override public void success(DiscussionDTO discussionDTO, Response response)
-        {
+    private class SecurityDiscussionEditCallback implements Callback<DiscussionDTO> {
+        @Override
+        public void success(DiscussionDTO discussionDTO, Response response) {
             onFinish();
             linkWith(discussionDTO, true);
 
-            if (discussionPostActionButtonsView.isShareEnabled(SocialNetworkEnum.WECHAT))
-            {
+            if (discussionPostActionButtonsView.isShareEnabled(SocialNetworkEnum.WECHAT)) {
                 socialSharerLazy.get().share(weChatDTOFactory.createFrom(discussionDTO)); // Proper callback?
             }
             DeviceUtil.dismissKeyboard(getActivity());
             getDashboardNavigator().popFragment();
         }
 
-        @Override public void failure(RetrofitError error)
-        {
+        @Override
+        public void failure(RetrofitError error) {
             onFinish();
             THToast.show(new THException(error));
         }
 
-        private void onFinish()
-        {
-            if (progressDialog != null)
-            {
+        private void onFinish() {
+            if (progressDialog != null) {
                 progressDialog.hide();
             }
         }
     }
 
-    private class DiscussionEditTextWatcher implements TextWatcher
-    {
-        @Override public void beforeTextChanged(CharSequence s, int start, int count, int after)
-        {
+    private class DiscussionEditTextWatcher implements TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
 
-        @Override public void onTextChanged(CharSequence s, int start, int before, int count)
-        {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
         }
 
-        @Override public void afterTextChanged(Editable s)
-        {
+        @Override
+        public void afterTextChanged(Editable s) {
         }
     }
 }

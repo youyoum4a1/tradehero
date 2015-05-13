@@ -13,7 +13,7 @@ import timber.log.Timber;
 public class THToast
 {
     public static Handler toastHandler = null;
-    public static int toastPosition = Application.context().getResources().getDimensionPixelOffset(R.dimen.abs__action_bar_default_height);
+    public static int toastPosition = Application.context().getResources().getDimensionPixelOffset(R.dimen.abc_action_bar_default_height_material);
     public static void show(final String message)
     {
         //THLog.e(TAG, "show " + message, new IllegalArgumentException());

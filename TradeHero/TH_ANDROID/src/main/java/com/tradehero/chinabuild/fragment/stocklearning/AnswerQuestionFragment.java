@@ -7,10 +7,10 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.RelativeLayout;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
+
 import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.metrics.Analytics;

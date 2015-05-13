@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,10 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
+
 import com.igexin.sdk.PushManager;
 import com.tradehero.chinabuild.MainTabFragmentCompetition;
 import com.tradehero.chinabuild.MainTabFragmentDiscovery;
@@ -46,9 +44,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
@@ -66,15 +61,20 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-import dagger.Lazy;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MainActivity extends SherlockFragmentActivity implements DashboardNavigatorActivity
-{
+public class MainActivity extends AppCompatActivity {
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
@@ -162,8 +162,8 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     private TextView dialogTitleATV;
     private TextView dialogTitleBTV;
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         AppTiming.dashboardCreate = System.currentTimeMillis();
         // this need tobe early than super.onCreate or it will crash
         // when device scroll into landscape.
@@ -217,11 +217,9 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     }
 
     @OnClick({R.id.llTabTrade, R.id.llTabStockGod, R.id.llTabDiscovery, R.id.llTabCompetition, R.id.llTabLearning})
-    public void OnClickTabMenu(View view)
-    {
+    public void OnClickTabMenu(View view) {
         int id = view.getId();
-        switch (id)
-        {
+        switch (id) {
             case R.id.llTabTrade:
                 setTabCurrent(TAB_TRADE);
                 recordShowedGuideOfMainTab(0);
@@ -273,8 +271,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         }
     }
 
-    private void tabInit()
-    {
+    private void tabInit() {
         setContentView(R.layout.main_activity_layout);
         ButterKnife.inject(this);
 
@@ -282,8 +279,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         frg_tabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         frg_tabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 
-        for (int i = 0; i < count; i++)
-        {
+        for (int i = 0; i < count; i++) {
             TextView textView = new TextView(this);
             textView.setText(strTabArray[i]);
             //do not see the indicator text，it is a temp solution.
@@ -294,17 +290,16 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         }
 
         //When a novice first login, jump to leaderboards.
-        if(THSharePreferenceManager.isFirstLoginSuccess(this, currentUserId.toUserBaseKey().getUserId())) {
+        if (THSharePreferenceManager.isFirstLoginSuccess(this, currentUserId.toUserBaseKey().getUserId())) {
             llTabStockGod.performClick();
-        }else{
+        } else {
             llTabTrade.performClick();
         }
     }
 
-    @Override protected void onDestroy()
-    {
-        if (currentActivityHolder != null)
-        {
+    @Override
+    protected void onDestroy() {
+        if (currentActivityHolder != null) {
             currentActivityHolder.unsetActivity(this);
         }
         userProfileCache.get().unregister(userProfileCacheListener);
@@ -312,50 +307,33 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         super.onDestroy();
     }
 
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
     }
 
-    @Override public DashboardNavigator getDashboardNavigator()
-    {
-        return null;
-    }
-
-    @Override public Navigator getNavigator()
-    {
-        return null;
-    }
-
-    protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
-    {
+    protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> {
         @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
-        {
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value) {
             supportInvalidateOptionsMenu();
-            if (value.isVisitor)
-            {
+            if (value.isVisitor) {
                 showBindGuestUserDialog();
             }
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-        {
+        @Override
+        public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error) {
 
         }
     }
 
-    @Override public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
-        if (keyCode == KeyEvent.KEYCODE_BACK)
-        {
-            if (guideView.getVisibility() == View.VISIBLE)
-            {
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (guideView.getVisibility() == View.VISIBLE) {
                 dismissGuideView();
-            }
-            else
-            {
+            } else {
                 exitApp();
             }
             return true;
@@ -363,21 +341,16 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         return super.onKeyDown(keyCode, event);
     }
 
-    public void exitApp()
-    {
-        if (TIME_PRESSED_BACK == -1 || (System.currentTimeMillis() - TIME_PRESSED_BACK) > TIME_TO_EXIT_APP)
-        {
+    public void exitApp() {
+        if (TIME_PRESSED_BACK == -1 || (System.currentTimeMillis() - TIME_PRESSED_BACK) > TIME_TO_EXIT_APP) {
             THToast.show(R.string.press_back_again_to_exit);
             TIME_PRESSED_BACK = System.currentTimeMillis();
-        }
-        else
-        {
+        } else {
             finish();
         }
     }
 
-    private void showBindGuestUserDialog()
-    {
+    private void showBindGuestUserDialog() {
         alertDialogUtil.get().popWithOkCancelButton(this, R.string.app_name,
                 R.string.guest_user_dialog_summary,
                 R.string.ok, R.string.cancel, new DialogInterface.OnClickListener() {
@@ -390,53 +363,43 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
                 });
     }
 
-    private void gotoGetTimesContinuallyLogin()
-    {
+    private void gotoGetTimesContinuallyLogin() {
         userServiceWrapper.get().isLoginThreeTimesContinually(currentUserId.toUserBaseKey().key, new Callback<LoginContinuallyTimesDTO>() {
 
-            @Override public void success(LoginContinuallyTimesDTO loginContinuallyTimesDTO, Response response)
-            {
-                if (loginContinuallyTimesDTO != null)
-                {
+            @Override
+            public void success(LoginContinuallyTimesDTO loginContinuallyTimesDTO, Response response) {
+                if (loginContinuallyTimesDTO != null) {
                     THSharePreferenceManager.Login_Continuous_Time = loginContinuallyTimesDTO.continuousCount;
                 }
             }
 
-            @Override public void failure(RetrofitError error)
-            {
+            @Override
+            public void failure(RetrofitError error) {
 
             }
         });
     }
 
-    private void dismissGuideView()
-    {
+    private void dismissGuideView() {
         guideView.setVisibility(View.GONE);
-        if (guide_current == GUIDE_TYPE_COMPETITION)
-        {
+        if (guide_current == GUIDE_TYPE_COMPETITION) {
             THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_COMPETITION);
             return;
         }
-        if (guide_current == GUIDE_TYPE_STOCK_DETAIL)
-        {
+        if (guide_current == GUIDE_TYPE_STOCK_DETAIL) {
             THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_STOCK_DETAIL);
             return;
         }
     }
 
-    public void showGuideView(int type)
-    {
-        if (type == GUIDE_TYPE_COMPETITION)
-        {
-            if (frg_tabHost.getCurrentTabTag().equals(getString(R.string.tab_main_competition)))
-            {
+    public void showGuideView(int type) {
+        if (type == GUIDE_TYPE_COMPETITION) {
+            if (frg_tabHost.getCurrentTabTag().equals(getString(R.string.tab_main_competition))) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 Fragment currFragment = fragmentManager.findFragmentByTag(frg_tabHost.getCurrentTabTag());
-                if (currFragment instanceof MainTabFragmentCompetition)
-                {
+                if (currFragment instanceof MainTabFragmentCompetition) {
                     int index = ((MainTabFragmentCompetition) currFragment).getCurrentFragmentItem();
-                    if (index == 0)
-                    {
+                    if (index == 0) {
                         guide_current = GUIDE_TYPE_COMPETITION;
                         View view = View.inflate(this, R.layout.guide_layout_competition, null);
                         guideView.removeAllViews();
@@ -447,17 +410,13 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
             }
             return;
         }
-        if (type == GUIDE_TYPE_STOCK_DETAIL)
-        {
-            if (frg_tabHost.getCurrentTabTag().equals(getString(R.string.tab_main_trade)))
-            {
+        if (type == GUIDE_TYPE_STOCK_DETAIL) {
+            if (frg_tabHost.getCurrentTabTag().equals(getString(R.string.tab_main_trade))) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 Fragment currFragment = fragmentManager.findFragmentByTag(frg_tabHost.getCurrentTabTag());
-                if (currFragment instanceof MainTabFragmentTrade)
-                {
+                if (currFragment instanceof MainTabFragmentTrade) {
                     int index = ((MainTabFragmentTrade) currFragment).getCurrentFragmentItem();
-                    if (index == 1)
-                    {
+                    if (index == 1) {
                         guide_current = GUIDE_TYPE_STOCK_DETAIL;
                         View view = View.inflate(this, R.layout.guide_layout_stock, null);
                         RelativeLayout.LayoutParams params =
@@ -472,16 +431,12 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         }
     }
 
-    private void showGuideViewDelayed()
-    {
+    private void showGuideViewDelayed() {
         Handler handler = new Handler();
-        handler.post(new Runnable()
-        {
+        handler.post(new Runnable() {
             @Override
-            public void run()
-            {
-                if (guideView.getVisibility() == View.GONE)
-                {
+            public void run() {
+                if (guideView.getVisibility() == View.GONE) {
                     guideView.setVisibility(View.VISIBLE);
                 }
             }
@@ -491,7 +446,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     private void displayGuideOfMainTab() {
         if (THSharePreferenceManager.isGuideAvailable(this, THSharePreferenceManager.GUIDE_MAIN_TAB_ZERO)) {
             guideTab0IV.setVisibility(View.VISIBLE);
-        }  else  {
+        } else {
             guideTab0IV.setVisibility(View.GONE);
         }
 
@@ -524,43 +479,40 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
             guideTab2IV.setVisibility(View.GONE);
             return;
         }
-        if (index == 3)  {
+        if (index == 3) {
             THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_MAIN_TAB_THREE);
             guideTab3IV.setVisibility(View.GONE);
             return;
         }
-        if (index == 4)  {
+        if (index == 4) {
             THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_MAIN_TAB_FOUR);
             guideTab4IV.setVisibility(View.GONE);
             return;
         }
     }
 
-    protected void getPositionDirectly(@NotNull UserBaseKey heroId)
-    {
-        if (getPositionDTOCallback != null)
-        {
+    protected void getPositionDirectly(@NotNull UserBaseKey heroId) {
+        if (getPositionDTOCallback != null) {
             getPositionDTOCallback.setPrimaryCallback(null);
         }
         getPositionDTOCallback = null;
         getPositionDTOCallback = positionServiceWrapper.get()
-                        .getPositionsDirect(heroId.key, 1, 20, new Callback<GetPositionsDTO>() {
+                .getPositionsDirect(heroId.key, 1, 20, new Callback<GetPositionsDTO>() {
 
-                            @Override public void success(GetPositionsDTO getPositionsDTO, Response response)
-                            {
-                                setGetPositionDTO(getPositionsDTO);
-                                MainActivity.getPositionsDTO = getPositionsDTO;
-                            }
+                    @Override
+                    public void success(GetPositionsDTO getPositionsDTO, Response response) {
+                        setGetPositionDTO(getPositionsDTO);
+                        MainActivity.getPositionsDTO = getPositionsDTO;
+                    }
 
-                            @Override public void failure(RetrofitError error)
-                            {
+                    @Override
+                    public void failure(RetrofitError error) {
 
-                            }
-                        });
+                    }
+                });
     }
 
-    public static PositionDTOKey getSecurityPositionDTOKey(SecurityId securityId)
-    {
+    public static PositionDTOKey getSecurityPositionDTOKey(SecurityId securityId) {
         GetPositionsDTO getPositionsDTO = MainActivity.getPositionsDTO;
         if (getPositionsDTO == null) return null;
         PositionDTO positionDTO = getPositionsDTO.getSecurityPositionDTO(securityId);
@@ -568,8 +520,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         return null;
     }
 
-    public static PositionDTOKey getSecurityPositionDTOKey(int securityId)
-    {
+    public static PositionDTOKey getSecurityPositionDTOKey(int securityId) {
         GetPositionsDTO getPositionsDTO = MainActivity.getPositionsDTO;
         if (getPositionsDTO == null) return null;
         PositionDTO positionDTO = getPositionsDTO.getSecurityPositionDTO(securityId);
@@ -577,36 +528,32 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         return null;
     }
 
-    public static void setGetPositionDTO(GetPositionsDTO getPositionsDTO)
-    {
+    public static void setGetPositionDTO(GetPositionsDTO getPositionsDTO) {
         MainActivity.getPositionsDTO = getPositionsDTO;
     }
 
-    protected class WatchlistPositionFragmentSecurityIdListCacheListener implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
-    {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
-        {
+    protected class WatchlistPositionFragmentSecurityIdListCacheListener implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> {
+        @Override
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value) {
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-        {
+        @Override
+        public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error) {
             onFinish();
         }
 
-        private void onFinish()
-        {
+        private void onFinish() {
 
         }
     }
 
-    protected void fetchWatchPositionList(boolean force)
-    {
+    protected void fetchWatchPositionList(boolean force) {
         userWatchlistPositionCache.unregister(userWatchlistPositionFetchListener);
         userWatchlistPositionCache.register(currentUserId.toUserBaseKey(), userWatchlistPositionFetchListener);
         userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey(), force);
     }
 
-    private void downloadEndPoint(){
+    private void downloadEndPoint() {
         shareServiceWrapper.getShareEndPoint(new Callback<String>() {
             @Override
             public void success(String endpoint, Response response) {
@@ -625,7 +572,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     }
 
     //Download app info to check whether update TradeHero or not.
-    private void gotoDownloadAppInfo(){
+    private void gotoDownloadAppInfo() {
         userServiceWrapper.get().downloadAppVersionInfo(new THCallback<AppInfoDTO>() {
             @Override
             protected void success(AppInfoDTO appInfoDTO, THResponse thResponse) {
@@ -654,21 +601,21 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     }
 
     private void showUpdateDialog() {
-        if (updateAppDialog==null) {
+        if (updateAppDialog == null) {
             updateAppDialog = new Dialog(this);
             updateAppDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             updateAppDialog.setCanceledOnTouchOutside(false);
             updateAppDialog.setCancelable(false);
             updateAppDialog.setContentView(R.layout.share_dialog_layout);
-            dialogOKBtn = (TextView)updateAppDialog.findViewById(R.id.btn_ok);
-            dialogCancelBtn = (TextView)updateAppDialog.findViewById(R.id.btn_cancel);
-            dialogTitleATV = (TextView)updateAppDialog.findViewById(R.id.title);
+            dialogOKBtn = (TextView) updateAppDialog.findViewById(R.id.btn_ok);
+            dialogCancelBtn = (TextView) updateAppDialog.findViewById(R.id.btn_cancel);
+            dialogTitleATV = (TextView) updateAppDialog.findViewById(R.id.title);
             dialogTitleATV.setText(getResources().getString(R.string.app_update_hint));
-            dialogTitleBTV = (TextView)updateAppDialog.findViewById(R.id.title2);
+            dialogTitleBTV = (TextView) updateAppDialog.findViewById(R.id.title2);
             final AppInfoDTO dto = THSharePreferenceManager.getAppVersionInfo(this);
-            if(dto.isForceUpgrade()){
+            if (dto.isForceUpgrade()) {
                 dialogTitleBTV.setText(getResources().getString(R.string.app_update_force_update));
-            }else {
+            } else {
                 dialogTitleBTV.setVisibility(View.GONE);
             }
             dialogOKBtn.setOnClickListener(new View.OnClickListener() {
@@ -678,7 +625,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
                     String url = dto.getLatestVersionDownloadUrl();
                     if (dto.isForceUpgrade() || dto.isSuggestUpgrade()) {
                         downloadApp(url);
-                    }else {
+                    } else {
                         updateAppDialog.dismiss();
                     }
                 }
@@ -700,9 +647,9 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         }
     }
 
-    private void downloadApp(String url){
-        ActivityHelper.launchBrowserDownloadApp(this,  url);
-        if(updateAppDialog!=null){
+    private void downloadApp(String url) {
+        ActivityHelper.launchBrowserDownloadApp(this, url);
+        if (updateAppDialog != null) {
             updateAppDialog.dismiss();
         }
         finish();

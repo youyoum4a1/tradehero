@@ -8,8 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -34,9 +34,6 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     private TextView forgotPasswordLink;
     private ImageView backButton;
     @Inject Analytics analytics;
-
-    @Inject UserServiceWrapper userServiceWrapper;
-    @Inject ProgressDialogUtil progressDialogUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

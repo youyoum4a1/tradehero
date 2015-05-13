@@ -12,18 +12,25 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
+
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.BitmapTypedOutput;
@@ -34,17 +41,18 @@ import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.EmailSignUtils;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+
+import java.io.File;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
-
-import javax.inject.Inject;
-import java.io.File;
-import java.util.Map;
 
 /**
  * Register using email or phone number.
@@ -111,7 +119,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.SIGN_UP,AnalyticsConstants.BUTTON_LOGIN_REGISTER));
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.SIGN_UP, AnalyticsConstants.BUTTON_LOGIN_REGISTER));
         DaggerUtils.inject(this);
     }
 
@@ -119,6 +127,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain(R.string.authentication_register);
+        setHeadViewRight0Visibility(View.INVISIBLE);
     }
 
     @Override
@@ -138,8 +147,8 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 mIsPhoneNumRegister = false;
-                if(EmailSignUtils.isPhoneNumber(charSequence)){
-                        mIsPhoneNumRegister = true;
+                if (EmailSignUtils.isPhoneNumber(charSequence)) {
+                    mIsPhoneNumRegister = true;
                 }
                 if (verifyCodeLayout != null) {
                     verifyCodeLayout.setVisibility(mIsPhoneNumRegister ? View.VISIBLE : View.GONE);
@@ -228,7 +237,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (getActivity() instanceof DashboardNavigatorActivity) {
-                    ((NavigatorActivity) getActivity()).getNavigator().popFragment();
+                    ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator().popFragment();
                 } else {
                     Timber.e("Activity is not a DashboardNavigatorActivity", new Exception());
                 }
@@ -245,16 +254,16 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             return;
         }
         if (requestCode == REQUEST_GALLERY && data != null) {
-            if(data.getData()!=null){
+            if (data.getData() != null) {
                 startPhotoZoom(data.getData(), 150);
             }
             return;
         }
-        if(requestCode==REQUEST_CAMERA){
+        if (requestCode == REQUEST_CAMERA) {
             startPhotoZoom(Uri.fromFile(file), 150);
             return;
         }
-        if(requestCode == REQUEST_PHOTO_ZOOM && data != null){
+        if (requestCode == REQUEST_PHOTO_ZOOM && data != null) {
             storeAndDisplayPhoto(data);
         }
     }
@@ -339,7 +348,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     @Override
     public boolean areFieldsValid() {
         String displayNameStr = mDisplayName.getText().toString();
-        if(displayNameStr.contains(" ")){
+        if (displayNameStr.contains(" ")) {
             THToast.show(R.string.sign_in_display_name_no_blank);
             return false;
         }
@@ -355,7 +364,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             THToast.show(R.string.register_error_password);
             return false;
         }
-        if(!EmailSignUtils.isValidEmail(emailEditText.getText())&&!isValidPhoneNumber(emailEditText.getText())){
+        if (!EmailSignUtils.isValidEmail(emailEditText.getText()) && !isValidPhoneNumber(emailEditText.getText())) {
             THToast.show(R.string.enter_phone_email_error);
             return false;
         }
@@ -386,8 +395,8 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
     protected BitmapTypedOutput safeCreateProfilePhoto() {
         BitmapTypedOutput created = null;
-        if(photo==null){
-           return null;
+        if (photo == null) {
+            return null;
         }
         created = new BitmapTypedOutput(BitmapTypedOutput.TYPE_JPEG, photo, String.valueOf(System.currentTimeMillis()), 75);
         return created;
@@ -457,7 +466,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         sendCodeMiddleCallback = null;
     }
 
-    private void startPhotoZoom(Uri data, int size){
+    private void startPhotoZoom(Uri data, int size) {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(data, "image/*");
         intent.putExtra("crop", "true");
@@ -469,11 +478,11 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         startActivityForResult(intent, REQUEST_PHOTO_ZOOM);
     }
 
-    private void storeAndDisplayPhoto(Intent data){
+    private void storeAndDisplayPhoto(Intent data) {
         Bundle bundle = data.getExtras();
-        if(bundle != null){
+        if (bundle != null) {
             photo = (Bitmap) bundle.get("data");
-            if(photo!=null){
+            if (photo != null) {
                 mPhoto.setImageBitmap(photo);
             }
         }

@@ -8,8 +8,8 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 

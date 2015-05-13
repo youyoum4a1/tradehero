@@ -7,13 +7,14 @@ import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
+
 import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -22,8 +23,9 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 /**
  * Created by palmer on 15/3/31.
@@ -115,7 +117,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
         bundle.putString(AnswerQuestionFragment.KEY_QUESTION_GROUP_TYPE, AnswerQuestionFragment.TYPE_ERROR);
         bundle.putInt(AnswerQuestionFragment.KEY_ERROR_QUESTION_SIZE, StockLearningQuestionManager.getInstance().getReAnswerQuestions().size());
         pushFragment(AnswerQuestionFragment.class, bundle);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.QUESTION_REANSWER_QUESTION, questionGroup.id + ": " + questionGroup.name));
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.QUESTION_REANSWER_QUESTION, questionGroup.id + ": " + questionGroup.name));
     }
 
     private void gotoHistory() {
@@ -165,7 +167,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
         }
     }
 
-    public void refreshSummary(){
+    public void refreshSummary() {
         StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
         questionStatusRecords = stockLearningDatabaseHelper.retrieveQuestionRecords(currentUserId.get(), questionGroup.id);
         reAnswerQuestions.clear();

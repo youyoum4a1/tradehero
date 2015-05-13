@@ -6,9 +6,8 @@
       Base application theme, dependent on API level. This theme is replaced
       by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
   -->
-  <style name="TradeHero" parent="Theme.Sherlock.Light">
-    <item name="android:windowActionBar">true</item>
-    <item name="android:windowNoTitle">false</item>
+  <style name="TradeHero" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="android:windowNoTitle">true</item>
     <item name="android:windowActionBarOverlay">true</item>
   </style>
 
@@ -35,7 +34,7 @@
     <item name="android:windowBackground">@color/color_blue</item>
   </style>
 
-  <style name="TradeHero.Menu.ItemTextIcon" parent="TextAppearance.Sherlock.Light.SearchResult">
+  <style name="TradeHero.Menu.ItemTextIcon" parent="Base.TextAppearance.AppCompat.SearchResult">
     <item name="android:textStyle">bold</item>
     <item name="android:textSize">@dimen/text_xlarge</item>
   </style>
@@ -145,36 +144,43 @@
     <item name="android:textColor">@color/black</item>
   </style>
 
-  <style name="TradeHero.Dashboard.ActionBar" parent="Widget.Sherlock.ActionBar">
-    <item name="android:titleTextStyle">@style/TradeHero.Dashboard.ActionBar.TitleTextStyle</item>
-    <item name="android:background">@color/tradehero_blue</item>//定义ActionBar背景颜色
+  <style name="TradeHero.Dashboard.ActionBar" parent="Widget.AppCompat.Toolbar">
+    <item name="android:background">?attr/colorPrimary</item>
+    <item name="theme">@style/ThemeOverlay.ActionBar.TradeHero</item>
+    <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+    <item name="contentInsetStart">0dp</item>
   </style>
 
-  <style name="TradeHero.Dashboard.ActionBarButton" parent="Widget.Sherlock.Light.ActionButton">
+  <style name="ThemeOverlay.ActionBar.TradeHero" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    <item name="android:windowActionBarOverlay">true</item>
+    <item name="windowActionBarOverlay">true</item>
+  </style>
+
+  <style name="TradeHero.Dashboard.ActionBarButton" parent="Widget.AppCompat.Light.ActionButton">
     <item name="android:background">@drawable/basic_transparent_selector</item>
 
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar.TitleTextStyle"
-      parent="TextAppearance.Sherlock.Widget.ActionBar.Title">
+      parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
     <item name="android:textColor">@color/white</item>
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar.Menu"
-      parent="TextAppearance.Sherlock.Widget.ActionBar.Menu">
+      parent="TextAppearance.AppCompat.Widget.ActionBar.Menu">
     <item name="android:textSize">@dimen/text_medium</item>
     <item name="android:textAllCaps">false</item>
   </style>
 
-  <style name="TradeHero.Dashboard.ActionBar.DropDownListView" parent="Widget.Sherlock.Light.ListView.DropDown">
+  <style name="TradeHero.Dashboard.ActionBar.DropDownListView" parent="Widget.AppCompat.Light.ListView.DropDown">
     <item name="android:listSelector">@drawable/basic_transparent_selector</item>
   </style>
 
-  <style name="TradeHero.Dashboard.ActionBar.PopupMenu" parent="Widget.Sherlock.Light.PopupMenu">
+  <style name="TradeHero.Dashboard.ActionBar.PopupMenu" parent="Widget.AppCompat.Light.PopupMenu">
     <item name="android:listSelector">@drawable/basic_transparent_selector</item>
   </style>
 
-  <style name="TradeHero.Dashboard.ActionBar.OverflowButtonStyle" parent="Widget.Sherlock.Light.ActionButton.Overflow">
+  <style name="TradeHero.Dashboard.ActionBar.OverflowButtonStyle" parent="Widget.AppCompat.Light.ActionButton.Overflow">
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar.WidgetStyle" parent="Widget">
@@ -437,7 +443,7 @@
 
   </style>
 
-  <style name="TH.Dialog" parent="@android:Theme">
+  <style name="TH.Dialog" parent="Theme.AppCompat">
     <item name="android:windowBackground">@android:color/transparent</item>
     <item name="android:colorBackgroundCacheHint">@null</item>
     <item name="android:windowFrame">@null</item>
