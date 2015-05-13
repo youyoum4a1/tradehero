@@ -109,6 +109,7 @@ public abstract class SocialFriendsFragment extends BaseFragment
             filterSubject = BehaviorSubject.create();
         }
         filterTextView.setText(filterText);
+        listenToFilterSubject();
         listenToSubject();
     }
 
@@ -116,12 +117,6 @@ public abstract class SocialFriendsFragment extends BaseFragment
     {
         setActionBarTitle(getTitle());
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public void onStart()
-    {
-        super.onStart();
-        listenToFilterSubject();
     }
 
     @Override public void onResume()
@@ -169,7 +164,7 @@ public abstract class SocialFriendsFragment extends BaseFragment
 
     protected void listenToFilterSubject()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
                 this,
                 filterSubject
                         .flatMap(new Func1<Pair<String, List<SocialFriendListItemDTO>>, Observable<? extends List<SocialFriendListItemDTO>>>()
@@ -277,6 +272,7 @@ public abstract class SocialFriendsFragment extends BaseFragment
 
     protected void handleFriendListError(@NonNull Throwable e)
     {
+        Timber.e(e, "Failed to fetch friends");
         //when already fetched the data, do not show error view
         if (listedSocialItems == null)
         {
