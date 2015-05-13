@@ -8,22 +8,29 @@ import android.util.Pair;
 import com.facebook.Session;
 import com.facebook.widget.WebDialog;
 import com.tradehero.common.rx.PairGetSecond;
+import com.tradehero.common.social.facebook.FacebookConstants;
+import com.tradehero.common.social.facebook.FacebookWebDialogOperator;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.auth.AccessTokenForm;
 import com.tradehero.th.api.social.InviteDTO;
 import com.tradehero.th.api.social.InviteFacebookDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.InviteFormUserDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
-import com.tradehero.common.social.facebook.FacebookWebDialogOperator;
+import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ReplaceWith;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -42,6 +49,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     @NonNull private final FacebookAuthenticationProvider facebookAuthenticationProvider;
     @NonNull private final UserProfileCacheRx userProfileCache;
     @NonNull private final Provider<Activity> activityProvider;
+    @NonNull private final List<String> permissions;
 
     //<editor-fold desc="Constructors">
     @Inject public SocialFriendHandlerFacebook(
@@ -50,7 +58,8 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
             @NonNull SocialServiceWrapper socialServiceWrapper,
             @NonNull FacebookAuthenticationProvider facebookAuthenticationProvider,
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull Provider<Activity> activityProvider)
+            @NonNull Provider<Activity> activityProvider,
+            @FacebookPermissions @NonNull List<String> permissions)
     {
         super(userServiceWrapper);
         this.currentUserId = currentUserId;
@@ -58,6 +67,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
         this.facebookAuthenticationProvider = facebookAuthenticationProvider;
         this.userProfileCache = userProfileCache;
         this.activityProvider = activityProvider;
+        this.permissions = permissions;
     }
     //</editor-fold>
 
@@ -174,9 +184,11 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
 
     @NonNull public Observable<Pair<UserProfileDTO, Session>> createProfileSessionObservable()
     {
+        final List<String> newPermissions = new ArrayList<>(permissions);
+        newPermissions.add(FacebookConstants.PERMISSION_FRIENDS);
         return Observable.combineLatest(
-                userProfileCache.get(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
-                facebookAuthenticationProvider.createSessionObservable(activityProvider.get()),
+                userProfileCache.getOne(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
+                facebookAuthenticationProvider.createSessionObservable(activityProvider.get(), newPermissions),
                 new Func2<UserProfileDTO, Session, Pair<UserProfileDTO, Session>>()
                 {
                     @Override public Pair<UserProfileDTO, Session> call(UserProfileDTO t1, Session t2)
@@ -190,11 +202,16 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
                     {
                         if (pair.first.fbLinked)
                         {
-                            return Observable.just(pair);
+                            return socialServiceWrapper.connectRx(
+                                    pair.first.getBaseKey(),
+                                    new AccessTokenForm(new AuthData(SocialNetworkEnum.FB,
+                                            pair.second.getExpirationDate(),
+                                            pair.second.getAccessToken())))
+                                    .map(new ReplaceWith<UserProfileDTO, Pair<UserProfileDTO, Session>>(pair));
                         }
                         // Need to link then return
                         return Observable.combineLatest(
-                                facebookAuthenticationProvider.createAuthDataObservable(activityProvider.get())
+                                facebookAuthenticationProvider.createAuthDataObservable(activityProvider.get(), newPermissions)
                                         .observeOn(Schedulers.io())
                                         .flatMap(socialServiceWrapper.connectFunc1(pair.first.getBaseKey())),
                                 Observable.just(Session.getActiveSession()),
