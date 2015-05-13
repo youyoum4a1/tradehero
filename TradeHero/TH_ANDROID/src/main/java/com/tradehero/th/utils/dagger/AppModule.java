@@ -417,6 +417,7 @@ import javax.inject.Singleton;
                         StockLearningHistoryFragment.class,
                         OneQuestionFragment.class,
                         AnswerQuestionFragment.class,
+                        OneQuestionFragment.class,
                         //Stock Learning
 
                         SignInFragment.class,

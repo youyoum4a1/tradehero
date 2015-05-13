@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.tradehero.chinabuild.fragment.stocklearning.Question;
 import com.tradehero.chinabuild.fragment.stocklearning.QuestionGroup;
 import com.tradehero.chinabuild.fragment.stocklearning.QuestionStatusRecord;
-
 import java.util.ArrayList;
 
 /**
@@ -44,39 +43,6 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void insertOrUpdateQuestionRecord(ArrayList<QuestionStatusRecord> sets) {
-        SQLiteDatabase db = getWritableDatabase();
-        try {
-            db.beginTransaction();
-            for (QuestionStatusRecord questionStatusRecord : sets) {
-                Cursor cursor = db.query(SQLs.TABLE_QUESTION_RECORD, null, SQLs.QUESTION_RECORD_USER_ID + " =? and " + SQLs.QUESTION_RECORD_GROUP_ID + " =? and " + SQLs.QUESTION_RECORD_QUESTION_ID + " =?",
-                        new String[]{String.valueOf(questionStatusRecord.user_id), String.valueOf(questionStatusRecord.question_group_id), String.valueOf(questionStatusRecord.question_id)}, null, null, null);
-                if (cursor.moveToFirst()) {
-                    ContentValues values = new ContentValues();
-                    values.put(SQLs.QUESTION_RECORD_QUESTION_CHOICE, questionStatusRecord.question_choice);
-                    values.put(SQLs.QUESTION_RECORD_QUESTION_STATUS, questionStatusRecord.question_status);
-                    db.update(SQLs.TABLE_QUESTION_RECORD, values, SQLs.QUESTION_RECORD_USER_ID + " =? and " + SQLs.QUESTION_RECORD_GROUP_ID + " =? and " + SQLs.QUESTION_RECORD_QUESTION_ID + " =?",
-                            new String[]{String.valueOf(questionStatusRecord.user_id), String.valueOf(questionStatusRecord.question_group_id), String.valueOf(questionStatusRecord.question_id)});
-                } else {
-                    ContentValues values = new ContentValues();
-                    values.put(SQLs.QUESTION_RECORD_QUESTION_ID, questionStatusRecord.question_id);
-                    values.put(SQLs.QUESTION_RECORD_QUESTION_CHOICE, questionStatusRecord.question_choice);
-                    values.put(SQLs.QUESTION_RECORD_QUESTION_STATUS, questionStatusRecord.question_status);
-                    values.put(SQLs.QUESTION_RECORD_USER_ID, questionStatusRecord.user_id);
-                    values.put(SQLs.QUESTION_RECORD_GROUP_ID, questionStatusRecord.question_group_id);
-                    db.insert(SQLs.TABLE_QUESTION_RECORD, null, values);
-                }
-                cursor.close();
-            }
-            db.setTransactionSuccessful();
-        } catch (SQLiteException e) {
-            e.printStackTrace();
-        } finally {
-            db.endTransaction();
-            db.close();
-        }
-    }
-
     public void insertQuestionRecord(QuestionStatusRecord questionStatusRecord) {
         SQLiteDatabase db = getWritableDatabase();
         try {
@@ -93,7 +59,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
                 ContentValues values = new ContentValues();
                 values.put(SQLs.QUESTION_RECORD_QUESTION_ID, questionStatusRecord.question_id);
                 values.put(SQLs.QUESTION_RECORD_QUESTION_CHOICE, questionStatusRecord.question_choice);
-                values.put(SQLs.QUESTION_RECORD_QUESTION_STATUS, questionStatusRecord.question_status);
+                values.put(SQLs.QUESTION_RECORD_QUESTION_STATUS, -1);
                 values.put(SQLs.QUESTION_RECORD_USER_ID, questionStatusRecord.user_id);
                 values.put(SQLs.QUESTION_RECORD_GROUP_ID, questionStatusRecord.question_group_id);
                 db.insert(SQLs.TABLE_QUESTION_RECORD, null, values);
@@ -249,8 +215,6 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
             for(Question question: questions) {
                 db.delete(SQLs.TABLE_QUESTION, SQLs.QUESTION_GROUP_GROUP_ID + " =? and " + SQLs.QUESTION_QUESTION_ID + " =? ",
                         new String[]{String.valueOf(question.subcategory), String.valueOf(question.id)});
-                db.delete(SQLs.TABLE_QUESTION_RECORD, SQLs.QUESTION_RECORD_GROUP_ID + " =? and " + SQLs.QUESTION_RECORD_QUESTION_ID + " =? ",
-                        new String[]{String.valueOf(question.subcategory), String.valueOf(question.id)});
                 ContentValues values = new ContentValues();
                 values.put(SQLs.QUESTION_DESCRIPTION, question.content);
                 values.put(SQLs.QUESTION_QUESTION_ID, question.id);
@@ -286,6 +250,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
             String optionD = cursor.getString(cursor.getColumnIndex(SQLs.QUESTION_CHOICE_D));
             String answer = cursor.getString(cursor.getColumnIndex(SQLs.QUESTION_ANSWERS));
             String imageUrl = cursor.getString(cursor.getColumnIndex(SQLs.QUESTION_IMAGE_URL));
+            int questionGroupId = cursor.getInt(cursor.getColumnIndex(SQLs.QUESTION_QUESTION_GROUP_ID));
             question.content = content;
             question.id = question_id;
             question.option1 = optionA;
@@ -294,6 +259,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
             question.option4 = optionD;
             question.imageUrl = imageUrl;
             question.answer = answer;
+            question.subcategory = questionGroupId;
             questions.add(question);
         }
         cursor.close();

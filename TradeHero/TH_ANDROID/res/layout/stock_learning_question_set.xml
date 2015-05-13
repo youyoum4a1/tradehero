@@ -3,10 +3,23 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
     <android.support.v4.view.ViewPager
             android:id="@+id/viewpager_questions"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
+            android:layout_height="fill_parent">
     </android.support.v4.view.ViewPager>
+
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:id="@+id/relativelayout_guide_stock_learning_question"
+                    android:visibility="gone"
+                    android:background="@drawable/guide_bg">
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                   android:layout_centerInParent="true"
+                   android:src="@drawable/guide_stock_learning"
+                   android:layout_marginLeft="50dp"
+                   android:scaleType="fitCenter"
+                   android:layout_marginRight="50dp"/>
+
+    </RelativeLayout>
 </RelativeLayout>

@@ -91,7 +91,6 @@ public class AnalyticsConstants
     //股神动态，热门话题,悬赏帖，最新动态
     public final static String BUTTON_DISCOVERY_LATEST = "BUTTON_DISCOVERY_LATEST";
     public final static String BUTTON_DISCOVERY_SQUARE = "BUTTON_DISCOVERY_SQUARE";
-    public final static String BUTTON_DISCOVERY_NEWS = "BUTTON_DISCOVERY_NEWS";
     public final static String BUTTON_DISCOVERY_REWARD = "BUTTON_DISCOVERY_REWARD";
     public final static String BUTTON_DISCOVERY_GOD = "BUTTON_DISCOVERY_GOD";
     public final static String DISCOVERY_GUIDE_ITEM = "DISCOVERY_GUIDE_ITEM";
@@ -104,13 +103,19 @@ public class AnalyticsConstants
     public final static String BUTTON_STOCK_SALE_SUCCESSFULLY = "BUTTON_STOCK_SALE_SUCCESSFULLY";
 
     //选择题库
-    public final static String QUESTION_SET_SELECT = "QUESTION_SET_SELECT";
-    //下一题
-    public final static String QUESTION_NEXT_QUESTION = "QUESTION_NEXT_QUESTION";
+    public final static String QUESTION_CATEGORY_SELECT = "QUESTION_CATEGORY_SELECT";
+    //选择题库子分类
+    public final static String QUESTION_SUBCATEGORY_SELECT = "QUESTION_SUBCATEGORY_SELECT";
     //查看结果
     public final static String QUESTION_CHECK_QUESTION_RESULT = "QUESTION_CHECK_QUESTION_RESULT";
+    //下一题
+    public final static String QUESTION_NEXT_QUESTION = "QUESTION_NEXT_QUESTION";
     //答完一套题
-    public final static String QUESTION_COMPLETED = "QUESTION_COMPLETED";
+    public final static String ONE_QUESTION_CATEGORY_COMPLETED = "QUESTION_COMPLETED";
+    //查看历史
+    public final static String QUESTION_HISTORY = "QUESTION_HISTORY";
+    //重答错题
+    public final static String QUESTION_REANSWER_QUESTION = "QUESTION_REANSWER_QUESTION";
     //选择视频
     public final static String VIDEO_SELECT = "VIDEO_SELECT";
     //Palmer
@@ -136,7 +141,6 @@ public class AnalyticsConstants
     //每个比赛的比赛详情，参加比赛和去比赛的点击量，邀请好友的点击量，排行中每个用户的点击量。
     public static final String BUTTON_COMPETITION_DETAIL_JOIN = "BUTTON_COMPETITION_DETAIL_JOIN";
     public static final String BUTTON_COMPETITION_DETAIL_GOTO = "BUTTON_COMPETITION_DETAIL_GOTO";
-    public static final String BUTTON_COMPETITION_DETAIL_INVITE = "BUTTON_COMPETITION_DETAIL_INVITE";
     public static final String BUTTON_COMPETITION_DETAIL_RANK_POSITION = "BUTTON_COMPETITION_DETAIL_RANK_POSITION";
 
     //个股页面右上角点击+自选股，取消自选 ,1天，5天，3个月，1年，讨论tab，资讯tab的点击量，最下方购买，出售，讨论的点击量。讨论tab和资讯tab下方的点击加载更多,抢沙发 的点击量

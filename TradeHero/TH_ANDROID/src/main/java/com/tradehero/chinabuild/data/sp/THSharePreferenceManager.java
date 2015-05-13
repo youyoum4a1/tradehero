@@ -244,6 +244,7 @@ public class THSharePreferenceManager {
     public final static String GUIDE_MAIN_TAB_TWO = "guide_main_tab_two";
     public final static String GUIDE_MAIN_TAB_THREE = "guide_main_tab_three";
     public final static String GUIDE_MAIN_TAB_FOUR = "guide_main_tab_four";
+    public final static String GUIDE_STOCK_LEARNING_QUESTION = "guide_stock_learning_question";
 
     public static boolean isGuideAvailable(Context context, String key) {
         if (context == null) {

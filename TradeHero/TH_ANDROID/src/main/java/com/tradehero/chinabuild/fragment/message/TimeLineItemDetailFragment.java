@@ -964,16 +964,10 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
                     @Override
                     public void onDeleteTimeLineClick() {
-                        if (dataDto == null || currentUserId == null) {
-                            return;
-                        }
-                        if (dataDto instanceof TimelineItemDTO) {
-                            int timeLineId = ((TimelineItemDTO) dataDto).id;
-                            ManageDeleteTimeLineDTO dto = new ManageDeleteTimeLineDTO();
-                            dto.isDeleted = true;
-                            administratorManageTimelineServiceWrapper.get().operationDeleteTimeLine(currentUserId.toUserBaseKey().key, timeLineId, dto, new ManagerOperateCallback());
-                        }
                         timeLineDetailMenuDialog.dismiss();
+                        if (dataDto != null) {
+                            showDeleteTimeLineConfirmDlg(dataDto.id, DIALOG_TYPE_DELETE_TIMELINE);
+                        }
                     }
                 }, isDeleteAllowed, isReportAllowed, isManager(), isTop(), isProduction(), isFavorite(), isLearning());
     }
