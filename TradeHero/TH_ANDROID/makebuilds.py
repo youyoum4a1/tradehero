@@ -2,7 +2,7 @@ from subprocess import call
 import os.path
 TASK = "assembleRelease"
 COMMAND = "../../gradlew -PdistId=%s -PdistName=%s -PoutputRoot=%s %s"
-OUTPUT_ROOT = "/Users/liangyx/Downloads/tmp/test"
+OUTPUT_ROOT = "build/dist"
 FILE_TAPSTREAMTYPE = "src/main/java/com/tradehero/th/utils/metrics/tapstream/TapStreamType.java"
 TAG_BEGIN = "BEGIN_ENUM"
 TAG_END = "END_ENUM"
@@ -10,6 +10,10 @@ TAG_END = "END_ENUM"
 if not os.path.exists(FILE_TAPSTREAMTYPE):
     print "Check the file path of TapStreamType.java"
     exit()
+
+if not os.path.exists(OUTPUT_ROOT):
+    import os
+    os.makedirs(OUTPUT_ROOT)
 
 with open(FILE_TAPSTREAMTYPE) as f:
     lines = f.readlines()
@@ -42,5 +46,5 @@ with open(FILE_TAPSTREAMTYPE) as f:
         call(args, shell=True)
         # Uncomment the follow code to build 4 APKs for testing.
         #if dist_id == "3":
-        #    break;
+        break;
 

@@ -54,7 +54,11 @@ android {
 
         applicationVariants.all { variant ->
             variant.outputs.each { output ->
-                output.outputFile = new File(outputRoot, "tradehero-" + variant.baseName + "-" + distName +".apk")
+                if (outputRoot) {
+                    output.outputFile = new File(outputRoot, "tradehero-" + variant.baseName + "-" + distName + ".apk")
+                } else {
+                    output.outputFile = new File(output.outputFile.parent, "tradehero-" + variant.baseName + "-" + distName +".apk")
+                }
             }
         }
     }
