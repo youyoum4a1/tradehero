@@ -309,7 +309,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Get Social Friends">
-    @NonNull public Observable<UserFriendsDTOList> getFriendsRx(@NonNull FriendsListKey friendsListKey)
+    @NonNull public Observable<UserFriendsDTOList> getFriendsRx(@NonNull final FriendsListKey friendsListKey)
     {
         Observable<UserFriendsDTOList> received;
         if (friendsListKey.searchQuery != null)
@@ -324,6 +324,20 @@ import rx.functions.Func1;
             if (friendsListKey.socialNetworkEnum == SocialNetworkEnum.WB)
             {
                 received = userServiceRx.getSocialWeiboFriends(friendsListKey.userBaseKey.key);
+            }
+            else if (friendsListKey.socialNetworkEnum == SocialNetworkEnum.FB)
+            {
+                received = userServiceRx.getSocialFacebookFriends(friendsListKey.userBaseKey.key)
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends UserFriendsDTOList>>()
+                {
+                    // It may not be deployed yet.
+                    @Override public Observable<? extends UserFriendsDTOList> call(Throwable throwable)
+                    {
+                        return userServiceRx.getSocialFriends(
+                                friendsListKey.userBaseKey.key,
+                                friendsListKey.socialNetworkEnum);
+                    }
+                });
             }
             else
             {

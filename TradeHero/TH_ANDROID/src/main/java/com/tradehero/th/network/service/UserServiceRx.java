@@ -185,8 +185,11 @@ public interface UserServiceRx
     Observable<UserFriendsDTOList> getFriends(
             @Path("userId") int userId);
 
-    @GET("/users/{userId}/getweibofriends")
+    @GET("/users/{userId}/getWeiboFriends")
     Observable<UserFriendsDTOList> getSocialWeiboFriends(@Path("userId") int userId);
+
+    @GET("/users/{userId}/getFacebookFriends")
+    Observable<UserFriendsDTOList> getSocialFacebookFriends(@Path("userId") int userId);
 
     @GET("/users/{userId}/GetNewFriends")
     Observable<UserFriendsDTOList> getSocialFriends(
