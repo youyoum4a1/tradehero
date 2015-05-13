@@ -8,6 +8,7 @@ import javax.inject.Inject;
 public class SingleExpandingListViewListener extends BaseExpandingListViewListener
 {
     private int oldSelectedPostion;
+
     @Inject public SingleExpandingListViewListener()
     {
         super();
@@ -16,15 +17,15 @@ public class SingleExpandingListViewListener extends BaseExpandingListViewListen
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        if ((oldSelectedPostion != -1) && (position != oldSelectedPostion)) {
+        if ((oldSelectedPostion != -1) && (position != oldSelectedPostion))
+        {
             Object item = parent.getItemAtPosition(oldSelectedPostion);
             if (item instanceof ExpandableItem)
             {
                 View child = parent.getChildAt(oldSelectedPostion);
                 collapseView(child);
-                ((ExpandableItem)item).setExpanded(false);
+                ((ExpandableItem) item).setExpanded(false);
             }
-
         }
 
         oldSelectedPostion = position;

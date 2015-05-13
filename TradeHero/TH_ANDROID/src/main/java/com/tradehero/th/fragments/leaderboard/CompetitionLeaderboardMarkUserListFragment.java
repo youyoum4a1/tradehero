@@ -9,7 +9,6 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
@@ -320,37 +319,21 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
                 });
     }
 
-    @Override protected void updateCurrentRankHeaderView(@Nullable LeaderboardMarkUserItemView.Requisite requisite)
+    @Override protected void updateCurrentRankView(@Nullable LeaderboardMarkUserItemView.Requisite requisite)
     {
-        super.updateCurrentRankHeaderView(requisite);
-        View rankHeaderView = getRankHeaderView();
+        super.updateCurrentRankView(requisite);
 
-        if (rankHeaderView != null
-                && rankHeaderView instanceof CompetitionLeaderboardMarkUserItemView
-                && requisite instanceof CompetitionLeaderboardMarkUserItemView.Requisite)
+        if (requisite instanceof CompetitionLeaderboardMarkUserItemView.Requisite)
         {
-            CompetitionLeaderboardMarkUserOwnRankingView leaderboardMarkUserItemView = (CompetitionLeaderboardMarkUserOwnRankingView) rankHeaderView;
             CompetitionLeaderboardMarkUserItemView.Requisite thisRequisite = (CompetitionLeaderboardMarkUserItemView.Requisite) requisite;
             if (requisite.currentLeaderboardUserDTO == null)
             {
-                leaderboardMarkUserItemView.displayUserIsNotRanked(requisite.currentUserProfileDTO);
-                leaderboardMarkUserItemView.setOnClickListener(null);
-            }
-            else if (leaderboardMarkUserItemView instanceof CompetitionLeaderboardMarkUserOwnRankingView)
-            {
-                CompetitionLeaderboardDTO competitionLeaderboardDTO = thisRequisite.competitionLeaderboardDTO;
-                leaderboardMarkUserItemView.display(new CompetitionLeaderboardMarkUserOwnRankingView.DTO(
-                        getResources(),
-                        currentUserId,
-                        requisite.currentLeaderboardUserDTO,
-                        requisite.currentUserProfileDTO,
-                        competitionLeaderboardDTO.prizes == null ? 0 : competitionLeaderboardDTO.prizes.size(),
-                        thisRequisite.providerDTO));
+                ((LeaderboardMarkUserListAdapter) itemViewAdapter).isNotRanked(requisite.currentUserProfileDTO);
             }
             else
             {
                 CompetitionLeaderboardDTO competitionLeaderboardDTO = thisRequisite.competitionLeaderboardDTO;
-                leaderboardMarkUserItemView.display(new CompetitionLeaderboardMarkUserItemView.DTO(
+                ((LeaderboardMarkUserListAdapter) itemViewAdapter).isRanked(new CompetitionLeaderboardMarkUserOwnRankingView.DTO(
                         getResources(),
                         currentUserId,
                         requisite.currentLeaderboardUserDTO,
@@ -358,6 +341,10 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
                         competitionLeaderboardDTO.prizes == null ? 0 : competitionLeaderboardDTO.prizes.size(),
                         thisRequisite.providerDTO));
             }
+        }
+        else
+        {
+            super.updateCurrentRankView(requisite);
         }
     }
 

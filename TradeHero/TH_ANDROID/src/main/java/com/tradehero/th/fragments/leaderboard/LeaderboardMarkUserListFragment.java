@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import com.android.internal.util.Predicate;
@@ -64,8 +65,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardCacheRx leaderboardCache;
     @Inject LeaderboardMarkUserListFragmentUtil fragmentUtil;
-
-    private View mRankHeaderView;
 
     protected LeaderboardFilterFragment leaderboardFilterFragment;
     protected PerPagedLeaderboardKeyPreference savedPreference;
@@ -118,7 +117,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     {
         View view = inflater.inflate(R.layout.leaderboard_mark_user_listview, container, false);
         ButterKnife.inject(this, view);
-        inflateHeaderView();
         listView.setEmptyView(inflateEmptyView(inflater, container));
         return view;
     }
@@ -132,13 +130,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         return inflater.inflate(R.layout.leaderboard_empty_view, container, false);
     }
 
-    private void inflateHeaderView()
-    {
-        View userRankingHeaderView = inflateAndGetUserRankHeaderView();
-        setupOwnRankingView(userRankingHeaderView);
-        ((ListView) listView).addHeaderView(userRankingHeaderView);
-    }
-
     @Override public void onStart()
     {
         super.onStart();
@@ -147,17 +138,18 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
                 .subscribe(
                         fragmentUtil,
                         new TimberOnErrorAction("Error when receiving user follow requested")));
-        if ((itemViewAdapter != null) && (itemViewAdapter.getCount() == 0))
+        if ((itemViewAdapter != null) && (itemViewAdapter.getCount() == 1))
         {
             requestDtos();
         }
         if (ownRankRequisite == null)
         {
             fetchOwnRanking();
-        } else {
-            updateCurrentRankHeaderView(ownRankRequisite);
         }
-
+        else
+        {
+            updateCurrentRankView(ownRankRequisite);
+        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -212,12 +204,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         super.onStop();
     }
 
-    @Override public void onDestroyView()
-    {
-        mRankHeaderView = null;
-        super.onDestroyView();
-    }
-
     @Override public void onDestroy()
     {
         this.leaderboardFilterFragment = null;
@@ -231,6 +217,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         LeaderboardMarkUserListAdapter adapter = new LeaderboardMarkUserListAdapter(
                 getActivity(),
                 R.layout.lbmu_item_roi_mode,
+                getCurrentRankLayoutResId(),
                 new LeaderboardKey(leaderboardDefKey.key));
         adapter.setApplicablePortfolioId(getApplicablePortfolioId());
         return adapter;
@@ -304,24 +291,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         }
     }
 
-    @Nullable protected View getRankHeaderView()
-    {
-        return mRankHeaderView;
-    }
-
-    @Override protected void setCurrentUserProfileDTO(@NonNull UserProfileDTO currentUserProfileDTO)
-    {
-        super.setCurrentUserProfileDTO(currentUserProfileDTO);
-        if (mRankHeaderView instanceof LeaderboardMarkUserItemView)
-        {
-            LeaderboardMarkUserItemView ownRankingView = (LeaderboardMarkUserItemView) mRankHeaderView;
-            ownRankingView.linkWith(getApplicablePortfolioId());
-        }
-    }
-
     protected void fetchOwnRanking()
     {
-        updateLoadingCurrentRankHeaderView();
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 fetchOwnRankingInfoObservables())
@@ -331,14 +302,14 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
                         {
                             @Override public void call(LeaderboardMarkUserItemView.Requisite requisite)
                             {
-                                updateCurrentRankHeaderView(requisite);
+                                updateCurrentRankView(requisite);
                             }
                         },
                         new Action1<Throwable>()
                         {
                             @Override public void call(Throwable throwable)
                             {
-                                updateCurrentRankHeaderView(null);
+                                updateCurrentRankView(null);
                             }
                         }));
     }
@@ -363,69 +334,26 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
                 .subscribeOn(Schedulers.computation());
     }
 
-    /**
-     * Get the header view which shows the user's current rank
-     */
-    @Nullable protected final View inflateAndGetUserRankHeaderView()
-    {
-        if (mRankHeaderView == null)
-        {
-            mRankHeaderView = LayoutInflater.from(getActivity()).inflate(getCurrentRankLayoutResId(), null, false);
-        }
-        return mRankHeaderView;
-    }
-
     @LayoutRes protected int getCurrentRankLayoutResId()
     {
         return R.layout.lbmu_item_own_ranking_roi_mode;
     }
 
-    protected void updateLoadingCurrentRankHeaderView()
+    protected void updateCurrentRankView(@Nullable LeaderboardMarkUserItemView.Requisite requisite)
     {
-        if (mRankHeaderView != null && mRankHeaderView instanceof LeaderboardMarkUserItemView)
+        if (requisite == null || requisite.currentLeaderboardUserDTO == null)
         {
-            LeaderboardMarkUserItemView leaderboardMarkUserItemView = (LeaderboardMarkUserItemView) mRankHeaderView;
-            leaderboardMarkUserItemView.displayUserIsLoading();
+            ((LeaderboardMarkUserListAdapter) itemViewAdapter).isNotRanked(requisite.currentUserProfileDTO);
         }
-    }
-
-    protected void updateCurrentRankHeaderView(@Nullable LeaderboardMarkUserItemView.Requisite requisite)
-    {
-        if (mRankHeaderView != null && mRankHeaderView instanceof LeaderboardMarkUserItemView)
+        else
         {
-            LeaderboardMarkUserItemView leaderboardMarkUserItemView = (LeaderboardMarkUserItemView) mRankHeaderView;
-            if (requisite == null || requisite.currentLeaderboardUserDTO == null)
-            {
-                leaderboardMarkUserItemView.displayUserIsNotRanked(requisite.currentUserProfileDTO);
-                // user is not ranked, disable expandable view
-                leaderboardMarkUserItemView.setOnClickListener(null);
-            }
-            else
-            {
-                leaderboardMarkUserItemView.display(new LeaderboardMarkUserOwnRankingView.DTO(
-                        getResources(),
-                        currentUserId,
-                        requisite.currentLeaderboardUserDTO,
-                        requisite.currentUserProfileDTO));
-            }
+            ((LeaderboardMarkUserListAdapter) itemViewAdapter).isRanked(new LeaderboardMarkUserOwnRankingView.DTO(
+                    getResources(),
+                    currentUserId,
+                    requisite.currentLeaderboardUserDTO,
+                    requisite.currentUserProfileDTO));
         }
-    }
-
-    protected void setupOwnRankingView(View userRankingHeaderView)
-    {
-        if (userRankingHeaderView instanceof LeaderboardMarkUserItemView)
-        {
-            LeaderboardMarkUserItemView ownRankingView = (LeaderboardMarkUserItemView) userRankingHeaderView;
-            if (ownRankingView.expandMark != null)
-            {
-                ownRankingView.expandMark.setVisibility(View.GONE);
-            }
-            if (ownRankingView.expandingLayout != null)
-            {
-                ownRankingView.expandingLayout.setVisibility(View.GONE);
-                ownRankingView.setExpanded(false);
-            }
-        }
+        ((ArrayAdapter) itemViewAdapter).notifyDataSetChanged();
     }
 
     @Override protected void updateListViewRow(@NonNull final UserProfileDTO currentUserProfile, @NonNull final UserBaseKey heroId)

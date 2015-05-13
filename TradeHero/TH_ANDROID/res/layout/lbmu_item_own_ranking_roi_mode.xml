@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:descendantFocusability="afterDescendants"
+    android:descendantFocusability="blocksDescendants"
     android:background="@color/lb_header_bg"
     >
 
