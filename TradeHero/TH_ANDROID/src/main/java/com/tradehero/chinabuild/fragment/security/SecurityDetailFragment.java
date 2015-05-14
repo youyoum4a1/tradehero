@@ -10,15 +10,18 @@ import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -40,12 +43,17 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.adapters.PositionTradeListAdapter;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.discussion.*;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionKeyList;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
@@ -57,7 +65,12 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
-import com.tradehero.th.api.position.*;
+import com.tradehero.th.api.position.OwnedPositionId;
+import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionDTOCompact;
+import com.tradehero.th.api.position.PositionDTOCompactList;
+import com.tradehero.th.api.position.PositionDTOKeyFactory;
+import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -108,23 +121,28 @@ import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.GuideView;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.viewpagerindicator.SquarePageIndicator;
-import dagger.Lazy;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import dagger.Lazy;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by huhaiping on 14-9-1.
@@ -691,10 +709,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         fetchWatchlist();
         super.onResume();
 
-        //if (THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_STOCK_BUY))
-        //{
+        if (THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_STOCK_BUY)) {
             showGuideView();
-        //}
+        }
 
         getTradeTabDetail();
     }
