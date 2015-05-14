@@ -42,16 +42,6 @@ import javax.inject.Singleton;
             throw new NullPointerException("ownedPositionId.positionId cannot be null");
         }
     }
-
-    private void basicCheck(OwnedTradeId ownedTradeId)
-    {
-        basicCheck((OwnedPositionId) ownedTradeId);
-        if (ownedTradeId.tradeId == null)
-        {
-            throw new NullPointerException("ownedTradeId.tradeId cannot be null");
-        }
-    }
-
     //<editor-fold desc="Get Trades List">
     @NotNull private DTOProcessor<TradeDTOList> createTradeListReceivedProcessor(
             @NotNull OwnedPositionId ownedPositionId)
@@ -69,10 +59,4 @@ import javax.inject.Singleton;
                         ownedPositionId.positionId));
     }
 
-    //<editor-fold desc="Get One Trade">
-    @NotNull private DTOProcessor<TradeDTO> createTradeReceivedProcessor(
-            @NotNull OwnedPositionId ownedPositionId)
-    {
-        return new DTOProcessorTradeReceived(ownedPositionId);
-    }
 }

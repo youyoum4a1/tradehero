@@ -54,11 +54,6 @@ public class ProviderPageIntent extends OneProviderIntent
         return R.string.intent_uri_action_provider_page;
     }
 
-    public String getForwardUriPath()
-    {
-        return getForwardUriPath(getData());
-    }
-
     public static String getForwardUriPath(Uri data)
     {
         return getForwardUriPath(data.getPathSegments());

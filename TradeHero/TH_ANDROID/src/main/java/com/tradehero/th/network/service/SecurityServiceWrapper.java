@@ -200,71 +200,6 @@ import java.util.Map;
         }
         return received;
     }
-
-    @NotNull public MiddleCallback<SecurityCompactDTOList> getSecurities(
-            @NotNull SecurityListType key,
-            @Nullable Callback<SecurityCompactDTOList> callback)
-    {
-        MiddleCallback<SecurityCompactDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        if (key instanceof TrendingSecurityListType)
-        {
-            TrendingSecurityListType trendingKey = (TrendingSecurityListType) key;
-            if (trendingKey instanceof TrendingBasicSecurityListType)
-            {
-                this.securityServiceAsync.getTrendingSecurities(
-                        trendingKey.exchange,
-                        trendingKey.getPage(),
-                        trendingKey.perPage,
-                        middleCallback);
-            }
-            else if (trendingKey instanceof TrendingPriceSecurityListType)
-            {
-                this.securityServiceAsync.getTrendingSecuritiesByPrice(
-                        trendingKey.exchange,
-                        trendingKey.getPage(),
-                        trendingKey.perPage,
-                        middleCallback);
-            }
-            else if (trendingKey instanceof TrendingVolumeSecurityListType)
-            {
-                this.securityServiceAsync.getTrendingSecuritiesByVolume(
-                        trendingKey.exchange,
-                        trendingKey.getPage(),
-                        trendingKey.perPage,
-                        middleCallback);
-            }
-            else if (trendingKey instanceof TrendingAllSecurityListType)
-            {
-                this.securityServiceAsync.getTrendingSecuritiesAllInExchange(
-                        trendingKey.exchange,
-                        trendingKey.getPage(),
-                        trendingKey.perPage,
-                        middleCallback);
-            }
-            else
-            {
-                throw new IllegalArgumentException("Unhandled type " + trendingKey.getClass().getName());
-            }
-        }
-        else if (key instanceof SearchSecurityListType)
-        {
-            SearchSecurityListType searchKey = (SearchSecurityListType) key;
-            this.securityServiceAsync.searchSecurities(
-                    searchKey.searchString,
-                    searchKey.getPage(),
-                    searchKey.perPage,
-                    middleCallback);
-        }
-        else if (key instanceof ProviderSecurityListType)
-        {
-            return providerServiceWrapper.getProviderSecurities((ProviderSecurityListType) key, callback);
-        }
-        else
-        {
-            throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
-        }
-        return middleCallback;
-    }
     //</editor-fold>
 
     //<editor-fold desc="Get Security">
@@ -279,17 +214,6 @@ import java.util.Map;
                 this.securityService.getSecurity(securityId.getExchange(), securityId.getPathSafeSymbol()));
     }
 
-    @NotNull public MiddleCallback<SecurityPositionDetailDTO> getSecurity(
-            @NotNull SecurityId securityId,
-            @Nullable Callback<SecurityPositionDetailDTO> callback)
-    {
-        MiddleCallback<SecurityPositionDetailDTO> middleCallback = new BaseMiddleCallback<>(
-                callback,
-                createSecurityPositionDetailDTOProcessor(securityId));
-        this.securityServiceAsync.getSecurity(securityId.getExchange(), securityId.getPathSafeSymbol(), middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="Buy Security">
     @NotNull private DTOProcessor<SecurityPositionDetailDTO> createSecurityPositionUpdatedProcessor(@NotNull SecurityId securityId)
@@ -341,19 +265,6 @@ import java.util.Map;
         return middleCallback;
     }
     //</editor-fold>
-
-    //<editor-fold desc="Buy or Sell Security">
-    public SecurityPositionDetailDTO doTransaction(
-            @NotNull SecurityId securityId,
-            @NotNull TransactionFormDTO transactionFormDTO,
-            boolean isBuy)
-    {
-        if (isBuy)
-        {
-            return buy(securityId, transactionFormDTO);
-        }
-        return sell(securityId, transactionFormDTO);
-    }
 
     @NotNull public MiddleCallback<SecurityPositionDetailDTO> doTransaction(
             @NotNull SecurityId securityId,

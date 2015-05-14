@@ -4,7 +4,6 @@ import android.content.Context;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.users.*;
 import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserLogin;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -61,11 +60,6 @@ import javax.inject.Singleton;
                 userProfileCache,
                 currentUserId,
                 dtoCacheUtil);
-    }
-
-    protected DTOProcessor<UserProfileDTO> createUpdateDeviceProcessor()
-    {
-        return new DTOProcessorUpdateUserProfile(userProfileCache);
     }
 
 

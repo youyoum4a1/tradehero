@@ -146,12 +146,6 @@ import javax.inject.Singleton;
                 portfolioCache.get(),
                 userWatchlistPositionCache.get());
     }
-
-    @NotNull public MiddleCallback<WatchlistPositionDTO> deleteWatchlist(@NotNull WatchlistPositionDTO watchlistPositionDTO, @Nullable Callback<WatchlistPositionDTO> callback)
-    {
-        return deleteWatchlist(watchlistPositionDTO.getPositionCompactId(), callback);
-    }
-
     @NotNull
     public MiddleCallback<WatchlistPositionDTO> deleteWatchlist(@NotNull PositionCompactId positionCompactId, @Nullable Callback<WatchlistPositionDTO> callback)
     {
