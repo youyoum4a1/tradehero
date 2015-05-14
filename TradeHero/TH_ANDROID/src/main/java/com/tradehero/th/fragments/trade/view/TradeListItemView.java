@@ -233,11 +233,12 @@ public class TradeListItemView extends LinearLayout
                 @NonNull Resources resources,
                 @NonNull PositionDTO positionDTO,
                 @NonNull SecurityCompactDTO securityCompactDTO,
+                boolean expanded,
                 @NonNull TradeDTO tradeDTO,
                 boolean lastTrade,
                 @NonNull PrettyTime prettyTime)
         {
-            super(tradeDTO);
+            super(expanded, tradeDTO);
             this.lastTrade = lastTrade;
 
             Boolean isClosed = positionDTO.isClosed();

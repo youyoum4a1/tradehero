@@ -1,8 +1,10 @@
 package com.tradehero.th.fragments.trade;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,9 +45,11 @@ public class TradeListItemAdapter
     }
     //</editor-fold>
 
-    @NonNull public List<Object> createObjects(
+    @NonNull public static List<Object> createObjects(
+            @NonNull Resources resources,
             @NonNull PositionDTO positionDTO,
             @NonNull SecurityCompactDTO securityCompactDTO,
+            @Nullable Integer expandedTradeId,
             @NonNull TradeDTOList tradeDTOs,
             @NonNull PrettyTime prettyTime)
     {
@@ -61,7 +65,7 @@ public class TradeListItemAdapter
             objects.add(R.string.trade_list_header_open_summary);
         }
 
-        objects.add(new PositionView.DTO(getContext().getResources(), new ExpandableListItem<PositionDTO>(true, positionDTO), securityCompactDTO));
+        objects.add(new PositionView.DTO(resources, new ExpandableListItem<>(true, positionDTO), securityCompactDTO));
 
         objects.add(R.string.trade_list_header_position_summary);
 
@@ -69,7 +73,14 @@ public class TradeListItemAdapter
         {
             TradeDTO dto = tradeDTOs.get(i);
             objects.add(
-                    new TradeListItemView.DTO(getContext().getResources(), positionDTO, securityCompactDTO, dto, i == 0, prettyTime));
+                    new TradeListItemView.DTO(
+                            resources,
+                            positionDTO,
+                            securityCompactDTO,
+                            expandedTradeId != null && expandedTradeId.equals(dto.id),
+                            dto,
+                            i == 0,
+                            prettyTime));
         }
 
         return objects;

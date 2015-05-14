@@ -14,7 +14,7 @@ import javax.inject.Inject;
 //TODO need refactor by alex
 public class CompetitionLeaderboardPositionListFragment extends TabbedPositionListFragment
 {
-    @Inject Context doNotRemoveOrItFails;
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
     private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardPositionListFragment.class + ".providerId";
 

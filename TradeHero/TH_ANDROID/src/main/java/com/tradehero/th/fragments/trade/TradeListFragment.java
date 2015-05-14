@@ -57,6 +57,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;
@@ -68,7 +69,10 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
-@Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
+@Routable({
+        "user/:userId/portfolio/:portfolioId/position/:positionId",
+        "user/:userId/portfolio/:portfolioId/position/:positionId/trade/:tradeId"
+})
 public class TradeListFragment extends BasePurchaseManagerFragment
 {
     private static final String BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE = TradeListFragment.class.getName() + ".positionDTOKey";
@@ -88,6 +92,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @RouteProperty("userId") Integer routeUserId;
     @RouteProperty("portfolioId") Integer routePortfolioId;
     @RouteProperty("positionId") Integer routePositionId;
+    @RouteProperty("tradeId") Integer tradeId;
 
     @NonNull final PrettyTime prettyTime;
     @NonNull protected PositionDTOKey positionDTOKey;
@@ -232,7 +237,8 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     protected void fetchAll()
     {
         onStopSubscriptions.add(AppObservable.bindFragment(this,
-                        positionCache.get(positionDTOKey)
+                        positionCache.getOne(positionDTOKey)
+                                .subscribeOn(Schedulers.computation())
                                 .map(new Func1<Pair<PositionDTOKey, PositionDTO>, PositionDTO>()
                                 {
                                     @Override public PositionDTO call(Pair<PositionDTOKey, PositionDTO> positionDTOKeyPositionDTOPair)
@@ -255,6 +261,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                                                             @Override public Observable<SecurityId> call(SecurityIntegerId securityIntegerId)
                                                             {
                                                                 return securityIdCache.getOne(pDTO.getSecurityIntegerId())
+                                                                        .subscribeOn(Schedulers.computation())
                                                                         .map(new PairGetSecond<SecurityIntegerId, SecurityId>());
                                                             }
                                                         })
@@ -267,6 +274,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                                                                     SecurityId securityId)
                                                             {
                                                                 return securityCompactCache.getOne(securityId)
+                                                                        .subscribeOn(Schedulers.computation())
                                                                         .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
                                                                         .startWith(securityCompactDTO != null ? Observable.just(securityCompactDTO)
                                                                                 : Observable.<SecurityCompactDTO>empty());
@@ -274,6 +282,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                                                         }),
                                                 Observable.just(pDTO.getOwnedPositionId())
                                                         .distinctUntilChanged()
+                                                        .delay(200, TimeUnit.MILLISECONDS) // crappy HACK to prevent the Retrofit thread for trades from being interrupted
                                                         .flatMap(new Func1<OwnedPositionId, Observable<TradeDTOList>>()
                                                         {
                                                             @Override public Observable<TradeDTOList> call(OwnedPositionId ownedPositionId)
@@ -282,18 +291,24 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                                                                         .map(new PairGetSecond<OwnedPositionId, TradeDTOList>());
                                                             }
                                                         }),
-
                                                 new Func2<SecurityCompactDTO, TradeDTOList, List<Object>>()
                                                 {
                                                     @Override public List<Object> call(SecurityCompactDTO scDTO, TradeDTOList tradeDTOs)
                                                     {
                                                         securityCompactDTO = scDTO;
-                                                        return adapter.createObjects(pDTO, scDTO, tradeDTOs, prettyTime);
+                                                        List<Object> objects = TradeListItemAdapter.createObjects(
+                                                                getResources(),
+                                                                pDTO,
+                                                                scDTO,
+                                                                tradeId,
+                                                                tradeDTOs,
+                                                                prettyTime);
+                                                        tradeId = null; // It is a one-time-use field
+                                                        return objects;
                                                     }
                                                 });
                                     }
                                 })
-                                .subscribeOn(Schedulers.computation())
                                 .observeOn(AndroidSchedulers.mainThread()))
                         .subscribe(
                                 new Action1<List<Object>>()
@@ -308,8 +323,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                                         finishReceivingData();
                                     }
                                 },
-                                new ToastOnErrorAction())
-        );
+                                new ToastOnErrorAction()));
     }
 
     public void finishReceivingData()
