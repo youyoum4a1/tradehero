@@ -53,16 +53,11 @@ public class SecurityDiscussionItemViewLinear
     }
 
     @Override
-    protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
+    protected AbstractDiscussionItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
     {
         return new SecurityDiscussionItemViewMenuClickedListener()
         {
             @Override public void onShareButtonClicked()
-            {
-                // Nothing to do
-            }
-
-            @Override public void onTranslationRequested()
             {
                 // Nothing to do
             }

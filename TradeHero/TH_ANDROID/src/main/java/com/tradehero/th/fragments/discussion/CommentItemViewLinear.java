@@ -59,16 +59,11 @@ public class CommentItemViewLinear extends DiscussionItemViewLinear<CommentKey>
     }
 
     @Override
-    protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
+    protected AbstractDiscussionItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
     {
         return new CommentItemViewHolderMenuClickedListener()
         {
             @Override public void onShareButtonClicked()
-            {
-                // Nothing to do
-            }
-
-            @Override public void onTranslationRequested()
             {
                 // Nothing to do
             }

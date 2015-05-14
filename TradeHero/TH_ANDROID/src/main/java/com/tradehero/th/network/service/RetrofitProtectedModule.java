@@ -1,12 +1,10 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.utils.CustomXmlConverter;
-import com.tradehero.th.network.NetworkConstants;
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 import retrofit.RestAdapter;
-
-import javax.inject.Singleton;
 
 @Module(
         injects = {
@@ -81,13 +79,6 @@ public class RetrofitProtectedModule
     @Provides @Singleton AdministratorManageTimelineServiceAsync provideAdministratorManageTimelineServiceAsync(RestAdapter adapter)
     {
         return adapter.create(AdministratorManageTimelineServiceAsync.class);
-    }
-
-    @Provides @Singleton TranslationServiceBingAsync provideBingTranslationServiceAsync(RestAdapter.Builder builder)
-    {
-        return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
-                .setConverter(null)
-                .build().create(TranslationServiceBingAsync.class);
     }
 
     @Provides @Singleton UserServiceAsync provideUserService(RestAdapter adapter)

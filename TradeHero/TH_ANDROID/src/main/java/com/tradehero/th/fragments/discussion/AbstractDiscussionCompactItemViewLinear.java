@@ -3,30 +3,30 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.SocialShareResultDTO;
-import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.share.SocialShareTranslationHelper;
+import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.utils.DaggerUtils;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 
 abstract public class AbstractDiscussionCompactItemViewLinear<T extends DiscussionKey>
         extends LinearLayout
         implements DTOView<T>
 {
     @Inject protected DiscussionCache discussionCache;
-    @Inject protected SocialShareTranslationHelper socialShareHelper;
+    @Inject protected SocialShareHelper socialShareHelper;
     protected AbstractDiscussionCompactItemViewHolder viewHolder;
     protected T discussionKey;
     protected AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
@@ -60,7 +60,6 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
             discussionFetchListener = createDiscussionFetchListener();
             viewHolder = createViewHolder();
             viewHolder.onFinishInflate(this);
-            socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
         }
     }
 
@@ -76,7 +75,6 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
             viewHolder.onAttachedToWindow(this);
             viewHolder.linkWith(abstractDiscussionCompactDTO, true);
             viewHolder.setMenuClickedListener(createViewHolderMenuClickedListener());
-            socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
         }
     }
 
@@ -156,7 +154,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
     }
     //</editor-fold>
 
-    protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
+    protected AbstractDiscussionItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
     {
         return new AbstractDiscussionViewHolderClickedListener()
         {
@@ -174,11 +172,6 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
             {
                 // Nothing to do
             }
-
-            @Override public void onTranslationRequested()
-            {
-                // Nothing to do
-            }
         };
     }
 
@@ -186,55 +179,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
     {
         @Override public void onMoreButtonClicked()
         {
-            socialShareHelper.shareOrTranslate(abstractDiscussionCompactDTO);
-        }
-    }
-
-    protected SocialShareTranslationHelper.OnMenuClickedListener createSocialShareMenuClickedListener()
-    {
-        return new AbstractDiscussionItemViewShareTranslationMenuClickListener();
-    }
-
-    protected class AbstractDiscussionItemViewShareTranslationMenuClickListener implements SocialShareTranslationHelper.OnMenuClickedListener
-    {
-        @Override public void onCancelClicked()
-        {
-        }
-
-        @Override public void onShareRequestedClicked(SocialShareFormDTO socialShareFormDTO)
-        {
-        }
-
-        @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO)
-        {
-        }
-
-        @Override public void onShared(SocialShareFormDTO shareFormDTO,
-                SocialShareResultDTO socialShareResultDTO)
-        {
-        }
-
-        @Override public void onShareFailed(SocialShareFormDTO shareFormDTO, Throwable throwable)
-        {
-        }
-
-        @Override public void onTranslationClicked(AbstractDiscussionCompactDTO toTranslate)
-        {
-        }
-
-        @Override public void onTranslatedOneAttribute(AbstractDiscussionCompactDTO toTranslate,
-                TranslationResult translationResult)
-        {
-        }
-
-        @Override public void onTranslatedAllAtributes(AbstractDiscussionCompactDTO toTranslate,
-                AbstractDiscussionCompactDTO translated)
-        {
-        }
-
-        @Override public void onTranslateFailed(AbstractDiscussionCompactDTO toTranslate,
-                Throwable error)
-        {
+            socialShareHelper.share(abstractDiscussionCompactDTO);
         }
     }
 }

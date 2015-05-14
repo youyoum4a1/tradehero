@@ -48,20 +48,6 @@ public class AbstractDiscussionItemViewHolder<DiscussionDTOType extends Abstract
         displayStubText();
     }
 
-    @Override public void displayTranslatableTexts()
-    {
-        super.displayTranslatableTexts();
-        displayText();
-    }
-
-    protected void displayText()
-    {
-        if (textContent != null)
-        {
-            textContent.setText(getText());
-        }
-    }
-
     protected String getText()
     {
         switch (currentTranslationStatus)
@@ -162,14 +148,14 @@ public class AbstractDiscussionItemViewHolder<DiscussionDTOType extends Abstract
 
     protected void notifyUserClicked(UserBaseKey userBaseKey)
     {
-        AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
+        DiscussionActionButtonsView.OnButtonClickedListener menuClickedListenerCopy = menuClickedListener;
         if (menuClickedListenerCopy instanceof OnMenuClickedListener)
         {
             ((OnMenuClickedListener) menuClickedListenerCopy).onUserClicked(userBaseKey);
         }
     }
 
-    public static interface OnMenuClickedListener extends AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener
+    public interface OnMenuClickedListener extends DiscussionActionButtonsView.OnButtonClickedListener
     {
         void onUserClicked(UserBaseKey userClicked);
     }

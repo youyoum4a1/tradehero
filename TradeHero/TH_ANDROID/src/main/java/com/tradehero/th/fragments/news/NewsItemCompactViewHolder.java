@@ -3,13 +3,17 @@ package com.tradehero.th.fragments.news;
 import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.InjectView;
-import butterknife.Optional;
+
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
+
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import butterknife.InjectView;
+import butterknife.Optional;
 
 public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO>
         extends AbstractDiscussionCompactItemViewHolder<DiscussionType>
@@ -68,13 +72,6 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
         {
             return null;
         }
-    }
-
-    @Override public void displayTranslatableTexts()
-    {
-        super.displayTranslatableTexts();
-        displayTitle();
-        displayDescription();
     }
 
     protected void displayTitle()
@@ -149,7 +146,7 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
 
     //</editor-fold>
 
-    public static interface OnMenuClickedListener extends AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener
+    public interface OnMenuClickedListener extends AbstractDiscussionItemViewHolder.OnMenuClickedListener
     {
         // Nothing for now
     }

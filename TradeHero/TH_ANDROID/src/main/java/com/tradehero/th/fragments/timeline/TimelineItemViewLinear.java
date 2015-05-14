@@ -17,6 +17,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -155,16 +156,11 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
 
 
     @Override
-    protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
+    protected AbstractDiscussionItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
     {
         return new TimelineItemViewMenuClickedListener()
         {
             @Override public void onShareButtonClicked()
-            {
-                // Nothing to do
-            }
-
-            @Override public void onTranslationRequested()
             {
                 // Nothing to do
             }

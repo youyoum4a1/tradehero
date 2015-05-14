@@ -1,26 +1,24 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
-import android.text.Html;
-import android.text.Spanned;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.Optional;
+
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.SocialShareResultDTO;
-import com.tradehero.th.api.translation.TranslationResult;
-import com.tradehero.th.models.share.SocialShareTranslationHelper;
+import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.utils.DaggerUtils;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.Optional;
 
 public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends AbstractDiscussionCompactDTO>
 {
@@ -51,14 +49,13 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
 
     @Inject @NotNull protected PrettyTime prettyTime;
     @Inject @NotNull protected Context context;
-    @Inject @NotNull protected SocialShareTranslationHelper socialShareHelper;
+    @Inject @NotNull protected SocialShareHelper socialShareHelper;
 
     protected boolean downVote;
     protected DiscussionDTOType discussionDTO;
     protected DiscussionDTOType translatedDiscussionDTO;
     protected @NotNull TranslationStatus currentTranslationStatus = TranslationStatus.ORIGINAL;
-    protected TranslationResult latestTranslationResult;
-    protected OnMenuClickedListener menuClickedListener;
+    protected DiscussionActionButtonsView.OnButtonClickedListener menuClickedListener;
 
     //<editor-fold desc="Constructors">
     public AbstractDiscussionCompactItemViewHolder()
@@ -71,13 +68,11 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     public void onFinishInflate(@NotNull View view)
     {
         ButterKnife.inject(this, view);
-        socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
     }
 
     public void onAttachedToWindow(@NotNull View view)
     {
         ButterKnife.inject(this, view);
-        socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
         if (discussionActionButtonsView != null)
         {
             discussionActionButtonsView.setButtonClickedListener(createDiscussionActionButtonsViewClickedListener());
@@ -99,7 +94,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         //Do nothing
     }
 
-    public void setMenuClickedListener(OnMenuClickedListener menuClickedListener)
+    public void setMenuClickedListener(DiscussionActionButtonsView.OnButtonClickedListener menuClickedListener)
     {
         this.menuClickedListener = menuClickedListener;
     }
@@ -120,10 +115,6 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
             display();
         }
 
-        if (isAutoTranslate() && socialShareHelper.canTranslate(discussionDTO))
-        {
-            handleTranslationRequested();
-        }
     }
 
     public void setDownVote(boolean downVote)
@@ -135,36 +126,11 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         }
     }
 
-    public boolean isAutoTranslate()
-    {
-        return socialShareHelper.isAutoTranslate();
-    }
-
-    public void linkWithTranslated(DiscussionDTOType translatedDiscussionDTO, boolean andDisplay)
-    {
-        this.translatedDiscussionDTO = translatedDiscussionDTO;
-        if (currentTranslationStatus == TranslationStatus.TRANSLATING)
-        {
-            currentTranslationStatus = TranslationStatus.TRANSLATED;
-        }
-        if (andDisplay)
-        {
-            displayTranslatableTexts();
-        }
-    }
-
-    public void setLatestTranslationResult(TranslationResult latestTranslationResult)
-    {
-        this.latestTranslationResult = latestTranslationResult;
-        displayTranslateNotice();
-    }
-
     //<editor-fold desc="Display Methods">
     public void display()
     {
         displayInProcess();
         displayTime();
-        displayTranslatableTexts();
     }
 
     protected void displayInProcess()
@@ -198,43 +164,11 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         return null;
     }
 
-    public void displayTranslatableTexts()
-    {
-        displayTranslateNotice();
-    }
-
-    public void displayTranslateNotice()
-    {
-        if (translateNoticeWrapper != null)
-        {
-            translateNoticeWrapper.setVisibility(socialShareHelper.canTranslate(discussionDTO) ? View.VISIBLE : View.GONE);
-        }
-        if (translateNotice != null)
-        {
-            translateNotice.setText(getTranslateNoticeText());
-        }
-        if (translateNoticeImage != null && latestTranslationResult != null)
-        {
-            translateNoticeImage.setImageResource(latestTranslationResult.logoResId());
-        }
-    }
-
-    public Spanned getTranslateNoticeText()
-    {
-        return Html.fromHtml(context.getString(
-                R.string.discussion_translate_button_with_powered,
-                getTranslateNoticeActionText()));
-    }
-
-    public String getTranslateNoticeActionText()
-    {
-        return context.getString(currentTranslationStatus.actionTextResId);
-    }
     //</editor-fold>
 
     protected void notifyCommentButtonClicked()
     {
-        OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
+        DiscussionActionButtonsView.OnButtonClickedListener menuClickedListenerCopy = menuClickedListener;
         if (menuClickedListenerCopy != null)
         {
             menuClickedListenerCopy.onCommentButtonClicked();
@@ -244,51 +178,16 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     protected void notifyShareRequested()
     {
         socialShareHelper.share(discussionDTO);
-        OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
+        DiscussionActionButtonsView.OnButtonClickedListener menuClickedListenerCopy = menuClickedListener;
         if (menuClickedListenerCopy != null)
         {
             menuClickedListenerCopy.onShareButtonClicked();
         }
     }
 
-    @OnClick({R.id.discussion_translate_notice_wrapper}) @Optional
-    protected void toggleTranslate()
-    {
-        switch (currentTranslationStatus)
-        {
-            case ORIGINAL:
-            case FAILED:
-                handleTranslationRequested();
-                break;
-
-            case TRANSLATING:
-            case TRANSLATED:
-                currentTranslationStatus = TranslationStatus.ORIGINAL;
-                displayTranslatableTexts();
-                break;
-        }
-    }
-
-    protected void handleTranslationRequested()
-    {
-        currentTranslationStatus = TranslationStatus.TRANSLATING;
-        displayTranslateNotice();
-        socialShareHelper.translate(discussionDTO);
-        notifyTranslationRequested();
-    }
-
-    protected void notifyTranslationRequested()
-    {
-        OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
-        if (menuClickedListenerCopy != null)
-        {
-            menuClickedListenerCopy.onTranslationRequested();
-        }
-    }
-
     protected void notifyMoreButtonClicked()
     {
-        OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
+        DiscussionActionButtonsView.OnButtonClickedListener menuClickedListenerCopy = menuClickedListener;
         if (menuClickedListenerCopy != null)
         {
             menuClickedListenerCopy.onMoreButtonClicked();
@@ -316,71 +215,5 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         {
             notifyMoreButtonClicked();
         }
-    }
-
-    protected SocialShareTranslationHelper.OnMenuClickedListener createSocialShareMenuClickedListener()
-    {
-        return new AbstractDiscussionCompactItemViewHolderSocialShareHelperMenuClickedListener()
-        {
-            @Override public void onTranslationClicked(AbstractDiscussionCompactDTO toTranslate)
-            {
-                // Nothing to do
-            }
-
-            @Override public void onTranslateFailed(AbstractDiscussionCompactDTO toTranslate,
-                    Throwable error)
-            {
-                currentTranslationStatus = TranslationStatus.FAILED;
-            }
-
-            @Override public void onCancelClicked()
-            {
-                // Nothing to do
-            }
-
-            @Override public void onShareRequestedClicked(SocialShareFormDTO socialShareFormDTO)
-            {
-                // Nothing to do
-            }
-
-            @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO)
-            {
-                // Nothing to do
-            }
-
-            @Override public void onShared(SocialShareFormDTO shareFormDTO,
-                    SocialShareResultDTO socialShareResultDTO)
-            {
-                // Nothing to do
-            }
-
-            @Override public void onShareFailed(SocialShareFormDTO shareFormDTO,
-                    Throwable throwable)
-            {
-                // Nothing to do
-            }
-        };
-    }
-
-    abstract protected class AbstractDiscussionCompactItemViewHolderSocialShareHelperMenuClickedListener
-            implements SocialShareTranslationHelper.OnMenuClickedListener
-    {
-        @Override public void onTranslatedOneAttribute(AbstractDiscussionCompactDTO toTranslate,
-                TranslationResult translationResult)
-        {
-            setLatestTranslationResult(translationResult);
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override public void onTranslatedAllAtributes(AbstractDiscussionCompactDTO toTranslate,
-                AbstractDiscussionCompactDTO translated)
-        {
-            linkWithTranslated((DiscussionDTOType) translated, true);
-        }
-    }
-
-    public static interface OnMenuClickedListener extends DiscussionActionButtonsView.OnButtonClickedListener
-    {
-        void onTranslationRequested();
     }
 }

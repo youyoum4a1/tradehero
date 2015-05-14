@@ -1,6 +1,7 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
+
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView;
 import com.tradehero.chinabuild.MainTabFragmentCompetition;
 import com.tradehero.chinabuild.MainTabFragmentDiscovery;
@@ -139,7 +140,6 @@ import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.StockInfoValueFragment;
 import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
 import com.tradehero.th.fragments.security.WarrantSecurityItemView;
-import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
@@ -157,7 +157,6 @@ import com.tradehero.th.fragments.trade.FreshQuoteHolder;
 import com.tradehero.th.fragments.trade.SellDialogFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
-import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
@@ -185,10 +184,13 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.TradeHeroProgressBar;
+
+import java.util.Locale;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
-import java.util.Locale;
-import javax.inject.Singleton;
 
 @Module(
         includes = {
@@ -211,7 +213,6 @@ import javax.inject.Singleton;
                         PullToRefreshExpandableListView.class,
                         SimplePremiumFollowUserAssistant.class,
                         PremiumFollowUserAssistant.class,
-                        TranslatableLanguageListFragment.class,
                         EmailSignInFragment.class,
                         PasswordResetFragment.class,
                         TrendingFragment.class,

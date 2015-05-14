@@ -8,9 +8,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.Optional;
+
 import com.tradehero.common.persistence.FetchAssistant;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -19,15 +17,22 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.SecurityIntegerIdList;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
+import com.tradehero.th.fragments.discussion.DiscussionActionButtonsView;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityMultiFetchAssistant;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Map;
+
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.Optional;
 
 public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         NewsItemCompactViewHolder<DiscussionType>
@@ -134,12 +139,6 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         return null;
     }
 
-    @Override public void displayTranslatableTexts()
-    {
-        super.displayTranslatableTexts();
-        displayText();
-    }
-
     protected void displayText()
     {
         if (textContent != null)
@@ -216,7 +215,7 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
 
     protected void notifyOpenOnWebClicked()
     {
-        AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
+        DiscussionActionButtonsView.OnButtonClickedListener menuClickedListenerCopy = menuClickedListener;
         if (menuClickedListenerCopy instanceof OnMenuClickedListener)
         {
             ((OnMenuClickedListener) menuClickedListenerCopy).onOpenOnWebClicked();
@@ -225,7 +224,7 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
 
     protected void notifySecurityClicked(SecurityId securityId)
     {
-        AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
+        DiscussionActionButtonsView.OnButtonClickedListener menuClickedListenerCopy = menuClickedListener;
         if (menuClickedListenerCopy instanceof OnMenuClickedListener)
         {
             ((OnMenuClickedListener) menuClickedListenerCopy).onSecurityClicked(securityId);

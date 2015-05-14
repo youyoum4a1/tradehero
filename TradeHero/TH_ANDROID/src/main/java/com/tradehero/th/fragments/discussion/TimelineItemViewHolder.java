@@ -45,8 +45,7 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
     {
         if (discussionActionButtonsView != null)
         {
-            discussionActionButtonsView.setShowMore(
-                    socialShareHelper.canTranslate(discussionDTO) || canShowStockMenu());
+            discussionActionButtonsView.setShowMore(canShowStockMenu());
         }
     }
 
@@ -173,14 +172,14 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
 
     protected void notifySecurityClicked()
     {
-        AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
+        DiscussionActionButtonsView.OnButtonClickedListener menuClickedListenerCopy = menuClickedListener;
         if (menuClickedListenerCopy instanceof OnMenuClickedListener)
         {
             ((OnMenuClickedListener) menuClickedListenerCopy).onSecurityClicked();
         }
     }
 
-    public static interface OnMenuClickedListener extends AbstractDiscussionItemViewHolder.OnMenuClickedListener
+    public interface OnMenuClickedListener extends AbstractDiscussionItemViewHolder.OnMenuClickedListener
     {
         void onSecurityClicked();
     }

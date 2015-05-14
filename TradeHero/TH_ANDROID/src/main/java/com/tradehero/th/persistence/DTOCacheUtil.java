@@ -1,6 +1,7 @@
 package com.tradehero.th.persistence;
 
 import android.content.Context;
+
 import com.tradehero.chinabuild.cache.CompetitionNewCache;
 import com.tradehero.chinabuild.cache.PortfolioCompactNewCache;
 import com.tradehero.chinabuild.cache.PositionCompactNewCache;
@@ -37,24 +38,29 @@ import com.tradehero.th.persistence.notification.NotificationListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.persistence.position.*;
+import com.tradehero.th.persistence.position.GetPositionsCache;
+import com.tradehero.th.persistence.position.PositionCache;
+import com.tradehero.th.persistence.position.PositionCompactCache;
+import com.tradehero.th.persistence.position.PositionCompactIdCache;
+import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.social.UserFollowerCache;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.trade.TradeCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
-import com.tradehero.th.persistence.translation.TranslationTokenCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import dagger.Lazy;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import dagger.Lazy;
 
 @Singleton public class DTOCacheUtil
 {
@@ -95,7 +101,6 @@ import javax.inject.Singleton;
     protected final Lazy<SystemStatusCache> systemStatusCache;
     protected final Lazy<TradeCache> tradeCache;
     protected final Lazy<TradeListCache> tradeListCache;
-    protected final Lazy<TranslationTokenCache> translationTokenCache;
     protected final Lazy<UserProfileCache> userProfileCache;
     protected final Lazy<UserFollowerCache> userFollowerCache;
     protected final Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
@@ -150,7 +155,6 @@ import javax.inject.Singleton;
             Lazy<SystemStatusCache> systemStatusCache,
             Lazy<TradeCache> tradeCache,
             Lazy<TradeListCache> tradeListCache,
-            Lazy<TranslationTokenCache> translationTokenCache,
             Lazy<UserProfileCache> userProfileCache,
             Lazy<UserFollowerCache> userFollowerCache,
             Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
@@ -199,7 +203,6 @@ import javax.inject.Singleton;
         this.systemStatusCache = systemStatusCache;
         this.tradeCache = tradeCache;
         this.tradeListCache = tradeListCache;
-        this.translationTokenCache = translationTokenCache;
         this.userProfileCache = userProfileCache;
         this.userFollowerCache = userFollowerCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;

@@ -181,7 +181,7 @@ public class DiscussionActionButtonsView extends LinearLayout
         }
     }
 
-    public static interface OnButtonClickedListener
+    public interface OnButtonClickedListener
     {
         void onCommentButtonClicked();
 

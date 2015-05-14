@@ -11,6 +11,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 
@@ -81,7 +82,7 @@ public class NewsViewLinear extends AbstractDiscussionCompactItemViewLinear<News
     }
 
     @Override
-    protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
+    protected AbstractDiscussionItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
     {
         return new NewsViewHolderClickedListener()
         {
@@ -91,11 +92,6 @@ public class NewsViewLinear extends AbstractDiscussionCompactItemViewLinear<News
             }
 
             @Override public void onUserClicked(UserBaseKey userClicked)
-            {
-                // Nothing to do
-            }
-
-            @Override public void onTranslationRequested()
             {
                 // Nothing to do
             }

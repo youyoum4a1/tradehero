@@ -122,18 +122,6 @@ public class RetrofitModule
         return adapter.create(TradeService.class);
     }
 
-    @Provides @Singleton TranslationServiceBing provideBingTranslationService(RestAdapter.Builder builder)
-    {
-        return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
-                .setConverter(null)
-                .build().create(TranslationServiceBing.class);
-    }
-
-    @Provides @Singleton TranslationTokenService provideTranslationTokenService(RestAdapter adapter)
-    {
-        return adapter.create(TranslationTokenService.class);
-    }
-
     @Provides @Singleton UserService provideUserService(RestAdapter adapter)
     {
         return adapter.create(UserService.class);

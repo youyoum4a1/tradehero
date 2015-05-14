@@ -13,6 +13,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.persistence.news.NewsItemCompactCacheNew;
 import javax.inject.Inject;
@@ -114,7 +115,7 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
     }
 
     @Override
-    protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
+    protected AbstractDiscussionItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
     {
         return new NewsHeadlineViewHolderClickedListener()
         {
@@ -124,11 +125,6 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
             }
 
             @Override public void onUserClicked(UserBaseKey userClicked)
-            {
-                // Nothing to do
-            }
-
-            @Override public void onTranslationRequested()
             {
                 // Nothing to do
             }
