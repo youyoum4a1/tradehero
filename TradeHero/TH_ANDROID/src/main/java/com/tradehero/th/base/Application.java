@@ -8,25 +8,24 @@ import com.tradehero.common.timber.EasyDebugTree;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.filter.FilterModule;
 import com.tradehero.th.fragments.competition.CompetitionModule;
-import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
-import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceSignUtils;
 import com.tradehero.th.utils.EmailSignUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.route.THRouter;
-import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
-import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import timber.log.Timber;
 
 public class Application extends PApplication
 {
@@ -60,10 +59,7 @@ public class Application extends PApplication
 
         thRouter.registerRoutes(
                 TrendingFragment.class,
-                FriendsInvitationFragment.class,
-                BuySellFragment.class,
-                PositionListFragment.class,
-                TradeListFragment.class
+                FriendsInvitationFragment.class
         );
         thRouter.registerAlias("messages", "updatecenter/0");
         thRouter.registerAlias("notifications", "updatecenter/1");
@@ -91,7 +87,6 @@ public class Application extends PApplication
         Object[] modules = new Object[]
                 {
                         new AppModule(this),
-                        new IntentDaggerModule(),
                         new CompetitionModule(),
                         new FilterModule()
                 };

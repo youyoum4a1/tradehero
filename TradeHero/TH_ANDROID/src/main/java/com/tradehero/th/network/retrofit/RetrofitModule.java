@@ -6,23 +6,48 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.common.utils.RetrofitHelper;
-import com.tradehero.th.api.competition.*;
+import com.tradehero.th.api.competition.ProviderCompactDTO;
+import com.tradehero.th.api.competition.ProviderCompactDTODeserialiser;
+import com.tradehero.th.api.competition.ProviderCompactDTOJacksonModule;
+import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDTODeserialiser;
+import com.tradehero.th.api.competition.ProviderDTOJacksonModule;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTODeserialiser;
 import com.tradehero.th.api.position.PositionDTOJacksonModule;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTODeserialiser;
 import com.tradehero.th.api.social.UserFriendsDTOJacksonModule;
-import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.network.CompetitionUrl;
 import com.tradehero.th.network.FriendlyUrlConnectionClient;
 import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.ServerEndpoint;
-import com.tradehero.th.network.service.*;
+import com.tradehero.th.network.service.AlertService;
+import com.tradehero.th.network.service.CompetitionService;
+import com.tradehero.th.network.service.DiscussionService;
+import com.tradehero.th.network.service.FollowerService;
+import com.tradehero.th.network.service.LeaderboardService;
+import com.tradehero.th.network.service.MarketService;
+import com.tradehero.th.network.service.MessageService;
+import com.tradehero.th.network.service.NewsServiceSync;
+import com.tradehero.th.network.service.NotificationService;
+import com.tradehero.th.network.service.PortfolioService;
+import com.tradehero.th.network.service.PositionService;
+import com.tradehero.th.network.service.ProviderService;
+import com.tradehero.th.network.service.RetrofitProtectedModule;
+import com.tradehero.th.network.service.SecurityService;
+import com.tradehero.th.network.service.SessionService;
+import com.tradehero.th.network.service.TradeService;
+import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.service.UserTimelineService;
+import com.tradehero.th.network.service.WatchlistService;
+import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.widget.VotePair;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 import retrofit.Endpoint;
@@ -30,15 +55,11 @@ import retrofit.Endpoints;
 import retrofit.RestAdapter;
 import retrofit.converter.Converter;
 
-import javax.inject.Singleton;
-
 @Module(
         includes = {
                 RetrofitProtectedModule.class,
         },
         injects = {
-                ProviderPageIntent.class,
-
                 VotePair.class
         },
         complete = false,

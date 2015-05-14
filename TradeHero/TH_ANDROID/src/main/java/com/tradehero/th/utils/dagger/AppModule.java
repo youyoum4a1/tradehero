@@ -105,58 +105,18 @@ import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.PasswordResetFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
-import com.tradehero.th.fragments.discussion.DiscussionItemViewHolder;
-import com.tradehero.th.fragments.discussion.DiscussionItemViewLinear;
-import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
-import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
-import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
-import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
-import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
-import com.tradehero.th.fragments.news.NewsDialogLayout;
-import com.tradehero.th.fragments.news.NewsHeadlineFragment;
-import com.tradehero.th.fragments.news.NewsHeadlineViewLinear;
-import com.tradehero.th.fragments.news.NewsItemCompactViewHolder;
-import com.tradehero.th.fragments.news.NewsItemViewHolder;
-import com.tradehero.th.fragments.news.NewsViewLinear;
-import com.tradehero.th.fragments.news.ShareDialogLayout;
-import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
-import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
-import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView;
-import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodViewHolder;
-import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView;
-import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
-import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.security.SecurityActionListLinear;
 import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.security.SecuritySearchProviderFragment;
-import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.StockInfoValueFragment;
-import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
 import com.tradehero.th.fragments.security.WarrantSecurityItemView;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentWeibo;
-import com.tradehero.th.fragments.social.message.AbstractPrivateMessageFragment;
-import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
-import com.tradehero.th.fragments.social.message.PrivateDiscussionView;
-import com.tradehero.th.fragments.social.message.PrivateMessageBubbleViewLinear;
-import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
-import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
-import com.tradehero.th.fragments.trade.AbstractTransactionDialogFragment;
-import com.tradehero.th.fragments.trade.BuyDialogFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
-import com.tradehero.th.fragments.trade.SellDialogFragment;
-import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
@@ -167,7 +127,6 @@ import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
 import com.tradehero.th.models.ModelsModule;
 import com.tradehero.th.models.chart.ChartModule;
-import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.models.user.SimplePremiumFollowUserAssistant;
@@ -226,30 +185,10 @@ import dagger.Provides;
                         WarrantSecurityItemView.class,
                         SearchPeopleItemView.class,
                         FreshQuoteHolder.class,
-                        BuySellFragment.class,
-                        AbstractTransactionDialogFragment.class,
-                        BuyDialogFragment.class,
-                        SellDialogFragment.class,
                         MarkdownTextView.class,
 
-                        NewsHeadlineFragment.class,
                         StockInfoValueFragment.class,
-                        WarrantInfoValueFragment.class,
-                        StockInfoFragment.class,
                         DisplayablePortfolioFetchAssistant.class,
-
-                        PositionListFragment.class,
-                        LeaderboardPositionListFragment.class,
-                        CompetitionLeaderboardPositionListFragment.class,
-
-                        PositionPartialTopView.class,
-                        PositionPartialBottomClosedView.class,
-                        PositionPartialBottomOpenView.class,
-                        PositionLockedView.class,
-                        PositionPartialBottomInPeriodViewHolder.class,
-
-                        TradeListFragment.class,
-                        TradeListItemView.class,
 
                         SearchStockPageListLoader.class,
                         TimelineListLoader.class,
@@ -261,44 +200,17 @@ import dagger.Provides;
 
                         CacheHelper.class,
 
-                        TimelineItemViewLinear.class,
-
                         PeopleSearchFragment.class,
 
                         WebViewFragment.class,
                         UserWatchlistPositionCache.class,
 
-                        ProviderPageIntent.class,
-
                         FriendListLoader.class,
 
-                        ShareDialogLayout.class,
                         ShareDestinationSetAdapter.class,
-                        NewsDialogLayout.class,
                         SecurityActionListLinear.class,
-                        NewsHeadlineViewLinear.class,
-                        NewsViewLinear.class,
-                        AbstractDiscussionCompactItemViewLinear.class,
-                        DiscussionItemViewLinear.class,
-                        AbstractDiscussionCompactItemViewHolder.class,
-                        AbstractDiscussionItemViewHolder.class,
-                        DiscussionItemViewHolder.class,
-                        NewsItemCompactViewHolder.class,
-                        NewsItemViewHolder.class,
-                        TimelineItemViewHolder.class,
-                        SingleViewDiscussionSetAdapter.class,
-                        MessageHeaderDTO.class,
-                        NewPrivateMessageFragment.class,
-                        ReplyPrivateMessageFragment.class,
-                        DiscussionSetAdapter.class,
-                        PrivateDiscussionView.class,
-                        PrivateDiscussionSetAdapter.class,
-                        PrivateDiscussionView.PrivateDiscussionViewDiscussionSetAdapter.class,
-                        PrivateMessageBubbleViewLinear.class,
-                        AbstractDiscussionFragment.class,
-                        AbstractPrivateMessageFragment.class,
 
-                        SecurityDiscussionFragment.class,
+                        MessageHeaderDTO.class,
                         AlertDialogUtil.class,
                         FriendsInvitationFragment.class,
                         SocialFriendsFragmentWeibo.class,

@@ -2,22 +2,22 @@ package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import com.squareup.picasso.LruCache;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.persistence.prefs.LongPreference;
-import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
-import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.trending.ExtraTileAdapter;
 import com.tradehero.th.fragments.trending.ProviderTileView;
 import com.tradehero.th.persistence.ListCacheMaxSize;
 import com.tradehero.th.persistence.MessageListTimeline;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
 import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
-import dagger.Module;
-import dagger.Provides;
 
 import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
 
 @Module(
         injects = {
@@ -26,9 +26,6 @@ import javax.inject.Singleton;
                 // Extra Tile needs to know about userProfile data for survey tile element
                 ExtraTileAdapter.class,
                 ProviderTileView.class,
-
-                TimelineDiscussionFragment.class,
-                NewsDiscussionFragment.class,
         },
         complete = false,
         library = true

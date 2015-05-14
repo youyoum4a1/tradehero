@@ -5,14 +5,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.widget.TabHost;
-import com.tradehero.th.R;
+
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
-import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.utils.DaggerUtils;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import timber.log.Timber;
 
 public class DashboardNavigator extends Navigator
@@ -53,7 +54,7 @@ public class DashboardNavigator extends Navigator
 
     public void goToFragment(Class fragment,Bundle args)
     {
-        this.goToFragment(fragment,args,TAB_SHOULD_ADD_TO_BACKSTACK,TAB_SHOW_HOME_AS_UP);
+        this.goToFragment(fragment, args, TAB_SHOULD_ADD_TO_BACKSTACK, TAB_SHOW_HOME_AS_UP);
     }
 
     public void goToFragment(Class fragment, Bundle args,Boolean shouldAddToBackStack, Boolean showHomeKeyAsUp)
@@ -73,25 +74,6 @@ public class DashboardNavigator extends Navigator
         manager.executePendingTransactions();
 
         updateTabBarOnTabChanged(((Object) pushFragment(tabType.fragmentClass, args, null, null, shouldAddToBackStack, showHomeKeyAsUp)).getClass().getName());
-    }
-
-    private void postPushActionFragment(final THIntent thIntent)
-    {
-        final Class<? extends Fragment> actionFragment = thIntent.getActionFragment();
-        if (actionFragment == null)
-        {
-            return;
-        }
-
-        Fragment currentDashboardFragment = manager.findFragmentById(R.id.realtabcontent);
-        currentDashboardFragment.getView().post(new Runnable()
-        {
-            // This is the way we found to make sure we do not superimpose 2 fragments.
-            @Override public void run()
-            {
-                pushFragment(actionFragment, thIntent.getBundle());
-            }
-        });
     }
 
     @Override public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim,
