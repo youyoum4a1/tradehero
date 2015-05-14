@@ -160,8 +160,6 @@ import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
-import com.tradehero.th.fragments.watchlist.WatchlistItemView;
-import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
@@ -269,8 +267,6 @@ import dagger.Provides;
 
                         WebViewFragment.class,
                         UserWatchlistPositionCache.class,
-                        WatchlistItemView.class,
-                        WatchlistPortfolioHeaderView.class,
 
                         ProviderPageIntent.class,
 
