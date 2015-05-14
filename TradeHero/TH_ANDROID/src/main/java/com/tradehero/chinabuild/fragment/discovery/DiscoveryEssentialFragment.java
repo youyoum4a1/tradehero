@@ -96,7 +96,7 @@ public class DiscoveryEssentialFragment extends DashboardFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.discovery_square_favorite);
+        setHeadViewMiddleMain(getString(R.string.discovery_square_favorite));
     }
 
     public void initView()

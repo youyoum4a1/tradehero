@@ -119,7 +119,7 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
         //判断是否是游客，如果是游客不能创建比赛
         if (userProfileDTO != null && userProfileDTO.isVisitor)
         {
-            dialogContent = getActivity().getResources().getString(R.string.dialog_competition_suggest_login);
+            dialogContent = getString(R.string.dialog_competition_suggest_login);
             showSuggestLoginDialogFragment(dialogContent);
         }
         else

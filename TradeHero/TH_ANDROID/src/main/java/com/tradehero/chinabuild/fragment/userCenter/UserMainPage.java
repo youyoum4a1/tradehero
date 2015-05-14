@@ -305,7 +305,7 @@ public class UserMainPage extends DashboardFragment
             if (updatedUserProfileDTO.wbLinked)
             {
                 String outputStr = show;
-                String downloadCNTradeHeroWeibo = getActivity().getResources().getString(R.string.download_tradehero_android_app_on_weibo);
+                String downloadCNTradeHeroWeibo = getString(R.string.download_tradehero_android_app_on_weibo);
                 outputStr = WeiboUtils.getShareContentWeibo(outputStr, downloadCNTradeHeroWeibo);
                 InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(outputStr);
                 userServiceWrapper.get().inviteFriends(
@@ -375,7 +375,7 @@ public class UserMainPage extends DashboardFragment
     {
         if (currentUserProfileDTO != null && currentUserProfileDTO.isVisitor && currentUserProfileDTO.getAllHeroCount() >= 5)
         {
-            dialogContent = getActivity().getResources().getString(R.string.guest_user_dialog_summary);
+            dialogContent = getString(R.string.guest_user_dialog_summary);
             showSuggestLoginDialogFragment(dialogContent);
             return;
         }

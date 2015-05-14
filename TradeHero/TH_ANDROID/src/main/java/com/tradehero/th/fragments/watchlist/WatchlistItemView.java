@@ -13,7 +13,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
@@ -21,8 +22,6 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
@@ -32,17 +31,11 @@ import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
-
+import dagger.Lazy;
+import java.text.DecimalFormat;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.text.DecimalFormat;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import dagger.Lazy;
 import timber.log.Timber;
 
 public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistPositionDTO> {
@@ -386,9 +379,5 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         PopupMenu popupMenu = new PopupMenu(getContext(), moreButton);
         popupMenu.setOnMenuItemClickListener(createMoreButtonPopupMenuClickHandler());
         return popupMenu;
-    }
-
-    private Navigator getNavigator() {
-        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }
 }

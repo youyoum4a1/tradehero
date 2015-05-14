@@ -99,7 +99,7 @@ public class DiscoveryNewsFragment extends DashboardFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.discovery_square_news);
+        setHeadViewMiddleMain(getString(R.string.discovery_square_news));
     }
 
     private void retrieveNews(){

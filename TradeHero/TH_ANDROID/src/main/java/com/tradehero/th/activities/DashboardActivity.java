@@ -9,14 +9,10 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-
 import com.crashlytics.android.Crashlytics;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.SignInFragment;
@@ -29,12 +25,8 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.widget.GuideView;
-
-import org.jetbrains.annotations.NotNull;
-
-import javax.inject.Inject;
-
 import dagger.Lazy;
+import javax.inject.Inject;
 
 public class DashboardActivity extends AppCompatActivity
         implements DashboardNavigatorActivity {
@@ -46,7 +38,8 @@ public class DashboardActivity extends AppCompatActivity
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject DeviceTokenHelper deviceTokenHelper;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    //content view; //not sure why this
+    ViewGroup dashboardWrapper;
 
     //Guide View
     private GuideView guideRL;
@@ -77,20 +70,13 @@ public class DashboardActivity extends AppCompatActivity
         }
 
         //setContentView ...
-        ViewGroup dashboardWrapper = appContainer.get(this);
+        dashboardWrapper = appContainer.get(this);
 
         toolbar = (Toolbar) findViewById(R.id.th_toolbar);
         setSupportActionBar(toolbar);
 
         initViews();
         setScreenWH();
-        detachUserProfileCache();
-        userProfileCacheListener = createUserProfileFetchListener();
-
-        if (currentUserId.get().toString().length() > 1) {
-            userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-            userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
-        }
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
 
@@ -108,10 +94,6 @@ public class DashboardActivity extends AppCompatActivity
                 }
             }
         }
-    }
-
-    private void detachUserProfileCache() {
-        userProfileCache.get().unregister(userProfileCacheListener);
     }
 
     @Override
@@ -137,24 +119,12 @@ public class DashboardActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         guideRL.setVisibility(View.GONE);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-
+    @Override protected void onDestroy() {
         if (navigator != null) {
             navigator.onDestroy();
         }
@@ -163,9 +133,6 @@ public class DashboardActivity extends AppCompatActivity
         if (currentActivityHolder != null) {
             currentActivityHolder.unsetActivity(this);
         }
-
-        detachUserProfileCache();
-        userProfileCacheListener = null;
 
         super.onDestroy();
     }
@@ -232,22 +199,6 @@ public class DashboardActivity extends AppCompatActivity
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener() {
-        return new UserProfileFetchListener();
-    }
-
-    protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> {
-        @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value) {
-            supportInvalidateOptionsMenu();
-        }
-
-        @Override
-        public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error) {
-
-        }
-    }
-
     private void setScreenWH() {
         DisplayMetrics dm = getResources().getDisplayMetrics();
         int screenWidth = dm.widthPixels;
@@ -255,12 +206,6 @@ public class DashboardActivity extends AppCompatActivity
 
         SCREEN_W = screenWidth;
         SCREEN_H = screenHeight;
-    }
-
-    public int getStatusBarHeight() {
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        int height = getResources().getDimensionPixelSize(resourceId);
-        return height;
     }
 
 }

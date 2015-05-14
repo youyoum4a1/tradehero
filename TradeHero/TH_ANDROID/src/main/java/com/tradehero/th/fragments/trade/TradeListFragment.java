@@ -369,11 +369,11 @@ public class TradeListFragment extends DashboardFragment
             WatchlistEditFragment.putSecurityId(args, securityId);
             if (watchlistPositionCache.get(securityId) != null)
             {
-                WatchlistEditFragment.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
+                args.putString(DashboardFragment.BUNDLE_KEY_TITLE, getString(R.string.watchlist_edit_title));
             }
             else
             {
-                WatchlistEditFragment.putActionBarTitle(args, getString(R.string.watchlist_add_title));
+                args.putString(DashboardFragment.BUNDLE_KEY_TITLE, getString(R.string.watchlist_add_title));
             }
             DashboardNavigator navigator = getDashboardNavigator();
             if (navigator != null)

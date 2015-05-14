@@ -777,7 +777,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (securityId != null) {
             Bundle args = new Bundle();
             WatchlistEditFragment.putSecurityId(args, securityId);
-            getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args);
+            pushFragment(WatchlistEditFragment.class, args);
         } else {
             THToast.show(R.string.watchlist_not_enough_info);
         }
@@ -942,7 +942,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             args.putBundle(StockInfoFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE,
                     providerId.getArgs());
         }
-        getDashboardNavigator().pushFragment(StockInfoFragment.class, args);
+        pushFragment(StockInfoFragment.class, args);
     }
 
     private BroadcastReceiver createImageButtonClickBroadcastReceiver() {

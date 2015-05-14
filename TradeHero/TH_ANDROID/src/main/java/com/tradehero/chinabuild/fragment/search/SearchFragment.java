@@ -109,9 +109,9 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
 
     public void initView()
     {
-        searchNoResult = getActivity().getResources().getString(R.string.search_no_result);
-        searchStr = getActivity().getResources().getString(R.string.search_search);
-        searchCancelStr = getActivity().getResources().getString(R.string.search_cancel);
+        searchNoResult = getString(R.string.search_no_result);
+        searchStr = getString(R.string.search_search);
+        searchCancelStr = getString(R.string.search_cancel);
         if (StringUtils.isNullOrEmptyOrSpaces(getSearchString()) && !isUserSearch)
         {
             if (adapter != null && adapter.getCount() == 0)

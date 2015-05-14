@@ -177,7 +177,7 @@ public class CompetitionDetailFragment extends Fragment
         View view = inflater.inflate(R.layout.competition_detail_layout, container, false);
         ButterKnife.inject(this, view);
         guideCompetitionEditIntroHeight = (int)getActivity().getResources().getDimension(R.dimen.guide_competition_edit_intro);
-        competitionDescriptionWarning = getActivity().getResources().getString(R.string.competition_intro_warning);
+        competitionDescriptionWarning = getString(R.string.competition_intro_warning);
         mRefreshView = (LinearLayout) inflater.inflate(R.layout.competition_detail_listview_header, null);
         tvCompetitionDetailMore.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
 

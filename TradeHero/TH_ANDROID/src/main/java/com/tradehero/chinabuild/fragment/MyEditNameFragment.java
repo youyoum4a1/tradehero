@@ -46,7 +46,7 @@ public class MyEditNameFragment extends DashboardFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.settings_my_name);
+        setHeadViewMiddleMain(getString(R.string.settings_my_name));
     }
 
     @Override

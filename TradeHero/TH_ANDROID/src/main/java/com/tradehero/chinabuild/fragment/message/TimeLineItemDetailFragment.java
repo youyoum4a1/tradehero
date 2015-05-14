@@ -210,7 +210,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain("详情");
-        setHeadViewRight0(getActivity().getResources().getString(R.string.discovery_discuss_send_more));
+        setHeadViewRight0(getString(R.string.discovery_discuss_send_more));
     }
 
     @Override
@@ -773,7 +773,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         UserProfileDTO updatedUserProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
         if (updatedUserProfileDTO != null) {
             if (updatedUserProfileDTO.wbLinked) {
-                String downloadCNTradeHeroWeibo = getActivity().getResources().getString(R.string.download_tradehero_android_app_on_weibo);
+                String downloadCNTradeHeroWeibo = getString(R.string.download_tradehero_android_app_on_weibo);
                 String outputStr = show;
                 outputStr = WeiboUtils.getShareContentWeibo(outputStr, downloadCNTradeHeroWeibo);
                 InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(outputStr);
@@ -1215,9 +1215,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             deleteOrApplyTLConfirmDlgTitle2TV = (TextView) deleteOrApplyTimeLineConfirmDialog.findViewById(R.id.title2);
             deleteOrApplyTLConfirmDlgCancelTV = (TextView) deleteOrApplyTimeLineConfirmDialog.findViewById(R.id.btn_cancel);
             deleteOrApplyTLConfirmDlgOKTV = (TextView) deleteOrApplyTimeLineConfirmDialog.findViewById(R.id.btn_ok);
-            deleteOrApplyTLConfirmDlgOKTV.setText(getActivity().getResources().getString(R.string.discovery_discuss_dlg_btn_ok));
+            deleteOrApplyTLConfirmDlgOKTV.setText(getString(R.string.discovery_discuss_dlg_btn_ok));
             deleteOrApplyTLConfirmDlgTitle2TV.setVisibility(View.GONE);
-            deleteOrApplyTLConfirmDlgCancelTV.setText(getActivity().getResources().getString(R.string.discovery_discuss_dlg_btn_cancel));
+            deleteOrApplyTLConfirmDlgCancelTV.setText(getString(R.string.discovery_discuss_dlg_btn_cancel));
             deleteOrApplyTLConfirmDlgCancelTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1229,7 +1229,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             return;
         }
         if (dialogType == DIALOG_TYPE_APPLY_COMMENT) {
-            deleteOrApplyTLConfirmDlgTitleTV.setText(getActivity().getResources().getString(R.string.discovery_discuss_dlg_title_applycomment));
+            deleteOrApplyTLConfirmDlgTitleTV.setText(getString(R.string.discovery_discuss_dlg_title_applycomment));
             deleteOrApplyTLConfirmDlgOKTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1239,7 +1239,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             });
         }
         if (dialogType == DIALOG_TYPE_DELETE_COMMENT) {
-            deleteOrApplyTLConfirmDlgTitleTV.setText(getActivity().getResources().getString(R.string.discovery_discuss_dlg_title_deletecomment));
+            deleteOrApplyTLConfirmDlgTitleTV.setText(getString(R.string.discovery_discuss_dlg_title_deletecomment));
             deleteOrApplyTLConfirmDlgOKTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1249,7 +1249,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             });
         }
         if (dialogType == DIALOG_TYPE_DELETE_TIMELINE) {
-            deleteOrApplyTLConfirmDlgTitleTV.setText(getActivity().getResources().getString(R.string.discovery_discuss_dlg_title_deletetimeline));
+            deleteOrApplyTLConfirmDlgTitleTV.setText(getString(R.string.discovery_discuss_dlg_title_deletetimeline));
             deleteOrApplyTLConfirmDlgOKTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

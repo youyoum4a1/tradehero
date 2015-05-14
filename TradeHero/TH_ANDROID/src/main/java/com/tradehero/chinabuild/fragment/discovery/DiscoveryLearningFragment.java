@@ -95,7 +95,7 @@ public class DiscoveryLearningFragment extends DashboardFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.discovery_square_novice);
+        setHeadViewMiddleMain(getString(R.string.discovery_square_novice));
     }
 
     public void initView()

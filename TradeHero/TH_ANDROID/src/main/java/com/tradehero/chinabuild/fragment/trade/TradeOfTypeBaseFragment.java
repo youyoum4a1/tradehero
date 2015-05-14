@@ -5,7 +5,10 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import android.view.Menu;
@@ -16,6 +19,7 @@ import com.tradehero.chinabuild.fragment.competition.CompetitionUtils;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.adapters.SecurityListAdapter;
@@ -28,21 +32,17 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-import javax.inject.Inject;
-
 public class TradeOfTypeBaseFragment extends DashboardFragment
 {
-    @Inject Lazy<ExchangeCompactListCache> exchangeCompactListCache;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
 
     public DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> securityListTypeCacheListener;
@@ -50,7 +50,6 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     public SpinnerExchangeIconAdapter spinnerIconAdapter;
     public AdapterView.OnItemSelectedListener spinnerSelectListener;
 
-    @InjectView(R.id.llSpinner) LinearLayout llSpinner;
     @InjectView(R.id.spinnerExchange) Spinner spinnerExchange;
     @InjectView(R.id.listSecurity) SecurityListView listSecurity;
     @InjectView(R.id.tradeheroprogressbar_hothold) TradeHeroProgressBar pbHotHold;
@@ -87,7 +86,6 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     {
         View view = getRootView(inflater, container);
         ButterKnife.inject(this, view);
-        //exchangeListTypeCacheListener = createExchangeListTypeFetchListener();
         spinnerSelectListener = createSpinnerItemSelectListener();
         securityListTypeCacheListener = createSecurityListFetchListener();
         listSecurity.setAdapter(adapterSecurity);
@@ -113,7 +111,6 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
 
     protected void initView()
     {
-        //fetchExchangeList();
         initSpinnerView(CompetitionUtils.getExchangeList());
         initListView();
     }
@@ -134,7 +131,6 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
                 Timber.d("下拉刷新");
-                //fetchSecurityList(currentPosition);
                 fetchSecurityList(currentPosition, true);
             }
 
@@ -236,22 +232,6 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         }
     }
 
-    //private void fetchExchangeList()
-    //{
-    //    detachExchangeListCache();
-    //    ExchangeListType key = new ExchangeListType();
-    //    exchangeCompactListCache.get().register(key, exchangeListTypeCacheListener);
-    //    exchangeCompactListCache.get().getOrFetchAsync(key,false);
-    //}
-
-    //protected void detachExchangeListCache()
-    //{
-    //    if (exchangeListTypeCacheListener != null)
-    //    {
-    //        exchangeCompactListCache.get().unregister(exchangeListTypeCacheListener);
-    //    }
-    //}
-
     protected DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityListFetchListener()
     {
         return new TrendingSecurityListFetchListener();
@@ -304,36 +284,12 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         };
     }
 
-    ////<editor-fold desc="Exchange List Listener">
-    //protected DTOCacheNew.Listener<ExchangeListType, ExchangeCompactDTOList> createExchangeListTypeFetchListener()
-    //{
-    //    return new TrendingExchangeListTypeFetchListener();
-    //}
-    //
-    //protected class TrendingExchangeListTypeFetchListener implements DTOCacheNew.Listener<ExchangeListType, ExchangeCompactDTOList>
-    //{
-    //    @Override
-    //    public void onDTOReceived(@NotNull ExchangeListType key, @NotNull ExchangeCompactDTOList value)
-    //    {
-    //        Timber.d("Filter exchangeListTypeCacheListener onDTOReceived");
-    //        initSpinnerView(value);
-    //    }
-    //
-    //    @Override
-    //    public void onErrorThrown(@NotNull ExchangeListType key, @NotNull Throwable error)
-    //    {
-    //        THToast.show(getString(R.string.error_fetch_exchange_list));
-    //        Timber.e("Error fetching the list of exchanges %s", key, error);
-    //    }
-    //}
-
     //</editor-fold>
     private void initAdapterSecurity(SecurityCompactDTOList list, SecurityListType key)
     {
         if (key.getPage() == PagedLeaderboardKey.FIRST_PAGE)
         {
             currentPage = 0;
-            //adapterSecurity = new SecurityListAdapter(getActivity(), list, getTradeType());
             adapterSecurity.setSecurityList(list);
             listSecurity.setAdapter(adapterSecurity);
         }
@@ -347,10 +303,6 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         {
             currentPage += 1;
         }
-        else
-        {
-
-        }
     }
 
     public void enterSecurity(SecurityId securityId, String securityName)
@@ -358,7 +310,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
-        gotoDashboard(SecurityDetailFragment.class.getName(), bundle);
+        gotoDashboard(SecurityDetailFragment.class, bundle);
     }
 
     private void initSpinnerView(ExchangeCompactDTOList value)
@@ -415,7 +367,6 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     @Override
     public void onStop()
     {
-        //detachExchangeListCache();
         detachSecurityListCache();
         super.onStop();
     }

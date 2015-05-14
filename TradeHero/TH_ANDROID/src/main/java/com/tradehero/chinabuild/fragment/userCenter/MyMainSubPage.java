@@ -27,12 +27,10 @@ import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import org.jetbrains.annotations.NotNull;
+import javax.inject.Inject;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
 
 /**
  * Created by palmer on 15/2/27.
@@ -158,7 +156,7 @@ public class MyMainSubPage extends Fragment {
         if (dto == null) return;
         Bundle bundle = new Bundle();
         bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, dto.getDiscussionKey().getArgs());
-        pushFragment(TimeLineItemDetailFragment.class, bundle);
+        getDashboardNavigator().pushFragment(TimeLineItemDetailFragment.class, bundle);
     }
 
 
@@ -222,11 +220,6 @@ public class MyMainSubPage extends Fragment {
         }
 
 
-    }
-
-    private Fragment pushFragment(@NotNull Class fragmentClass, Bundle args)
-    {
-        return getDashboardNavigator().pushFragment(fragmentClass, args);
     }
 
     private DashboardNavigator getDashboardNavigator()

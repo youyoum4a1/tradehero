@@ -34,17 +34,6 @@
       android:background="@drawable/basic_transparent_selector">
   </TextView>
 
-  <TextView
-      android:id="@+id/tvHeadRight1"
-      android:layout_width="wrap_content"
-      android:layout_height="fill_parent"
-      android:gravity="center"
-      android:textColor="@color/white"
-      android:layout_marginRight="@dimen/margin_xsmall"
-      android:layout_toLeftOf="@id/tvHeadRight0"
-      android:visibility="gone">
-  </TextView>
-
   <LinearLayout
       android:layout_centerInParent="true"
       android:layout_width="wrap_content"

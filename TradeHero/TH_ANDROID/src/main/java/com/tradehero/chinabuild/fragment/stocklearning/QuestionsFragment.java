@@ -202,12 +202,12 @@ public class QuestionsFragment extends DashboardFragment {
         Bundle bundle =  new Bundle();
         bundle.putString(AnswerQuestionFragment.KEY_QUESTION_GROUP_TYPE, AnswerQuestionFragment.TYPE_NORMAL);
         bundle.putSerializable(AnswerQuestionFragment.KEY_QUESTION_GROUP, questionGroup);
-        gotoDashboard(AnswerQuestionFragment.class.getName(), bundle);
+        gotoDashboard(AnswerQuestionFragment.class, bundle);
     }
 
     private void jumpToSummaryFragment(QuestionGroup questionGroup){
         Bundle bundle = new Bundle();
         bundle.putSerializable(AnswersSummaryFragment.KEY_QUESTION_GROUP, questionGroup);
-        gotoDashboard(AnswersSummaryFragment.class.getName(), bundle);
+        gotoDashboard(AnswersSummaryFragment.class, bundle);
     }
 }

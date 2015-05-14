@@ -258,7 +258,7 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
             if (updatedUserProfileDTO.wbLinked)
             {
                 String outputStr = show;
-                String downloadCNTradeHeroWeibo = getActivity().getResources().getString(R.string.download_tradehero_android_app_on_weibo);
+                String downloadCNTradeHeroWeibo = getString(R.string.download_tradehero_android_app_on_weibo);
                 outputStr = WeiboUtils.getShareContentWeibo(outputStr, downloadCNTradeHeroWeibo);
                 InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(outputStr);
                 userServiceWrapper.get().inviteFriends(

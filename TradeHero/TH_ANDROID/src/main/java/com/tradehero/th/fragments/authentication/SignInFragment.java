@@ -10,14 +10,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.auth.AuthenticationMode;
-import com.tradehero.metrics.Analytics;
-
-import javax.inject.Inject;
 
 public class SignInFragment extends SignInOrUpFragment
 {
-    @Inject Analytics analytics;
-
     @Override protected int getViewId()
     {
         return R.layout.authentication_sign_in;
@@ -40,16 +35,11 @@ public class SignInFragment extends SignInOrUpFragment
         return view;
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-    }
-
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.guide_screen_login);
-        setHeadViewRight0(R.string.authentication_register);
+        setHeadViewMiddleMain(getString(R.string.guide_screen_login));
+        setHeadViewRight0(getString(R.string.authentication_register));
         setRight0ButtonOnClickListener(onClickListener);
     }
 

@@ -87,7 +87,7 @@ public class PasswordResetFragment extends DashboardFragment implements View.OnC
         newPwdET.addTextChangedListener(this);
         getVerifyCodeButton = (TextView)view.findViewById(R.id.reset_password_verify_code_button);
         getVerifyCodeButton.setOnClickListener(this);
-        requestVerifyCodeStr = getActivity().getResources().getString(R.string.login_get_verify_code);
+        requestVerifyCodeStr = getString(R.string.login_get_verify_code);
         long limitTime = (System.currentTimeMillis() - EmailSignUpFragment.last_time_request_verify_code) / 1000;
         if (limitTime < EmailSignUpFragment.duration_verify_code && limitTime > 0) {
             getVerifyCodeButton.setClickable(false);
@@ -140,9 +140,9 @@ public class PasswordResetFragment extends DashboardFragment implements View.OnC
             public void success(ResetPasswordDTO resetPasswordDTO, Response response) {
                 if(resetPasswordDTO.resetPassword){
                     if(getActivity()!=null) {
-                        THToast.show(getActivity().getResources().getString(R.string.sign_in_reset_password_successfully));
+                        THToast.show(getString(R.string.sign_in_reset_password_successfully));
                     }else{
-                        THToast.show(getActivity().getResources().getString(R.string.sign_in_reset_password_failed));
+                        THToast.show(getString(R.string.sign_in_reset_password_failed));
                     }
                 }
                 onFinish();

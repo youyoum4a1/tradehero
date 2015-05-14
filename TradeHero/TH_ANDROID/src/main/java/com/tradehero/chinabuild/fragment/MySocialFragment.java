@@ -61,7 +61,7 @@ public class MySocialFragment extends DashboardFragment implements View.OnClickL
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.settings_my_social);
+        setHeadViewMiddleMain(getString(R.string.settings_my_social));
     }
 
     @Override

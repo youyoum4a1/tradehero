@@ -248,7 +248,7 @@ public class PortfolioFragment extends DashboardFragment {
             }
         } else if (item instanceof PositionLockedItem) {
             if (currentUserProfileDTO != null && currentUserProfileDTO.isVisitor && currentUserProfileDTO.getAllHeroCount() >= 5) {
-                dialogContent = getActivity().getResources().getString(R.string.guest_user_dialog_summary);
+                dialogContent = getString(R.string.guest_user_dialog_summary);
                 showSuggestLoginDialogFragment(dialogContent);
                 return;
             }

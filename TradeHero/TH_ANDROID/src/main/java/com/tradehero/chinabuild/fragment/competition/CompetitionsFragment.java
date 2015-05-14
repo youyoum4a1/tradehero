@@ -146,7 +146,7 @@ public class CompetitionsFragment extends DashboardFragment {
     {
         Bundle bundle = new Bundle();
         bundle.putSerializable(CompetitionDetailFragment.BUNDLE_COMPETITION_DTO, userCompetitionDTO);
-        gotoDashboard(CompetitionMainFragment.class.getName(), bundle);
+        gotoDashboard(CompetitionMainFragment.class, bundle);
     }
 
     private void initCompetitionAdv(UserCompetitionDTOList userCompetitionDTOs)

@@ -100,8 +100,8 @@ public class ShareSellDialogFragment extends BaseDialogFragment
         if(getActivity()==null){
             return;
         }
-        loseMoneyContentA = getActivity().getResources().getString(R.string.share_sell_title11);
-        loseMoneyContentB = getActivity().getResources().getString(R.string.share_sell_title12);
+        loseMoneyContentA = getString(R.string.share_sell_title11);
+        loseMoneyContentB = getString(R.string.share_sell_title12);
         loseMoneyColor = getActivity().getResources().getColor(R.color.share_sellsecurity_losemoney);
         if(mProfit != null){
             String currency = SecurityUtils.getDefaultCurrency();

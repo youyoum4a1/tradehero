@@ -172,8 +172,8 @@ public class SearchUniteFragment extends DashboardFragment
 
     public void initView()
     {
-        searchStr = getActivity().getResources().getString(R.string.search_search);
-        searchCancelStr = getActivity().getResources().getString(R.string.search_cancel);
+        searchStr = getString(R.string.search_search);
+        searchCancelStr = getString(R.string.search_cancel);
 
         tvSearchInput.setOnClickListener(new View.OnClickListener()
         {

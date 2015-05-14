@@ -23,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
-
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -43,12 +42,9 @@ import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.EmailSignUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-
 import java.io.File;
 import java.util.Map;
-
 import javax.inject.Inject;
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -167,7 +163,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
         getVerifyCodeButton = (TextView) view.findViewById(R.id.get_verify_code_button);
         getVerifyCodeButton.setOnClickListener(this);
-        requestVerifyCodeStr = getActivity().getResources().getString(R.string.login_get_verify_code);
+        requestVerifyCodeStr = getString(R.string.login_get_verify_code);
         long limitTime = (System.currentTimeMillis() - last_time_request_verify_code) / 1000;
         if (limitTime < duration_verify_code && limitTime > 0) {
             getVerifyCodeButton.setClickable(false);

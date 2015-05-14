@@ -318,7 +318,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     {
         Class<? extends SocialFriendsFragment> target = socialNetworkFactory.findProperTargetFragment(socialNetwork);
         Bundle bundle = new Bundle();
-        getDashboardNavigator().pushFragment(target, bundle);
+        pushFragment(target, bundle);
     }
 
     private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)

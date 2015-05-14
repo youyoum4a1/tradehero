@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.settings.DashboardPreferenceFragment;
 import com.tradehero.th.utils.DeviceUtil;
 import org.jetbrains.annotations.NotNull;
@@ -127,11 +126,7 @@ public class Navigator
     {
         if (args != null)
         {
-            if (DashboardFragment.class.isAssignableFrom(fragmentClass))
-            {
-                DashboardFragment.putKeyShowHomeAsUp(args, showHomeAsUp);
-            }
-            else if (DashboardPreferenceFragment.class.isAssignableFrom(fragmentClass))
+            if (DashboardPreferenceFragment.class.isAssignableFrom(fragmentClass))
             {
                 DashboardPreferenceFragment.putKeyShowHomeAsUp(args, showHomeAsUp);
             }

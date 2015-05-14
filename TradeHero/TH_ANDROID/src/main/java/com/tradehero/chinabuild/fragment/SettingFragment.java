@@ -66,7 +66,7 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.settings);
+        setHeadViewMiddleMain(getString(R.string.settings));
     }
 
     @Override
@@ -130,7 +130,7 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
                 getActivity().finish();
                 break;
             case R.id.settings_about:
-                goToFragment(SettingsAboutUsFragment.class);
+                pushFragment(SettingsAboutUsFragment.class, new Bundle());
                 break;
             case R.id.settings_version:
                 gotoDownloadAppPage();

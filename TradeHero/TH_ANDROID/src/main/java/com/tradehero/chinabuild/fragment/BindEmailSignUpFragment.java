@@ -200,10 +200,10 @@ public class BindEmailSignUpFragment extends EmailSignUpFragment
                     }
                     String thirdPartyName = providerName;
                     if(providerName.equals(AnalyticsConstants.BUTTON_LOGIN_WECHAT)){
-                        thirdPartyName = getActivity().getResources().getString(R.string.sign_in_wechat);
+                        thirdPartyName = getString(R.string.sign_in_wechat);
                     }
                     if(providerName.equals(AnalyticsConstants.BUTTON_LOGIN_WEIBO)){
-                        thirdPartyName = getActivity().getResources().getString(R.string.sign_in_weibo);
+                        thirdPartyName = getString(R.string.sign_in_weibo);
                     }
                     progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), thirdPartyName));
                 }

@@ -118,8 +118,8 @@ public class CompetitionCollegeFragment extends DashboardFragment{
             }
         });
         tvContent = (TextView) confirmCollegeDialog.findViewById(R.id.textview_content);
-        chooseCollegeStrA = getActivity().getResources().getString(R.string.dialog_competition_choose_college_a);
-        chooseCollegeStrB = getActivity().getResources().getString(R.string.dialog_competition_choose_college_b);
+        chooseCollegeStrA = getString(R.string.dialog_competition_choose_college_a);
+        chooseCollegeStrB = getString(R.string.dialog_competition_choose_college_b);
     }
 
     private void showDialog(String collegeName){

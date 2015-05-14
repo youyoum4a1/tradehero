@@ -97,7 +97,7 @@ public class DiscoveryRewardFragment extends DashboardFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.discovery_discuss_send_reward);
+        setHeadViewMiddleMain(getString(R.string.discovery_discuss_send_reward));
     }
 
     public void initView() {

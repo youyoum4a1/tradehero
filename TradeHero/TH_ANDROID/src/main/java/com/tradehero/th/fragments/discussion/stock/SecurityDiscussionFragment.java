@@ -62,7 +62,7 @@ public class SecurityDiscussionFragment extends DashboardFragment
         {
             Bundle bundle = new Bundle();
             SecurityDiscussionEditPostFragment.putSecurityId(bundle, securityId);
-            getDashboardNavigator().pushFragment(SecurityDiscussionEditPostFragment.class, bundle);
+            pushFragment(SecurityDiscussionEditPostFragment.class, bundle);
         }
     }
 

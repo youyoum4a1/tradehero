@@ -64,8 +64,8 @@ public class BindGuestUserFragment extends DashboardFragment implements View.OnC
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.bind);
-        setHeadViewRight0(R.string.authentication_register);
+        setHeadViewMiddleMain(getString(R.string.bind));
+        setHeadViewRight0(getString(R.string.authentication_register));
     }
 
     @Override
@@ -250,6 +250,6 @@ public class BindGuestUserFragment extends DashboardFragment implements View.OnC
     @Override public void onClickHeadRight0()
     {
         mBindGuestUserPreference.set(true);
-        goToFragment(BindEmailSignUpFragment.class);
+        pushFragment(BindEmailSignUpFragment.class, new Bundle());
     }
 }

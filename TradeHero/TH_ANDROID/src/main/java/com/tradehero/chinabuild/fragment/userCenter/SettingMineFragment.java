@@ -112,7 +112,7 @@ public class SettingMineFragment extends DashboardFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.tab_main_me);
+        setHeadViewMiddleMain(getString(R.string.tab_main_me));
     }
 
 
@@ -211,7 +211,7 @@ public class SettingMineFragment extends DashboardFragment {
             if (user.allFollowerCount > 9) {
                 int userId = currentUserId.toUserBaseKey().getUserId();
                 if (THSharePreferenceManager.isShareDialogFANSMoreThanNineAvailable(userId, getActivity())) {
-                    String moreThanNineFans = getActivity().getResources().getString(R.string.share_amount_fans_num_summary);
+                    String moreThanNineFans = getString(R.string.share_amount_fans_num_summary);
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                             getString(R.string.share_amount_fans_num_title), moreThanNineFans, THSharePreferenceManager.FANS_MORE_THAN_NINE, userId);
                     THSharePreferenceManager.FansMoreThanNineShowed = true;

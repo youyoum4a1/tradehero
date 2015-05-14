@@ -3,29 +3,26 @@ package com.tradehero.th.fragments.authentication;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-
-import javax.inject.Inject;
 import java.util.Map;
+import javax.inject.Inject;
 
 public class EmailSignInFragment extends EmailSignInOrUpFragment
 {
@@ -51,8 +48,8 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.guide_screen_login);
-        setHeadViewRight0(R.string.authentication_register);
+        setHeadViewMiddleMain(getString(R.string.guide_screen_login));
+        setHeadViewRight0(getString(R.string.authentication_register));
         setRight0ButtonOnClickListener(onClickListener);
         setLeftButtonOnClickListener(onClickListener);
     }

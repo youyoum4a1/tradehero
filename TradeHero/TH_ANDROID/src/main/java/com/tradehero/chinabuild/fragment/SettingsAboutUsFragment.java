@@ -33,7 +33,7 @@ public class SettingsAboutUsFragment extends DashboardFragment implements View.O
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.settings_about_title);
+        setHeadViewMiddleMain(getString(R.string.settings_about_title));
     }
 
     @Override

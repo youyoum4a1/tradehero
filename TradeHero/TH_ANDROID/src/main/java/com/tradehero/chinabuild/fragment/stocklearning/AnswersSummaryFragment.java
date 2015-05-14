@@ -31,11 +31,18 @@ import javax.inject.Inject;
  * Created by palmer on 15/3/31.
  */
 public class AnswersSummaryFragment extends DashboardFragment implements View.OnClickListener {
+    public final static String KEY_QUESTION_GROUP = "key_question_group";
 
+    @Inject CurrentUserId currentUserId;
+    @Inject Analytics analytics;
     private TextView summaryDescTV;
     private Button historyBtn;
     private Button errorsBtn;
     private ImageView resultIV;
+    private QuestionGroup questionGroup;
+    private ArrayList<QuestionStatusRecord> questionStatusRecords = new ArrayList();
+    private ArrayList<Question> reAnswerQuestions = new ArrayList();
+    private ArrayList<Question> questions = new ArrayList();
 
     //Resources
     private String descriptionSummaryA;
@@ -44,16 +51,6 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
     private int descriptionSummaryColorB;
     private int descSizeA;
     private int descSizeB;
-
-    private QuestionGroup questionGroup;
-    private ArrayList<QuestionStatusRecord> questionStatusRecords = new ArrayList();
-    private ArrayList<Question> reAnswerQuestions = new ArrayList();
-    private ArrayList<Question> questions = new ArrayList();
-
-    public final static String KEY_QUESTION_GROUP = "key_question_group";
-
-    @Inject CurrentUserId currentUserId;
-    @Inject Analytics analytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,7 +81,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.question_summary);
+        setHeadViewMiddleMain(getString(R.string.question_summary));
     }
 
     @Override
@@ -128,8 +125,8 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
     }
 
     private void initSummaryDescriptionResources() {
-        descriptionSummaryA = getActivity().getResources().getString(R.string.stock_learning_summary_a);
-        descriptionSummaryB = getActivity().getResources().getString(R.string.stock_learning_summary_b);
+        descriptionSummaryA = getString(R.string.stock_learning_summary_a);
+        descriptionSummaryB = getString(R.string.stock_learning_summary_b);
         descriptionSummaryColorA = getActivity().getResources().getColor(R.color.stock_learning_summary_success_color);
         descriptionSummaryColorB = getActivity().getResources().getColor(R.color.stock_learning_summary_failed_color);
         descSizeA = (int) getActivity().getResources().getDimension(R.dimen.stock_learning_summary_des_size_a);

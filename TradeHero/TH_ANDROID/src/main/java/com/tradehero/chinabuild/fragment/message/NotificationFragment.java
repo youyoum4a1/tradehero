@@ -387,7 +387,7 @@ public class NotificationFragment extends DashboardFragment
             dialogOKBtn = (TextView)notificationClearAllDialog.findViewById(R.id.btn_ok);
             dialogCancelBtn = (TextView)notificationClearAllDialog.findViewById(R.id.btn_cancel);
             dialogTitleATV = (TextView)notificationClearAllDialog.findViewById(R.id.title);
-            dialogTitleATV.setText(getActivity().getResources().getString(R.string.notification_empty_confirm));
+            dialogTitleATV.setText(getString(R.string.notification_empty_confirm));
             dialogTitleBTV = (TextView)notificationClearAllDialog.findViewById(R.id.title2);
             dialogTitleBTV.setVisibility(View.GONE);
             dialogOKBtn.setOnClickListener(new View.OnClickListener() {

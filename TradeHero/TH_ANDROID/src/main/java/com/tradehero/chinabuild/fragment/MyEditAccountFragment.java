@@ -49,7 +49,7 @@ public class MyEditAccountFragment extends DashboardFragment implements View.OnC
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.settings_my_account);
+        setHeadViewMiddleMain(getString(R.string.settings_my_account));
     }
 
     @Override

@@ -251,7 +251,7 @@ public class TradeOfMineFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
-        gotoDashboard(SecurityDetailFragment.class.getName(), bundle);
+        gotoDashboard(SecurityDetailFragment.class, bundle);
     }
 
     //Download portfolio about my stock

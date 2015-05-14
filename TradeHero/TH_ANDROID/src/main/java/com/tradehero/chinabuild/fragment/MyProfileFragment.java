@@ -81,7 +81,7 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.settings_my_profile);
+        setHeadViewMiddleMain(getString(R.string.settings_my_profile));
     }
 
     @Override
@@ -148,10 +148,10 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
                 gotoEditName();
                 break;
             case R.id.account_layout:
-                goToFragment(MyEditAccountFragment.class);
+                pushFragment(MyEditAccountFragment.class, new Bundle());
                 break;
             case R.id.social_layout:
-                goToFragment(MySocialFragment.class);
+                pushFragment(MySocialFragment.class, new Bundle());
                 break;
         }
     }
@@ -161,10 +161,10 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
             return;
         }
         if (userProfileDTO.isVisitor) {
-            dialogContent = getActivity().getResources().getString(R.string.dialog_profile_suggest_signin);
+            dialogContent = getString(R.string.dialog_profile_suggest_signin);
             showSuggestLoginDialogFragment(dialogContent);
         } else {
-            goToFragment(MyEditNameFragment.class);
+            pushFragment(MyEditNameFragment.class, new Bundle());
         }
     }
 

@@ -220,7 +220,7 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
         UserProfileDTO updatedUserProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
         if (updatedUserProfileDTO != null) {
             if (updatedUserProfileDTO.wbLinked) {
-                String dowloadCNTradeHeroWeiboURL = getActivity().getResources().getString(R.string.download_tradehero_android_app_on_weibo);
+                String dowloadCNTradeHeroWeiboURL = getString(R.string.download_tradehero_android_app_on_weibo);
                 String outputStr = WeiboUtils.getShareContentWeibo(mShareContent, dowloadCNTradeHeroWeiboURL);
                 InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(outputStr);
                 userServiceWrapper.get().inviteFriends(

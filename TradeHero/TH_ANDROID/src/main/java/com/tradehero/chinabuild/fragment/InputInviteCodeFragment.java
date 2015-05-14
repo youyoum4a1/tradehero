@@ -42,8 +42,8 @@ public class InputInviteCodeFragment extends DashboardFragment implements View.O
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.invite_code);
-        setHeadViewRight0(R.string.submit);
+        setHeadViewMiddleMain(getString(R.string.invite_code));
+        setHeadViewRight0(getString(R.string.submit));
     }
 
     @Override public void onClickHeadRight0()

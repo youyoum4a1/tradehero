@@ -92,9 +92,9 @@ public class CompetitionSearchFragment extends DashboardFragment
 
     private void initView()
     {
-        searchNoResult = getActivity().getResources().getString(R.string.search_no_result);
-        searchStr = getActivity().getResources().getString(R.string.search_search);
-        searchCancelStr = getActivity().getResources().getString(R.string.search_cancel);
+        searchNoResult = getString(R.string.search_no_result);
+        searchStr = getString(R.string.search_search);
+        searchCancelStr = getString(R.string.search_cancel);
         initListView();
         tvSearchInput.setHint("请输入比赛关键字");
         tvSearchInput.setOnEditorActionListener(new TextView.OnEditorActionListener()

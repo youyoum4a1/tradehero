@@ -107,7 +107,7 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.discovery_square_discuss);
+        setHeadViewMiddleMain(getString(R.string.discovery_square_discuss));
     }
 
     public void initView()

@@ -13,7 +13,11 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.*;
+import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDTOList;
+import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderIdConstants;
+import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
@@ -26,9 +30,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
-import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
@@ -44,13 +46,12 @@ import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
+import java.util.HashSet;
+import java.util.Set;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
-
-import javax.inject.Inject;
-import java.util.HashSet;
-import java.util.Set;
 
 @Routable("trending-securities")
 public class TrendingFragment extends SecurityListFragment
@@ -284,12 +285,6 @@ public class TrendingFragment extends SecurityListFragment
         return trendingFilterTypeDTO.getSecurityListType(page, perPage);
     }
 
-    public void pushSearchIn()
-    {
-        Bundle args = new Bundle();
-        getDashboardNavigator().pushFragment(SecuritySearchFragment.class, args);
-    }
-
     //<editor-fold desc="Listeners">
     @Override protected OnItemClickListener createOnItemClickListener()
     {
@@ -371,7 +366,7 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleEarnCreditItemOnClick()
     {
-        getDashboardNavigator().pushFragment(FriendsInvitationFragment.class);
+        pushFragment(FriendsInvitationFragment.class, new Bundle());
     }
 
     private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)

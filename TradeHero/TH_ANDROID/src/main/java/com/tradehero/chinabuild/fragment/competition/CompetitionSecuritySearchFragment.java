@@ -117,10 +117,10 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     private void initView()
     {
         currentPage = 0;
-        noSearchResult = getActivity().getResources().getString(R.string.search_no_result);
+        noSearchResult = getString(R.string.search_no_result);
         initListView();
-        searchStr = getActivity().getResources().getString(R.string.search_search);
-        searchCancelStr = getActivity().getResources().getString(R.string.search_cancel);
+        searchStr = getString(R.string.search_search);
+        searchCancelStr = getString(R.string.search_cancel);
         tvSearchInput.setOnEditorActionListener(new TextView.OnEditorActionListener()
         {
             @Override public boolean onEditorAction(TextView textView, int actionId, android.view.KeyEvent keyEvent)

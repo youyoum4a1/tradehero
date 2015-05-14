@@ -7,11 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
-
+import com.tradehero.th.fragments.DashboardNavigator;
 import org.jetbrains.annotations.NotNull;
 
 public class DashboardPreferenceFragment extends PreferenceFragment {
@@ -65,7 +63,7 @@ public class DashboardPreferenceFragment extends PreferenceFragment {
         return getKeyShowHomeAsUp(getArguments());
     }
 
-    protected Navigator getNavigator() {
+    protected DashboardNavigator getNavigator() {
         return ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
     }
 }

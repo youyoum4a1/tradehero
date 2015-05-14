@@ -7,7 +7,8 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -15,17 +16,11 @@ import com.tradehero.th.api.timeline.form.PublishableFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
-
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class DiscussionPostActionButtonsView extends LinearLayout {
     @InjectView(R.id.btn_share_fb) ToggleButton mFacebookShareButton;
@@ -160,10 +155,6 @@ public class DiscussionPostActionButtonsView extends LinearLayout {
     }
 
     private void openSettingScreen() {
-    }
-
-    private Navigator getNavigator() {
-        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }
 
     public void populate(PublishableFormDTO publishableFormDTO) {

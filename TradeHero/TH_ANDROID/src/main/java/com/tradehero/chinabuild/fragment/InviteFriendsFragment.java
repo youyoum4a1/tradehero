@@ -62,7 +62,7 @@ public class InviteFriendsFragment extends DashboardFragment implements View.OnC
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.invite_friends);
+        setHeadViewMiddleMain(getString(R.string.invite_friends));
     }
 
     @Override
@@ -92,7 +92,7 @@ public class InviteFriendsFragment extends DashboardFragment implements View.OnC
         switch (view.getId())
         {
             case R.id.invite_friend_input_layout:
-                goToFragment(InputInviteCodeFragment.class);
+                pushFragment(InputInviteCodeFragment.class, new Bundle());
                 break;
             case R.id.copy:
                 THToast.show(R.string.copy_my_invite_code_success);
@@ -120,7 +120,7 @@ public class InviteFriendsFragment extends DashboardFragment implements View.OnC
                     boolean linked = updatedUserProfileDTO.wbLinked;
                     if (linked)
                     {
-                        goToFragment(SocialFriendsFragmentWeibo.class);
+                        pushFragment(SocialFriendsFragmentWeibo.class, new Bundle());
                     }
                     else
                     {
