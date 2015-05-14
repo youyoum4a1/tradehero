@@ -19,7 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.igexin.sdk.PushManager;
 import com.tradehero.chinabuild.MainTabFragmentCompetition;
 import com.tradehero.chinabuild.MainTabFragmentDiscovery;
@@ -31,7 +33,6 @@ import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoverySquareFragment;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -42,8 +43,6 @@ import com.tradehero.th.api.position.PositionDTOKey;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
@@ -61,15 +60,9 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-
-import org.jetbrains.annotations.NotNull;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import dagger.Lazy;
+import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -81,13 +74,11 @@ public class MainActivity extends AppCompatActivity {
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Analytics analytics;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Inject @BindGuestUser BooleanPreference mBindGuestUserPreference;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
-    private MiddleCallback<GetPositionsDTO> getPositionDTOCallback;
     @Inject Lazy<PositionServiceWrapper> positionServiceWrapper;
-    private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionFetchListener;
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
+    private MiddleCallback<GetPositionsDTO> getPositionDTOCallback;
 
     @InjectView(R.id.llTabTrade) LinearLayout llTabTrade;
     @InjectView(R.id.llTabStockGod) LinearLayout llTabStockGod;
@@ -180,11 +171,19 @@ public class MainActivity extends AppCompatActivity {
         gotoDownloadAppInfo();
         ShareDialogFragment.isDialogShowing = true;
 
-        userProfileCacheListener = new UserProfileFetchListener();
-        userWatchlistPositionFetchListener = new WatchlistPositionFragmentSecurityIdListCacheListener();
-        userProfileCache.get().unregister(userProfileCacheListener);
-        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey(), false);
+        //show guest user dialog
+        if (userProfileCache.get().get(currentUserId.toUserBaseKey()).isVisitor) {
+            alertDialogUtil.get().popWithOkCancelButton(this, R.string.app_name,
+                    R.string.guest_user_dialog_summary,
+                    R.string.ok, R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent gotoAuthticationIntent = new Intent(MainActivity.this, AuthenticationActivity.class);
+                            startActivity(gotoAuthticationIntent);
+                            finish();
+                        }
+                    });
+        }
 
         //enable baidu push
         mBindGuestUserPreference.set(false);
@@ -204,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         gotoGetTimesContinuallyLogin();
 
         getPositionDirectly(currentUserId.toUserBaseKey());
-        fetchWatchPositionList(false);
+        userWatchlistPositionCache.get(currentUserId.toUserBaseKey());
 
         //Download Endpoint
         downloadEndPoint();
@@ -302,8 +301,6 @@ public class MainActivity extends AppCompatActivity {
         if (currentActivityHolder != null) {
             currentActivityHolder.unsetActivity(this);
         }
-        userProfileCache.get().unregister(userProfileCacheListener);
-        userProfileCacheListener = null;
         super.onDestroy();
     }
 
@@ -311,21 +308,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
-    }
-
-    protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> {
-        @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value) {
-            supportInvalidateOptionsMenu();
-            if (value.isVisitor) {
-                showBindGuestUserDialog();
-            }
-        }
-
-        @Override
-        public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error) {
-
-        }
     }
 
     @Override
@@ -348,19 +330,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             finish();
         }
-    }
-
-    private void showBindGuestUserDialog() {
-        alertDialogUtil.get().popWithOkCancelButton(this, R.string.app_name,
-                R.string.guest_user_dialog_summary,
-                R.string.ok, R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent gotoAuthticationIntent = new Intent(MainActivity.this, AuthenticationActivity.class);
-                        startActivity(gotoAuthticationIntent);
-                        finish();
-                    }
-                });
     }
 
     private void gotoGetTimesContinuallyLogin() {
@@ -514,43 +483,26 @@ public class MainActivity extends AppCompatActivity {
 
     public static PositionDTOKey getSecurityPositionDTOKey(SecurityId securityId) {
         GetPositionsDTO getPositionsDTO = MainActivity.getPositionsDTO;
-        if (getPositionsDTO == null) return null;
+        if (getPositionsDTO == null)
+            return null;
         PositionDTO positionDTO = getPositionsDTO.getSecurityPositionDTO(securityId);
-        if (positionDTO != null) return positionDTO.getPositionDTOKey();
+        if (positionDTO != null)
+            return positionDTO.getPositionDTOKey();
         return null;
     }
 
     public static PositionDTOKey getSecurityPositionDTOKey(int securityId) {
         GetPositionsDTO getPositionsDTO = MainActivity.getPositionsDTO;
-        if (getPositionsDTO == null) return null;
+        if (getPositionsDTO == null)
+            return null;
         PositionDTO positionDTO = getPositionsDTO.getSecurityPositionDTO(securityId);
-        if (positionDTO != null) return positionDTO.getPositionDTOKey();
+        if (positionDTO != null)
+            return positionDTO.getPositionDTOKey();
         return null;
     }
 
     public static void setGetPositionDTO(GetPositionsDTO getPositionsDTO) {
         MainActivity.getPositionsDTO = getPositionsDTO;
-    }
-
-    protected class WatchlistPositionFragmentSecurityIdListCacheListener implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> {
-        @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value) {
-        }
-
-        @Override
-        public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error) {
-            onFinish();
-        }
-
-        private void onFinish() {
-
-        }
-    }
-
-    protected void fetchWatchPositionList(boolean force) {
-        userWatchlistPositionCache.unregister(userWatchlistPositionFetchListener);
-        userWatchlistPositionCache.register(currentUserId.toUserBaseKey(), userWatchlistPositionFetchListener);
-        userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey(), force);
     }
 
     private void downloadEndPoint() {
