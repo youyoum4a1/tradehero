@@ -3,7 +3,9 @@ package com.tradehero.th.fragments.authentication;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
@@ -57,6 +59,8 @@ import timber.log.Timber;
  */
 public class EmailSignUpFragment extends Fragment
 {
+    private static final String BUNDLE_KEY_DEEP_LINK = EmailSignUpFragment.class.getName() + ".deepLink";
+
     @Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject UserServiceWrapper userServiceWrapper;
@@ -69,11 +73,23 @@ public class EmailSignUpFragment extends Fragment
     private SubscriptionList onStopSubscriptions;
     @Nullable private ActivityResultDTO receivedActivityResult;
     @Nullable Observer<SocialNetworkEnum> socialNetworkEnumObserver;
+    @Nullable Uri deepLink;
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
         navigator.get().popFragment();
+    }
+
+    public static void putDeepLink(@NonNull Bundle args, @NonNull Uri deepLink)
+    {
+        args.putString(BUNDLE_KEY_DEEP_LINK, deepLink.toString());
+    }
+
+    @Nullable private static Uri getDeepLink(@NonNull Bundle args)
+    {
+        String link = args.getString(BUNDLE_KEY_DEEP_LINK);
+        return link == null ? null : Uri.parse(link);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -84,6 +100,7 @@ public class EmailSignUpFragment extends Fragment
         analytics.tagScreen(AnalyticsConstants.Register_Form);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.RegisterFormScreen));
         analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Email));
+        deepLink = getDeepLink(getArguments());
     }
 
     @Override public void onAttach(Activity activity)
@@ -232,7 +249,9 @@ public class EmailSignUpFragment extends Fragment
                     {
                         THAppsFlyer.sendTrackingWithEvent(getActivity(), AppsFlyerConstants.REGISTRATION_EMAIL);
                         AuthDataUtil.saveAccountAndResult(getActivity(), pair.first, pair.second.email);
-                        ActivityHelper.launchDashboard(getActivity());
+                        ActivityHelper.launchDashboard(
+                                getActivity(),
+                                deepLink);
                     }
                 })
                 .doOnError(new ToastOnErrorAction())

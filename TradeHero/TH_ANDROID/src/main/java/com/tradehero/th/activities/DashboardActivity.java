@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -86,7 +87,6 @@ import com.tradehero.th.fragments.updatecenter.messageNew.MessagesCenterNewFragm
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.notification.NotificationCacheRx;
@@ -153,7 +153,6 @@ public class DashboardActivity extends BaseActivity
     @Inject ResideMenu resideMenu;
 
     @Inject THRouter thRouter;
-    @Inject Lazy<PushNotificationManager> pushNotificationManager;
     @Inject Analytics analytics;
     @Inject Lazy<BroadcastUtils> broadcastUtilsLazy;
     @Inject @IsOnBoardShown BooleanPreference isOnboardShown;
@@ -225,6 +224,8 @@ public class DashboardActivity extends BaseActivity
         initBroadcastReceivers();
 
         localBroadcastManager.registerReceiver(onlineStateReceiver, new IntentFilter(OnlineStateReceiver.ONLINE_STATE_CHANGED));
+
+        routeDeepLink(getIntent());
     }
 
     private void setupNavigator()
@@ -270,6 +271,16 @@ public class DashboardActivity extends BaseActivity
                 updateNetworkStatus();
             }
         };
+    }
+
+    private void routeDeepLink(@NonNull Intent intent)
+    {
+        Uri data = intent.getData();
+        if (data != null)
+        {
+            thRouter.open(data, null, this);
+            intent.setData(null);
+        }
     }
 
     @Override
@@ -472,6 +483,7 @@ public class DashboardActivity extends BaseActivity
 
         Bundle extras = intent.getExtras();
         processNotificationDataIfPresence(extras);
+        routeDeepLink(intent);
     }
 
     private void processNotificationDataIfPresence(Bundle extras)
@@ -621,7 +633,7 @@ public class DashboardActivity extends BaseActivity
         if (routeParams != null)
         {
             resideMenu.closeMenu();
-            thRouter.open(routeParams.deepLink, routeParams.extras);
+            thRouter.open(routeParams.deepLink, routeParams.extras, this);
         }
     }
 

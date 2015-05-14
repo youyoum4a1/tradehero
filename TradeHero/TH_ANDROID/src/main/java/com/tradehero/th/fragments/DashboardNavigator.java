@@ -33,11 +33,17 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
     public DashboardNavigator(FragmentActivity fragmentActivity, int fragmentContentId, Class<? extends Fragment> initialFragment,
             int minimumBackstackSize)
     {
+        this(fragmentActivity, fragmentContentId, initialFragment, minimumBackstackSize, new Bundle());
+    }
+    public DashboardNavigator(FragmentActivity fragmentActivity, int fragmentContentId, Class<? extends Fragment> initialFragment,
+            int minimumBackstackSize,
+            Bundle initialArgs)
+    {
         super(fragmentActivity, fragmentActivity.getSupportFragmentManager(), fragmentContentId, minimumBackstackSize);
 
         if (initialFragment != null)
         {
-            Fragment fragment = Fragment.instantiate(activity, initialFragment.getName(), new Bundle());
+            Fragment fragment = Fragment.instantiate(activity, initialFragment.getName(), initialArgs);
             FragmentTransaction transaction = manager.beginTransaction();
             transaction
                     .replace(fragmentContentId, fragment)

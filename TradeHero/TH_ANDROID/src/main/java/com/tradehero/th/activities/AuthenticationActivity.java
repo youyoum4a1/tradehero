@@ -2,8 +2,10 @@ package com.tradehero.th.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.Window;
 import com.tradehero.common.activities.ActivityResultRequester;
@@ -65,6 +67,7 @@ public class AuthenticationActivity extends BaseActivity
     private Subscription socialButtonsSubscription;
     private PublishSubject<SocialNetworkEnum> selectedSocialNetworkSubject;
     private Observable<Pair<AuthData, UserProfileDTO>> authenticationObservable;
+    @Nullable Uri deepLink;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -84,7 +87,13 @@ public class AuthenticationActivity extends BaseActivity
                     }
                 });
 
-        navigator = new DashboardNavigator(this, R.id.fragment_content, GuideAuthenticationFragment.class, 0);
+        deepLink = getIntent().getData();
+        Bundle args = new Bundle();
+        if (deepLink != null)
+        {
+            GuideAuthenticationFragment.putDeepLink(args, deepLink);
+        }
+        navigator = new DashboardNavigator(this, R.id.fragment_content, GuideAuthenticationFragment.class, 0, args);
     }
 
     @Override protected void onResume()
@@ -183,7 +192,7 @@ public class AuthenticationActivity extends BaseActivity
                 {
                     @Override public void call(Pair<AuthData, UserProfileDTO> authDataUserProfileDTOPair)
                     {
-                        ActivityHelper.launchDashboard(AuthenticationActivity.this);
+                        ActivityHelper.launchDashboard(AuthenticationActivity.this, deepLink);
                     }
                 })
                 ;

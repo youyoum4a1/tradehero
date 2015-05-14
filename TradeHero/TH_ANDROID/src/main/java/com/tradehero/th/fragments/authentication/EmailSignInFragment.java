@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.authentication;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -68,6 +69,8 @@ import timber.log.Timber;
 
 public class EmailSignInFragment extends Fragment
 {
+    private static final String BUNDLE_KEY_DEEP_LINK = EmailSignInFragment.class.getName() + ".deepLink";
+
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
@@ -82,11 +85,23 @@ public class EmailSignInFragment extends Fragment
     SubscriptionList onStopSubscriptions;
 
     @Nullable Observer<SocialNetworkEnum> socialNetworkEnumObserver;
+    @Nullable Uri deepLink;
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
         navigator.get().popFragment();
+    }
+
+    public static void putDeepLink(@NonNull Bundle args, @NonNull Uri deepLink)
+    {
+        args.putString(BUNDLE_KEY_DEEP_LINK, deepLink.toString());
+    }
+
+    @Nullable private static Uri getDeepLink(@NonNull Bundle args)
+    {
+        String link = args.getString(BUNDLE_KEY_DEEP_LINK);
+        return link == null ? null : Uri.parse(link);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -95,6 +110,7 @@ public class EmailSignInFragment extends Fragment
         HierarchyInjector.inject(this);
         analytics.tagScreen(AnalyticsConstants.Login_Form);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
+        deepLink = getDeepLink(getArguments());
     }
 
     @Override public void onAttach(Activity activity)
@@ -179,7 +195,9 @@ public class EmailSignInFragment extends Fragment
                     @Override public void call(Pair<AuthData, UserProfileDTO> pair)
                     {
                         AuthDataUtil.saveAccountAndResult(getActivity(), pair.first, pair.second.email);
-                        ActivityHelper.launchDashboard(getActivity());
+                        ActivityHelper.launchDashboard(
+                                getActivity(),
+                                deepLink);
                     }
                 })
                 .doOnError(new ToastOnErrorAction())

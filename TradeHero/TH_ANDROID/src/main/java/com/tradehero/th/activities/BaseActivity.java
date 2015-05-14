@@ -187,7 +187,7 @@ public class BaseActivity extends ActionBarActivity
     {
         @Override public void onReceive(Context context, Intent intent)
         {
-            ActivityHelper.launchAuthentication(BaseActivity.this);
+            ActivityHelper.launchAuthentication(BaseActivity.this, intent.getData());
         }
     }
 

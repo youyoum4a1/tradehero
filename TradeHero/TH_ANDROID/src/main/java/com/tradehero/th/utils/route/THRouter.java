@@ -3,6 +3,7 @@ package com.tradehero.th.utils.route;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,7 +12,9 @@ import com.tradehero.route.Routable;
 import com.tradehero.route.Router;
 import com.tradehero.route.RouterOptions;
 import com.tradehero.route.RouterParams;
+import com.tradehero.th.R;
 import com.tradehero.th.activities.BaseActivity;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -35,6 +38,12 @@ public class THRouter extends Router
         aliases = new LinkedHashMap<>();
     }
     //</editor-fold>
+
+    public void open(@NonNull Uri uri, Bundle extras, Activity activity)
+    {
+        String scheme = activity.getString(R.string.intent_scheme) + "://";
+        open(uri.toString().replace(scheme, ""), extras, activity);
+    }
 
     @Override public void open(String url, Bundle extras, Context context)
     {
@@ -60,12 +69,18 @@ public class THRouter extends Router
             }
         } catch (Exception ex)
         {
-            Intent returnIntent = new Intent();
-            BaseActivity.putRouteParams(returnIntent, url, extras);
-            ((Activity) context).setResult(BaseActivity.REQUEST_CODE_ROUTE, returnIntent);
-            ((Activity) context).finish();
+            if (context instanceof Activity && !(context instanceof DashboardActivity))
+            {
+                Intent returnIntent = new Intent();
+                BaseActivity.putRouteParams(returnIntent, url, extras);
+                ((Activity) context).setResult(BaseActivity.REQUEST_CODE_ROUTE, returnIntent);
+                ((Activity) context).finish();
+            }
+            else
+            {
+                Timber.e(ex, "No route for %s when context is %s", url, context.getClass().getName());
+            }
         }
-
     }
 
     @Override public Router registerRoutes(Class<?>... targets)
