@@ -11,7 +11,6 @@ import dagger.Provides;
 
 @Module(
         includes = {
-                UIComponents.class
         },
         injects = {
                 SocialFriendUserView.class
@@ -24,15 +23,5 @@ public class UIModule
     @Provides PrettyTime providePrettyTime()
     {
         return new PrettyTime();
-    }
-
-    @Provides @Singleton AppContainer provideAppContainer()
-    {
-        return AppContainer.DEFAULT;
-    }
-
-    @Provides @Singleton ViewWrapper provideViewWrapper()
-    {
-        return ViewWrapper.DEFAULT;
     }
 }

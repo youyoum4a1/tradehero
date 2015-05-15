@@ -7,8 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
+
 import com.crashlytics.android.Crashlytics;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.th.R;
@@ -20,26 +20,23 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.widget.GuideView;
-import dagger.Lazy;
+
 import javax.inject.Inject;
+
+import dagger.Lazy;
 
 public class DashboardActivity extends AppCompatActivity
         implements DashboardNavigatorActivity {
-    @Inject AppContainer appContainer;
-
     private DashboardNavigator navigator;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject DeviceTokenHelper deviceTokenHelper;
-    //content view; //not sure why this
-    ViewGroup dashboardWrapper;
 
     //Guide View
     private GuideView guideRL;
@@ -69,8 +66,7 @@ public class DashboardActivity extends AppCompatActivity
             Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 
-        //setContentView ...
-        dashboardWrapper = appContainer.get(this);
+        setContentView(R.layout.dashboard_with_bottom_bar);
 
         toolbar = (Toolbar) findViewById(R.id.th_toolbar);
         setSupportActionBar(toolbar);
@@ -124,7 +120,8 @@ public class DashboardActivity extends AppCompatActivity
         guideRL.setVisibility(View.GONE);
     }
 
-    @Override protected void onDestroy() {
+    @Override
+    protected void onDestroy() {
         if (navigator != null) {
             navigator.onDestroy();
         }
