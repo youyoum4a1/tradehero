@@ -98,6 +98,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs;
     @Nullable private ExchangeIntegerId exchangeIdFromArguments;
     @NonNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
+    private Integer routedExchangeById;
 
     private ExtraTileAdapterNew wrapperAdapter;
     @Inject protected THBillingInteractorRx userInteractorRx;
@@ -280,6 +281,12 @@ public class TrendingStockFragment extends TrendingBaseFragment
         exchangeAdapter.notifyDataSetChanged();
     }
 
+    protected void setExchangeByCode(@NonNull Integer exchangeById)
+    {
+        THToast.show("setting " + exchangeById);
+        this.routedExchangeById = exchangeById;
+    }
+
     private void fetchUserProfile()
     {
         onDestroyViewSubscriptions.add(AppObservable.bindFragment(
@@ -390,7 +397,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
         );
     }
 
-
     @Override public boolean canMakePagedDtoKey()
     {
         return true;
@@ -417,7 +423,12 @@ public class TrendingStockFragment extends TrendingBaseFragment
         if (exchangeCompactSpinnerDTOs != null)
         {
             final ExchangeIntegerId preferredExchangeId;
-            if (exchangeIdFromArguments != null)
+            if (routedExchangeById != null)
+            {
+                preferredExchangeId = new ExchangeIntegerId(routedExchangeById);
+                routedExchangeById = null;
+            }
+            else if (exchangeIdFromArguments != null)
             {
                 preferredExchangeId = exchangeIdFromArguments;
                 exchangeIdFromArguments = null;

@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Pair;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,8 +54,9 @@ import timber.log.Timber;
 
 @Routable({
         "trending-securities",
-        "trending-stocks/:stockPageIndex",
-        "trending-fx/:fxPageIndex",
+        "trending-stocks/tab-index/:stockPageIndex",
+        "trending-stocks/exchange/:exchangeId",
+        "trending-fx/tab-index/:fxPageIndex",
 })
 public class TrendingMainFragment extends DashboardFragment
 {
@@ -68,6 +70,7 @@ public class TrendingMainFragment extends DashboardFragment
     @Inject THRouter thRouter;
     @RouteProperty("stockPageIndex") Integer selectedStockPageIndex;
     @RouteProperty("fxPageIndex") Integer selectedFxPageIndex;
+    @RouteProperty("exchangeId") Integer routedExchangeId;
 
     @NonNull private static TrendingTabType lastType = TrendingTabType.STOCK;
     private static int lastPosition = 1;
@@ -357,9 +360,12 @@ public class TrendingMainFragment extends DashboardFragment
 
     private class TradingStockPagerAdapter extends FragmentPagerAdapter
     {
+        @NonNull final SparseArray<Fragment> registeredFragments;
+
         public TradingStockPagerAdapter(FragmentManager fragmentManager)
         {
             super(fragmentManager);
+            registeredFragments = new SparseArray<>();
         }
 
         @Override public Fragment getItem(int position)
@@ -369,7 +375,9 @@ public class TrendingMainFragment extends DashboardFragment
             TrendingStockTabType tabType = TrendingStockTabType.values()[position];
             Class fragmentClass = tabType.fragmentClass;
             TrendingStockFragment.putTabType(args, tabType);
-            return Fragment.instantiate(getActivity(), fragmentClass.getName(), args);
+            Fragment created = Fragment.instantiate(getActivity(), fragmentClass.getName(), args);
+            registeredFragments.put(position, created);
+            return created;
         }
 
         @Override public CharSequence getPageTitle(int position)
@@ -380,6 +388,12 @@ public class TrendingMainFragment extends DashboardFragment
         @Override public int getCount()
         {
             return TrendingStockTabType.values().length;
+        }
+
+        @Override public void destroyItem(ViewGroup container, int position, Object object)
+        {
+            registeredFragments.remove(position);
+            super.destroyItem(container, position, object);
         }
     }
 
@@ -482,6 +496,18 @@ public class TrendingMainFragment extends DashboardFragment
         else
         {
             tabViewPager.setCurrentItem(lastPosition, true);
+        }
+
+        if (routedExchangeId != null
+                && tabViewPager != null
+                && lastType.equals(TrendingTabType.STOCK))
+        {
+            Fragment currentFragment = tradingStockPagerAdapter.registeredFragments.get(tabViewPager.getCurrentItem());
+            if (currentFragment instanceof TrendingStockFragment)
+            {
+                ((TrendingStockFragment) currentFragment).setExchangeByCode(routedExchangeId);
+                routedExchangeId = null;
+            }
         }
     }
 
