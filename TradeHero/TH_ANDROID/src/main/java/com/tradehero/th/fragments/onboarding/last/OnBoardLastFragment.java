@@ -102,7 +102,7 @@ public class OnBoardLastFragment extends BaseFragment
     protected void buySharesButtonClicked(View view)
     {
         SecurityId id = favoriteAdapter.getItem(favoriteGallery.getSelectedItemPosition()).getSecurityId();
-        thRouter.open("stockSecurity/" +  id.getExchange() + "/" + id.getSecuritySymbol(), getActivity());
+        thRouter.open("stock-security/" +  id.getExchange() + "/" + id.getSecuritySymbol(), getActivity());
     }
 
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})

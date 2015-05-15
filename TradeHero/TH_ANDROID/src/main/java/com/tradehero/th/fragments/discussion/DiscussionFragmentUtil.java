@@ -130,11 +130,11 @@ public class DiscussionFragmentUtil
             SecurityId securityId = ((SecurityUserAction) userAction).securityId;
             if (securityId.getExchange().equals(SecurityUtils.FX_EXCHANGE))
             {
-                thRouter.open("fxSecurity/" + securityId.getExchange() + "/" + securityId.getSecuritySymbol(), activity);
+                thRouter.open("fx-security/" + securityId.getExchange() + "/" + securityId.getSecuritySymbol(), activity);
             }
             else
             {
-                thRouter.open("stockSecurity/" + securityId.getExchange() + "/" + securityId.getSecuritySymbol(), activity);
+                thRouter.open("stock-security/" + securityId.getExchange() + "/" + securityId.getSecuritySymbol(), activity);
             }
             return Observable.empty();
         }

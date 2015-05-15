@@ -58,8 +58,7 @@ import rx.functions.Action1;
 import timber.log.Timber;
 
 @Routable({
-        "security/:securityRawInfo",
-        "stockSecurity/:exchange/:symbol"
+        "stock-security/:exchange/:symbol"
 })
 public class BuySellStockFragment extends BuySellFragment
 {
