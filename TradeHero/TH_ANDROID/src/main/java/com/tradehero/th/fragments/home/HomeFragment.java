@@ -53,6 +53,7 @@ import rx.functions.Func1;
 import timber.log.Timber;
 
 @Routable({
+        "home",
         "refer-friend/:socialId/:socialUserId",
         "user/:userId/follow/free",
         "user/:userIdPremium/follow/premium",

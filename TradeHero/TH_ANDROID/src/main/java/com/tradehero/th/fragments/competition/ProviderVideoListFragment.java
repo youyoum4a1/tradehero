@@ -26,6 +26,7 @@ import butterknife.OnItemLongClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
@@ -40,9 +41,10 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-@Routable(
-        "providers/:providerId/helpVideos"
-)
+@Routable({
+        "providers/:providerId/helpVideos",
+        "providers/:providerId/helpVideos/:videoId",
+})
 public class ProviderVideoListFragment extends CompetitionFragment
 {
     @Inject HelpVideoListCacheRx helpVideoListCache;
@@ -50,6 +52,8 @@ public class ProviderVideoListFragment extends CompetitionFragment
     @InjectView(android.R.id.empty) View emptyView;
     @InjectView(R.id.help_videos_list) AbsListView videoListView;
     @InjectView(R.id.help_video_list_screen) BetterViewAnimator helpVideoListScreen;
+
+    @RouteProperty("videoId") Integer routedVideoId;
 
     private ProviderVideoAdapter providerVideoAdapter;
     private int currentDisplayedChild;
@@ -153,6 +157,19 @@ public class ProviderVideoListFragment extends CompetitionFragment
         providerVideoAdapter.notifyDataSetChanged();
         helpVideoListScreen.setDisplayedChildByLayoutId(R.id.help_videos_list);
         videoListView.setEmptyView(emptyView);
+
+        if (routedVideoId != null && videoDTOs != null)
+        {
+            for (HelpVideoDTO video : videoDTOs)
+            {
+                if (routedVideoId.equals(video.id))
+                {
+                    openVideo(video);
+                    routedVideoId = null;
+                    break;
+                }
+            }
+        }
     }
 
     private void displayActionBarTitle()
@@ -171,8 +188,11 @@ public class ProviderVideoListFragment extends CompetitionFragment
     @OnItemClick(R.id.help_videos_list)
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
     {
-        HelpVideoDTO helpVideoDTO = (HelpVideoDTO) adapterView.getItemAtPosition(position);
+        openVideo((HelpVideoDTO) adapterView.getItemAtPosition(position));
+    }
 
+    protected void openVideo(@NonNull HelpVideoDTO helpVideoDTO)
+    {
         Uri url = Uri.parse(helpVideoDTO.videoUrl);
         Intent videoIntent = new Intent(Intent.ACTION_VIEW, url);
         PackageManager packageManager = getActivity().getPackageManager();

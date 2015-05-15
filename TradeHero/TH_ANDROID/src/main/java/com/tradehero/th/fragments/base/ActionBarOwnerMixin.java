@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.base;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -188,7 +189,7 @@ public class ActionBarOwnerMixin
      * @param toolbarSpinnerResId resource id of the spinner.
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void configureSpinner(int toolbarSpinnerResId, ArrayAdapter adapter, AdapterView.OnItemSelectedListener listener, int selectedPosition)
+    public void configureSpinner(@IdRes int toolbarSpinnerResId, ArrayAdapter adapter, AdapterView.OnItemSelectedListener listener, int selectedPosition)
     {
         Toolbar toolbar = ((BaseActivity) fragment.getActivity()).getToolbar();
         if (toolbar == null)
@@ -215,6 +216,14 @@ public class ActionBarOwnerMixin
             fragment.getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, value, true);
             int offset = (int) fragment.getActivity().getResources().getDimension(value.resourceId);
             toolbarSpinner.setDropDownVerticalOffset(offset);
+        }
+    }
+
+    public void setSpinnerSelection(int index)
+    {
+        if (toolbarSpinner != null)
+        {
+            toolbarSpinner.setSelection(index);
         }
     }
 

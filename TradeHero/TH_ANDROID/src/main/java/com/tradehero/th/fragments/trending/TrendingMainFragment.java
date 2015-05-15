@@ -38,6 +38,7 @@ import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.route.THRouter;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
@@ -52,7 +53,8 @@ import timber.log.Timber;
 
 @Routable({
         "trending-securities",
-        "trendingstocks/:pageIndex"
+        "trending-stocks/:stockPageIndex",
+        "trending-fx/:fxPageIndex",
 })
 public class TrendingMainFragment extends DashboardFragment
 {
@@ -63,7 +65,9 @@ public class TrendingMainFragment extends DashboardFragment
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
-    @RouteProperty("pageIndex") int selectedPageIndex = -1;
+    @Inject THRouter thRouter;
+    @RouteProperty("stockPageIndex") Integer selectedStockPageIndex;
+    @RouteProperty("fxPageIndex") Integer selectedFxPageIndex;
 
     @NonNull private static TrendingTabType lastType = TrendingTabType.STOCK;
     private static int lastPosition = 1;
@@ -206,19 +210,15 @@ public class TrendingMainFragment extends DashboardFragment
         pagerSlidingTabStrip.setDistributeEvenly(!lastType.equals(TrendingTabType.STOCK));
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
-        if (selectedPageIndex != -1) {
-            tabViewPager.setCurrentItem(selectedPageIndex, true);
-        }
-        else
-        {
-            tabViewPager.setCurrentItem(lastPosition, true);
-        }
+        handleRouting();
     }
 
     @Override public void onResume()
     {
         super.onResume();
         showToolbarSpinner();
+        thRouter.inject(this, getArguments());
+        handleRouting();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -327,6 +327,7 @@ public class TrendingMainFragment extends DashboardFragment
                         getString(R.string.stocks),
                         getString(R.string.fx)},
                 listener, lastType.ordinal());
+        handleRouting();
     }
 
     @Override public void onPause()
@@ -439,6 +440,48 @@ public class TrendingMainFragment extends DashboardFragment
         if (fragments != null)
         {
             fragments.clear();
+        }
+    }
+
+    protected void handleRouting()
+    {
+        if (selectedStockPageIndex != null)
+        {
+            if (lastType.equals(TrendingTabType.STOCK))
+            {
+                if (tabViewPager != null)
+                {
+                    lastPosition = selectedStockPageIndex;
+                    tabViewPager.setCurrentItem(selectedStockPageIndex, true);
+                    selectedStockPageIndex = null;
+                }
+            }
+            else if (actionBarOwnerMixin != null)
+            {
+                lastType = TrendingTabType.STOCK;
+                actionBarOwnerMixin.setSpinnerSelection(TrendingTabType.STOCK.ordinal());
+            }
+        }
+        else if (selectedFxPageIndex != null)
+        {
+            if (lastType.equals(TrendingTabType.FX))
+            {
+                if (tabViewPager != null)
+                {
+                    lastPosition = selectedFxPageIndex;
+                    tabViewPager.setCurrentItem(selectedFxPageIndex, true);
+                    selectedFxPageIndex = null;
+                }
+            }
+            else if (actionBarOwnerMixin != null)
+            {
+                lastType = TrendingTabType.FX;
+                actionBarOwnerMixin.setSpinnerSelection(TrendingTabType.FX.ordinal());
+            }
+        }
+        else
+        {
+            tabViewPager.setCurrentItem(lastPosition, true);
         }
     }
 

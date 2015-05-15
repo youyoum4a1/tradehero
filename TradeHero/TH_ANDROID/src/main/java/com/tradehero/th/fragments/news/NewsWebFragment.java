@@ -22,6 +22,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Gallery;
 import android.widget.TextView;
 import com.tradehero.metrics.Analytics;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
@@ -36,6 +38,7 @@ import com.tradehero.th.persistence.security.SecurityMultiFetchAssistant;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.AnalyticsDuration;
 import com.tradehero.th.utils.metrics.events.AttributesEvent;
+import com.tradehero.th.utils.route.THRouter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,6 +54,9 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
+@Routable({
+        "news/:newsId"
+})
 public class NewsWebFragment extends WebViewFragment
 {
     private static final String BUNDLE_KEY_PREVIOUS_SCREEN = NewsWebFragment.class + ".previousScreen";
@@ -62,6 +68,9 @@ public class NewsWebFragment extends WebViewFragment
     @Inject protected SecurityMultiFetchAssistant securityMultiFetchAssistant;
     @Inject Analytics analytics;
     @Inject FragmentOuterElements fragmentElements;
+    @Inject THRouter thRouter;
+
+    @RouteProperty("newsId") Integer routedNewsId;
 
     private String previousScreen;
     private int newsId;
@@ -107,6 +116,12 @@ public class NewsWebFragment extends WebViewFragment
     {
         super.onCreate(savedInstanceState);
         previousScreen = getPreviousScreenFromBundle();
+        thRouter.inject(this);
+        if (routedNewsId != null)
+        {
+            putNewsId(getArguments(), routedNewsId);
+            routedNewsId = null;
+        }
         newsId = getNewsId();
     }
 
@@ -156,6 +171,18 @@ public class NewsWebFragment extends WebViewFragment
 
         subscription = AppObservable.bindFragment(this,
                 newsServiceWrapper.getSecurityNewsDetailRx(new NewsItemDTOKey(newsId))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnNext(new Action1<NewsItemDTO>()
+                        {
+                            @Override public void call(NewsItemDTO newsItemDTO)
+                            {
+                                if (getLoadingUrl() == null && newsItemDTO.url != null)
+                                {
+                                    loadUrl(newsItemDTO.url);
+                                }
+                            }
+                        })
+                        .observeOn(Schedulers.computation())
                         .flatMap(new Func1<NewsItemDTO, Observable<Map<SecurityIntegerId, SecurityCompactDTO>>>()
                         {
                             @Override public Observable<Map<SecurityIntegerId, SecurityCompactDTO>> call(NewsItemDTO newsItemDTO)
@@ -215,8 +242,7 @@ public class NewsWebFragment extends WebViewFragment
                     mlp.rightMargin,
                     mlp.bottomMargin
             );
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             Timber.d("Error", e);
         }
@@ -250,7 +276,8 @@ public class NewsWebFragment extends WebViewFragment
     @Override public void onDestroyView()
     {
         super.onDestroyView();
-        if (subscription != null) {
+        if (subscription != null)
+        {
             subscription.unsubscribe();
         }
     }
@@ -262,7 +289,6 @@ public class NewsWebFragment extends WebViewFragment
         collections.put(AnalyticsConstants.TimeOnScreen, AnalyticsDuration.sinceTimeMillis(beginTime).toString());
         analytics.fireEvent(new AttributesEvent(AnalyticsConstants.NewsItem_Show, collections));
     }
-
 
     class CompactSecurityListAdapter extends ArrayAdapter<SecurityCompactDTO>
     {

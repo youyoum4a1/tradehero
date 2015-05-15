@@ -5,13 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.route.InjectRoute;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
@@ -29,7 +27,8 @@ abstract public class CompetitionFragment extends DashboardFragment
     @Inject ProviderCacheRx providerCache;
     @Inject THRouter thRouter;
 
-    @InjectRoute protected ProviderId providerId;
+    @RouteProperty("providerId") protected Integer routedProviderId;
+    protected ProviderId providerId;
     @Nullable private Subscription providerCacheSubscription;
     protected ProviderDTO providerDTO;
 
@@ -48,11 +47,11 @@ abstract public class CompetitionFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
 
         thRouter.inject(this, getArguments());
-        // TODO improve thRouter so that it leaves the field empty instead of filling it with empty data.
-        if (this.providerId == null || this.providerId.key == null)
+        if (routedProviderId != null)
         {
-            this.providerId = getProviderId(getArguments());
+            putProviderId(getArguments(), new ProviderId(routedProviderId));
         }
+        this.providerId = getProviderId(getArguments());
     }
 
     @Override public void onStart()
