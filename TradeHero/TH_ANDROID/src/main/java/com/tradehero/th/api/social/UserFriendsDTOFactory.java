@@ -9,6 +9,7 @@ public class UserFriendsDTOFactory
     public static final String FACEBOOK_SOCIAL_ID = "fb";
     public static final String LINKEDIN_SOCIAL_ID = "li";
     public static final String TWITTER_SOCIAL_ID = "tw";
+    public static final String WEIBO_SOCIAL_ID = "wb";
 
     @Nullable public static UserFriendsDTO createFrom(@NonNull String socialId, @NonNull String socialUserId)
     {
@@ -25,6 +26,10 @@ public class UserFriendsDTOFactory
 
             case TWITTER_SOCIAL_ID:
                 created = new UserFriendsTwitterDTO(socialUserId);
+                break;
+
+            case WEIBO_SOCIAL_ID:
+                created = new UserFriendsWeiboDTO(socialUserId);
                 break;
         }
         if (created == null)

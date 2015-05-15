@@ -239,7 +239,7 @@ public class THRouterTest
         assertThat(competitionWebViewFragment.getWebView()).isNotNull();
 
         ShadowWebView shadowWebView = shadowOf(competitionWebViewFragment.getWebView());
-        String landingPage = providerUtil.getLandingPage(providerId, currentUserId.toUserBaseKey());
+        String landingPage = providerUtil.getLandingPage(providerId);
         assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(landingPage);
     }
 

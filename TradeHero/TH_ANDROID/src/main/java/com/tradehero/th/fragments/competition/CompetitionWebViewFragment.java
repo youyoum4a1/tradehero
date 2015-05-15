@@ -6,12 +6,11 @@ import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.intent.THIntent;
@@ -27,30 +26,37 @@ import timber.log.Timber;
 )
 public class CompetitionWebViewFragment extends BaseWebViewFragment
 {
-    @InjectRoute protected ProviderId enrollProviderId;
-    @Inject CurrentUserId currentUserId;
+    @RouteProperty("enrollProviderId") protected Integer enrollProviderId;
     @Inject THRouter thRouter;
     @Inject ProviderUtil providerUtil;
     @Inject BroadcastUtils broadcastUtils;
+
+    protected ProviderId providerId;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         HierarchyInjector.inject(this);
         thRouter.inject(this);
+
+        if (enrollProviderId != null)
+        {
+            providerId = new ProviderId(enrollProviderId);
+        }
+
+        //noinspection ConstantConditions
+        if (providerId != null && providerId.key != null)
+        {
+            CompetitionWebViewFragment.putUrl(getArguments(), providerUtil.getLandingPage(
+                    providerId));
+        }
+        CompetitionWebViewFragment.putIsOptionMenuVisible(getArguments(), true);
+
     }
 
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-
-        //noinspection ConstantConditions
-        if (enrollProviderId != null && enrollProviderId.key != null)
-        {
-            CompetitionWebViewFragment.putUrl(getArguments(), providerUtil.getLandingPage(
-                    enrollProviderId, currentUserId.toUserBaseKey()));
-        }
-        CompetitionWebViewFragment.putIsOptionMenuVisible(getArguments(), true);
 
         thIntentPassedListener = createCompetitionTHIntentPassedListener();
         setThIntentPassedListener(thIntentPassedListener);
@@ -80,7 +86,7 @@ public class CompetitionWebViewFragment extends BaseWebViewFragment
         String loadingUrl = super.getLoadingUrl();
         if (loadingUrl == null)
         {
-            return providerUtil.getLandingPage(enrollProviderId, currentUserId.toUserBaseKey());
+            return providerUtil.getLandingPage(providerId);
         }
         return loadingUrl;
     }

@@ -443,8 +443,8 @@ public class DashboardActivity extends BaseActivity
                                             enrollmentScreenOpened.add(providerDTO.id);
                                             Bundle args = new Bundle();
                                             CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
-                                                    providerDTO.getProviderId(),
-                                                    currentUserId.toUserBaseKey()));
+                                                    providerDTO.getProviderId()
+                                            ));
                                             navigator.pushFragment(CompetitionWebViewFragment.class, args);
                                         }
                                     }

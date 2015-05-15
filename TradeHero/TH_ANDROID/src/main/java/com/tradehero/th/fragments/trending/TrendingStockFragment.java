@@ -533,8 +533,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
         {
             Bundle args = new Bundle();
             CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
-                    providerDTO.getProviderId(),
-                    currentUserId.toUserBaseKey()));
+                    providerDTO.getProviderId()
+            ));
             navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
         }
     }
