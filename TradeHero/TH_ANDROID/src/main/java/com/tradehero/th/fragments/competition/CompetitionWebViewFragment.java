@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.competition;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Menu;
@@ -21,12 +22,14 @@ import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-@Routable(
-        "providers-enroll/:enrollProviderId"
-)
+@Routable({
+        "providers-enroll/:enrollProviderId",
+        "providers-enroll/:enrollProviderId/pages/:encodedUrl",
+})
 public class CompetitionWebViewFragment extends BaseWebViewFragment
 {
     @RouteProperty("enrollProviderId") protected Integer enrollProviderId;
+    @RouteProperty("encodedUrl") protected String encodedUrl;
     @Inject THRouter thRouter;
     @Inject ProviderUtil providerUtil;
     @Inject BroadcastUtils broadcastUtils;
@@ -44,14 +47,16 @@ public class CompetitionWebViewFragment extends BaseWebViewFragment
             providerId = new ProviderId(enrollProviderId);
         }
 
-        //noinspection ConstantConditions
-        if (providerId != null && providerId.key != null)
+        if (encodedUrl != null)
+        {
+            CompetitionWebViewFragment.putUrl(getArguments(), Uri.decode(encodedUrl));
+        }
+        else if (providerId != null)
         {
             CompetitionWebViewFragment.putUrl(getArguments(), providerUtil.getLandingPage(
                     providerId));
         }
         CompetitionWebViewFragment.putIsOptionMenuVisible(getArguments(), true);
-
     }
 
     @Override public void onAttach(Activity activity)

@@ -84,6 +84,7 @@ import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
+import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
 import com.tradehero.th.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
@@ -709,38 +710,40 @@ public class DashboardActivity extends BaseActivity
         {
             THRouter router = new THRouter(context, navigatorProvider);
             router.registerRoutes(
-                    PushableTimelineFragment.class,
-                    MeTimelineFragment.class,
-                    NotificationsCenterFragment.class,
-                    MessagesCenterNewFragment.class,
-                    UpdateCenterFragment.class,
-                    TrendingMainFragment.class,
-                    FriendsInvitationFragment.class,
-                    SettingsFragment.class,
-                    MainCompetitionFragment.class,
                     BuySellStockFragment.class,
-                    FXMainFragment.class,
-                    FXMainFragment.class,
-                    FXInfoFragment.class,
-                    StoreScreenFragment.class,
-                    LeaderboardCommunityFragment.class,
                     CompetitionWebViewFragment.class,
+                    DiscoveryMainFragment.class,
+                    FacebookShareActivity.class,
+                    FriendsInvitationFragment.class,
+                    FXInfoFragment.class,
+                    FXMainFragment.class,
+                    FXMainFragment.class,
+                    HomeFragment.class,
+                    LeaderboardCommunityFragment.class,
+                    MainCompetitionFragment.class,
+                    MessagesCenterNewFragment.class,
+                    MeTimelineFragment.class,
+                    NewsWebFragment.class,
+                    NotificationsCenterFragment.class,
                     PositionListFragment.class,
+                    ProviderVideoListFragment.class,
+                    PushableTimelineFragment.class,
+                    SettingsFragment.class,
+                    StoreScreenFragment.class,
                     TabbedPositionListFragment.class,
                     TradeListFragment.class,
-                    HomeFragment.class,
-                    NewsWebFragment.class,
-                    ProviderVideoListFragment.class,
-                    WebViewFragment.class,
-                    DiscoveryMainFragment.class,
-                    FacebookShareActivity.class
-
+                    TrendingMainFragment.class,
+                    UpdateCenterFragment.class,
+                    WebViewFragment.class
             );
-            router.registerAlias("messages", "updatecenter/0");
-            router.registerAlias("notifications", "updatecenter/1");
-            router.registerAlias("reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
+            router.registerAlias("messages", "updatecenter/" + UpdateCenterTabType.Messages.ordinal());
+            router.registerAlias("notifications", "updatecenter/" + UpdateCenterTabType.Notifications.ordinal());
+            router.registerAlias("cash", "store/" + ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR.ordinal());
+            router.registerAlias("store/cash", "store/" + ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR.ordinal());
             router.registerAlias("credits", "store/" + ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS.ordinal());
             router.registerAlias("store/credits", "store/" + ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS.ordinal());
+            router.registerAlias("store/reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
+            router.registerAlias("reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
             return router;
         }
 
