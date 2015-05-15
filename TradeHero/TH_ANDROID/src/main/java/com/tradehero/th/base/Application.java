@@ -6,10 +6,6 @@ import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.timber.CrashReportingTree;
 import com.tradehero.common.timber.EasyDebugTree;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.filter.FilterModule;
-import com.tradehero.th.fragments.competition.CompetitionModule;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceSignUtils;
@@ -57,10 +53,7 @@ public class Application extends PApplication
         EmailSignUtils.initialize();
         DeviceSignUtils.initialize();
 
-        thRouter.registerRoutes(
-                TrendingFragment.class,
-                FriendsInvitationFragment.class
-        );
+        thRouter.registerRoutes();
         thRouter.registerAlias("messages", "updatecenter/0");
         thRouter.registerAlias("notifications", "updatecenter/1");
 
@@ -87,8 +80,6 @@ public class Application extends PApplication
         Object[] modules = new Object[]
                 {
                         new AppModule(this),
-                        new CompetitionModule(),
-                        new FilterModule()
                 };
 
         if (!Constants.RELEASE)

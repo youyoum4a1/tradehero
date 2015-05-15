@@ -8,7 +8,6 @@ import android.widget.TabHost;
 
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.utils.DaggerUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -36,22 +35,6 @@ public class DashboardNavigator extends Navigator
     {
     }
 
-    private void goToTab(@NotNull DashboardTabType tabType, TabHost.OnTabChangeListener changeListener)
-    {
-        mOnTabChangedListener = changeListener;
-        goToTab(tabType);
-    }
-
-    public void goToTab(@NotNull DashboardTabType tabType)
-    {
-        this.goToTab(tabType, TAB_SHOULD_ADD_TO_BACKSTACK);
-    }
-
-    public void goToTab(@NotNull DashboardTabType tabType, Boolean shouldAddToBackStack)
-    {
-        this.goToTab(tabType, shouldAddToBackStack, TAB_SHOW_HOME_AS_UP);
-    }
-
     public void goToFragment(Class fragment,Bundle args)
     {
         this.goToFragment(fragment, args, TAB_SHOULD_ADD_TO_BACKSTACK, TAB_SHOW_HOME_AS_UP);
@@ -64,16 +47,6 @@ public class DashboardNavigator extends Navigator
         manager.executePendingTransactions();
 
         updateTabBarOnTabChanged(((Object) pushFragment(fragment, args, null, null, shouldAddToBackStack, showHomeKeyAsUp)).getClass().getName());
-    }
-
-    public void goToTab(@NotNull DashboardTabType tabType, Boolean shouldAddToBackStack, Boolean showHomeKeyAsUp)
-    {
-        Bundle args = new Bundle();
-
-        manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        manager.executePendingTransactions();
-
-        updateTabBarOnTabChanged(((Object) pushFragment(tabType.fragmentClass, args, null, null, shouldAddToBackStack, showHomeKeyAsUp)).getClass().getName());
     }
 
     @Override public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim,

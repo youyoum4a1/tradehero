@@ -104,22 +104,9 @@ import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.PasswordResetFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
-import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
-import com.tradehero.th.fragments.security.SecurityActionListLinear;
 import com.tradehero.th.fragments.security.SecurityItemView;
-import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
-import com.tradehero.th.fragments.security.SecuritySearchFragment;
-import com.tradehero.th.fragments.security.SecuritySearchProviderFragment;
-import com.tradehero.th.fragments.security.StockInfoValueFragment;
-import com.tradehero.th.fragments.security.WarrantSecurityItemView;
-import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
-import com.tradehero.th.fragments.social.PeopleSearchFragment;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentWeibo;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
-import com.tradehero.th.fragments.trending.SearchPeopleItemView;
-import com.tradehero.th.fragments.trending.TrendingFragment;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
@@ -172,22 +159,13 @@ import dagger.Provides;
                         PremiumFollowUserAssistant.class,
                         EmailSignInFragment.class,
                         PasswordResetFragment.class,
-                        TrendingFragment.class,
-                        TrendingFilterSelectorView.class,
                         SecurityListPagedLoader.class,
-                        SecuritySearchFragment.class,
                         SearchUniteFragment.class,
-                        SecuritySearchProviderFragment.class,
                         MacquarieSecurityListPagedLoader.class,
-                        SecurityItemViewAdapter.class,
-                        MacquarieWarrantItemViewAdapter.class,
                         SecurityItemView.class,
-                        WarrantSecurityItemView.class,
-                        SearchPeopleItemView.class,
                         FreshQuoteHolder.class,
                         MarkdownTextView.class,
 
-                        StockInfoValueFragment.class,
                         DisplayablePortfolioFetchAssistant.class,
 
                         SearchStockPageListLoader.class,
@@ -200,19 +178,13 @@ import dagger.Provides;
 
                         CacheHelper.class,
 
-                        PeopleSearchFragment.class,
-
                         WebViewFragment.class,
                         UserWatchlistPositionCache.class,
 
                         FriendListLoader.class,
 
-                        ShareDestinationSetAdapter.class,
-                        SecurityActionListLinear.class,
-
                         MessageHeaderDTO.class,
                         AlertDialogUtil.class,
-                        FriendsInvitationFragment.class,
                         SocialFriendsFragmentWeibo.class,
                         GuideActivity.class,
 

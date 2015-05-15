@@ -7,8 +7,6 @@ import com.squareup.picasso.LruCache;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.persistence.prefs.LongPreference;
-import com.tradehero.th.fragments.trending.ExtraTileAdapter;
-import com.tradehero.th.fragments.trending.ProviderTileView;
 import com.tradehero.th.persistence.ListCacheMaxSize;
 import com.tradehero.th.persistence.MessageListTimeline;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
@@ -24,8 +22,6 @@ import dagger.Provides;
                 UserProfileFetchAssistant.class,
 
                 // Extra Tile needs to know about userProfile data for survey tile element
-                ExtraTileAdapter.class,
-                ProviderTileView.class,
         },
         complete = false,
         library = true

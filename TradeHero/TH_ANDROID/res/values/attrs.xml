@@ -31,10 +31,6 @@
     <attr name="progressIndicator" format="reference"/>
   </declare-styleable>
 
-  <declare-styleable name="QuickPriceButton">
-    <attr name="price" format="integer"/>
-  </declare-styleable>
-
   <declare-styleable name="TimeSpanButton">
     <attr name="timeSpan" format="string"/>
   </declare-styleable>
@@ -42,10 +38,6 @@
   <declare-styleable name="DiscussionView">
     <attr name="listItemLayoutTH" format="reference"/>
     <attr name="topicLayout" format="reference"/>
-  </declare-styleable>
-
-  <declare-styleable name="VotePair">
-    <attr name="downVote" format="boolean"/>
   </declare-styleable>
 
   <declare-styleable name="AnimatedTextView">

@@ -44,7 +44,6 @@ import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.YahooNewsService;
-import com.tradehero.th.widget.VotePair;
 
 import javax.inject.Singleton;
 
@@ -60,7 +59,6 @@ import retrofit.converter.Converter;
                 RetrofitProtectedModule.class,
         },
         injects = {
-                VotePair.class
         },
         complete = false,
         library = true

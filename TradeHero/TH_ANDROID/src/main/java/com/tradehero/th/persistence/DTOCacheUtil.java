@@ -13,7 +13,6 @@ import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.alert.AlertCache;
@@ -64,6 +63,8 @@ import dagger.Lazy;
 
 @Singleton public class DTOCacheUtil
 {
+    public final static int DEFAULT_PER_PAGE = 20;
+
     protected final CurrentUserId currentUserId;
 
     //<editor-fold desc="Caches">
@@ -278,7 +279,7 @@ import dagger.Lazy;
                             new TrendingBasicSecurityListType(
                                     initialExchange.name,
                                     1,
-                                    TrendingFragment.DEFAULT_PER_PAGE));
+                                    DEFAULT_PER_PAGE));
                 }
             }
         }
