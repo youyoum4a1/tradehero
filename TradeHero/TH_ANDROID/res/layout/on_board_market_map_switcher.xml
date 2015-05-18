@@ -23,11 +23,9 @@
       android:id="@android:id/hint"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:visibility="gone"
       android:gravity="center_horizontal"
       style="@style/TH.Subhead.Inverse"
-      tools:visibility="visible"
-      tools:text="Tap on the map to select stock exchanges"
+      android:text="@string/on_board_exchange_loading_regions"
       />
 
 </com.tradehero.th.fragments.onboarding.exchange.MarketRegionSwitcherView>

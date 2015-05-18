@@ -32,6 +32,8 @@ public class MarketRegionSwitcherView extends LinearLayout
     @InjectView(R.id.market_button_selector) MarketRegionButtonView buttonView;
     @InjectView(android.R.id.hint) TextView hint;
 
+    private int maxSelectableExchanges;
+    private boolean regionsLoaded;
     @NonNull private PublishSubject<MarketRegion> clickedMarketRegionBehavior;
     @NonNull private SubscriptionList childSubscriptions;
     @Nullable private MarketRegion selectedRegion;
@@ -97,8 +99,11 @@ public class MarketRegionSwitcherView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    public void enable(@NonNull Collection<? extends MarketRegion> enabledRegions)
+    public void enable(@NonNull Collection<? extends MarketRegion> enabledRegions, int maxSelectableExchanges)
     {
+        regionsLoaded = true;
+        this.maxSelectableExchanges = maxSelectableExchanges;
+        displayHint();
         try
         {
             mapView.enable(enabledRegions);
@@ -136,19 +141,29 @@ public class MarketRegionSwitcherView extends LinearLayout
 
     protected void displayHint()
     {
-        if (selectedRegion == null)
+        if (!regionsLoaded)
+        {
+            hint.setText(R.string.on_board_exchange_loading_regions);
+        }
+        else if (selectedRegion == null)
         {
             hint.setText(R.string.on_board_exchange_tap_map_select_exchanges);
-            hint.setVisibility(VISIBLE);
         }
         else if (selectedExchanges == null || selectedExchanges.size() == 0)
         {
             hint.setText(R.string.on_board_exchange_tap_list_select_exchanges);
-            hint.setVisibility(VISIBLE);
+        }
+        else if (selectedExchanges.size() >= maxSelectableExchanges)
+        {
+            hint.setText(String.format(
+                    getResources().getString(R.string.on_board_exchange_tap_list_full),
+                    maxSelectableExchanges));
         }
         else
         {
-            hint.setVisibility(GONE);
+            hint.setText(String.format(
+                    getResources().getString(R.string.on_board_exchange_tap_list_select_exchanges_have),
+                    maxSelectableExchanges));
         }
     }
 

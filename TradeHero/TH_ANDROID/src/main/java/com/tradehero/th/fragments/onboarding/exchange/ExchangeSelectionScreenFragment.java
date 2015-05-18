@@ -216,7 +216,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
                     @Override public Observable<MarketRegion> call(ExchangeCompactDTOList exchanges)
                     {
                         filedExchangeIds = ExchangeCompactDTOUtil.filePerRegion(exchanges);
-                        mapHeaderSwitcherView.enable(filedExchangeIds.keySet());
+                        mapHeaderSwitcherView.enable(filedExchangeIds.keySet(), MAX_SELECTABLE_EXCHANGES);
                         for (ExchangeCompactDTO exchange : exchanges)
                         {
                             knownExchanges.put(exchange.getExchangeIntegerId(), exchange);
