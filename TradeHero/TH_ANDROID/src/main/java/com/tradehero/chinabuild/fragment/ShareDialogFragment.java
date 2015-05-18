@@ -249,7 +249,7 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
     }
 
 
-    public static interface DialogDissmissListener
+    public interface DialogDissmissListener
     {
         public void onDismissDialog();
     }
