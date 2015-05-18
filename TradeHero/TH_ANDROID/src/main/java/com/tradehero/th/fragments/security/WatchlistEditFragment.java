@@ -3,15 +3,21 @@ package com.tradehero.th.fragments.security;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -21,40 +27,43 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
-import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
-import rx.Notification;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func2;
 import timber.log.Timber;
 
 public class WatchlistEditFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = WatchlistEditFragment.class.getName() + ".securityKeyId";
 
-    private ImageView securityLogo;
-    private TextView securityTitle;
-    private TextView securityDesc;
-    private TextView watchPrice;
-    @NonNull private SecurityId securityKeyId;
+    @InjectView(R.id.edit_watchlist_item_security_logo) ImageView securityLogo;
+    @InjectView(R.id.edit_watchlist_item_security_name) TextView securityTitle;
+    @InjectView(R.id.edit_watchlist_item_security_desc) TextView securityDesc;
+    @InjectView(R.id.edit_watchlist_item_security_price) TextView watchPrice;
+    @InjectView(R.id.edit_watchlist_item_done) TextView doneButton;
+    @InjectView(R.id.edit_watchlist_item_delete) TextView deleteButton;
+
+    private SecurityId securityKeyId;
+    private WatchlistPositionDTO watchlistPositionDTO;
     private SecurityCompactDTO securityCompactDTO;
-    private TextView watchAction;
-    private TextView deleteButton;
 
     @Inject SecurityCompactCacheRx securityCompactCache;
-    @Inject Lazy<WatchlistPositionCacheRx> watchlistPositionCache;
+    @Inject WatchlistPositionCacheRx watchlistPositionCache;
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
@@ -69,90 +78,168 @@ public class WatchlistEditFragment extends DashboardFragment
         return new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE));
     }
 
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        securityKeyId = getSecurityId(getArguments());
+    }
+
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.edit_watchlist_item_layout, container, false);
-        initViews(view);
-        securityKeyId = getSecurityId(getArguments());
-        return view;
+        return inflater.inflate(R.layout.edit_watchlist_item_layout, container, false);
     }
 
-    private void initViews(@NonNull View view)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
-        securityLogo = (ImageView) view.findViewById(R.id.edit_watchlist_item_security_logo);
-        securityTitle = (TextView) view.findViewById(R.id.edit_watchlist_item_security_name);
-        securityDesc = (TextView) view.findViewById(R.id.edit_watchlist_item_security_desc);
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
+        securityTitle.setText(SecurityUtils.getDisplayableSecurityName(securityKeyId));
+        fetchRequisite();
+    }
 
-        watchPrice = (TextView) view.findViewById(R.id.edit_watchlist_item_security_price);
+    @Override public void onStop()
+    {
+        DeviceUtil.dismissKeyboard(watchPrice);
+        super.onStop();
+    }
 
-        watchAction = (TextView) view.findViewById(R.id.edit_watchlist_item_done);
-        if (watchAction != null)
+    @Override public void onDestroyView()
+    {
+        picasso.get().cancelRequest(securityLogo);
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
+    protected void fetchRequisite()
+    {
+        onDestroyViewSubscriptions.add(
+                Observable.combineLatest(
+                        watchlistPositionCache.get(securityKeyId)
+                                .map(new PairGetSecond<SecurityId, WatchlistPositionDTO>())
+                                .startWith(Observable.<WatchlistPositionDTO>just(null))
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnNext(
+                                        new Action1<WatchlistPositionDTO>()
+                                        {
+                                            @Override public void call(@Nullable WatchlistPositionDTO watchlistPositionDTO)
+                                            {
+                                                display(watchlistPositionDTO);
+                                            }
+                                        }),
+                        securityCompactCache.getOne(securityKeyId)
+                                .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnNext(new Action1<SecurityCompactDTO>()
+                                {
+                                    @Override public void call(@NonNull SecurityCompactDTO securityCompactDTO)
+                                    {
+                                        display(securityCompactDTO);
+                                    }
+                                }),
+                        new Func2<WatchlistPositionDTO, SecurityCompactDTO, Pair<WatchlistPositionDTO, SecurityCompactDTO>>()
+                        {
+                            @Override public Pair<WatchlistPositionDTO, SecurityCompactDTO> call(
+                                    @Nullable WatchlistPositionDTO watchlistPositionDTO,
+                                    @NonNull SecurityCompactDTO securityCompactDTO)
+                            {
+                                return Pair.create(watchlistPositionDTO, securityCompactDTO);
+                            }
+                        })
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                new Action1<Pair<WatchlistPositionDTO, SecurityCompactDTO>>()
+                                {
+                                    @Override public void call(Pair<WatchlistPositionDTO, SecurityCompactDTO> pair)
+                                    {
+                                        display(pair.first, pair.second);
+                                    }
+                                },
+                                new ToastOnErrorAction())
+        );
+    }
+
+    protected void display(@Nullable WatchlistPositionDTO watchlistPositionDTO)
+    {
+        this.watchlistPositionDTO = watchlistPositionDTO;
+        deleteButton.setEnabled(watchlistPositionDTO != null);
+        setActionBarTitle(watchlistPositionDTO != null
+                ? R.string.watchlist_edit_title
+                : R.string.watchlist_add_title);
+        analytics.addEvent(new SimpleEvent(watchlistPositionDTO != null
+                ? AnalyticsConstants.Watchlist_Edit
+                : AnalyticsConstants.Watchlist_Add));
+    }
+
+    protected void display(@NonNull SecurityCompactDTO securityCompactDTO)
+    {
+        this.securityCompactDTO = securityCompactDTO;
+        doneButton.setEnabled(true);
+        securityDesc.setText(securityCompactDTO.name);
+
+        if (securityCompactDTO.imageBlobUrl != null)
         {
-            watchAction.setEnabled(false);
-            watchAction.setOnClickListener(createOnWatchButtonClickedListener());
+            picasso.get()
+                    .load(securityCompactDTO.imageBlobUrl)
+                    .transform(new WhiteToTransparentTransformation())
+                    .into(securityLogo);
         }
-        deleteButton = (TextView) view.findViewById(R.id.edit_watchlist_item_delete);
-        if (deleteButton != null)
+        else
         {
-            deleteButton.setOnClickListener(createOnDeleteButtonClickedListener());
-        }
-
-        checkDeleteButtonEnable();
-    }
-
-    private void checkDeleteButtonEnable()
-    {
-        if (securityKeyId != null)
-        {
-            WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().getCachedValue(securityKeyId);
-            deleteButton.setEnabled(watchlistPositionDTO != null);
+            securityLogo.setImageResource(securityCompactDTO.getExchangeLogoId());
+            securityLogo.setVisibility(View.VISIBLE);
         }
     }
 
-    @NonNull private View.OnClickListener createOnWatchButtonClickedListener()
+    protected void display(@Nullable WatchlistPositionDTO watchlistPositionDTO, @NonNull SecurityCompactDTO securityCompactDTO)
     {
-        return new View.OnClickListener()
-        {
-            @Override public void onClick(View v)
-            {
-                DeviceUtil.dismissKeyboard(getView());
-                handleWatchButtonClicked();
-            }
-        };
+        Double price = (watchlistPositionDTO != null && watchlistPositionDTO.watchlistPriceRefCcy != null)
+                ? watchlistPositionDTO.watchlistPriceRefCcy
+                : securityCompactDTO.lastPrice != null
+                        ? securityCompactDTO.lastPrice
+                        : null;
+        THSignedNumber number = price != null
+                ? THSignedNumber.builder(price).build()
+                : null;
+        watchPrice.setText(number != null ? number.toString() : "");
     }
 
-    private void handleWatchButtonClicked()
+    @NonNull private ProgressDialog showUpdatingProgress()
     {
-        final ProgressDialog progressDialog = showProgressBarOld();
+        return ProgressDialog.show(
+                getActivity(),
+                getString(R.string.alert_dialog_please_wait),
+                getString(R.string.watchlist_updating),
+                true);
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.edit_watchlist_item_done) void handleDoneButtonClicked(View view)
+    {
+        DeviceUtil.dismissKeyboard(watchPrice);
+        doneButton.setEnabled(false);
+        deleteButton.setEnabled(false);
+        final ProgressDialog progressDialog = showUpdatingProgress();
         try
         {
             double price = Double.parseDouble(watchPrice.getText().toString());
-            int quantity = 1;
-            if (quantity == 0)
-            {
-                throw new Exception(getString(R.string.watchlist_quantity_should_not_be_zero));
-            }
             // add new watchlist
-            WatchlistPositionFormDTO watchPositionItemForm = new WatchlistPositionFormDTO(securityCompactDTO.id, price, quantity);
+            WatchlistPositionFormDTO watchPositionItemForm = new WatchlistPositionFormDTO(securityCompactDTO.id, price, 1);
 
-            WatchlistPositionDTO existingWatchlistPosition = watchlistPositionCache.get().getCachedValue(securityCompactDTO.getSecurityId());
             Observable<WatchlistPositionDTO> updateObservable;
-            if (existingWatchlistPosition != null)
+            if (watchlistPositionDTO != null)
             {
                 updateObservable = watchlistServiceWrapper.updateWatchlistEntryRx(
-                        existingWatchlistPosition.getPositionCompactId(),
+                        watchlistPositionDTO.getPositionCompactId(),
                         watchPositionItemForm);
             }
             else
             {
                 updateObservable = watchlistServiceWrapper.createWatchlistEntryRx(watchPositionItemForm);
             }
-            Action0 closeDialogAction = new DismissDialogAction0(progressDialog);
-            onStopSubscriptions.add(AppObservable.bindFragment(this, updateObservable)
+            onDestroyViewSubscriptions.add(AppObservable.bindFragment(this, updateObservable)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnUnsubscribe(closeDialogAction)
-                    .finallyDo(closeDialogAction)
-                    .subscribe(createWatchlistUpdateObserver()));
+                    .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
+                    .subscribe(new WatchlistEditObserver()));
         } catch (NumberFormatException ex)
         {
             THToast.show(getString(R.string.wrong_number_format));
@@ -163,205 +250,58 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    private ProgressDialog showProgressBarOld()
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.edit_watchlist_item_delete) void handleButtonDeleteClicked(View view)
     {
-        return ProgressDialog.show(
-                getActivity(),
-                getString(R.string.alert_dialog_please_wait),
-                getString(R.string.watchlist_updating),
-                true);
-    }
-
-    @NonNull private View.OnClickListener createOnDeleteButtonClickedListener()
-    {
-        return new View.OnClickListener()
-        {
-            @Override public void onClick(View v)
-            {
-                DeviceUtil.dismissKeyboard(getView());
-                handleButtonDeleteClicked();
-            }
-        };
-    }
-
-    private void handleButtonDeleteClicked()
-    {
-        WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().getCachedValue(securityKeyId);
-        if (watchlistPositionDTO != null)
-        {
-            final ProgressDialog progressDialog = showProgressBarOld();
-            Action0 closeDialogAction = new DismissDialogAction0(progressDialog);
-            onStopSubscriptions.add(AppObservable.bindFragment(
-                    this,
-                    watchlistServiceWrapper.deleteWatchlistRx(watchlistPositionDTO.getPositionCompactId()))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnUnsubscribe(closeDialogAction)
-                    .finallyDo(closeDialogAction)
-                    .subscribe(createWatchlistDeleteObserver()));
-        }
-        else
-        {
-            THToast.show(R.string.error_fetch_portfolio_watchlist);
-        }
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-
-        if (watchlistPositionCache.get().getCachedValue(securityKeyId) != null)
-        {
-            setActionBarTitle(getString(R.string.watchlist_edit_title));
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_Edit));
-        }
-        else
-        {
-            setActionBarTitle(getString(R.string.watchlist_add_title));
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_Add));
-        }
-        querySecurity(securityKeyId);
-        displaySecurityTitle();
-        checkDeleteButtonEnable();
-
-    }
-
-    private void displaySecurityTitle()
-    {
-        if (securityTitle != null)
-        {
-            securityTitle.setText(SecurityUtils.getDisplayableSecurityName(securityKeyId));
-        }
-    }
-
-    private void querySecurity(@NonNull SecurityId securityId)
-    {
-        final ProgressDialog progressDialog = ProgressDialog.show(
-                getActivity(),
-                getString(R.string.alert_dialog_please_wait),
-                getString(R.string.loading_loading),
-                true);
-
-        DismissDialogAction0 closeDialogAction = new DismissDialogAction0(progressDialog);
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
-                securityCompactCache.get(securityId))
-                .take(1)
+        DeviceUtil.dismissKeyboard(watchPrice);
+        doneButton.setEnabled(false);
+        deleteButton.setEnabled(false);
+        ProgressDialog progressDialog = showUpdatingProgress();
+        onDestroyViewSubscriptions.add(watchlistServiceWrapper.deleteWatchlistRx(watchlistPositionDTO.getPositionCompactId())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnUnsubscribe(closeDialogAction)
-                .finallyDo(closeDialogAction)
-                .subscribe(createSecurityCompactCacheObserver()));
+                .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
+                .subscribe(new WatchlistEditObserver()));
     }
 
-    private void linkWith(@NonNull SecurityCompactDTO securityCompactDTO, boolean andDisplay)
-    {
-        this.securityCompactDTO = securityCompactDTO;
-        watchAction.setEnabled(true);
-        if (andDisplay)
-        {
-            if (securityDesc != null)
-            {
-                securityDesc.setText(securityCompactDTO.name);
-            }
-
-            if (securityLogo != null)
-            {
-                if (securityCompactDTO.imageBlobUrl != null)
-                {
-                    picasso.get()
-                            .load(securityCompactDTO.imageBlobUrl)
-                            .transform(new WhiteToTransparentTransformation())
-                            .into(securityLogo);
-                }
-                else
-                {
-                    int exchangeId = securityCompactDTO.getExchangeLogoId();
-                    if (exchangeId != 0)
-                    {
-                        securityLogo.setImageResource(securityCompactDTO.getExchangeLogoId());
-                        securityLogo.setVisibility(View.VISIBLE);
-                    }
-                    else
-                    {
-                        securityLogo.setVisibility(View.GONE);
-                    }
-                }
-            }
-
-            WatchlistPositionDTO watchListItem = watchlistPositionCache.get().getCachedValue(securityCompactDTO.getSecurityId());
-            if (watchPrice != null)
-            {
-                watchPrice.setText(
-                        watchListItem != null ?
-                                "" + watchListItem.watchlistPriceRefCcy :
-                                securityCompactDTO.lastPrice != null ? securityCompactDTO.lastPrice.toString() : "");
-            }
-        }
-    }
-
-    @NonNull protected Observer<WatchlistPositionDTO> createWatchlistUpdateObserver()
-    {
-        return new WatchlistEditTHObserver();
-    }
-
-    @NonNull protected Observer<WatchlistPositionDTO> createWatchlistDeleteObserver()
-    {
-        return new WatchlistDeletedTHObserver();
-    }
-
-    //TODO this extends is better? maybe not alex
-    protected class WatchlistDeletedTHObserver extends WatchlistEditTHObserver
+    protected class WatchlistEditObserver implements Observer<WatchlistPositionDTO>
     {
         @Override public void onNext(WatchlistPositionDTO args)
         {
-            if (isResumed())
-            {
-                navigator.get().popFragment();
-            }
-        }
-    }
-
-    protected class WatchlistEditTHObserver implements Observer<WatchlistPositionDTO>
-    {
-        @Override public void onNext(WatchlistPositionDTO args)
-        {
-            if (navigator != null)
-            {
-                navigator.get().popFragment();
-            }
+            navigator.get().popFragment();
         }
 
         @Override public void onCompleted()
         {
+            display(watchlistPositionDTO);
+            if (securityCompactDTO != null)
+            {
+                display(securityCompactDTO);
+            }
         }
 
         @Override public void onError(Throwable e)
         {
+            display(watchlistPositionDTO);
+            if (securityCompactDTO != null)
+            {
+                display(securityCompactDTO);
+            }
             Timber.e(e, "Failed to update watchlist position");
             THToast.show(new THException(e));
         }
     }
 
-    @NonNull protected Observer<Pair<SecurityId, SecurityCompactDTO>> createSecurityCompactCacheObserver()
+    @SuppressWarnings("UnusedDeclaration")
+    @OnTextChanged(value = R.id.edit_watchlist_item_security_price, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
+    void handleNumberUpdated(Editable s)
     {
-        return new WatchlistEditSecurityCompactCacheObserver();
-    }
-
-    protected class WatchlistEditSecurityCompactCacheObserver implements Observer<Pair<SecurityId, SecurityCompactDTO>>
-    {
-        @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
+        try
         {
-            linkWith(pair.second, true);
-            Timber.e("richard call OnNext:" + pair.second.name);
-        }
-
-        @Override public void onCompleted()
+            double price = Double.parseDouble(s.toString());
+            doneButton.setEnabled(true);
+        } catch (NumberFormatException e)
         {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_security_info);
-            Timber.e("Failed to fetch SecurityCompact for", e);
+            doneButton.setEnabled(false);
         }
     }
 }
