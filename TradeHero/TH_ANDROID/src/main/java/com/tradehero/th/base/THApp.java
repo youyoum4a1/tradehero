@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
@@ -13,18 +12,13 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.tradehero.common.application.PApplication;
-import com.tradehero.common.log.CrashReportingTree;
-import com.tradehero.common.log.EasyDebugTree;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.BuildConfig;
 import com.tradehero.th.inject.BaseInjector;
 import com.tradehero.th.inject.ExInjector;
 import com.tradehero.th.models.level.UserXPAchievementHandler;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ImageUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import dagger.ObjectGraph;
@@ -51,7 +45,6 @@ public class THApp extends PApplication
         super.init();
 
         Timber.plant(createTimberTree());
-        Timber.plant(createCrashlyticsTree());
 
         buildObjectGraphAndInject();
 
@@ -101,16 +94,6 @@ public class THApp extends PApplication
         THLog.showDeveloperKeyHash(this);
     }
 
-    private Timber.Tree createCrashlyticsTree()
-    {
-        //noinspection PointlessBooleanExpression,ConstantConditions
-        if (!BuildConfig.IS_INTELLIJ)
-        {
-            Crashlytics.start(this);
-        }
-        return new CrashReportingTree();
-    }
-
     private void buildObjectGraphAndInject()
     {
         objectGraph = ObjectGraph.create(getModules());
@@ -120,13 +103,7 @@ public class THApp extends PApplication
 
     @NonNull protected Timber.Tree createTimberTree()
     {
-        return new EasyDebugTree()
-        {
-            @Override public String createTag()
-            {
-                return String.format("TradeHero-%s", super.createTag());
-            }
-        };
+        return TimberUtil.createTree(this);
     }
 
     protected Object[] getModules()

@@ -19,7 +19,6 @@ import android.widget.AbsListView;
 import android.widget.TabHost;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.crashlytics.android.Crashlytics;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnScrollViewOnScrollChangedListener;
@@ -112,7 +111,6 @@ import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -184,12 +182,7 @@ public class DashboardActivity extends BaseActivity
 
         super.onCreate(savedInstanceState);
 
-        if (Constants.RELEASE)
-        {
-            Crashlytics.setString(Constants.TH_CLIENT_TYPE,
-                    String.format("%s:%d", Constants.DEVICE_TYPE, Constants.TAP_STREAM_TYPE.type));
-            Crashlytics.setUserIdentifier("" + currentUserId.get());
-        }
+        ActivityBuildTypeUtil.setUpCrashReports(currentUserId.toUserBaseKey());
 
         appContainer.wrap(this);
 
@@ -687,7 +680,7 @@ public class DashboardActivity extends BaseActivity
         // for DEBUGGING purpose only
         Fragment currentFragmentName = navigator.getCurrentFragment();
         Timber.e(new RuntimeException("LowMemory " + currentFragmentName), "%s", currentFragmentName);
-        Crashlytics.setString("LowMemoryAt", new Date().toString());
+        ActivityBuildTypeUtil.flagLowMemory();
     }
 
     @Module(
