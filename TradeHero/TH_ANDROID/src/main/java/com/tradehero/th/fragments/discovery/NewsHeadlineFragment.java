@@ -1,7 +1,12 @@
 package com.tradehero.th.fragments.discovery;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -14,6 +19,8 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import butterknife.OnItemLongClick;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
@@ -74,6 +81,7 @@ public class NewsHeadlineFragment extends Fragment
     @InjectView(R.id.discovery_news_list) ListView mNewsListView;
     @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
 
+    private ClipboardManager clipboardManager;
     private Subscription newsSubscription;
     private PaginationInfoDTO lastPaginationInfoDTO;
     private ProgressBar mBottomLoadingView;
@@ -106,6 +114,23 @@ public class NewsHeadlineFragment extends Fragment
         }
     }
 
+    @SuppressWarnings("unused")
+    @OnItemLongClick(R.id.discovery_news_list) boolean handleNewsItemLongClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        try
+        {
+            NewsItemCompactDTO newsItemDTO = (NewsItemCompactDTO) ((NewsHeadlineViewLinear.DTO) parent.getItemAtPosition(position)).viewHolderDTO.discussionDTO;
+            ClipData clip = ClipData.newPlainText("Video id", String.format("newsId:%d, url:%s", newsItemDTO.id, newsItemDTO.url));
+            clipboardManager.setPrimaryClip(clip);
+            THToast.show("Id and url copied to clipboard");
+            return true;
+        } catch (Exception e)
+        {
+            Timber.e(e, "Error:" + parent.getItemAtPosition(position));
+            return false;
+        }
+    }
+
     @Inject NewsServiceWrapper newsServiceWrapper;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject RxLoaderManager rxLoaderManager;
@@ -113,12 +138,7 @@ public class NewsHeadlineFragment extends Fragment
 
     protected NewsItemListKey newsItemListKey;
 
-    public NewsHeadlineFragment()
-    {
-        super();
-    }
-
-    private NewsItemListKey newsItemListKeyFromNewsType(NewsType newsType)
+    @Nullable private NewsItemListKey newsItemListKeyFromNewsType(@NonNull NewsType newsType)
     {
         switch (newsType)
         {
@@ -135,7 +155,7 @@ public class NewsHeadlineFragment extends Fragment
         }
     }
 
-    public static NewsHeadlineFragment newInstance(NewsType newsType)
+    @NonNull public static NewsHeadlineFragment newInstance(@NonNull NewsType newsType)
     {
         NewsHeadlineFragment newsHeadlineFragment = new NewsHeadlineFragment();
         Bundle bundle = new Bundle();
@@ -158,6 +178,7 @@ public class NewsHeadlineFragment extends Fragment
                         return view;
                     }
                 };
+        clipboardManager = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -240,7 +261,7 @@ public class NewsHeadlineFragment extends Fragment
         activateNewsItemListView();
     }
 
-    private Observable<PaginationDTO> createPaginationObservable()
+    @NonNull private Observable<PaginationDTO> createPaginationObservable()
     {
         Observable<PaginationDTO> pullFromStartObservable = Observable.create(
                 new Observable.OnSubscribe<PaginationDTO>()
@@ -293,29 +314,28 @@ public class NewsHeadlineFragment extends Fragment
                 .startWith(new PaginationDTO(1, newsItemListKey.perPage));
     }
 
-    private Observable<List<NewsItemCompactDTO>> createNewsListKeyPaginationObservable()
+    @NonNull private Observable<List<NewsItemCompactDTO>> createNewsListKeyPaginationObservable()
     {
-        return PaginationObservable.createFromRange(paginationObservable, (Func1<PaginationDTO, Observable<List<NewsItemCompactDTO>>>)
-                        new Func1<PaginationDTO, Observable<List<NewsItemCompactDTO>>>()
-                        {
-                            @Override public Observable<List<NewsItemCompactDTO>> call(PaginationDTO key)
-                            {
-                                return newsServiceWrapper.getNewsRx(NewsItemListKeyHelper.copy(newsItemListKey, key))
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .flatMapIterable(new Func1<PaginatedDTO<NewsItemCompactDTO>, Iterable<? extends NewsItemCompactDTO>>()
-                                        {
-                                            @Override public Iterable<? extends NewsItemCompactDTO> call(
-                                                    PaginatedDTO<NewsItemCompactDTO> paginatedDTO)
-                                            {
-                                                lastPaginationInfoDTO =
-                                                        paginatedDTO.getPagination();
-                                                return paginatedDTO.getData();
-                                            }
-                                        })
-                                        .toList();
-                            }
-                        }
+        return PaginationObservable.createFromRange(paginationObservable, new Func1<PaginationDTO, Observable<List<NewsItemCompactDTO>>>()
+                {
+                    @Override public Observable<List<NewsItemCompactDTO>> call(PaginationDTO key)
+                    {
+                        return newsServiceWrapper.getNewsRx(NewsItemListKeyHelper.copy(newsItemListKey, key))
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .flatMapIterable(new Func1<PaginatedDTO<NewsItemCompactDTO>, Iterable<? extends NewsItemCompactDTO>>()
+                                {
+                                    @Override public Iterable<? extends NewsItemCompactDTO> call(
+                                            PaginatedDTO<NewsItemCompactDTO> paginatedDTO)
+                                    {
+                                        lastPaginationInfoDTO =
+                                                paginatedDTO.getPagination();
+                                        return paginatedDTO.getData();
+                                    }
+                                })
+                                .toList();
+                    }
+                }
         );
     }
 

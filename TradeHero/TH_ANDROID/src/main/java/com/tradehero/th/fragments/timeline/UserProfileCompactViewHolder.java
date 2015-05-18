@@ -1,5 +1,7 @@
 package com.tradehero.th.fragments.timeline;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -7,9 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -33,6 +37,7 @@ public class UserProfileCompactViewHolder
     @Inject protected Picasso picasso;
     protected UserProfileDTO userProfileDTO;
     @NonNull final PublishSubject<ButtonType> buttonClickedSubject;
+    private ClipboardManager clipboardManager;
 
     //<editor-fold desc="Constructors>
     public UserProfileCompactViewHolder(@NonNull Context context)
@@ -40,6 +45,7 @@ public class UserProfileCompactViewHolder
         super();
         buttonClickedSubject = PublishSubject.create();
         HierarchyInjector.inject(context, this);
+        clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
     }
     //</editor-fold>
 
@@ -128,6 +134,20 @@ public class UserProfileCompactViewHolder
     protected void notifyAchievementsClicked()
     {
         buttonClickedSubject.onNext(ButtonType.ACHIEVEMENTS);
+    }
+
+    @SuppressWarnings("unused")
+    @OnLongClick(R.id.user_profile_avatar)
+    protected boolean onAvatarClicked(View view)
+    {
+        if (userProfileDTO != null)
+        {
+            ClipData clip = ClipData.newPlainText(userProfileDTO.displayName + " id", String.format("%d", userProfileDTO.id));
+            clipboardManager.setPrimaryClip(clip);
+            THToast.show("UserId " + userProfileDTO.id + " copied to clipboard");
+            return true;
+        }
+        return false;
     }
 
     public enum ButtonType

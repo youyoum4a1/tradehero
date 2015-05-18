@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -28,18 +27,12 @@ import timber.log.Timber;
 
 public class NewsDiscussionFragment extends AbstractDiscussionFragment
 {
-    private static final String BUNDLE_KEY_TITLE_BACKGROUND_RES = NewsDiscussionFragment.class.getName() + ".title_bg";
     private static final String BUNDLE_KEY_SECURITY_SYMBOL = NewsDiscussionFragment.class.getName() + ".security_symbol";
     private static final String BUNDLE_KEY_IS_RETURNING = NewsDiscussionFragment.class.getName() + ".isReturning";
 
     @SuppressWarnings("unused") @Inject Context doNotRemoveOrItFails;
 
     protected SubscriptionList onDestroyViewSubscriptions;
-
-    public static void putBackgroundResId(@NonNull Bundle args, @DrawableRes int resId)
-    {
-        args.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
-    }
 
     public static void putSecuritySymbol(@NonNull Bundle args, @NonNull String symbol)
     {
@@ -137,20 +130,5 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)
     {
         // Nothing to do
-    }
-
-    private void setRandomBackground()
-    {
-        // TODO have to remove this hack, please!
-        int bgRes = getArguments().getInt(BUNDLE_KEY_TITLE_BACKGROUND_RES, 0);
-        if (bgRes != 0)
-        {
-            //newsView.setTitleBackground(bgRes);
-        }
-    }
-
-    private void resetViews()
-    {
-        // TODO
     }
 }
