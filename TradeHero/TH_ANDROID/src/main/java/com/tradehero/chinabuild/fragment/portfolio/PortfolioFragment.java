@@ -364,6 +364,7 @@ public class PortfolioFragment extends DashboardFragment {
         }
         else {
             if (getPositionsDTOKey != null && getPositionsDTOKey.isValid()) {
+                getPositionsDTOKey = new PerPagedLeaderboardMarkUserId((int) leaderboardUserMarkId, 1, perPage);
                 detachGetPositionsTask();
                 getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
                 getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, true);
@@ -378,6 +379,7 @@ public class PortfolioFragment extends DashboardFragment {
             getPositionDirectly(showUserBaseKey, currentPage);
         } else {
             if (getPositionsDTOKey != null && getPositionsDTOKey.isValid()) {
+                getPositionsDTOKey = new PerPagedLeaderboardMarkUserId((int) leaderboardUserMarkId, currentPage, perPage);
                 detachGetPositionsTask();
                 getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
                 getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, true);
