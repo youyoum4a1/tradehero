@@ -65,18 +65,15 @@ public class DiscussSendFragment extends DashboardFragment
     public static final String BUNDLE_KEY_REWARD = "bundle_key_reward";
     public static final String BUNDLE_KEY_IS_GO_REWARD = "bundle_key_is_go_reward";
 
-    @InjectView(R.id.btnAt) Button btnAt;
-    @InjectView(R.id.btnSelectStock) Button btnSelectStock;
     protected @InjectView(R.id.edtDiscussionPostContent) EditText discussionPostContent;
 
     @Inject RichTextCreator parser;
     private DiscussionKey discussionKey;
     private MiddleCallback<DiscussionDTO> discussionEditMiddleCallback;
-    private MiddleCallback<TimelineItemDTO> dicoveryEditMiddleCallback;
-    private ProgressDialog progressDialog;
+    public MiddleCallback<TimelineItemDTO> dicoveryEditMiddleCallback;
+    public ProgressDialog progressDialog;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
-    @Inject DiscussionCache discussionCache;
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
     @Inject SecurityCompactCache securityCompactCache;
@@ -104,7 +101,7 @@ public class DiscussSendFragment extends DashboardFragment
     private int rewardColorOrange;
     private String[] moneyList;
 
-    private boolean isSending = false;
+    public boolean isSending = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -120,7 +117,6 @@ public class DiscussSendFragment extends DashboardFragment
         setHeadViewMiddleMain("发布");
         setHeadViewRight0(getResources().getString(R.string.private_message_btn_send));
     }
-
 
     @Override public void onClickHeadRight0()
     {
@@ -220,7 +216,7 @@ public class DiscussSendFragment extends DashboardFragment
             if (args.containsKey(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE))
             {
                 DiscussionKey discussionKey = discussionKeyFactory.fromBundle(args.getBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE));
-                linkWith(discussionKey, true);
+                linkWith(discussionKey);
             }
         }
         if (selectionFragment != null)
@@ -242,7 +238,7 @@ public class DiscussSendFragment extends DashboardFragment
         super.onDetach();
     }
 
-    private void linkWith(DiscussionKey discussionKey, boolean andDisplay)
+    private void linkWith(DiscussionKey discussionKey)
     {
         this.discussionKey = discussionKey;
     }
@@ -265,14 +261,9 @@ public class DiscussSendFragment extends DashboardFragment
         }
     }
 
-    private boolean validateNotEmptyText()
+    public boolean validate()
     {
-        return !discussionPostContent.getText().toString().trim().isEmpty();
-    }
-
-    private boolean validate()
-    {
-        boolean notEmptyText = validateNotEmptyText();
+        boolean notEmptyText = !discussionPostContent.getText().toString().trim().isEmpty();
         if (!notEmptyText)
         {
             THToast.show(R.string.error_discussion_empty_post);
@@ -337,7 +328,7 @@ public class DiscussSendFragment extends DashboardFragment
             extraText = String.format(COMPETITION_FORMAT, ((UserCompetitionDTO) extraInput).name, ((UserCompetitionDTO) extraInput).id);
         }
 
-        Editable editable = null;
+        Editable editable;
         if(isReward){
             editable = rewardContentET.getText();
             String nonMarkUpText = extraText;
@@ -451,22 +442,6 @@ public class DiscussSendFragment extends DashboardFragment
         });
     }
 
-    //发布普通的自己的TIMELINE流入最新动态
-    protected void postDiscoveryDiscusstion()
-    {
-        if (validate())
-        {
-            isSending = true;
-            DiscoveryDiscussFormDTO discussionFormDTO = new DiscoveryDiscussFormDTO();
-            if (discussionFormDTO == null) return;
-            discussionFormDTO.text = unSpanText(discussionPostContent.getText()).toString();
-            unsetDiscoveryEditMiddleCallback();
-            progressDialog = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
-            dicoveryEditMiddleCallback = discussionServiceWrapper.createDiscoveryDiscussion(currentUserId.toUserBaseKey().key, discussionFormDTO,
-                    new DiscoveryDiscussionEditCallback());
-        }
-    }
-
     private void unsetDiscussionEditMiddleCallback()
     {
         if (discussionEditMiddleCallback != null)
@@ -476,7 +451,7 @@ public class DiscussSendFragment extends DashboardFragment
         discussionEditMiddleCallback = null;
     }
 
-    private void unsetDiscoveryEditMiddleCallback()
+    public void unsetDiscoveryEditMiddleCallback()
     {
         if (dicoveryEditMiddleCallback != null)
         {
@@ -498,8 +473,6 @@ public class DiscussSendFragment extends DashboardFragment
             }
             DeviceUtil.dismissKeyboard(getActivity());
             getDashboardNavigator().popFragment();
-
-
         }
 
         @Override public void failure(RetrofitError error)
@@ -514,32 +487,6 @@ public class DiscussSendFragment extends DashboardFragment
             {
                 progressDialog.hide();
             }
-        }
-    }
-
-    private class DiscoveryDiscussionEditCallback implements Callback<TimelineItemDTO>
-    {
-        @Override public void success(TimelineItemDTO discussionDTO, Response response)
-        {
-            onFinish();
-            DeviceUtil.dismissKeyboard(getActivity());
-            getDashboardNavigator().popFragment();
-        }
-
-        @Override public void failure(RetrofitError error)
-        {
-            onFinish();
-            THToast.show(new THException(error));
-        }
-
-        private void onFinish()
-        {
-            if (progressDialog != null)
-            {
-                progressDialog.hide();
-            }
-
-            isSending = false;
         }
     }
 

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.tradehero.chinabuild.data.SecurityPositionItem;
 import com.tradehero.chinabuild.data.WatchPositionItem;
-import com.tradehero.chinabuild.fragment.search.SearchUniteFragment;
+import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
@@ -124,7 +124,7 @@ public class CNPersonTradePositionListAdapter extends BaseExpandableListAdapter 
                     @Override
                     public void onClick(View view) {
                         Bundle args = new Bundle();
-                        args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, SearchUniteFragment.class.getName());
+                        args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, SearchUnitFragment.class.getName());
                         ActivityHelper.launchDashboard(activity, args);
                     }
                 });

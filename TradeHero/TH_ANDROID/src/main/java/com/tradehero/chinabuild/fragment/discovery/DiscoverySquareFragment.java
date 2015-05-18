@@ -48,7 +48,6 @@ import java.util.TimerTask;
  */
 public class DiscoverySquareFragment extends DashboardFragment implements View.OnClickListener
 {
-
     //Square Reward Views
     private LinearLayout rewardLL;
     private TextView numberOfRewardTV;
@@ -71,7 +70,6 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
     @InjectView(R.id.rlTopBanner) RelativeLayout rlTopBanner;
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) CirclePageIndicator indicator;
-    @InjectView(R.id.btnBannerClose) Button btnBannerClose;
     private List<View> views = new ArrayList();
     private Timer timer;
 
@@ -128,7 +126,6 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
         stopTimer();
         super.onDestroyView();
     }
-
 
     @Override
     public void onClick(View view)
@@ -226,13 +223,13 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
     PagerAdapter pageAdapter = new PagerAdapter()
     {
         @Override
-        public void destroyItem(View container, int position, Object object)
+        public void destroyItem(ViewGroup container, int position, Object object)
         {
             ((ViewPager) container).removeView(views.get(position));
         }
 
         @Override
-        public Object instantiateItem(View container, int position)
+        public Object instantiateItem(ViewGroup container, int position)
         {
             ((ViewPager) container).addView(views.get(position));
             return views.get(position);
@@ -250,8 +247,6 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
             return (views == null) ? 0 : views.size();
         }
     };
-
-
 
     public void stopTimer() {
         if (timer != null) {

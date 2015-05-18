@@ -168,7 +168,7 @@ public class TradeOfMineFragment extends DashboardFragment
         mRefreshView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                enterSettingPage();
+                gotoDashboard(SettingMineFragment.class, new Bundle());
             }
         });
         roiTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_rateofreturn);
@@ -601,10 +601,5 @@ public class TradeOfMineFragment extends DashboardFragment
         gotoMineIV.setVisibility(View.GONE);
         gotoMineTV.setVisibility(View.VISIBLE);
         gotoMineTV.setText(String.valueOf(count));
-    }
-
-
-    private void enterSettingPage(){
-        gotoDashboard(SettingMineFragment.class.getName());
     }
 }

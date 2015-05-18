@@ -46,12 +46,6 @@ public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPage
         indicator.setOutsideListener(this);
     }
 
-    @Override public void onDestroyView()
-    {
-        ButterKnife.reset(this);
-        super.onDestroyView();
-    }
-
     private static final String[] CONTENT = new String[] {" 推荐榜 ", " 人气榜 ", " 土豪榜 "};
 
     class CustomAdapter extends FragmentPagerAdapter

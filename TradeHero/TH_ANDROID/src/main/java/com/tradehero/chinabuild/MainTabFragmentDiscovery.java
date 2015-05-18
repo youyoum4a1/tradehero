@@ -8,7 +8,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -17,12 +16,11 @@ import com.tradehero.chinabuild.fragment.discovery.DiscoverySquareFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoveryStockGodNewsFragment;
 import com.tradehero.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.chinabuild.fragment.message.DiscussSendFragment;
-import com.tradehero.th.R;
 import com.tradehero.metrics.Analytics;
+import com.tradehero.th.R;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
-
 import javax.inject.Inject;
 
 
@@ -30,11 +28,9 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
 {
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) TabPageIndicator indicator;
-    private FragmentPagerAdapter adapter;
-
-    @InjectView(R.id.tvCreateTimeLine) TextView tvCreateTimeLine;
 
     @Inject Analytics analytics;
+    private FragmentPagerAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -53,15 +49,7 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
         indicator.setViewPager(pager);
     }
 
-    @Override public void onDestroyView()
-    {
-        ButterKnife.reset(this);
-        super.onDestroyView();
-    }
-
-    private static final String[] CONTENT = new String[] {"广场"
-              , "股神动态"
-    };
+    private static final String[] CONTENT = new String[] {"广场", "股神动态"};
 
     @Override
     public void onPageScrolled(int i, float v, int i2) {

@@ -8,22 +8,20 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.chinabuild.fragment.AbsBaseFragment;
-import com.tradehero.chinabuild.fragment.search.SearchUniteFragment;
+import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.fragment.trade.TradeOfChinaConceptFragment;
 import com.tradehero.chinabuild.fragment.trade.TradeOfHotHoldFragment;
 import com.tradehero.chinabuild.fragment.trade.TradeOfMineFragment;
 import com.tradehero.chinabuild.fragment.trade.TradeOfRisePercentFragment;
-import com.tradehero.th.R;
 import com.tradehero.metrics.Analytics;
+import com.tradehero.th.R;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
-
 import javax.inject.Inject;
 
 public class MainTabFragmentTrade extends AbsBaseFragment implements ViewPager.OnPageChangeListener
@@ -31,12 +29,9 @@ public class MainTabFragmentTrade extends AbsBaseFragment implements ViewPager.O
 
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) TabPageIndicator indicator;
-    @InjectView(R.id.imgSearch) ImageView imgSearch;
-    private FragmentPagerAdapter adapter;
 
     @Inject Analytics analytics;
-
-    public static final String TAG = "main_tab_fragment_trade";
+    private FragmentPagerAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -66,21 +61,14 @@ public class MainTabFragmentTrade extends AbsBaseFragment implements ViewPager.O
     public void onSearchClicked()
     {
         analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_SEARCH));
-        gotoDashboard(SearchUniteFragment.class.getName());
+        gotoDashboard(SearchUnitFragment.class.getName(), new Bundle());
     }
 
-    @Override public void onDestroyView()
-    {
-        ButterKnife.reset(this);
-        super.onDestroyView();
-    }
     private static final String[] CONTENT = new String[] {"我的交易", "热门持有", "涨幅榜单", "中国概念"};
 
     @Override public void onPageScrolled(int i, float v, int i2)
     {
     }
-
-
 
     @Override public void onPageSelected(int i)
     {

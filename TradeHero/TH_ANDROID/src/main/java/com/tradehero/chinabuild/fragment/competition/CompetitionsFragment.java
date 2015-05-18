@@ -183,7 +183,7 @@ public class CompetitionsFragment extends DashboardFragment {
     @OnClick(R.id.llCompetitionAdv)
     public void onCompetitionAdvClicked()
     {
-        gotoDashboard(CompetitionDetailFragment.class.getName());
+        gotoDashboard(CompetitionDetailFragment.class, new Bundle());
     }
 
     @Override public void onDestroyView()

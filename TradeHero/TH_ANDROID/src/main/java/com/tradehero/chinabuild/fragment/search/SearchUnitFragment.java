@@ -72,9 +72,8 @@ import java.util.List;
 /*
    整合搜索
  */
-public class SearchUniteFragment extends DashboardFragment
+public class SearchUnitFragment extends DashboardFragment
 {
-
     public static final String BUNDLE_DEFAULT_TAB_PAGE = "bundle_default_tab_page";
 
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
@@ -98,7 +97,6 @@ public class SearchUniteFragment extends DashboardFragment
 
     @InjectView(R.id.tvSearch) TextView tvSearch;
     @InjectView(R.id.edtSearchInput) EditText tvSearchInput;
-    @InjectView(R.id.btn_search_x) Button btnSearch_x;
 
     private SearchHotSecurityListType keyHot;
     private SearchSecurityListType keySearch;
