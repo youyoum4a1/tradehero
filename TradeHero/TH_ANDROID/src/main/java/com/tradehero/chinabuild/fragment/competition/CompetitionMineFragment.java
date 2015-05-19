@@ -314,13 +314,13 @@ public class CompetitionMineFragment extends DashboardFragment {
 
     private PagerAdapter pageAdapter = new PagerAdapter() {
         @Override
-        public void destroyItem(View container, int position, Object object) {
-            ((ViewPager) container).removeView(views.get(position));
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView(views.get(position));
         }
 
         @Override
-        public Object instantiateItem(View container, int position) {
-            ((ViewPager) container).addView(views.get(position));
+        public Object instantiateItem(ViewGroup container, int position) {
+            container.addView(views.get(position));
             return views.get(position);
         }
 
