@@ -18,7 +18,7 @@
             android:id="@+id/btnEmptyAction"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="@color/th_white"
             android:textSize="15sp"
             android:layout_marginTop="30dp"
             android:background="@drawable/button_xml"

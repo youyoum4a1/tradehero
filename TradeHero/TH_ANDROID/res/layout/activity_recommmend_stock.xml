@@ -108,7 +108,7 @@
             <Button android:layout_width="0dp" android:layout_height="wrap_content"
                     android:id="@+id/button_recommend_follow"
                     android:text="@string/recommend_follow"
-                    android:textColor="@color/white"
+                    android:textColor="@color/th_white"
                     android:layout_weight="4"
                     android:gravity="center"
                     android:background="@drawable/basic_red_selector_round_corner"

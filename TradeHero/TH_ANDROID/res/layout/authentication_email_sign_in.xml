@@ -34,7 +34,7 @@
 
     <ImageView
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="1px"
             android:layout_marginLeft="15dp"
             android:background="#bfbfbf"/>
 
@@ -91,7 +91,7 @@
                 android:background="@drawable/basic_red_selector_round_corner"
                 android:text="@string/authentication_login"
                 android:gravity="center"
-                android:textColor="@color/white"
+                android:textColor="@color/th_white"
                 android:textSize="17sp"/>
         <View
                 android:layout_width="0dp"

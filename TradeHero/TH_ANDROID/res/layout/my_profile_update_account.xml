@@ -79,7 +79,7 @@
         android:layout_weight="4"
         android:background="@drawable/basic_red_selector_round_corner"
         android:text="@string/update"
-        android:textColor="@color/white"
+        android:textColor="@color/th_white"
         android:textSize="@dimen/text_xlarge"
         android:textStyle="bold"/>
     <View

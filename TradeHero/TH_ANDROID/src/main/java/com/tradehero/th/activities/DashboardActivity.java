@@ -122,9 +122,6 @@ public class DashboardActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        if (navigator != null) {
-            navigator.onDestroy();
-        }
         navigator = null;
 
         if (currentActivityHolder != null) {
