@@ -231,9 +231,6 @@
   </style>
 
   <style name="TH.SeekBar" parent="android:Widget.Holo.Light.SeekBar">
-    <item name="android:thumbOffset">16dip</item>
-    <item name="paddingStart">0dp</item>
-    <item name="paddingEnd">16dip</item>
   </style>
 
   <style name="TH.Btn_Invite_Action">

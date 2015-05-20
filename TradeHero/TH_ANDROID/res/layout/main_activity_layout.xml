@@ -1,171 +1,213 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dashboard_background_color"
-    >
+    android:background="@color/dashboard_background_color">
 
-  <LinearLayout
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
-      android:orientation="vertical">
-
-    <FrameLayout
-        android:id="@+id/realtabcontent"
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"/>
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
 
-    <android.support.v4.app.FragmentTabHost
-        android:id="@android:id/tabhost"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-
-      <LinearLayout
-          android:id="@+id/llMainTab"
-          android:layout_width="fill_parent"
-          android:paddingLeft="10dp"
-          android:paddingRight="10dp"
-          android:layout_height="60dp"
-          android:background="@drawable/tab_menu_bg"
-          android:orientation="horizontal"
-          >
-        <LinearLayout
-            android:id="@+id/llTabTrade"
-            android:orientation="vertical"
-            android:layout_weight="1.0"
-            android:gravity="center"
+        <FrameLayout
+            android:id="@+id/realtabcontent"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-          <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/imgTabMenu0"
-                style="@style/navigation_icon"
-                android:background="@drawable/tab_menu0_normal"
-                android:layout_centerHorizontal="true"
-                android:focusable="false"/>
-            <ImageView android:layout_width="8dp" android:layout_height="8dp"
-                android:id="@+id/imageview_main_tab0_record"
-                android:background="@drawable/icon_bg_count"
-                android:layout_alignTop="@id/imgTabMenu0"
-                android:layout_alignRight="@id/imgTabMenu0"/>
-          </RelativeLayout>
-          <TextView
-              android:id="@+id/tvTabMenu0"
-              style="@style/navigation_text"
-              android:text="@string/tab_main_trade"/>
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/llTabStockGod"
-            android:orientation="vertical"
-            android:layout_weight="1.0"
-            android:gravity="center"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-          <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/imgTabMenu1"
-                style="@style/navigation_icon"
-                android:background="@drawable/tab_menu1_normal"
-                android:layout_centerHorizontal="true"
-                android:focusable="false"/>
-            <ImageView android:layout_width="8dp" android:layout_height="8dp"
-                android:background="@drawable/icon_bg_count"
-                android:layout_alignTop="@id/imgTabMenu1"
-                android:visibility="invisible"
-                android:layout_alignRight="@id/imgTabMenu1"/>
-          </RelativeLayout>
-          <TextView
-              android:id="@+id/tvTabMenu1"
-              style="@style/navigation_text"
-              android:text="@string/tab_main_stock_god"/>
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/llTabDiscovery"
-            android:orientation="vertical"
-            android:layout_weight="1.0"
-            android:gravity="center"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-          <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/imgTabMenu2"
-                style="@style/navigation_icon"
-                android:background="@drawable/tab_menu2_normal"
-                />
-            <ImageView android:layout_width="8dp" android:layout_height="8dp"
-                android:id="@+id/imageview_main_tab2_record"
-                android:background="@drawable/icon_bg_count"
-                android:layout_alignTop="@id/imgTabMenu2"
-                android:layout_alignRight="@id/imgTabMenu2"/>
-          </RelativeLayout>
-          <TextView
-              android:id="@+id/tvTabMenu2"
-              style="@style/navigation_text"
-              android:text="@string/tab_main_descovery"/>
-        </LinearLayout>
+            android:layout_height="0dip"
+            android:layout_weight="1" />
 
-        <LinearLayout
-            android:id="@+id/llTabLearning"
-            android:orientation="vertical"
-            android:layout_weight="1.0"
-            android:gravity="center"
+        <android.support.v4.app.FragmentTabHost
+            android:id="@android:id/tabhost"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-          <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/imgTabMenu3"
-                style="@style/navigation_icon"
-                android:background="@drawable/tab_menu3_normal"
-                android:layout_centerHorizontal="true"
-                android:focusable="false"/>
-            <ImageView android:layout_width="8dp" android:layout_height="8dp"
-                android:id="@+id/imageview_main_tab3_record"
-                android:background="@drawable/icon_bg_count"
-                android:visibility="invisible"
-                android:layout_alignTop="@id/imgTabMenu3"
-                android:layout_alignRight="@id/imgTabMenu3"/>
-          </RelativeLayout>
-          <TextView
-              android:id="@+id/tvTabMenu3"
-              style="@style/navigation_text"
-              android:text="@string/tab_main_learning"/>
-        </LinearLayout>
-          <LinearLayout
-                  android:id="@+id/llTabCompetition"
-                  android:orientation="vertical"
-                  android:gravity="center"
-                  android:layout_weight="1.0"
-                  android:layout_width="fill_parent"
-                  android:layout_height="fill_parent">
-              <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
-                  <ImageView
-                          android:id="@+id/imgTabMenu4"
-                          style="@style/navigation_icon"
-                          android:background="@drawable/tab_menu5_normal"
-                          />
-                  <ImageView android:layout_width="8dp" android:layout_height="8dp"
-                             android:id="@+id/imageview_main_tab4_record"
-                             android:background="@drawable/icon_bg_count"
-                             android:layout_alignTop="@id/imgTabMenu4"
-                             android:layout_alignRight="@id/imgTabMenu4"/>
-              </RelativeLayout>
-              <TextView
-                      android:id="@+id/tvTabMenu4"
-                      style="@style/navigation_text"
-                      android:text="@string/tab_main_competition"/>
-          </LinearLayout>
-      </LinearLayout>
-    </android.support.v4.app.FragmentTabHost>
-  </LinearLayout>
+            android:layout_height="wrap_content">
 
-  <LinearLayout android:id="@+id/linearlayout_guide" android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:visibility="gone"
-      android:background="#4c000000"
-      android:orientation="horizontal"/>
+
+            <LinearLayout
+                android:id="@+id/llMainTab"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/tab_menu_bg"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+                <LinearLayout
+                    android:id="@+id/llTabTrade"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1.0"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/imgTabMenu0"
+                            style="@style/navigation_icon"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/tab_menu0_normal"
+                            android:focusable="false" />
+
+                        <ImageView
+                            android:id="@+id/imageview_main_tab0_record"
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+                            android:layout_alignRight="@id/imgTabMenu0"
+                            android:layout_alignTop="@id/imgTabMenu0"
+                            android:background="@drawable/icon_bg_count" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tvTabMenu0"
+                        style="@style/navigation_text"
+                        android:text="@string/tab_main_trade" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llTabStockGod"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1.0"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/imgTabMenu1"
+                            style="@style/navigation_icon"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/tab_menu1_normal"
+                            android:focusable="false" />
+
+                        <ImageView
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+                            android:layout_alignRight="@id/imgTabMenu1"
+                            android:layout_alignTop="@id/imgTabMenu1"
+                            android:background="@drawable/icon_bg_count"
+                            android:visibility="invisible" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tvTabMenu1"
+                        style="@style/navigation_text"
+                        android:text="@string/tab_main_stock_god" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llTabDiscovery"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1.0"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/imgTabMenu2"
+                            style="@style/navigation_icon"
+                            android:background="@drawable/tab_menu2_normal" />
+
+                        <ImageView
+                            android:id="@+id/imageview_main_tab2_record"
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+                            android:layout_alignRight="@id/imgTabMenu2"
+                            android:layout_alignTop="@id/imgTabMenu2"
+                            android:background="@drawable/icon_bg_count" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tvTabMenu2"
+                        style="@style/navigation_text"
+                        android:text="@string/tab_main_descovery" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llTabCompetition"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1.0"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/imgTabMenu4"
+                            style="@style/navigation_icon"
+                            android:background="@drawable/tab_menu5_normal" />
+
+                        <ImageView
+                            android:id="@+id/imageview_main_tab4_record"
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+                            android:layout_alignRight="@id/imgTabMenu4"
+                            android:layout_alignTop="@id/imgTabMenu4"
+                            android:background="@drawable/icon_bg_count" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tvTabMenu4"
+                        style="@style/navigation_text"
+                        android:text="@string/tab_main_competition" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llTabLearning"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1.0"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/imgTabMenu3"
+                            style="@style/navigation_icon"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/tab_menu3_normal"
+                            android:focusable="false" />
+
+                        <ImageView
+                            android:id="@+id/imageview_main_tab3_record"
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+                            android:layout_alignRight="@id/imgTabMenu3"
+                            android:layout_alignTop="@id/imgTabMenu3"
+                            android:background="@drawable/icon_bg_count"
+                            android:visibility="invisible" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tvTabMenu3"
+                        style="@style/navigation_text"
+                        android:text="@string/tab_main_learning" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </android.support.v4.app.FragmentTabHost>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout_guide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#4c000000"
+        android:orientation="horizontal"
+        android:visibility="gone" />
 </RelativeLayout>
 
 
