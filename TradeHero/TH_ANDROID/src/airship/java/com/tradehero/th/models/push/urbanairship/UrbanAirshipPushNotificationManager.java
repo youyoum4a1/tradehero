@@ -88,7 +88,7 @@ import timber.log.Timber;
                         Timber.i("My UrbanAirship Application Channel ID: %s", channelId);
                         uAirship.getPushManager().setPushEnabled(true);
 
-                        registerActions();
+                        registerActions(uAirship.getActionRegistry());
 
                         final InitialisationCompleteDTO initialisationCompleteDTO = new InitialisationCompleteDTO(channelId, uAirship);
                         Timber.d("UrbanAirship Initialisation %d milliseconds", (System.nanoTime() - before) / 1000000);
@@ -133,14 +133,14 @@ import timber.log.Timber;
                 });
     }
 
-    private void registerActions()
+    private void registerActions(@NonNull ActionRegistry actionRegistry)
     {
-        ActionRegistry.shared().registerAction(
+        actionRegistry.registerAction(
                 new Action()
                 {
-                    @Override public ActionResult perform(String s, ActionArguments actionArguments)
+                    @Override public ActionResult perform(ActionArguments actionArguments)
                     {
-                        Timber.e(new Exception("Reporting"), "s is %s, argument are %s", s,
+                        Timber.e(new Exception("Reporting"), "argument are %s",
                                 actionArguments);
                         return ActionResult.newEmptyResult();
                     }
