@@ -21,8 +21,6 @@ public class FriendlyUrlConnectionClient extends UrlConnectionClient
     {
         super();
         this.context = context;
-
-        HttpsURLConnection.setDefaultHostnameVerifier(new NullHostNameVerifier());
         enableHttpResponseCache();
     }
 
@@ -43,15 +41,5 @@ public class FriendlyUrlConnectionClient extends UrlConnectionClient
         {
             Timber.e("Response cache is not available", httpResponseCacheNotAvailable);
         }
-    }
-
-    @Override protected HttpURLConnection openConnection(Request request) throws IOException
-    {
-        HttpURLConnection connection = super.openConnection(request);
-        if (connection instanceof HttpsURLConnection)
-        {
-            ((HttpsURLConnection) connection).setSSLSocketFactory(NetworkUtils.createBadSslSocketFactory());
-        }
-        return connection;
     }
 }
