@@ -8,17 +8,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import com.tradehero.th.R;
 
 public final class NewsPagerFragment extends Fragment
@@ -40,7 +37,7 @@ public final class NewsPagerFragment extends Fragment
 
         mViewPager.setAdapter(new DiscoveryNewsFragmentAdapter(this.getChildFragmentManager()));
         newsSpinner.setAdapter(new NewsSpinnerAdapter(getActivity(),
-                new NewsType[] { NewsType.SeekingAlpha, NewsType.MotleyFool, NewsType.Region, NewsType.Global}));
+                new NewsType[] {NewsType.SeekingAlpha, NewsType.MotleyFool, NewsType.Region, NewsType.Global}));
         newsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
@@ -59,10 +56,10 @@ public final class NewsPagerFragment extends Fragment
             int offset = (int) getResources().getDimension(R.dimen.size_6);
             newsSpinner.setDropDownVerticalOffset(offset);
         }
-
     }
 
-    class NewsSpinnerAdapter extends ArrayAdapter<NewsType> {
+    class NewsSpinnerAdapter extends ArrayAdapter<NewsType>
+    {
         public NewsSpinnerAdapter(Context context, NewsType[] objects)
         {
             super(context, 0, objects);
@@ -71,8 +68,11 @@ public final class NewsPagerFragment extends Fragment
         @Override public View getView(int position, View convertView, ViewGroup parent)
         {
             NewsType type = getItem(position);
-            View view = getActivity().getLayoutInflater().inflate(type.titleViewResourceId, parent, false);
-            return view;
+            if (convertView == null)
+            {
+                convertView = getActivity().getLayoutInflater().inflate(type.titleViewResourceId, parent, false);
+            }
+            return convertView;
         }
 
         @Override public View getDropDownView(int position, View convertView, ViewGroup parent)
@@ -80,13 +80,13 @@ public final class NewsPagerFragment extends Fragment
             NewsType type = getItem(position);
             View rootView = getActivity().getLayoutInflater().inflate(type.titleViewResourceId, parent, false);
             View view = rootView.findViewById(R.id.spinner_arrow);
-            if (view != null) {
+            if (view != null)
+            {
                 view.setVisibility(View.GONE);
             }
             return rootView;
         }
     }
-
 
     private class DiscoveryNewsFragmentAdapter extends FragmentPagerAdapter
     {

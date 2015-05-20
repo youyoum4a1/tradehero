@@ -99,7 +99,7 @@ public class THSignedFXRate extends THSignedNumber
     }
     //</editor-fold>
 
-    @Override protected Spanned getSpannedValue()
+    @Override @NonNull protected Spanned getSpannedValue()
     {
         SpannableStringBuilder spannedValue = (SpannableStringBuilder) super.getSpannedValue();
         int length = spannedValue.length();

@@ -5,18 +5,18 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 import com.tradehero.common.api.SelectableDTO;
+import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.fragments.onboarding.OnBoardSelectableViewLinear;
-import com.tradehero.th.models.number.THSignedMoney;
 import javax.inject.Inject;
 
 public class OnBoardExchangeItemView extends OnBoardSelectableViewLinear<ExchangeCompactDTO, SelectableDTO<ExchangeCompactDTO>>
@@ -27,26 +27,29 @@ public class OnBoardExchangeItemView extends OnBoardSelectableViewLinear<Exchang
 
     @InjectView(android.R.id.icon) ImageView flagImage;
     @InjectView(android.R.id.icon1) ImageView logoImage;
-    @InjectView(android.R.id.text1) TextView shortNameView;
-    @InjectView(android.R.id.text2) TextView nameView;
-    @InjectView(R.id.market_cap) TextView marketCapView;
-    View marketCapSliderView;
+    @InjectView(android.R.id.text1) TextView nameView;
+    @InjectView(android.R.id.text2) TextView shortNameView;
     @InjectView(R.id.top_stock_list) TopStockListView topStockListView;
+
+    @NonNull private final Transformation whiteTransformation;
 
     //<editor-fold desc="Constructors">
     public OnBoardExchangeItemView(Context context)
     {
         super(context);
+        whiteTransformation = new WhiteToTransparentTransformation();
     }
 
     public OnBoardExchangeItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        whiteTransformation = new WhiteToTransparentTransformation();
     }
 
     public OnBoardExchangeItemView(Context context, AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
+        whiteTransformation = new WhiteToTransparentTransformation();
     }
     //</editor-fold>
 
@@ -99,6 +102,7 @@ public class OnBoardExchangeItemView extends OnBoardSelectableViewLinear<Exchang
             else
             {
                 picasso.load(dto.imageUrl)
+                        .transform(whiteTransformation)
                         .into(logoImage);
             }
         }
@@ -124,20 +128,6 @@ public class OnBoardExchangeItemView extends OnBoardSelectableViewLinear<Exchang
             else
             {
                 nameView.setText(dto.desc);
-            }
-        }
-
-        if (marketCapView != null)
-        {
-            if (dto == null)
-            {
-                marketCapView.setText("");
-            }
-            else
-            {
-                marketCapView.setText(getResources().getString(
-                        R.string.exchange_market_cap_abbreviated,
-                        THSignedMoney.builder(dto.getSumMarketCap()).build().toString()));
             }
         }
 

@@ -3,7 +3,6 @@ package com.tradehero.th.api.competition;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.CompetitionUrl;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import javax.inject.Inject;
@@ -39,7 +38,7 @@ public class ProviderUtil
     }
     //</editor-fold>
 
-    @NonNull public String getLandingPage(@NonNull ProviderId providerId, UserBaseKey userBaseKey)
+    @NonNull public String getLandingPage(@NonNull ProviderId providerId)
     {
         String url = competitionUrl + LANDING;
         url = appendProviderId(url, '?', providerId);

@@ -1,13 +1,10 @@
 package com.tradehero.th.utils.dagger;
 
-import android.accounts.AccountManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.FlavorModule;
 import com.tradehero.th.BuildTypeModule;
-import com.tradehero.th.activities.ActivityAppModule;
 import com.tradehero.th.api.ObjectMapperWrapper;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.THApp;
@@ -22,7 +19,6 @@ import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.network.share.SocialNetworkAppModule;
 import com.tradehero.th.persistence.PersistenceModule;
 import com.tradehero.th.persistence.prefs.LanguageCode;
-import com.tradehero.th.utils.metrics.MetricsBuildTypeModule;
 import com.tradehero.th.utils.metrics.MetricsModule;
 import dagger.Module;
 import dagger.Provides;
@@ -31,13 +27,11 @@ import javax.inject.Singleton;
 
 @Module(
         includes = {
-                ActivityAppModule.class,
                 FlavorModule.class,
                 CacheModule.class,
                 GraphicModule.class,
                 NetworkModule.class,
                 MetricsModule.class,
-                MetricsBuildTypeModule.class,
                 ModelsModule.class,
                 PersistenceModule.class,
                 ChartModule.class,
@@ -45,7 +39,7 @@ import javax.inject.Singleton;
                 BillingModule.class,
                 SocialNetworkAppModule.class,
                 PushModule.class,
-                BuildTypeModule.class
+                BuildTypeModule.class,
         },
         injects =
                 {
@@ -88,17 +82,6 @@ public class AppModule
     @Provides @Singleton THApp provideApplication()
     {
         return THApp;
-    }
-
-    @Provides @Singleton AccountManager provideAccountManager(Context context)
-    {
-        return AccountManager.get(context);
-    }
-
-    @Provides @Singleton
-    LocalBroadcastManager providesLocalBroadcastReceiver(Context context)
-    {
-        return LocalBroadcastManager.getInstance(context);
     }
 
     @Provides @Singleton ConnectivityManager provideConnectivityManager(Context context) {

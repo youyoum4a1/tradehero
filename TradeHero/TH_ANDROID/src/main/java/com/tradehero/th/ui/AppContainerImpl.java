@@ -7,13 +7,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.special.residemenu.ResideMenu;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.reside.THResideMenuItemImpl;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.utils.DeviceUtil;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 import static butterknife.ButterKnife.findById;
@@ -22,12 +34,20 @@ public class AppContainerImpl implements AppContainer
 {
     private final ResideMenu resideMenu;
     private final ResideMenuItemClickListener resideMenuItemClickListener;
+    @NonNull private final CurrentUserId currentUserId;
+    @NonNull private final UserProfileCacheRx userProfileCache;
     private Activity activity;
 
-    @Inject public AppContainerImpl(ResideMenu resideMenu, ResideMenuItemClickListener resideMenuItemClickListener)
+    @Inject public AppContainerImpl(
+            ResideMenu resideMenu,
+            ResideMenuItemClickListener resideMenuItemClickListener,
+            @NonNull CurrentUserId currentUserId,
+            @NonNull UserProfileCacheRx userProfileCache)
     {
         this.resideMenu = resideMenu;
         this.resideMenuItemClickListener = resideMenuItemClickListener;
+        this.currentUserId = currentUserId;
+        this.userProfileCache = userProfileCache;
     }
 
     @Override public ViewGroup wrap(final Activity activity)
@@ -46,15 +66,60 @@ public class AppContainerImpl implements AppContainer
         resideMenu.attachTo((ViewGroup) activity.getWindow().getDecorView());
         LayoutInflater.from(activity).inflate(R.layout.residemenu_footer, resideMenu.getFooter(), true);
 
-        List<View> menuItems = new ArrayList<>();
-        for (RootFragmentType tabType : RootFragmentType.forResideMenu())
-        {
-            View menuItem = createMenuItemFromTabType(activity, tabType);
-            menuItem.setOnClickListener(resideMenuItemClickListener);
-            menuItems.add(menuItem);
-        }
-        resideMenu.setMenuListener(new CustomOnMenuListener());
-        resideMenu.setMenuItems(menuItems);
+        currentUserId.getKeyObservable()
+                .filter(new Func1<Integer, Boolean>()
+                {
+                    @Override public Boolean call(Integer userId)
+                    {
+                        return userId > 0;
+                    }
+                })
+                .distinctUntilChanged()
+                .flatMap(new Func1<Integer, Observable<UserProfileDTO>>()
+                {
+                    @Override public Observable<UserProfileDTO> call(Integer userId)
+                    {
+                        return userProfileCache.getOne(new UserBaseKey(userId))
+                                .map(new PairGetSecond<UserBaseKey, UserProfileDTO>());
+                    }
+                })
+                .map(new Func1<UserProfileDTO, Collection<RootFragmentType>>()
+                {
+                    @Override public Collection<RootFragmentType> call(UserProfileDTO userProfileDTO)
+                    {
+                        Collection<RootFragmentType> menus = new LinkedHashSet<>(RootFragmentType.forResideMenu());
+                        if (userProfileDTO != null && userProfileDTO.isAdmin)
+                        {
+                            menus.add(RootFragmentType.ADMIN_SETTINGS);
+                        }
+                        return menus;
+                    }
+                })
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends Collection<RootFragmentType>>>()
+                {
+                    @Override public Observable<? extends Collection<RootFragmentType>> call(Throwable throwable)
+                    {
+                        return Observable.just(RootFragmentType.forResideMenu());
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<Collection<RootFragmentType>>()
+                        {
+                            @Override public void call(Collection<RootFragmentType> rootFragmentTypes)
+                            {
+                                List<View> menuItems = new ArrayList<>();
+                                for (RootFragmentType tabType : rootFragmentTypes)
+                                {
+                                    View menuItem = createMenuItemFromTabType(activity, tabType);
+                                    menuItem.setOnClickListener(resideMenuItemClickListener);
+                                    menuItems.add(menuItem);
+                                }
+                                resideMenu.setMenuListener(new CustomOnMenuListener());
+                                resideMenu.setMenuItems(menuItems);
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to load menus"));
 
         // only enable swipe from right to left
         resideMenu.setEnableSwipeLeftToRight(false);
@@ -93,10 +158,6 @@ public class AppContainerImpl implements AppContainer
         {
             LayoutInflater inflater = LayoutInflater.from(context);
             created = inflater.inflate(tabType.viewResId, null);
-            if (created instanceof TextResideMenuItem)
-            {
-                ((TextResideMenuItem) created).setTitle(tabType.stringResId);
-            }
         }
         else
         {

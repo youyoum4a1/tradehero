@@ -8,7 +8,7 @@ import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.PortfolioId;
-import com.tradehero.th.api.position.PositionDTOCompactList;
+import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -79,7 +79,7 @@ public abstract class AbstractTransactionDialogFragmentTestBase
         mockSecurityCompactDTO.name = "Security Name";
         securityCompactCache.onNext(securityId, mockSecurityCompactDTO);
 
-        PositionDTOCompactList mockPositionsDTOCompactList = new PositionDTOCompactList();
+        PositionDTOList mockPositionsDTOCompactList = new PositionDTOList();
         positionCompactListCache.onNext(securityId, mockPositionsDTOCompactList);
 
         activity = Robolectric.setupActivity(DashboardActivity.class);

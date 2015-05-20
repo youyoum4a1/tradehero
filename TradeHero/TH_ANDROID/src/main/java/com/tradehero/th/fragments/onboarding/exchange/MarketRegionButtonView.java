@@ -31,12 +31,25 @@ public class MarketRegionButtonView extends TableLayout
 
     @NonNull public Observable<MarketRegion> getMarketRegionClickedObservable()
     {
-        return ViewArrayObservable.clicks(new ArrayList<View>(getRegionViews()), false)
+        final List<MarketRegionView> regionViews = getRegionViews();
+        return ViewArrayObservable.clicks(new ArrayList<View>(regionViews), false)
                 .map(new Func1<OnClickEvent, MarketRegion>()
                 {
                     @Override public MarketRegion call(OnClickEvent onClickEvent)
                     {
-                        return ((MarketRegionView) onClickEvent.view()).region;
+                        MarketRegionView regionView = (MarketRegionView) onClickEvent.view();
+                        for (MarketRegionView candidate : regionViews)
+                        {
+                            if (candidate == regionView)
+                            {
+                                candidate.setSelected(true);
+                            }
+                            else
+                            {
+                                candidate.setSelected(false);
+                            }
+                        }
+                        return regionView.params.region;
                     }
                 });
     }
@@ -55,11 +68,22 @@ public class MarketRegionButtonView extends TableLayout
         return regionViews;
     }
 
+    public void showClicked(@NonNull MarketRegion marketRegion)
+    {
+        for (MarketRegionView view : getRegionViews())
+        {
+            if (view.params.region.equals(marketRegion))
+            {
+                view.setSelected(true);
+            }
+        }
+    }
+
     public void enable(@NonNull Collection<? extends MarketRegion> enabledRegions)
     {
         for (MarketRegionView view : getRegionViews())
         {
-            view.setEnabled(enabledRegions.contains(view.region));
+            view.setEnabled(enabledRegions.contains(view.params.region));
         }
     }
 }

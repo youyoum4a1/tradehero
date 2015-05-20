@@ -43,8 +43,7 @@ import rx.Observer;
 import timber.log.Timber;
 
 @Routable({
-        "securityFx/:securityRawInfo",
-        "fxSecurity/:exchange/:symbol"
+        "fx-security/:exchange/:symbol"
 })
 //TODO need refactor by alex
 public class FXMainFragment extends BuySellFragment

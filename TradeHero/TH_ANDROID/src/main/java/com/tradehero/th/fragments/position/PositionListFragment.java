@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.position;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +16,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.widget.AbsListView;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -26,6 +27,7 @@ import butterknife.OnItemClick;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.common.billing.purchase.PurchaseResult;
+import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
@@ -135,6 +137,8 @@ public class PositionListFragment
     @InjectView(R.id.position_list) ListView positionListView;
     @InjectView(R.id.btn_help) ImageView btnHelp;
 
+    private View inflatedHeader;
+
     @InjectRoute UserBaseKey injectedUserBaseKey;
     @InjectRoute PortfolioId injectedPortfolioId;
 
@@ -143,13 +147,13 @@ public class PositionListFragment
     protected PortfolioDTO portfolioDTO;
     protected List<Object> viewDTOs;
     protected UserBaseKey shownUser;
+
     @Nullable protected UserProfileDTO userProfileDTO;
 
     protected PositionItemAdapter positionItemAdapter;
-
     private int firstPositionVisible = 0;
-    @Inject protected THBillingInteractorRx userInteractorRx;
 
+    @Inject protected THBillingInteractorRx userInteractorRx;
     @NonNull private TabbedPositionListFragment.TabType positionType;
 
     //<editor-fold desc="Arguments Handling">
@@ -572,7 +576,7 @@ public class PositionListFragment
                             {
                                 @Override public void call(Throwable error)
                                 {
-                                    Timber.e(""+getString(R.string.error_fetch_portfolio_info)+" "+error.toString());
+                                    Timber.e("" + getString(R.string.error_fetch_portfolio_info) + " " + error.toString());
                                 }
                             }
                     ));
@@ -588,7 +592,7 @@ public class PositionListFragment
 
         preparePortfolioHeaderView(portfolioDTO);
         portfolioHeaderView.linkWith(portfolioDTO);
-        if (portfolioDTO != null && portfolioDTO.assetClass == AssetClass.FX)
+        if (portfolioDTO.assetClass == AssetClass.FX)
         {
             btnHelp.setVisibility(View.VISIBLE);
         }
@@ -628,34 +632,37 @@ public class PositionListFragment
             // portfolio header
             int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);
             headerStub.setLayoutResource(headerLayoutId);
-            final View inflatedHeader = headerStub.inflate();
+            inflatedHeader = headerStub.inflate();
             portfolioHeaderView = (PortfolioHeaderView) inflatedHeader;
             linkPortfolioHeader();
 
-            positionListView.post(new Runnable()
+            ViewTreeObserver observer = inflatedHeader.getViewTreeObserver();
+            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
             {
-                @Override public void run()
+                @SuppressLint("NewApi")
+                @Override public void onGlobalLayout()
                 {
-                    AbsListView listView = positionListView;
-                    if (listView != null)
+                    if (SDKUtils.isJellyBeanOrHigher())
                     {
-                        int headerHeight = inflatedHeader.getMeasuredHeight();
-                        positionListView.setPadding(
-                                positionListView.getPaddingLeft(),
-                                headerHeight,
-                                positionListView.getPaddingRight(),
-                                positionListView.getPaddingBottom());
-                        listView.setPadding(listView.getPaddingLeft(),
-                                headerHeight,
-                                listView.getPaddingRight(),
-                                listView.getPaddingBottom());
-                        listView.setOnScrollListener(new MultiScrollListener(
-                                fragmentElements.get().getListViewScrollListener(),
-                                new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER,
-                                        inflatedHeader,
-                                        -headerHeight,
-                                        null, 0)));
+                        inflatedHeader.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
+                    else
+                    {
+                        inflatedHeader.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                    int headerHeight = inflatedHeader.getMeasuredHeight();
+                    positionListView.setPadding(
+                            positionListView.getPaddingLeft(),
+                            headerHeight,
+                            positionListView.getPaddingRight(),
+                            positionListView.getPaddingBottom());
+
+                    positionListView.setOnScrollListener(new MultiScrollListener(
+                            fragmentElements.get().getListViewScrollListener(),
+                            new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER,
+                                    inflatedHeader,
+                                    -headerHeight,
+                                    null, 0)));
                 }
             });
         }
@@ -746,7 +753,11 @@ public class PositionListFragment
         positionItemAdapter.setNotifyOnChange(true);
         swipeToRefreshLayout.setRefreshing(false);
         listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
-        positionListView.smoothScrollToPosition(0);
+        if (inflatedHeader != null)
+        {
+            //Translate to 0 to restore position
+            inflatedHeader.animate().translationY(0f).start();
+        }
         display();
     }
 

@@ -44,10 +44,15 @@
 
   <!-- Number presentation -->
   <string name="number_presentation_unit_suffix"/>
+  <string name="number_presentation_unit_suffix_long"/>
   <string name="number_presentation_thousand_suffix">k</string>
+  <string name="number_presentation_thousand_suffix_long">\u00A0thousands</string>
   <string name="number_presentation_million_suffix">M</string>
+  <string name="number_presentation_million_suffix_long">\u00A0millions</string>
   <string name="number_presentation_billion_suffix">B</string>
+  <string name="number_presentation_billion_suffix_long">\u00A0billions</string>
   <string name="number_presentation_trillion_suffix">Tr</string>
+  <string name="number_presentation_trillion_suffix_long">\u00A0trillions</string>
   <string name="arrow_prefix_positive">▲</string>
   <string name="arrow_prefix_negative">▼</string>
   <string name="arrow_prefix_zero"/>

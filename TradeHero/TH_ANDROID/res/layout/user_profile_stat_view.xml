@@ -2,13 +2,23 @@
 
 <com.tradehero.th.fragments.timeline.UserProfileDetailView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/user_profile_stat_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/white"
-    android:padding="24dp"
+    android:padding="@dimen/size_2"
     >
+
+    <TextView
+        android:id="@+id/portfolio_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="MyStocks"
+        style="@style/TH.Title"
+        android:gravity="center_horizontal"
+        />
 
     <include
         android:layout_width="match_parent"
@@ -17,4 +27,5 @@
         />
 
     <include layout="@layout/user_statistic"/>
+
 </com.tradehero.th.fragments.timeline.UserProfileDetailView>

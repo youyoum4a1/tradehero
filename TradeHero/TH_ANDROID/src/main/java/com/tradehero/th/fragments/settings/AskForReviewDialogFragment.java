@@ -11,12 +11,9 @@ import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.MarketUtil;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
-import javax.inject.Inject;
 
 public class AskForReviewDialogFragment extends BaseDialogFragment
 {
-    @Inject MarketUtil marketUtil;
-
     @NonNull public static AskForReviewDialogFragment showReviewDialog(@NonNull FragmentManager fragmentManager)
     {
         AskForReviewDialogFragment dialogFragment = new AskForReviewDialogFragment();
@@ -46,7 +43,7 @@ public class AskForReviewDialogFragment extends BaseDialogFragment
     @OnClick(R.id.btn_rate)
     public void onRate()
     {
-        marketUtil.sendToReviewAllOnMarket(getActivity());
+        MarketUtil.sendToReviewAllOnMarket(getActivity());
         dismiss();
     }
 }

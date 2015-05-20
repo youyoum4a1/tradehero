@@ -7,7 +7,7 @@ import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.fragments.competition.CompetitionFragment;
+import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;
@@ -94,7 +94,7 @@ public class OneProviderIntentTest
         OneProviderIntent intent = new SimpleOneProviderIntent(resources, providerId);
         Bundle bundle = intent.getBundle();
         assertEquals(1, bundle.size());
-        assertEquals(567, (int) CompetitionFragment.getProviderId(bundle).key);
+        assertEquals(567, (int) ProviderVideoListFragment.getProviderId(bundle).key);
     }
 
     @Test public void populateBundleKeepsExisting()
@@ -106,6 +106,6 @@ public class OneProviderIntentTest
         intent.populate(bundle);
 
         assertEquals(2, bundle.size());
-        assertEquals(567, (int) CompetitionFragment.getProviderId(bundle).key);
+        assertEquals(567, (int) ProviderVideoListFragment.getProviderId(bundle).key);
     }
 }

@@ -1,5 +1,6 @@
 package com.tradehero.th.activities;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Pair;
@@ -41,13 +42,13 @@ public class SplashActivity extends BaseActivity
 
     @Inject Lazy<Api> tapStream;
     @Inject MobileAppTracker mobileAppTracker;
-    @Inject THAppsFlyer thAppsFlyer;
     @Inject Analytics analytics;
     @Inject @AuthHeader String authToken;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
 
     @Nullable Subscription userProfileSubscription;
+    @Nullable Uri deepLink;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -69,6 +70,8 @@ public class SplashActivity extends BaseActivity
             getWindow().getDecorView().findViewById(android.R.id.content).setBackgroundColor(
                     getResources().getColor(R.color.authentication_guide_bg_color));
         }
+
+        deepLink = getIntent().getData();
     }
 
     @Override protected void onResume()
@@ -84,8 +87,8 @@ public class SplashActivity extends BaseActivity
         mobileAppTracker.setReferralSources(this);
         mobileAppTracker.measureSession();
 
-        thAppsFlyer.setAppsFlyerKey(MetricsModule.APP_FLYER_KEY);
-        thAppsFlyer.sendTracking();
+        THAppsFlyer.setAppsFlyerKey(this, MetricsModule.APP_FLYER_KEY);
+        THAppsFlyer.sendTracking(this);
 
         if (!Constants.RELEASE)
         {
@@ -97,7 +100,7 @@ public class SplashActivity extends BaseActivity
 
         if (firstLaunchPreference.get() || resetHelpScreens.get() || authToken == null)
         {
-            ActivityHelper.launchAuthentication(this);
+            ActivityHelper.launchAuthentication(this, deepLink);
             firstLaunchPreference.set(false);
             resetHelpScreens.set(false);
             finish();
@@ -112,7 +115,7 @@ public class SplashActivity extends BaseActivity
                             {
                                 @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
                                 {
-                                    ActivityHelper.launchDashboard(SplashActivity.this);
+                                    ActivityHelper.launchDashboard(SplashActivity.this, deepLink);
                                     finish();
                                 }
                             },
@@ -120,7 +123,7 @@ public class SplashActivity extends BaseActivity
                             {
                                 @Override public void call(Throwable throwable)
                                 {
-                                    ActivityHelper.launchAuthentication(SplashActivity.this);
+                                    ActivityHelper.launchAuthentication(SplashActivity.this, deepLink);
                                     finish();
                                 }
                             });

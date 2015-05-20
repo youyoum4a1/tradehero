@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,7 +19,6 @@ import android.widget.AbsListView;
 import android.widget.TabHost;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.crashlytics.android.Crashlytics;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnScrollViewOnScrollChangedListener;
@@ -68,7 +68,7 @@ import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
-import com.tradehero.th.fragments.onboarding.OnBoardNewDialogFragment;
+import com.tradehero.th.fragments.news.NewsWebFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardingBroadcastSignal;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
@@ -83,11 +83,11 @@ import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
+import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
 import com.tradehero.th.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.notification.NotificationCacheRx;
@@ -111,7 +111,6 @@ import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -154,14 +153,12 @@ public class DashboardActivity extends BaseActivity
     @Inject ResideMenu resideMenu;
 
     @Inject THRouter thRouter;
-    @Inject Lazy<PushNotificationManager> pushNotificationManager;
     @Inject Analytics analytics;
     @Inject Lazy<BroadcastUtils> broadcastUtilsLazy;
     @Inject @IsOnBoardShown BooleanPreference isOnboardShown;
     @Inject @IsFxShown BooleanPreference isFxShown;
     @Inject Set<ActivityResultRequester> activityResultRequesters;
     @Inject @ForAnalytics Lazy<DashboardNavigator.DashboardFragmentWatcher> analyticsReporter;
-    @Inject THAppsFlyer thAppsFlyer;
     @Inject ProviderUtil providerUtil;
 
     @Inject Lazy<ProviderListCacheRx> providerListCache;
@@ -185,12 +182,7 @@ public class DashboardActivity extends BaseActivity
 
         super.onCreate(savedInstanceState);
 
-        if (Constants.RELEASE)
-        {
-            Crashlytics.setString(Constants.TH_CLIENT_TYPE,
-                    String.format("%s:%d", Constants.DEVICE_TYPE, Constants.TAP_STREAM_TYPE.type));
-            Crashlytics.setUserIdentifier("" + currentUserId.get());
-        }
+        ActivityBuildTypeUtil.setUpCrashReports(currentUserId.toUserBaseKey());
 
         appContainer.wrap(this);
 
@@ -222,11 +214,13 @@ public class DashboardActivity extends BaseActivity
         }
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
-        pushNotificationManager.get().enablePush();
+        //pushNotificationManager.get().enablePush();
 
         initBroadcastReceivers();
 
         localBroadcastManager.registerReceiver(onlineStateReceiver, new IntentFilter(OnlineStateReceiver.ONLINE_STATE_CHANGED));
+
+        routeDeepLink(getIntent());
     }
 
     private void setupNavigator()
@@ -272,6 +266,16 @@ public class DashboardActivity extends BaseActivity
                 updateNetworkStatus();
             }
         };
+    }
+
+    private void routeDeepLink(@NonNull Intent intent)
+    {
+        Uri data = intent.getData();
+        if (data != null)
+        {
+            thRouter.open(data, null, this);
+            intent.setData(null);
+        }
     }
 
     @Override
@@ -369,7 +373,7 @@ public class DashboardActivity extends BaseActivity
     {
         super.onStart();
         systemStatusCache.get(new SystemStatusKey());
-        thAppsFlyer.sendTracking();
+        THAppsFlyer.sendTracking(this);
     }
 
     @Override protected void onResume()
@@ -386,7 +390,7 @@ public class DashboardActivity extends BaseActivity
                             @Override public void call(Intent intent)
                             {
                                 isOnboardShown.set(true);
-                                OnBoardNewDialogFragment.showOnBoardDialog(DashboardActivity.this.getSupportFragmentManager());
+                                navigator.launchActivity(OnBoardActivity.class);
                             }
                         },
                         new Action1<Throwable>()
@@ -434,8 +438,8 @@ public class DashboardActivity extends BaseActivity
                                             enrollmentScreenOpened.add(providerDTO.id);
                                             Bundle args = new Bundle();
                                             CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
-                                                    providerDTO.getProviderId(),
-                                                    currentUserId.toUserBaseKey()));
+                                                    providerDTO.getProviderId()
+                                            ));
                                             navigator.pushFragment(CompetitionWebViewFragment.class, args);
                                         }
                                     }
@@ -474,6 +478,7 @@ public class DashboardActivity extends BaseActivity
 
         Bundle extras = intent.getExtras();
         processNotificationDataIfPresence(extras);
+        routeDeepLink(intent);
     }
 
     private void processNotificationDataIfPresence(Bundle extras)
@@ -616,14 +621,14 @@ public class DashboardActivity extends BaseActivity
         {
             @Override public void call(ActivityResultRequester requester)
             {
-                requester.onActivityResult(requestCode, resultCode, data);
+                requester.onActivityResult(DashboardActivity.this, requestCode, resultCode, data);
             }
         });
         RouteParams routeParams = getRouteParams(data);
         if (routeParams != null)
         {
             resideMenu.closeMenu();
-            thRouter.open(routeParams.deepLink, routeParams.extras);
+            thRouter.open(routeParams.deepLink, routeParams.extras, this);
         }
     }
 
@@ -675,7 +680,7 @@ public class DashboardActivity extends BaseActivity
         // for DEBUGGING purpose only
         Fragment currentFragmentName = navigator.getCurrentFragment();
         Timber.e(new RuntimeException("LowMemory " + currentFragmentName), "%s", currentFragmentName);
-        Crashlytics.setString("LowMemoryAt", new Date().toString());
+        ActivityBuildTypeUtil.flagLowMemory();
     }
 
     @Module(
@@ -698,36 +703,40 @@ public class DashboardActivity extends BaseActivity
         {
             THRouter router = new THRouter(context, navigatorProvider);
             router.registerRoutes(
-                    PushableTimelineFragment.class,
-                    MeTimelineFragment.class,
-                    NotificationsCenterFragment.class,
-                    MessagesCenterNewFragment.class,
-                    UpdateCenterFragment.class,
-                    TrendingMainFragment.class,
-                    FriendsInvitationFragment.class,
-                    SettingsFragment.class,
-                    MainCompetitionFragment.class,
                     BuySellStockFragment.class,
-                    FXMainFragment.class,
-                    FXMainFragment.class,
-                    FXInfoFragment.class,
-                    StoreScreenFragment.class,
-                    LeaderboardCommunityFragment.class,
                     CompetitionWebViewFragment.class,
+                    DiscoveryMainFragment.class,
+                    FacebookShareActivity.class,
+                    FriendsInvitationFragment.class,
+                    FXInfoFragment.class,
+                    FXMainFragment.class,
+                    FXMainFragment.class,
+                    HomeFragment.class,
+                    LeaderboardCommunityFragment.class,
+                    MainCompetitionFragment.class,
+                    MessagesCenterNewFragment.class,
+                    MeTimelineFragment.class,
+                    NewsWebFragment.class,
+                    NotificationsCenterFragment.class,
                     PositionListFragment.class,
+                    ProviderVideoListFragment.class,
+                    PushableTimelineFragment.class,
+                    SettingsFragment.class,
+                    StoreScreenFragment.class,
                     TabbedPositionListFragment.class,
                     TradeListFragment.class,
-                    HomeFragment.class,
-                    ProviderVideoListFragment.class,
-                    WebViewFragment.class,
-                    DiscoveryMainFragment.class,
-                    FacebookShareActivity.class
-
+                    TrendingMainFragment.class,
+                    UpdateCenterFragment.class,
+                    WebViewFragment.class
             );
-            router.registerAlias("messages", "updatecenter/0");
-            router.registerAlias("notifications", "updatecenter/1");
-            router.registerAlias("reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
+            router.registerAlias("messages", "updatecenter/" + UpdateCenterTabType.Messages.ordinal());
+            router.registerAlias("notifications", "updatecenter/" + UpdateCenterTabType.Notifications.ordinal());
+            router.registerAlias("cash", "store/" + ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR.ordinal());
+            router.registerAlias("store/cash", "store/" + ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR.ordinal());
+            router.registerAlias("credits", "store/" + ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS.ordinal());
+            router.registerAlias("store/credits", "store/" + ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS.ordinal());
             router.registerAlias("store/reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
+            router.registerAlias("reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
             return router;
         }
 

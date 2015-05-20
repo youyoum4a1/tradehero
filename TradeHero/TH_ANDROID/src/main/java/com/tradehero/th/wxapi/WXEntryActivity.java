@@ -26,7 +26,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
-import com.tradehero.th.activities.MarketUtil;
 import com.tradehero.th.api.share.TrackShareDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
@@ -68,7 +67,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     @Inject IWXAPI mWeChatApi;
     @Inject WeChatServiceWrapper weChatServiceWrapper;
     @Inject Lazy<Picasso> picassoLazy;
-    @Inject Lazy<MarketUtil> marketUtil;
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
 
     public static void putWeChatDTO(@NonNull Intent intent, @NonNull WeChatDTO weChatDTO)

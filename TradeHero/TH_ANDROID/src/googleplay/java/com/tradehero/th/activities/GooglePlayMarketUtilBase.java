@@ -9,24 +9,16 @@ import com.tradehero.th.R;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
-import rx.functions.Actions;
 import timber.log.Timber;
 
-abstract class GooglePlayMarketUtilBase implements MarketUtil
+abstract class GooglePlayMarketUtilBase
 {
     // Google PlayStore
     public static final String PLAYSTORE_APP_ID = "com.tradehero.th";
     private static final String PLAYSTORE_URL = "https://play.google.com/store/apps/details?id=";
     public static final int REQUEST_CODE_UPDATE_PLAY_SERVICE = 43;
 
-    //<editor-fold desc="Constructors">
-    public GooglePlayMarketUtilBase()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @Override public void showAppOnMarket(@NonNull Activity activity)
+    public static void showAppOnMarket(@NonNull Activity activity)
     {
         try
         {
@@ -53,12 +45,12 @@ abstract class GooglePlayMarketUtilBase implements MarketUtil
         }
     }
 
-    @Override public void sendToReviewAllOnMarket(@NonNull Activity activity)
+    public static void sendToReviewAllOnMarket(@NonNull Activity activity)
     {
         showAppOnMarket(activity);
     }
 
-    @Override public String getAppMarketUrl()
+    public static String getAppMarketUrl()
     {
         return PLAYSTORE_URL + PLAYSTORE_APP_ID;
     }

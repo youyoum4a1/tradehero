@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
+import android.content.Context;
 import com.squareup.okhttp.Authenticator;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -22,9 +23,9 @@ public class ApiAuthenticator implements Authenticator
 {
     private final AccountManager accountManager;
 
-    @Inject ApiAuthenticator(AccountManager accountManager)
+    @Inject ApiAuthenticator(Context context)
     {
-        this.accountManager = accountManager;
+        this.accountManager = AccountManager.get(context);
     }
 
     @Override public Request authenticate(Proxy proxy, Response response) throws IOException

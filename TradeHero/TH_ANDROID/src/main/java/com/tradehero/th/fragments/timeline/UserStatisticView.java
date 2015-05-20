@@ -21,9 +21,9 @@ import timber.log.Timber;
 public class UserStatisticView extends LinearLayout
     implements DTOView<UserStatisticView.DTO>
 {
-    @InjectView(R.id.leaderboard_dayshold_tv) NumericalAnimatedTextView daysHoldTv;
-    @InjectView(R.id.leaderboard_position_tv) NumericalAnimatedTextView positionsCountTv;
-    @InjectView(R.id.leaderboard_tradecount_tv) NumericalAnimatedTextView tradeCountTv;
+    @InjectView(R.id.leaderboard_dayshold_tv) @Optional NumericalAnimatedTextView daysHoldTv;
+    @InjectView(R.id.leaderboard_position_tv) @Optional NumericalAnimatedTextView positionsCountTv;
+    @InjectView(R.id.leaderboard_tradecount_tv) @Optional NumericalAnimatedTextView tradeCountTv;
 
     @InjectView(R.id.leaderboard_gauge_performance)
     @Optional GaugeView performanceGauge;

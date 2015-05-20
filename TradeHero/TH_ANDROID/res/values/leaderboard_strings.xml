@@ -80,7 +80,7 @@
 
   <string name="leaderboard_community_most_skilled">All Time</string>
 
-  <string name="leaderboard_type_stocks">Stocks Leaders</string>
-  <string name="leaderboard_type_fx">FX Leaders</string>
+  <string name="leaderboard_type_stocks">Stocks Heroes</string>
+  <string name="leaderboard_type_fx">FX Heroes</string>
   <string name="leaderboard_type_all">All</string>
 </resources>

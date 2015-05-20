@@ -422,7 +422,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         {
             portfolioChangedSubscription = Observable.combineLatest(
                     Observable.just(purchaseApplicablePortfolioId),
-                    currentUserPortfolioCompactListObservable,
+                    currentUserPortfolioCompactListObservable.get(),
                     ownedPortfolioIdListCache.get(securityId).map(new PairGetSecond<PortfolioCompactListKey, OwnedPortfolioIdList>()),
                     new Func3<OwnedPortfolioId, PortfolioCompactDTOList, OwnedPortfolioIdList, Boolean>()
                     {

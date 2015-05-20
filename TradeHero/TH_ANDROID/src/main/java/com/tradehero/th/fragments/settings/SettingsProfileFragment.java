@@ -25,7 +25,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
-import com.tradehero.th.fragments.authentication.AuthDataAccountAction;
+import com.tradehero.th.auth.AuthDataUtil;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -36,7 +36,6 @@ import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -54,7 +53,6 @@ public class SettingsProfileFragment extends BaseFragment
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
-    @Inject Provider<AuthDataAccountAction> authDataActionProvider;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -104,7 +102,7 @@ public class SettingsProfileFragment extends BaseFragment
         super.onActivityResult(requestCode, resultCode, data);
         if (profileView != null)
         {
-            profileView.onActivityResult(requestCode, resultCode, data);
+            profileView.onActivityResult(getActivity(), requestCode, resultCode, data);
         }
     }
 
@@ -188,7 +186,7 @@ public class SettingsProfileFragment extends BaseFragment
                                 @Override public void call(Pair<AuthData, UserProfileDTO> pair)
                                 {
                                     THToast.show(R.string.settings_update_profile_successful);
-                                    authDataActionProvider.get().call(pair);
+                                    AuthDataUtil.saveAccount(getActivity(), pair.first, pair.second.email);
                                     getActivity().finish();
                                 }
                             },

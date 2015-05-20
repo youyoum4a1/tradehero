@@ -26,7 +26,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.internal.util.SubscriptionList;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public class BaseFragment extends Fragment
@@ -45,7 +44,7 @@ public class BaseFragment extends Fragment
     protected SubscriptionList onStopSubscriptions;
     protected SubscriptionList onDestroyViewSubscriptions;
     protected SubscriptionList onDestroyOptionsMenuSubscriptions;
-
+    protected SubscriptionList onDestroySubscriptions;
 
     @Inject protected Lazy<DashboardNavigator> navigator;
 
@@ -91,6 +90,7 @@ public class BaseFragment extends Fragment
         isOptionMenuVisible = getIsOptionMenuVisible(getArguments());
         hasOptionMenu = getHasOptionMenu(getArguments());
         setHasOptionsMenu(hasOptionMenu);
+        onDestroySubscriptions = new SubscriptionList();
     }
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
@@ -129,6 +129,7 @@ public class BaseFragment extends Fragment
     @Override public void onDestroy()
     {
         actionBarOwnerMixin.onDestroy();
+        onDestroySubscriptions.unsubscribe();
         super.onDestroy();
     }
 
@@ -191,7 +192,11 @@ public class BaseFragment extends Fragment
 
     @Override public void onDestroyOptionsMenu()
     {
-        onDestroyOptionsMenuSubscriptions.unsubscribe();
+        if (onDestroyOptionsMenuSubscriptions != null)
+        // We need this test as it appears some SDKs call destroy before calling create
+        {
+            onDestroyOptionsMenuSubscriptions.unsubscribe();
+        }
         super.onDestroyOptionsMenu();
     }
 

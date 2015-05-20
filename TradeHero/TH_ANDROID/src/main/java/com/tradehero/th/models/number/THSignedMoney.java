@@ -104,7 +104,7 @@ public class THSignedMoney extends THSignedNumber
         return currencySpanBuilder;
     }
 
-    @Override protected CharSequence getCombinedSpan()
+    @NonNull @Override protected CharSequence getCombinedSpan()
     {
         return TextUtils.concat(getSpannedSign(), getSpannedCurrency(), getCurrencySpace(), getSpannedValue());
     }

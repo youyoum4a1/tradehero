@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.fragments.competition.CompetitionFragment;
+import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import java.util.List;
 
 abstract public class OneProviderIntent extends ProviderIntent
@@ -73,6 +73,6 @@ abstract public class OneProviderIntent extends ProviderIntent
     @Override public void populate(@NonNull Bundle bundle)
     {
         super.populate(bundle);
-        CompetitionFragment.putProviderId(bundle, getProviderId());
+        ProviderVideoListFragment.putProviderId(bundle, getProviderId());
     }
 }

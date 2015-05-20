@@ -26,40 +26,78 @@ import butterknife.OnItemLongClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.persistence.competition.HelpVideoListCacheRx;
+import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.utils.route.THRouter;
 import java.util.List;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import timber.log.Timber;
 
-@Routable(
-        "providers/:providerId/helpVideos"
-)
-public class ProviderVideoListFragment extends CompetitionFragment
+@Routable({
+        "providers/:providerId/helpVideos",
+        "providers/:providerId/helpVideos/:videoId",
+})
+public class ProviderVideoListFragment extends DashboardFragment
 {
+    private static final String BUNDLE_KEY_PROVIDER_ID = ProviderVideoListFragment.class.getName() + ".providerId";
+
+    @Inject ProviderCacheRx providerCache;
     @Inject HelpVideoListCacheRx helpVideoListCache;
+    @Inject THRouter thRouter;
 
     @InjectView(android.R.id.empty) View emptyView;
     @InjectView(R.id.help_videos_list) AbsListView videoListView;
     @InjectView(R.id.help_video_list_screen) BetterViewAnimator helpVideoListScreen;
 
+    @RouteProperty("providerId") protected Integer routedProviderId;
+    @RouteProperty("videoId") Integer routedVideoId;
+
+    protected ProviderId providerId;
+    protected ProviderDTO providerDTO;
+
     private ProviderVideoAdapter providerVideoAdapter;
     private int currentDisplayedChild;
     private ClipboardManager clipboardManager;
+
+    public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
+    {
+        args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+    }
+
+    @NonNull public static ProviderId getProviderId(@NonNull Bundle args)
+    {
+        return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
+    }
 
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
         providerVideoAdapter = new ProviderVideoAdapter(activity, R.layout.help_video_item_view);
         clipboardManager = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        thRouter.inject(this, getArguments());
+        if (routedProviderId != null)
+        {
+            putProviderId(getArguments(), new ProviderId(routedProviderId));
+        }
+        this.providerId = getProviderId(getArguments());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -79,6 +117,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
     @Override public void onStart()
     {
         super.onStart();
+        fetchProviderDTO();
         fetchVideoList();
     }
 
@@ -114,20 +153,44 @@ public class ProviderVideoListFragment extends CompetitionFragment
         super.onDestroyView();
     }
 
-    @Override protected void linkWith(@NonNull ProviderDTO providerDTO, boolean andDisplay)
+    protected void fetchProviderDTO()
     {
-        super.linkWith(providerDTO, andDisplay);
-        if (andDisplay)
-        {
-            displayActionBarTitle();
-        }
+        onStopSubscriptions.add(AppObservable.bindFragment(
+                this,
+                providerCache.get(this.providerId))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<Pair<ProviderId, ProviderDTO>>()
+                        {
+                            @Override public void call(Pair<ProviderId, ProviderDTO> pair)
+                            {
+                                linkWith(pair.second);
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable throwable)
+                            {
+                                if (providerDTO == null)
+                                {
+                                    THToast.show(getString(R.string.error_fetch_provider_info));
+                                }
+                                Timber.e("Error fetching the provider info", throwable);
+                            }
+                        }));
+    }
+
+    protected void linkWith(@NonNull ProviderDTO providerDTO)
+    {
+        this.providerDTO = providerDTO;
+        displayActionBarTitle();
     }
 
     protected void fetchVideoList()
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                helpVideoListCache.get(new HelpVideoListKey(providerId)))
+                helpVideoListCache.getOne(new HelpVideoListKey(providerId)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<HelpVideoListKey, HelpVideoDTOList>>()
@@ -153,6 +216,19 @@ public class ProviderVideoListFragment extends CompetitionFragment
         providerVideoAdapter.notifyDataSetChanged();
         helpVideoListScreen.setDisplayedChildByLayoutId(R.id.help_videos_list);
         videoListView.setEmptyView(emptyView);
+
+        if (routedVideoId != null && videoDTOs != null)
+        {
+            for (HelpVideoDTO video : videoDTOs)
+            {
+                if (routedVideoId.equals(video.id))
+                {
+                    openVideo(video);
+                    routedVideoId = null;
+                    break;
+                }
+            }
+        }
     }
 
     private void displayActionBarTitle()
@@ -171,8 +247,14 @@ public class ProviderVideoListFragment extends CompetitionFragment
     @OnItemClick(R.id.help_videos_list)
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
     {
-        HelpVideoDTO helpVideoDTO = (HelpVideoDTO) adapterView.getItemAtPosition(position);
+        HelpVideoDTO videoDTO = (HelpVideoDTO) adapterView.getItemAtPosition(position);
+        openVideo(videoDTO);
+        ClipData clip = ClipData.newPlainText("Video id", String.format("providerId:%d, videoId:%d", videoDTO.providerId, videoDTO.id));
+        clipboardManager.setPrimaryClip(clip);
+    }
 
+    protected void openVideo(@NonNull HelpVideoDTO helpVideoDTO)
+    {
         Uri url = Uri.parse(helpVideoDTO.videoUrl);
         Intent videoIntent = new Intent(Intent.ACTION_VIEW, url);
         PackageManager packageManager = getActivity().getPackageManager();

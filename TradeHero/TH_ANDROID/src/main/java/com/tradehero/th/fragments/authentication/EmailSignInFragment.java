@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.authentication;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
@@ -27,6 +29,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.auth.AuthData;
+import com.tradehero.th.auth.AuthDataUtil;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.SessionServiceWrapper;
@@ -66,13 +69,13 @@ import timber.log.Timber;
 
 public class EmailSignInFragment extends Fragment
 {
+    private static final String BUNDLE_KEY_DEEP_LINK = EmailSignInFragment.class.getName() + ".deepLink";
+
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject Provider<LoginSignUpFormDTO.Builder2> loginSignUpFormDTOProvider;
     @Inject SessionServiceWrapper sessionServiceWrapper;
-    @Inject Provider<AuthDataAccountAction> authDataActionProvider;
-    @Inject THAppsFlyer thAppsFlyer;
 
     @InjectView(R.id.authentication_sign_in_email) ValidatedText email;
     TextValidator emailValidator;
@@ -82,11 +85,23 @@ public class EmailSignInFragment extends Fragment
     SubscriptionList onStopSubscriptions;
 
     @Nullable Observer<SocialNetworkEnum> socialNetworkEnumObserver;
+    @Nullable Uri deepLink;
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
         navigator.get().popFragment();
+    }
+
+    public static void putDeepLink(@NonNull Bundle args, @NonNull Uri deepLink)
+    {
+        args.putString(BUNDLE_KEY_DEEP_LINK, deepLink.toString());
+    }
+
+    @Nullable private static Uri getDeepLink(@NonNull Bundle args)
+    {
+        String link = args.getString(BUNDLE_KEY_DEEP_LINK);
+        return link == null ? null : Uri.parse(link);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -95,6 +110,7 @@ public class EmailSignInFragment extends Fragment
         HierarchyInjector.inject(this);
         analytics.tagScreen(AnalyticsConstants.Login_Form);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
+        deepLink = getDeepLink(getArguments());
     }
 
     @Override public void onAttach(Activity activity)
@@ -146,7 +162,7 @@ public class EmailSignInFragment extends Fragment
     {
         final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
                 getString(R.string.authentication_connecting_tradehero_only), true);
-        AuthData authData = loginSignUpFormDTO.authData;
+        final AuthData authData = loginSignUpFormDTO.authData;
         Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
                 authData.getTHToken(), loginSignUpFormDTO)
                 .map(new Func1<UserLoginDTO, UserProfileDTO>()
@@ -170,12 +186,20 @@ public class EmailSignInFragment extends Fragment
                 {
                     @Override public void call(Pair<AuthData, UserProfileDTO> pair)
                     {
-                        thAppsFlyer.sendTrackingWithEvent(AppsFlyerConstants.REGISTRATION_EMAIL);
+                        THAppsFlyer.sendTrackingWithEvent(getActivity(), AppsFlyerConstants.REGISTRATION_EMAIL);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(authDataActionProvider.get())
-                .doOnNext(new OpenDashboardAction(getActivity()))
+                .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
+                {
+                    @Override public void call(Pair<AuthData, UserProfileDTO> pair)
+                    {
+                        AuthDataUtil.saveAccountAndResult(getActivity(), pair.first, pair.second.email);
+                        ActivityHelper.launchDashboard(
+                                getActivity(),
+                                deepLink);
+                    }
+                })
                 .doOnError(new ToastOnErrorAction())
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog));
     }

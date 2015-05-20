@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.trade;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.InjectView;
@@ -45,6 +45,7 @@ import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
@@ -57,11 +58,13 @@ import rx.functions.Action1;
 import timber.log.Timber;
 
 @Routable({
-        "security/:securityRawInfo",
-        "stockSecurity/:exchange/:symbol"
+        "stock-security/:exchange/:symbol"
 })
 public class BuySellStockFragment extends BuySellFragment
 {
+    private static final float WATCHED_ALPHA_UNWATCHED = 0.5f;
+    private static final float WATCHED_ALPHA_WATCHED = 1f;
+
     @InjectView(R.id.buy_price) protected TextView mBuyPrice;
     @InjectView(R.id.sell_price) protected TextView mSellPrice;
     @InjectView(R.id.vprice_as_of) protected TextView mVPriceAsOf;
@@ -89,7 +92,7 @@ public class BuySellStockFragment extends BuySellFragment
     protected TextView mTvStockTitle;
     protected TextView mTvStockSubTitle;
     protected SecurityCircleProgressBar circleProgressBar;
-    protected View btnWatched;
+    protected ImageView btnWatched;
     protected View btnAlerted;
     protected View marketCloseIcon;
 
@@ -140,7 +143,7 @@ public class BuySellStockFragment extends BuySellFragment
             circleProgressBar = (SecurityCircleProgressBar) v.findViewById(R.id.circle_progressbar);
             marketCloseIcon = v.findViewById(R.id.action_bar_market_closed_icon);
 
-            btnWatched = v.findViewById(R.id.btn_watched);
+            btnWatched = (ImageView) v.findViewById(R.id.btn_watched);
             btnAlerted = v.findViewById(R.id.btn_alerted);
 
             btnAlerted.setOnClickListener(new View.OnClickListener()
@@ -447,14 +450,21 @@ public class BuySellStockFragment extends BuySellFragment
             if (securityId == null || watchedList == null)
             {
                 // TODO show disabled
-                btnWatched.setVisibility(View.GONE);
+                btnWatched.setVisibility(View.INVISIBLE);
             }
             else
             {
                 btnWatched.setVisibility(View.VISIBLE);
-                btnWatched.setAlpha(watchedList.contains(securityId) ?
-                        1.0f :
-                        0.50f);
+                boolean watched = watchedList.contains(securityId);
+                btnWatched.setAlpha(watched ?
+                        WATCHED_ALPHA_WATCHED :
+                        WATCHED_ALPHA_UNWATCHED);
+                GraphicUtil.applyColorFilter(
+                        btnWatched,
+                        getResources().getColor(
+                                watched
+                                        ? R.color.watchlist_button_color
+                                        : R.color.white));
             }
         }
     }

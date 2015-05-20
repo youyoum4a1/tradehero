@@ -116,9 +116,14 @@ abstract public class OneFragmentActivity extends BaseActivity
         {
             @Override public void call(ActivityResultRequester requester)
             {
-                requester.onActivityResult(requestCode, resultCode, data);
+                requester.onActivityResult(OneFragmentActivity.this, requestCode, resultCode, data);
             }
         });
+        RouteParams routeParams = getRouteParams(data);
+        if (routeParams != null)
+        {
+            thRouter.open(routeParams.deepLink, routeParams.extras, this);
+        }
     }
 
     @Module(

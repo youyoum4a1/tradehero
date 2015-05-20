@@ -11,19 +11,21 @@ import com.tradehero.th.api.market.MarketRegion;
 
 public class MapHitBoxView extends ImageView
 {
-    @NonNull final Params sizeParams;
+    @NonNull final Params params;
 
     //<editor-fold desc="Constructors">
     public MapHitBoxView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        sizeParams = new Params(context, attrs);
+        params = new Params(context, attrs);
+        setSelected(false);
     }
 
     public MapHitBoxView(Context context, AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
-        sizeParams = new Params(context, attrs);
+        params = new Params(context, attrs);
+        setSelected(false);
     }
     //</editor-fold>
 
@@ -32,31 +34,42 @@ public class MapHitBoxView extends ImageView
      */
     public void loadImage()
     {
-        setImageResource(sizeParams.imageRes);
+        setImageResource(params.imageRes);
+    }
+
+    @Override public void setSelected(boolean selected)
+    {
+        setAlpha(selected ? params.alphaSelected : 0f);
     }
 
     static class Params
     {
         @NonNull final MarketRegion region;
         @DrawableRes final int imageRes;
+        final float alphaSelected;
 
+        //<editor-fold desc="Constructors">
         Params(@NonNull Context context, @NonNull AttributeSet attrs)
         {
-            this(context.obtainStyledAttributes(attrs, R.styleable.MapHitBoxView));
+            this(context.obtainStyledAttributes(attrs, R.styleable.MarketRegionView),
+                    context.obtainStyledAttributes(attrs, R.styleable.OnBoardSelectableViewLinear));
         }
 
-        Params(@NonNull TypedArray a)
+        Params(@NonNull TypedArray marketRegionAttrs, @NonNull TypedArray selectableAttrs)
         {
-            this(MarketRegion.valueOf(a.getString(R.styleable.MapHitBoxView_hitBoxRegion)),
-                    a.getResourceId(R.styleable.MapHitBoxView_hitBoxImage, R.drawable.map_hitboxes)
-            );
-            a.recycle();
+            this(MarketRegion.valueOf(marketRegionAttrs.getString(R.styleable.MarketRegionView_region)),
+                    marketRegionAttrs.getResourceId(R.styleable.MarketRegionView_hitBoxImage, R.drawable.map_hitboxes),
+                    selectableAttrs.getFloat(R.styleable.OnBoardSelectableViewLinear_alphaSelected, 0f));
+            marketRegionAttrs.recycle();
+            selectableAttrs.recycle();
         }
 
-        Params(@NonNull MarketRegion region, @DrawableRes int imageRes)
+        Params(@NonNull MarketRegion region, @DrawableRes int imageRes, float alphaSelected)
         {
             this.region = region;
             this.imageRes = imageRes;
+            this.alphaSelected = alphaSelected;
         }
+        //</editor-fold>
     }
 }

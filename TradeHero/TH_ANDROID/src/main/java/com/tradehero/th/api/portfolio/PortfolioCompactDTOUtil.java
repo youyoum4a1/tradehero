@@ -2,6 +2,8 @@ package com.tradehero.th.api.portfolio;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
@@ -207,7 +209,7 @@ public class PortfolioCompactDTOUtil
         return converted;
     }
 
-    public static int getIconResId(@NonNull PortfolioCompactDTO portfolioDTO)
+    @DrawableRes public static int getIconResId(@NonNull PortfolioCompactDTO portfolioDTO)
     {
         int imageResId = R.drawable.ic_portfolio_stocks;
         if (portfolioDTO.providerId != null)
@@ -230,5 +232,15 @@ public class PortfolioCompactDTOUtil
             imageResId = R.drawable.ic_portfolio_favorites;
         }
         return imageResId;
+    }
+
+    @ColorRes @Nullable public static Integer getIconTintResId(@NonNull PortfolioCompactDTO portfolioDTO)
+    {
+        Integer colorResId = null;
+        if (portfolioDTO.isWatchlist)
+        {
+            colorResId = R.color.watchlist_button_color;
+        }
+        return colorResId;
     }
 }

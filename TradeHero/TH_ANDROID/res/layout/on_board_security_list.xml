@@ -23,17 +23,37 @@
       tools:listitem="@layout/on_board_security_item_view"
       />
 
-  <TextView
-      android:id="@android:id/button1"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/next"
-      android:layout_alignParentBottom="true"
-      android:gravity="center"
-      style="@style/TH.Title.Inverse"
-      android:padding="@dimen/size_1"
-      android:background="@drawable/basic_green_selector"
-      android:visibility="gone"
-      />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        >
+
+        <TextView
+            android:id="@android:id/button2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/back"
+            android:gravity="center"
+            style="@style/TH.Title"
+            android:padding="@dimen/size_1"
+            android:background="@drawable/basic_white_selector"
+            />
+
+        <TextView
+            android:id="@android:id/button1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/next"
+            android:gravity="center"
+            style="@style/TH.Title.Inverse"
+            android:padding="@dimen/size_1"
+            android:background="@drawable/basic_green_selector"
+            />
+
+    </LinearLayout>
 
 </RelativeLayout>

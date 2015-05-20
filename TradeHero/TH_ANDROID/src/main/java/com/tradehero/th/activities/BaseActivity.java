@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,13 +23,11 @@ import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.dagger.AppModule;
-import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
-import javax.inject.Inject;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -44,12 +41,9 @@ public class BaseActivity extends ActionBarActivity
     private AccountManager accountManager;
     private Injector newInjector;
 
-    @Inject protected LocalBroadcastManager localBroadcastManager;
-    @Inject @ForUpgrade IntentFilter upgradeIntentFilter;
+    protected LocalBroadcastManager localBroadcastManager;
     BroadcastReceiver upgradeRequiredBroadcastListener;
-    @Inject @ForSocialToken IntentFilter socialTokenIntentFilter;
     BroadcastReceiver socialTokenBroadcastListener;
-    @Inject Lazy<MarketUtil> marketUtil;
 
     private WeakReference<Toolbar> toolbarRef;
 
@@ -82,6 +76,7 @@ public class BaseActivity extends ActionBarActivity
         Timber.d("Activity created");
 
         accountManager = AccountManager.get(this);
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
         upgradeRequiredBroadcastListener = new UpgradeRequiredListener();
         socialTokenBroadcastListener = new SocialTokenListener();
     }
@@ -106,8 +101,8 @@ public class BaseActivity extends ActionBarActivity
         {
             accountManager.addOnAccountsUpdatedListener(this, null, true);
         }
-        localBroadcastManager.registerReceiver(upgradeRequiredBroadcastListener, upgradeIntentFilter);
-        localBroadcastManager.registerReceiver(socialTokenBroadcastListener, socialTokenIntentFilter);
+        localBroadcastManager.registerReceiver(upgradeRequiredBroadcastListener, ActivityUtil.getIntentFilterUpgrade());
+        localBroadcastManager.registerReceiver(socialTokenBroadcastListener, ActivityUtil.getIntentFilterSocialToken());
     }
 
     @Override protected void onPause()
@@ -180,7 +175,7 @@ public class BaseActivity extends ActionBarActivity
                                 if (event.isPositive())
                                 {
                                     THToast.show(R.string.update_guide);
-                                    marketUtil.get().showAppOnMarket(BaseActivity.this);
+                                    MarketUtil.showAppOnMarket(BaseActivity.this);
                                     finish();
                                 }
                             }
@@ -192,7 +187,7 @@ public class BaseActivity extends ActionBarActivity
     {
         @Override public void onReceive(Context context, Intent intent)
         {
-            ActivityHelper.launchAuthentication(BaseActivity.this);
+            ActivityHelper.launchAuthentication(BaseActivity.this, intent.getData());
         }
     }
 

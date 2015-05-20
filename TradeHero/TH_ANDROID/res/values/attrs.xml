@@ -138,15 +138,12 @@
 
   <declare-styleable name="MarketRegionView">
     <attr name="region" format="string"/>
-  </declare-styleable>
-
-  <declare-styleable name="MapHitBoxView">
-    <attr name="hitBoxRegion" format="string"/>
     <attr name="hitBoxImage" format="reference"/>
   </declare-styleable>
 
   <declare-styleable name="OnBoardSelectableViewLinear">
     <attr name="alphaUnSelected" format="float"/>
+    <attr name="alphaSelected" format="float"/>
   </declare-styleable>
 
   <declare-styleable name="TopStockListView">

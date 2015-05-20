@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.googleplay.inventory;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -37,7 +38,7 @@ public class THBaseIABInventoryFetcherHolderRx
         return new THBaseIABInventoryFetcherRx(requestCode, productIdentifiers, context, iabExceptionFactory);
     }
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
         // Nothing to do
     }

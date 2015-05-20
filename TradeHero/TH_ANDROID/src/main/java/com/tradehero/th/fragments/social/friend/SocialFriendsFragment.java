@@ -66,6 +66,7 @@ public abstract class SocialFriendsFragment extends BaseFragment
 
     protected SocialFriendHandler socialFriendHandler;
 
+    private BehaviorSubject<UserFriendsDTOList> userFriendsSubject;
     private FriendsListKey friendsListKey;
     @Nullable protected UserFriendsDTOList friendDTOList;
     protected List<UserFriendsDTO> followableFriends;
@@ -82,6 +83,8 @@ public abstract class SocialFriendsFragment extends BaseFragment
         friendsListKey = new FriendsListKey(currentUserId.toUserBaseKey(), getSocialNetwork());
         socialFriendsListAdapter = createSocialFriendsAdapter();
         socialFriendHandler = createFriendHandler();
+        userFriendsSubject = BehaviorSubject.create();
+        fetchAllFriends();
     }
 
     @Override
@@ -106,19 +109,14 @@ public abstract class SocialFriendsFragment extends BaseFragment
             filterSubject = BehaviorSubject.create();
         }
         filterTextView.setText(filterText);
+        listenToFilterSubject();
+        listenToSubject();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         setActionBarTitle(getTitle());
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public void onStart()
-    {
-        super.onStart();
-        fetchAllFriends();
-        listenToFilterSubject();
     }
 
     @Override public void onResume()
@@ -166,7 +164,7 @@ public abstract class SocialFriendsFragment extends BaseFragment
 
     protected void listenToFilterSubject()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
                 this,
                 filterSubject
                         .flatMap(new Func1<Pair<String, List<SocialFriendListItemDTO>>, Observable<? extends List<SocialFriendListItemDTO>>>()
@@ -226,9 +224,19 @@ public abstract class SocialFriendsFragment extends BaseFragment
 
     protected void fetchAllFriends()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
-                getFetchAllFriendsObservable())
+        onDestroySubscriptions.add(getFetchAllFriendsObservable()
+                .subscribe(userFriendsSubject));
+    }
+
+    @NonNull protected Observable<UserFriendsDTOList> getFetchAllFriendsObservable()
+    {
+        return friendsListCache.get(friendsListKey)
+                .map(new PairGetSecond<FriendsListKey, UserFriendsDTOList>());
+    }
+
+    protected void listenToSubject()
+    {
+        onDestroyViewSubscriptions.add(userFriendsSubject
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<UserFriendsDTOList>()
@@ -245,12 +253,6 @@ public abstract class SocialFriendsFragment extends BaseFragment
                                 SocialFriendsFragment.this.handleFriendListError(error);
                             }
                         }));
-    }
-
-    @NonNull protected Observable<UserFriendsDTOList> getFetchAllFriendsObservable()
-    {
-        return friendsListCache.get(friendsListKey)
-                .map(new PairGetSecond<FriendsListKey, UserFriendsDTOList>());
     }
 
     protected void linkWith(@NonNull UserFriendsDTOList value)
@@ -270,6 +272,7 @@ public abstract class SocialFriendsFragment extends BaseFragment
 
     protected void handleFriendListError(@NonNull Throwable e)
     {
+        Timber.e(e, "Failed to fetch friends");
         //when already fetched the data, do not show error view
         if (listedSocialItems == null)
         {
@@ -506,7 +509,8 @@ public abstract class SocialFriendsFragment extends BaseFragment
     @SuppressWarnings("UnusedParameters")
     protected void handleInviteError(@NonNull Throwable e)
     {
-        if (e instanceof FacebookOperationCanceledException) {
+        if (e instanceof FacebookOperationCanceledException)
+        {
             THToast.show(R.string.invite_friend_request_cancelled);
             return;
         }

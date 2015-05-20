@@ -14,9 +14,11 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -30,7 +32,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Inject protected CurrentUserId currentUserId;
     @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
 
-    protected Observable<PortfolioCompactDTOList> currentUserPortfolioCompactListObservable;
+    protected Provider<Observable<PortfolioCompactDTOList>> currentUserPortfolioCompactListObservable;
 
     public static void putApplicablePortfolioId(@NonNull Bundle args, @NonNull OwnedPortfolioId ownedPortfolioId)
     {
@@ -53,11 +55,31 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
-        currentUserPortfolioCompactListObservable = portfolioCompactListCache.get(currentUserId.toUserBaseKey())
-                        .map(new PairGetSecond<UserBaseKey, PortfolioCompactDTOList>())
-                        .publish()
-                        .refCount()
-                        .cache(1);
+        currentUserPortfolioCompactListObservable = new Provider<Observable<PortfolioCompactDTOList>>()
+        {
+            private Observable<PortfolioCompactDTOList> observable = null;
+
+            @Override public Observable<PortfolioCompactDTOList> get()
+            {
+                if (observable == null)
+                {
+                    // .get() is called immediately, so use this Provider to reduce the aggressiveness.
+                    observable = portfolioCompactListCache.get(currentUserId.toUserBaseKey())
+                            .doOnSubscribe(new Action0()
+                            {
+                                @Override public void call()
+                                {
+                                    Timber.d("onSub");
+                                }
+                            })
+                            .map(new PairGetSecond<UserBaseKey, PortfolioCompactDTOList>())
+                            .publish()
+                            .refCount()
+                            .cache(1);
+                }
+                return observable;
+            }
+        };
     }
 
     @Override public void onResume()
@@ -89,7 +111,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                currentUserPortfolioCompactListObservable)
+                currentUserPortfolioCompactListObservable.get())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<PortfolioCompactDTOList>()

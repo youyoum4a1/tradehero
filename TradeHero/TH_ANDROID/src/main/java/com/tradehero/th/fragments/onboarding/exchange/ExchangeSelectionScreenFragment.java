@@ -18,66 +18,142 @@ import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.market.MarketRegion;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 public class ExchangeSelectionScreenFragment extends BaseFragment
 {
+    private static final String BUNDLE_KEY_INITIAL_REGION = ExchangeSelectionScreenFragment.class.getName() + ".initialRegion";
+    private static final String BUNDLE_KEY_HAD_INITIAL_SELECTED_EXCHANGE =
+            ExchangeSelectionScreenFragment.class.getName() + ".hadInitialSelectedExchange";
+    private static final String BUNDLE_KEY_INITIAL_EXCHANGES = ExchangeSelectionScreenFragment.class.getName() + ".initialExchanges";
     private static final int MAX_SELECTABLE_EXCHANGES = 3;
     private static final int MAX_TOP_STOCKS = 6;
     private static final String MAP_ITEM_DTO = "map";
 
     @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCacheRx userProfileCache;
 
     MarketRegionSwitcherView mapHeaderSwitcherView;
     @InjectView(android.R.id.list) ListView exchangeList;
+    @InjectView(android.R.id.button2) View backButton;
     @InjectView(android.R.id.button1) View nextButton;
     ArrayAdapter<SelectableExchangeDTO> exchangeAdapter;
+    @Nullable MarketRegion initialRegion;
+    boolean hadInitialExchangeSelected;
     @NonNull Map<MarketRegion, List<ExchangeIntegerId>> filedExchangeIds;
     @NonNull Map<ExchangeIntegerId, ExchangeCompactDTO> knownExchanges;
     @NonNull Set<ExchangeIntegerId> selectedExchanges;
+    @NonNull BehaviorSubject<MarketRegion> selectedRegionSubject;
     @NonNull BehaviorSubject<ExchangeCompactDTOList> selectedExchangesSubject;
+    @NonNull PublishSubject<Boolean> nextClickedSubject;
+
+    public static void putRequisites(@NonNull Bundle args,
+            @Nullable MarketRegion initialRegion,
+            boolean hadAutoSelectedExchange,
+            @Nullable List<ExchangeIntegerId> initialExchangeIds)
+    {
+        if (initialRegion != null)
+        {
+            args.putInt(BUNDLE_KEY_INITIAL_REGION, initialRegion.code);
+        }
+        args.putBoolean(BUNDLE_KEY_HAD_INITIAL_SELECTED_EXCHANGE, hadAutoSelectedExchange);
+        if (initialExchangeIds != null)
+        {
+            int[] list = new int[initialExchangeIds.size()];
+            for (int index = 0; index < initialExchangeIds.size(); index++)
+            {
+                list[index] = initialExchangeIds.get(index).key;
+            }
+            args.putIntArray(BUNDLE_KEY_INITIAL_EXCHANGES, list);
+        }
+    }
+
+    @Nullable private static MarketRegion getInitialRegion(@NonNull Bundle args)
+    {
+        if (args.containsKey(BUNDLE_KEY_INITIAL_REGION))
+        {
+            return MarketRegion.create(args.getInt(BUNDLE_KEY_INITIAL_REGION));
+        }
+        return null;
+    }
+
+    private static boolean getHadInitialExchangeSelected(@NonNull Bundle args)
+    {
+        return args.getBoolean(BUNDLE_KEY_HAD_INITIAL_SELECTED_EXCHANGE);
+    }
+
+    @NonNull private static Set<ExchangeIntegerId> getInitialExchanges(@NonNull Bundle args)
+    {
+        int[] list = args.getIntArray(BUNDLE_KEY_INITIAL_EXCHANGES);
+        Set<ExchangeIntegerId> initialExchanges = new HashSet<>();
+        if (list != null)
+        {
+            for (int id : list)
+            {
+                initialExchanges.add(new ExchangeIntegerId(id));
+            }
+        }
+        return initialExchanges;
+    }
 
     public ExchangeSelectionScreenFragment()
     {
         filedExchangeIds = new HashMap<>();
         knownExchanges = new HashMap<>();
         selectedExchanges = new HashSet<>();
+        selectedRegionSubject = BehaviorSubject.create();
         selectedExchangesSubject = BehaviorSubject.create();
+        nextClickedSubject = PublishSubject.create();
     }
 
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        exchangeAdapter = new OnBoardEmptyOrItemAdapter<>(
+        exchangeAdapter = new DTOAdapterNew<>(
                 activity,
-                R.layout.on_board_exchange_item_view,
-                R.layout.on_board_empty_exchange);
+                R.layout.on_board_exchange_item_view);
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        initialRegion = getInitialRegion(getArguments());
+        hadInitialExchangeSelected = getHadInitialExchangeSelected(getArguments());
+        selectedExchanges = getInitialExchanges(getArguments());
     }
 
     @SuppressLint("InflateParams")
@@ -95,14 +171,14 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
         exchangeList.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.on_board_started_header, null), "title", false);
         exchangeList.addHeaderView(mapHeaderSwitcherView, MAP_ITEM_DTO, true);
         exchangeList.setAdapter(exchangeAdapter);
+        backButton.setVisibility(View.GONE);
         displayNextButton();
     }
 
     @Override public void onStart()
     {
         super.onStart();
-        fetchExchangeInfo();
-        registerMapClicks();
+        fetchExchangeInfoAndMapClicks();
     }
 
     @Override public void onDestroyView()
@@ -117,49 +193,59 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
         super.onDetach();
     }
 
-    protected void fetchExchangeInfo()
+    protected void fetchExchangeInfoAndMapClicks()
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                exchangeCompactListCache.get(new ExchangeListType(MAX_TOP_STOCKS)))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<Pair<ExchangeListType, ExchangeCompactDTOList>>()
+                Observable.combineLatest(
+                        userProfileCache.getOne(currentUserId.toUserBaseKey()),
+                        exchangeCompactListCache.getOne(new ExchangeListType(MAX_TOP_STOCKS)),
+                        new Func2<Pair<UserBaseKey, UserProfileDTO>, Pair<ExchangeListType, ExchangeCompactDTOList>, ExchangeCompactDTOList>()
                         {
-                            @Override public void call(Pair<ExchangeListType, ExchangeCompactDTOList> pair)
+                            @Override public ExchangeCompactDTOList call(
+                                    Pair<UserBaseKey, UserProfileDTO> profilePair,
+                                    Pair<ExchangeListType, ExchangeCompactDTOList> exchangesPair)
                             {
-                                filedExchangeIds = ExchangeCompactDTOUtil.filePerRegion(pair.second);
-                                mapHeaderSwitcherView.enable(filedExchangeIds.keySet());
-                                for (ExchangeCompactDTO exchange : pair.second)
-                                {
-                                    knownExchanges.put(exchange.getExchangeIntegerId(), exchange);
-                                }
-                            }
-                        },
-                        new ToastAndLogOnErrorAction("Failed to load exchanges")));
-    }
-
-    protected void registerMapClicks()
-    {
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
-                mapHeaderSwitcherView.getMarketRegionClickedObservable()
-                        .distinctUntilChanged()
-                        .observeOn(Schedulers.computation())
-                        .flatMap(new Func1<MarketRegion, Observable<List<SelectableExchangeDTO>>>()
-                        {
-                            @Override public Observable<List<SelectableExchangeDTO>> call(MarketRegion region)
-                            {
-                                List<ExchangeIntegerId> exchanges = filedExchangeIds.get(region);
-                                if (exchanges == null)
-                                {
-                                    return Observable.empty();
-                                }
-                                Set<ExchangeIntegerId> toShow = new LinkedHashSet<>(selectedExchanges);
-                                toShow.addAll(exchanges);
-                                return Observable.just(createSelectables(toShow));
+                                mapHeaderSwitcherView.setCurrentUserProfile(profilePair.second);
+                                return exchangesPair.second;
                             }
                         }))
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<ExchangeCompactDTOList, Observable<MarketRegion>>()
+                {
+                    @Override public Observable<MarketRegion> call(ExchangeCompactDTOList exchanges)
+                    {
+                        filedExchangeIds = ExchangeCompactDTOUtil.filePerRegion(exchanges);
+                        mapHeaderSwitcherView.enable(filedExchangeIds.keySet(), MAX_SELECTABLE_EXCHANGES);
+                        for (ExchangeCompactDTO exchange : exchanges)
+                        {
+                            knownExchanges.put(exchange.getExchangeIntegerId(), exchange);
+                        }
+                        if (initialRegion != null)
+                        {
+                            mapHeaderSwitcherView.showClicked(initialRegion);
+                        }
+                        return mapHeaderSwitcherView.getMarketRegionClickedObservable()
+                                .startWith(initialRegion == null ? Observable.<MarketRegion>empty() : Observable.just(initialRegion));
+                    }
+                })
+                .observeOn(Schedulers.computation())
+                .distinctUntilChanged()
+                .flatMap(new Func1<MarketRegion, Observable<List<SelectableExchangeDTO>>>()
+                {
+                    @Override public Observable<List<SelectableExchangeDTO>> call(MarketRegion region)
+                    {
+                        selectedRegionSubject.onNext(region);
+                        List<ExchangeIntegerId> exchanges = filedExchangeIds.get(region);
+                        if (exchanges == null)
+                        {
+                            return Observable.empty();
+                        }
+                        Set<ExchangeIntegerId> toShow = new LinkedHashSet<>(selectedExchanges);
+                        toShow.addAll(exchanges);
+                        return Observable.just(createSelectables(toShow));
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<List<SelectableExchangeDTO>>()
@@ -171,19 +257,34 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
                                 exchangeAdapter.addAll(dtos);
                                 exchangeAdapter.setNotifyOnChange(true);
                                 exchangeAdapter.notifyDataSetChanged();
+                                displayNextButton();
+                                informSelectedExchanges();
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastAndLogOnErrorAction("Failed to load exchanges or register map clicks")));
     }
 
     @NonNull List<SelectableExchangeDTO> createSelectables(@NonNull Collection<ExchangeIntegerId> toShow)
     {
-        List<SelectableExchangeDTO> dtos = new ArrayList<>();
+        Set<ExchangeCompactDTO> toShowDtos = new TreeSet<>(new DesirableExchangeComparator());
         for (ExchangeIntegerId exchangeId : toShow)
         {
+            toShowDtos.add(knownExchanges.get(exchangeId));
+        }
+
+        List<SelectableExchangeDTO> dtos = new ArrayList<>();
+        ExchangeIntegerId id;
+        for (ExchangeCompactDTO exchangeCompactDTO : toShowDtos)
+        {
+            id = exchangeCompactDTO.getExchangeIntegerId();
+            if (!hadInitialExchangeSelected)
+            {
+                hadInitialExchangeSelected = true;
+                selectedExchanges.add(id);
+            }
             dtos.add(new SelectableExchangeDTO(
-                    knownExchanges.get(exchangeId),
-                    selectedExchanges.contains(exchangeId)));
+                    knownExchanges.get(id),
+                    selectedExchanges.contains(id)));
         }
         return dtos;
     }
@@ -192,7 +293,6 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     @OnItemClick(android.R.id.list)
     protected void onExchangeClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        nextButton.setVisibility(View.VISIBLE);
         Object item = parent.getItemAtPosition(position);
         //noinspection StatementWithEmptyBody
         if (item.equals(MAP_ITEM_DTO))
@@ -217,21 +317,18 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
                 {
                     selectedExchanges.remove(dto.value.getExchangeIntegerId());
                 }
-                exchangeAdapter.notifyDataSetChanged();
+                ((OnBoardExchangeItemView) view).display(dto);
+
+                informSelectedExchanges();
             }
         }
         displayNextButton();
     }
 
-    protected void displayNextButton()
+    protected void informSelectedExchanges()
     {
-        nextButton.setEnabled(selectedExchanges.size() > 0);
-    }
+        mapHeaderSwitcherView.setSelectedExchanges(selectedExchanges);
 
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(android.R.id.button1)
-    protected void onNextClicked(@SuppressWarnings("UnusedParameters") View view)
-    {
         ExchangeCompactDTOList selectedDTOs = new ExchangeCompactDTOList();
         for (ExchangeIntegerId selected : selectedExchanges)
         {
@@ -240,8 +337,75 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
         selectedExchangesSubject.onNext(selectedDTOs);
     }
 
+    protected void displayNextButton()
+    {
+        boolean hasItems = selectedExchanges.size() > 0;
+        if (hasItems)
+        {
+            nextButton.setVisibility(View.VISIBLE);
+        }
+        nextButton.setEnabled(hasItems);
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(android.R.id.button1)
+    protected void onNextClicked(@SuppressWarnings("UnusedParameters") View view)
+    {
+        nextClickedSubject.onNext(true);
+    }
+
+    @NonNull public Observable<MarketRegion> getMarketRegionClickedObservable()
+    {
+        return selectedRegionSubject.asObservable();
+    }
+
     @NonNull public Observable<ExchangeCompactDTOList> getSelectedExchangesObservable()
     {
         return selectedExchangesSubject.asObservable();
+    }
+
+    @NonNull public Observable<Boolean> getNextClickedObservable()
+    {
+        return nextClickedSubject.asObservable();
+    }
+
+    private class DesirableExchangeComparator implements Comparator<ExchangeCompactDTO>
+    {
+        @Override public int compare(ExchangeCompactDTO lhs, ExchangeCompactDTO rhs)
+        {
+            if (lhs == rhs)
+            {
+                return 0;
+            }
+            boolean lSelected = selectedExchanges.contains(lhs.getExchangeIntegerId());
+            boolean rSelected = selectedExchanges.contains(rhs.getExchangeIntegerId());
+            if (lSelected && !rSelected)
+            {
+                return -1;
+            }
+            else if (!lSelected && rSelected)
+            {
+                return 1;
+            }
+
+            if (lhs.onBoardScore != null && rhs.onBoardScore != null)
+            {
+                int scoreComp = lhs.onBoardScore.compareTo(rhs.onBoardScore);
+                if (scoreComp != 0)
+                {
+                    return scoreComp;
+                }
+            }
+            else if (lhs.onBoardScore != null)
+            {
+                return -1;
+            }
+            else if (rhs.onBoardScore != null)
+            {
+                return 1;
+            }
+
+            return Integer.valueOf(lhs.id).compareTo(rhs.id);
+        }
     }
 }

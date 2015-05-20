@@ -154,9 +154,10 @@ public class PreferenceModule
         return new BooleanPreference(sharedPreferences, PREF_IS_FX_SHOWN_FLAG, false);
     }
 
-    @Provides @AuthHeader String provideAuthenticationHeader(final AccountManager accountManager)
+    @Provides @AuthHeader String provideAuthenticationHeader(final Context context)
     {
         Account[] accounts = null;
+        AccountManager accountManager = AccountManager.get(context);
         try
         {
             accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);

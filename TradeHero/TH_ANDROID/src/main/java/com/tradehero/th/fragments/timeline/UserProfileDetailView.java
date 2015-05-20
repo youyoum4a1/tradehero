@@ -1,111 +1,57 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+import butterknife.ButterKnife;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.users.UserProfileDTO;
+import rx.Observable;
 
 public class UserProfileDetailView extends LinearLayout implements DTOView<UserProfileDTO>
 {
-    protected UserProfileDetailViewHolder userProfileDetailViewHolder;
-    private UserProfileCompactViewHolder.OnProfileClickedListener profileClickedListener;
+    @NonNull protected final UserProfileDetailViewHolder userProfileDetailViewHolder;
 
     //<editor-fold desc="Constructors">
     public UserProfileDetailView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        userProfileDetailViewHolder = new UserProfileDetailViewHolder(context);
     }
     //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        userProfileDetailViewHolder = new UserProfileDetailViewHolder(this);
-    }
-
-    public void setProfileClickedListener(
-            UserProfileCompactViewHolder.OnProfileClickedListener profileClickedListener)
-    {
-        this.profileClickedListener = profileClickedListener;
+        ButterKnife.inject(userProfileDetailViewHolder, this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        userProfileDetailViewHolder.initViews(this);
-        userProfileDetailViewHolder.setProfileClickedListener(createProfileClickListener());
+        ButterKnife.inject(userProfileDetailViewHolder, this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        userProfileDetailViewHolder.detachViews();
-        userProfileDetailViewHolder.setProfileClickedListener(null);
+        ButterKnife.reset(userProfileDetailViewHolder);
         super.onDetachedFromWindow();
     }
 
-    @Override public void setVisibility(int visibility)
+    @Override public void display(UserProfileDTO dto)
     {
-        super.setVisibility(visibility);
-
-        if (userProfileDetailViewHolder != null)
-        {
-            userProfileDetailViewHolder.setVisibility(visibility);
-        }
+        userProfileDetailViewHolder.display(dto);
     }
 
-    @Override public void display(final UserProfileDTO dto)
+    public void setLevelDef(@NonNull LevelDefDTOList levelDefDTOList)
     {
-        if (userProfileDetailViewHolder != null)
-        {
-            userProfileDetailViewHolder.display(dto);
-        }
+        userProfileDetailViewHolder.setLevelDef(levelDefDTOList);
     }
 
-    protected void notifyHeroClicked()
+    @NonNull public Observable<UserProfileCompactViewHolder.ButtonType> getButtonClickedObservable()
     {
-        if (profileClickedListener != null)
-        {
-            profileClickedListener.onHeroClicked();
-        }
-    }
-
-    protected void notifyFollowerClicked()
-    {
-        if (profileClickedListener != null)
-        {
-            profileClickedListener.onFollowerClicked();
-        }
-    }
-
-    private void notifyDefaultAchievementClicked()
-    {
-        if (profileClickedListener != null)
-        {
-            profileClickedListener.onAchievementClicked();
-        }
-    }
-
-    protected UserProfileCompactViewHolder.OnProfileClickedListener createProfileClickListener()
-    {
-        return new UserProfileDetailProfileClickedListener();
-    }
-
-    protected class UserProfileDetailProfileClickedListener implements UserProfileCompactViewHolder.OnProfileClickedListener
-    {
-        @Override public void onHeroClicked()
-        {
-            notifyHeroClicked();
-        }
-
-        @Override public void onFollowerClicked()
-        {
-            notifyFollowerClicked();
-        }
-
-        @Override public void onAchievementClicked()
-        {
-            notifyDefaultAchievementClicked();
-        }
+        return userProfileDetailViewHolder.getButtonClickedObservable();
     }
 }

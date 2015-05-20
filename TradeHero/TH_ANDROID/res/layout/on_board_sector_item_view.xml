@@ -8,13 +8,13 @@
     android:layout_height="match_parent"
     android:padding="@dimen/size_1"
     android:background="@drawable/basic_white_selector"
-    app:alphaUnSelected="0.9"
+    app:alphaUnSelected="@dimen/on_board_alpha_unselected"
     >
 
   <com.squareup.widgets.AspectRatioImageView
       android:id="@android:id/icon1"
-      android:layout_width="@dimen/size_4"
-      android:layout_height="@dimen/size_4"
+      android:layout_width="@dimen/size_6"
+      android:layout_height="@dimen/size_6"
       android:maxHeight="@dimen/size_6"
       app:dominantMeasurement="width"
       app:aspectRatioEnabled="true"

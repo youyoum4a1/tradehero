@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class MarketRegionMapView extends FrameLayout
@@ -30,7 +30,8 @@ public class MarketRegionMapView extends FrameLayout
     @InjectView(R.id.back_image) ImageView backImage;
     @InjectView(R.id.front_image) ImageView frontImage;
     @NonNull private Map<MarketRegion, MapHitBoxView> feedbackHitBoxes;
-    @NonNull private BehaviorSubject<MarketRegion> marketRegionClickedBehavior;
+    @NonNull private PublishSubject<MarketRegion> marketRegionClickedBehavior;
+    @NonNull private PublishSubject<Boolean> switchClickedBehavior;
     @Nullable Bitmap mapBitmap;
     int imW;
     int imH;
@@ -39,14 +40,16 @@ public class MarketRegionMapView extends FrameLayout
     public MarketRegionMapView(Context context)
     {
         super(context);
-        this.marketRegionClickedBehavior = BehaviorSubject.create();
+        this.marketRegionClickedBehavior = PublishSubject.create();
+        this.switchClickedBehavior = PublishSubject.create();
         this.feedbackHitBoxes = new HashMap<>();
     }
 
     public MarketRegionMapView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        this.marketRegionClickedBehavior = BehaviorSubject.create();
+        this.marketRegionClickedBehavior = PublishSubject.create();
+        this.switchClickedBehavior = PublishSubject.create();
         this.feedbackHitBoxes = new HashMap<>();
     }
     //</editor-fold>
@@ -65,7 +68,7 @@ public class MarketRegionMapView extends FrameLayout
                 if (child instanceof  MapHitBoxView)
                 {
                     ((MapHitBoxView) child).loadImage();
-                    feedbackHitBoxes.put(((MapHitBoxView) child).sizeParams.region, (MapHitBoxView) child);
+                    feedbackHitBoxes.put(((MapHitBoxView) child).params.region, (MapHitBoxView) child);
                 }
             } catch (OutOfMemoryError e)
             {
@@ -109,22 +112,40 @@ public class MarketRegionMapView extends FrameLayout
         MarketRegion candidateRegion = MarketRegionDisplayUtil.getBestApproxMarketRegion(getResources(), pixel, HALF_CUBE_APPROXIMATION);
         if (candidateRegion != null && !candidateRegion.equals(MarketRegion.OTHER))
         {
-            marketRegionClickedBehavior.onNext(candidateRegion);
-            View hitBoxView = feedbackHitBoxes.get(candidateRegion);
-            if (hitBoxView == null)
-            {
-                hitBoxView = frontImage;
-            }
-            showClicked(hitBoxView);
+            showClicked(candidateRegion);
             return false;
+        }
+        else
+        {
+            switchClickedBehavior.onNext(true);
         }
         return true;
     }
 
+    public void showClicked(@NonNull MarketRegion candidateRegion)
+    {
+        marketRegionClickedBehavior.onNext(candidateRegion);
+        View hitBoxView = feedbackHitBoxes.get(candidateRegion);
+        if (hitBoxView == null)
+        {
+            hitBoxView = frontImage;
+        }
+        for (MapHitBoxView candidate : feedbackHitBoxes.values())
+        {
+            if (candidate != hitBoxView)
+            {
+                candidate.animate().cancel();
+                candidate.setSelected(false);
+            }
+        }
+        showClicked(hitBoxView);
+    }
+
     private void showClicked(@NonNull View hitBoxView)
     {
+        float targetAlpha = (hitBoxView instanceof MapHitBoxView) ? ((MapHitBoxView) hitBoxView).params.alphaSelected : 0f;
         hitBoxView.setAlpha(ON_CLICK_ALPHA);
-        hitBoxView.animate().alpha(0f)
+        hitBoxView.animate().alpha(targetAlpha)
                 .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
                 .start();
     }
@@ -132,5 +153,10 @@ public class MarketRegionMapView extends FrameLayout
     @NonNull public Observable<MarketRegion> getMarketRegionClickedObservable()
     {
         return marketRegionClickedBehavior.asObservable();
+    }
+
+    @NonNull public Observable<Boolean> getSwitchClickedObservable()
+    {
+        return switchClickedBehavior.asObservable();
     }
 }

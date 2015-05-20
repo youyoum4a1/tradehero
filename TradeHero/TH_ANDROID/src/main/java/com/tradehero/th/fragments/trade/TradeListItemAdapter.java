@@ -1,8 +1,10 @@
 package com.tradehero.th.fragments.trade;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,13 +39,19 @@ public class TradeListItemAdapter
     @LayoutRes public static final int LAYOUT_RES_ID_POSITION_IN_PERIOD_CLOSED = R.layout.position_closed_in_period;
 
     //<editor-fold desc="Constructors">
-    public TradeListItemAdapter(final Context context)
+    public TradeListItemAdapter(@NonNull final Context context)
     {
         super(context, LAYOUT_RES_ID_ITEM_TRADE);
     }
     //</editor-fold>
 
-    public List<Object> createObjects(PositionDTO positionDTO, SecurityCompactDTO securityCompactDTO, TradeDTOList tradeDTOs, PrettyTime prettyTime)
+    @NonNull public static List<Object> createObjects(
+            @NonNull Resources resources,
+            @NonNull PositionDTO positionDTO,
+            @NonNull SecurityCompactDTO securityCompactDTO,
+            @Nullable Integer expandedTradeId,
+            @NonNull TradeDTOList tradeDTOs,
+            @NonNull PrettyTime prettyTime)
     {
         List<Object> objects = new ArrayList<>();
 
@@ -57,7 +65,7 @@ public class TradeListItemAdapter
             objects.add(R.string.trade_list_header_open_summary);
         }
 
-        objects.add(new PositionView.DTO(getContext().getResources(), new ExpandableListItem<PositionDTO>(true, positionDTO), securityCompactDTO));
+        objects.add(new PositionView.DTO(resources, new ExpandableListItem<>(true, positionDTO), securityCompactDTO));
 
         objects.add(R.string.trade_list_header_position_summary);
 
@@ -65,7 +73,14 @@ public class TradeListItemAdapter
         {
             TradeDTO dto = tradeDTOs.get(i);
             objects.add(
-                    new TradeListItemView.DTO(getContext().getResources(), positionDTO, securityCompactDTO, dto, i == 0, prettyTime));
+                    new TradeListItemView.DTO(
+                            resources,
+                            positionDTO,
+                            securityCompactDTO,
+                            expandedTradeId != null && expandedTradeId.equals(dto.id),
+                            dto,
+                            i == 0,
+                            prettyTime));
         }
 
         return objects;

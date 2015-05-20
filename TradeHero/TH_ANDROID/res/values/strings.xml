@@ -240,6 +240,7 @@
   <string name="weibo_friends_invite">Join TradeHero, learn to trade, get expert tips, compete with the world top traders and earn real cash from followers, use my invitation code %1$s to get extra 10,000 TH dollars!</string>
   <string name="referral_dollars_claimed">Referral dollars claimed</string>
   <string name="next">Next</string>
+  <string name="back">Back</string>
   <string name="done">Done</string>
   <string name="trade_comment">Trade Comment</string>
 
@@ -251,7 +252,7 @@
   <string name="discovery_news">News</string>
   <string name="discovery_discussions">Discussions</string>
   <string name="discovery">Discover</string>
-  <string name="discovery_learning">Videos</string>
+  <string name="discovery_learning">Academy</string>
   <string name="onboard_exchange_title">To Help Get You Started</string>
   <string name="onboard_exchange_summary1">Which exchange are you interested in ?</string>
   <string name="onboard_exchange_summary2">Which sector are you interested in ?</string>
@@ -280,12 +281,12 @@
   <string name="retry">Retry</string>
 
   <string name="stocks">Stocks</string>
-  <string name="stocks_main">My Stocks</string>
-  <string name="trending">Trending</string>
-  <string name="price">Price</string>
-  <string name="volume">Volume</string>
-  <string name="all">All</string>
-  <string name="favorites">Favorites</string>
+  <string name="trending_tab_stocks_main">My Stocks</string>
+  <string name="trending_tab_trending">Trending</string>
+  <string name="trending_tab_price">Price Action</string>
+  <string name="trending_tab_volume">Unusual Volumes</string>
+  <string name="trending_tab_all">All</string>
+  <string name="trending_tab_favorites">Favorites</string>
   <string name="my_fx">My FX</string>
   <string name="fx">FX</string>
   <string name="trade_fx">Trade FX</string>

@@ -232,8 +232,8 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
             portfolioCompactListCache.invalidate(currentUserId.toUserBaseKey());
             Bundle args = new Bundle();
             CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
-                    providerDTO.getProviderId(),
-                    currentUserId.toUserBaseKey()));
+                    providerDTO.getProviderId()
+            ));
             webFragment = navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }

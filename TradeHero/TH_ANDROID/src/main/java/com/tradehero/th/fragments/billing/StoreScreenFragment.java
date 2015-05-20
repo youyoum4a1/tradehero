@@ -216,6 +216,7 @@ public class StoreScreenFragment extends BaseFragment
                         .subscribe(
                                 Actions.empty(),
                                 new ToastOnErrorAction()));
+                productDomainIdentifierOrdinal = null;
             }
         }
     }

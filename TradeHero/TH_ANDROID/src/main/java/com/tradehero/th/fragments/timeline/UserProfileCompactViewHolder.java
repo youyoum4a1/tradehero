@@ -1,15 +1,19 @@
 package com.tradehero.th.fragments.timeline;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -17,14 +21,14 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public class UserProfileCompactViewHolder
 {
     @InjectView(R.id.user_profile_avatar) @Optional public ImageView avatar;
     @InjectView(R.id.user_profile_roi) @Optional public TextView roiSinceInception;
-    @InjectView(R.id.user_profile_followers_count_wrapper) @Optional public View followersCountWrapper;
     @InjectView(R.id.user_profile_followers_count) @Optional public TextView followersCount;
-    @InjectView(R.id.user_profile_heroes_count_wrapper) @Optional public View heroesCountWrapper;
     @InjectView(R.id.user_profile_heroes_count) @Optional public TextView heroesCount;
     @InjectView(R.id.user_profile_display_name) @Optional public TextView displayName;
 
@@ -32,72 +36,47 @@ public class UserProfileCompactViewHolder
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Picasso picasso;
     protected UserProfileDTO userProfileDTO;
-    private OnProfileClickedListener profileClickedListener;
+    @NonNull final PublishSubject<ButtonType> buttonClickedSubject;
+    private ClipboardManager clipboardManager;
 
-    public UserProfileCompactViewHolder(View view)
+    //<editor-fold desc="Constructors>
+    public UserProfileCompactViewHolder(@NonNull Context context)
     {
         super();
-        HierarchyInjector.inject(view.getContext(), this);
-        initViews(view);
+        buttonClickedSubject = PublishSubject.create();
+        HierarchyInjector.inject(context, this);
+        clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+    }
+    //</editor-fold>
+
+    @NonNull public Observable<ButtonType> getButtonClickedObservable()
+    {
+        return buttonClickedSubject.asObservable();
     }
 
-    public void initViews(View view)
+    public void display(@NonNull UserProfileDTO userProfileDTO)
     {
-        ButterKnife.inject(this, view);
-    }
+        this.userProfileDTO = userProfileDTO;
 
-    public void detachViews()
-    {
-        ButterKnife.reset(this);
-    }
-
-    public void setProfileClickedListener(OnProfileClickedListener profileClickedListener)
-    {
-        this.profileClickedListener = profileClickedListener;
-    }
-
-    public void display(UserProfileDTO dto)
-    {
-        this.userProfileDTO = dto;
-        loadUserPicture();
-        displayRoiSinceInception();
-        displayFollowersCount();
-        displayHeroesCount();
-        displayDisplayName();
-    }
-
-    protected void loadUserPicture()
-    {
+        // Avatar
         if (avatar != null)
         {
-            loadDefaultPicture();
-            if (userProfileDTO != null && userProfileDTO.picture != null)
+            picasso.load(R.drawable.superman_facebook)
+                    .transform(peopleIconTransformation)
+                    .into(avatar);
+            if (userProfileDTO.picture != null)
             {
-                picasso
-                        .load(userProfileDTO.picture)
+                picasso.load(userProfileDTO.picture)
                         .transform(peopleIconTransformation)
                         .placeholder(avatar.getDrawable())
                         .into(avatar);
             }
         }
-    }
 
-    protected void loadDefaultPicture()
-    {
-        if (avatar != null)
-        {
-            picasso
-                    .load(R.drawable.superman_facebook)
-                    .transform(peopleIconTransformation)
-                    .into(avatar);
-        }
-    }
-
-    protected void displayRoiSinceInception()
-    {
+        // ROI Since Inception
         if (roiSinceInception != null)
         {
-            if (userProfileDTO != null && userProfileDTO.portfolio != null)
+            if (userProfileDTO.portfolio != null)
             {
                 double roi = userProfileDTO.portfolio.roiSinceInception != null ? userProfileDTO.portfolio.roiSinceInception : 0;
                 THSignedPercentage
@@ -114,92 +93,67 @@ public class UserProfileCompactViewHolder
                 roiSinceInception.setText(R.string.na);
             }
         }
-    }
 
-    protected void displayFollowersCount()
-    {
+        // Followers Count
         if (followersCount != null)
         {
-            if (userProfileDTO != null)
-            {
-                followersCount.setText(THSignedNumber.builder(userProfileDTO.allFollowerCount).build().toString());
-            }
-            else
-            {
-                followersCount.setText(R.string.na);
-            }
+            followersCount.setText(THSignedNumber.builder(userProfileDTO.allFollowerCount).build().toString());
         }
-    }
 
-    protected void displayHeroesCount()
-    {
+        // Heroes Count
         if (heroesCount != null)
         {
-            if (userProfileDTO != null)
-            {
-                heroesCount.setText(THSignedNumber.builder(
-                        userProfileDTO.heroIds == null
-                                ? userProfileDTO.allHeroCount
-                                : userProfileDTO.heroIds.size())
-                        .build().toString());
-            }
-            else
-            {
-                heroesCount.setText(R.string.na);
-            }
+            heroesCount.setText(THSignedNumber.builder(
+                    userProfileDTO.heroIds == null
+                            ? userProfileDTO.allHeroCount
+                            : userProfileDTO.heroIds.size())
+                    .build().toString());
         }
-    }
 
-    protected void displayDisplayName()
-    {
+        // Display Name
         if (displayName != null)
         {
-            if (userProfileDTO != null)
-            {
-                displayName.setText(userProfileDTO.displayName);
-            }
-            else
-            {
-                displayName.setText(R.string.na);
-            }
+            displayName.setText(userProfileDTO.displayName);
         }
     }
 
+    @SuppressWarnings("unused")
     @OnClick({R.id.user_profile_heroes_count, R.id.user_profile_heroes_count_wrapper}) @Optional
-    protected void notifyHeroClicked()
+    protected void notifyHeroesClicked(View view)
     {
-        OnProfileClickedListener listener = profileClickedListener;
-        if (listener != null)
-        {
-            listener.onHeroClicked();
-        }
+        buttonClickedSubject.onNext(ButtonType.HEROES);
     }
 
+    @SuppressWarnings("unused")
     @OnClick({R.id.user_profile_followers_count, R.id.user_profile_followers_count_wrapper}) @Optional
-    protected void notifyFollowerClicked()
+    protected void notifyFollowersClicked(View view)
     {
-        OnProfileClickedListener listener = profileClickedListener;
-        if (listener != null)
-        {
-            listener.onFollowerClicked();
-        }
+        buttonClickedSubject.onNext(ButtonType.FOLLOWERS);
     }
 
-    protected void notifyDefaultPortfolioClicked()
+    protected void notifyAchievementsClicked()
     {
-        OnProfileClickedListener listener = profileClickedListener;
-        if (listener != null)
-        {
-            listener.onAchievementClicked();
-        }
+        buttonClickedSubject.onNext(ButtonType.ACHIEVEMENTS);
     }
 
-    public static interface OnProfileClickedListener
+    @SuppressWarnings("unused")
+    @OnLongClick(R.id.user_profile_avatar)
+    protected boolean onAvatarClicked(View view)
     {
-        void onHeroClicked();
+        if (userProfileDTO != null)
+        {
+            ClipData clip = ClipData.newPlainText(userProfileDTO.displayName + " id", String.format("%d", userProfileDTO.id));
+            clipboardManager.setPrimaryClip(clip);
+            THToast.show("UserId " + userProfileDTO.id + " copied to clipboard");
+            return true;
+        }
+        return false;
+    }
 
-        void onFollowerClicked();
-
-        void onAchievementClicked();
+    public enum ButtonType
+    {
+        HEROES,
+        FOLLOWERS,
+        ACHIEVEMENTS,
     }
 }

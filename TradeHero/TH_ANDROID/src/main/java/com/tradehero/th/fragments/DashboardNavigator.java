@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import com.tradehero.th.activities.BaseActivity;
+import com.tradehero.th.activities.OnBoardActivity;
 import com.tradehero.th.activities.OneFragmentActivity;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
@@ -32,11 +33,17 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
     public DashboardNavigator(FragmentActivity fragmentActivity, int fragmentContentId, Class<? extends Fragment> initialFragment,
             int minimumBackstackSize)
     {
+        this(fragmentActivity, fragmentContentId, initialFragment, minimumBackstackSize, new Bundle());
+    }
+    public DashboardNavigator(FragmentActivity fragmentActivity, int fragmentContentId, Class<? extends Fragment> initialFragment,
+            int minimumBackstackSize,
+            Bundle initialArgs)
+    {
         super(fragmentActivity, fragmentActivity.getSupportFragmentManager(), fragmentContentId, minimumBackstackSize);
 
         if (initialFragment != null)
         {
-            Fragment fragment = Fragment.instantiate(activity, initialFragment.getName(), new Bundle());
+            Fragment fragment = Fragment.instantiate(activity, initialFragment.getName(), initialArgs);
             FragmentTransaction transaction = manager.beginTransaction();
             transaction
                     .replace(fragmentContentId, fragment)
@@ -184,7 +191,8 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         {
             startIntent.putExtras(extras);
         }
-        if (OneFragmentActivity.class.isAssignableFrom(activityClass))
+        if (OneFragmentActivity.class.isAssignableFrom(activityClass)
+                || OnBoardActivity.class.isAssignableFrom(activityClass))
         {
             activity.startActivityForResult(startIntent, BaseActivity.REQUEST_CODE_ROUTE);
         }

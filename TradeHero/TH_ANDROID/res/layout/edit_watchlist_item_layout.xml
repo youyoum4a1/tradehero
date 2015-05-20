@@ -20,6 +20,7 @@
         android:layout_width="@dimen/big_image_w_h"
         android:layout_height="@dimen/big_image_w_h"
         android:contentDescription="@null"
+        android:src="@drawable/default_image"
         tools:src="@drawable/superman_facebook"
         />
 
@@ -30,7 +31,8 @@
         tools:text="GOOG"
         android:textStyle="bold"
         android:layout_toRightOf="@id/edit_watchlist_item_security_logo"
-        android:paddingLeft="5dp"
+        android:layout_toEndOf="@id/edit_watchlist_item_security_logo"
+        android:paddingLeft="@dimen/margin_xsmall"
         />
 
     <TextView
@@ -38,9 +40,10 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         tools:text="Company Name"
-        android:paddingLeft="5dp"
+        android:paddingLeft="@dimen/margin_xsmall"
         android:layout_below="@id/edit_watchlist_item_security_name"
         android:layout_toRightOf="@id/edit_watchlist_item_security_logo"
+        android:layout_toEndOf="@id/edit_watchlist_item_security_logo"
         />
 
   </RelativeLayout>
@@ -62,16 +65,18 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/watchlist_average_price_header"
-        android:gravity="right"
+        android:gravity="end"
         />
 
-    <TextView
+    <EditText
         android:id="@+id/edit_watchlist_item_security_price"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:maxLength="10"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/size_2"
+        android:layout_marginStart="@dimen/size_2"
+        android:inputType="numberDecimal"
         />
 
   </LinearLayout>
@@ -81,30 +86,35 @@
       android:layout_height="wrap_content"
       android:orientation="horizontal"
       android:layout_gravity="center_horizontal"
-      android:layout_marginTop="10dp"
+      android:layout_marginTop="@dimen/margin_small"
       >
 
     <TextView
         android:id="@+id/edit_watchlist_item_delete"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:padding="5dp"
         android:gravity="center"
         android:text="@string/watchlist_button_delete"
-        android:background="@drawable/basic_white_selector"
+        android:background="@drawable/basic_red_selector"
+        android:textColor="@color/white"
         android:minWidth="100dp"
+        android:minHeight="@dimen/clickable_element_min_dimen"
+        android:enabled="false"
         />
 
     <TextView
         android:id="@+id/edit_watchlist_item_done"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:padding="5dp"
         android:gravity="center"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginStart="@dimen/margin_small"
         android:text="@string/watchlist_button_done"
-        android:background="@drawable/basic_white_selector"
+        android:background="@drawable/basic_blue_selector"
+        android:textColor="@color/white"
         android:minWidth="100dp"
+        android:minHeight="@dimen/clickable_element_min_dimen"
+        android:enabled="false"
         />
 
   </LinearLayout>

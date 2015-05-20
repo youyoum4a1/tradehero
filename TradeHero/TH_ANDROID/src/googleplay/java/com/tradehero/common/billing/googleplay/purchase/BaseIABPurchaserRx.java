@@ -139,13 +139,15 @@ abstract public class BaseIABPurchaserRx<
      * method from your Activity's {@link android.app.Activity@onActivityResult} method. This method MUST be called from the UI thread of the
      * Activity.
      *
+     *
+     * @param activity
      * @param requestCode The requestCode as you received it.
      * @param resultCode The resultCode as you received it.
      * @param data The data (Intent) as you received it.
      * @return Returns true if the result was related to a purchase flow and was handled; false if the result was not related to a purchase, in which
      * case you should handle it normally.
      */
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
         Timber.d("handleActivityResult requestCode: %d, resultCode: %d", requestCode, resultCode);
         if (requestCode != getRequestCode())

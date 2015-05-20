@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/size_7"
     style="@style/TradeHero.ActionBar.Spinner"
     >
+
 <CheckedTextView
     android:id="@+id/spinner_text"
     android:layout_width="match_parent"
@@ -13,7 +16,7 @@
     android:singleLine="true"
     android:ellipsize="marquee"
     style="@style/TH.Title.Inverse"
-    tools:text="Stocks Leaders"
+    tools:text="Stocks Heroes"
     />
 
   <ImageView
@@ -23,4 +26,5 @@
       android:layout_marginRight="@dimen/size_1"
       android:layout_gravity="center_vertical|right"
       android:background="@drawable/spinner_arrow_bg"/>
+
 </FrameLayout>

@@ -18,14 +18,18 @@
         android:layout_marginEnd="@dimen/size_1"
         android:enabled="false"
         style="@style/TH.OnBoard.MarketRegion"
-        app:region="NORTH_AMERICA"/>
+        app:region="NORTH_AMERICA"
+        app:alphaUnSelected="@dimen/on_board_alpha_unselected"
+        />
 
     <com.tradehero.th.fragments.onboarding.exchange.MarketRegionView
         android:orientation="vertical"
         android:layout_height="wrap_content"
         android:enabled="false"
         style="@style/TH.OnBoard.MarketRegion"
-        app:region="EAST_ASIA"/>
+        app:region="EAST_ASIA"
+        app:alphaUnSelected="@dimen/on_board_alpha_unselected"
+        />
 
   </TableRow>
 
@@ -41,14 +45,18 @@
         android:enabled="false"
         style="@style/TH.OnBoard.MarketRegion"
         android:textColor="@color/black"
-        app:region="EUROPE"/>
+        app:region="EUROPE"
+        app:alphaUnSelected="@dimen/on_board_alpha_unselected"
+        />
 
     <com.tradehero.th.fragments.onboarding.exchange.MarketRegionView
         android:orientation="vertical"
         android:layout_height="wrap_content"
         android:enabled="false"
         style="@style/TH.OnBoard.MarketRegion"
-        app:region="SOUTH_EAST_ASIA"/>
+        app:region="SOUTH_EAST_ASIA"
+        app:alphaUnSelected="@dimen/on_board_alpha_unselected"
+        />
 
   </TableRow>
 
@@ -62,7 +70,9 @@
         android:enabled="false"
         style="@style/TH.OnBoard.MarketRegion"
         android:textColor="@color/black"
-        app:region="AUSTRALIA"/>
+        app:region="AUSTRALIA"
+        app:alphaUnSelected="@dimen/on_board_alpha_unselected"
+        />
 
     <com.tradehero.th.fragments.onboarding.exchange.MarketRegionView
         android:orientation="vertical"
@@ -70,7 +80,9 @@
         android:enabled="false"
         style="@style/TH.OnBoard.MarketRegion"
         android:textColor="@color/black"
-        app:region="INDIA"/>
+        app:region="INDIA"
+        app:alphaUnSelected="@dimen/on_board_alpha_unselected"
+        />
 
   </TableRow>
 

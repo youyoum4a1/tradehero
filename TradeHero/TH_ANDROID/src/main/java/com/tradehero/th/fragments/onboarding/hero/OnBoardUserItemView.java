@@ -16,7 +16,6 @@ import com.tradehero.common.api.SelectableDTO;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.onboarding.OnBoardSelectableViewLinear;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -27,7 +26,6 @@ public class OnBoardUserItemView extends OnBoardSelectableViewLinear<Leaderboard
     @DrawableRes private static final int DEFAULT_EXCHANGE_LOGO = R.drawable.superman_facebook;
 
     @Inject Picasso picasso;
-    @Inject CurrentUserId currentUserId;
 
     @InjectView(android.R.id.icon1) ImageView image;
     @InjectView(android.R.id.text1) TextView shortNameView;

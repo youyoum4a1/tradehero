@@ -44,6 +44,8 @@ import timber.log.Timber;
 
 public class GuideAuthenticationFragment extends Fragment
 {
+    private static final String BUNDLE_KEY_DEEP_LINK = GuideAuthenticationFragment.class.getName() + ".deepLink";
+
     private static final int PAGER_INITIAL_POSITION = 0;
 
     @Inject DashboardNavigator navigator;
@@ -68,12 +70,30 @@ public class GuideAuthenticationFragment extends Fragment
 
     @Nullable protected Observer<SocialNetworkEnum> socialNetworkEnumObserver;
     protected SubscriptionList onViewSubscriptions;
+    @Nullable Uri deepLink;
+
+    public static void putDeepLink(@NonNull Bundle args, @NonNull Uri deepLink)
+    {
+        args.putString(BUNDLE_KEY_DEEP_LINK, deepLink.toString());
+    }
+
+    @Nullable private static Uri getDeepLink(@NonNull Bundle args)
+    {
+        String link = args.getString(BUNDLE_KEY_DEEP_LINK);
+        return link == null ? null : Uri.parse(link);
+    }
 
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
         ((Injector) activity).inject(this);
         socialNetworkEnumObserver = ((AuthenticationActivity) activity).getSelectedSocialNetworkObserver();
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        deepLink = getDeepLink(getArguments());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -145,13 +165,23 @@ public class GuideAuthenticationFragment extends Fragment
     @OnClick(R.id.authentication_email_sign_in_link)
     protected void onSignInClicked(View view)
     {
-        navigator.pushFragment(EmailSignInFragment.class);
+        Bundle args = new Bundle();
+        if (deepLink != null)
+        {
+            EmailSignInFragment.putDeepLink(args, deepLink);
+        }
+        navigator.pushFragment(EmailSignInFragment.class, args);
     }
 
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
     @OnClick(R.id.authentication_email_sign_up_link)
     protected void onSignUpClicked(View view)
     {
+        Bundle args = new Bundle();
+        if (deepLink != null)
+        {
+            EmailSignUpFragment.putDeepLink(args, deepLink);
+        }
         navigator.pushFragment(EmailSignUpFragment.class);
     }
 

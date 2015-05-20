@@ -18,8 +18,8 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.functions.Func2;
 
 public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
 {
@@ -52,18 +52,25 @@ public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
 
     @NonNull @Override protected Observable<UserFriendsDTOList> getFetchAllFriendsObservable()
     {
-        return Observable.zip(
-                super.getFetchAllFriendsObservable(),
-                getFetchFacebookInvitableObservable(),
-                new Func2<UserFriendsDTOList, UserFriendsDTOList, UserFriendsDTOList>()
+        return getFetchFacebookInvitableObservable()
+                .flatMap(new Func1<UserFriendsDTOList, Observable<UserFriendsDTOList>>()
                 {
-                    @Override public UserFriendsDTOList call(
-                            UserFriendsDTOList thUsers, UserFriendsDTOList fbInvitable)
+                    @Override public Observable<UserFriendsDTOList> call(final UserFriendsDTOList fbInvitable)
                     {
-                        UserFriendsDTOList all = new UserFriendsDTOList();
-                        all.addAll(thUsers.getTradeHeroUsers());
-                        all.addAll(fbInvitable);
-                        return all;
+                        // We are doing it sequentially because the access token may have changed and we give a chance to the server
+                        // to fetch again on its side
+                        return SocialFriendsFragmentFacebook.super.getFetchAllFriendsObservable()
+                                .map(new Func1<UserFriendsDTOList, UserFriendsDTOList>()
+                                {
+                                    @Override public UserFriendsDTOList call(
+                                            UserFriendsDTOList thUsers)
+                                    {
+                                        UserFriendsDTOList all = new UserFriendsDTOList();
+                                        all.addAll(thUsers.getTradeHeroUsers());
+                                        all.addAll(fbInvitable);
+                                        return all;
+                                    }
+                                });
                     }
                 });
     }
@@ -81,7 +88,8 @@ public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
                                         .builder(pair.second, FacebookConstants.API_INVITABLE_FRIENDS)
                                         .setParameters(SocialFriendsFragmentFacebook.this.getFriendsFields())
                                         .setHttpMethod(HttpMethod.GET)
-                                        .build());
+                                        .build())
+                                .subscribeOn(AndroidSchedulers.mainThread());
                     }
                 })
                 .map(new Func1<Response, UserFriendsDTOList>()
