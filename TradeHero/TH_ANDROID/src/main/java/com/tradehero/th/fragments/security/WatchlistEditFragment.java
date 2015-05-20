@@ -272,11 +272,6 @@ public class WatchlistEditFragment extends DashboardFragment
 
         @Override public void onCompleted()
         {
-            display(watchlistPositionDTO);
-            if (securityCompactDTO != null)
-            {
-                display(securityCompactDTO);
-            }
         }
 
         @Override public void onError(Throwable e)
