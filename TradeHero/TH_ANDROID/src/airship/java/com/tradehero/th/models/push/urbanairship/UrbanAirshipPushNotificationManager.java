@@ -23,8 +23,8 @@ import com.urbanairship.actions.ActionResult;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
-import rx.Subscriber;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 @Singleton public final class UrbanAirshipPushNotificationManager implements PushNotificationManager
@@ -60,23 +60,20 @@ import timber.log.Timber;
     @NonNull @Override public Observable<PushNotificationManager.InitialisationCompleteDTO> initialise()
     {
         final long before = System.nanoTime();
-        return Observable.create(
-                new Observable.OnSubscribe<UAirship>()
-                {
-                    @Override public void call(final Subscriber<? super UAirship> subscriber)
-                    {
-                        UAirship.takeOff(
-                                THApp.context(),
-                                options,
-                                new UAirship.OnReadyCallback()
-                                {
-                                    @Override public void onAirshipReady(UAirship uAirship)
-                                    {
-                                        subscriber.onNext(uAirship);
-                                    }
-                                });
-                    }
-                })
+        UAirship.takeOff(THApp.context(), options);
+        while (UAirship.shared() == null)
+        {
+            // We have to use the direct takeOff and do this to avoid a silly NPE in com.urbanairship.analytics.EventService
+            try
+            {
+                Thread.sleep(100);
+            } catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return Observable.just(UAirship.shared())
+                .observeOn(Schedulers.computation())
                 .flatMap(new Func1<UAirship, Observable<PushNotificationManager.InitialisationCompleteDTO>>()
                 {
                     @Override public Observable<PushNotificationManager.InitialisationCompleteDTO> call(final UAirship uAirship)
@@ -185,7 +182,7 @@ import timber.log.Timber;
         }
         else
         {
-            Timber.e(new NullPointerException(), "Failed to setSoundEnabled" );
+            Timber.e(new NullPointerException(), "Failed to setSoundEnabled");
         }
     }
 
