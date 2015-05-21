@@ -29,9 +29,7 @@ public class ChoiceFollowUserAssistantWithDialog
     //<editor-fold desc="Constructors">
     public ChoiceFollowUserAssistantWithDialog(
             @NonNull Activity activity,
-            @NonNull UserBaseDTO heroDTO
-//            @NonNull OwnedPortfolioId applicablePortfolioId
-    )
+            @NonNull UserBaseDTO heroDTO)
     {
         super();
         this.activity = activity;

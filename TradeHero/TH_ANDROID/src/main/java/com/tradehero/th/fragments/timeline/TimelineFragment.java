@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,6 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClickSticky;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.metrics.Analytics;
@@ -75,7 +77,8 @@ import com.tradehero.th.rx.ReplaceWith;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
-import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.rx.view.DismissDialogAction0;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -89,7 +92,6 @@ import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -251,7 +253,7 @@ public class TimelineFragment extends DashboardFragment
     {
         super.onStart();
 
-        fetchUserProfile();
+        fetchShownUserProfile();
         fetchMessageThreadHeader();
         fetchPortfolioList();
 
@@ -301,7 +303,6 @@ public class TimelineFragment extends DashboardFragment
                 }
             }
         });
-        //timelineListView.setOnLastItemVisibleListener(new TimelineLastItemVisibleListener());
 
         if (cancelRefreshingOnResume)
         {
@@ -500,7 +501,7 @@ public class TimelineFragment extends DashboardFragment
         }
     }
 
-    protected void fetchUserProfile()
+    protected void fetchShownUserProfile()
     {
         onStopSubscriptions.add(AppObservable.bindFragment(this, userProfileCache.get().get(shownUserBaseKey))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -510,16 +511,16 @@ public class TimelineFragment extends DashboardFragment
     protected void fetchLevelDefList()
     {
         onDestroyViewSubscriptions.add(AppObservable.bindFragment(this, levelDefListCache.getOne(new LevelDefListId()))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(
-                new Action1<Pair<LevelDefListId, LevelDefDTOList>>()
-                {
-                    @Override public void call(Pair<LevelDefListId, LevelDefDTOList> pair)
-                    {
-                        userProfileView.setLevelDef(pair.second);
-                    }
-                },
-                new TimberOnErrorAction("Failed to fetch level definitions")));
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<Pair<LevelDefListId, LevelDefDTOList>>()
+                        {
+                            @Override public void call(Pair<LevelDefListId, LevelDefDTOList> pair)
+                            {
+                                userProfileView.setLevelDef(pair.second);
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to fetch level definitions")));
     }
 
     /** item of Portfolio tab is clicked */
@@ -539,7 +540,7 @@ public class TimelineFragment extends DashboardFragment
             {
                 if (displayablePortfolioDTO.portfolioDTO.isWatchlist)
                 {
-                    pushWatchlistPositionFragment(displayablePortfolioDTO.ownedPortfolioId);
+                    pushWatchlistPositionFragment();
                 }
                 else
                 {
@@ -599,10 +600,7 @@ public class TimelineFragment extends DashboardFragment
         navigator.get().pushFragment(TabbedPositionListFragment.class, args);
     }
 
-    /**
-     * Go to watchlist
-     */
-    private void pushWatchlistPositionFragment(OwnedPortfolioId ownedPortfolioId)
+    private void pushWatchlistPositionFragment()
     {
         Bundle args = new Bundle();
         MainWatchlistPositionFragment.putShowActionBarTitle(args, true);
@@ -705,47 +703,39 @@ public class TimelineFragment extends DashboardFragment
 
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
     @OnClick(R.id.follow_button)
-    protected void handleFollowRequested(View view)
+    protected void handleFollowRequested()
     {
-        if (shownProfile == null)
-        {
-            throw new IllegalArgumentException("We should not have arrived here");
-        }
-        else
-        {
-            onStopSubscriptions.add(
-                    new ChoiceFollowUserAssistantWithDialog(
-                            getActivity(),
-                            shownProfile
-                            //                            getApplicablePortfolioId()
-                    )
-                            .launchChoiceRx()
-                            .finallyDo(new Action0()
+        onStopSubscriptions.add(userProfileCache.get().getOne(shownUserBaseKey)
+                .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<UserProfileDTO, Observable<Pair<FollowRequest, UserProfileDTO>>>()
+                {
+                    @Override public Observable<Pair<FollowRequest, UserProfileDTO>> call(UserProfileDTO shownProfile)
+                    {
+                        return new ChoiceFollowUserAssistantWithDialog(
+                                getActivity(),
+                                shownProfile)
+                                .launchChoiceRx();
+                    }
+                })
+                .subscribe(
+                        new Action1<Pair<FollowRequest, UserProfileDTO>>()
+                        {
+                            @Override public void call(Pair<FollowRequest, UserProfileDTO> pair)
                             {
-                                @Override public void call()
+                                if (!mIsOtherProfile)
                                 {
-                                    AlertDialogUtil.dismissProgressDialog();
+                                    TimelineFragment.this.linkWith(pair.second);
                                 }
-                            })
-                            .subscribe(
-                                    new Action1<Pair<FollowRequest, UserProfileDTO>>()
-                                    {
-                                        @Override public void call(Pair<FollowRequest, UserProfileDTO> pair)
-                                        {
-                                            if (!mIsOtherProfile)
-                                            {
-                                                TimelineFragment.this.linkWith(pair.second);
-                                            }
-                                            TimelineFragment.this.updateBottomButton();
-                                            String actionName = pair.first.isPremium
-                                                    ? AnalyticsConstants.PremiumFollow_Success
-                                                    : AnalyticsConstants.FreeFollow_Success;
-                                            analytics.addEvent(new ScreenFlowEvent(actionName, AnalyticsConstants.Profile));
-                                        }
-                                    },
-                                    new ToastOnErrorAction()
-                            ));
-        }
+                                TimelineFragment.this.updateBottomButton();
+                                String actionName = pair.first.isPremium
+                                        ? AnalyticsConstants.PremiumFollow_Success
+                                        : AnalyticsConstants.FreeFollow_Success;
+                                analytics.addEvent(new ScreenFlowEvent(actionName, AnalyticsConstants.Profile));
+                            }
+                        },
+                        new ToastOnErrorAction()
+                ));
     }
 
     protected void pushPrivateMessageFragment()
@@ -764,19 +754,12 @@ public class TimelineFragment extends DashboardFragment
         navigator.get().launchActivity(PrivateDiscussionActivity.class, args);
     }
 
-    /**
-     * Null means unsure.
-     */
     protected int getFollowType()
     {
         UserProfileDTO userProfileDTO =
                 userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
-            //            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-            //            if (applicablePortfolioId != null)
-            //            {
-            //                UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
             UserBaseKey purchaserKey = currentUserId.toUserBaseKey();
             if (purchaserKey != null)
             {
@@ -786,27 +769,16 @@ public class TimelineFragment extends DashboardFragment
                     return purchaserProfile.getFollowType(shownUserBaseKey);
                 }
             }
-            //            }
-            //            else
-            //            {
-            //                return userProfileDTO.getFollowType(shownUserBaseKey);
-            //            }
         }
         return 0;
     }
 
     protected Observable<UserProfileDTO> freeFollow(@NonNull UserBaseKey heroId)
     {
-        AlertDialogUtil.showProgressDialog(getActivity(), getString(R.string.following_this_hero));
+        ProgressDialog progressDialog = ProgressDialogUtil.create(getActivity(), getString(R.string.following_this_hero));
         return userServiceWrapperLazy.get().freeFollowRx(heroId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new Action0()
-                {
-                    @Override public void call()
-                    {
-                        AlertDialogUtil.dismissProgressDialog();
-                    }
-                });
+                .doOnUnsubscribe(new DismissDialogAction0(progressDialog));
     }
 
     protected class TimelineMessageThreadHeaderCacheObserver implements Observer<Pair<UserBaseKey, MessageHeaderDTO>>
@@ -891,11 +863,6 @@ public class TimelineFragment extends DashboardFragment
         HeroManagerFragment.putFollowerId(
                 bundle,
                 mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
-        //        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
-        //        if (applicablePortfolio != null)
-        //        {
-        //            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
-        //        }
         navigator.get().pushFragment(HeroManagerFragment.class, bundle);
     }
 
@@ -905,11 +872,6 @@ public class TimelineFragment extends DashboardFragment
         FollowerManagerFragment.putHeroId(
                 bundle,
                 mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
-        //        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
-        //        if (applicablePortfolio != null)
-        //        {
-        //            //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
-        //        }
         navigator.get().pushFragment(FollowerManagerFragment.class, bundle);
     }
 

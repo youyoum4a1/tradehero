@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.View;
 import android.webkit.WebView;
 import butterknife.ButterKnife;
@@ -18,21 +17,17 @@ import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.social.InviteFormUserDTO;
-import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTOFactory;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.api.social.UserFriendsTwitterDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.social.friend.RequestObserver;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandler;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandlerFacebook;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
-import com.tradehero.th.models.social.FollowRequest;
-import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
@@ -43,20 +38,16 @@ import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import timber.log.Timber;
 
 @Routable({
         "home",
-        "refer-friend/:socialId/:socialUserId",
-        "user/:userId/follow/free",
-        "user/:userIdPremium/follow/premium",
+        "refer-friend/:socialId/:socialUserId"
 })
 public final class HomeFragment extends BaseWebViewFragment
 {
@@ -72,13 +63,9 @@ public final class HomeFragment extends BaseWebViewFragment
 
     @RouteProperty(ROUTER_SOCIAL_ID) String socialId;
     @RouteProperty(ROUTER_SOCIAL_USER_ID) String socialUserId;
-    @RouteProperty(ROUTER_USER_ID) Integer userId;
-    @RouteProperty(ROUTER_USER_ID_PREMIUM) Integer userIdPremium;
 
     public static final String ROUTER_SOCIAL_ID = "socialId";
     public static final String ROUTER_SOCIAL_USER_ID = "socialUserId";
-    public static final String ROUTER_USER_ID = "userId";
-    public static final String ROUTER_USER_ID_PREMIUM = "userIdPremium";
 
     protected SocialFriendHandler socialFriendHandler;
     private UserFriendsDTO userFriendsDTO;
@@ -124,15 +111,6 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             createInviteInHomePage();
         }
-        else if (userId != null)
-        {
-            createFollowInHomePage();
-        }
-        else if (userIdPremium != null)
-        {
-            followPremium(new UserBaseKey(userIdPremium));
-            userIdPremium = null;
-        }
     }
 
     @Override public void onPause()
@@ -155,11 +133,9 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             args.remove(ROUTER_SOCIAL_ID);
             args.remove(ROUTER_SOCIAL_USER_ID);
-            args.remove(ROUTER_USER_ID);
         }
         socialId = null;
         socialUserId = null;
-        userId = null;
     }
 
     //<editor-fold desc="Windy's stuff, to be refactored">
@@ -169,40 +145,10 @@ public final class HomeFragment extends BaseWebViewFragment
         invite();
     }
 
-    public void createFollowInHomePage()
-    {
-        UserFriendsDTO user = new UserFriendsContactEntryDTO();
-        user.thUserId = userId;
-        follow(user);
-    }
-
     public void follow(UserFriendsDTO userFriendsDTO)
     {
         List<UserFriendsDTO> usersToFollow = Arrays.asList(userFriendsDTO);
         handleFollowUsers(usersToFollow);
-    }
-
-    protected void followPremium(UserBaseKey heroId)
-    {
-        onStopSubscriptions.add(userProfileCacheLazy.get().getOne(heroId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<Pair<UserBaseKey, UserProfileDTO>, Observable<Pair<FollowRequest, UserProfileDTO>>>()
-                {
-                    @Override public Observable<Pair<FollowRequest, UserProfileDTO>> call(Pair<UserBaseKey, UserProfileDTO> heroPair)
-                    {
-                        return new ChoiceFollowUserAssistantWithDialog(getActivity(), heroPair.second)
-                                .launchChoiceRx();
-                    }
-                })
-                .subscribe(
-                        new Action1<Pair<FollowRequest, UserProfileDTO>>()
-                        {
-                            @Override public void call(Pair<FollowRequest, UserProfileDTO> followRequestUserProfileDTOPair)
-                            {
-                                // TODO
-                            }
-                        },
-                        new ToastOnErrorAction()));
     }
 
     private void invite()
