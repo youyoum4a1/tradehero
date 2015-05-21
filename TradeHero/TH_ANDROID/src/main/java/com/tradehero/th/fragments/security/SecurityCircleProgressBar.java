@@ -36,7 +36,7 @@ public class SecurityCircleProgressBar extends CircleProgressBar
     public SecurityCircleProgressBar(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        HierarchyInjector.inject(this);
+        HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
 
