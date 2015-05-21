@@ -5,12 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    tools:background="@color/on_board_new_background_top"
     >
 
   <ViewSwitcher
       android:id="@+id/switcher"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      tools:layout_height="wrap_content"
       >
 
     <include layout="@layout/on_board_market_map_view"/>
@@ -26,6 +28,22 @@
       android:gravity="center_horizontal"
       style="@style/TH.Subhead.Inverse"
       android:text="@string/on_board_exchange_loading_regions"
+      />
+
+  <TextView
+      android:id="@+id/btn_retry"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:minHeight="@dimen/clickable_element_min_dimen"
+      android:layout_marginTop="@dimen/margin_small"
+      android:padding="@dimen/margin_small"
+      style="@style/TH.Button.Inverse"
+      android:background="@drawable/basic_orange_selector"
+      android:text="@string/on_board_tap_retry"
+      android:visibility="gone"
+      android:layout_gravity="center_horizontal"
+      android:gravity="center"
+      tools:visibility="visible"
       />
 
 </com.tradehero.th.fragments.onboarding.exchange.MarketRegionSwitcherView>

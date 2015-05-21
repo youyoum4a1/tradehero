@@ -210,6 +210,22 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
                                 return exchangesPair.second;
                             }
                         }))
+                .retryWhen(new Func1<Observable<? extends Throwable>, Observable<?>>()
+                {
+                    @Override public Observable<?> call(Observable<? extends Throwable> observable)
+                    {
+                        return observable
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .flatMap(new Func1<Throwable, Observable<?>>()
+                                {
+                                    @Override public Observable<?> call(Throwable throwable)
+                                    {
+                                        mapHeaderSwitcherView.displayRetry(true);
+                                        return mapHeaderSwitcherView.getRetryClickedObservable();
+                                    }
+                                });
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<ExchangeCompactDTOList, Observable<MarketRegion>>()
                 {

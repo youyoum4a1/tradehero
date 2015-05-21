@@ -4,11 +4,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.MarketRegion;
@@ -31,10 +33,12 @@ public class MarketRegionSwitcherView extends LinearLayout
     @InjectView(R.id.market_map_selector) MarketRegionMapView mapView;
     @InjectView(R.id.market_button_selector) MarketRegionButtonView buttonView;
     @InjectView(android.R.id.hint) TextView hint;
+    @InjectView(R.id.btn_retry) TextView buttonRetry;
 
     private int maxSelectableExchanges;
     private boolean regionsLoaded;
-    @NonNull private PublishSubject<MarketRegion> clickedMarketRegionBehavior;
+    @NonNull private PublishSubject<MarketRegion> clickedMarketRegionSubject;
+    @NonNull private PublishSubject<Boolean> clickedRetrySubject;
     @NonNull private SubscriptionList childSubscriptions;
     @Nullable private MarketRegion selectedRegion;
     private Set<ExchangeIntegerId> selectedExchanges;
@@ -45,13 +49,15 @@ public class MarketRegionSwitcherView extends LinearLayout
     public MarketRegionSwitcherView(Context context)
     {
         super(context);
-        this.clickedMarketRegionBehavior = PublishSubject.create();
+        this.clickedMarketRegionSubject = PublishSubject.create();
+        this.clickedRetrySubject = PublishSubject.create();
     }
 
     public MarketRegionSwitcherView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        this.clickedMarketRegionBehavior = PublishSubject.create();
+        this.clickedMarketRegionSubject = PublishSubject.create();
+        this.clickedRetrySubject = PublishSubject.create();
     }
     //</editor-fold>
 
@@ -75,7 +81,7 @@ public class MarketRegionSwitcherView extends LinearLayout
     {
         super.onAttachedToWindow();
         childSubscriptions = new SubscriptionList();
-        childSubscriptions.add(mapView.getMarketRegionClickedObservable().subscribe(clickedMarketRegionBehavior));
+        childSubscriptions.add(mapView.getMarketRegionClickedObservable().subscribe(clickedMarketRegionSubject));
         childSubscriptions.add(mapView.getSwitchClickedObservable().subscribe(
                 new Action1<Boolean>()
                 {
@@ -90,7 +96,7 @@ public class MarketRegionSwitcherView extends LinearLayout
                     }
                 }
         ));
-        childSubscriptions.add(buttonView.getMarketRegionClickedObservable().subscribe(clickedMarketRegionBehavior));
+        childSubscriptions.add(buttonView.getMarketRegionClickedObservable().subscribe(clickedMarketRegionSubject));
     }
 
     @Override protected void onDetachedFromWindow()
@@ -104,6 +110,7 @@ public class MarketRegionSwitcherView extends LinearLayout
         regionsLoaded = true;
         this.maxSelectableExchanges = maxSelectableExchanges;
         displayHint();
+        displayRetry(false);
         try
         {
             mapView.enable(enabledRegions);
@@ -167,9 +174,15 @@ public class MarketRegionSwitcherView extends LinearLayout
         }
     }
 
+    protected void displayRetry(boolean failed)
+    {
+        buttonRetry.setText(failed ? R.string.on_board_tap_retry : R.string.on_board_retry_success);
+        buttonRetry.setVisibility(failed ? VISIBLE : GONE);
+    }
+
     @NonNull public Observable<MarketRegion> getMarketRegionClickedObservable()
     {
-        return clickedMarketRegionBehavior.asObservable()
+        return clickedMarketRegionSubject.asObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<MarketRegion>()
                 {
@@ -178,5 +191,18 @@ public class MarketRegionSwitcherView extends LinearLayout
                         setSelectedRegion(marketRegion);
                     }
                 });
+    }
+
+    @SuppressWarnings("unused")
+    @OnClick(R.id.btn_retry)
+    protected void onButtonRetryClicked(View view)
+    {
+        buttonRetry.setText(R.string.on_board_retrying);
+        clickedRetrySubject.onNext(true);
+    }
+
+    @NonNull public Observable<Boolean> getRetryClickedObservable()
+    {
+        return clickedRetrySubject.asObservable();
     }
 }

@@ -30,4 +30,8 @@
   <string name="on_board_last_button_buy">Yes, buy shares!</string>
   <string name="on_board_last_button_later">Later, I will look around first</string>
 
+  <string name="on_board_tap_retry">Tap to retry</string>
+  <string name="on_board_retrying">Retrying…</string>
+  <string name="on_board_retry_success">Success</string>
+
 </resources>
