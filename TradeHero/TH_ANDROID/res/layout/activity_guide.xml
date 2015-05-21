@@ -79,7 +79,7 @@
           android:layout_marginTop="@dimen/margin_medium"
           android:padding="@dimen/margin_small"
           android:text="@string/guide_screen_try"
-          android:textColor="@color/white"
+          android:textColor="@color/th_white"
           android:textSize="@dimen/text_xlarge"
           android:gravity="center"
           android:background="@drawable/basic_red_selector_round_corner"/>
@@ -92,7 +92,7 @@
           android:layout_marginBottom="@dimen/margin_small"
           android:padding="@dimen/margin_small"
           android:text="@string/guide_screen_login"
-          android:textColor="@color/white"
+          android:textColor="@color/th_white"
           android:textSize="@dimen/text_xlarge"
           android:gravity="center"
           android:background="@drawable/basic_blue_selector_round_corner"/>

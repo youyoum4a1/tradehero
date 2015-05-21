@@ -183,7 +183,7 @@ public class CompetitionsFragment extends DashboardFragment {
     @OnClick(R.id.llCompetitionAdv)
     public void onCompetitionAdvClicked()
     {
-        gotoDashboard(CompetitionDetailFragment.class.getName());
+        gotoDashboard(CompetitionDetailFragment.class, new Bundle());
     }
 
     @Override public void onDestroyView()
@@ -223,15 +223,15 @@ public class CompetitionsFragment extends DashboardFragment {
     PagerAdapter pageAdapter = new PagerAdapter()
     {
         @Override
-        public void destroyItem(View container, int position, Object object)
+        public void destroyItem(ViewGroup container, int position, Object object)
         {
-            ((ViewPager) container).removeView(views.get(position));
+            container.removeView(views.get(position));
         }
 
         @Override
-        public Object instantiateItem(View container, int position)
+        public Object instantiateItem(ViewGroup container, int position)
         {
-            ((ViewPager) container).addView(views.get(position));
+            container.addView(views.get(position));
             return views.get(position);
         }
 

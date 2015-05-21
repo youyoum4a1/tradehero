@@ -41,11 +41,6 @@ public class MainTabFragmentLearning extends AbsBaseFragment {
         return view;
     }
 
-    @Override public void onDestroyView() {
-        ButterKnife.reset(this);
-        super.onDestroyView();
-    }
-
     private void initView() {
         adapter = new CustomAdapter(getChildFragmentManager());
         pager.setAdapter(adapter);

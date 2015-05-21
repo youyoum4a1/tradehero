@@ -78,7 +78,6 @@ public class SplashActivity extends AppCompatActivity {
             taskFragment = new TaskFragment();
             fm.beginTransaction().add(taskFragment, TAG_TASK_FRAGMENT).commit();
         }
-
     }
 
     @Override
@@ -170,8 +169,5 @@ public class SplashActivity extends AppCompatActivity {
                 handleTaskResult(result);
             }
         }
-
     }
-
-
 }

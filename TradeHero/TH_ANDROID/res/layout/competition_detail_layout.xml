@@ -110,7 +110,7 @@
                     android:id="@+id/btnCollegeSelect"
                     android:layout_width="fill_parent"
                     android:layout_alignParentBottom="true"
-                    android:textColor="@color/white"
+                    android:textColor="@color/th_white"
                     android:background="@drawable/bg_college_xml"
                     android:text="选择所在高校"/>
 

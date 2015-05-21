@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import butterknife.ButterKnife;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -30,30 +31,21 @@ import javax.inject.Inject;
  */
 public abstract class AbsBaseFragment extends Fragment
 {
-
     private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = AbsBaseFragment.class.getName() + ".purchaseApplicablePortfolioId";
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
-    private DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListFetchListener;
+    @Inject Lazy<UserProfileCache> userProfileCache;
 
+    private DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListFetchListener;
     protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    @Inject Lazy<UserProfileCache> userProfileCache;
 
     public UserProfileDTO userProfileDTO;
 
     //Show dialogfragment
     private LoginSuggestDialogFragment dialogFragment;
     private FragmentManager fm;
-
-
-    public void gotoDashboard(String strFragment)
-    {
-        Bundle args = new Bundle();
-        args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME,strFragment);
-        ActivityHelper.launchDashboard(this.getActivity(), args);
-    }
 
     public void gotoDashboard(String strFragment,Bundle bundle)
     {
@@ -64,15 +56,14 @@ public abstract class AbsBaseFragment extends Fragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-
         DaggerUtils.inject(this);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
-        userProfileCacheListener = createUserProfileFetchListener();
+        portfolioCompactListFetchListener = new BasePurchaseManagementPortfolioCompactListFetchListener();
+        userProfileCacheListener = new UserProfileFetchListener();
         fetchUserProfile();
     }
 
@@ -86,11 +77,6 @@ public abstract class AbsBaseFragment extends Fragment
         detachUserProfileCache();
         userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
-    }
-
-    protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
-    {
-        return new BasePurchaseManagementPortfolioCompactListFetchListener();
     }
 
     protected class BasePurchaseManagementPortfolioCompactListFetchListener implements DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList>
@@ -132,6 +118,12 @@ public abstract class AbsBaseFragment extends Fragment
         super.onDestroy();
     }
 
+    @Override public void onDestroyView()
+    {
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
     private void detachPortfolioCompactListCache()
     {
         portfolioCompactListCache.unregister(portfolioCompactListFetchListener);
@@ -167,20 +159,6 @@ public abstract class AbsBaseFragment extends Fragment
     protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
     {
         this.purchaseApplicableOwnedPortfolioId = purchaseApplicablePortfolioId;
-        if(purchaseApplicableOwnedPortfolioId!=null)
-        {
-            linkWithApplicable();
-        }
-    }
-
-    protected void linkWithApplicable()
-    {
-
-    }
-
-    @Nullable public OwnedPortfolioId getApplicablePortfolioId()
-    {
-        return purchaseApplicableOwnedPortfolioId;
     }
 
     public static OwnedPortfolioId getApplicablePortfolioId(@Nullable Bundle args)
@@ -193,11 +171,6 @@ public abstract class AbsBaseFragment extends Fragment
             }
         }
         return null;
-    }
-
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
-    {
-        return new UserProfileFetchListener();
     }
 
     protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
@@ -224,5 +197,4 @@ public abstract class AbsBaseFragment extends Fragment
         dialogFragment.setContent(dialogContent);
         dialogFragment.show(fm, LoginSuggestDialogFragment.class.getName());
     }
-
 }

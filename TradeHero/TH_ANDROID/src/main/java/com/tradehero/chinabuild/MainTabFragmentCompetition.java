@@ -8,8 +8,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -17,26 +15,21 @@ import com.tradehero.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.chinabuild.fragment.competition.CompetitionCreateFragment;
 import com.tradehero.chinabuild.fragment.competition.CompetitionMineFragment;
 import com.tradehero.chinabuild.fragment.competition.CompetitionsFragment;
-import com.tradehero.chinabuild.fragment.search.SearchUniteFragment;
-import com.tradehero.th.R;
+import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.metrics.Analytics;
+import com.tradehero.th.R;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
-
 import javax.inject.Inject;
 
 public class MainTabFragmentCompetition extends AbsBaseFragment
 {
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) TabPageIndicator indicator;
-    @InjectView(R.id.imgSearch) ImageView imgSearch;
-    @InjectView(R.id.tvCreateCompetition) TextView tvCreateCompetition;//创建 浮标
-    private FragmentPagerAdapter adapter;
-
-    private String dialogContent;
-
     @Inject Analytics analytics;
+    private FragmentPagerAdapter adapter;
+    private String dialogContent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -47,18 +40,12 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
         return view;
     }
 
-    @Override public void onDestroyView()
-    {
-        ButterKnife.reset(this);
-        super.onDestroyView();
-    }
-
     @OnClick(R.id.imgSearch)
     public void CompetitionSearchClicked()
     {
         Bundle bundle =  new Bundle();
-        bundle.putInt(SearchUniteFragment.BUNDLE_DEFAULT_TAB_PAGE,SearchUniteFragment.TAB_SEARCH_COMPETITION);
-        gotoDashboard(SearchUniteFragment.class.getName(),bundle);
+        bundle.putInt(SearchUnitFragment.BUNDLE_DEFAULT_TAB_PAGE, SearchUnitFragment.TAB_SEARCH_COMPETITION);
+        gotoDashboard(SearchUnitFragment.class.getName(),bundle);
         analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_COMPETITION_DETAIL_SEARCH));
     }
 
@@ -124,7 +111,7 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
         }
         else
         {
-            gotoDashboard(CompetitionCreateFragment.class.getName());
+            gotoDashboard(CompetitionCreateFragment.class.getName(), new Bundle());
         }
 
         analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_COMPETITION_DETAIL_CREATE));

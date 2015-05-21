@@ -7,15 +7,18 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.chinabuild.cache.CompetitionListType;
 import com.tradehero.chinabuild.cache.CompetitionListTypeRecommand;
@@ -23,7 +26,6 @@ import com.tradehero.chinabuild.cache.CompetitionListTypeSearch;
 import com.tradehero.chinabuild.cache.CompetitionNewCache;
 import com.tradehero.chinabuild.data.CompetitionDataItem;
 import com.tradehero.chinabuild.data.CompetitionInterface;
-import com.tradehero.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.chinabuild.data.UserCompetitionDTOList;
 import com.tradehero.chinabuild.fragment.competition.CompetitionDetailFragment;
 import com.tradehero.chinabuild.fragment.competition.CompetitionMainFragment;
@@ -46,11 +48,14 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.key.SearchHotSecurityListType;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
-import com.tradehero.th.api.users.*;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.SearchUserListType;
+import com.tradehero.th.api.users.UserListType;
+import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.tradehero.th.api.users.UserSearchResultDTOList;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -62,19 +67,17 @@ import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.viewpagerindicator.SquarePageIndicator;
 import dagger.Lazy;
-import org.jetbrains.annotations.NotNull;
-
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 /*
    整合搜索
  */
-public class SearchUniteFragment extends DashboardFragment
+public class SearchUnitFragment extends DashboardFragment
 {
-
     public static final String BUNDLE_DEFAULT_TAB_PAGE = "bundle_default_tab_page";
 
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
@@ -98,7 +101,6 @@ public class SearchUniteFragment extends DashboardFragment
 
     @InjectView(R.id.tvSearch) TextView tvSearch;
     @InjectView(R.id.edtSearchInput) EditText tvSearchInput;
-    @InjectView(R.id.btn_search_x) Button btnSearch_x;
 
     private SearchHotSecurityListType keyHot;
     private SearchSecurityListType keySearch;
@@ -141,12 +143,12 @@ public class SearchUniteFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         isFristLunch = true;
-        securityListTypeCacheListener = createSecurityListFetchListener();
-        securityListTypeHotCacheListener = createSecurityListFetchListener();
+        securityListTypeCacheListener = new TrendingSecurityListFetchListener();
+        securityListTypeHotCacheListener = new TrendingSecurityListFetchListener();
 
-        competitionListCacheListenerSearch = createCompetitionListCacheListenerSearch();
-        userCacheListenerSearch = createUserBaseKeyListCacheListener();
-        leaderboardCacheListener = createLeaderboardCacheListener();
+        competitionListCacheListenerSearch = new CompetitionListCacheListener();
+        userCacheListenerSearch = new UserBaseKeyListCacheListener();
+        leaderboardCacheListener = new BaseLeaderboardFragmentLeaderboardCacheListener();
 
         adapterStock = new SecuritySearchListAdapter(getActivity());
         adapterCompetition = new CompetitionListAdapter(getActivity(), CompetitionUtils.COMPETITION_PAGE_SEARCH);
@@ -165,7 +167,6 @@ public class SearchUniteFragment extends DashboardFragment
         View view = inflater.inflate(R.layout.search_unite_fragment_layout, container, false);
         ButterKnife.inject(this, view);
         initView();
-        hideActionBar();
         initTabPageView();
         return view;
     }
@@ -232,12 +233,11 @@ public class SearchUniteFragment extends DashboardFragment
         });
     }
 
-    public void enterSecurity(SecurityId securityId, String securityName, SecurityCompactDTO dto)
+    @Override
+    public void onResume()
     {
-        Bundle bundle = new Bundle();
-        bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
-        pushFragment(SecurityDetailFragment.class, bundle);
+        super.onResume();
+        setOnclickListener();
     }
 
     @Override
@@ -250,19 +250,6 @@ public class SearchUniteFragment extends DashboardFragment
         ButterKnife.reset(this);
         closeInputMethod();
         super.onDestroyView();
-    }
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-        setOnclickListener();
-
-    }
-
-    protected DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityListFetchListener()
-    {
-        return new TrendingSecurityListFetchListener();
     }
 
     protected class TrendingSecurityListFetchListener implements DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList>
@@ -396,7 +383,7 @@ public class SearchUniteFragment extends DashboardFragment
         }
     }
 
-    @OnClick({R.id.tvSearchTabStock, R.id.tvSearchTabCompetition, R.id.tvSearchTabUser})
+    @OnClick({R.id.tvSearchTabStock, R.id.tvSearchTabCompetition, R.id.tvSearchTabUser, R.id.tvSearch})
     public void onSearchTabClicked(View view)
     {
         int id = view.getId();
@@ -411,21 +398,18 @@ public class SearchUniteFragment extends DashboardFragment
             case R.id.tvSearchTabUser:
                 pager.setCurrentItem(TAB_SEARCH_USER);
                 break;
-        }
-    }
-
-    @OnClick(R.id.tvSearch)
-    public void onSearchClicked()
-    {
-        if (TextUtils.isEmpty(getSearchString()))
-        {
-            popCurrentFragment();
-            return;
-        }
-        if (!StringUtils.isNullOrEmptyOrSpaces(getSearchString()))
-        {
-            controlLoading(tabSelect, true);
-            fetchUnite(tabSelect, true);
+            case R.id.tvSearch:
+                if (TextUtils.isEmpty(getSearchString()))
+                {
+                    popCurrentFragment();
+                    return;
+                }
+                if (!StringUtils.isNullOrEmptyOrSpaces(getSearchString()))
+                {
+                    controlLoading(tabSelect, true);
+                    fetchUnite(tabSelect, true);
+                }
+                break;
         }
     }
 
@@ -472,7 +456,7 @@ public class SearchUniteFragment extends DashboardFragment
     public void initTabPageView()
     {
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        views = new ArrayList<View>();
+        views = new ArrayList<>();
         View viewTab0 = layoutInflater.inflate(R.layout.search_unite_listview_layout, null);
         initRootViewTab0(viewTab0);
         views.add(viewTab0);
@@ -603,10 +587,13 @@ public class SearchUniteFragment extends DashboardFragment
                     SecurityCompactDTO dto = (SecurityCompactDTO) adapterStock.getItem((int) position);
                     if (dto != null)
                     {
-                        enterSecurity(dto.getSecurityId(), dto.name, dto);
+                        Bundle bundle = new Bundle();
+                        bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, dto.getSecurityId().getArgs());
+                        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, dto.name);
+                        pushFragment(SecurityDetailFragment.class, bundle);
                         if (isUserSearch)
                         {
-                            SearchResultSave.saveSearchSecurity(getActivity(), (SecurityCompactDTO) dto);
+                            SearchResultSave.saveSearchSecurity(getActivity(), dto);
                             sendAnalytics(dto);
                         }
                     }
@@ -622,7 +609,9 @@ public class SearchUniteFragment extends DashboardFragment
                     if (item instanceof CompetitionDataItem)
                     {
                         SearchResultSave.saveSearchCompetitons(getActivity(), (CompetitionDataItem) item);
-                        gotoCompetitionDetailFragment(((CompetitionDataItem) item).userCompetitionDTO);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(CompetitionDetailFragment.BUNDLE_COMPETITION_DTO, ((CompetitionDataItem) item).userCompetitionDTO);
+                        pushFragment(CompetitionMainFragment.class, bundle);
                     }
                 }
             };
@@ -633,10 +622,12 @@ public class SearchUniteFragment extends DashboardFragment
                 @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
                 {
                     UserSearchResultDTO item = adapterUser.getItem((int) position);
-                    if (item instanceof UserSearchResultDTO)
+                    if (item != null)
                     {
                         SearchResultSave.saveSearchUsers(getActivity(), item);
-                        gotoUserDetailFragment(item.userId);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, item.userId);
+                        pushFragment(UserMainPage.class, bundle);
                     }
                 }
             };
@@ -748,15 +739,15 @@ public class SearchUniteFragment extends DashboardFragment
     public PagerAdapter pageAdapter = new PagerAdapter()
     {
         @Override
-        public void destroyItem(View container, int position, Object object)
+        public void destroyItem(ViewGroup container, int position, Object object)
         {
-            ((ViewPager) container).removeView(views.get(position));
+            container.removeView(views.get(position));
         }
 
         @Override
-        public Object instantiateItem(View container, int position)
+        public Object instantiateItem(ViewGroup container, int position)
         {
-            ((ViewPager) container).addView(views.get(position));
+            container.addView(views.get(position));
             return views.get(position);
         }
 
@@ -798,11 +789,6 @@ public class SearchUniteFragment extends DashboardFragment
         tvSearchInput.setHint(hintArray[index]);
     }
 
-    protected DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> createCompetitionListCacheListenerSearch()
-    {
-        return new CompetitionListCacheListener();
-    }
-
     protected class CompetitionListCacheListener implements DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList>
     {
         @Override public void onDTOReceived(@NotNull CompetitionListType key, @NotNull UserCompetitionDTOList value)
@@ -833,13 +819,6 @@ public class SearchUniteFragment extends DashboardFragment
         {
             adapterCompetition.setSearchCompetitionDtoList(userCompetitionDTOs);
         }
-    }
-
-    private void gotoCompetitionDetailFragment(UserCompetitionDTO userCompetitionDTO)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(CompetitionDetailFragment.BUNDLE_COMPETITION_DTO, userCompetitionDTO);
-        pushFragment(CompetitionMainFragment.class, bundle);
     }
 
     protected void detachSearchCompetition()
@@ -892,24 +871,15 @@ public class SearchUniteFragment extends DashboardFragment
         userBaseKeyListCache.get().getOrFetchAsync(searchKey, force);
     }
 
-    private DTOCacheNew.Listener<UserListType, UserSearchResultDTOList> createUserBaseKeyListCacheListener()
-    {
-        return new UserBaseKeyListCacheListener();
-    }
-
     protected class UserBaseKeyListCacheListener implements DTOCacheNew.Listener<UserListType, UserSearchResultDTOList>
     {
         public void onDTOReceived(@NotNull UserListType key, @NotNull UserSearchResultDTOList value)
         {
             if (key instanceof SearchUserListType)
             {
-                if (((SearchUserListType) key).getPage() == 1)
+                if (adapterUser != null)
                 {
-                    initSearchUserResult(value);
-                }
-                else
-                {
-                    addSearchUserResult(value);
+                    adapterUser.addListData(value);
                 }
 
                 pageUser++;
@@ -929,34 +899,6 @@ public class SearchUniteFragment extends DashboardFragment
         }
     }
 
-    public void initSearchUserResult(UserSearchResultDTOList users)
-    {
-        if (adapterUser != null)
-        {
-            adapterUser.setListData(users);
-        }
-    }
-
-    public void addSearchUserResult(UserSearchResultDTOList users)
-    {
-        if (adapterUser != null)
-        {
-            adapterUser.addListData(users);
-        }
-    }
-
-    private void gotoUserDetailFragment(int userId)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
-        pushFragment(UserMainPage.class, bundle);
-    }
-
-    protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> createLeaderboardCacheListener()
-    {
-        return new BaseLeaderboardFragmentLeaderboardCacheListener();
-    }
-
     protected class BaseLeaderboardFragmentLeaderboardCacheListener implements DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO>
     {
         @Override public void onDTOReceived(@NotNull LeaderboardKey key, @NotNull LeaderboardDTO value)
@@ -970,7 +912,10 @@ public class SearchUniteFragment extends DashboardFragment
                     userSearchResultDTOs.add(new UserSearchResultDTO(list.get(i)));
                 }
             }
-            initSearchUserResult(userSearchResultDTOs);
+            if (adapterUser != null)
+            {
+                adapterUser.setListData(userSearchResultDTOs);
+            }
             onFinish();
         }
 

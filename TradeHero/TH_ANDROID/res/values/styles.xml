@@ -8,7 +8,8 @@
   -->
   <style name="TradeHero" parent="Theme.AppCompat.Light.NoActionBar">
     <item name="android:windowNoTitle">true</item>
-    <item name="android:windowActionBarOverlay">true</item>
+    <item name="android:windowActionBarOverlay">false</item>
+    <item name="colorPrimaryDark">@color/black</item>
   </style>
 
   <style name="TradeHero.Settings" parent="TradeHero">

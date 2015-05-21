@@ -5,14 +5,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.widget.TabHost;
-
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.DaggerUtils;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import timber.log.Timber;
 
 public class DashboardNavigator extends Navigator
@@ -26,13 +22,6 @@ public class DashboardNavigator extends Navigator
     {
         super(context, manager, fragmentContentId);
         DaggerUtils.inject(this);
-    }
-
-    /**
-     * To be called when we want it to be GC'ed
-     */
-    public void onDestroy()
-    {
     }
 
     public void goToFragment(Class fragment,Bundle args)
@@ -52,22 +41,12 @@ public class DashboardNavigator extends Navigator
     @Override public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim,
             @Nullable String backStackName, Boolean shouldAddToBackStack, Boolean showHomeAsUp)
     {
-        Fragment currentFragment = getCurrentFragment();
-        if (currentFragment instanceof DashboardFragment)
-        {
-            DashboardFragment currentDashboardFragment = (DashboardFragment) currentFragment;
-            if (!currentDashboardFragment.allowNavigateTo(fragmentClass, args))
-            {
-                return null;
-            }
-        }
-
         T fragment = super.pushFragment(fragmentClass, args, anim, backStackName, shouldAddToBackStack, showHomeAsUp);
-        executePending(fragment);
+        executePending();
         return fragment;
     }
 
-    private void executePending(Fragment fragment)
+    private void executePending()
     {
         manager.executePendingTransactions();
     }
@@ -78,7 +57,7 @@ public class DashboardNavigator extends Navigator
 
         if (!isBackStackEmpty())
         {
-            executePending(null);
+            executePending();
         }
         Timber.d("BackStack count %d", manager.getBackStackEntryCount());
     }

@@ -12,6 +12,7 @@ import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.UserTimeLineAdapter;
 import com.tradehero.th.api.timeline.TimelineDTO;
@@ -21,25 +22,20 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
+import javax.inject.Inject;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
 
 /*
 股神动态
  */
 public class DiscoveryStockGodNewsFragment extends DashboardFragment
 {
-
     @InjectView(R.id.listTimeLine) SecurityListView listTimeLine;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
-    @InjectView(R.id.tradeheroprogressbar_discovery) TradeHeroProgressBar progressBar;
     private UserTimeLineAdapter adapter;
     private int maxID = -1;
     @Inject CurrentUserId currentUserId;
@@ -130,6 +126,15 @@ public class DiscoveryStockGodNewsFragment extends DashboardFragment
         });
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+        if(adapter!=null)
+        {
+            adapter.OnResumeDataAction();
+        }
+    }
+
     public void enterTimeLineDetail(TimelineItemDTO dto)
     {
         Bundle bundle = new Bundle();
@@ -206,14 +211,5 @@ public class DiscoveryStockGodNewsFragment extends DashboardFragment
         ButterKnife.reset(this);
         detachTimeLineMiddleCallback();
         super.onDestroyView();
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        if(adapter!=null)
-        {
-            adapter.OnResumeDataAction();
-        }
     }
 }

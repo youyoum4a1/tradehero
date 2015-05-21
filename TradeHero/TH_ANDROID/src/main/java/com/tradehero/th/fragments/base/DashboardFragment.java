@@ -18,7 +18,6 @@ import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,8 +26,6 @@ import timber.log.Timber;
 abstract public class DashboardFragment extends BaseFragment {
     public static final String BUNDLE_KEY_TITLE = DashboardFragment.class.getName() + ".title";
     public static final String BUNDLE_OPEN_CLASS_NAME = DashboardFragment.class.getName() + ".oepn_class_name";
-
-    @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject RichTextCreator parser;
 
     private RelativeLayout rlCustomHeadView;
@@ -111,13 +108,6 @@ abstract public class DashboardFragment extends BaseFragment {
         }
     }
 
-    public void setHeadViewRight0(int right0) {
-        if (tvHeadRight0 != null) {
-            tvHeadRight0.setVisibility(View.VISIBLE);
-            tvHeadRight0.setText(right0);
-        }
-    }
-
     public void setHeadViewRight0Drawable(Drawable left, Drawable top, Drawable right, Drawable bottom) {
         if (tvHeadRight0 != null) {
             if (right != null) {
@@ -150,7 +140,6 @@ abstract public class DashboardFragment extends BaseFragment {
             }
         }
         initHeadViewCustomLayout();
-
     }
 
     public void initHeadViewCustomLayout() {
@@ -194,16 +183,6 @@ abstract public class DashboardFragment extends BaseFragment {
             return activity.getDashboardNavigator();
         }
         return null;
-    }
-
-    public <T extends Fragment> boolean allowNavigateTo(@NotNull Class<T> fragmentClass, Bundle args) {
-        return true;
-    }
-
-    public void gotoDashboard(String strFragment) {
-        Bundle args = new Bundle();
-        args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, strFragment);
-        ActivityHelper.launchDashboard(this.getActivity(), args);
     }
 
     public void gotoDashboard(Class Fragment, Bundle bundle) {

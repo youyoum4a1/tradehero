@@ -53,7 +53,7 @@ import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PositionDetailFragment;
 import com.tradehero.chinabuild.fragment.search.SearchFragment;
-import com.tradehero.chinabuild.fragment.search.SearchUniteFragment;
+import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.fragment.security.BasePurchaseManagerFragment;
 import com.tradehero.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
@@ -160,7 +160,7 @@ import dagger.Provides;
                         EmailSignInFragment.class,
                         PasswordResetFragment.class,
                         SecurityListPagedLoader.class,
-                        SearchUniteFragment.class,
+                        SearchUnitFragment.class,
                         MacquarieSecurityListPagedLoader.class,
                         SecurityItemView.class,
                         FreshQuoteHolder.class,
