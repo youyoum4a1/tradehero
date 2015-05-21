@@ -26,7 +26,6 @@ import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.ViewArrayObservable;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.SocialAlertDialogRxUtil;
 import java.util.List;
 import javax.inject.Inject;
@@ -338,7 +337,16 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
         {
             return Observable.just(null);
         }
-        return socialShareHelper.canShare(socialNetwork)
+        return Observable.just(UserProfileDTOUtil.checkLinkedStatus(userProfileCopy, socialNetwork))
+                .flatMap(new Func1<Boolean, Observable<Boolean>>()
+                {
+                    @Override public Observable<Boolean> call(Boolean linked)
+                    {
+                        return linked
+                                ? socialShareHelper.canShare(socialNetwork)
+                                : Observable.just(false);
+                    }
+                })
                 .map(new Func1<Boolean, Boolean>()
                 {
                     @Override public Boolean call(Boolean canShare)
