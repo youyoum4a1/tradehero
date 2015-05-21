@@ -19,12 +19,14 @@ import butterknife.OnItemClick;
 import butterknife.OnTextChanged;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.UserFriendsDTOFactory;
 import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
@@ -53,7 +55,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-@Routable("refer-friends")
+@Routable({
+        "refer-friends",
+        "refer-friend/:socialId/:socialUserId",
+})
 public class FriendsInvitationFragment extends BaseFragment
         implements SocialFriendUserView.OnElementClickListener
 {
@@ -82,6 +87,12 @@ public class FriendsInvitationFragment extends BaseFragment
     private static final String KEY_LIST_TYPE = "key_list_type";
     private static final int LIST_TYPE_SOCIAL_LIST = 1;
     private static final int LIST_TYPE_FRIEND_LIST = 2;
+
+    public static final String ROUTER_SOCIAL_ID = "socialId";
+    public static final String ROUTER_SOCIAL_USER_ID = "socialUserId";
+
+    @RouteProperty(ROUTER_SOCIAL_ID) String socialId;
+    @RouteProperty(ROUTER_SOCIAL_USER_ID) String socialUserId;
 
     private Bundle savedState;
 
@@ -113,6 +124,21 @@ public class FriendsInvitationFragment extends BaseFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         restoreSavedData(savedInstanceState);
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        if (socialId != null && socialUserId != null)
+        {
+            createInviteInHomePage();
+        }
+    }
+
+    @Override public void onPause()
+    {
+        resetRoutingData();
+        super.onPause();
     }
 
     @Override
@@ -160,6 +186,19 @@ public class FriendsInvitationFragment extends BaseFragment
             state.putInt(KEY_LIST_TYPE, (friendsListView.getVisibility() == View.VISIBLE) ? LIST_TYPE_FRIEND_LIST : LIST_TYPE_SOCIAL_LIST);
         }
         return state;
+    }
+
+    private void resetRoutingData()
+    {
+        // TODO Routing library should have a way to clear injected data, proposing: THRouter.reset(this)
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            args.remove(ROUTER_SOCIAL_ID);
+            args.remove(ROUTER_SOCIAL_USER_ID);
+        }
+        socialId = null;
+        socialUserId = null;
     }
 
     private void bindSocialTypeData()
@@ -300,6 +339,11 @@ public class FriendsInvitationFragment extends BaseFragment
         socialFriendHandler.followFriends(usersToFollow)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
+    }
+
+    private void createInviteInHomePage()
+    {
+        handleInviteUsers(UserFriendsDTOFactory.createFrom(socialId, socialUserId));
     }
 
     // TODO via which social network to invite user?
@@ -505,5 +549,4 @@ public class FriendsInvitationFragment extends BaseFragment
         searchProgressBar.setVisibility(View.GONE);
         friendsListEmptyView.setVisibility(View.GONE);
     }
-
 }
