@@ -1,7 +1,6 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.network.NetworkConstants;
-import com.tradehero.th.network.retrofit.RequestHeaders;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -150,14 +149,6 @@ public class RetrofitProtectedModule
     @Provides @Singleton WeChatServiceRx provideWeChatServiceRx(RestAdapter adapter)
     {
         return adapter.create(WeChatServiceRx.class);
-    }
-
-    @Provides @Singleton HomeServiceRx provideHomeServiceRx(RestAdapter.Builder builder, RequestHeaders requestHeaders)
-    {
-        return builder.setEndpoint(NetworkConstants.TRADEHERO_PROD_ENDPOINT)
-                .setRequestInterceptor(requestHeaders)
-                .build()
-                .create(HomeServiceRx.class);
     }
     //</editor-fold>
 }

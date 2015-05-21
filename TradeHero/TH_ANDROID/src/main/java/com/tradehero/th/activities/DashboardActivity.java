@@ -66,7 +66,6 @@ import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
-import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.news.NewsWebFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardingBroadcastSignal;
@@ -711,7 +710,6 @@ public class DashboardActivity extends BaseActivity
                     FXInfoFragment.class,
                     FXMainFragment.class,
                     FXMainFragment.class,
-                    HomeFragment.class,
                     LeaderboardCommunityFragment.class,
                     MainCompetitionFragment.class,
                     MessagesCenterNewFragment.class,

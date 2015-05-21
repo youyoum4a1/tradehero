@@ -11,7 +11,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.AdminSettingsActivity;
 import com.tradehero.th.activities.AlertManagerActivity;
 import com.tradehero.th.activities.FriendsInvitationActivity;
-import com.tradehero.th.activities.HomeActivity;
 import com.tradehero.th.activities.SettingsActivity;
 import com.tradehero.th.activities.StoreScreenActivity;
 import com.tradehero.th.activities.UpdateCenterActivity;
@@ -37,13 +36,6 @@ public enum RootFragmentType
             TrendingMainFragment.class,
             null,
             AnalyticsConstants.TabBar_Trade),
-    ME(R.layout.home_selector,
-            R.string.dashboard_timeline,
-            R.string.dashboard_timeline_key,
-            R.drawable.icn_menu_home,
-            MeTimelineFragment.class,
-            null,
-            AnalyticsConstants.TabBar_Me),
     DISCOVERY(R.layout.tab_indicator_holo,
             R.string.discovery,
             R.string.dashboard_discovery_key,
@@ -65,14 +57,14 @@ public enum RootFragmentType
             ContestCenterFragment.class,
             null,
             AnalyticsConstants.TabBar_ContestCenter),
-    // Side menu
-    HOME(R.layout.tab_indicator_holo,
-            R.string.dashboard_home,
-            R.string.dashboard_home_key,
-            R.drawable.icn_side_menu_home,
+    ME(R.layout.home_selector,
+            R.string.dashboard_timeline,
+            R.string.dashboard_timeline_key,
+            R.drawable.icn_menu_home,
+            MeTimelineFragment.class,
             null,
-            HomeActivity.class,
-            AnalyticsConstants.TabBar_Home),
+            AnalyticsConstants.TabBar_Me),
+    // Side menu
     UPDATE_CENTER(R.layout.residemenu_item_update_center,
             R.string.dashboard_message_center,
             R.string.dashboard_message_center_key,

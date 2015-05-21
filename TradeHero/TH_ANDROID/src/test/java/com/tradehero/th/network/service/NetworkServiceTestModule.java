@@ -15,7 +15,6 @@ import dagger.Module;
                 CurrencyServiceWrapper.class,
                 DiscussionServiceWrapper.class,
                 FollowerServiceWrapper.class,
-                HomeServiceWrapper.class,
                 LeaderboardServiceWrapper.class,
                 MarketServiceWrapper.class,
                 MessageServiceWrapper.class,
