@@ -53,21 +53,18 @@ import com.tradehero.th.persistence.prefs.ShareDialogTotalValueKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
-import com.tradehero.metrics.Analytics;
 import dagger.Lazy;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /*
     交易－我的交易
  */
 public class TradeOfMineFragment extends DashboardFragment
 {
-
     @Nullable protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOListener;
     private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionFetchListener;
     private DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
@@ -99,8 +96,6 @@ public class TradeOfMineFragment extends DashboardFragment
     @Inject @ShareDialogROIValueKey BooleanPreference mShareDialogROIValueKeyPreference;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
-    @Inject Analytics analytics;
-
     private static long time_stamp = -1;
     private final long duration_showing_dialog = 120000;
     private boolean availableShowDialog = false;
@@ -118,7 +113,6 @@ public class TradeOfMineFragment extends DashboardFragment
         userWatchlistPositionFetchListener = new WatchlistPositionFragmentSecurityIdListCacheListener();
         portfolioFetchListener = new WatchlistPositionFragmentPortfolioCacheListener();
         portfolioCompactListFetchListener = new BasePurchaseManagementPortfolioCompactListFetchListener();
-
         userProfileCacheListener = new UserProfileFetchListener();
     }
 
@@ -131,13 +125,9 @@ public class TradeOfMineFragment extends DashboardFragment
         return view;
     }
 
-    @Override public void onStart() {
-        availableShowDialog = true;
-        super.onStart();
-    }
-
     @Override public void onResume() {
         super.onResume();
+        availableShowDialog = true;
         fetchPortfolioCompactList(true);
         fetchUserProfile();
     }
@@ -416,7 +406,6 @@ public class TradeOfMineFragment extends DashboardFragment
             }
         }
 
-        String valueString = String.format("%s %,.0f", cached.getNiceCurrency(), cached.totalValue);
         //总资产数达到15w
         if (cached.totalValue > 150000 && getActivity() != null && availableShowDialog)
         {

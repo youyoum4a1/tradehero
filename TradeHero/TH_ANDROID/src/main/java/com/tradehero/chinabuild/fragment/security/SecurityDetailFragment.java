@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,10 +17,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -31,18 +31,15 @@ import com.tradehero.chinabuild.cache.PositionDTOKey;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.dialog.DialogFactory;
 import com.tradehero.chinabuild.dialog.SecurityDetailDialogLayout;
-import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.chinabuild.fragment.message.SecurityDiscussSendFragment;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
-import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -75,10 +72,6 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
-import com.tradehero.th.api.share.wechat.WeChatDTO;
-import com.tradehero.th.api.share.wechat.WeChatMessageType;
-import com.tradehero.th.api.social.InviteFormDTO;
-import com.tradehero.th.api.social.InviteFormWeiboDTO;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -100,19 +93,14 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
-import com.tradehero.th.network.share.SocialSharer;
-import com.tradehero.th.network.share.SocialSharerImpl;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
-import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
@@ -120,27 +108,19 @@ import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.GuideView;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.viewpagerindicator.SquarePageIndicator;
-
+import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import dagger.Lazy;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -161,8 +141,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     @Inject Analytics analytics;
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     private MiddleCallback<DiscussionDTO> voteCallback;
-    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
-    @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject CurrentUserId currentUserId;
 
     protected SecurityId securityId;
@@ -217,8 +195,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     @Inject public Lazy<PrettyTime> prettyTime;
     private AbstractDiscussionCompactDTO dtoDiscuss;
     private AbstractDiscussionCompactDTO dtoNews;
-    private Dialog mShareSheetDialog;
-    @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
     protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionCacheFetchListener;
     private ProgressDialog progressBar;
     @Inject ProgressDialogUtil progressDialogUtil;
@@ -227,15 +203,13 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private int indexDiscussOrNews = -1;
 
     //Security Detail Tab Start
-    @InjectView(R.id.progress) ProgressBar progress;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.ic_info_buy_sale_btns) LinearLayout llBuySaleButtons;//购买卖出栏
     @InjectView(R.id.llSecurityBuy) RelativeLayout llSecurityBuy;//购买
     @InjectView(R.id.llSecuritySale) RelativeLayout llSecuritySale;//出售
-    @InjectView(R.id.llSecurityDiscuss) RelativeLayout llSecurityDiscuss;//讨论
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) SquarePageIndicator indicator;
-    private List<View> views = new ArrayList<View>();
+    private List<View> views = new ArrayList<>();
 
     private Button[] btnChart;
     Button btnChart0;
@@ -269,13 +243,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     LinearLayout llTLPraise;
     LinearLayout llTLPraiseDown;
     LinearLayout llTLComment;
-    //LinearLayout llTLShare;
     TextView tvTLPraise;
     TextView btnTLPraise;
     TextView tvTLPraiseDown;
     TextView btnTLPraiseDown;
     TextView tvTLComment;
-    //TextView tvTLShare;
     LinearLayout bottomBarLL;
     //Security Detail Tab End
 
@@ -323,7 +295,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<TradeListCache> tradeListCache;
-    @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject PositionDTOKeyFactory positionDTOKeyFactory;
 
     protected com.tradehero.th.api.position.PositionDTOKey positionDTOKey;
@@ -340,16 +311,16 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        compactCacheListener = createSecurityCompactCacheListener();
+        compactCacheListener = new StockInfoFragmentSecurityCompactCacheListener();
         chartDTO = chartDTOFactory.createChartDTO();
-        securityPositionDetailListener = createSecurityPositionCacheListener();
-        positionNewCacheListener = createPositionNewCacheListener();
-        userProfileCacheListener = createUserProfileCacheListener();
-        userWatchlistPositionCacheFetchListener = createUserWatchlistCacheListener();
-        newsCacheListener = createNewsCacheListener();
+        securityPositionDetailListener = new AbstractBuySellSecurityPositionCacheListener();
+        positionNewCacheListener = new PositionNewCacheListener();
+        userProfileCacheListener = new AbstractBuySellUserProfileCacheListener();
+        userWatchlistPositionCacheFetchListener = new BuySellUserWatchlistCacheListener();
+        newsCacheListener = new NewsHeadlineNewsListListener();
 
-        fetchPositionListener = createPositionCacheListener();
-        fetchTradesListener = createTradeListeCacheListener();
+        fetchPositionListener = new TradeListFragmentPositionCacheListener();
+        fetchTradesListener = new GetTradesListener();
         adapter = new PositionTradeListAdapter(getActivity());
 
         isGotoTradeDetail = getArguments().getBoolean(BUNDLE_KEY_GOTO_TRADE_DETAIL, false);
@@ -393,17 +364,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         return view;
     }
 
-    @Override public void updateHeadView(boolean display)
-    {
-        super.updateHeadView(display);
-    }
-
     //+自选股 已添加
     @Override public void onClickHeadRight0()
     {
         if (!isInWatchList)
         {
-            addSecurityToWatchList();
+            if (securityId != null && securityCompactDTO != null)
+            {
+                handleWatchButtonClicked();
+            }
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_ADDWATCH));
         }
         else
@@ -465,14 +434,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         displayInWatchButton();
     }
 
-    public void addSecurityToWatchList()
-    {
-        if (securityId != null && securityCompactDTO != null)
-        {
-            handleWatchButtonClicked();
-        }
-    }
-
     public void setBuySaleButtonVisable(boolean isCanSale)
     {
         try
@@ -480,7 +441,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             llBuySaleButtons.setVisibility(View.VISIBLE);
             llSecurityBuy.setVisibility(View.VISIBLE);
             llSecuritySale.setVisibility(isCanSale ? View.VISIBLE : View.GONE);
-            if (isCanSale || isBuyOrSaleValid(true, false))
+            if (isCanSale || isBuyOrSaleValid(true))
             {
                 betterViewAnimator.setDisplayedChildByLayoutId(R.id.ic_info_buy_sale_btns);
             }
@@ -488,11 +449,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         {
             e.printStackTrace();
         }
-    }
-
-    @Override protected void initViews(View view)
-    {
-
     }
 
     public void initView()
@@ -556,7 +512,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public void initTabPageView()
     {
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        views = new ArrayList<View>();
+        views = new ArrayList<>();
         View viewTab0 = layoutInflater.inflate(R.layout.security_detail_tab0_layout, null);
         initRootViewTab0(viewTab0);
         views.add(viewTab0);
@@ -608,13 +564,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         llTLPraise = (LinearLayout) tabView0.findViewById(R.id.llTLPraise);
         llTLPraiseDown = (LinearLayout) tabView0.findViewById(R.id.llTLPraiseDown);
         llTLComment = (LinearLayout) tabView0.findViewById(R.id.llTLComment);
-        //llTLShare = (LinearLayout) tabView0.findViewById(R.id.llTLShare);
         tvTLPraise = (TextView) tabView0.findViewById(R.id.tvTLPraise);
         btnTLPraise = (TextView) tabView0.findViewById(R.id.btnTLPraise);
         tvTLPraiseDown = (TextView) tabView0.findViewById(R.id.tvTLPraiseDown);
         btnTLPraiseDown = (TextView) tabView0.findViewById(R.id.btnTLPraiseDown);
         tvTLComment = (TextView) tabView0.findViewById(R.id.tvTLComment);
-        //tvTLShare = (TextView) tabView0.findViewById(R.id.tvTLShare);
         bottomBarLL = (LinearLayout) tabView0.findViewById(R.id.ic_info_buy_sale_btns);
     }
 
@@ -759,7 +713,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     }
 
-
     public void initArgment()
     {
         Bundle args = getArguments();
@@ -809,7 +762,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 SecurityPositionDetailDTO detailDTO = securityPositionDetailCache.get().get(this.securityId);
                 if (detailDTO != null)
                 {
-                    linkWith(detailDTO, true);
+                    linkWith(detailDTO);
                 }
                 else
                 {
@@ -828,7 +781,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     {
         destroyFreshQuoteHolder();
         freshQuoteHolder = new FreshQuoteHolder(securityId, MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION);
-        freshQuoteHolder.setListener(createFreshQuoteListener());
+        freshQuoteHolder.setListener(new BuySellFreshQuoteListener());
         freshQuoteHolder.start();
     }
 
@@ -839,11 +792,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             freshQuoteHolder.destroy();
         }
         freshQuoteHolder = null;
-    }
-
-    protected FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener()
-    {
-        return new BuySellFreshQuoteListener();
     }
 
     abstract protected class AbstractBuySellFreshQuoteListener implements FreshQuoteHolder.FreshQuoteListener
@@ -867,7 +815,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     protected void linkWith(QuoteDTO quoteDTO)
     {
         this.quoteDTO = quoteDTO;
-
         setInitialBuySaleQuantityIfCan();
     }
 
@@ -894,7 +841,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     {
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
-        //if (this.mBuyQuantity != null && this.mSellQuantity != null)
         if (this.mSellQuantity != null)
         {
             setBuySaleButtonVisable(mSellQuantity > 0);//可以卖出
@@ -906,7 +852,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         Integer maxPurchasableShares = getMaxPurchasableShares();
         if (maxPurchasableShares != null)
         {
-            linkWithBuyQuantity((int) Math.ceil(((double) maxPurchasableShares) / 2), true);
+            linkWithBuyQuantity((int) Math.ceil(((double) maxPurchasableShares) / 2));
         }
     }
 
@@ -915,7 +861,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         Integer maxSellableShares = getMaxSellableShares();
         if (maxSellableShares != null)
         {
-            linkWithSellQuantity(maxSellableShares, true);
+            linkWithSellQuantity(maxSellableShares);
             if (maxSellableShares == 0)
             {
                 setTransactionTypeBuy(true);
@@ -933,7 +879,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         return Math.min(candidate, maxPurchasable);
     }
 
-    protected void linkWithBuyQuantity(Integer buyQuantity, boolean andDisplay)
+    protected void linkWithBuyQuantity(Integer buyQuantity)
     {
         this.mBuyQuantity = getClampedBuyQuantity(buyQuantity);
     }
@@ -948,7 +894,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         return Math.min(candidate, maxSellable);
     }
 
-    protected void linkWithSellQuantity(Integer sellQuantity, boolean andDisplay)
+    protected void linkWithSellQuantity(Integer sellQuantity)
     {
         this.mSellQuantity = getClampedSellQuantity(sellQuantity);
     }
@@ -1016,46 +962,30 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         securityCompactCache.get().unregister(compactCacheListener);
     }
 
-    protected DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
+    @Override protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId)
     {
-        return new StockInfoFragmentSecurityCompactCacheListener();
-    }
-
-    @Override protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId,
-            boolean andDisplay)
-    {
-        super.linkWithApplicable(purchaseApplicablePortfolioId, andDisplay);
+        super.linkWithApplicable(purchaseApplicablePortfolioId);
         if (purchaseApplicablePortfolioId != null)
         {
-            linkWith(portfolioCompactCache.get(purchaseApplicablePortfolioId.getPortfolioIdKey()), andDisplay);
+            linkWith(portfolioCompactCache.get(purchaseApplicablePortfolioId.getPortfolioIdKey()));
             purchaseApplicableOwnedPortfolioId = purchaseApplicablePortfolioId;
         }
         else
         {
-            linkWith((PortfolioCompactDTO) null, andDisplay);
+            linkWith((PortfolioCompactDTO) null);
         }
     }
 
-    protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
+    protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
     {
         if (getActivity() != null)
         {
             this.portfolioCompactDTO = portfolioCompactDTO;
-            clampBuyQuantity(andDisplay);
-            clampSellQuantity(andDisplay);
+            linkWithSellQuantity(mSellQuantity);
+            linkWithBuyQuantity(mBuyQuantity);
 
             setInitialBuySaleQuantityIfCan();
         }
-    }
-
-    protected void clampSellQuantity(boolean andDisplay)
-    {
-        linkWithSellQuantity(mSellQuantity, andDisplay);
-    }
-
-    protected void clampBuyQuantity(boolean andDisplay)
-    {
-        linkWithBuyQuantity(mBuyQuantity, andDisplay);
     }
 
     protected class StockInfoFragmentSecurityCompactCacheListener implements DTOCacheNew.Listener<SecurityId, SecurityCompactDTO>
@@ -1110,20 +1040,16 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     public void setChartView(int select)
     {
-        //if (indexChart != select)
+        indexChart = select;
+        for (int i = 0; i < btnChart.length; i++)
         {
-            indexChart = select;
-            for (int i = 0; i < btnChart.length; i++)
-            {
-                btnChart[i].setBackgroundResource((i == indexChart ? R.drawable.tab_blue_head_active : R.drawable.tab_blue_head_normal));
-            }
-            linkWith(new ChartTimeSpan(getChartTimeSpanDuration(indexChart)), true);
+            btnChart[i].setBackgroundResource((i == indexChart ? R.drawable.tab_blue_head_active : R.drawable.tab_blue_head_normal));
         }
+        linkWith(new ChartTimeSpan(getChartTimeSpanDuration(indexChart)));
     }
 
     public void setDiscussOrNewsViewDefault()
     {
-        //indexDiscussOrNews = 0;
         for (int i = 0; i < btnDiscussOrNews.length; i++)
         {
             btnDiscussOrNews[i].setBackgroundResource(
@@ -1214,7 +1140,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     {
         if (securityCompactDTO != null)
         {
-
             setHeadViewMiddleMain(securityCompactDTO.name);
 
             //涨跌幅
@@ -1270,13 +1195,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public void linkWith(ChartTimeSpan timeSpan, boolean andDisplay)
+    public void linkWith(ChartTimeSpan timeSpan)
     {
         chartDTO.setChartTimeSpan(timeSpan);
-        if (andDisplay)
-        {
-            displayChartImage();
-        }
+        displayChartImage();
     }
 
     @OnClick({R.id.llSecurityBuy, R.id.llSecuritySale, R.id.llSecurityDiscuss})
@@ -1287,65 +1209,46 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         if (id == R.id.llSecurityBuy)
         {
             enterBuySale(id == R.id.llSecurityBuy);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_BUY));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
+                    AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_BUY));
         }
         else if (id == R.id.llSecuritySale)
         {
             enterBuySale(id == R.id.llSecurityBuy);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_SALE));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
+                    AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_SALE));
         }
         else if (id == R.id.llSecurityDiscuss)
         {
             enterDiscussSend();
-            analytics.addEvent(
-                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_DISCUSS));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
+                            AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_DISCUSS));
         }
     }
 
     public boolean isBuyOrSaleValid(boolean isBuy)
     {
-        return isBuyOrSaleValid(isBuy, true);
-    }
-
-    public boolean isBuyOrSaleValid(boolean isBuy, boolean display)
-    {
         if (quoteDTO == null) return false;
         if (quoteDTO.ask == null && quoteDTO.bid == null)
         {//ask bid 都没有返回 则说明停牌
-            if (display)
-            {
-                showBuyOrSaleError(ERROR_NO_ASK_BID);
-                return false;
-            }
+            showBuyOrSaleError(ERROR_NO_ASK_BID);
+            return false;
         }
         else if (quoteDTO.bid == null && (!isBuy))
         {//跌停
-            if (display)
-            {
-                showBuyOrSaleError(ERROR_NO_BID);
-                return false;
-            }
+            showBuyOrSaleError(ERROR_NO_BID);
+            return false;
         }
         else if (quoteDTO.ask == null && (isBuy))
         {//涨停
-            if (display)
-            {
-                showBuyOrSaleError(ERROR_NO_ASK);
-                return false;
-            }
+            showBuyOrSaleError(ERROR_NO_ASK);
+            return false;
         }
 
         if (isFromCompetition && portfolioCompactDTO == null)
         {
-            if (display)
-            {
-                showBuyOrSaleError(ERROR_NO_COMPETITION_PROTFOLIO);
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            showBuyOrSaleError(ERROR_NO_COMPETITION_PROTFOLIO);
+            return false;
         }
 
         return true;
@@ -1373,20 +1276,21 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     public void enterBuySale(boolean isBuy) {
 
-        if (!isBuyOrSaleValid(isBuy)) return;
-        Bundle bundle = new Bundle();
-        if(portfolioCompactDTO!=null&& portfolioCompactDTO.getPortfolioId()!=null) {
-            bundle.putBundle(BuySaleSecurityFragment.KEY_PORTFOLIO_ID, portfolioCompactDTO.getPortfolioId().getArgs());
-        }else{
-            return;
+        if (isBuyOrSaleValid(isBuy)) {
+            Bundle bundle = new Bundle();
+            if (portfolioCompactDTO!=null&& portfolioCompactDTO.getPortfolioId()!=null) {
+                bundle.putBundle(BuySaleSecurityFragment.KEY_PORTFOLIO_ID, portfolioCompactDTO.getPortfolioId().getArgs());
+            } else {
+                return;
+            }
+            bundle.putBundle(BuySaleSecurityFragment.KEY_SECURITY_ID, securityId.getArgs());
+            bundle.putBundle(BuySaleSecurityFragment.KEY_QUOTE_DTO, quoteDTO.getArgs());
+            bundle.putBoolean(BuySaleSecurityFragment.KEY_BUY_OR_SALE, isBuy);
+            bundle.putString(BuySaleSecurityFragment.KEY_SECURITY_NAME, securityName);
+            bundle.putInt(BuySaleSecurityFragment.KEY_COMPETITION_ID, competitionID);
+            bundle.putSerializable(BuySaleSecurityFragment.KEY_POSITION_COMPACT_DTO, positionDTOCompactList);
+            pushFragment(BuySaleSecurityFragment.class, bundle);
         }
-        bundle.putBundle(BuySaleSecurityFragment.KEY_SECURITY_ID, securityId.getArgs());
-        bundle.putBundle(BuySaleSecurityFragment.KEY_QUOTE_DTO, quoteDTO.getArgs());
-        bundle.putBoolean(BuySaleSecurityFragment.KEY_BUY_OR_SALE, isBuy);
-        bundle.putString(BuySaleSecurityFragment.KEY_SECURITY_NAME, securityName);
-        bundle.putInt(BuySaleSecurityFragment.KEY_COMPETITION_ID, competitionID);
-        bundle.putSerializable(BuySaleSecurityFragment.KEY_POSITION_COMPACT_DTO, positionDTOCompactList);
-        pushFragment(BuySaleSecurityFragment.class, bundle);
     }
 
     public void enterDiscussSend()
@@ -1394,11 +1298,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDiscussSendFragment.BUNDLE_KEY_SECURITY_ID, securityId.getArgs());
         pushFragment(SecurityDiscussSendFragment.class, bundle);
-    }
-
-    protected DTOCacheNew.Listener<PositionDTOKey, PositionDTO> createPositionNewCacheListener()
-    {
-        return new PositionNewCacheListener();
     }
 
     protected class PositionNewCacheListener implements DTOCacheNew.Listener<PositionDTOKey, PositionDTO>
@@ -1419,7 +1318,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         {
             PositionDTOCompactList positionDTOCompacts = new PositionDTOCompactList();
             positionDTOCompacts.add(value);
-            linkWith(positionDTOCompacts, true);
+            linkWith(positionDTOCompacts);
         }
 
         if (value instanceof PositionDTO)
@@ -1434,16 +1333,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected DTOCacheNew.Listener<SecurityId, SecurityPositionDetailDTO> createSecurityPositionCacheListener()
-    {
-        return new AbstractBuySellSecurityPositionCacheListener();
-    }
-
     protected class AbstractBuySellSecurityPositionCacheListener implements DTOCacheNew.Listener<SecurityId, SecurityPositionDetailDTO>
     {
         @Override public void onDTOReceived(@NotNull final SecurityId key, @NotNull final SecurityPositionDetailDTO value)
         {
-            linkWith(value, true);
+            linkWith(value);
         }
 
         @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
@@ -1451,21 +1345,16 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
-    {
-        return new AbstractBuySellUserProfileCacheListener();
-    }
-
     protected class AbstractBuySellUserProfileCacheListener implements DTOCacheNew.HurriedListener<UserBaseKey, UserProfileDTO>
     {
         @Override public void onPreCachedDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
-            linkWith(value, true);
+            linkWith(value);
         }
 
         @Override public void onDTOReceived(@NotNull final UserBaseKey key, @NotNull final UserProfileDTO value)
         {
-            linkWith(value, true);
+            linkWith(value);
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
@@ -1473,40 +1362,28 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void linkWith(SecurityPositionDetailDTO detailDTO, boolean andDisplay)
+    private void linkWith(SecurityPositionDetailDTO detailDTO)
     {
         this.securityPositionDetailDTO = detailDTO;
         if (securityPositionDetailDTO != null)
         {
-            linkWith(securityPositionDetailDTO.security, andDisplay);
-            linkWith(securityPositionDetailDTO.positions, andDisplay);
+            linkWith(securityPositionDetailDTO.security);
+            linkWith(securityPositionDetailDTO.positions);
         }
         else
         {
-            linkWith((SecurityCompactDTO) null, andDisplay);
-            linkWith((PositionDTOCompactList) null, andDisplay);
+            linkWith((SecurityCompactDTO) null);
+            linkWith((PositionDTOCompactList) null);
         }
     }
 
-    public void linkWith(final PositionDTOCompactList positionDTOCompacts, boolean andDisplay)
+    public void linkWith(final PositionDTOCompactList positionDTOCompacts)
     {
         this.positionDTOCompactList = positionDTOCompacts;
-        if (andDisplay)
-        {
-            setInitialBuySaleQuantityIfCan();
-        }
+        setInitialBuySaleQuantityIfCan();
     }
 
-    public void linkWith(final SecurityCompactDTO securityCompactDTO, boolean andDisplay)
-    {
-        if (!securityCompactDTO.getSecurityId().equals(this.securityId))
-        {
-            throw new IllegalArgumentException("This security compact is not for " + this.securityId);
-        }
-        this.securityCompactDTO = securityCompactDTO;
-    }
-
-    public void linkWith(final UserProfileDTO userProfileDTO, boolean andDisplay)
+    public void linkWith(final UserProfileDTO userProfileDTO)
     {
         this.userProfileDTO = userProfileDTO;
         setInitialBuySaleQuantityIfCan();
@@ -1522,11 +1399,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     protected void detachUserProfileCache()
     {
         userProfileCache.get().unregister(userProfileCacheListener);
-    }
-
-    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> createUserWatchlistCacheListener()
-    {
-        return new BuySellUserWatchlistCacheListener();
     }
 
     protected class BuySellUserWatchlistCacheListener
@@ -1595,9 +1467,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             int quantity = watchQuantity;
             // add new watchlist
             WatchlistPositionFormDTO watchPositionItemForm = new WatchlistPositionFormDTO(securityCompactDTO.id, price, quantity);
+            detachMiddleCallbackUpdate();
             middleCallbackUpdate = watchlistServiceWrapper.createWatchlistEntry(
                     watchPositionItemForm,
-                    createWatchlistUpdateCallback());
+                    new WatchlistEditTHCallback());
         } catch (NumberFormatException ex) {
             THToast.show(getString(R.string.wrong_number_format));
             dismissProgress();
@@ -1615,11 +1488,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             showProgressBar();
             detachMiddleCallbackDelete();
             middleCallbackDelete =
-                    watchlistServiceWrapper.deleteWatchlist(watchlistPositionDTO.getPositionCompactId(), createWatchlistDeleteCallback());
-        }
-        else
-        {
-            //THToast.show(R.string.error_fetch_portfolio_watchlist);
+                    watchlistServiceWrapper.deleteWatchlist(watchlistPositionDTO.getPositionCompactId(), new WatchlistDeletedTHCallback());
         }
     }
 
@@ -1643,16 +1512,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             progressBarCopy.dismiss();
         }
         progressBar = null;
-    }
-
-    @NotNull protected retrofit.Callback<WatchlistPositionDTO> createWatchlistUpdateCallback()
-    {
-        return new WatchlistEditTHCallback();
-    }
-
-    @NotNull protected retrofit.Callback<WatchlistPositionDTO> createWatchlistDeleteCallback()
-    {
-        return new WatchlistDeletedTHCallback();
     }
 
     protected class WatchlistEditTHCallback extends THCallback<WatchlistPositionDTO>
@@ -1700,6 +1559,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             middleCallbackDelete.setPrimaryCallback(null);
         }
         middleCallbackDelete = null;
+    }
+
+    protected void detachMiddleCallbackUpdate()
+    {
+        if (middleCallbackUpdate != null)
+        {
+            middleCallbackUpdate.setPrimaryCallback(null);
+        }
+        middleCallbackUpdate = null;
     }
 
     public int getCompetitionID()
@@ -1755,18 +1623,13 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     }
 
-    @NotNull protected DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> createNewsCacheListener()
-    {
-        return new NewsHeadlineNewsListListener();
-    }
-
     protected class NewsHeadlineNewsListListener implements DTOCacheNew.HurriedListener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>
     {
         @Override public void onPreCachedDTOReceived(
                 @NotNull NewsItemListKey key,
                 @NotNull PaginatedDTO<NewsItemCompactDTO> value)
         {
-            linkWith(key, value);
+            linkWith(value);
             finish();
         }
 
@@ -1774,7 +1637,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 @NotNull NewsItemListKey key,
                 @NotNull PaginatedDTO<NewsItemCompactDTO> value)
         {
-            linkWith(key, value);
+            linkWith(value);
             finish();
         }
 
@@ -1790,8 +1653,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public void linkWith(@NotNull NewsItemListKey key,
-            @NotNull PaginatedDTO<NewsItemCompactDTO> value)
+    public void linkWith(@NotNull PaginatedDTO<NewsItemCompactDTO> value)
     {
         if (value.getData() != null && value.getData().size() > 0)
         {
@@ -1819,50 +1681,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE,
                 discussionKey.getArgs());
         pushFragment(DiscussSendFragment.class, bundle);
-    }
-
-    private void share(String strShare)
-    {
-        mShareSheetTitleCache.set(strShare);
-        ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
-                .inflate(R.layout.share_sheet_dialog_layout, null);
-        contentView.setLocalSocialClickedListener(
-                new ShareSheetDialogLayout.OnLocalSocialClickedListener()
-                {
-                    @Override public void onShareRequestedClicked()
-                    {
-
-                    }
-                });
-        mShareSheetDialog = THDialog.showUpDialog(getActivity(), contentView);
-    }
-
-    //Share to wechat moment and share to weibo on the background
-    private void shareToWechatMoment(final String strShare)
-    {
-        String show = getUnParsedText(strShare);
-        if (TextUtils.isEmpty(show))
-        {
-            return;
-        }
-        UserProfileDTO updatedUserProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-        if (updatedUserProfileDTO != null)
-        {
-            if (updatedUserProfileDTO.wbLinked)
-            {
-                String outputStr = show;
-                String downloadCNTradeHeroWeibo = getString(R.string.download_tradehero_android_app_on_weibo);
-                outputStr = WeiboUtils.getShareContentWeibo(outputStr, downloadCNTradeHeroWeibo);
-                InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(outputStr);
-                userServiceWrapper.get().inviteFriends(
-                        currentUserId.toUserBaseKey(), inviteFormDTO, new RequestCallback());
-            }
-        }
-        WeChatDTO weChatDTO = new WeChatDTO();
-        weChatDTO.id = 0;
-        weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
-        weChatDTO.title = show;
-        ((SocialSharerImpl) socialSharerLazy.get()).share(weChatDTO, getActivity());
     }
 
     private void openUserProfile(int userId)
@@ -1943,7 +1761,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         if(item.voteDirection != 0) {
             btnTLPraise.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.vote_praise));
         }
-
     }
 
     public void clickedPraiseDown()
@@ -1974,7 +1791,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             btnTLPraiseDown.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.vote_ani));
         }
     }
-
 
     protected void detachVoteMiddleCallback()
     {
@@ -2011,6 +1827,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         throw new IllegalStateException("Unknown discussion type");
     }
 
+    //TODO why null ?
     protected class VoteCallback implements retrofit.Callback<DiscussionDTO>
     {
         public VoteCallback(VoteDirection voteDirection)
@@ -2023,22 +1840,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         @Override public void failure(RetrofitError error)
         {
-        }
-    }
-
-    private class RequestCallback implements retrofit.Callback
-    {
-
-        @Override
-        public void success(Object o, Response response)
-        {
-
-        }
-
-        @Override
-        public void failure(RetrofitError retrofitError)
-        {
-
         }
     }
 
@@ -2108,25 +1909,27 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         else if (view.getId() == R.id.btnTabChart2)
         {
             setChartView(2);
-            analytics.addEvent(
-                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_90DAY));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
+                    AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_90DAY));
         }
         else if (view.getId() == R.id.btnTabChart3)
         {
             setChartView(3);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_YEAR));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
+                    AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_YEAR));
         }
         else if (view.getId() == R.id.btnTabDiscuss)
         {
             setDiscussOrNewsView(0);
-            analytics.addEvent(
-                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_DISCUSS));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
+                    AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_DISCUSS));
         }
 
         else if (view.getId() == R.id.btnTabNews)
         {
             setDiscussOrNewsView(1);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_NEWS));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
+                    AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_NEWS));
         }
     }
 
@@ -2230,16 +2033,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         positionCache.get().getOrFetchAsync(positionDTOKey);
     }
 
-    protected DTOCacheNew.Listener<com.tradehero.th.api.position.PositionDTOKey, PositionDTO> createPositionCacheListener()
-    {
-        return new TradeListFragmentPositionCacheListener();
-    }
-
     protected class TradeListFragmentPositionCacheListener implements DTOCacheNew.Listener<com.tradehero.th.api.position.PositionDTOKey, PositionDTO>
     {
         @Override public void onDTOReceived(@NotNull com.tradehero.th.api.position.PositionDTOKey key, @NotNull PositionDTO value)
         {
-            linkWith(value, true);
+            linkWith(value);
         }
 
         @Override public void onErrorThrown(@NotNull com.tradehero.th.api.position.PositionDTOKey key, @NotNull Throwable error)
@@ -2248,7 +2046,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public void linkWith(PositionDTO positionDTO, boolean andDisplay)
+    public void linkWith(PositionDTO positionDTO)
     {
         if (getActivity() == null) return;
         this.positionDTO = positionDTO;
@@ -2288,11 +2086,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         {
             betterViewAnimatorPortfolio.setDisplayedChildByLayoutId(R.id.listTrade);
         }
-    }
-
-    protected TradeListCache.Listener<OwnedPositionId, TradeDTOList> createTradeListeCacheListener()
-    {
-        return new GetTradesListener();
     }
 
     private class GetTradesListener implements TradeListCache.Listener<OwnedPositionId, TradeDTOList>
