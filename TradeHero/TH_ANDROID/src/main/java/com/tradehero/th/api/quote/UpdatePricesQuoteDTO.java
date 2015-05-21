@@ -6,6 +6,4 @@ import java.util.Dictionary;
 public class UpdatePricesQuoteDTO implements Serializable
 {
     public int id;
-    public String yahooSymbol;
-    public Dictionary<String, String> quoteData;
 }

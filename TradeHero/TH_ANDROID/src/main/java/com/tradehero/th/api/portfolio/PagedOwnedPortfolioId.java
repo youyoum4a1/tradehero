@@ -10,12 +10,6 @@ public class PagedOwnedPortfolioId extends OwnedPortfolioId
 
     @Nullable public final Integer page;
 
-    //<editor-fold desc="Constructors">
-    public PagedOwnedPortfolioId(int userId, int portfolioId, @Nullable Integer page)
-    {
-        super(userId, portfolioId);
-        this.page = page;
-    }
 
     public PagedOwnedPortfolioId(Bundle args)
     {
@@ -23,12 +17,6 @@ public class PagedOwnedPortfolioId extends OwnedPortfolioId
         this.page = args.containsKey(BUNDLE_KEY_PAGE) ? args.getInt(BUNDLE_KEY_PAGE) : null;
     }
     //</editor-fold>
-
-    public static boolean isPagedOwnedPortfolioId(@NotNull Bundle args)
-    {
-        return isOwnedPortfolioId(args)
-                && args.containsKey(BUNDLE_KEY_PAGE);
-    }
 
     @Override public int hashCode()
     {

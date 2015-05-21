@@ -85,10 +85,6 @@ abstract public class AbstractGetPositionsDTO<PositionDTOType extends PositionDT
         return getOpenPositions(false);
     }
 
-    public List<PositionDTOType> getPositionsWithUnknownOpenStatus()
-    {
-        return getOpenPositions(null);
-    }
 
     @Nullable
     public List<PositionDTOType> getOpenPositions(Boolean open)

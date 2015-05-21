@@ -2,7 +2,6 @@ package com.tradehero.th.api.discussion.key;
 
 import android.os.Bundle;
 import com.tradehero.th.api.pagination.RangedKey;
-import com.tradehero.th.api.discussion.DiscussionType;
 import java.util.Map;
 
 public class RangedDiscussionListKey extends DiscussionListKey implements RangedKey
@@ -14,45 +13,6 @@ public class RangedDiscussionListKey extends DiscussionListKey implements Ranged
     public final Integer maxCount;
     public final Integer maxId;
     public final Integer minId;
-
-    //<editor-fold desc="Constructors">
-    public RangedDiscussionListKey(DiscussionType inReplyToType, int inReplyToId)
-    {
-        this(inReplyToType, inReplyToId, null);
-    }
-
-    public RangedDiscussionListKey(DiscussionType inReplyToType, int inReplyToId, Integer maxCount)
-    {
-        this(inReplyToType, inReplyToId, maxCount, null);
-    }
-
-    public RangedDiscussionListKey(DiscussionListKey discussionListKey, Integer maxCount, Integer maxId)
-    {
-        this(discussionListKey.inReplyToType, discussionListKey.inReplyToId, maxCount, maxId, null);
-    }
-
-    public RangedDiscussionListKey(DiscussionListKey discussionListKey, Integer maxCount, Integer maxId, Integer minId)
-    {
-        this(discussionListKey.inReplyToType, discussionListKey.inReplyToId, maxCount, maxId, minId);
-    }
-
-    public RangedDiscussionListKey(DiscussionListKey discussionListKey, Integer maxCount)
-    {
-        this(discussionListKey, maxCount, null);
-    }
-
-    public RangedDiscussionListKey(DiscussionType inReplyToType, int inReplyToId, Integer maxCount, Integer maxId)
-    {
-        this(inReplyToType, inReplyToId, maxCount, maxId, null);
-    }
-
-    public RangedDiscussionListKey(DiscussionType inReplyToType, int inReplyToId, Integer maxCount, Integer maxId, Integer minId)
-    {
-        super(inReplyToType, inReplyToId);
-        this.maxCount = maxCount;
-        this.maxId = maxId;
-        this.minId = minId;
-    }
 
     public RangedDiscussionListKey(Bundle args)
     {

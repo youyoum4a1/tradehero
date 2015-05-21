@@ -22,15 +22,4 @@ public class OwnedPortfolioIdList extends DTOKeyIdList<OwnedPortfolioId>
             add(new OwnedPortfolioId(userBaseKey.key, portfolioCompactDTO.id));
         }
     }
-    //</editor-fold>
-
-    public PortfolioIdList getPortfolioIds()
-    {
-        PortfolioIdList ids = new PortfolioIdList();
-        for (OwnedPortfolioId ownedPortfolioId: this)
-        {
-            ids.add(ownedPortfolioId.getPortfolioIdKey());
-        }
-        return ids;
-    }
 }
