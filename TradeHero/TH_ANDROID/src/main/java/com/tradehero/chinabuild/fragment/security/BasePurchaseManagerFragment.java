@@ -1,7 +1,6 @@
 package com.tradehero.chinabuild.fragment.security;
 
 import android.os.Bundle;
-import android.view.View;
 import com.tradehero.chinabuild.cache.PortfolioCompactNewCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -12,11 +11,10 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
-
-import javax.inject.Inject;
 
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
 {
@@ -41,13 +39,11 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         return null;
     }
 
-    abstract protected void initViews(View view);
-
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
-        portfolioCompactNewFetchListener = createPortfolioCompactNewFetchListener();
+        portfolioCompactListFetchListener = new BasePurchaseManagementPortfolioCompactListFetchListener();
+        portfolioCompactNewFetchListener = new BasePurchaseManagementPortfolioCompactNewFetchListener();
     }
 
     @Override public void onResume()
@@ -123,26 +119,18 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
         else
         {
-            linkWithApplicable(applicablePortfolioId, true);
+            linkWithApplicable(applicablePortfolioId);
         }
     }
 
-    protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
+    protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId)
     {
         this.purchaseApplicableOwnedPortfolioId = purchaseApplicablePortfolioId;
-        if (andDisplay)
-        {
-        }
     }
 
     @Nullable public OwnedPortfolioId getApplicablePortfolioId()
     {
         return purchaseApplicableOwnedPortfolioId;
-    }
-
-    protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
-    {
-        return new BasePurchaseManagementPortfolioCompactListFetchListener();
     }
 
     protected class BasePurchaseManagementPortfolioCompactListFetchListener implements DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList>
@@ -161,11 +149,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
-    protected DTOCacheNew.Listener<PortfolioId, PortfolioCompactDTO> createPortfolioCompactNewFetchListener()
-    {
-        return new BasePurchaseManagementPortfolioCompactNewFetchListener();
-    }
-
     protected class BasePurchaseManagementPortfolioCompactNewFetchListener implements DTOCacheNew.Listener<PortfolioId, PortfolioCompactDTO>
     {
         protected BasePurchaseManagementPortfolioCompactNewFetchListener()
@@ -181,7 +164,4 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         {
         }
     }
-
-
-
 }
