@@ -877,9 +877,19 @@ public class SearchUnitFragment extends DashboardFragment
         {
             if (key instanceof SearchUserListType)
             {
-                if (adapterUser != null)
+                if (((SearchUserListType) key).getPage() == 1)
                 {
-                    adapterUser.addListData(value);
+                    if (adapterUser != null)
+                    {
+                        adapterUser.setListData(value);
+                    }
+                }
+                else
+                {
+                    if (adapterUser != null)
+                    {
+                        adapterUser.addListData(value);
+                    }
                 }
 
                 pageUser++;
