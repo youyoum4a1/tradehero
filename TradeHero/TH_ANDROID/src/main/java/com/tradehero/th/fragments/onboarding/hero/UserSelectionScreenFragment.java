@@ -171,7 +171,7 @@ public class UserSelectionScreenFragment extends BaseFragment
                                             {
                                                 return leaderboardUserListCache.getOne(new SuggestHeroesListTypeNew(
                                                         selectedExchanges.exchanges.getExchangeIds(),
-                                                        selectedExchanges.sectors.getSectorIds(),
+                                                        selectedExchanges.getSectorIds(),
                                                         null, null))
                                                         .subscribeOn(Schedulers.computation());
                                             }

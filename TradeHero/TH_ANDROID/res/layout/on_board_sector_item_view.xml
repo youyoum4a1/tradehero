@@ -24,49 +24,55 @@
       tools:src="@drawable/accounts_glyph_name_default"
       />
 
-  <RelativeLayout
+  <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_gravity="center_vertical"
+      android:orientation="vertical"
       >
 
-    <TextView
-        android:id="@android:id/text1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        style="@style/TH.Subhead"
-        tools:text="NYSE"
-        />
-
-    <ImageView
-        android:id="@android:id/icon2"
-        android:layout_width="@dimen/size_3"
-        android:layout_height="@dimen/size_3"
-        android:src="@drawable/tick_green"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        />
-
-    <TextView
-        android:id="@android:id/text2"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@android:id/text1"
-        android:layout_toEndOf="@android:id/text1"
-        android:layout_toLeftOf="@android:id/icon2"
-        android:layout_toStartOf="@android:id/icon2"
-        android:ellipsize="end"
-        android:gravity="end"
-        android:layout_centerVertical="true"
-        android:lines="1"
+        android:layout_gravity="center_vertical"
+        >
+
+      <TextView
+          android:id="@android:id/text1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentStart="true"
+          android:layout_centerVertical="true"
+          style="@style/TH.Subhead"
+          tools:text="NYSE"
+          />
+
+      <ImageView
+          android:id="@android:id/icon2"
+          android:layout_width="@dimen/size_3"
+          android:layout_height="@dimen/size_3"
+          android:src="@drawable/tick_green"
+          android:layout_alignParentRight="true"
+          android:layout_alignParentEnd="true"
+          android:layout_centerVertical="true"
+          />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         style="@style/TH.Caption"
-        tools:text="New York Stock Exchange"
+        android:text="@string/exchange_top_stocks_header"
         />
 
-  </RelativeLayout>
+    <com.tradehero.th.fragments.onboarding.exchange.TopStockListView
+        android:id="@+id/top_stock_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:topStock="@layout/on_board_top_stock_logo"
+        />
+
+  </LinearLayout>
 
 </com.tradehero.th.fragments.onboarding.sector.OnBoardSectorItemView>

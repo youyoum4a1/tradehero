@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.market.SectorCompactDTOList;
+import com.tradehero.th.api.market.SectorDTOList;
 import com.tradehero.th.api.market.SectorListType;
 import com.tradehero.th.network.service.MarketServiceWrapper;
 import dagger.Lazy;
@@ -13,14 +13,14 @@ import javax.inject.Singleton;
 import rx.Observable;
 
 @Singleton @UserCache
-public class SectorCompactListCacheRx extends BaseFetchDTOCacheRx<SectorListType, SectorCompactDTOList>
+public class SectorListCacheRx extends BaseFetchDTOCacheRx<SectorListType, SectorDTOList>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 1; // Be careful to increase when necessary
 
     @NonNull private final Lazy<MarketServiceWrapper> marketServiceWrapper;
 
     //<editor-fold desc="Constructors">
-    @Inject public SectorCompactListCacheRx(
+    @Inject public SectorListCacheRx(
             @NonNull Lazy<MarketServiceWrapper> marketServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
@@ -29,8 +29,8 @@ public class SectorCompactListCacheRx extends BaseFetchDTOCacheRx<SectorListType
     }
     //</editor-fold>
 
-    @Override @NonNull protected Observable<SectorCompactDTOList> fetch(@NonNull SectorListType key)
+    @Override @NonNull protected Observable<SectorDTOList> fetch(@NonNull SectorListType key)
     {
-        return marketServiceWrapper.get().getSectors();
+        return marketServiceWrapper.get().getSectors(key);
     }
 }

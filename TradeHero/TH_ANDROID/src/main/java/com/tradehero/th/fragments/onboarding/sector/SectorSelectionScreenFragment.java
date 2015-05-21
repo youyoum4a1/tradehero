@@ -18,13 +18,13 @@ import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.market.SectorCompactDTO;
-import com.tradehero.th.api.market.SectorCompactDTOList;
+import com.tradehero.th.api.market.SectorDTO;
+import com.tradehero.th.api.market.SectorDTOList;
 import com.tradehero.th.api.market.SectorId;
 import com.tradehero.th.api.market.SectorListType;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
-import com.tradehero.th.persistence.market.SectorCompactListCacheRx;
+import com.tradehero.th.persistence.market.SectorListCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,16 +48,17 @@ public class SectorSelectionScreenFragment extends BaseFragment
     private static final String BUNDLE_KEY_HAD_INITIAL_SELECTED_SECTOR =
             SectorSelectionScreenFragment.class.getName() + ".hadInitialSelectedSector";
     private static final int MAX_SELECTABLE_SECTORS = 3;
+    private static final int DEFAULT_TOP_N_STOCKS = 6;
 
-    @Inject SectorCompactListCacheRx sectorCompactListCache;
+    @Inject SectorListCacheRx sectorListCache;
 
     @InjectView(android.R.id.list) ListView sectorList;
     @InjectView(android.R.id.button1) View nextButton;
     ArrayAdapter<SelectableSectorDTO> sectorAdapter;
-    @NonNull Map<SectorId, SectorCompactDTO> knownSectors;
+    @NonNull Map<SectorId, SectorDTO> knownSectors;
     boolean hadInitialExchangeSelected;
     @NonNull Set<SectorId> selectedSectors;
-    @NonNull BehaviorSubject<SectorCompactDTOList> selectedSectorsSubject;
+    @NonNull BehaviorSubject<SectorDTOList> selectedSectorsSubject;
     @NonNull PublishSubject<Boolean> nextClickedSubject;
 
     public static void putRequisites(@NonNull Bundle args,
@@ -156,10 +157,10 @@ public class SectorSelectionScreenFragment extends BaseFragment
     {
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
-                sectorCompactListCache.getOne(new SectorListType()))
-                .map(new Func1<Pair<SectorListType,SectorCompactDTOList>, List<SelectableSectorDTO>>()
+                sectorListCache.getOne(new SectorListType(DEFAULT_TOP_N_STOCKS)))
+                .map(new Func1<Pair<SectorListType, SectorDTOList>, List<SelectableSectorDTO>>()
                 {
-                    @Override public List<SelectableSectorDTO> call(Pair<SectorListType, SectorCompactDTOList> pair)
+                    @Override public List<SelectableSectorDTO> call(Pair<SectorListType, SectorDTOList> pair)
                     {
                         return createSelectables(pair.second);
                     }
@@ -182,11 +183,11 @@ public class SectorSelectionScreenFragment extends BaseFragment
                         new ToastAndLogOnErrorAction("Failed to load sectors")));
     }
 
-    @NonNull List<SelectableSectorDTO> createSelectables(@NonNull Collection<SectorCompactDTO> sectors)
+    @NonNull List<SelectableSectorDTO> createSelectables(@NonNull Collection<SectorDTO> sectors)
     {
         List<SelectableSectorDTO> onBoardSectors = new ArrayList<>();
         int count = MAX_SELECTABLE_SECTORS;
-        for (SectorCompactDTO sector : sectors)
+        for (SectorDTO sector : sectors)
         {
             knownSectors.put(sector.getSectorId(), sector);
             if (!hadInitialExchangeSelected && count > 0)
@@ -232,7 +233,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
 
     protected void informSelectedSectors()
     {
-        SectorCompactDTOList selectedDTOs = new SectorCompactDTOList();
+        SectorDTOList selectedDTOs = new SectorDTOList();
         for (SectorId selected : selectedSectors)
         {
             selectedDTOs.add(knownSectors.get(selected));
@@ -259,7 +260,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
         nextClickedSubject.onNext(true);
     }
 
-    @NonNull public Observable<SectorCompactDTOList> getSelectedSectorsObservable()
+    @NonNull public Observable<SectorDTOList> getSelectedSectorsObservable()
     {
         return selectedSectorsSubject.asObservable();
     }

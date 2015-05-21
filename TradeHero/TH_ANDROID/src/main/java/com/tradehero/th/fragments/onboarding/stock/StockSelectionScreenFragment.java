@@ -159,7 +159,7 @@ public class StockSelectionScreenFragment extends BaseFragment
                     {
                         return securityCompactListCache.getOne(new ExchangeSectorSecurityListTypeNew(
                                 exchangeSectorListDTO.exchanges.getExchangeIds(),
-                                exchangeSectorListDTO.sectors.getSectorIds(),
+                                exchangeSectorListDTO.getSectorIds(),
                                 null, null))
                                 .map(new PairGetSecond<SecurityListType, SecurityCompactDTOList>());
                     }

@@ -20,7 +20,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeCompactSectorListDTO;
 import com.tradehero.th.api.market.MarketRegion;
-import com.tradehero.th.api.market.SectorCompactDTOList;
+import com.tradehero.th.api.market.SectorDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityIntegerIdListForm;
 import com.tradehero.th.api.social.BatchFollowFormDTO;
@@ -74,12 +74,12 @@ public class OnBoardFragment extends BaseFragment
     private boolean hadAutoSelectedExchange;
     private ExchangeCompactDTOList selectedExchanges;
     private boolean hadAutoSelectedSector;
-    private SectorCompactDTOList selectedSectors;
+    private SectorDTOList selectedSectors;
     private LeaderboardUserDTOList selectedHeroes;
     private SecurityCompactDTOList selectedStocks;
     @NonNull private final Subscription[] fragmentSubscriptions;
     @NonNull private final BehaviorSubject<ExchangeCompactDTOList> selectedExchangesSubject;
-    @NonNull private final BehaviorSubject<SectorCompactDTOList> selectedSectorsSubject;
+    @NonNull private final BehaviorSubject<SectorDTOList> selectedSectorsSubject;
     @NonNull private BehaviorSubject<SecurityCompactDTOList> selectedSecuritiesBehavior;
 
     public OnBoardFragment()
@@ -324,10 +324,10 @@ public class OnBoardFragment extends BaseFragment
         fragment.setArguments(args);
         fragmentSubscriptions[INDEX_SELECTION_SECTORS] = fragment.getSelectedSectorsObservable()
                 .subscribeOn(Schedulers.computation())
-                .startWith(selectedSectors == null ? new SectorCompactDTOList() : selectedSectors)
-                .flatMap(new Func1<SectorCompactDTOList, Observable<Boolean>>()
+                .startWith(selectedSectors == null ? new SectorDTOList() : selectedSectors)
+                .flatMap(new Func1<SectorDTOList, Observable<Boolean>>()
                 {
-                    @Override public Observable<Boolean> call(final SectorCompactDTOList sectorDTOs)
+                    @Override public Observable<Boolean> call(final SectorDTOList sectorDTOs)
                     {
                         selectedSectors = sectorDTOs;
                         if (sectorDTOs.size() > 0)
@@ -447,10 +447,10 @@ public class OnBoardFragment extends BaseFragment
         return Observable.combineLatest(
                 selectedExchangesSubject,
                 selectedSectorsSubject,
-                new Func2<ExchangeCompactDTOList, SectorCompactDTOList, ExchangeCompactSectorListDTO>()
+                new Func2<ExchangeCompactDTOList, SectorDTOList, ExchangeCompactSectorListDTO>()
                 {
                     @Override
-                    public ExchangeCompactSectorListDTO call(ExchangeCompactDTOList exchangeCompactDTOs, SectorCompactDTOList sectorCompactDTOs)
+                    public ExchangeCompactSectorListDTO call(ExchangeCompactDTOList exchangeCompactDTOs, SectorDTOList sectorCompactDTOs)
                     {
                         return new ExchangeCompactSectorListDTO(exchangeCompactDTOs, sectorCompactDTOs);
                     }

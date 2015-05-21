@@ -11,11 +11,12 @@ import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.api.SelectableDTO;
 import com.tradehero.th.R;
-import com.tradehero.th.api.market.SectorCompactDTO;
+import com.tradehero.th.api.market.SectorDTO;
 import com.tradehero.th.fragments.onboarding.OnBoardSelectableViewLinear;
+import com.tradehero.th.fragments.onboarding.exchange.TopStockListView;
 import javax.inject.Inject;
 
-public class OnBoardSectorItemView extends OnBoardSelectableViewLinear<SectorCompactDTO, SelectableDTO<SectorCompactDTO>>
+public class OnBoardSectorItemView extends OnBoardSelectableViewLinear<SectorDTO, SelectableDTO<SectorDTO>>
 {
     @DrawableRes private static final int DEFAULT_SECTOR_LOGO = R.drawable.accounts_glyph_name_default;
 
@@ -23,6 +24,7 @@ public class OnBoardSectorItemView extends OnBoardSelectableViewLinear<SectorCom
 
     @InjectView(android.R.id.icon1) ImageView logoImage;
     @InjectView(android.R.id.text1) TextView shortNameView;
+    @InjectView(R.id.top_stock_list) TopStockListView topStockListView;
 
     //<editor-fold desc="Constructors">
     public OnBoardSectorItemView(Context context)
@@ -50,13 +52,13 @@ public class OnBoardSectorItemView extends OnBoardSelectableViewLinear<SectorCom
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(@NonNull SelectableDTO<SectorCompactDTO> dto)
+    @Override public void display(@NonNull SelectableDTO<SectorDTO> dto)
     {
         super.display(dto);
         display(dto.value);
     }
 
-    protected void display(@Nullable SectorCompactDTO dto)
+    protected void display(@Nullable SectorDTO dto)
     {
         if (logoImage != null)
         {
@@ -81,6 +83,18 @@ public class OnBoardSectorItemView extends OnBoardSelectableViewLinear<SectorCom
             else
             {
                 shortNameView.setText(dto.name);
+            }
+        }
+        if (topStockListView != null)
+        {
+            if (dto != null)
+            {
+                topStockListView.setVisibility(VISIBLE);
+                topStockListView.display(dto.getTopSecurities());
+            }
+            else
+            {
+                topStockListView.setVisibility(GONE);
             }
         }
     }
