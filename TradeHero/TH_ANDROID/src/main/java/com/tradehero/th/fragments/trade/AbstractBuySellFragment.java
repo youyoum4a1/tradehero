@@ -49,7 +49,7 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
     private final static String BUNDLE_KEY_IS_BUY = AbstractBuySellFragment.class.getName() + ".isBuy";
     private final static String BUNDLE_KEY_QUANTITY_BUY = AbstractBuySellFragment.class.getName() + ".quantityBuy";
     private final static String BUNDLE_KEY_QUANTITY_SELL = AbstractBuySellFragment.class.getName() + ".quantitySell";
-    public final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".providerId";
+    private final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".providerId";
     private final static String BUNDLE_KEY_SHOW_CONFIRMATION = AbstractBuySellFragment.class.getName() + ".showConfirmation";
 
     private final static long MILLISECOND_QUOTE_REFRESH = 30000;
@@ -96,6 +96,11 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
     public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
     {
         args.putBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+    }
+
+    public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
+    {
+        args.putBundle(BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
     }
 
     public static void putShowConfirmation(@NonNull Bundle args, boolean showConfirmation)
