@@ -17,7 +17,6 @@ import dagger.Module;
                 ProviderWarrantListRxFragment.class,
                 WarrantCompetitionPagerFragment.class,
                 WatchlistEditFragment.class,
-                SecurityActionListLinear.class,
         },
         library = true,
         complete = false

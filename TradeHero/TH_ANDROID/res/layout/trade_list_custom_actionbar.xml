@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tradehero.th.fragments.trade.StockActionBarRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rlStockHeader"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/margin_xsmall"
+    android:paddingBottom="@dimen/margin_xsmall"
+    tools:background="@color/tradehero_blue">
+
+  <ImageButton
+      android:id="@+id/btn_watched"
+      android:layout_width="@dimen/clickable_element_min_dimen"
+      android:layout_height="@dimen/clickable_element_min_dimen"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
+      android:layout_centerVertical="true"
+      android:background="@drawable/basic_themed_selector"
+      android:src="@drawable/icn_star"
+      android:visibility="invisible"
+      tools:visibility="visible"
+      />
+
+  <ImageButton
+      android:id="@+id/btn_alerted"
+      android:layout_width="@dimen/clickable_element_min_dimen"
+      android:layout_height="@dimen/clickable_element_min_dimen"
+      android:layout_centerVertical="true"
+      android:layout_toLeftOf="@id/btn_watched"
+      android:layout_toStartOf="@id/btn_watched"
+      android:background="@drawable/basic_themed_selector"
+      android:src="@drawable/icn_alert"
+      android:visibility="invisible"
+      android:scaleType="centerInside"
+      tools:visibility="visible"
+      />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginRight="@dimen/margin_xsmall"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
+      android:layout_toLeftOf="@id/btn_alerted"
+      android:layout_toStartOf="@id/btn_alerted"
+      android:layout_centerVertical="true"
+      android:gravity="center_vertical"
+      android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_stock_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Facebook Inc."
+        android:ellipsize="end"
+        style="@style/TH.Title"
+        android:singleLine="true"/>
+
+    <TextView
+        android:id="@+id/tv_stock_sub_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="NASDAQ:FB"
+        style="@style/TH.Caption"
+        android:ellipsize="end"
+        android:singleLine="true"/>
+
+  </LinearLayout>
+
+</com.tradehero.th.fragments.trade.StockActionBarRelativeLayout>

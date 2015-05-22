@@ -21,7 +21,6 @@ import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
-import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
@@ -34,6 +33,7 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
 import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
+import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -44,8 +44,10 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Observer;
@@ -127,21 +129,25 @@ public class BuySellStockFragment extends BuySellFragment
                 .inflate(R.layout.stock_detail_custom_actionbar, null);
         onDestroyOptionsMenuSubscriptions.add(actionBarLayout.getUserActionObservable()
                 .subscribe(
-                        new Action1<StockDetailActionBarRelativeLayout.UserAction>()
+                        new Action1<StockActionBarRelativeLayout.UserAction>()
                         {
-                            @Override public void call(StockDetailActionBarRelativeLayout.UserAction userAction)
+                            @Override public void call(StockActionBarRelativeLayout.UserAction userAction)
                             {
-                                switch (userAction)
+                                if (userAction instanceof StockActionBarRelativeLayout.WatchlistUserAction)
                                 {
-                                    case ALERT:
-                                        handleBtnAddTriggerClicked();
-                                        break;
-                                    case WATCHLIST:
-                                        handleBtnWatchlistClicked();
-                                        break;
-
-                                    default:
-                                        throw new IllegalArgumentException("Unhandled argument UserAction." + userAction);
+                                    handleAddToWatchlistRequested((StockActionBarRelativeLayout.WatchlistUserAction) userAction);
+                                }
+                                else if (userAction instanceof StockActionBarRelativeLayout.UpdateAlertUserAction)
+                                {
+                                    handleUpdateAlertRequested((StockActionBarRelativeLayout.UpdateAlertUserAction) userAction);
+                                }
+                                else if (userAction instanceof StockActionBarRelativeLayout.CreateAlertUserAction)
+                                {
+                                    handleAddAlertRequested((StockActionBarRelativeLayout.CreateAlertUserAction) userAction);
+                                }
+                                else
+                                {
+                                    throw new IllegalArgumentException("Unhandled argument UserAction." + userAction);
                                 }
                             }
                         },
@@ -367,11 +373,6 @@ public class BuySellStockFragment extends BuySellFragment
         }
     }
 
-    public boolean isBuySellReady()
-    {
-        return quoteDTO != null && positionDTOList != null && applicableOwnedPortfolioIds != null;
-    }
-
     @Override protected boolean getSupportSell()
     {
         boolean supportSell;
@@ -389,41 +390,36 @@ public class BuySellStockFragment extends BuySellFragment
         return supportSell;
     }
 
-    protected void handleBtnAddTriggerClicked()
+    protected void handleAddToWatchlistRequested(@NonNull StockActionBarRelativeLayout.WatchlistUserAction userAction)
     {
-        if (mappedAlerts != null)
+        Bundle args = new Bundle();
+        WatchlistEditFragment.putSecurityId(args, userAction.securityId);
+        if (userAction.add)
         {
-            AlertCompactDTO alertDTO = mappedAlerts.get(securityId);
-            BaseAlertEditDialogFragment dialog;
-            if (alertDTO != null)
-            {
-                AlertId alertId = alertDTO.getAlertId(currentUserId.toUserBaseKey());
-                dialog = AlertEditDialogFragment.newInstance(alertId);
-            }
-            else
-            {
-                dialog = AlertCreateDialogFragment.newInstance(securityId);
-            }
-            dialog.show(getFragmentManager(), BaseAlertEditDialogFragment.class.getName());
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
+            ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_add_title));
         }
         else
         {
-            THToast.show(R.string.error_incomplete_info_message);
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
+            ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
+        }
+        if (navigator != null)
+        {
+            navigator.get().pushFragment(WatchlistEditFragment.class, args);
         }
     }
 
-    protected void handleBtnWatchlistClicked()
+    protected void handleUpdateAlertRequested(@NonNull StockActionBarRelativeLayout.UpdateAlertUserAction userAction)
     {
-        if (securityId != null)
-        {
-            Bundle args = new Bundle();
-            WatchlistEditFragment.putSecurityId(args, securityId);
-            navigator.get().pushFragment(WatchlistEditFragment.class, args);
-        }
-        else
-        {
-            THToast.show(R.string.watchlist_not_enough_info);
-        }
+        AlertEditDialogFragment.newInstance(userAction.alertCompactDTO.getAlertId(currentUserId.toUserBaseKey()))
+                .show(getFragmentManager(), AlertEditDialogFragment.class.getName());
+    }
+
+    protected void handleAddAlertRequested(@NonNull StockActionBarRelativeLayout.CreateAlertUserAction userAction)
+    {
+        AlertCreateDialogFragment.newInstance(userAction.securityId)
+                .show(getFragmentManager(), BaseAlertEditDialogFragment.class.getName());
     }
 
     @Override protected void handleBuySellButtonsClicked(View view)

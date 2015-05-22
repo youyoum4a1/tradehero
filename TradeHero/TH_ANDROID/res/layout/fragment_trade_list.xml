@@ -14,7 +14,9 @@
         android:clipToPadding="false"
         android:divider="@color/tradehero_divider_grey"
         android:dividerHeight="1dp"
-        android:paddingBottom="@dimen/clickable_element_min_dimen"
+        android:paddingBottom="@dimen/size_12"
       />
+
+    <include layout="@layout/buy_sell_buttons"/>
 
 </RelativeLayout>
