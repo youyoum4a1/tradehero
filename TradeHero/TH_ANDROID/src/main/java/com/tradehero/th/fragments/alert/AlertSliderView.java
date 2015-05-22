@@ -13,7 +13,6 @@ import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
-import com.special.residemenu.ResideMenu;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -30,8 +29,6 @@ public class AlertSliderView extends RelativeLayout
     @SuppressWarnings("FieldCanBeLocal") private final int SWITCHER_INDEX_DISABLED = 0;
     @SuppressWarnings("FieldCanBeLocal") private final int SWITCHER_INDEX_ENABLED = 1;
     private final int SLIDER_INITIAL_VALUE = 50;
-
-    @Inject ResideMenu resideMenu;
 
     @InjectView(R.id.alert_slider_toggle) Switch alertToggle;
     @InjectView(R.id.value_switcher) ViewSwitcher valueSwitcher;

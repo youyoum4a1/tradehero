@@ -15,7 +15,7 @@ abstract public class DashboardFragment extends BaseFragment
             case android.R.id.home:
                 if (!actionBarOwnerMixin.shouldShowHomeAsUp())
                 {
-                    fragmentElements.get().openMenu();
+                    fragmentElements.get().onOptionItemsSelected(item);
                     return true;
                 }
                 break;

@@ -88,7 +88,7 @@ public class BaseWebViewFragment extends BaseFragment
         }
         else
         {
-            //To fix animation on Pre Chromium WebViews such as one on ResideMenu opening animation
+            //To fix animation on Pre Chromium WebViews.
             webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 

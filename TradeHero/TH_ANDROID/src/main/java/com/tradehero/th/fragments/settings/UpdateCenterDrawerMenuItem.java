@@ -21,7 +21,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.internal.util.SubscriptionList;
 
-public class SettingsResideMenuItemUpdateCenter extends LinearLayout
+public class UpdateCenterDrawerMenuItem extends LinearLayout
 {
     @InjectView(R.id.unread_Count) TextView tvUnreadCount;
 
@@ -32,19 +32,19 @@ public class SettingsResideMenuItemUpdateCenter extends LinearLayout
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
-    public SettingsResideMenuItemUpdateCenter(Context context)
+    public UpdateCenterDrawerMenuItem(Context context)
     {
         super(context);
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public SettingsResideMenuItemUpdateCenter(Context context, AttributeSet attrs)
+    public UpdateCenterDrawerMenuItem(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public SettingsResideMenuItemUpdateCenter(Context context, AttributeSet attrs, int defStyle)
+    public UpdateCenterDrawerMenuItem(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
@@ -75,7 +75,7 @@ public class SettingsResideMenuItemUpdateCenter extends LinearLayout
                                 linkWith(userBaseKeyUserProfileDTOPair.second);
                             }
                         },
-                        new TimberOnErrorAction("Failed to get userProfile in ResideMenu")));
+                        new TimberOnErrorAction("Failed to get userProfile in LeftMenu")));
     }
 
     @Override protected void onDetachedFromWindow()

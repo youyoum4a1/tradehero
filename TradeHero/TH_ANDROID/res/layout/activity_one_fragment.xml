@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/tradehero_dashboard_bg_color"
     android:animateLayoutChanges="true"
+    android:fitsSystemWindows="true"
     >
 
   <android.support.v7.widget.Toolbar

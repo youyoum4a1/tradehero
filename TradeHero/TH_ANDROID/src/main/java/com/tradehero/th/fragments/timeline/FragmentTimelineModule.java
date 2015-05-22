@@ -10,7 +10,6 @@ import dagger.Module;
                 TimelineItemViewLinear.class,
                 UserProfileCompactViewHolder.class,
                 UserProfileDetailViewHolder.class,
-                UserProfileResideMenuItem.class,
         },
         library = true,
         complete = false

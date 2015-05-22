@@ -1,9 +1,10 @@
 package com.tradehero.th.fragments.base;
 
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.MenuItem;
 import android.widget.AbsListView;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
-import com.special.residemenu.ResideMenu;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
@@ -13,27 +14,22 @@ import javax.inject.Inject;
 
 public class DashboardFragmentOuterElements implements FragmentOuterElements
 {
-    @NonNull public final ResideMenu resideMenu;
+    @NonNull private final ActionBarDrawerToggle mDrawerToggle;
     @NonNull public final AbsListView.OnScrollListener dashboardBottomTabsListViewScrollListener;
     @NonNull public final NotifyingScrollView.OnScrollChangedListener
             dashboardBottomTabScrollViewScrollListener;
     @NonNull public final DashboardTabHost dashboardTabHost;
 
     @Inject public DashboardFragmentOuterElements(
-            @NonNull ResideMenu resideMenu,
+            @NonNull ActionBarDrawerToggle mDrawerToggle,
             @NonNull @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsListViewScrollListener,
             @NonNull @BottomTabsQuickReturnScrollViewListener NotifyingScrollView.OnScrollChangedListener dashboardBottomTabScrollViewScrollListener,
             @NonNull @BottomTabs DashboardTabHost dashboardTabHost)
     {
-        this.resideMenu = resideMenu;
+        this.mDrawerToggle = mDrawerToggle;
         this.dashboardBottomTabsListViewScrollListener = dashboardBottomTabsListViewScrollListener;
         this.dashboardBottomTabScrollViewScrollListener = dashboardBottomTabScrollViewScrollListener;
         this.dashboardTabHost = dashboardTabHost;
-    }
-
-    @Override public void openMenu()
-    {
-        resideMenu.openMenu();
     }
 
     @NonNull @Override public AbsListView.OnScrollListener getListViewScrollListener()
@@ -49,5 +45,10 @@ public class DashboardFragmentOuterElements implements FragmentOuterElements
     @NonNull @Override public MovableBottom getMovableBottom()
     {
         return dashboardTabHost;
+    }
+
+    @Override public boolean onOptionItemsSelected(MenuItem item)
+    {
+        return mDrawerToggle.onOptionsItemSelected(item);
     }
 }
