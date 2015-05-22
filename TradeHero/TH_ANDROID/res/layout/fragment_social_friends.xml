@@ -48,8 +48,9 @@
           >
         <TextView android:layout_weight="1" android:layout_height="wrap_content" android:layout_width="0dp"/>
         <TextView
-            android:id="@+id/social_follow_all" android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:id="@+id/social_follow_all"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
             android:text="@string/follow_all"
             android:layout_weight="4"
             android:paddingTop="5dp"
@@ -60,7 +61,8 @@
 
         <TextView
             android:id="@+id/social_invite_all"
-            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
             android:text="@string/invite"
             android:layout_weight="4"
             android:paddingTop="5dp"

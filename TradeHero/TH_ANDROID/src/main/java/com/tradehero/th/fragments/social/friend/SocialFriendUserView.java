@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -9,9 +10,12 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsWeiboDTO;
@@ -22,15 +26,12 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 
-public class SocialFriendUserView extends SocialFriendItemView
+public class SocialFriendUserView extends SocialFriendItemView implements View.OnClickListener
 {
     @InjectView(R.id.social_item_logo) ImageView friendLogo;
     @InjectView(R.id.social_item_title) TextView friendTitle;
     @InjectView(R.id.social_item_action_btn) TextView actionBtn;
-    @InjectView(R.id.social_friend_item_ll) LinearLayout socialFriendItem;
     @InjectView(R.id.social_item_action_cb) ImageView actionCb;
-    @Inject Picasso picasso;
-    @Inject @ForUserPhoto Transformation peopleIconTransformation;
 
     private SocialFriendListItemUserDTO socialFriendListItemUserDTO;
     @Nullable private OnElementClickListener onElementClickListener;
@@ -59,15 +60,16 @@ public class SocialFriendUserView extends SocialFriendItemView
     {
         super.onAttachedToWindow();
         ButterKnife.inject(this);
+        setOnClickListener(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         ButterKnife.reset(this);
+        setOnClickListener(null);
         super.onDetachedFromWindow();
     }
 
-    @OnClick(R.id.social_item_action_btn)
     public void onActionButtonClick()
     {
         if (onElementClickListener != null)
@@ -83,7 +85,7 @@ public class SocialFriendUserView extends SocialFriendItemView
         }
     }
 
-    @OnClick(R.id.social_item_action_cb)
+
     public void onActionCheckBoxClick()
     {
         if (onElementClickListener != null)
@@ -92,15 +94,6 @@ public class SocialFriendUserView extends SocialFriendItemView
             actionCb.setBackgroundResource(socialFriendListItemUserDTO.isSelected ?
                     R.drawable.register_duihao : R.drawable.register_duihao_cancel);
             onElementClickListener.onCheckBoxClick(socialFriendListItemUserDTO.userFriendsDTO);
-        }
-    }
-
-    @OnClick(R.id.social_friend_item_ll)
-    public void onActionItemViewClick()
-    {
-        if (isNeedCheckBoxShow())
-        {
-            actionCb.performClick();
         }
     }
 
@@ -118,38 +111,16 @@ public class SocialFriendUserView extends SocialFriendItemView
             displayUserIcon();
             displayTitle();
             displayActionButton();
-            setItemViewClickable();
         }
-    }
-
-    private void setItemViewClickable()
-    {
-        socialFriendItem.setClickable(isNeedCheckBoxShow());
     }
 
     private void displayUserIcon()
     {
-        picasso.load(socialFriendListItemUserDTO.userFriendsDTO.getProfilePictureURL())
-                .placeholder(R.drawable.avatar_default)
-                .error(R.drawable.avatar_default)
-                .into(friendLogo, new Callback()
-                {
-                    @Override public void onSuccess()
-                    {
-                    }
-
-                    @Override public void onError()
-                    {
-                        displayDefaultUserIcon();
-                    }
-                });
+        ImageLoader.getInstance().displayImage(socialFriendListItemUserDTO.userFriendsDTO.getProfilePictureURL(),
+                friendLogo,
+                UniversalImageLoader.getAvatarImageLoaderOptions(false));
     }
 
-    private void displayDefaultUserIcon()
-    {
-        picasso.load(R.drawable.avatar_default)
-                .into(friendLogo);
-    }
 
     private void displayTitle()
     {
@@ -158,25 +129,24 @@ public class SocialFriendUserView extends SocialFriendItemView
 
     private void displayActionButton()
     {
-        int pL = actionBtn.getPaddingLeft();
-        int pR = actionBtn.getPaddingRight();
-        int pT = actionBtn.getPaddingTop();
-        int pB = actionBtn.getPaddingBottom();
-
         if (socialFriendListItemUserDTO.userFriendsDTO.isTradeHeroUser())
         {
             actionBtn.setText(R.string.follow);
             actionBtn.setBackgroundResource(R.drawable.basic_green_selector_round_corner);
             actionBtn.setEnabled(true);
+            actionBtn.setOnClickListener(new OnClickListener(
+
+            ) {
+                @Override
+                public void onClick(View v) {
+                    onActionButtonClick();
+                }
+            });
         }
         else
         {
-            actionBtn.setText(R.string.invite);
-            actionBtn.setBackgroundResource(R.drawable.yellow_rounded_button_selector);
-            actionBtn.setEnabled(!socialFriendListItemUserDTO.userFriendsDTO.alreadyInvited);
             setWeiboCheckBox();
         }
-        actionBtn.setPadding(pL, pT, pR, pB);
     }
 
     private boolean isNeedCheckBoxShow()
@@ -203,7 +173,15 @@ public class SocialFriendUserView extends SocialFriendItemView
         }
     }
 
-    public static interface OnElementClickListener
+    @Override
+    public void onClick(View v) {
+        if (isNeedCheckBoxShow())
+        {
+            onActionCheckBoxClick();
+        }
+    }
+
+    public interface OnElementClickListener
     {
         void onFollowButtonClick(@NotNull UserFriendsDTO userFriendsDTO);
         void onInviteButtonClick(@NotNull UserFriendsDTO userFriendsDTO);

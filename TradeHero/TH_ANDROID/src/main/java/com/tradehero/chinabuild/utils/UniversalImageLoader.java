@@ -67,4 +67,15 @@ public class UniversalImageLoader {
                 .build();
         return options;
     }
+
+    public static DisplayImageOptions getAvatarImageLoaderOptions(boolean enableDiskCache){
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .showImageOnLoading(R.drawable.avatar_default)
+                .showImageForEmptyUri(R.drawable.avatar_default)
+                .showImageOnFail(R.drawable.avatar_default)
+                .cacheInMemory(true)
+                .cacheOnDisc(enableDiskCache)
+                .build();
+        return options;
+    }
 }
