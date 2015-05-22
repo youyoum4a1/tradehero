@@ -147,6 +147,9 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             protected Integer doInBackground(Void... params) {
+                if (firstLaunchPreference.get()) {
+                    return STATUS_FIRST_LAUNCH;
+                }
                 CredentialsDTO credentialsDTO = mainCredentialsPreference.getCredentials();
                 if (credentialsDTO != null) {
                     try {
