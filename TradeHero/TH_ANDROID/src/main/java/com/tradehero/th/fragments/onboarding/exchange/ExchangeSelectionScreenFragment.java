@@ -143,9 +143,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        exchangeAdapter = new DTOAdapterNew<>(
-                activity,
-                R.layout.on_board_exchange_item_view);
+        exchangeAdapter = new DTOAdapterNew<>(activity, R.layout.on_board_exchange_item_view);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -210,22 +208,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
                                 return exchangesPair.second;
                             }
                         }))
-                .retryWhen(new Func1<Observable<? extends Throwable>, Observable<?>>()
-                {
-                    @Override public Observable<?> call(Observable<? extends Throwable> observable)
-                    {
-                        return observable
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .flatMap(new Func1<Throwable, Observable<?>>()
-                                {
-                                    @Override public Observable<?> call(Throwable throwable)
-                                    {
-                                        mapHeaderSwitcherView.displayRetry(true);
-                                        return mapHeaderSwitcherView.getRetryClickedObservable();
-                                    }
-                                });
-                    }
-                })
+                .retryWhen(mapHeaderSwitcherView.isRetryClickedAfterFailed())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<ExchangeCompactDTOList, Observable<MarketRegion>>()
                 {
