@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.InjectView;
@@ -36,7 +35,6 @@ import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
 import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
-import com.tradehero.th.fragments.security.SecurityCircleProgressBar;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -44,9 +42,8 @@ import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.GraphicUtil;
-import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import java.util.Map;
@@ -62,9 +59,6 @@ import timber.log.Timber;
 })
 public class BuySellStockFragment extends BuySellFragment
 {
-    private static final float WATCHED_ALPHA_UNWATCHED = 0.5f;
-    private static final float WATCHED_ALPHA_WATCHED = 1f;
-
     @InjectView(R.id.buy_price) protected TextView mBuyPrice;
     @InjectView(R.id.sell_price) protected TextView mSellPrice;
     @InjectView(R.id.vprice_as_of) protected TextView mVPriceAsOf;
@@ -89,12 +83,7 @@ public class BuySellStockFragment extends BuySellFragment
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
     @Nullable private Map<SecurityId, AlertCompactDTO> mappedAlerts;
 
-    protected TextView mTvStockTitle;
-    protected TextView mTvStockSubTitle;
-    protected SecurityCircleProgressBar circleProgressBar;
-    protected ImageView btnWatched;
-    protected View btnAlerted;
-    protected View marketCloseIcon;
+    protected StockDetailActionBarRelativeLayout actionBarLayout;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -134,50 +123,36 @@ public class BuySellStockFragment extends BuySellFragment
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
 
-        if (mTvStockTitle == null)
-        {
-            LayoutInflater inflator = LayoutInflater.from(actionBar.getThemedContext());
-            View v = inflator.inflate(R.layout.stock_detail_custom_actionbar, null);
-            mTvStockTitle = (TextView) v.findViewById(R.id.tv_stock_title);
-            mTvStockSubTitle = (TextView) v.findViewById(R.id.tv_stock_sub_title);
-            circleProgressBar = (SecurityCircleProgressBar) v.findViewById(R.id.circle_progressbar);
-            marketCloseIcon = v.findViewById(R.id.action_bar_market_closed_icon);
+        actionBarLayout = (StockDetailActionBarRelativeLayout) LayoutInflater.from(actionBar.getThemedContext())
+                .inflate(R.layout.stock_detail_custom_actionbar, null);
+        onDestroyOptionsMenuSubscriptions.add(actionBarLayout.getUserActionObservable()
+                .subscribe(
+                        new Action1<StockDetailActionBarRelativeLayout.UserAction>()
+                        {
+                            @Override public void call(StockDetailActionBarRelativeLayout.UserAction userAction)
+                            {
+                                switch (userAction)
+                                {
+                                    case ALERT:
+                                        handleBtnAddTriggerClicked();
+                                        break;
+                                    case WATCHLIST:
+                                        handleBtnWatchlistClicked();
+                                        break;
 
-            btnWatched = (ImageView) v.findViewById(R.id.btn_watched);
-            btnAlerted = v.findViewById(R.id.btn_alerted);
-
-            btnAlerted.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    handleBtnAddTriggerClicked();
-                }
-            });
-
-            btnWatched.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    handleBtnWatchlistClicked();
-                }
-            });
-
-            actionBar.setCustomView(v);
-
-            if (securityCompactDTO != null)
-            {
-                displayActionBar(securityCompactDTO);
-            }
-        }
+                                    default:
+                                        throw new IllegalArgumentException("Unhandled argument UserAction." + userAction);
+                                }
+                            }
+                        },
+                        new ToastAndLogOnErrorAction("Failed to handle action bar")));
+        actionBar.setCustomView(actionBarLayout);
+        displayActionBar();
     }
 
     @Override public void onDestroyOptionsMenu()
     {
-        btnAlerted = null;
-        btnWatched = null;
-        circleProgressBar = null;
-        mTvStockSubTitle = null;
-        mTvStockTitle = null;
+        actionBarLayout = null;
         super.onDestroyOptionsMenu();
     }
 
@@ -204,13 +179,13 @@ public class BuySellStockFragment extends BuySellFragment
                     @Override public void onError(Throwable e)
                     {
                         Timber.e(e, "There was an error getting the alert ids");
-                        displayTriggerButton();
+                        displayActionBar();
                     }
 
                     @Override public void onNext(Map<SecurityId, AlertCompactDTO> securityIdAlertIdMap)
                     {
                         mappedAlerts = securityIdAlertIdMap;
-                        displayTriggerButton();
+                        displayActionBar();
                     }
                 });
     }
@@ -276,7 +251,7 @@ public class BuySellStockFragment extends BuySellFragment
     protected void linkWith(WatchlistPositionDTOList watchedList)
     {
         this.watchedList = watchedList;
-        displayWatchlistButton();
+        displayActionBar();
     }
 
     @Override public void linkWith(@NonNull SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -289,41 +264,18 @@ public class BuySellStockFragment extends BuySellFragment
             displayAsOf();
         }
 
-        displayActionBar(securityCompactDTO);
+        displayActionBar();
     }
 
-    protected void displayActionBar(@NonNull SecurityCompactDTO securityCompactDTO)
+    protected void displayActionBar()
     {
-        if (!StringUtils.isNullOrEmpty(securityCompactDTO.name))
+        if (actionBarLayout != null)
         {
-            if (mTvStockTitle != null)
-            {
-                mTvStockTitle.setText(securityCompactDTO.name);
-            }
-            if (mTvStockSubTitle != null)
-            {
-                mTvStockSubTitle.setText(securityCompactDTO.getExchangeSymbol());
-            }
-        }
-        else
-        {
-            if (mTvStockTitle != null)
-            {
-                mTvStockTitle.setText(securityCompactDTO.getExchangeSymbol());
-            }
-            if (mTvStockSubTitle != null)
-            {
-                mTvStockSubTitle.setText(null);
-            }
-        }
-
-        circleProgressBar.display(securityCompactDTO);
-        if (marketCloseIcon != null)
-        {
-            boolean marketIsOpen = securityCompactDTO == null
-                    || securityCompactDTO.marketOpen == null
-                    || securityCompactDTO.marketOpen;
-            marketCloseIcon.setVisibility(marketIsOpen ? View.GONE : View.VISIBLE);
+            actionBarLayout.display(new StockDetailActionBarRelativeLayout.Requisite(
+                    securityId,
+                    securityCompactDTO,
+                    watchedList,
+                    mappedAlerts));
         }
     }
 
@@ -331,7 +283,7 @@ public class BuySellStockFragment extends BuySellFragment
     {
         super.linkWith(quoteDTO);
         onStopSubscriptions.add(
-                circleProgressBar.start(getMillisecondQuoteRefresh())
+                actionBarLayout.circleProgressBar.start(getMillisecondQuoteRefresh())
                         .subscribe(
                                 new Action1<Boolean>()
                                 {
@@ -418,55 +370,6 @@ public class BuySellStockFragment extends BuySellFragment
     public boolean isBuySellReady()
     {
         return quoteDTO != null && positionDTOList != null && applicableOwnedPortfolioIds != null;
-    }
-
-    public void displayTriggerButton()
-    {
-        if (btnAlerted != null)
-        {
-            btnAlerted.setVisibility(mappedAlerts != null ? View.VISIBLE : View.GONE);
-            if (mappedAlerts != null)
-            {
-                float alpha;
-                AlertCompactDTO compactDTO = mappedAlerts.get(securityId);
-                if ((compactDTO != null) && compactDTO.active)
-                {
-                    alpha = 1.0f;
-                }
-                else
-                {
-                    alpha = 0.5f;
-                }
-
-                btnAlerted.setAlpha(alpha);
-            }
-        }
-    }
-
-    public void displayWatchlistButton()
-    {
-        if (btnWatched != null)
-        {
-            if (securityId == null || watchedList == null)
-            {
-                // TODO show disabled
-                btnWatched.setVisibility(View.INVISIBLE);
-            }
-            else
-            {
-                btnWatched.setVisibility(View.VISIBLE);
-                boolean watched = watchedList.contains(securityId);
-                btnWatched.setAlpha(watched ?
-                        WATCHED_ALPHA_WATCHED :
-                        WATCHED_ALPHA_UNWATCHED);
-                GraphicUtil.applyColorFilter(
-                        btnWatched,
-                        getResources().getColor(
-                                watched
-                                        ? R.color.watchlist_button_color
-                                        : R.color.white));
-            }
-        }
     }
 
     @Override protected boolean getSupportSell()
