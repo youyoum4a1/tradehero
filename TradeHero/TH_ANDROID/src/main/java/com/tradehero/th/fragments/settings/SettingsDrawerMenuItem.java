@@ -11,26 +11,26 @@ import com.tradehero.th.R;
 import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 
-public class SettingsResideMenuItem extends LinearLayout
+public class SettingsDrawerMenuItem extends LinearLayout
 {
     @Inject UnreadSettingPreferenceHolder unreadSettingPreferenceHolder;
     @InjectView(R.id.unread_icon) View unreadIcon;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
-    public SettingsResideMenuItem(Context context)
+    public SettingsDrawerMenuItem(Context context)
     {
         super(context);
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public SettingsResideMenuItem(Context context, AttributeSet attrs)
+    public SettingsDrawerMenuItem(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public SettingsResideMenuItem(Context context, AttributeSet attrs, int defStyle)
+    public SettingsDrawerMenuItem(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }

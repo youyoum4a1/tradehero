@@ -18,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.special.residemenu.ResideMenu;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
@@ -59,8 +58,7 @@ import timber.log.Timber;
 
 @Routable("messages")
 public class MessagesCenterNewFragment extends BaseFragment
-        implements
-        ResideMenu.OnMenuListener, MessageListViewAdapter.OnMessageItemClicked
+        implements MessageListViewAdapter.OnMessageItemClicked
 {
 
     @Inject Lazy<MessageHeaderListCacheRx> messageListCache;
@@ -340,16 +338,6 @@ public class MessagesCenterNewFragment extends BaseFragment
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(createMessageHeaderIdListCacheObserver()));
         }
-    }
-
-    @Override public void openMenu()
-    {
-
-    }
-
-    @Override public void closeMenu()
-    {
-
     }
 
     private void onRefreshCompleted()

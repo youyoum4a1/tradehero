@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabWidget;
-import com.special.residemenu.ResideMenu;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -52,8 +51,7 @@ import rx.android.schedulers.AndroidSchedulers;
 })
 @Routable("updatecenter/:pageIndex")
 public class UpdateCenterFragment extends BaseFragment
-        implements OnTitleNumberChangeListener,
-        ResideMenu.OnMenuListener
+        implements OnTitleNumberChangeListener
 {
     static final int FRAGMENT_LAYOUT_ID = 10000;
     public static final String REQUEST_UPDATE_UNREAD_COUNTER = ".updateUnreadCounter";
@@ -305,23 +303,5 @@ public class UpdateCenterFragment extends BaseFragment
                 fetchUserProfile(true);
             }
         };
-    }
-
-    @Override public void openMenu()
-    {
-        Fragment currentFragment = getCurrentFragment();
-        if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
-        {
-            ((ResideMenu.OnMenuListener) currentFragment).openMenu();
-        }
-    }
-
-    @Override public void closeMenu()
-    {
-        Fragment currentFragment = getCurrentFragment();
-        if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
-        {
-            ((ResideMenu.OnMenuListener) currentFragment).closeMenu();
-        }
     }
 }

@@ -1,20 +1,20 @@
 package com.tradehero.th.ui;
 
+import android.support.v4.widget.DrawerLayout;
 import android.view.View;
-import com.special.residemenu.ResideMenu;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-public class ResideMenuItemClickListener implements View.OnClickListener
+public class LeftDrawerMenuItemClickListener implements View.OnClickListener
 {
-    private final ResideMenu resideMenu;
+    private final DrawerLayout drawerLayout;
     private final Lazy<DashboardNavigator> navigator;
 
-    @Inject ResideMenuItemClickListener(ResideMenu resideMenu, Lazy<DashboardNavigator> navigator)
+    @Inject LeftDrawerMenuItemClickListener(DrawerLayout drawerLayout, Lazy<DashboardNavigator> navigator)
     {
-        this.resideMenu = resideMenu;
+        this.drawerLayout = drawerLayout;
         this.navigator = navigator;
     }
 
@@ -27,7 +27,7 @@ public class ResideMenuItemClickListener implements View.OnClickListener
             if (tabType.fragmentClass != null)
             {
                 navigator.get().goToTab(tabType);
-                resideMenu.closeMenu();
+                drawerLayout.closeDrawers();
             }
             else if (tabType.activityClass != null)
             {

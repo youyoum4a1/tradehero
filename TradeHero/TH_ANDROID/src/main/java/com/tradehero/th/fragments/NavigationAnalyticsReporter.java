@@ -29,7 +29,7 @@ public class NavigationAnalyticsReporter implements DashboardNavigator.Dashboard
         }
         else
         {
-            for (RootFragmentType rootFragmentType: RootFragmentType.forResideMenu())
+            for (RootFragmentType rootFragmentType: RootFragmentType.forLeftDrawer())
             {
                 if (rootFragmentType.fragmentClass == fragmentClass)
                 {

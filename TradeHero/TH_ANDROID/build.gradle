@@ -354,12 +354,7 @@ dependencies {
   baiduCompile fileTree(dir: 'libs/baidu', include: ['*.jar'])
   releaseCompile fileTree(dir: 'libs/analytics', include: ['*.jar'])
 
-  compile 'com.special.residemenu:library:1.0.TH-SNAPSHOT@aar'
-
   compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
-
-  // For residemenu
-  compile 'com.nineoldandroids:library:2.4.0'
 
   // for qq
   releaseCompile fileTree(dir: 'libs/qq', include: ['*.jar'])

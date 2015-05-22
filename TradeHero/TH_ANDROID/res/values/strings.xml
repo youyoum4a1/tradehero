@@ -272,8 +272,8 @@
   <string name="ask_for_invite_summary2">10,000 TH$</string>
   <string name="ask_for_invite">Invite Friends Now !</string>
 
-  <!-- Residemenu -->
-  <string name="residemenu_footer_title">Content Partners:</string>
+  <!-- LeftDrawer -->
+  <string name="left_drawer_footer_title">Content Partners:</string>
 
   <string name="best_roi">ROI:</string>
   <string name="content_sharing_started">Sharing&#8230;</string>

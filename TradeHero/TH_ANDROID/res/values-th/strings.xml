@@ -154,8 +154,8 @@
   <string name="ask_for_invite_summary2">10,000 TH$</string>
   <string name="ask_for_invite">ชวนเพื่อนเลย !</string>
 
-  <!-- Residemenu -->
-  <string name="residemenu_footer_title">หุ้นส่วนด้านเนื้อหา:</string>
+  <!-- LeftDrawermenu -->
+  <string name="left_drawer_footer_title">หุ้นส่วนด้านเนื้อหา:</string>
 
   <string name="best_roi">ผลตอบแทนจากเงินลงทุน (ROI):</string>
   <string name="content_sharing_started">กำลังแชร์…</string>
