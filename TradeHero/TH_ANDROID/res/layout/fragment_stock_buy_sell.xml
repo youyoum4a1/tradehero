@@ -18,6 +18,7 @@
       android:visibility="gone"
       android:progressDrawable="@drawable/progress_thin_square"
       />
+
   <RelativeLayout
       android:id="@+id/chart_frame"
       android:layout_width="match_parent"
@@ -30,6 +31,7 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:background="?attr/colorPrimary">
+
       <ImageView
           android:id="@+id/stock_logo"
           android:layout_width="@dimen/medium_image_w_h"
@@ -44,6 +46,7 @@
           android:layout_marginStart="@dimen/margin_medium"
           tools:src="@drawable/square_ca"
           />
+
       <com.tradehero.th.fragments.trade.view.PortfolioSelectorView
           android:id="@+id/portfolio_selector_container"
           android:layout_width="wrap_content"

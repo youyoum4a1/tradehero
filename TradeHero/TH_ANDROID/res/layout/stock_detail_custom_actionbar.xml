@@ -58,8 +58,10 @@
       android:layout_toLeftOf="@id/btn_watched"
       android:layout_toStartOf="@id/btn_watched"
       android:background="@drawable/basic_themed_selector"
-      android:src="@drawable/icn_alert"/>
-
+      android:src="@drawable/icn_alert"
+      android:visibility="invisible"
+      tools:visibility="visible"
+      />
 
   <LinearLayout
       android:layout_width="match_parent"
