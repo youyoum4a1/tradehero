@@ -62,6 +62,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public Integer commentCount;
     public String currencyDisplay;
     public String currencyISO;
+    @Nullable public String criteria;
 
     @Nullable public GetPositionsDTOKey getGetPositionsDTOKey()
     {
