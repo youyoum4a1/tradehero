@@ -12,6 +12,7 @@
   <color name="tradehero_blue">#1376FB</color>
   <color name="tradehero_blue_pressed">#58b0dd</color>
   <color name="tradehero_blue_focused">#8cdddd</color>
+  <color name="tradehero_blue_status_bar">@color/tradehero_blue</color>
   <color name="tradehero_dark_blue">#03237D</color>
 
   <color name="tradehero_tab_bg_color">@color/tradehero_dark_blue</color>

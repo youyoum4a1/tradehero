@@ -8,12 +8,17 @@
     android:orientation="vertical"
     android:clickable="true"
     android:descendantFocusability="afterDescendants"
+    android:fitsSystemWindows="true"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     >
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:background="@drawable/login_bg_1"
+        android:fitsSystemWindows="true"
+        android:layout_marginTop="-32dp"
         />
     <LinearLayout
         android:id="@+id/drawer_content_container"
