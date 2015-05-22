@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.billing;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -40,7 +41,6 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.Constants;
@@ -79,6 +79,16 @@ public class StoreScreenFragment extends BaseFragment
     private StoreItemAdapter storeItemAdapter;
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
     @Nullable protected Subscription purchaseSubscription;
+
+    public static void registerAliases(@NonNull THRouter router)
+    {
+        router.registerAlias("cash", "store/" + ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR.ordinal());
+        router.registerAlias("store/cash", "store/" + ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR.ordinal());
+        router.registerAlias("credits", "store/" + ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS.ordinal());
+        router.registerAlias("store/credits", "store/" + ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS.ordinal());
+        router.registerAlias("store/reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
+        router.registerAlias("reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
+    }
 
     @Override public void onAttach(Activity activity)
     {

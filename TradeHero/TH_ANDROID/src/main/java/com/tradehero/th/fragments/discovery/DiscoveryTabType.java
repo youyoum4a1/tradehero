@@ -10,7 +10,7 @@ enum DiscoveryTabType
 {
     NEWS(R.string.discovery_news, NewsPagerFragment.class),
     DISCUSSION(R.string.discovery_discussions, DiscoveryDiscussionFragment.class),
-    LEARNING(R.string.discovery_learning, VideoCategoriesFragment.class);
+    ACADEMY(R.string.discovery_learning, VideoCategoriesFragment.class);
 
     @StringRes public final int titleStringResId;
     @NonNull public final Class<? extends Fragment> fragmentClass;

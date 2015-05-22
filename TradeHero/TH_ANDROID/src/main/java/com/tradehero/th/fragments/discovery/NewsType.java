@@ -9,7 +9,6 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 
 enum NewsType
 {
-
     SeekingAlpha(R.string.seeking_alpha, R.layout.news_carousel_seekingalpha, R.color.news_seeking_alpha, AnalyticsConstants.NewsSeekingAlpha),
     MotleyFool(R.string.motley_fool, R.layout.news_carousel_motleyfool, R.color.news_motley_fool, AnalyticsConstants.NewsMotleyFool),
     Region(R.string.regional_news, R.layout.news_carousel_regional, R.color.news_regional, AnalyticsConstants.NewsRegional),
@@ -19,7 +18,6 @@ enum NewsType
     @LayoutRes public final int titleViewResourceId;
     @ColorRes  public final int colorResourceId;
     @NonNull public final String analyticsName;
-
 
     NewsType(@StringRes int titleResourceId, @LayoutRes int titleViewResourceId, @ColorRes int colorResourceId, @NonNull String analyticsName)
     {

@@ -51,7 +51,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
@@ -82,7 +81,6 @@ import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
-import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
 import com.tradehero.th.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
@@ -727,14 +725,9 @@ public class DashboardActivity extends BaseActivity
                     UpdateCenterFragment.class,
                     WebViewFragment.class
             );
-            router.registerAlias("messages", "updatecenter/" + UpdateCenterTabType.Messages.ordinal());
-            router.registerAlias("notifications", "updatecenter/" + UpdateCenterTabType.Notifications.ordinal());
-            router.registerAlias("cash", "store/" + ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR.ordinal());
-            router.registerAlias("store/cash", "store/" + ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR.ordinal());
-            router.registerAlias("credits", "store/" + ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS.ordinal());
-            router.registerAlias("store/credits", "store/" + ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS.ordinal());
-            router.registerAlias("store/reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
-            router.registerAlias("reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
+            DiscoveryMainFragment.registerAliases(router);
+            StoreScreenFragment.registerAliases(router);
+            UpdateCenterFragment.registerAliases(router);
             return router;
         }
 

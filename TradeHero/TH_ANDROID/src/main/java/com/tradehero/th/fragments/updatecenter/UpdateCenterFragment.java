@@ -68,6 +68,12 @@ public class UpdateCenterFragment extends BaseFragment
     private FragmentTabHost mTabHost;
     private BroadcastReceiver broadcastReceiver;
 
+    public static void registerAliases(@NonNull THRouter router)
+    {
+        router.registerAlias("messages", "updatecenter/" + UpdateCenterTabType.Messages.ordinal());
+        router.registerAlias("notifications", "updatecenter/" + UpdateCenterTabType.Notifications.ordinal());
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
