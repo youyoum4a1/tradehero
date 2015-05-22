@@ -43,6 +43,7 @@ import com.tradehero.th.api.position.PositionDTOKey;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
@@ -172,7 +173,8 @@ public class MainActivity extends AppCompatActivity {
         ShareDialogFragment.isDialogShowing = true;
 
         //show guest user dialog
-        if (userProfileCache.get().get(currentUserId.toUserBaseKey()).isVisitor) {
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        if ((userProfileDTO != null) && userProfileDTO.isVisitor) {
             alertDialogUtil.get().popWithOkCancelButton(this, R.string.app_name,
                     R.string.guest_user_dialog_summary,
                     R.string.ok, R.string.cancel, new DialogInterface.OnClickListener() {
