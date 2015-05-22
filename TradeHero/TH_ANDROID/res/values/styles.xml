@@ -9,7 +9,7 @@
       parent="Theme.AppCompat.Light.NoActionBar">
     <item name="colorAccent">@color/text_secondary_accented</item>
     <item name="colorPrimary">@color/tradehero_blue</item>
-    <item name="colorPrimaryDark">#ff117acd</item>
+    <item name="colorPrimaryDark">#ff0b4a9e</item>
     <item name="colorControlNormal">@color/tradehero_blue</item>
     <item name="colorControlHighlight">@color/tradehero_blue_pressed</item>
     <item name="android:textColorPrimary">@color/text_primary</item>

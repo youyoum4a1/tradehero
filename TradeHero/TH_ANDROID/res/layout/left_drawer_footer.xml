@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_gravity="center"
-    tools:background="@color/tradehero_reside_menu_bg"
     >
 
   <TextView

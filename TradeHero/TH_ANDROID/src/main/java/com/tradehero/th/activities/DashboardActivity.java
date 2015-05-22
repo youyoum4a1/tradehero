@@ -281,6 +281,8 @@ public class DashboardActivity extends BaseActivity
             content.setOnClickListener(leftDrawerMenuItemClickListener);
             drawerContents.addView(content);
         }
+
+        drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.tradehero_blue_status_bar));
     }
 
     private void initBroadcastReceivers()
