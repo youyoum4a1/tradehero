@@ -96,8 +96,11 @@ public class SearchUserListAdapter extends BaseAdapter
                 THSignedNumber thRoiSinceInception = THSignedPercentage.builder(roi * 100).withSign().signTypeArrow()
                         .build();
                 holder.tvUserExtraValue.setText(thRoiSinceInception.toString());
-                holder.tvUserExtraValue.setTextColor(
-                        context.getResources().getColor(thRoiSinceInception.getColorResId()));
+                holder.tvUserExtraValue.setTextColor(context.getResources().getColor(thRoiSinceInception.getColorResId()));
+            }
+            else if (holder.tvUserExtraValue != null) {
+                holder.tvUserExtraValue.setText("--");
+                holder.tvUserExtraValue.setTextColor(context.getResources().getColor(R.color.black));
             }
         }
         return convertView;

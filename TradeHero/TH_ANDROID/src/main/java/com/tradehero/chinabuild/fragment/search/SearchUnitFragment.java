@@ -110,7 +110,7 @@ public class SearchUnitFragment extends DashboardFragment
 
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) SquarePageIndicator indicator;
-    private List<View> views = new ArrayList<View>();
+    private List<View> views = new ArrayList<>();
 
     public int tabSelect = 0;
     @InjectView(R.id.tvSearchTabStock) TextView tvSearchTabStock;
