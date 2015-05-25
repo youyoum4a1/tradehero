@@ -216,8 +216,6 @@ public class DashboardActivity extends BaseActivity
         initBroadcastReceivers();
 
         localBroadcastManager.registerReceiver(onlineStateReceiver, new IntentFilter(OnlineStateReceiver.ONLINE_STATE_CHANGED));
-
-        routeDeepLink(getIntent());
     }
 
     private void setupNavigator()
@@ -263,16 +261,6 @@ public class DashboardActivity extends BaseActivity
                 updateNetworkStatus();
             }
         };
-    }
-
-    private void routeDeepLink(@NonNull Intent intent)
-    {
-        Uri data = intent.getData();
-        if (data != null)
-        {
-            thRouter.open(data, null, this);
-            intent.setData(null);
-        }
     }
 
     @Override
@@ -376,7 +364,6 @@ public class DashboardActivity extends BaseActivity
     @Override protected void onResume()
     {
         super.onResume();
-        launchActions();
 
         subscriptions = new CompositeSubscription();
 
@@ -398,60 +385,63 @@ public class DashboardActivity extends BaseActivity
                             }
                         }));
 
-        // get providers for enrollment page
-        subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
-                        .flatMap(new Func1<Intent, Observable<? extends Pair<ProviderListKey, ProviderDTOList>>>()
-                        {
-                            @Override public Observable<? extends Pair<ProviderListKey, ProviderDTOList>> call(Intent intent)
+        if (!launchActions(getIntent()))
+        {
+            // get providers for enrollment page
+            subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
+                            .flatMap(new Func1<Intent, Observable<? extends Pair<ProviderListKey, ProviderDTOList>>>()
                             {
-                                return providerListCache.get().get(new ProviderListKey());
-                            }
-                        })
-                        .flatMap(new Func1<Pair<ProviderListKey, ProviderDTOList>, Observable<ProviderDTO>>()
-                        {
-                            @Override public Observable<ProviderDTO> call(Pair<ProviderListKey, ProviderDTOList> pair)
-                            {
-                                for (ProviderDTO providerDTO : pair.second)
+                                @Override public Observable<? extends Pair<ProviderListKey, ProviderDTOList>> call(Intent intent)
                                 {
-                                    boolean r = !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerDTO.id);
-                                    if (r)
-                                    {
-                                        return Observable.just(providerDTO);
-                                    }
+                                    return providerListCache.get().get(new ProviderListKey());
                                 }
-                                broadcastUtilsLazy.get().nextPlease();
-                                return Observable.empty();
-                            }
-                        })
-                        .subscribeOn(Schedulers.io()))
-                        .subscribe(
-                                new Observer<ProviderDTO>()
+                            })
+                            .flatMap(new Func1<Pair<ProviderListKey, ProviderDTOList>, Observable<ProviderDTO>>()
+                            {
+                                @Override public Observable<ProviderDTO> call(Pair<ProviderListKey, ProviderDTOList> pair)
                                 {
-                                    @Override public void onNext(ProviderDTO providerDTO)
+                                    for (ProviderDTO providerDTO : pair.second)
                                     {
-                                        if (!enrollmentScreenIsOpened)
+                                        boolean r = !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerDTO.id);
+                                        if (r)
                                         {
-                                            enrollmentScreenIsOpened = true;
-                                            enrollmentScreenOpened.add(providerDTO.id);
-                                            Bundle args = new Bundle();
-                                            CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
-                                                    providerDTO.getProviderId()
-                                            ));
-                                            navigator.pushFragment(CompetitionWebViewFragment.class, args);
+                                            return Observable.just(providerDTO);
                                         }
                                     }
-
-                                    @Override public void onCompleted()
+                                    broadcastUtilsLazy.get().nextPlease();
+                                    return Observable.empty();
+                                }
+                            })
+                            .subscribeOn(Schedulers.io()))
+                            .subscribe(
+                                    new Observer<ProviderDTO>()
                                     {
-                                    }
+                                        @Override public void onNext(ProviderDTO providerDTO)
+                                        {
+                                            if (!enrollmentScreenIsOpened)
+                                            {
+                                                enrollmentScreenIsOpened = true;
+                                                enrollmentScreenOpened.add(providerDTO.id);
+                                                Bundle args = new Bundle();
+                                                CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
+                                                        providerDTO.getProviderId()
+                                                ));
+                                                navigator.pushFragment(CompetitionWebViewFragment.class, args);
+                                            }
+                                        }
 
-                                    @Override public void onError(Throwable e)
-                                    {
-                                        THToast.show(R.string.error_fetch_provider_competition_list);
-                                        broadcastUtilsLazy.get().nextPlease();
-                                    }
-                                })
-        );
+                                        @Override public void onCompleted()
+                                        {
+                                        }
+
+                                        @Override public void onError(Throwable e)
+                                        {
+                                            THToast.show(R.string.error_fetch_provider_competition_list);
+                                            broadcastUtilsLazy.get().nextPlease();
+                                        }
+                                    })
+            );
+        }
 
         subscriptions.add(fromLocalBroadcast(this, SEND_LOVE_INTENT_FILTER)
                 .subscribe(new Action1<Intent>()
@@ -466,7 +456,6 @@ public class DashboardActivity extends BaseActivity
         {
             userProfileCache.get().get(currentUserId.toUserBaseKey());
         }
-
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -475,7 +464,7 @@ public class DashboardActivity extends BaseActivity
 
         Bundle extras = intent.getExtras();
         processNotificationDataIfPresence(extras);
-        routeDeepLink(intent);
+        launchActions(intent);
     }
 
     private void processNotificationDataIfPresence(Bundle extras)
@@ -591,24 +580,21 @@ public class DashboardActivity extends BaseActivity
         return superModules;
     }
 
-    private void launchActions()
+    private boolean launchActions(Intent intent)
     {
-        Intent intent = getIntent();
-        if (intent == null || intent.getAction() == null)
+        if (intent == null)
         {
-            return;
+            return false;
         }
 
-        if (intent.getData() != null)
+        Uri data = intent.getData();
+        if (data != null)
         {
-            String url = intent.getData().toString();
-            url = url.replace("tradehero://", "");
-            thRouter.open(url, this);
-            return;
+            thRouter.open(data, null, this);
+            intent.setData(null);
+            return true;
         }
-
-        Timber.d(getIntent().getAction());
-        Timber.e(new Exception("thIntentFactory"), "Was handled by thIntentFactory");
+        return false;
     }
 
     @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data)
