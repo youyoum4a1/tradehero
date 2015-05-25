@@ -169,7 +169,7 @@ public class NewsHeadlineFragment extends Fragment
         super.onAttach(activity);
         HierarchyInjector.inject(this);
         newsAdapter =
-                new DiscussionArrayAdapter(activity, R.layout.news_headline_item_view)
+                new DiscussionArrayAdapter(activity, R.layout.news_discovery_headline_item_view)
                 {
                     @Override public AbstractDiscussionCompactItemViewLinear getView(int position, View convertView, ViewGroup viewGroup)
                     {
