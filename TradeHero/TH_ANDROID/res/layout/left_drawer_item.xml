@@ -3,11 +3,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/TH.LeftDrawerMenu.Container"
+    tools:background="@color/tradehero_reside_menu_bg"
     >
 
   <ImageView
       android:id="@android:id/icon"
       style="@style/TH.LeftDrawerMenu.Icon"
+      tools:src="@drawable/icn_side_menu_store"
       />
 
   <TextView
