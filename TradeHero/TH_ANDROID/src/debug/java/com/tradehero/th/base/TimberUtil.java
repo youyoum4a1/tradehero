@@ -1,13 +1,11 @@
 package com.tradehero.th.base;
 
-import android.app.Application;
-import android.support.annotation.NonNull;
 import com.tradehero.common.log.EasyDebugTree;
 import timber.log.Timber;
 
 public class TimberUtil
 {
-    public static Timber.Tree createTree(@NonNull Application application)
+    public static Timber.Tree createTree()
     {
         return new EasyDebugTree()
         {
@@ -16,6 +14,5 @@ public class TimberUtil
                 return String.format("TradeHero-%s", super.createTag());
             }
         };
-
     }
 }

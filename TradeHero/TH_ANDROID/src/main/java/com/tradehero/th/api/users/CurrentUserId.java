@@ -7,10 +7,12 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.IntPreference;
+import com.tradehero.th.activities.ActivityBuildTypeUtil;
 import com.tradehero.th.utils.Constants;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.subjects.BehaviorSubject;
 
 @Singleton public class CurrentUserId extends IntPreference
@@ -59,6 +61,13 @@ import rx.subjects.BehaviorSubject;
 
     @NonNull public Observable<Integer> getKeyObservable()
     {
-        return keyObservable.asObservable();
+        return keyObservable.asObservable()
+                .doOnNext(new Action1<Integer>()
+                {
+                    @Override public void call(Integer userId)
+                    {
+                        ActivityBuildTypeUtil.setUpCrashReports(new UserBaseKey(userId));
+                    }
+                });
     }
 }
