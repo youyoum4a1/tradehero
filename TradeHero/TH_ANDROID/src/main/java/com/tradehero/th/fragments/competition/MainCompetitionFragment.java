@@ -365,9 +365,9 @@ public class MainCompetitionFragment extends DashboardFragment
                                             if (!is404)
                                             {
                                                 THToast.show(getString(R.string.error_fetch_provider_prize_pool_info));
+                                                Timber.e(throwable, "Error fetching the provider prize pool info");
                                             }
                                         }
-                                        Timber.e(throwable, "Error fetching the provider prize pool info");
                                         return Collections.emptyList();
                                     }
                                 }),
