@@ -113,6 +113,7 @@ import dagger.Provides;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
@@ -122,6 +123,7 @@ import rx.Notification;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -270,13 +272,57 @@ public class DashboardActivity extends BaseActivity
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        Collection<RootFragmentType> fragmentTypes = RootFragmentType.forLeftDrawer();
-        for (RootFragmentType fragmentType : fragmentTypes)
-        {
-            View content = RootFragmentType.createDrawerItemFromTabType(this, drawerLayout, fragmentType);
-            content.setOnClickListener(leftDrawerMenuItemClickListener);
-            drawerContents.addView(content);
-        }
+        currentUserId.getKeyObservable()
+                .filter(new Func1<Integer, Boolean>()
+                {
+                    @Override public Boolean call(Integer userId)
+                    {
+                        return userId > 0;
+                    }
+                })
+                .distinctUntilChanged()
+                .flatMap(new Func1<Integer, Observable<UserProfileDTO>>()
+                {
+                    @Override public Observable<UserProfileDTO> call(Integer userId)
+                    {
+                        return userProfileCache.get().getOne(new UserBaseKey(userId))
+                                .map(new PairGetSecond<UserBaseKey, UserProfileDTO>());
+                    }
+                })
+                .map(new Func1<UserProfileDTO, Collection<RootFragmentType>>()
+                {
+                    @Override public Collection<RootFragmentType> call(UserProfileDTO userProfileDTO)
+                    {
+                        Collection<RootFragmentType> menus = new LinkedHashSet<>(RootFragmentType.forLeftDrawer());
+                        if (userProfileDTO != null && userProfileDTO.isAdmin)
+                        {
+                            menus.add(RootFragmentType.ADMIN_SETTINGS);
+                        }
+                        return menus;
+                    }
+                })
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends Collection<RootFragmentType>>>()
+                {
+                    @Override public Observable<? extends Collection<RootFragmentType>> call(Throwable throwable)
+                    {
+                        return Observable.just(RootFragmentType.forLeftDrawer());
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<Collection<RootFragmentType>>()
+                        {
+                            @Override public void call(Collection<RootFragmentType> fragmentTypes)
+                            {
+                                for (RootFragmentType fragmentType : fragmentTypes)
+                                {
+                                    View content = RootFragmentType.createDrawerItemFromTabType(DashboardActivity.this, drawerLayout, fragmentType);
+                                    content.setOnClickListener(leftDrawerMenuItemClickListener);
+                                    drawerContents.addView(content);
+                                }
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to load drawer"));
 
         drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.tradehero_blue_status_bar));
     }
