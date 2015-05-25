@@ -12,9 +12,9 @@ import com.tradehero.th.R;
 
 public class TimelineHeaderButtonView extends LinearLayout
 {
-    @InjectView(R.id.btn_profile_timeline) Button btnTimeline;
-    @InjectView(R.id.btn_profile_portfolios) Button btnPortfolioList;
-    @InjectView(R.id.btn_profile_stats) Button btnStats;
+    @InjectView(R.id.btn_profile_timeline) TextView btnTimeline;
+    @InjectView(R.id.btn_profile_portfolios) TextView btnPortfolioList;
+    @InjectView(R.id.btn_profile_stats) TextView btnStats;
 
     private TimelineProfileClickListener clickListener;
 
@@ -39,6 +39,7 @@ public class TimelineHeaderButtonView extends LinearLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
+        setDividerDrawable(null);
     }
 
     @Override protected void onAttachedToWindow()
