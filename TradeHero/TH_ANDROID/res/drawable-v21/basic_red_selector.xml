@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?attr/colorControlHighlight"
+    >
+  <item>
+    <selector>
+      <item
+          android:state_focused="true"
+          android:state_pressed="false"
+          >
+        <color android:color="@color/red_light" />
+      </item>
+      <item android:state_enabled="false">
+        <color android:color="@color/darker_grey" />
+      </item>
+      <item>
+        <color android:color="@color/red_normal" />
+      </item>
+    </selector>
+  </item>
+</ripple>
