@@ -2,15 +2,15 @@
 <resources>
 
   <style name="TH.LeftDrawerMenu.Text"
-      parent="TH.Subhead.Inverse">
-    <item name="android:layout_marginStart">@dimen/margin_small</item>
-    <item name="android:layout_marginLeft">@dimen/margin_small</item>
+      parent="TH.Body1.Inverse">
+    <item name="android:layout_marginStart">@dimen/margin_large</item>
+    <item name="android:layout_marginLeft">@dimen/margin_large</item>
   </style>
 
   <style name="TH.LeftDrawerMenu.Container">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:minHeight">?attr/listPreferredItemHeight</item>
+    <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
     <item name="android:orientation">horizontal</item>
     <item name="android:paddingLeft">?attr/listPreferredItemPaddingLeft</item>
     <item name="android:paddingStart">?android:attr/listPreferredItemPaddingStart</item>
