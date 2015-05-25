@@ -20,6 +20,8 @@
       android:clipToPadding="false"
       android:horizontalSpacing="@dimen/trending_horizontal_spacing"
       android:verticalSpacing="@dimen/trending_horizontal_spacing"
+      android:listSelector="@drawable/basic_transparent_selector"
+      android:drawSelectorOnTop="true"
       tools:listitem="@layout/on_board_security_item_view"
       />
 
