@@ -16,6 +16,8 @@
     android:singleLine="true"
     android:ellipsize="marquee"
     style="@style/TH.Title.Inverse"
+    android:checked="true"
+    android:textColor="@color/text_primary_inverse"
     tools:text="Stocks Heroes"
     />
 
