@@ -204,7 +204,7 @@ public class ProviderSecurityListRxFragment
         {
             BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         }
-        args.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
+        BuySellFragment.putProviderId(args, providerId);
         navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(clicked), args);
     }
 

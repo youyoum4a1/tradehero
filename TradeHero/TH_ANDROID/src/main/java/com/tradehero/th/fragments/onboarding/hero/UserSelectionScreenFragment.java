@@ -19,6 +19,7 @@ import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.market.ExchangeCompactSectorListDTO;
@@ -29,7 +30,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
+import com.tradehero.th.fragments.onboarding.OnBoardHeaderLinearView;
 import com.tradehero.th.persistence.leaderboard.LeaderboardUserListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
@@ -60,6 +61,7 @@ public class UserSelectionScreenFragment extends BaseFragment
 
     @InjectView(android.R.id.list) ListView userList;
     @InjectView(android.R.id.button1) View nextButton;
+    protected OnBoardHeaderLinearView headerView;
     Observable<ExchangeCompactSectorListDTO> selectedExchangesSectorsObservable;
     ArrayAdapter<OnBoardUserItemView.DTO> userAdapter;
     @NonNull Map<UserBaseKey, LeaderboardUserDTO> knownUsers;
@@ -101,10 +103,7 @@ public class UserSelectionScreenFragment extends BaseFragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        userAdapter = new OnBoardEmptyOrItemAdapter<>(
-                activity,
-                R.layout.on_board_user_item_view,
-                R.layout.on_board_empty_item);
+        userAdapter = new DTOAdapterNew<>(activity, R.layout.on_board_user_item_view);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -116,6 +115,7 @@ public class UserSelectionScreenFragment extends BaseFragment
     @SuppressLint("InflateParams")
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+        headerView = (OnBoardHeaderLinearView) LayoutInflater.from(getActivity()).inflate(R.layout.on_board_user_header, null);
         // We can reuse the same list
         return inflater.inflate(R.layout.on_board_map_exchange, container, false);
     }
@@ -124,7 +124,7 @@ public class UserSelectionScreenFragment extends BaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        userList.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.on_board_user_header, null), "title", false);
+        userList.addHeaderView(headerView, "title", false);
         userList.setAdapter(userAdapter);
         displayNextButton();
     }
@@ -203,12 +203,14 @@ public class UserSelectionScreenFragment extends BaseFragment
                                         });
                             }
                         }))
+                .retryWhen(headerView.isRetryClickedAfterFailed())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<List<OnBoardUserItemView.DTO>>()
                         {
                             @Override public void call(List<OnBoardUserItemView.DTO> onBoardUsers)
                             {
+                                headerView.displayRetry(false);
                                 userAdapter.setNotifyOnChange(false);
                                 userAdapter.clear();
                                 userAdapter.addAll(onBoardUsers);

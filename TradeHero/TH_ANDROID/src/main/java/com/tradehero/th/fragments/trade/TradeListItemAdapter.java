@@ -50,7 +50,7 @@ public class TradeListItemAdapter
             @NonNull PositionDTO positionDTO,
             @NonNull SecurityCompactDTO securityCompactDTO,
             @Nullable Integer expandedTradeId,
-            @NonNull TradeDTOList tradeDTOs,
+            @Nullable TradeDTOList tradeDTOs,
             @NonNull PrettyTime prettyTime)
     {
         List<Object> objects = new ArrayList<>();
@@ -68,19 +68,25 @@ public class TradeListItemAdapter
         objects.add(new PositionView.DTO(resources, new ExpandableListItem<>(true, positionDTO), securityCompactDTO));
 
         objects.add(R.string.trade_list_header_position_summary);
-
-        for (int i = 0; i < tradeDTOs.size(); i++)
+        if (tradeDTOs != null)
         {
-            TradeDTO dto = tradeDTOs.get(i);
-            objects.add(
-                    new TradeListItemView.DTO(
-                            resources,
-                            positionDTO,
-                            securityCompactDTO,
-                            expandedTradeId != null && expandedTradeId.equals(dto.id),
-                            dto,
-                            i == 0,
-                            prettyTime));
+            for (int i = 0; i < tradeDTOs.size(); i++)
+            {
+                TradeDTO dto = tradeDTOs.get(i);
+                objects.add(
+                        new TradeListItemView.DTO(
+                                resources,
+                                positionDTO,
+                                securityCompactDTO,
+                                expandedTradeId != null && expandedTradeId.equals(dto.id),
+                                dto,
+                                i == 0,
+                                prettyTime));
+            }
+        }
+        else
+        {
+            // TODO add loading
         }
 
         return objects;

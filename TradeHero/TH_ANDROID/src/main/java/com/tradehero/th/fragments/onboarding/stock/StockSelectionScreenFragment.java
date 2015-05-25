@@ -17,6 +17,7 @@ import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.market.ExchangeCompactSectorListDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
@@ -24,7 +25,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.key.ExchangeSectorSecurityListTypeNew;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
+import com.tradehero.th.fragments.onboarding.OnBoardHeaderLinearView;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import in.srain.cube.views.GridViewWithHeaderAndFooter;
@@ -52,11 +53,12 @@ public class StockSelectionScreenFragment extends BaseFragment
 
     @InjectView(android.R.id.list) GridViewWithHeaderAndFooter stockList;
     @InjectView(android.R.id.button1) View nextButton;
+    protected OnBoardHeaderLinearView headerView;
     ArrayAdapter<SelectableSecurityDTO> stockAdapter;
-    @NonNull Map<SecurityId, SecurityCompactDTO> knownStocks;
+    @NonNull final Map<SecurityId, SecurityCompactDTO> knownStocks;
     @NonNull Set<SecurityId> selectedStocks;
-    @NonNull BehaviorSubject<SecurityCompactDTOList> selectedStocksSubject;
-    @NonNull PublishSubject<Boolean> nextClickedSubject;
+    @NonNull final BehaviorSubject<SecurityCompactDTOList> selectedStocksSubject;
+    @NonNull final PublishSubject<Boolean> nextClickedSubject;
     Observable<ExchangeCompactSectorListDTO> selectedExchangesSectorsObservable;
 
     public static void putInitialStocks(@NonNull Bundle args, @NonNull List<SecurityId> securityIds)
@@ -99,10 +101,7 @@ public class StockSelectionScreenFragment extends BaseFragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        stockAdapter = new OnBoardEmptyOrItemAdapter<>(
-                activity,
-                R.layout.on_board_security_item_view,
-                R.layout.on_board_empty_item);
+        stockAdapter = new DTOAdapterNew<>(activity, R.layout.on_board_security_item_view);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -114,6 +113,7 @@ public class StockSelectionScreenFragment extends BaseFragment
     @SuppressLint("InflateParams")
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+        headerView = (OnBoardHeaderLinearView) LayoutInflater.from(getActivity()).inflate(R.layout.on_board_stock_header, null);
         return inflater.inflate(R.layout.on_board_security_list, container, false);
     }
 
@@ -121,7 +121,7 @@ public class StockSelectionScreenFragment extends BaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        stockList.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.on_board_stock_header, null), "title", false);
+        stockList.addHeaderView(headerView, "title", false);
         stockList.setAdapter(stockAdapter);
         displayNextButton();
     }
@@ -164,6 +164,7 @@ public class StockSelectionScreenFragment extends BaseFragment
                                 .map(new PairGetSecond<SecurityListType, SecurityCompactDTOList>());
                     }
                 }))
+                .retryWhen(headerView.isRetryClickedAfterFailed())
                 .map(new Func1<SecurityCompactDTOList, List<SelectableSecurityDTO>>()
                 {
                     @Override public List<SelectableSecurityDTO> call(SecurityCompactDTOList stockList)
@@ -190,6 +191,7 @@ public class StockSelectionScreenFragment extends BaseFragment
                         {
                             @Override public void call(List<SelectableSecurityDTO> stockList)
                             {
+                                headerView.displayRetry(false);
                                 stockAdapter.setNotifyOnChange(false);
                                 stockAdapter.clear();
                                 stockAdapter.addAll(stockList);

@@ -1,11 +1,12 @@
 package com.tradehero.th.fragments.discovery;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +17,7 @@ import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -24,20 +26,29 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.AnalyticsDuration;
 import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
 import com.tradehero.th.utils.route.THRouter;
-import com.tradehero.th.widget.THTabView;
 import javax.inject.Inject;
 
-@Routable({"news", "discussion", "academy"})
+@Routable(DiscoveryMainFragment.ROUTER_DISCOVERY_TAB_INDEX + ":tabIndex")
 public class DiscoveryMainFragment extends DashboardFragment
 {
+    public static final String ROUTER_DISCOVERY_TAB_INDEX = "discovery/tab-index/";
+
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
     @InjectView(R.id.pager) ViewPager tabViewPager;
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
+    @RouteProperty("tabIndex") Integer tabIndex;
     private DiscoveryPagerAdapter discoveryPagerAdapter;
     private long beginTime;
     private int oldPageItem;
+
+    public static void registerAliases(@NonNull THRouter router)
+    {
+        router.registerAlias("discovery-news", ROUTER_DISCOVERY_TAB_INDEX + DiscoveryTabType.NEWS.ordinal());
+        router.registerAlias("discovery-discussion", ROUTER_DISCOVERY_TAB_INDEX + DiscoveryTabType.DISCUSSION.ordinal());
+        router.registerAlias("discovery-academy", ROUTER_DISCOVERY_TAB_INDEX + DiscoveryTabType.ACADEMY.ordinal());
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -48,14 +59,13 @@ public class DiscoveryMainFragment extends DashboardFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.discovery_main_fragment, container, false);
-        ButterKnife.inject(this, view);
-        initViews();
-        return view;
+        return inflater.inflate(R.layout.discovery_main_fragment, container, false);
     }
 
-    private void initViews()
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
         tabViewPager.setAdapter(discoveryPagerAdapter);
         if (!Constants.RELEASE)
         {
@@ -89,6 +99,11 @@ public class DiscoveryMainFragment extends DashboardFragment
             {
             }
         });
+        if (tabIndex != null)
+        {
+            tabViewPager.setCurrentItem(tabIndex);
+            tabIndex = null;
+        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.tradehero.th.fragments.onboarding.OnBoardProgressHeaderLinearView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -13,4 +13,17 @@
       android:gravity="center_horizontal"
       />
 
-</LinearLayout>
+  <include layout="@layout/on_board_retry_button"/>
+
+  <Space
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/margin_small"/>
+
+  <ProgressBar
+      android:id="@+id/progress"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      />
+
+</com.tradehero.th.fragments.onboarding.OnBoardProgressHeaderLinearView>

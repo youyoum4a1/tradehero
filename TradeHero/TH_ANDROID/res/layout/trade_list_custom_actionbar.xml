@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tradehero.th.fragments.trade.StockDetailActionBarRelativeLayout
+<com.tradehero.th.fragments.trade.StockActionBarRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rlStockHeader"
@@ -9,37 +9,10 @@
     android:paddingBottom="@dimen/margin_xsmall"
     tools:background="@color/tradehero_blue">
 
-  <FrameLayout
-      android:id="@+id/circle_progressbar_container"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerVertical="true">
-
-    <com.tradehero.th.fragments.security.SecurityCircleProgressBar
-        android:id="@+id/circle_progressbar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="@dimen/size_1"
-        />
-
-    <ImageView
-        android:id="@+id/action_bar_market_closed_icon"
-        android:layout_width="@dimen/size_3"
-        android:layout_height="@dimen/size_3"
-        android:contentDescription="@null"
-        android:scaleType="centerInside"
-        android:visibility="visible"
-        android:layout_gravity="bottom|end"
-        android:src="@drawable/buyscreen_stock_inactive_pressed"
-        />
-
-  </FrameLayout>
-
   <ImageButton
       android:id="@+id/btn_watched"
       android:layout_width="@dimen/clickable_element_min_dimen"
       android:layout_height="@dimen/clickable_element_min_dimen"
-      android:padding="12dp"
       android:layout_alignParentRight="true"
       android:layout_alignParentEnd="true"
       android:layout_centerVertical="true"
@@ -54,25 +27,25 @@
       android:layout_width="@dimen/clickable_element_min_dimen"
       android:layout_height="@dimen/clickable_element_min_dimen"
       android:layout_centerVertical="true"
-      android:padding="12dp"
       android:layout_toLeftOf="@id/btn_watched"
       android:layout_toStartOf="@id/btn_watched"
       android:background="@drawable/basic_themed_selector"
       android:src="@drawable/icn_alert"
       android:visibility="invisible"
+      android:scaleType="centerInside"
       tools:visibility="visible"
       />
 
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/margin_xsmall"
-      android:layout_toRightOf="@id/circle_progressbar_container"
-      android:layout_toEndOf="@id/circle_progressbar_container"
+      android:layout_marginRight="@dimen/margin_xsmall"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
       android:layout_toLeftOf="@id/btn_alerted"
       android:layout_toStartOf="@id/btn_alerted"
       android:layout_centerVertical="true"
-      android:gravity="top"
+      android:gravity="center_vertical"
       android:orientation="vertical">
 
     <TextView
@@ -95,4 +68,4 @@
 
   </LinearLayout>
 
-</com.tradehero.th.fragments.trade.StockDetailActionBarRelativeLayout>
+</com.tradehero.th.fragments.trade.StockActionBarRelativeLayout>

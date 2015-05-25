@@ -107,7 +107,8 @@ public class PositionCacheRx extends BaseFetchDTOCacheRx<PositionDTOKey, Positio
                 positionCompactIdCache.get().onNext(value.getPositionCompactId(), value.getOwnedPositionId());
             }
         }
-        invalidateMatchingTrades(key); super.onNext(key, value);
+        invalidateMatchingTrades(key);
+        super.onNext(key, value);
     }
 
     @Override public void invalidate(@NonNull PositionDTOKey key)

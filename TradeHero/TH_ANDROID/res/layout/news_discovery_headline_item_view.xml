@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.news.NewsHeadlineViewLinear
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/margin_xsmall"
+    android:orientation="vertical"
+    style="@style/TH.ListItem.Clickable.LB"
+    android:layout_centerVertical="true"
+    >
+
+  <TextView
+      android:id="@+id/news_title_title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      style="@style/TH.Subhead"
+      android:singleLine="true"
+      tools:text="Company Name to be bought by private equity more text"
+      />
+
+  <TextView
+      android:id="@+id/discussion_time"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="4dp"
+      style="@style/TH.Time_Text"
+      tools:text="A big one"
+      />
+
+</com.tradehero.th.fragments.news.NewsHeadlineViewLinear>

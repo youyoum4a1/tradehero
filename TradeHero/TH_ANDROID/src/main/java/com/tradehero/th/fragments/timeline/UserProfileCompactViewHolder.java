@@ -137,8 +137,8 @@ public class UserProfileCompactViewHolder
     }
 
     @SuppressWarnings("unused")
-    @OnLongClick(R.id.user_profile_avatar)
-    protected boolean onAvatarClicked(View view)
+    @OnLongClick(R.id.user_profile_avatar) @Optional
+    protected boolean onAvatarLongClicked(View view)
     {
         if (userProfileDTO != null)
         {

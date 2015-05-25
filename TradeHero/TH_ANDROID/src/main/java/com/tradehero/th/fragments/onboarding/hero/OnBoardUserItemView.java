@@ -85,7 +85,7 @@ public class OnBoardUserItemView extends OnBoardSelectableViewLinear<Leaderboard
 
         if (descView != null)
         {
-            descView.setText("");
+            descView.setText(dto.value.criteria);
         }
 
         if (lbmuRoi != null)

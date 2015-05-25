@@ -240,11 +240,6 @@ public class FXMainFragment extends BuySellFragment
                 .into(btn);
     }
 
-    @Override public boolean isBuySellReady()
-    {
-        return quoteDTO != null && positionDTOList != null && applicableOwnedPortfolioIds != null;
-    }
-
     @Override public void displayBuySellContainer()
     {
         if (isBuySellReady() && mBuySellBtnContainer.getVisibility() == View.GONE && tabViewPager.getCurrentItem() == 0)

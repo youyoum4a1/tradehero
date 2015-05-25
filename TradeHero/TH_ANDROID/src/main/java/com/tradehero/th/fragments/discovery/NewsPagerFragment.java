@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnItemSelected;
 import com.tradehero.th.R;
 
 public final class NewsPagerFragment extends Fragment
@@ -25,37 +26,36 @@ public final class NewsPagerFragment extends Fragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.discovery_news_pager, container, false);
-        initView(view);
-        return view;
+        return inflater.inflate(R.layout.discovery_news_pager, container, false);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void initView(View view)
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
         mViewPager.setAdapter(new DiscoveryNewsFragmentAdapter(this.getChildFragmentManager()));
-        newsSpinner.setAdapter(new NewsSpinnerAdapter(getActivity(),
-                new NewsType[] {NewsType.SeekingAlpha, NewsType.MotleyFool, NewsType.Region, NewsType.Global}));
-        newsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
-                mViewPager.setCurrentItem(position);
-            }
-
-            @Override public void onNothingSelected(AdapterView<?> parent)
-            {
-                //
-            }
-        });
+        newsSpinner.setAdapter(new NewsSpinnerAdapter(getActivity(), NewsType.values()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
             int offset = (int) getResources().getDimension(R.dimen.size_6);
             newsSpinner.setDropDownVerticalOffset(offset);
         }
+    }
+
+    @Override public void onDestroyView()
+    {
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
+    @SuppressWarnings("unused")
+    @OnItemSelected(value = R.id.spinner_news, callback = OnItemSelected.Callback.ITEM_SELECTED)
+    public void onNewsItemSelected(AdapterView<?> parent, View view, int position, long id)
+    {
+        mViewPager.setCurrentItem(position);
     }
 
     class NewsSpinnerAdapter extends ArrayAdapter<NewsType>
@@ -95,9 +95,9 @@ public final class NewsPagerFragment extends Fragment
             super(fm);
         }
 
-        @Override public Fragment getItem(int i)
+        @Override public Fragment getItem(int position)
         {
-            return NewsHeadlineFragment.newInstance(NewsType.values()[i]);
+            return NewsHeadlineFragment.newInstance(NewsType.values()[position]);
         }
 
         @Override public int getCount()

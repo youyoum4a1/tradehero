@@ -18,12 +18,13 @@ import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.market.SectorDTO;
 import com.tradehero.th.api.market.SectorDTOList;
 import com.tradehero.th.api.market.SectorId;
 import com.tradehero.th.api.market.SectorListType;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.onboarding.OnBoardEmptyOrItemAdapter;
+import com.tradehero.th.fragments.onboarding.OnBoardHeaderLinearView;
 import com.tradehero.th.persistence.market.SectorListCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
 
     @InjectView(android.R.id.list) ListView sectorList;
     @InjectView(android.R.id.button1) View nextButton;
+    protected OnBoardHeaderLinearView headerView;
     ArrayAdapter<SelectableSectorDTO> sectorAdapter;
     @NonNull Map<SectorId, SectorDTO> knownSectors;
     boolean hadInitialExchangeSelected;
@@ -106,10 +108,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        sectorAdapter = new OnBoardEmptyOrItemAdapter<>(
-                activity,
-                R.layout.on_board_sector_item_view,
-                R.layout.on_board_empty_item);
+        sectorAdapter = new DTOAdapterNew<>(activity, R.layout.on_board_sector_item_view);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -122,6 +121,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
     @SuppressLint("InflateParams")
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+        headerView = (OnBoardHeaderLinearView) LayoutInflater.from(getActivity()).inflate(R.layout.on_board_sector_header, null);
         // We can reuse the same list
         return inflater.inflate(R.layout.on_board_map_exchange, container, false);
     }
@@ -130,7 +130,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        sectorList.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.on_board_sector_header, null), "title", false);
+        sectorList.addHeaderView(headerView, "title", false);
         sectorList.setAdapter(sectorAdapter);
         displayNextButton();
     }
@@ -158,6 +158,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 sectorListCache.getOne(new SectorListType(DEFAULT_TOP_N_STOCKS)))
+                .retryWhen(headerView.isRetryClickedAfterFailed())
                 .map(new Func1<Pair<SectorListType, SectorDTOList>, List<SelectableSectorDTO>>()
                 {
                     @Override public List<SelectableSectorDTO> call(Pair<SectorListType, SectorDTOList> pair)
@@ -171,6 +172,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
                         {
                             @Override public void call(List<SelectableSectorDTO> onBoardSectors)
                             {
+                                headerView.displayRetry(false);
                                 sectorAdapter.setNotifyOnChange(false);
                                 sectorAdapter.clear();
                                 sectorAdapter.addAll(onBoardSectors);
