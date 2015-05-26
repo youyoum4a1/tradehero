@@ -1,10 +1,6 @@
 package com.tradehero.th.ui;
 
-import com.tradehero.th.fragments.social.friend.SocialFriendUserView;
-
 import org.ocpsoft.prettytime.PrettyTime;
-
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,7 +9,6 @@ import dagger.Provides;
         includes = {
         },
         injects = {
-                SocialFriendUserView.class
         },
         complete = false,
         library = true

@@ -1,110 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.social.friend.SocialFriendsListView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ViewAnimator
     android:id="@+id/friends_root_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:background="#ffffff"
     >
 
-  <LinearLayout
-      android:id="@+id/content_wrapper"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:orientation="vertical"
-      android:visibility="visible"
+    <LinearLayout
+        android:id="@+id/content_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="visible"
 
-      >
-    <EditText
-        android:id="@+id/search_social_friends"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/search_social_friend_hint"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        />
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-      <ListView
-          android:id="@+id/social_friends_list"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:clipToPadding="false"
-          android:paddingBottom="@dimen/buy_sell_button_container_height"
-          />
-      <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          android:layout_alignParentBottom="true"
-          android:paddingTop="@dimen/common_margin_10"
-          android:paddingBottom="10dp"
-          android:paddingLeft="@dimen/common_margin_10"
-          android:paddingRight="@dimen/common_margin_10"
-          android:background="@drawable/buy_sell_action_buttons_background"
-          android:visibility="visible"
-          >
-        <TextView android:layout_weight="1" android:layout_height="wrap_content" android:layout_width="0dp"/>
-        <TextView
-            android:id="@+id/social_follow_all"
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:text="@string/follow_all"
-            android:layout_weight="4"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            style="@style/TH.Btn_Invite_Action"
-            android:background="@drawable/basic_green_selector_round_corner"
+        >
+
+        <EditText
+            android:id="@+id/search_social_friends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp"
+            android:hint="@string/search_social_friend_hint"
             />
 
-        <TextView
-            android:id="@+id/social_invite_all"
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:text="@string/invite"
-            android:layout_weight="4"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            style="@style/TH.Btn_Invite_Action"
-            android:background="@drawable/basic_red_selector_round_corner"/>
-         <TextView android:layout_weight="1" android:layout_height="wrap_content" android:layout_width="0dp"/>
-      </LinearLayout>
-    </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/social_friends_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="@dimen/buy_sell_button_container_height"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/buy_sell_action_buttons_background"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp"
+                android:paddingLeft="@dimen/common_margin_10"
+                android:paddingRight="@dimen/common_margin_10"
+                android:paddingTop="@dimen/common_margin_10"
+                android:visibility="visible"
+                >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/social_follow_all"
+                    style="@style/TH.Btn_Invite_Action"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="4"
+                    android:background="@drawable/basic_green_selector_round_corner"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:text="@string/follow_all"
+                    />
+
+                <TextView
+                    android:id="@+id/social_invite_all"
+                    style="@style/TH.Btn_Invite_Action"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="4"
+                    android:background="@drawable/basic_red_selector_round_corner"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:text="@string/invite"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+        </RelativeLayout>
 
 
-  </LinearLayout>
-  <TextView
-      style="@style/TH.Loading_Empty_Text"
-      android:id="@android:id/empty"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_centerInParent="true"
-      android:gravity="center"
-      android:text="@string/social_friend_empty"
-      android:visibility="gone"
-      />
+    </LinearLayout>
 
-  <!--TODO use string -->
+    <TextView
+        android:id="@android:id/empty"
+        style="@style/TH.Loading_Empty_Text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="@string/social_friend_empty"
+        android:visibility="gone"
+        />
 
-  <TextView
-      style="@style/TH.Loading_Error_Text"
-      android:id="@+id/error"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_gravity="center"
-      android:gravity="center"
-      android:layout_centerInParent="true"
-      android:text="@string/message_fetch_error"
-      android:visibility="gone"/>
+    <!--TODO use string -->
 
-    <com.tradehero.th.widget.TradeHeroProgressBar
+    <TextView
+        android:id="@+id/error"
+        style="@style/TH.Loading_Error_Text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/message_fetch_error"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tradehero.th.widget.TradeHeroProgressBar
             android:id="@+id/tradeheroprogressbar_invite_friends"
             android:layout_width="@dimen/loading_logo_width"
             android:layout_height="@dimen/loading_logo_height"
             android:layout_centerInParent="true"
             android:background="@drawable/logo"
-            android:visibility="gone"
+            android:visibility="visible"
             />
-</com.tradehero.th.fragments.social.friend.SocialFriendsListView>
+    </RelativeLayout>
+</ViewAnimator>
