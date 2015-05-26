@@ -5,10 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
+import com.facebook.HttpMethod;
+import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.widget.WebDialog;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.social.facebook.FacebookConstants;
+import com.tradehero.common.social.facebook.FacebookRequestOperator;
 import com.tradehero.common.social.facebook.FacebookWebDialogOperator;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.R;
@@ -19,6 +22,7 @@ import com.tradehero.th.api.social.InviteFacebookDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -26,6 +30,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.operator.FacebookPermissions;
+import com.tradehero.th.models.social.facebook.UserFriendsFacebookUtil;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -35,6 +40,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
@@ -222,6 +228,32 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
                                         return Pair.create(profile, session);
                                     }
                                 });
+                    }
+                });
+    }
+
+    @NonNull protected Observable<UserFriendsDTOList> getFetchFacebookInvitableObservable(@NonNull final Bundle parameters)
+    {
+        return createProfileSessionObservable()
+                .take(1)
+                .flatMap(new Func1<Pair<UserProfileDTO, Session>, Observable<? extends Response>>()
+                {
+                    @Override public Observable<? extends Response> call(Pair<UserProfileDTO, Session> pair)
+                    {
+                        return Observable.create(
+                                FacebookRequestOperator
+                                        .builder(pair.second, FacebookConstants.API_INVITABLE_FRIENDS)
+                                        .setParameters(parameters)
+                                        .setHttpMethod(HttpMethod.GET)
+                                        .build())
+                                .subscribeOn(AndroidSchedulers.mainThread());
+                    }
+                })
+                .map(new Func1<Response, UserFriendsDTOList>()
+                {
+                    @Override public UserFriendsDTOList call(Response response)
+                    {
+                        return UserFriendsFacebookUtil.convert(response);
                     }
                 });
     }
