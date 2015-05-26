@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.fxonboard;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -69,35 +71,29 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
     }
     //</editor-fold>
 
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        videoAdapter = new VideoAdapter(activity, null, R.layout.video_view);
+    }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fx_onboard_dialog, container, false);
-        ButterKnife.inject(this, view);
-        return view;
+        return inflater.inflate(R.layout.fx_onboard_dialog, container, false);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-
-        videoAdapter = new VideoAdapter(getActivity(), null, R.layout.video_view);
+        ButterKnife.inject(this, view);
         videosGrid.setAdapter(videoAdapter);
-
-        videosGrid.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> parent, View view1, int position, long id)
-            {
-                VideoDTO videoDTO = videoAdapter.getItem(position);
-                VideoDTOUtil.openVideoDTO(FxOnBoardDialogFragment.this.getActivity(), navigator.get(), videoDTO);
-            }
-        });
     }
 
     @Override public void onStart()
     {
         super.onStart();
 
-        List<FxOnBoardView<Boolean>> onBoardViews = new ArrayList<>();
+        List<Observable<Boolean>> onBoardViews = new ArrayList<>();
         for (int i = 0; i < viewAnimator.getChildCount(); ++i)
         {
             View child = viewAnimator.getChildAt(i);
@@ -105,18 +101,11 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
             {
                 @SuppressWarnings("unchecked")
                 FxOnBoardView<Boolean> fxOnBoardView = (FxOnBoardView<Boolean>) child;
-                onBoardViews.add(fxOnBoardView);
+                onBoardViews.add(fxOnBoardView.result());
             }
         }
 
-        onStopSubscriptions.add(Observable.from(onBoardViews)
-                .flatMap(new Func1<FxOnBoardView<Boolean>, Observable<? extends Boolean>>()
-                {
-                    @Override public Observable<? extends Boolean> call(FxOnBoardView<Boolean> view)
-                    {
-                        return view.result();
-                    }
-                })
+        onStopSubscriptions.add(Observable.merge(onBoardViews)
                 .subscribe(
                         new Action1<Boolean>()
                         {
@@ -177,9 +166,29 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
         TrendingMainFragment.fxDialogShowed = false;
     }
 
+    @Override public void onDestroyView()
+    {
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
+    @Override public void onDetach()
+    {
+        videoAdapter = null;
+        super.onDetach();
+    }
+
     @NonNull public Observable<UserAction> getUserActionTypeObservable()
     {
         return userActionTypeBehaviorSubject.asObservable();
+    }
+
+    @SuppressWarnings("unused")
+    @OnItemClick(R.id.introduction_videos_grid)
+    protected void onVideoItemClick(AdapterView<?> parent, View view1, int position, long id)
+    {
+        VideoDTO videoDTO = videoAdapter.getItem(position);
+        VideoDTOUtil.openVideoDTO(FxOnBoardDialogFragment.this.getActivity(), navigator.get(), videoDTO);
     }
 
     private void enrollFXAndNotify()
