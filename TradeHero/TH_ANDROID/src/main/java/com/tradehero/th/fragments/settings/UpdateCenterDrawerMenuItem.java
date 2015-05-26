@@ -23,7 +23,7 @@ import rx.internal.util.SubscriptionList;
 
 public class UpdateCenterDrawerMenuItem extends LinearLayout
 {
-    @InjectView(R.id.unread_Count) TextView tvUnreadCount;
+    @InjectView(R.id.unread_count) TextView tvUnreadCount;
 
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
