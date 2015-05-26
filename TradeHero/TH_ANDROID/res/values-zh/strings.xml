@@ -30,7 +30,7 @@
 
   <string name="please_update_token_title">社交关联过期请重新关联</string>
   <string name="please_update_token_description">请重新关联你的社交账号</string>
-  
+
   <string name="press_back_again_to_exit">点击返回以退出</string>
   <string name="discussion">讨论</string>
   <string name="more_character">. . .</string>
@@ -148,7 +148,7 @@
 
   <!-- LeftDrawer emenu -->
   <string name="left_drawer_footer_title">内容合作商:</string>
-    <string name="coming_soon">稍后推出!</string>
+  <string name="coming_soon">稍后推出!</string>
 
   <string name="content_shared">完成!</string>
 

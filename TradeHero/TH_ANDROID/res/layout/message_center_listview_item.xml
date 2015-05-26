@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tradehero.common.widget.swipe.SwipeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/swipe"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:id="@+id/swipe"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
   <LinearLayout
       android:tag="Bottom2"
       android:background="@color/tradehero_blue"
       android:layout_width="60dp"
       android:gravity="center"
       android:layout_height="fill_parent">
+
     <TextView
         android:id="@+id/delete"
         android:text="@string/watchlist_delete"
         android:gravity="center"
         android:textColor="@color/white"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"/>
+
   </LinearLayout>
 
   <LinearLayout
@@ -24,6 +28,7 @@
       android:background="@drawable/basic_white_selector"
       android:layout_width="match_parent"
       android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -56,7 +61,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/timeline_side_spacing"
-        android:layout_toRightOf="@id/message_item_icon"
+        android:layout_marginStart="@dimen/timeline_side_spacing"
         tools:background="@color/red"
         >
 
@@ -66,6 +71,7 @@
           android:layout_height="wrap_content"
           style="@style/TH.Caption"
           android:layout_alignParentRight="true"
+          android:layout_alignParentEnd="true"
           tools:text="A moment ago"
           android:layout_marginTop="0dip"
           android:maxLines="1"
@@ -78,6 +84,7 @@
           android:textColorLink="@color/tradehero_blue"
           style="@style/TH.UserNameTitle"
           android:layout_toLeftOf="@id/message_item_date"
+          android:layout_toStartOf="@id/message_item_date"
           tools:text="From me!"
           android:ellipsize="end"
           android:maxLines="1"
@@ -106,8 +113,8 @@
           android:maxLines="1"
           />
 
-
-
     </RelativeLayout>
+
   </LinearLayout>
+
 </com.tradehero.common.widget.swipe.SwipeLayout>

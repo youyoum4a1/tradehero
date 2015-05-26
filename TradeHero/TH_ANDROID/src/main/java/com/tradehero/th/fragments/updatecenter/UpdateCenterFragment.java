@@ -19,24 +19,18 @@ import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.social.AllRelationsFragment;
-import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.discussion.RunnableInvalidateMessageList;
 import com.tradehero.th.models.notification.RunnableInvalidateNotificationList;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.PreRoutable;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.THTabView;
@@ -58,7 +52,6 @@ public class UpdateCenterFragment extends BaseFragment
 
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject Analytics analytics;
 
     @Inject THRouter thRouter;
 
@@ -161,16 +154,6 @@ public class UpdateCenterFragment extends BaseFragment
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId())
-        {
-            case R.id.menu_private:
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Notification_New_Message));
-                navigator.get().pushFragment(AllRelationsFragment.class);
-                return true;
-            case R.id.menu_broadcast:
-                jumpToSendBroadcastMessage();
-                return true;
-        }
         Fragment f = getCurrentFragment();
         if (f != null)
         {
@@ -214,14 +197,6 @@ public class UpdateCenterFragment extends BaseFragment
         super.onDestroyOptionsMenu();
     }
 
-    private void jumpToSendBroadcastMessage()
-    {
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Notification_New_Broadcast));
-        Bundle args = new Bundle();
-        SendMessageFragment.putMessageType(args, MessageType.BROADCAST_ALL_FOLLOWERS);
-        navigator.get().pushFragment(SendMessageFragment.class, args);
-    }
-
     @Override public void onDestroyView()
     {
         // TODO Questionable, as specified by Liang, it should not be needed to clear the tabs here
@@ -244,7 +219,7 @@ public class UpdateCenterFragment extends BaseFragment
             return null;
         }
         String tag = mTabHost.getCurrentTabTag();
-        android.support.v4.app.FragmentManager fm = ((Fragment) this).getChildFragmentManager();
+        android.support.v4.app.FragmentManager fm = this.getChildFragmentManager();
         return fm.findFragmentByTag(tag);
     }
 

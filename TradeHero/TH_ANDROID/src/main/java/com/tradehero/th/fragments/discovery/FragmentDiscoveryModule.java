@@ -14,9 +14,6 @@ import javax.inject.Singleton;
 
                 NewsHeadlineFragment.class,
                 DiscoveryDiscussionFragment.class,
-
-                RegionalNewsSelectorView.class,
-                RegionalNewsSearchableSelectorView.class,
         },
         library = true,
         complete = false

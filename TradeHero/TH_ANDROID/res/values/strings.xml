@@ -274,6 +274,7 @@
 
   <!-- LeftDrawer -->
   <string name="left_drawer_footer_title">Content Partners:</string>
+  <string name="coming_soon">Coming soon!</string>
 
   <string name="best_roi">ROI:</string>
   <string name="content_sharing_started">Sharing&#8230;</string>

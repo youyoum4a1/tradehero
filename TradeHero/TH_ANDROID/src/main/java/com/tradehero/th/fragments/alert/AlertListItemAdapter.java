@@ -6,11 +6,13 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.widget.TextHolder;
 import java.util.Comparator;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
@@ -108,5 +110,15 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertItemView.DTO, A
     @Override public long getHeaderId(int position)
     {
         return getItem(position).alertCompactDTO.active ? HEADER_ID_ACTIVE : HEADER_ID_INACTIVE;
+    }
+
+    public static class TextHolder
+    {
+        @InjectView(R.id.title) public TextView text;
+
+        public TextHolder(View view)
+        {
+            ButterKnife.inject(this, view);
+        }
     }
 }

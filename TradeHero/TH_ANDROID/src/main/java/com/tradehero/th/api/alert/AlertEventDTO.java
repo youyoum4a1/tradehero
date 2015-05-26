@@ -7,8 +7,4 @@ public class AlertEventDTO
     public int id;
     public Date triggeredAt;
     public double securityPrice;
-
-    public AlertEventDTO()
-    {
-    }
 }

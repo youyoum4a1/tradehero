@@ -30,6 +30,6 @@
       android:layout_marginTop="10dp"
       android:padding="5dp"
       android:text="Example:\n\nPrivate message: 8143519\nBroadcast message: 8208452\nComment: 8145228\n"
-      />
+      tools:ignore="HardcodedText"/>
 
 </LinearLayout>

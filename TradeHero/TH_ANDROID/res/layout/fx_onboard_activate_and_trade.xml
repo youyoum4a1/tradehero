@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
   <com.tradehero.th.fragments.fxonboard.ActivateTradeView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
       style="@style/TH.FxOnBoardDialog"
       >
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,6 +19,7 @@
         android:gravity="center"
         style="@style/TH.Title"
         />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,12 +28,12 @@
         android:layout_marginTop="@dimen/margin_small"
         />
 
-      <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/margin_small"
-          android:layout_marginBottom="@dimen/margin_large"
-          android:background="@drawable/fx_onboard_image_3"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_large"
+        android:background="@drawable/fx_onboard_image_3"/>
 
     <TextView
         android:id="@+id/start_trading"
@@ -38,5 +42,7 @@
         android:text="@string/start_trading"
         style="@style/TH.FxOnBoardDialog.NextButton"
         />
+
   </com.tradehero.th.fragments.fxonboard.ActivateTradeView>
+
 </merge>
