@@ -17,31 +17,37 @@ import javax.inject.Inject;
  * This fragment will not be the main, but one that is pushed from elsewhere
  */
 @Routable({
-        "user/:userId",
-        "user/:heroIdFree/follow/free",
-        "user/:heroIdPremium/follow/premium",
+        "user/:" + PushableTimelineFragment.ROUTER_USER_ID,
+        "user/:" + PushableTimelineFragment.ROUTER_HERO_ID_FREE + "/follow/free",
+        "user/:" + PushableTimelineFragment.ROUTER_HERO_ID_PREMIUM + "/follow/premium",
 })
 public class PushableTimelineFragment extends TimelineFragment
 {
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
+    @RouteProperty(ROUTER_USER_ID) Integer userId;
     @RouteProperty(ROUTER_HERO_ID_FREE) Integer freeFollowHeroId;
     @RouteProperty(ROUTER_HERO_ID_PREMIUM) Integer premiumFollowHeroId;
 
+    public static final String ROUTER_USER_ID = "userId";
     public static final String ROUTER_HERO_ID_FREE = "heroIdFree";
     public static final String ROUTER_HERO_ID_PREMIUM = "heroIdPremium";
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    @Nullable @Override protected UserBaseKey getShownUserBaseKey()
     {
-        super.onCreate(savedInstanceState);
-        if (freeFollowHeroId != null)
+        if (userId != null)
         {
-            shownUserBaseKey = new UserBaseKey(freeFollowHeroId);
+            return new UserBaseKey(userId);
+        }
+        else if (freeFollowHeroId != null)
+        {
+            return new UserBaseKey(freeFollowHeroId);
         }
         else if (premiumFollowHeroId != null)
         {
-            shownUserBaseKey = new UserBaseKey(premiumFollowHeroId);
+            return new UserBaseKey(premiumFollowHeroId);
         }
+        return super.getShownUserBaseKey();
     }
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)

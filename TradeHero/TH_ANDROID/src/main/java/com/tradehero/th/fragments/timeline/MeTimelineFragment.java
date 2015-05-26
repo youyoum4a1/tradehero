@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.timeline;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,6 +11,7 @@ import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.UpdateCenterActivity;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -28,10 +29,9 @@ public class MeTimelineFragment extends TimelineFragment
 
     TextView unreadCountView;
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    @Nullable @Override protected UserBaseKey getShownUserBaseKey()
     {
-        super.onCreate(savedInstanceState);
-        thRouter.save(getArguments(), currentUserId.toUserBaseKey());
+        return currentUserId.toUserBaseKey();
     }
 
     @Override public void onResume()
