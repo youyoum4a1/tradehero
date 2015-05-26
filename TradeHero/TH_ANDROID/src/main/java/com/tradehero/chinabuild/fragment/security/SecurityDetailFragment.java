@@ -441,7 +441,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             llBuySaleButtons.setVisibility(View.VISIBLE);
             llSecurityBuy.setVisibility(View.VISIBLE);
             llSecuritySale.setVisibility(isCanSale ? View.VISIBLE : View.GONE);
-            if (isCanSale || isBuyOrSaleValid(true))
+            if (isCanSale || isBuyOrSaleValid(true, false))
             {
                 betterViewAnimator.setDisplayedChildByLayoutId(R.id.ic_info_buy_sale_btns);
             }
@@ -1226,9 +1226,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public boolean isBuyOrSaleValid(boolean isBuy)
+    public boolean isBuyOrSaleValid(boolean isBuy, boolean display)
     {
         if (quoteDTO == null) return false;
+        if (!display) {
+            return true;
+        }
         if (quoteDTO.ask == null && quoteDTO.bid == null)
         {//ask bid 都没有返回 则说明停牌
             showBuyOrSaleError(ERROR_NO_ASK_BID);
@@ -1276,7 +1279,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     public void enterBuySale(boolean isBuy) {
 
-        if (isBuyOrSaleValid(isBuy)) {
+        if (isBuyOrSaleValid(isBuy, true)) {
             Bundle bundle = new Bundle();
             if (portfolioCompactDTO!=null&& portfolioCompactDTO.getPortfolioId()!=null) {
                 bundle.putBundle(BuySaleSecurityFragment.KEY_PORTFOLIO_ID, portfolioCompactDTO.getPortfolioId().getArgs());
