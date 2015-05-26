@@ -444,13 +444,14 @@ public class PositionListFragment
         if (userAction instanceof PortfolioHeaderView.TimelineUserAction)
         {
             Bundle args = new Bundle();
-            thRouter.save(args, userAction.requested.getBaseKey());
-            if (currentUserId.toUserBaseKey().equals(userAction.requested.getBaseKey()))
+            UserBaseKey userToSee = userAction.requested.getBaseKey();
+            if (currentUserId.toUserBaseKey().equals(userToSee))
             {
                 navigator.get().pushFragment(MeTimelineFragment.class, args);
             }
             else
             {
+                PushableTimelineFragment.putUserBaseKey(args, userToSee);
                 navigator.get().pushFragment(PushableTimelineFragment.class, args);
             }
         }

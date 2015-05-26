@@ -30,7 +30,6 @@ import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
-import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
@@ -53,7 +52,6 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
     private FollowerListItemAdapter followerListAdapter;
     private UserBaseKey heroId;
     private FollowerSummaryDTO followerSummaryDTO;
-    @Inject THRouter thRouter;
 
     public static void putHeroId(@NonNull Bundle args, @NonNull UserBaseKey followerId)
     {
@@ -250,7 +248,7 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
     private void pushTimelineFragment(int followerId)
     {
         Bundle bundle = new Bundle();
-        thRouter.save(bundle, new UserBaseKey(followerId));
+        PushableTimelineFragment.putUserBaseKey(bundle, new UserBaseKey(followerId));
         navigator.get().pushFragment(PushableTimelineFragment.class, bundle);
     }
 

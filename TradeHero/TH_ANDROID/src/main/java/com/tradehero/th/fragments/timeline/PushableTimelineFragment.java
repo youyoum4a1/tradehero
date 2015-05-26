@@ -13,9 +13,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import javax.inject.Inject;
 
-/**
- * This fragment will not be the main, but one that is pushed from elsewhere
- */
 @Routable({
         "user/:" + PushableTimelineFragment.ROUTER_USER_ID,
         "user/:" + PushableTimelineFragment.ROUTER_HERO_ID_FREE + "/follow/free",

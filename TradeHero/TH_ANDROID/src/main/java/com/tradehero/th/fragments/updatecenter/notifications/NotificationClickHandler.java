@@ -22,7 +22,6 @@ import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -30,7 +29,6 @@ public class NotificationClickHandler
 {
     private final NotificationDTO notificationDTO;
 
-    @Inject THRouter thRouter;
     @Inject CurrentUserId currentUserId;
     @Inject DashboardNavigator navigator;
 
@@ -211,13 +209,13 @@ public class NotificationClickHandler
         {
             Bundle bundle = new Bundle();
             UserBaseKey referencedUser = new UserBaseKey(notificationDTO.referencedUserId);
-            thRouter.save(bundle, referencedUser);
             if (currentUserId.toUserBaseKey().equals(referencedUser))
             {
                 navigator.pushFragment(MeTimelineFragment.class, bundle);
             }
             else
             {
+                PushableTimelineFragment.putUserBaseKey(bundle, referencedUser);
                 navigator.pushFragment(PushableTimelineFragment.class, bundle);
             }
         }

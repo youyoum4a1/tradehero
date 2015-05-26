@@ -26,7 +26,6 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -41,7 +40,6 @@ public class FollowerListItemView extends RelativeLayout
     protected UserFollowerDTO userFollowerDTO;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
-    @Inject THRouter thRouter;
     @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Constructors">
@@ -99,7 +97,7 @@ public class FollowerListItemView extends RelativeLayout
     private void pushTimelineFragment()
     {
         Bundle bundle = new Bundle();
-        thRouter.save(bundle, new UserBaseKey(userFollowerDTO.id));
+        PushableTimelineFragment.putUserBaseKey(bundle, new UserBaseKey(userFollowerDTO.id));
         navigator.pushFragment(PushableTimelineFragment.class, bundle);
     }
 

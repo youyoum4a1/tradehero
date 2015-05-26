@@ -33,7 +33,6 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.GraphicUtil;
-import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.Subscription;
 
@@ -41,7 +40,6 @@ public class PortfolioListItemView extends RelativeLayout
         implements DTOView<DisplayablePortfolioDTO>
 {
     @Inject CurrentUserId currentUserId;
-    @Inject THRouter thRouter;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userImageTransformation;
     @Inject DashboardNavigator navigator;
@@ -98,13 +96,13 @@ public class PortfolioListItemView extends RelativeLayout
         {
             Bundle bundle = new Bundle();
             UserBaseKey userToSee = new UserBaseKey(displayablePortfolioDTO.userBaseDTO.id);
-            thRouter.save(bundle, userToSee);
             if (currentUserId.toUserBaseKey().equals(userToSee))
             {
                 navigator.pushFragment(MeTimelineFragment.class, bundle);
             }
             else
             {
+                PushableTimelineFragment.putUserBaseKey(bundle, userToSee);
                 navigator.pushFragment(PushableTimelineFragment.class, bundle);
             }
         }

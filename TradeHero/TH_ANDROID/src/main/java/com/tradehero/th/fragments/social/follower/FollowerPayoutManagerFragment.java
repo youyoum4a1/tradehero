@@ -22,12 +22,10 @@ import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.social.UserFollowerCacheRx;
 import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
@@ -52,7 +50,6 @@ public class FollowerPayoutManagerFragment extends DashboardFragment
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<UserFollowerCacheRx> userFollowerCache;
-    @Inject THRouter thRouter;
 
     public static void put(@NonNull Bundle args, @NonNull FollowerHeroRelationId followerHeroRelationId)
     {
@@ -215,7 +212,7 @@ public class FollowerPayoutManagerFragment extends DashboardFragment
         if (userFollowerDTO != null)
         {
             Bundle bundle = new Bundle();
-            thRouter.save(bundle, new UserBaseKey(userFollowerDTO.id));
+            PushableTimelineFragment.putUserBaseKey(bundle, new UserBaseKey(userFollowerDTO.id));
             navigator.get().pushFragment(PushableTimelineFragment.class, bundle);
         }
     }

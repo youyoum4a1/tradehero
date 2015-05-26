@@ -45,7 +45,6 @@ import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
-import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -66,7 +65,6 @@ public class MessagesCenterNewFragment extends BaseFragment
     @Inject Lazy<DiscussionListCacheRx> discussionListCache;
     @Inject Lazy<DiscussionCacheRx> discussionCache;
     @Inject CurrentUserId currentUserId;
-    @Inject THRouter thRouter;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Nullable private MessageListKey nextMoreRecentMessageListKey;
@@ -170,7 +168,6 @@ public class MessagesCenterNewFragment extends BaseFragment
                 targetUser = messageHeaderDTO.senderUserId;
             }
             UserBaseKey targetUserKey = new UserBaseKey(targetUser);
-            thRouter.save(bundle, targetUserKey);
             Timber.d("messageHeaderDTO recipientUserId:%s,senderUserId:%s,currentUserId%s", messageHeaderDTO.recipientUserId,
                     messageHeaderDTO.senderUserId, currentUserId.get());
             if (currentUserId.toUserBaseKey().equals(targetUserKey))
@@ -179,6 +176,7 @@ public class MessagesCenterNewFragment extends BaseFragment
             }
             else
             {
+                PushableTimelineFragment.putUserBaseKey(bundle, targetUserKey);
                 navigator.get().pushFragment(PushableTimelineFragment.class, bundle);
             }
         }

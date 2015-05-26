@@ -25,7 +25,6 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.social.FollowRequest;
-import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
@@ -44,7 +43,6 @@ public class RelationsListItemView extends RelativeLayout
 
     @Inject protected Lazy<Picasso> picassoLazy;
     @Inject @ForUserPhoto protected Lazy<Transformation> peopleIconTransformationLazy;
-    @Inject THRouter thRouter;
     @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Constructors">
@@ -99,7 +97,7 @@ public class RelationsListItemView extends RelativeLayout
         int userId = allowableRecipientDTO.user.id;
 
         Bundle bundle = new Bundle();
-        thRouter.save(bundle, new UserBaseKey(userId));
+        PushableTimelineFragment.putUserBaseKey(bundle, new UserBaseKey(userId));
         navigator.pushFragment(PushableTimelineFragment.class, bundle);
     }
 

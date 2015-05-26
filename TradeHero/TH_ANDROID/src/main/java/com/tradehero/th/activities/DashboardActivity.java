@@ -65,6 +65,7 @@ import com.tradehero.th.fragments.competition.CompetitionEnrollmentBroadcastSign
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
+import com.tradehero.th.fragments.dashboard.DrawerLayoutUtil;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
@@ -316,7 +317,7 @@ public class DashboardActivity extends BaseActivity
                             {
                                 for (RootFragmentType fragmentType : fragmentTypes)
                                 {
-                                    View content = RootFragmentType.createDrawerItemFromTabType(DashboardActivity.this, drawerLayout, fragmentType);
+                                    View content = DrawerLayoutUtil.createDrawerItemFromTabType(DashboardActivity.this, drawerLayout, fragmentType);
                                     content.setOnClickListener(leftDrawerMenuItemClickListener);
                                     drawerContents.addView(content);
                                 }

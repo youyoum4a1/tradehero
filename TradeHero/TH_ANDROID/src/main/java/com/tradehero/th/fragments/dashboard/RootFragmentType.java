@@ -1,18 +1,12 @@
 package com.tradehero.th.fragments.dashboard;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AdminSettingsActivity;
 import com.tradehero.th.activities.AlertManagerActivity;
@@ -180,22 +174,5 @@ public enum RootFragmentType
     @NonNull public static RootFragmentType getInitialTab()
     {
         return RootFragmentType.TRENDING;
-    }
-
-    public static View createDrawerItemFromTabType(@NonNull Context context, @NonNull DrawerLayout drawerLayout, @NonNull RootFragmentType tabType)
-    {
-
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View created = inflater.inflate(tabType.viewResId, drawerLayout, false);
-        ImageView image = (ImageView) created.findViewById(android.R.id.icon);
-        TextView title = (TextView) created.findViewById(android.R.id.text1);
-        image.setImageResource(tabType.drawableResId);
-        title.setText(tabType.stringResId);
-        created.setTag(tabType);
-
-        //Add the background selector
-        //created.setBackgroundResource(R.drawable.basic_transparent_selector);
-
-        return created;
     }
 }

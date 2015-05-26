@@ -183,10 +183,9 @@ public class TimelineFragment extends DashboardFragment
     @SuppressLint("InflateParams")
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_timeline, container, false);
         userProfileView = (UserProfileDetailView) inflater.inflate(R.layout.user_profile_detail_view, null);
         loadingView = new ProgressBar(getActivity());
-        return view;
+        return inflater.inflate(R.layout.fragment_timeline, container, false);
     }
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
