@@ -177,7 +177,7 @@ public class HeroListItemView extends RelativeLayout
 
     public void displayTitle()
     {
-        title.setText(UserBaseDTOUtil.getShortDisplayName(getContext(), heroDTO));
+        title.setText(UserBaseDTOUtil.getShortDisplayName(getResources(), heroDTO));
     }
 
     public void displayDateInfo()

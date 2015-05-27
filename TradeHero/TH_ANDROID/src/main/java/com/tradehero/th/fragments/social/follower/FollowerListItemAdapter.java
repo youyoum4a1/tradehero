@@ -1,89 +1,118 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import com.tradehero.th.api.social.FollowerSummaryDTO;
+import android.widget.ArrayAdapter;
 import com.tradehero.th.api.social.UserFollowerDTO;
+import java.util.ArrayList;
+import java.util.List;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
-public class FollowerListItemAdapter extends BaseAdapter
+public class FollowerListItemAdapter extends ArrayAdapter<Object>
 {
-    @NonNull protected final Context context;
-    protected final LayoutInflater inflater;
+    private static final int VIEW_TYPE_DTO = 0;
+    private static final int VIEW_TYPE_ACTION = 1;
+    public static final String ITEM_CALL_TO_ACTION = "CallToAction";
+
     @LayoutRes protected final int followerResId;
-    protected FollowerSummaryDTO followerSummaryDTO;
+    @LayoutRes protected final int actionResId;
+    @NonNull private final PublishSubject<FollowerListItemView.UserAction> userActionSubject;
 
     //<editor-fold desc="Constructors">
-    public FollowerListItemAdapter(@NonNull Context context, @LayoutRes int followerResId)
+    public FollowerListItemAdapter(
+            @NonNull Context context,
+            @LayoutRes int followerResId,
+            @LayoutRes int actionResId)
     {
-        super();
-        this.context = context;
-        this.inflater = LayoutInflater.from(context);
+        super(context, followerResId);
         this.followerResId = followerResId;
+        this.actionResId = actionResId;
+        this.userActionSubject = PublishSubject.create();
     }
     //</editor-fold>
 
-    public void setFollowerSummaryDTO(FollowerSummaryDTO followerSummaryDTO)
+    @NonNull public static List<Object> createObjects(
+            @NonNull Resources resources,
+            @NonNull List<? extends UserFollowerDTO> userFollowers)
     {
-        this.followerSummaryDTO = followerSummaryDTO;
-    }
-
-    @Override public boolean hasStableIds()
-    {
-        return true;
+        List<Object> objects = new ArrayList<>();
+        if (userFollowers.size() > 0)
+        {
+            for (UserFollowerDTO userFollowerDTO : userFollowers)
+            {
+                objects.add(new FollowerListItemView.DTO(resources, userFollowerDTO));
+            }
+        }
+        else
+        {
+            objects.add(ITEM_CALL_TO_ACTION);
+        }
+        return objects;
     }
 
     @Override public int getViewTypeCount()
     {
-        return 1;
+        return 2;
     }
 
-    public int getFollowerRealCount()
+    @Override public int getItemViewType(int position)
     {
-        return (followerSummaryDTO == null || followerSummaryDTO.userFollowers == null) ?
-                0 :
-                followerSummaryDTO.userFollowers.size();
-    }
-
-    @Override public int getCount()
-    {
-        return getFollowerRealCount();
-    }
-
-    @Override public long getItemId(int position)
-    {
-        Object item = getItem(position);
-        return item == null ? 0 : item.hashCode();
-    }
-
-    @Override public Object getItem(int position)
-    {
-        return getFollowerForPosition(position);
-    }
-
-    public UserFollowerDTO getFollowerForPosition(int position)
-    {
-        return (followerSummaryDTO == null || followerSummaryDTO.userFollowers == null) ?
-                null :
-                followerSummaryDTO.userFollowers.get(position);
+        return super.getItem(position) instanceof FollowerListItemView.DTO
+                ? VIEW_TYPE_DTO
+                : VIEW_TYPE_ACTION;
     }
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
-        if (!(convertView instanceof FollowerListItemView))
+        if (convertView == null)
         {
-            convertView = inflater.inflate(followerResId, parent, false);
+            convertView = inflate(position, parent);
         }
-        ((FollowerListItemView) convertView).display((UserFollowerDTO) getItem(position));
+        if (convertView instanceof FollowerListItemView)
+        {
+            ((FollowerListItemView) convertView).display((FollowerListItemView.DTO) getItem(position));
+        }
         return convertView;
+    }
+
+    @NonNull protected View inflate(int position, ViewGroup parent)
+    {
+        View view = LayoutInflater.from(getContext()).inflate(getLayoutRes(position), parent, false);
+        if (view instanceof FollowerListItemView)
+        {
+            ((FollowerListItemView) view).getUserActionObservable().subscribe(userActionSubject);
+        }
+        return view;
+    }
+
+    @LayoutRes protected int getLayoutRes(int position)
+    {
+        switch (getItemViewType(position))
+        {
+            case VIEW_TYPE_DTO:
+                return followerResId;
+
+            case VIEW_TYPE_ACTION:
+                return actionResId;
+
+            default:
+                throw new IllegalArgumentException("Unhandled view type " + getItemViewType(position));
+        }
     }
 
     @Override public boolean areAllItemsEnabled()
     {
         return true;
+    }
+
+    @NonNull public Observable<FollowerListItemView.UserAction> getUserActionObservable()
+    {
+        return userActionSubject.asObservable();
     }
 }

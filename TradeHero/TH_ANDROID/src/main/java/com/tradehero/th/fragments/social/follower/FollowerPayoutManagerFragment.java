@@ -122,7 +122,7 @@ public class FollowerPayoutManagerFragment extends DashboardFragment
                 return followerHeroRelationId.followerName;
             }
         }
-        return UserBaseDTOUtil.getShortDisplayName(getActivity(), userFollowerDTO);
+        return UserBaseDTOUtil.getShortDisplayName(getResources(), userFollowerDTO);
     }
 
     public void display(UserFollowerDTO summaryDTO)

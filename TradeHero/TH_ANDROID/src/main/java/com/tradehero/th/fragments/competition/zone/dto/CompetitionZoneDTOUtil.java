@@ -89,7 +89,7 @@ public class CompetitionZoneDTOUtil
 
             if (providerDTO.associatedPortfolio != null && portfolioUserProfileCompact != null)
             {
-                String subtitle = PortfolioCompactDTOUtil.getPortfolioSubtitle(context, providerDTO.associatedPortfolio, null);
+                String subtitle = PortfolioCompactDTOUtil.getPortfolioSubtitle(context.getResources(), providerDTO.associatedPortfolio, null);
                 list.add(Pair.create(
                         CompetitionZoneListItemAdapter.ITEM_TYPE_PORTFOLIO,
                         (CompetitionZoneDTO) new CompetitionZonePortfolioDTO(

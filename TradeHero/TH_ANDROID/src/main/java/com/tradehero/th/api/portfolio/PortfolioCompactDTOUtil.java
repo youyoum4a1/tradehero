@@ -1,6 +1,5 @@
 package com.tradehero.th.api.portfolio;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
@@ -109,7 +108,7 @@ public class PortfolioCompactDTOUtil
     }
 
     @Nullable public static String getPortfolioSubtitle(
-            @NonNull Context context,
+            @NonNull Resources resources,
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
             @Nullable String userName)
     {
@@ -119,12 +118,12 @@ public class PortfolioCompactDTOUtil
             {
                 if (userName != null && !userName.isEmpty())
                 {
-                    return context.getString(
+                    return resources.getString(
                             R.string.portfolio_description_count_open_positions_other,
                             portfolioCompactDTO.openPositionsCount,
                             userName);
                 }
-                return context.getString(
+                return resources.getString(
                         R.string.portfolio_description_count_open_positions_you,
                         portfolioCompactDTO.openPositionsCount);
             }
@@ -132,12 +131,12 @@ public class PortfolioCompactDTOUtil
             {
                 if (userName != null && !userName.isEmpty())
                 {
-                    return context.getString(
+                    return resources.getString(
                             R.string.portfolio_description_count_closed_positions_other,
                             portfolioCompactDTO.closedPositionsCount,
                             userName);
                 }
-                return context.getString(
+                return resources.getString(
                         R.string.portfolio_description_count_closed_positions_you,
                         portfolioCompactDTO.closedPositionsCount);
             }
@@ -145,12 +144,12 @@ public class PortfolioCompactDTOUtil
             {
                 if (userName != null && !userName.isEmpty())
                 {
-                    return context.getString(
+                    return resources.getString(
                             R.string.portfolio_description_count_watch_positions_other,
                             portfolioCompactDTO.watchlistPositionsCount,
                             userName);
                 }
-                return context.getString(
+                return resources.getString(
                         R.string.portfolio_description_count_watch_positions_you,
                         portfolioCompactDTO.watchlistPositionsCount);
             }

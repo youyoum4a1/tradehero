@@ -11,8 +11,6 @@ import dagger.Module;
                 FreeFollowerFragment.class,
                 FollowerPayoutManagerFragment.class,
                 FollowerListItemView.class,
-                FollowerRevenueListItemView.class,
-                FollowerRoiListItemView.class,
                 SendMessageFragment.class,
         },
         library = true,

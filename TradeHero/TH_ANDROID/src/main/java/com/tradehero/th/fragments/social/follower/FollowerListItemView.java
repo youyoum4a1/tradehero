@@ -1,12 +1,17 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.content.Context;
-import android.os.Bundle;
+import android.content.res.Resources;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.Spanned;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -18,44 +23,54 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public class FollowerListItemView extends RelativeLayout
-        implements DTOView<UserFollowerDTO>
+        implements DTOView<FollowerListItemView.DTO>
 {
+    private static final int INDEX_VIEW_REVENUE = 0;
+    private static final int INDEX_VIEW_FREE = 1;
+
     @InjectView(R.id.follower_profile_picture) ImageView userIcon;
     @InjectView(R.id.follower_title) TextView title;
     @InjectView(R.id.follower_revenue) @Optional TextView revenueInfo;
     @InjectView(R.id.country_logo) ImageView country;
+    @InjectView(R.id.follower_roi_info) @Optional TextView roiInfo;
+    @InjectView(R.id.revenue_switcher) @Optional ViewSwitcher typeSwitcher;
 
-    protected UserFollowerDTO userFollowerDTO;
+    @NonNull final PublishSubject<UserAction> userActionSubject;
+    @Nullable protected DTO dto;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
-    @Inject DashboardNavigator navigator;
 
     //<editor-fold desc="Constructors">
     public FollowerListItemView(Context context)
     {
         super(context);
+        userActionSubject = PublishSubject.create();
     }
 
     public FollowerListItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        userActionSubject = PublishSubject.create();
     }
 
     public FollowerListItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
+        userActionSubject = PublishSubject.create();
     }
     //</editor-fold>
 
@@ -80,6 +95,10 @@ public class FollowerListItemView extends RelativeLayout
 
     @Override protected void onDetachedFromWindow()
     {
+        if (userIcon != null)
+        {
+            picasso.get().cancelRequest(userIcon);
+        }
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
@@ -88,94 +107,104 @@ public class FollowerListItemView extends RelativeLayout
     @OnClick({R.id.follower_profile_picture})
     public void onProfilePictureClicked(View v)
     {
-        if (userFollowerDTO != null)
+        if (dto != null)
         {
-            pushTimelineFragment();
+            userActionSubject.onNext(new UserAction(dto, UserActionType.PROFILE));
         }
     }
 
-    private void pushTimelineFragment()
+    public void display(@NonNull DTO dto)
     {
-        Bundle bundle = new Bundle();
-        PushableTimelineFragment.putUserBaseKey(bundle, new UserBaseKey(userFollowerDTO.id));
-        navigator.pushFragment(PushableTimelineFragment.class, bundle);
-    }
+        this.dto = dto;
 
-    public void display(UserFollowerDTO followerDTO)
-    {
-        this.userFollowerDTO = followerDTO;
-        display();
-    }
-
-    //<editor-fold desc="Display Methods">
-    public void display()
-    {
-        displayUserIcon();
-        displayCountryLogo();
-        displayTitle();
-        displayRevenue();
-    }
-
-    public void displayUserIcon()
-    {
-
-        displayDefaultUserIcon();
-
-        if (userIcon != null && userFollowerDTO != null)
+        if (userIcon != null)
         {
-            picasso.get().load(userFollowerDTO.picture)
+            picasso.get().load(dto.userFollowerDTO.picture)
                     .transform(peopleIconTransformation)
-                            //TODO if this view is reused, userIcon.getDrawable() may returns the different drawable
-                    .placeholder(userIcon.getDrawable())
+                    .placeholder(R.drawable.superman_facebook)
                     .error(R.drawable.superman_facebook)
                     .into(userIcon);
         }
-    }
-
-    public void displayDefaultUserIcon()
-    {
-        picasso.get().load(R.drawable.superman_facebook)
-                .transform(peopleIconTransformation)
-                .into(userIcon);
-    }
-
-    public void displayCountryLogo()
-    {
         if (country != null)
         {
-            int imageResId = R.drawable.default_image;
-            if (userFollowerDTO != null)
-            {
-                imageResId = Country.getCountryLogo(R.drawable.default_image, userFollowerDTO.countryCode);
-            }
-            country.setImageResource(imageResId);
+            country.setImageResource(dto.countryFlagResId);
         }
-    }
-
-    public void displayTitle()
-    {
         if (title != null)
         {
-            title.setText(UserBaseDTOUtil.getShortDisplayName(getContext(), userFollowerDTO));
+            title.setText(dto.titleText);
+        }
+        if (revenueInfo != null)
+        {
+            revenueInfo.setText(dto.revenueText);
+        }
+        if (roiInfo != null)
+        {
+            roiInfo.setText(dto.roiInfoText);
+        }
+        if (typeSwitcher != null)
+        {
+            typeSwitcher.setDisplayedChild(dto.userFollowerDTO.isFreeFollow ?
+                    INDEX_VIEW_FREE :
+                    INDEX_VIEW_REVENUE);
         }
     }
 
-    public void displayRevenue()
+    @NonNull public Observable<UserAction> getUserActionObservable()
     {
-        if (revenueInfo != null)
+        return userActionSubject.asObservable();
+    }
+
+    public static class DTO
+    {
+        @NonNull public final UserFollowerDTO userFollowerDTO;
+        @DrawableRes public final int countryFlagResId;
+        public final String titleText;
+        public final String revenueText;
+        public final Spanned roiInfoText;
+
+        public DTO(@NonNull Resources resources, @NonNull UserFollowerDTO userFollowerDTO)
         {
-            if (userFollowerDTO != null)
-            {
-                THSignedNumber revenue = THSignedMoney.builder(userFollowerDTO.totalRevenue)
-                        .currency(SecurityUtils.getDefaultCurrency())
-                        .build();
-                revenueInfo.setText(revenue.toString());
-            }
-            else
-            {
-                revenueInfo.setText(R.string.na);
-            }
+            this.userFollowerDTO = userFollowerDTO;
+            countryFlagResId = Country.getCountryLogo(R.drawable.default_image, userFollowerDTO.countryCode);
+            titleText = UserBaseDTOUtil.getShortDisplayName(resources, userFollowerDTO);
+            revenueText = THSignedMoney.builder(userFollowerDTO.totalRevenue)
+                    .currency(SecurityUtils.getDefaultCurrency())
+                    .build()
+                    .toString();
+            roiInfoText = THSignedPercentage
+                    .builder(userFollowerDTO.roiSinceInception * 100)
+                    .withDefaultColor()
+                    .build()
+                    .createSpanned();
         }
     }
-    //</editor-fold>
+
+    @NonNull public static List<DTO> createList(
+            @NonNull Resources resources,
+            @NonNull Collection<? extends UserFollowerDTO> userFollowerDTOs)
+    {
+        List<DTO> list = new ArrayList<>();
+        for (UserFollowerDTO userFollowerDTO : userFollowerDTOs)
+        {
+            list.add(new DTO(resources, userFollowerDTO));
+        }
+        return list;
+    }
+
+    public enum UserActionType
+    {
+        PROFILE;
+    }
+
+    public static class UserAction
+    {
+        @NonNull public final DTO dto;
+        @NonNull public final UserActionType actionType;
+
+        public UserAction(@NonNull DTO dto, @NonNull UserActionType actionType)
+        {
+            this.dto = dto;
+            this.actionType = actionType;
+        }
+    }
 }

@@ -490,7 +490,7 @@ public class TimelineFragment extends DashboardFragment
             }
             else
             {
-                setActionBarTitle(UserBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
+                setActionBarTitle(UserBaseDTOUtil.getLongDisplayName(getResources(), shownProfile));
             }
         }
         else
