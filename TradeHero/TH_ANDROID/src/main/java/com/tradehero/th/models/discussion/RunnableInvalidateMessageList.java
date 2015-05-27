@@ -1,24 +1,18 @@
 package com.tradehero.th.models.discussion;
 
-import android.support.annotation.NonNull;
+import com.tradehero.th.base.THApp;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
 public class RunnableInvalidateMessageList implements Runnable
 {
-    @Inject @NonNull MessageHeaderListCacheRx messageHeaderListCache;
+    @Inject MessageHeaderListCacheRx messageHeaderListCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public RunnableInvalidateMessageList(
-            @NonNull MessageHeaderListCacheRx messageHeaderListCache)
-    {
-        this.messageHeaderListCache = messageHeaderListCache;
-    }
-
     public RunnableInvalidateMessageList()
     {
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(THApp.context(), this);
     }
     //</editor-fold>
 

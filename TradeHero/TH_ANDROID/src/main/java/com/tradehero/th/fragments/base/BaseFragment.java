@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -220,7 +220,7 @@ public class BaseFragment extends Fragment
     {
         if (getActivity() != null)
         {
-            return ((ActionBarActivity) getActivity()).getSupportActionBar();
+            return ((AppCompatActivity) getActivity()).getSupportActionBar();
         }
         else
         {

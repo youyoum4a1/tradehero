@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -31,7 +31,7 @@ import java.util.List;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-public class BaseActivity extends ActionBarActivity
+public class BaseActivity extends AppCompatActivity
         implements OnAccountsUpdateListener, Injector
 {
     public static final int REQUEST_CODE_ROUTE = "REQUEST_CODE_ROUTE".hashCode() & 0xFF; // 16 bit only
