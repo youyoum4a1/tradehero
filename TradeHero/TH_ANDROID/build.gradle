@@ -116,6 +116,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.1.1'
+    compile "com.android.support:recyclerview-v7:22.1.1"
     compile 'com.nineoldandroids:library:2.4.0'
     compile('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
         exclude group: 'com.nineoldandroids', module: 'library'
