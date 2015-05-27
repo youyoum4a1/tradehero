@@ -470,7 +470,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
                 FragmentUtils.getParent(this, OnHeroesLoadedListener.class);
         if (listener != null && !isDetached())
         {
-            listener.onHerosLoaded(getHeroTypeResource(), value);
+            listener.onHeroesLoaded(getHeroTypeResource(), value);
         }
     }
 }

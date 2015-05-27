@@ -61,13 +61,13 @@ public class FollowerManagerFragment extends DashboardFragment
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject THRouter router;
 
+    @RouteProperty("tabIndexMe") Integer routedTabIndexMe;
     @RouteProperty("heroId") Integer routedHeroId;
     @RouteProperty("heroIdWithTab") Integer routedHeroIdWithTab;
     @RouteProperty("heroIdForAll") Integer routedHeroIdForAll;
     @RouteProperty("heroIdForFree") Integer routedHeroIdForFree;
     @RouteProperty("heroIdForPremium") Integer routedHeroIdForPremium;
     @RouteProperty("tabIndex") Integer routedTabIndex;
-    @RouteProperty("tabIndexMe") Integer routedTabIndexMe;
 
     private UserBaseKey heroId;
     @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
@@ -94,9 +94,6 @@ public class FollowerManagerFragment extends DashboardFragment
         router.registerAlias("user/me/followers/all", "user/me/followers/tab-index/" + new AllHeroTypeResourceDTO().followerTabIndex);
         router.registerAlias("user/me/followers/free", "user/me/followers/tab-index/" + new FreeHeroTypeResourceDTO().followerTabIndex);
         router.registerAlias("user/me/followers/premium", "user/me/followers/tab-index/" + new PremiumHeroTypeResourceDTO().followerTabIndex);
-        router.registerAlias("user/:heroIdWithTab/followers/all", "user/:heroIdWithTab/followers/tab-index/" + new AllHeroTypeResourceDTO().followerTabIndex);
-        router.registerAlias("user/:heroIdWithTab/followers/free", "user/:heroIdWithTab/followers/tab-index/" + new FreeHeroTypeResourceDTO().followerTabIndex);
-        router.registerAlias("user/:heroIdWithTab/followers/premium", "user/:heroIdWithTab/followers/tab-index/" + new PremiumHeroTypeResourceDTO().followerTabIndex);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)

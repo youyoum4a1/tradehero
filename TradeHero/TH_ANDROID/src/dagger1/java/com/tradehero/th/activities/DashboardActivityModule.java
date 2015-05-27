@@ -33,6 +33,7 @@ import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
+import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
@@ -87,6 +88,7 @@ class DashboardActivityModule
                 FXInfoFragment.class,
                 FXMainFragment.class,
                 FXMainFragment.class,
+                HeroManagerFragment.class,
                 LeaderboardCommunityFragment.class,
                 MainCompetitionFragment.class,
                 MessagesCenterNewFragment.class,
@@ -106,6 +108,7 @@ class DashboardActivityModule
         );
         DiscoveryMainFragment.registerAliases(router);
         FollowerManagerFragment.registerAliases(router);
+        HeroManagerFragment.registerAliases(router);
         StoreScreenFragment.registerAliases(router);
         UpdateCenterFragment.registerAliases(router);
         return router;

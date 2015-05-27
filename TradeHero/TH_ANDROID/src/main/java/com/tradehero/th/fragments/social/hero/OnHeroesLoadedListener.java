@@ -5,5 +5,5 @@ import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 
 public interface OnHeroesLoadedListener
 {
-    void onHerosLoaded(HeroTypeResourceDTO resourceDTO, HeroDTOExtWrapper value);
+    void onHeroesLoaded(HeroTypeResourceDTO resourceDTO, HeroDTOExtWrapper value);
 }
