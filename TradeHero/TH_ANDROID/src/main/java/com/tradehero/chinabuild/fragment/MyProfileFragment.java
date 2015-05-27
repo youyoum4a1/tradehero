@@ -10,18 +10,18 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import android.view.Menu;
-import android.view.MenuInflater;
+
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -31,21 +31,22 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.BitmapTypedOutput;
-import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.BitmapForProfileFactory;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-import dagger.Lazy;
+
+import java.io.File;
 
 import javax.inject.Inject;
-import java.io.File;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
 
 public class MyProfileFragment extends DashboardFragment implements View.OnClickListener {
 
@@ -61,11 +62,9 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
     @InjectView(R.id.name) TextView mName;
     @InjectView(R.id.account_layout) RelativeLayout mAccountLayout;
     @InjectView(R.id.social_layout) RelativeLayout mSocialLayout;
-    @Inject BitmapForProfileFactory bitmapForProfileFactory;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
-    @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
     @Inject MainCredentialsPreference mainCredentialsPreference;
 
     private UserProfileDTO userProfileDTO;

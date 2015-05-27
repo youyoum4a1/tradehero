@@ -5,22 +5,36 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.widget.AbsListView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
-import com.squareup.picasso.Picasso;
-import com.tradehero.chinabuild.data.*;
-import com.tradehero.chinabuild.dialog.*;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tradehero.chinabuild.data.DiscussReportDTO;
+import com.tradehero.chinabuild.data.ManageEssentialDTO;
+import com.tradehero.chinabuild.data.ManageLearningDTO;
+import com.tradehero.chinabuild.data.ManageProductionDTO;
+import com.tradehero.chinabuild.data.ManageTopDTO;
+import com.tradehero.chinabuild.dialog.DialogFactory;
+import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
+import com.tradehero.chinabuild.dialog.TimeLineCommentDialogLayout;
+import com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout;
+import com.tradehero.chinabuild.dialog.TimeLineReportDialogLayout;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.listview.SecurityListView;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
@@ -30,10 +44,18 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.TimeLineBaseAdapter;
 import com.tradehero.th.adapters.TimeLineDetailDiscussSecItem;
 import com.tradehero.th.adapters.UserTimeLineAdapter;
-import com.tradehero.th.api.discussion.*;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionKeyList;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
-import com.tradehero.th.api.discussion.key.*;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
+import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
@@ -57,18 +79,28 @@ import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.*;
+import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.DeviceUtil;
+import com.tradehero.th.utils.InputTools;
+import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
-import dagger.Lazy;
+
 import org.jetbrains.annotations.NotNull;
 import org.ocpsoft.prettytime.PrettyTime;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TimeLineItemDetailFragment extends DashboardFragment implements DiscussionListCacheNew.DiscussionKeyListListener, View.OnClickListener {
 
@@ -105,7 +137,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     AbstractDiscussionCompactDTO dataDto;
 
     @Inject public Lazy<PrettyTime> prettyTime;
-    @Inject Picasso picasso;
     private MiddleCallback<DiscussionDTO> voteCallback;
     private Dialog mShareSheetDialog;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
@@ -526,18 +557,18 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                 tvUserTLName.setText(((DiscussionDTO) dto).user.getDisplayName());
                 tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(((DiscussionDTO) dto).createdAtUtc));
                 tvUserTLContent.setText(((DiscussionDTO) dto).text);
-                picasso.load(((DiscussionDTO) dto).user.picture)
-                        .placeholder(R.drawable.avatar_default)
-                        .error(R.drawable.avatar_default)
-                        .into(imgSecurityTLUserHeader);
+                ImageLoader.getInstance()
+                        .displayImage(((DiscussionDTO) dto).user.picture,
+                                imgSecurityTLUserHeader,
+                                UniversalImageLoader.getAvatarImageLoaderOptions(false));
             } else if (dto instanceof TimelineItemDTO) {
                 tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(((TimelineItemDTO) dto).createdAtUtc));
                 tvUserTLName.setText(((TimelineItemDTO) dto).user.getDisplayName());
                 tvUserTLContent.setText(((TimelineItemDTO) dto).text);
-                picasso.load(((TimelineItemDTO) dto).user.picture)
-                        .placeholder(R.drawable.avatar_default)
-                        .error(R.drawable.avatar_default)
-                        .into(imgSecurityTLUserHeader);
+                ImageLoader.getInstance()
+                        .displayImage(((TimelineItemDTO) dto).user.picture,
+                                imgSecurityTLUserHeader,
+                                UniversalImageLoader.getAvatarImageLoaderOptions(false));
             }
 
             btnTLPraise.setBackgroundResource(dto.voteDirection == 1 ? R.drawable.icon_praise_active : R.drawable.icon_praise_normal);

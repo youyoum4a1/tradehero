@@ -8,8 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.Window;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
+
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
@@ -21,29 +20,30 @@ import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WeChatServiceWrapper;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NetworkUtils;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-import dagger.Lazy;
+
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
+
+import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler //created by alex
 {
@@ -60,9 +60,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     @Inject CurrentUserId currentUserId;
     @Inject IWXAPI mWeChatApi;
     @Inject WeChatServiceWrapper weChatServiceWrapper;
-    @Inject Lazy<Picasso> picassoLazy;
-    @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
-
     @Inject Analytics analytics;
 
     private static String WECHAT_CODE;

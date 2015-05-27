@@ -10,9 +10,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.squareup.picasso.Picasso;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.EmptyDiscussionCompactDTO;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -22,12 +24,15 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
-import dagger.Lazy;
+
 import org.ocpsoft.prettytime.PrettyTime;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import dagger.Lazy;
 
 /**
  * Created by palmer on 14-11-11.
@@ -35,7 +40,6 @@ import java.util.List;
 public class TimeLineDetailDiscussSecItem extends BaseAdapter
 {
 
-    @Inject Lazy<Picasso> picasso;
     private List<AbstractDiscussionCompactDTO> listData = new ArrayList<AbstractDiscussionCompactDTO>();
     @Inject public Lazy<PrettyTime> prettyTime;
     public Context context;
@@ -119,11 +123,10 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter
             {
 
                 holder.user.setText(discussionDTO.user.getDisplayName());
-                picasso.get()
-                        .load(((DiscussionDTO) item).user.picture)
-                        .placeholder(R.drawable.avatar_default)
-                        .error(R.drawable.avatar_default)
-                        .into(holder.avatar);
+                ImageLoader.getInstance()
+                        .displayImage(((DiscussionDTO) item).user.picture,
+                                holder.avatar,
+                                UniversalImageLoader.getAvatarImageLoaderOptions(false));
             }
             else
             {

@@ -12,9 +12,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.squareup.picasso.Picasso;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.EmptyDiscussionCompactDTO;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -27,20 +29,21 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
-import java.util.List;
 
 public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
 {
 
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     private MiddleCallback<DiscussionDTO> voteCallback;
-    @Inject Lazy<Picasso> picasso;
     private List<AbstractDiscussionCompactDTO> listData;
 
     private Animation praiseAnimation;
@@ -172,11 +175,10 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
             holder.tvUserTLContent.setText(((DiscussionDTO) item).text);
             holder.tvUserTLName.setText(((DiscussionDTO) item).user.getDisplayName());
             holder.imgSecurityTLUserHeader.setVisibility(View.VISIBLE);
-            picasso.get()
-                    .load(((DiscussionDTO) item).user.picture)
-                    .placeholder(R.drawable.avatar_default)
-                    .error(R.drawable.avatar_default)
-                    .into(holder.imgSecurityTLUserHeader);
+            ImageLoader.getInstance()
+                    .displayImage(((DiscussionDTO) item).user.picture,
+                            holder.imgSecurityTLUserHeader,
+                            UniversalImageLoader.getAvatarImageLoaderOptions(false));
             holder.imgSecurityTLUserHeader.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(View view)

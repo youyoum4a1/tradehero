@@ -7,21 +7,20 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.squareup.picasso.Picasso;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchUserListAdapter extends BaseAdapter
 {
-    @Inject Lazy<Picasso> picasso;
     private Context context;
     private LayoutInflater inflater;
     private List<UserSearchResultDTO> userSearchResultDTOs;
@@ -81,12 +80,10 @@ public class SearchUserListAdapter extends BaseAdapter
             {
                 holder = (ViewHolder) convertView.getTag();
             }
-
-            picasso.get()
-                    .load(item.userPicture)
-                    .placeholder(R.drawable.avatar_default)
-                    .error(R.drawable.avatar_default)
-                    .into(holder.imgUserHead);
+            ImageLoader.getInstance()
+                    .displayImage(item.userPicture,
+                            holder.imgUserHead,
+                            UniversalImageLoader.getAvatarImageLoaderOptions(false));
 
             holder.imgUserName.setText(item.userthDisplayName);
 

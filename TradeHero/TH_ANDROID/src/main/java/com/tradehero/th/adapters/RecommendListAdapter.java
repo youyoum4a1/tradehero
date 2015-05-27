@@ -1,5 +1,6 @@
 package com.tradehero.th.adapters;
 
+import android.media.Image;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -11,9 +12,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.squareup.picasso.Picasso;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.RecommendHero;
 import com.tradehero.chinabuild.data.RecommendStock;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.RecommendStocksActivity;
 import com.tradehero.th.utils.ColorUtils;
@@ -177,13 +180,17 @@ public class RecommendListAdapter extends BaseAdapter
             TextView heroToolbarTV = (TextView) convertView.findViewById(R.id.textview_recommend_list_hero_toolbar);
             TextView titleHeroTV = (TextView) convertView.findViewById(R.id.textview_recommend_list_hero_title);
             ImageView heroSelectIV = (ImageView) convertView.findViewById(R.id.imageview_recommend_list_hero_select);
-            View downHeroDividerView = (View) convertView.findViewById(R.id.view_recommend_list_hero_down_divider);
+            View downHeroDividerView = convertView.findViewById(R.id.view_recommend_list_hero_down_divider);
             RelativeLayout heroRL = (RelativeLayout) convertView.findViewById(R.id.relativelayout_recommend_list_hero_item);
             RecommendHero hero = heroes.get(i);
             if (!TextUtils.isEmpty(hero.picUrl))
             {
-                Picasso.with(activity).load(hero.picUrl).
-                        placeholder(R.drawable.avatar_default).error(R.drawable.avatar_default).into(avatarIV);
+                ImageLoader.getInstance()
+                        .displayImage(
+                                hero.picUrl,
+                                avatarIV,
+                                UniversalImageLoader.getAvatarImageLoaderOptions(false)
+                        );
             }
             else
             {

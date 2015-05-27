@@ -13,13 +13,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.squareup.picasso.Picasso;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.cache.NoticeNewsCache;
 import com.tradehero.chinabuild.fragment.discovery.DiscoveryUtils;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -40,26 +43,25 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.StringUtils;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.MarkdownTextView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-
 public class UserTimeLineAdapter extends TimeLineBaseAdapter
 {
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     private MiddleCallback<DiscussionDTO> voteCallback;
-
-    @Inject Picasso picasso;
 
     private List<UserProfileCompactDTO> users = new ArrayList<>();
     private List<SecurityCompactDTO> securities = new ArrayList<>();
@@ -427,10 +429,10 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 if (item.getUser() != null)
                 {
                     holder.tvUserTLName.setText(item.getUser().getDisplayName());
-                    picasso.load(item.getUser().picture)
-                            .placeholder(R.drawable.avatar_default)
-                            .error(R.drawable.avatar_default)
-                            .into(holder.imgUserTLUserHeader);
+                    ImageLoader.getInstance()
+                            .displayImage(item.getUser().picture,
+                                    holder.imgUserTLUserHeader,
+                                    UniversalImageLoader.getAvatarImageLoaderOptions(false));
 
                     holder.tvUserTLName.setOnClickListener(new View.OnClickListener()
                     {

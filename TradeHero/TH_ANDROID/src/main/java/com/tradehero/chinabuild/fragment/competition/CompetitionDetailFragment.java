@@ -12,23 +12,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.*;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
-import com.squareup.picasso.Picasso;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.cache.PortfolioCompactNewCache;
 import com.tradehero.chinabuild.data.CompetitionDescription;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.DashboardActivity;
@@ -61,19 +68,23 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.GuideView;
 import com.tradehero.th.widget.TradeHeroProgressBar;
-import dagger.Lazy;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-9. 比赛详情页
@@ -83,7 +94,6 @@ public class CompetitionDetailFragment extends Fragment
     public static final String BUNDLE_COMPETITION_DTO = "bundle_competition_dto";
     public static final String BUNDLE_COMPETITION_ID = "bundle_competition_id";
 
-    @Inject Lazy<Picasso> picasso;
     @Inject CompetitionDTOUtil competitionDTOUtil;
     @Inject CompetitionLeaderboardCache competitionLeaderboardCache;
     protected DTOCacheNew.Listener<CompetitionLeaderboardId, CompetitionLeaderboardDTO> competitionLeaderboardCacheListener;
@@ -685,11 +695,8 @@ public class CompetitionDetailFragment extends Fragment
         if (value == null) return;
         mUserProfileDTO = value;
         tvUserName.setText(value.getDisplayName());
-        picasso.get()
-                .load(value.picture)
-                .placeholder(R.drawable.avatar_default)
-                .error(R.drawable.avatar_default)
-                .into(imgUserHead);
+        ImageLoader.getInstance().displayImage(value.picture, imgUserHead,
+                UniversalImageLoader.getAvatarImageLoaderOptions(false));
         //设置是否显示 高校选择按钮
         setScrollView();
     }

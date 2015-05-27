@@ -104,7 +104,6 @@ import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.PasswordResetFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
-import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentWeibo;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
 import com.tradehero.th.loaders.FriendListLoader;
@@ -139,7 +138,6 @@ import dagger.Provides;
 @Module(
         includes = {
                 CacheModule.class,
-                GraphicModule.class,
                 NetworkModule.class,
                 SocialNetworkModule.class,
                 UIModule.class,
@@ -162,7 +160,6 @@ import dagger.Provides;
                         SecurityListPagedLoader.class,
                         SearchUnitFragment.class,
                         MacquarieSecurityListPagedLoader.class,
-                        SecurityItemView.class,
                         FreshQuoteHolder.class,
                         MarkdownTextView.class,
 

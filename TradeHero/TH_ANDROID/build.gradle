@@ -124,10 +124,7 @@ dependencies {
     compile('se.emilsjolander:stickylistheaders:2.5.2@aar') {
         exclude group: 'com.google.android', module: 'support-v4'
     }
-    compile('com.squareup.picasso:picasso:2.5.2') {
-        exclude group: "com.squareup.okhttp", module: "okhttp"
-        exclude group: "com.squareup.okhttp", module: "okhttp-urlconnection"
-    }
+
     compile 'com.squareup.okhttp:okhttp:2.3.0'
     compile('com.squareup.okhttp:okhttp-urlconnection:2.3.0') {
         exclude group: "com.squareup.okhttp", module: "okhttp"

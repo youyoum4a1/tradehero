@@ -1,9 +1,7 @@
 package com.tradehero.th.utils.dagger;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.squareup.picasso.LruCache;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.persistence.prefs.LongPreference;
@@ -28,12 +26,6 @@ import dagger.Provides;
 )
 public class CacheModule
 {
-    @Provides @Singleton @ForPicasso LruCache providePicassoMemCache(Context context)
-    {
-        //return new LruMemFileCache(context);
-        //return LruMemFileCache.getInstance(context.getApplicationContext());
-        return new LruCache(context);
-    }
 
     @Provides @Singleton @SingleCacheMaxSize IntPreference provideDefaultSingleCacheMaxSize(@ForUser SharedPreferences preference)
     {

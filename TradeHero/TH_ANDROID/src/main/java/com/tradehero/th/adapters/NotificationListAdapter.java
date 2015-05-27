@@ -9,21 +9,25 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.squareup.picasso.Picasso;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
-import dagger.Lazy;
+
 import org.ocpsoft.prettytime.PrettyTime;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.regex.PatternSyntaxException;
 
+import javax.inject.Inject;
+
+import dagger.Lazy;
+
 public class NotificationListAdapter extends BaseAdapter
 {
-    @Inject Lazy<Picasso> picasso;
     private Context context;
     private LayoutInflater inflater;
     private ArrayList<NotificationDTO> dataList = new ArrayList<>();
@@ -125,11 +129,10 @@ public class NotificationListAdapter extends BaseAdapter
             if(item.useSysIcon){
                 holder.imgNotificationHeader.setImageResource(R.drawable.offical_logo);
             }else {
-                picasso.get()
-                        .load(item.imageUrl)
-                        .placeholder(R.drawable.avatar_default)
-                        .error(R.drawable.avatar_default)
-                        .into(holder.imgNotificationHeader);
+                ImageLoader.getInstance()
+                        .displayImage(item.imageUrl,
+                                holder.imgNotificationHeader,
+                                UniversalImageLoader.getAvatarImageLoaderOptions(false));
             }
             String text = item.text;
             if(!TextUtils.isEmpty(item.referencedUserName)){

@@ -3,6 +3,7 @@ package com.tradehero.chinabuild.fragment.security;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
@@ -19,13 +20,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
+
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.widgets.AspectRatioImageViewCallback;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+import com.squareup.widgets.AspectRatioImageView;
 import com.tradehero.chinabuild.cache.PositionCompactNewCache;
 import com.tradehero.chinabuild.cache.PositionDTOKey;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
@@ -36,6 +36,7 @@ import com.tradehero.chinabuild.fragment.message.SecurityDiscussSendFragment;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.listview.SecurityListView;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -114,13 +115,20 @@ import com.tradehero.th.widget.GuideView;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.viewpagerindicator.SquarePageIndicator;
-import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import dagger.Lazy;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -145,8 +153,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
-    @Inject Picasso picasso;
-    private Callback chartImageCallback;
     @Inject ChartDTOFactory chartDTOFactory;
     private ChartDTO chartDTO;
 
@@ -225,6 +231,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     protected ChartImageView chartImage;
     protected TextView tvLoadingChart;
     protected TextView tvSecurityDiscussOrNewsMore;
+
+    ImageLoadingListener chartLoadingListener;
 
     TextView tvSecurityPrice;//当前价格
     TextView tvSecurityDetailRate;//涨跌幅
@@ -472,20 +480,47 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         {
             chartImage.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
-        chartImageCallback = new AspectRatioImageViewCallback(chartImage)
-        {
-            @Override public void onSuccess()
-            {
-                super.onSuccess();
+
+        chartLoadingListener = new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String s, View view) {
+                //
+            }
+
+            @Override
+            public void onLoadingFailed(String s, View view, FailReason failReason) {
+                //
+            }
+
+            @Override
+            public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+                AspectRatioImageView aspectRatioImageView = (AspectRatioImageView) view;
+                int imgHeight = aspectRatioImageView.getDrawable().getIntrinsicHeight();
+                int imgWidth = aspectRatioImageView.getDrawable().getIntrinsicWidth();
+                aspectRatioImageView.setAspectRatioEnabled(true);
+                int dominantMeasurement = aspectRatioImageView.getDominantMeasurement();
+                if (dominantMeasurement == AspectRatioImageView.MEASUREMENT_WIDTH)
+                {
+                    aspectRatioImageView.setAspectRatio((float) imgHeight / (float) imgWidth);
+                }
+                else if (dominantMeasurement == AspectRatioImageView.MEASUREMENT_HEIGHT)
+                {
+                    aspectRatioImageView.setAspectRatio((float) imgWidth / (float) imgHeight);
+                }
+                else
+                {
+                    throw new IllegalArgumentException("Unhandled dominant measurement " + dominantMeasurement);
+                }
+
                 if (chartImageWrapper != null)
                 {
                     chartImageWrapper.setDisplayedChildByLayoutId(chartImage.getId());
                 }
             }
 
-            @Override public void onError()
-            {
-                super.onError();
+            @Override
+            public void onLoadingCancelled(String s, View view) {
+                //
             }
         };
 
@@ -639,7 +674,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        chartImageCallback = null;
         destroyFreshQuoteHolder();
         detachUserProfileCache();
         detachSecurityCompactCache();
@@ -1106,32 +1140,23 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     public void displayChartImage()
     {
-        ImageView image = this.chartImage;
-        if (!isDetached() && image != null)
+        if (!isDetached() && chartImage != null)
         {
             String imageURL = chartDTO.getChartUrl();
             // HACK TODO find something better than skipCache to avoid OutOfMemory
             if ((indexChart == 0) && isValidTimerForChartImage0())
             {
-                this.picasso
-                        .load(imageURL)
-                        .skipMemoryCache()
-                        .into(image, chartImageCallback);
+                ImageLoader.getInstance().displayImage(imageURL, chartImage, chartLoadingListener);
                 TIMER_FOR_DISPLAY_CHART_IMAGE0 = System.currentTimeMillis();
             }
             else if ((indexChart == 1) && isValidTimerForChartImage1())
             {
-                this.picasso
-                        .load(imageURL)
-                        .skipMemoryCache()
-                        .into(image, chartImageCallback);
+                ImageLoader.getInstance().displayImage(imageURL, chartImage, chartLoadingListener);
                 TIMER_FOR_DISPLAY_CHART_IMAGE1 = System.currentTimeMillis();
             }
             else
             {
-                this.picasso
-                        .load(imageURL)
-                        .into(image, chartImageCallback);
+                ImageLoader.getInstance().displayImage(imageURL, chartImage, chartLoadingListener);
             }
         }
     }
@@ -1719,10 +1744,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             {
                 tvUserTLName.setText(((DiscussionDTO) dto).user.getDisplayName());
                 tvUserTLContent.setText(((DiscussionDTO) dto).text);
-                picasso.load(((DiscussionDTO) dto).user.picture)
-                        .placeholder(R.drawable.avatar_default)
-                        .error(R.drawable.avatar_default)
-                        .into(imgSecurityTLUserHeader);
+                ImageLoader.getInstance()
+                        .displayImage(((DiscussionDTO) dto).user.picture,
+                                imgSecurityTLUserHeader,
+                                UniversalImageLoader.getAvatarImageLoaderOptions(false));
             }
 
             btnTLPraise.setBackgroundResource(dto.voteDirection==1?R.drawable.icon_praise_active:R.drawable.icon_praise_normal);
@@ -2159,5 +2184,4 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         {
         }
     }
-
 }
