@@ -17,7 +17,6 @@ import javax.inject.Singleton;
 
 @Module(
         injects = {
-                UrbanAirshipIntentReceiver.class
         },
         complete = false,
         library = true

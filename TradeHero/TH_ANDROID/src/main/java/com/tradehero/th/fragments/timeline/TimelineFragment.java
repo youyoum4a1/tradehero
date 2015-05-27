@@ -24,7 +24,6 @@ import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.metrics.Analytics;
-import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.PrivateDiscussionActivity;
 import com.tradehero.th.api.competition.ProviderId;
@@ -132,6 +131,9 @@ public class TimelineFragment extends DashboardFragment
     @Inject protected TimelineCacheRx timelineCache;
     @Inject DiscussionFragmentUtil discussionFragmentUtil;
     @Inject AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
+    @Inject protected THBillingInteractorRx userInteractorRx;
+    @Inject CurrentUserId currentUserId;
+    @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
 
     @InjectView(R.id.timeline_list_view) StickyListHeadersListView timelineListView;
     @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshContainer;
@@ -139,7 +141,7 @@ public class TimelineFragment extends DashboardFragment
     @InjectView(R.id.message_button) Button mSendMsgButton;
     @InjectView(R.id.follow_message_container) ViewGroup btnContainer;
 
-    @InjectRoute UserBaseKey shownUserBaseKey;
+    protected UserBaseKey shownUserBaseKey;
 
     protected MessageHeaderDTO messageThreadHeaderDTO;
     @Nullable protected UserProfileDTO shownProfile;
@@ -155,23 +157,15 @@ public class TimelineFragment extends DashboardFragment
     //TODO need move to pushableTimelineFragment
     private int mFollowType;//0 not follow, 1 free follow, 2 premium follow
     private boolean mIsHero = false;//whether the showUser follow the user
-    @Inject protected THBillingInteractorRx userInteractorRx;
-    @Inject CurrentUserId currentUserId;
-    @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        shownUserBaseKey = getUserBaseKey(getArguments());
+        thRouter.inject(this);
+        shownUserBaseKey = getShownUserBaseKey();
         if (shownUserBaseKey == null)
         {
-            thRouter.inject(this);
-        }
-        // This is due to THRouter creating
-        // noinspection ConstantConditions
-        if (shownUserBaseKey == null || shownUserBaseKey.key == null)
-        {
-            shownUserBaseKey = currentUserId.toUserBaseKey();
+            throw new IllegalArgumentException("Should not end up with null shownUserBaseKey");
         }
         mainTimelineAdapter = new MainTimelineAdapter(getActivity(),
                 R.layout.timeline_item_view,
@@ -181,13 +175,17 @@ public class TimelineFragment extends DashboardFragment
         mainTimelineAdapter.setCurrentTabType(currentTab);
     }
 
+    @Nullable protected UserBaseKey getShownUserBaseKey()
+    {
+        return getUserBaseKey(getArguments());
+    }
+
     @SuppressLint("InflateParams")
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_timeline, container, false);
         userProfileView = (UserProfileDetailView) inflater.inflate(R.layout.user_profile_detail_view, null);
         loadingView = new ProgressBar(getActivity());
-        return view;
+        return inflater.inflate(R.layout.fragment_timeline, container, false);
     }
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)

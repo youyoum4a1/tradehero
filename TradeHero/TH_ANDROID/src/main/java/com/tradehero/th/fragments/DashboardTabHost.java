@@ -104,17 +104,17 @@ public class DashboardTabHost extends TabHost
     @Override
     public <T extends Fragment> void onFragmentChanged(FragmentActivity fragmentActivity, Class<T> fragmentClass, Bundle bundle)
     {
-        showTabBar();
         for (RootFragmentType rootFragmentType: bottomBarFragmentTypes)
         {
             if (rootFragmentType.fragmentClass == fragmentClass)
             {
+                showTabBar();
                 setCurrentTabByTag(rootFragmentType.toString());
                 return;
             }
         }
         // none of the bottom bar fragment, hide me
-        //hideTabBar();
+        hideTabBar();
     }
 
     private class DummyTabContentFactory implements TabContentFactory

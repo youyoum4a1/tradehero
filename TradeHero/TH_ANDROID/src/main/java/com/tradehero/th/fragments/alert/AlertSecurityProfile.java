@@ -8,26 +8,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.security.SecurityCircleProgressBar;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.SecurityUtils;
 import java.text.SimpleDateFormat;
-import javax.inject.Inject;
 import rx.Observable;
 
 public class AlertSecurityProfile extends RelativeLayout
         implements DTOView<AlertSecurityProfile.DTO>
 {
-    @Inject Picasso picasso;
-
     @InjectView(R.id.security_circle) SecurityCircleProgressBar securityCircleProgressBar;
     @InjectView(R.id.stock_symbol) TextView stockSymbol;
     @InjectView(R.id.company_name) TextView companyName;
@@ -59,7 +54,6 @@ public class AlertSecurityProfile extends RelativeLayout
         super.onFinishInflate();
         if (!isInEditMode())
         {
-            HierarchyInjector.inject(this);
             ButterKnife.inject(this);
         }
     }

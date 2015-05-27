@@ -5,19 +5,19 @@
     style="@style/TH.BuySell_ViewPager_Belt"
     >
 
-  <Button
+  <TextView
       android:id="@+id/btn_profile_portfolios"
       style="@style/UserProfile.Tabs"
       android:text="@string/user_profile_button_portfolios"
       />
 
-  <Button
+  <TextView
       android:id="@+id/btn_profile_timeline"
       style="@style/UserProfile.Tabs"
       android:text="@string/user_profile_button_timeline"
       />
 
-  <Button
+  <TextView
       android:id="@+id/btn_profile_stats"
       style="@style/UserProfile.Tabs"
       android:text="@string/user_profile_button_stats"

@@ -4,10 +4,9 @@ import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.auth.AuthenticationModule;
 import com.tradehero.th.billing.BillingUIModule;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.DashboardResideMenu;
 import com.tradehero.th.fragments.FragmentModule;
-import com.tradehero.th.fragments.settings.SettingsResideMenuItem;
-import com.tradehero.th.fragments.settings.SettingsResideMenuItemUpdateCenter;
+import com.tradehero.th.fragments.settings.SettingsDrawerMenuItem;
+import com.tradehero.th.fragments.settings.UpdateCenterDrawerMenuItem;
 import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
@@ -38,8 +37,8 @@ import javax.inject.Singleton;
         injects = {
                 FollowUserAssistant.class,
                 SimpleFollowUserAssistant.class,
-                SettingsResideMenuItemUpdateCenter.class,
-                SettingsResideMenuItem.class,
+                UpdateCenterDrawerMenuItem.class,
+                SettingsDrawerMenuItem.class,
         },
         complete = false,
         library = true
@@ -52,9 +51,8 @@ public class UIModule
     }
 
     @Provides(type = Provides.Type.SET_VALUES) @Singleton Set<DashboardNavigator.DashboardFragmentWatcher> provideDashboardNavigatorWatchers(
-            DashboardResideMenu dashboardResideMenu
     )
     {
-        return new HashSet<>(Arrays.<DashboardNavigator.DashboardFragmentWatcher>asList(dashboardResideMenu));
+        return new HashSet<>(Arrays.<DashboardNavigator.DashboardFragmentWatcher>asList());
     }
 }

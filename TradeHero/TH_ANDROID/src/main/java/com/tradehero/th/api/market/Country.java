@@ -142,7 +142,7 @@ public enum Country
     LV(R.drawable.square_lv, R.string.location_name_lv),
     LY(R.drawable.square_ly, R.string.location_name_ly),
     MA(R.drawable.square_ma, R.string.location_name_ma),
-    MC(R.drawable.square_mc, R.string.location_name_mc),
+    MC(R.drawable.square_id, R.string.location_name_mc), // R.drawable.square_mc was removed because it was identical
     MD(R.drawable.square_md, R.string.location_name_md),
     ME(R.drawable.square_me, R.string.location_name_me),
     MG(R.drawable.square_mg, R.string.location_name_mg),

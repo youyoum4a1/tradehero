@@ -26,7 +26,6 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
@@ -50,7 +49,6 @@ public class HeroListItemView extends RelativeLayout
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
-    @Inject THRouter thRouter;
     @Inject DashboardNavigator navigator;
 
     @NonNull private BehaviorSubject<UserAction> userActionSubject;
@@ -128,7 +126,7 @@ public class HeroListItemView extends RelativeLayout
         if (heroDTO != null)
         {
             Bundle bundle = new Bundle();
-            thRouter.save(bundle, new UserBaseKey(heroDTO.id));
+            PushableTimelineFragment.putUserBaseKey(bundle, new UserBaseKey(heroDTO.id));
             navigator.pushFragment(PushableTimelineFragment.class, bundle);
         }
     }

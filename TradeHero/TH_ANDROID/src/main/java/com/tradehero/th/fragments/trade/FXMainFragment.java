@@ -249,6 +249,7 @@ public class FXMainFragment extends BuySellFragment
             mBuySellBtnContainer.setVisibility(View.VISIBLE);
             mBuySellBtnContainer.startAnimation(slideIn);
         }
+        mSelectedPortfolioContainer.setVisibility(tabViewPager.getCurrentItem() == 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override protected boolean getSupportSell()
@@ -263,6 +264,7 @@ public class FXMainFragment extends BuySellFragment
         if (defaultFxPortfolio != null)
         {
             mSelectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(), defaultFxPortfolio));
+            mSelectedPortfolioContainer.setVisibility(tabViewPager.getCurrentItem() == 0 ? View.VISIBLE : View.GONE);
         }
         setInitialSellQuantityIfCan();
         showCloseDialog();

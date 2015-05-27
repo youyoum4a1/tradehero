@@ -53,7 +53,6 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboar
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLegalDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePortfolioDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePreSeasonDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
@@ -365,9 +364,9 @@ public class MainCompetitionFragment extends DashboardFragment
                                             if (!is404)
                                             {
                                                 THToast.show(getString(R.string.error_fetch_provider_prize_pool_info));
+                                                Timber.e(throwable, "Error fetching the provider prize pool info");
                                             }
                                         }
-                                        Timber.e(throwable, "Error fetching the provider prize pool info");
                                         return Collections.emptyList();
                                     }
                                 }),
@@ -509,11 +508,6 @@ public class MainCompetitionFragment extends DashboardFragment
                 }
                 navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
             }
-        }
-        else if (competitionZoneDTO instanceof CompetitionZoneVideoDTO)
-        {
-            ProviderVideoListFragment.putProviderId(args, providerId);
-            navigator.get().pushFragment(ProviderVideoListFragment.class, args);
         }
         else if (competitionZoneDTO instanceof CompetitionZoneWizardDTO)
         {

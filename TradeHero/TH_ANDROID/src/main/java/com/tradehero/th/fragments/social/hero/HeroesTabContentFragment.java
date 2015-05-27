@@ -41,7 +41,6 @@ import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -67,7 +66,6 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
     /** when no heroes */
     @Inject Lazy<LeaderboardDefCacheRx> leaderboardDefCache;
     @Inject CurrentUserId currentUserId;
-    @Inject THRouter thRouter;
 
     @InjectView(android.R.id.progress) public ProgressBar progressBar;
     @InjectView(R.id.heros_list) public ListView heroListView;
@@ -264,7 +262,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
     private void pushTimelineFragment(UserBaseKey userBaseKey)
     {
         Bundle args = new Bundle();
-        thRouter.save(args, userBaseKey);
+        PushableTimelineFragment.putUserBaseKey(args, userBaseKey);
         navigator.get().pushFragment(PushableTimelineFragment.class, args);
     }
 

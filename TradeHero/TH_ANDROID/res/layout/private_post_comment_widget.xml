@@ -8,7 +8,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:id="@+id/discussion_comment_widget"
-      android:layout_alignParentBottom="true"
       android:layout_gravity="bottom"
       android:padding="6dp"
       android:background="@drawable/timeline_discussion_edit_widget_background"

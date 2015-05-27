@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/view_container"
     >
+
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -11,15 +13,19 @@
       android:paddingLeft="@dimen/size_2"
       android:background="@color/tradehero_dark_blue"
       android:orientation="vertical">
-    <LinearLayout android:layout_width="match_parent"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="@dimen/abc_action_bar_default_height_material"
         android:orientation="horizontal">
+
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_gravity="center_vertical"
           android:text="@string/help"
           style="@style/TH.Headline.Inverse"/>
+
     </LinearLayout>
 
     <TextView
@@ -69,14 +75,18 @@
         android:text="@string/position_close_info"
         style="@style/TH.Body1.Inverse"
         />
+
   </LinearLayout>
+
   <ImageView
       android:id="@+id/exit_help"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_gravity="bottom|left"
+      android:layout_gravity="bottom|start"
       android:layout_marginLeft="@dimen/size_2"
+      android:layout_marginStart="@dimen/size_2"
       android:layout_marginBottom="@dimen/size_7"
       android:background="@drawable/ic_help_close_bg"
-  />
+      />
+
 </FrameLayout>

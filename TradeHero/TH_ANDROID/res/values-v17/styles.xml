@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <style name="TH.LeftDrawerMenu.Text"
+      parent="TH.Body1.Inverse">
+    <item name="android:layout_marginStart">@dimen/margin_large</item>
+    <item name="android:layout_marginLeft">@dimen/margin_large</item>
+  </style>
+
+  <style name="TH.LeftDrawerMenu.Container">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
+    <item name="android:orientation">horizontal</item>
+    <item name="android:paddingLeft">?attr/listPreferredItemPaddingLeft</item>
+    <item name="android:paddingStart">?android:attr/listPreferredItemPaddingStart</item>
+    <item name="android:paddingRight">?attr/listPreferredItemPaddingRight</item>
+    <item name="android:paddingEnd">?android:attr/listPreferredItemPaddingEnd</item>
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:background">?attr/selectableItemBackground</item>
+    <item name="android:clickable">true</item>
+    <item name="android:focusable">true</item>
+  </style>
+</resources>

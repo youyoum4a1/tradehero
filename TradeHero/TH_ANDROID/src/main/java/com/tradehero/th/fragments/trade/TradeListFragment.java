@@ -215,6 +215,12 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         displayActionBar();
     }
 
+    @Override public void onPause()
+    {
+        fragmentElements.get().getMovableBottom().setOnMovableBottomTranslateListener(null);
+        super.onPause();
+    }
+
     @Override public void onDestroyOptionsMenu()
     {
         setActionBarSubtitle(null);

@@ -38,7 +38,6 @@ import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.Arrays;
 import javax.inject.Inject;
@@ -68,7 +67,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @Inject Provider<Activity> activityProvider;
     @Inject Lazy<SocialFriendHandlerFacebook> socialFriendHandlerFacebookLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject THRouter thRouter;
     @Inject Analytics analytics;
     @Inject DashboardNavigator dashboardNavigator;
     private Subscription facebookInvitationSubscription;
@@ -217,20 +215,17 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     private void handleOpenProfileButtonClicked()
     {
-        if (userFriendsDTO != null && currentUserId != null)
+        if (userFriendsDTO != null && currentUserId != null && dashboardNavigator != null)
         {
             Bundle bundle = new Bundle();
-            thRouter.save(bundle, new UserBaseKey(userFriendsDTO.thUserId));
-            if (dashboardNavigator != null)
+            if (currentUserId.get() == userFriendsDTO.thUserId)
             {
-                if (currentUserId.get() == userFriendsDTO.thUserId)
-                {
-                    dashboardNavigator.pushFragment(MeTimelineFragment.class, bundle);
-                }
-                else
-                {
-                    dashboardNavigator.pushFragment(PushableTimelineFragment.class, bundle);
-                }
+                dashboardNavigator.pushFragment(MeTimelineFragment.class, bundle);
+            }
+            else
+            {
+                PushableTimelineFragment.putUserBaseKey(bundle, new UserBaseKey(userFriendsDTO.thUserId));
+                dashboardNavigator.pushFragment(PushableTimelineFragment.class, bundle);
             }
         }
     }

@@ -22,7 +22,6 @@ import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -36,7 +35,6 @@ public class NotificationItemView
     @InjectView(R.id.notification_unread_flag) ImageView notificationUnreadFlag;
 
     @Inject DashboardNavigator navigator;
-    @Inject THRouter thRouter;
     @Inject CurrentUserId currentUserId;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
@@ -93,13 +91,13 @@ public class NotificationItemView
         if (notificationDTO != null && notificationDTO.referencedUserId != null)
         {
             UserBaseKey referencedUser = new UserBaseKey(notificationDTO.referencedUserId);
-            thRouter.save(bundle, referencedUser);
             if (currentUserId.toUserBaseKey().equals(referencedUser))
             {
                 navigator.pushFragment(MeTimelineFragment.class, bundle);
             }
             else
             {
+                PushableTimelineFragment.putUserBaseKey(bundle, referencedUser);
                 navigator.pushFragment(PushableTimelineFragment.class, bundle);
             }
         }

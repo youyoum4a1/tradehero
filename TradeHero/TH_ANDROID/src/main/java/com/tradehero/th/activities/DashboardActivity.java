@@ -5,15 +5,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.view.MenuItem;
-import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.TabHost;
@@ -23,7 +27,6 @@ import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnScrollViewOnScrollChangedListener;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
-import com.special.residemenu.ResideMenu;
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.rx.PairGetSecond;
@@ -62,6 +65,7 @@ import com.tradehero.th.fragments.competition.CompetitionEnrollmentBroadcastSign
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
+import com.tradehero.th.fragments.dashboard.DrawerLayoutUtil;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
@@ -97,7 +101,7 @@ import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction1;
-import com.tradehero.th.ui.AppContainer;
+import com.tradehero.th.ui.LeftDrawerMenuItemClickListener;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.dagger.AppModule;
@@ -108,7 +112,9 @@ import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
@@ -118,6 +124,7 @@ import rx.Notification;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -131,7 +138,7 @@ import static rx.android.app.AppObservable.bindActivity;
 import static rx.android.content.ContentObservable.fromLocalBroadcast;
 
 public class DashboardActivity extends BaseActivity
-        implements ResideMenu.OnMenuListener, AchievementAcceptor
+        implements AchievementAcceptor
 {
     private DashboardNavigator navigator;
     @Inject Set<DashboardNavigator.DashboardFragmentWatcher> dashboardFragmentWatchers;
@@ -146,9 +153,6 @@ public class DashboardActivity extends BaseActivity
     @Inject Lazy<NotificationCacheRx> notificationCache;
     @Inject SystemStatusCache systemStatusCache;
 
-    @Inject AppContainer appContainer;
-    @Inject ResideMenu resideMenu;
-
     @Inject THRouter thRouter;
     @Inject Analytics analytics;
     @Inject Lazy<BroadcastUtils> broadcastUtilsLazy;
@@ -157,12 +161,15 @@ public class DashboardActivity extends BaseActivity
     @Inject Set<ActivityResultRequester> activityResultRequesters;
     @Inject @ForAnalytics Lazy<DashboardNavigator.DashboardFragmentWatcher> analyticsReporter;
     @Inject ProviderUtil providerUtil;
+    @Inject LeftDrawerMenuItemClickListener leftDrawerMenuItemClickListener;
 
     @Inject Lazy<ProviderListCacheRx> providerListCache;
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
     private boolean enrollmentScreenIsOpened = false;
 
     @InjectView(R.id.my_toolbar) Toolbar toolbar;
+    @InjectView(R.id.dashboard_drawer_layout) DrawerLayout drawerLayout;
+    @InjectView(R.id.drawer_content_container) ViewGroup drawerContents;
 
     private Subscription notificationFetchSubscription;
 
@@ -171,6 +178,7 @@ public class DashboardActivity extends BaseActivity
     private BroadcastReceiver onlineStateReceiver;
     private MenuItem networkIndicator;
     private CompositeSubscription subscriptions;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -178,10 +186,9 @@ public class DashboardActivity extends BaseActivity
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
 
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.dashboard_with_bottom_bar);
 
         ActivityBuildTypeUtil.setUpCrashReports(currentUserId.toUserBaseKey());
-
-        appContainer.wrap(this);
 
         if (Constants.RELEASE)
         {
@@ -195,6 +202,8 @@ public class DashboardActivity extends BaseActivity
         ButterKnife.inject(this);
 
         setSupportActionBar(toolbar);
+
+        setupDrawerLayout();
 
         tabHostHeight = (int) getResources().getDimension(R.dimen.dashboard_tabhost_height);
         setupNavigator();
@@ -216,8 +225,6 @@ public class DashboardActivity extends BaseActivity
         initBroadcastReceivers();
 
         localBroadcastManager.registerReceiver(onlineStateReceiver, new IntentFilter(OnlineStateReceiver.ONLINE_STATE_CHANGED));
-
-        routeDeepLink(getIntent());
     }
 
     private void setupNavigator()
@@ -254,6 +261,73 @@ public class DashboardActivity extends BaseActivity
         navigator.addDashboardFragmentWatcher(dashboardTabHost);
     }
 
+    private void setupDrawerLayout()
+    {
+        //Setup Drawer Layout.
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+        drawerLayout.setDrawerListener(mDrawerToggle);
+
+        if (getSupportActionBar() != null)
+        {
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        currentUserId.getKeyObservable()
+                .filter(new Func1<Integer, Boolean>()
+                {
+                    @Override public Boolean call(Integer userId)
+                    {
+                        return userId > 0;
+                    }
+                })
+                .distinctUntilChanged()
+                .flatMap(new Func1<Integer, Observable<UserProfileDTO>>()
+                {
+                    @Override public Observable<UserProfileDTO> call(Integer userId)
+                    {
+                        return userProfileCache.get().getOne(new UserBaseKey(userId))
+                                .map(new PairGetSecond<UserBaseKey, UserProfileDTO>());
+                    }
+                })
+                .map(new Func1<UserProfileDTO, Collection<RootFragmentType>>()
+                {
+                    @Override public Collection<RootFragmentType> call(UserProfileDTO userProfileDTO)
+                    {
+                        Collection<RootFragmentType> menus = new LinkedHashSet<>(RootFragmentType.forLeftDrawer());
+                        if (userProfileDTO != null && userProfileDTO.isAdmin)
+                        {
+                            menus.add(RootFragmentType.ADMIN_SETTINGS);
+                        }
+                        return menus;
+                    }
+                })
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends Collection<RootFragmentType>>>()
+                {
+                    @Override public Observable<? extends Collection<RootFragmentType>> call(Throwable throwable)
+                    {
+                        return Observable.just(RootFragmentType.forLeftDrawer());
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<Collection<RootFragmentType>>()
+                        {
+                            @Override public void call(Collection<RootFragmentType> fragmentTypes)
+                            {
+                                for (RootFragmentType fragmentType : fragmentTypes)
+                                {
+                                    View content = DrawerLayoutUtil.createDrawerItemFromTabType(DashboardActivity.this, drawerLayout, fragmentType);
+                                    content.setOnClickListener(leftDrawerMenuItemClickListener);
+                                    drawerContents.addView(content);
+                                }
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to load drawer"));
+
+        drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.tradehero_blue_status_bar));
+    }
+
     private void initBroadcastReceivers()
     {
         onlineStateReceiver = new BroadcastReceiver()
@@ -263,22 +337,6 @@ public class DashboardActivity extends BaseActivity
                 updateNetworkStatus();
             }
         };
-    }
-
-    private void routeDeepLink(@NonNull Intent intent)
-    {
-        Uri data = intent.getData();
-        if (data != null)
-        {
-            thRouter.open(data, null, this);
-            intent.setData(null);
-        }
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(@NonNull MotionEvent ev)
-    {
-        return resideMenu.onInterceptTouchEvent(ev) || super.dispatchTouchEvent(ev);
     }
 
     private void launchBilling()
@@ -306,56 +364,17 @@ public class DashboardActivity extends BaseActivity
         }
     }
 
-/*
-        P2: There is a unnecessary menu button on Me page
-        https://www.pivotaltracker.com/n/projects/559137/stories/91165728
-
-    @Override public boolean onCreateOptionsMenu(Menu menu)
+    @Override protected void onPostCreate(@Nullable Bundle savedInstanceState)
     {
-        UserProfileDTO currentUserProfile =
-                userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
-        MenuInflater menuInflater = getMenuInflater();
-
-        menuInflater.inflate(R.menu.network_menu, menu);
-
-        networkIndicator = menu.findItem(R.id.menu_network);
-        updateNetworkStatus();
-
-        menuInflater.inflate(R.menu.hardware_menu, menu);
-
-        if (currentUserProfile != null)
-        {
-            if (currentUserProfile.isAdmin || !Constants.RELEASE)
-            {
-                menuInflater.inflate(R.menu.admin_menu, menu);
-            }
-        }
-        return super.onCreateOptionsMenu(menu);
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item)
+    @Override public void onConfigurationChanged(Configuration newConfig)
     {
-        // required for fragment onOptionItemSelected to be called
-        switch (item.getItemId())
-        {
-            case R.id.menu_network:
-                AlertDialogRxUtil.popNetworkUnavailable(this).subscribe(
-                        new EmptyAction1<OnDialogClickEvent>(),
-                        new EmptyAction1<Throwable>());
-                return true;
-            case R.id.admin_settings:
-                navigator.launchActivity(AdminSettingsActivity.class);
-                return true;
-            case R.id.hardware_menu_settings:
-                navigator.launchActivity(SettingsActivity.class);
-                return true;
-            case R.id.hardware_menu_about:
-                pushFragmentIfNecessary(AboutFragment.class);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
-*/
 
     private void pushFragmentIfNecessary(Class<? extends Fragment> fragmentClass)
     {
@@ -376,7 +395,6 @@ public class DashboardActivity extends BaseActivity
     @Override protected void onResume()
     {
         super.onResume();
-        launchActions();
 
         subscriptions = new CompositeSubscription();
 
@@ -398,60 +416,63 @@ public class DashboardActivity extends BaseActivity
                             }
                         }));
 
-        // get providers for enrollment page
-        subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
-                        .flatMap(new Func1<Intent, Observable<? extends Pair<ProviderListKey, ProviderDTOList>>>()
-                        {
-                            @Override public Observable<? extends Pair<ProviderListKey, ProviderDTOList>> call(Intent intent)
+        if (!launchActions(getIntent()))
+        {
+            // get providers for enrollment page
+            subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
+                            .flatMap(new Func1<Intent, Observable<? extends Pair<ProviderListKey, ProviderDTOList>>>()
                             {
-                                return providerListCache.get().get(new ProviderListKey());
-                            }
-                        })
-                        .flatMap(new Func1<Pair<ProviderListKey, ProviderDTOList>, Observable<ProviderDTO>>()
-                        {
-                            @Override public Observable<ProviderDTO> call(Pair<ProviderListKey, ProviderDTOList> pair)
-                            {
-                                for (ProviderDTO providerDTO : pair.second)
+                                @Override public Observable<? extends Pair<ProviderListKey, ProviderDTOList>> call(Intent intent)
                                 {
-                                    boolean r = !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerDTO.id);
-                                    if (r)
-                                    {
-                                        return Observable.just(providerDTO);
-                                    }
+                                    return providerListCache.get().get(new ProviderListKey());
                                 }
-                                broadcastUtilsLazy.get().nextPlease();
-                                return Observable.empty();
-                            }
-                        })
-                        .subscribeOn(Schedulers.io()))
-                        .subscribe(
-                                new Observer<ProviderDTO>()
+                            })
+                            .flatMap(new Func1<Pair<ProviderListKey, ProviderDTOList>, Observable<ProviderDTO>>()
+                            {
+                                @Override public Observable<ProviderDTO> call(Pair<ProviderListKey, ProviderDTOList> pair)
                                 {
-                                    @Override public void onNext(ProviderDTO providerDTO)
+                                    for (ProviderDTO providerDTO : pair.second)
                                     {
-                                        if (!enrollmentScreenIsOpened)
+                                        boolean r = !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerDTO.id);
+                                        if (r)
                                         {
-                                            enrollmentScreenIsOpened = true;
-                                            enrollmentScreenOpened.add(providerDTO.id);
-                                            Bundle args = new Bundle();
-                                            CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
-                                                    providerDTO.getProviderId()
-                                            ));
-                                            navigator.pushFragment(CompetitionWebViewFragment.class, args);
+                                            return Observable.just(providerDTO);
                                         }
                                     }
-
-                                    @Override public void onCompleted()
+                                    broadcastUtilsLazy.get().nextPlease();
+                                    return Observable.empty();
+                                }
+                            })
+                            .subscribeOn(Schedulers.io()))
+                            .subscribe(
+                                    new Observer<ProviderDTO>()
                                     {
-                                    }
+                                        @Override public void onNext(ProviderDTO providerDTO)
+                                        {
+                                            if (!enrollmentScreenIsOpened)
+                                            {
+                                                enrollmentScreenIsOpened = true;
+                                                enrollmentScreenOpened.add(providerDTO.id);
+                                                Bundle args = new Bundle();
+                                                CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
+                                                        providerDTO.getProviderId()
+                                                ));
+                                                navigator.pushFragment(CompetitionWebViewFragment.class, args);
+                                            }
+                                        }
 
-                                    @Override public void onError(Throwable e)
-                                    {
-                                        THToast.show(R.string.error_fetch_provider_competition_list);
-                                        broadcastUtilsLazy.get().nextPlease();
-                                    }
-                                })
-        );
+                                        @Override public void onCompleted()
+                                        {
+                                        }
+
+                                        @Override public void onError(Throwable e)
+                                        {
+                                            THToast.show(R.string.error_fetch_provider_competition_list);
+                                            broadcastUtilsLazy.get().nextPlease();
+                                        }
+                                    })
+            );
+        }
 
         subscriptions.add(fromLocalBroadcast(this, SEND_LOVE_INTENT_FILTER)
                 .subscribe(new Action1<Intent>()
@@ -461,12 +482,6 @@ public class DashboardActivity extends BaseActivity
                         AskForReviewSuggestedDialogFragment.showReviewDialog(DashboardActivity.this.getFragmentManager());
                     }
                 }, new EmptyAction1<Throwable>()));
-
-        if (resideMenu.isOpened())
-        {
-            userProfileCache.get().get(currentUserId.toUserBaseKey());
-        }
-
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -475,7 +490,7 @@ public class DashboardActivity extends BaseActivity
 
         Bundle extras = intent.getExtras();
         processNotificationDataIfPresence(extras);
-        routeDeepLink(intent);
+        launchActions(intent);
     }
 
     private void processNotificationDataIfPresence(Bundle extras)
@@ -591,24 +606,21 @@ public class DashboardActivity extends BaseActivity
         return superModules;
     }
 
-    private void launchActions()
+    private boolean launchActions(Intent intent)
     {
-        Intent intent = getIntent();
-        if (intent == null || intent.getAction() == null)
+        if (intent == null)
         {
-            return;
+            return false;
         }
 
-        if (intent.getData() != null)
+        Uri data = intent.getData();
+        if (data != null)
         {
-            String url = intent.getData().toString();
-            url = url.replace("tradehero://", "");
-            thRouter.open(url, this);
-            return;
+            thRouter.open(data, null, this);
+            intent.setData(null);
+            return true;
         }
-
-        Timber.d(getIntent().getAction());
-        Timber.e(new Exception("thIntentFactory"), "Was handled by thIntentFactory");
+        return false;
     }
 
     @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data)
@@ -624,26 +636,7 @@ public class DashboardActivity extends BaseActivity
         RouteParams routeParams = getRouteParams(data);
         if (routeParams != null)
         {
-            resideMenu.closeMenu();
             thRouter.open(routeParams.deepLink, routeParams.extras, this);
-        }
-    }
-
-    @Override public void openMenu()
-    {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
-        if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
-        {
-            ((ResideMenu.OnMenuListener) currentFragment).openMenu();
-        }
-    }
-
-    @Override public void closeMenu()
-    {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
-        if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
-        {
-            ((ResideMenu.OnMenuListener) currentFragment).closeMenu();
         }
     }
 
@@ -729,6 +722,15 @@ public class DashboardActivity extends BaseActivity
             StoreScreenFragment.registerAliases(router);
             UpdateCenterFragment.registerAliases(router);
             return router;
+        }
+
+        @Provides DrawerLayout provideDrawerLayout(){
+            return drawerLayout;
+        }
+
+        @Provides ActionBarDrawerToggle provideActionBarDrawerToggle()
+        {
+            return mDrawerToggle;
         }
 
         @Provides FragmentOuterElements provideFragmentElements(DashboardFragmentOuterElements dashboardFragmentElements)

@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.urbanairship.push.BaseIntentReceiver;
 import com.urbanairship.push.PushMessage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import timber.log.Timber;
 

@@ -1,5 +1,6 @@
 package com.tradehero.th.activities;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import com.crashlytics.android.Crashlytics;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -8,10 +9,15 @@ import java.util.Date;
 
 public class ActivityBuildTypeUtil
 {
+    public static void startCrashReports(@NonNull Context context)
+    {
+        Crashlytics.start(context);
+        Crashlytics.setString(Constants.TH_CLIENT_TYPE,
+                String.format("%s:%s", Constants.DEVICE_TYPE, Constants.TAP_STREAM_TYPE.name()));
+    }
+
     public static void setUpCrashReports(@NonNull UserBaseKey currentUserKey)
     {
-        Crashlytics.setString(Constants.TH_CLIENT_TYPE,
-                String.format("%s:%d", Constants.DEVICE_TYPE, Constants.TAP_STREAM_TYPE.type));
         Crashlytics.setUserIdentifier("" + currentUserKey.key);
     }
 

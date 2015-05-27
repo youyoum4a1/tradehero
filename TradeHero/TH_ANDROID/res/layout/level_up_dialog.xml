@@ -15,7 +15,9 @@
 
   <RelativeLayout
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      tools:ignore="UselessParent">
+
     <TextView
         android:id="@+id/user_level_up_header"
         android:layout_width="wrap_content"
@@ -54,7 +56,7 @@
         android:layout_below="@id/user_level_current_badge"
         android:layout_marginTop="@dimen/user_level_level_up_text_vertical_margin"
         />
-  </RelativeLayout>
 
+  </RelativeLayout>
 
 </RelativeLayout>

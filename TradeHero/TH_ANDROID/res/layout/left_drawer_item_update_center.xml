@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.settings.UpdateCenterDrawerMenuItem
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/TH.LeftDrawerMenu.Container"
+    >
+
+    <ImageView
+        android:id="@android:id/icon"
+        style="@style/TH.LeftDrawerMenu.Icon"
+        />
+
+    <TextView
+        android:id="@android:id/text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TH.LeftDrawerMenu.Text"
+        tools:text="@string/trending_header"
+        />
+
+    <TextView
+        android:id="@+id/unread_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_xsmall"
+        android:layout_marginStart="@dimen/margin_xsmall"
+        android:padding="2dp"
+        android:textSize="@dimen/text_xxsmall"
+        android:textColor="@color/white"
+        android:background="@drawable/red_circle" />
+
+</com.tradehero.th.fragments.settings.UpdateCenterDrawerMenuItem>

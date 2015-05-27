@@ -119,13 +119,16 @@ public class ActionBarOwnerMixin
             if (!shouldShowHome())
             {
                 actionBar.setHomeAsUpIndicator(null);
+                actionBar.setDisplayHomeAsUpEnabled(false);
             }
             else if (shouldShowHomeAsUp())
             {
+                actionBar.setDisplayHomeAsUpEnabled(true);
                 actionBar.setHomeAsUpIndicator(R.drawable.ic_actionbar_back);
             }
             else
             {
+                actionBar.setDisplayHomeAsUpEnabled(true);
                 actionBar.setHomeAsUpIndicator(R.drawable.icn_actionbar_hamburger);
             }
         }

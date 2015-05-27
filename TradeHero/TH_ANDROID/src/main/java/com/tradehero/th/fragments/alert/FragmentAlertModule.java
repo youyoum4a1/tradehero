@@ -9,7 +9,6 @@ import dagger.Module;
                 AlertEditDialogFragment.class,
                 AlertListItemAdapter.class,
                 AlertItemView.class,
-                AlertSecurityProfile.class,
                 AlertSliderView.class,
         },
         library = true,

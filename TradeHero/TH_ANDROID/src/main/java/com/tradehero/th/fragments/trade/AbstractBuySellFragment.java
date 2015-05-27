@@ -5,8 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.android.internal.util.Predicate;
@@ -76,8 +74,6 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
     protected Integer mSellQuantity;
     protected boolean showConfirmation = false;
 
-    protected MenuItem marketCloseIcon;
-
     public static void putIsSell(@NonNull Bundle args)
     {
         args.putBoolean(BUNDLE_KEY_IS_BUY, false);
@@ -134,13 +130,6 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
     {
         collectFromParameters(savedInstanceState);
         return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @Override public void onPrepareOptionsMenu(Menu menu)
-    {
-        super.onPrepareOptionsMenu(menu);
-        marketCloseIcon = menu.findItem(R.id.buy_sell_menu_market_status);
-        displayMarketClose();
     }
 
     @Override public void onStart()
@@ -394,10 +383,6 @@ public class AbstractBuySellFragment extends BasePurchaseManagerFragment
         if (!marketIsOpen)
         {
             notifyOnceMarketClosed();
-        }
-        if (marketCloseIcon != null)
-        {
-            marketCloseIcon.setVisible(!marketIsOpen);
         }
     }
 

@@ -12,6 +12,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.SearchUserListType;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
@@ -23,7 +24,6 @@ import com.tradehero.th.fragments.trending.PeopleItemViewAdapter;
 import com.tradehero.th.persistence.user.UserBaseKeyListCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -36,7 +36,6 @@ public class PeopleSearchFragment extends BaseSearchRxFragment<
 {
     @Inject UserBaseKeyListCacheRx userBaseKeyListCache;
     @Inject Analytics analytics;
-    @Inject THRouter thRouter;
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
@@ -102,13 +101,14 @@ public class PeopleSearchFragment extends BaseSearchRxFragment<
     protected void pushTimelineFragmentIn(UserSearchResultDTO userSearchResultDTO)
     {
         Bundle args = new Bundle();
-        thRouter.save(args, userSearchResultDTO.getUserBaseKey());
-        if (currentUserId.toUserBaseKey().equals(userSearchResultDTO.getUserBaseKey()))
+        UserBaseKey userToSee =  userSearchResultDTO.getUserBaseKey();
+        if (currentUserId.toUserBaseKey().equals(userToSee))
         {
             navigator.get().pushFragment(MeTimelineFragment.class, args);
         }
         else
         {
+            PushableTimelineFragment.putUserBaseKey(args, userToSee);
             navigator.get().pushFragment(PushableTimelineFragment.class, args);
         }
     }

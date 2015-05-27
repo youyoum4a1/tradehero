@@ -55,6 +55,7 @@
     </LinearLayout>
 
   </ScrollView>
+
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -66,6 +67,7 @@
       android:paddingBottom="3dp"
       android:baselineAligned="false"
       >
+
     <LinearLayout
         android:layout_weight="1"
         android:layout_height="match_parent"
@@ -73,6 +75,7 @@
         android:gravity="center_horizontal"
         android:layout_width="0dp"
         >
+
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -81,34 +84,14 @@
           android:text="@string/about_screen_secure_by"
           android:singleLine="true"
           />
+
       <ImageView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:src="@drawable/icn_about_vkey"
           android:contentDescription="@null"
           />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_weight="1"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:layout_width="0dp"
-        >
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:gravity="center_horizontal"
-          android:textColor="@color/white"
-          android:text="@string/about_screen_text_processing_by"
-          android:singleLine="true"
-          />
-      <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:src="@drawable/icn_about_repustate"
-          android:contentDescription="@null"
-          />
+
     </LinearLayout>
 
     <LinearLayout
@@ -118,6 +101,33 @@
         android:gravity="center_horizontal"
         android:layout_width="0dp"
         >
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:textColor="@color/white"
+          android:text="@string/about_screen_text_processing_by"
+          android:singleLine="true"
+          />
+
+      <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:src="@drawable/icn_about_repustate"
+          android:contentDescription="@null"
+          />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="0dp"
+        >
+
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -126,13 +136,16 @@
           android:text="@string/about_screen_sentiment_analysis_by"
           android:singleLine="true"
           />
+
       <ImageView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:src="@drawable/icn_about_heckyl"
           android:contentDescription="@null"
           />
+
     </LinearLayout>
+
   </LinearLayout>
 
   <View

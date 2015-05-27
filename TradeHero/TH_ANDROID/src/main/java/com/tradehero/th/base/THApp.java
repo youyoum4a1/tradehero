@@ -3,7 +3,6 @@ package com.tradehero.th.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
@@ -14,6 +13,7 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.tradehero.common.application.PApplication;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.activities.ActivityBuildTypeUtil;
 import com.tradehero.th.inject.BaseInjector;
 import com.tradehero.th.inject.ExInjector;
 import com.tradehero.th.models.level.UserXPAchievementHandler;
@@ -30,8 +30,6 @@ import timber.log.Timber;
 public class THApp extends PApplication
         implements ExInjector
 {
-    public static boolean timberPlanted = false;
-
     private static final int MEMORY_CACHE_SIZE = 2 * 1024 * 1024;
     private static final int DISK_CACHE_SIZE = 50 * 1024 * 1024;
 
@@ -44,7 +42,8 @@ public class THApp extends PApplication
     {
         super.init();
 
-        Timber.plant(createTimberTree());
+        ActivityBuildTypeUtil.startCrashReports(this);
+        Timber.plant(TimberUtil.createTree());
 
         buildObjectGraphAndInject();
 
@@ -99,11 +98,6 @@ public class THApp extends PApplication
         objectGraph = ObjectGraph.create(getModules());
         objectGraph.injectStatics();
         objectGraph.inject(this);
-    }
-
-    @NonNull protected Timber.Tree createTimberTree()
-    {
-        return TimberUtil.createTree(this);
     }
 
     protected Object[] getModules()

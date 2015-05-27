@@ -1,33 +1,37 @@
 package com.tradehero.th.activities;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import butterknife.OnClick;
 import com.tradehero.th.R;
 import timber.log.Timber;
 
 public class HelpActivity extends ActionBarActivity
 {
-
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+
+    public static void slideInFromRight(@NonNull Activity fromActivity)
+    {
+        Intent intent = new Intent(fromActivity, HelpActivity.class);
+        ActivityOptionsCompat optionsCompat =
+                ActivityOptionsCompat.makeCustomAnimation(fromActivity, R.anim.slide_right_in, R.anim.slide_left_out);
+        ActivityCompat.startActivity(fromActivity, intent, optionsCompat.toBundle());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
-        final View exit = findViewById(R.id.exit_help);
-        final View.OnClickListener onClickListener = new View.OnClickListener()
-        {
-            @Override public void onClick(View v)
-            {
-                finish();
-            }
-        };
-        exit.setOnClickListener(onClickListener);
 
         final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener()
         {
@@ -62,6 +66,7 @@ public class HelpActivity extends ActionBarActivity
         });
     }
 
+    @OnClick(R.id.exit_help)
     @Override public void finish()
     {
         super.finish();

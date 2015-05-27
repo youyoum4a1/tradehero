@@ -2,12 +2,9 @@ package com.tradehero.th.fragments.position;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -101,7 +98,6 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-//@Routable("user/:userId/portfolio/:portfolioId")
 public class PositionListFragment
         extends BasePurchaseManagerFragment
         implements WithTutorial
@@ -250,10 +246,7 @@ public class PositionListFragment
         {
             @Override public void onClick(View v)
             {
-                Intent intent = new Intent(getActivity(), HelpActivity.class);
-                ActivityOptionsCompat optionsCompat =
-                        ActivityOptionsCompat.makeCustomAnimation(getActivity(), R.anim.slide_right_in, R.anim.slide_left_out);
-                ActivityCompat.startActivity(getActivity(), intent, optionsCompat.toBundle());
+                HelpActivity.slideInFromRight(getActivity());
             }
         });
         positionListView.setAdapter(positionItemAdapter);
@@ -451,13 +444,14 @@ public class PositionListFragment
         if (userAction instanceof PortfolioHeaderView.TimelineUserAction)
         {
             Bundle args = new Bundle();
-            thRouter.save(args, userAction.requested.getBaseKey());
-            if (currentUserId.toUserBaseKey().equals(userAction.requested.getBaseKey()))
+            UserBaseKey userToSee = userAction.requested.getBaseKey();
+            if (currentUserId.toUserBaseKey().equals(userToSee))
             {
                 navigator.get().pushFragment(MeTimelineFragment.class, args);
             }
             else
             {
+                PushableTimelineFragment.putUserBaseKey(args, userToSee);
                 navigator.get().pushFragment(PushableTimelineFragment.class, args);
             }
         }

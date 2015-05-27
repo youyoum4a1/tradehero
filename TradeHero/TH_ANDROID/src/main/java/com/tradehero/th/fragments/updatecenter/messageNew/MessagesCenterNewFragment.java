@@ -18,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.special.residemenu.ResideMenu;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
@@ -46,7 +45,6 @@ import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
-import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -59,8 +57,7 @@ import timber.log.Timber;
 
 @Routable("messages")
 public class MessagesCenterNewFragment extends BaseFragment
-        implements
-        ResideMenu.OnMenuListener, MessageListViewAdapter.OnMessageItemClicked
+        implements MessageListViewAdapter.OnMessageItemClicked
 {
 
     @Inject Lazy<MessageHeaderListCacheRx> messageListCache;
@@ -68,7 +65,6 @@ public class MessagesCenterNewFragment extends BaseFragment
     @Inject Lazy<DiscussionListCacheRx> discussionListCache;
     @Inject Lazy<DiscussionCacheRx> discussionCache;
     @Inject CurrentUserId currentUserId;
-    @Inject THRouter thRouter;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Nullable private MessageListKey nextMoreRecentMessageListKey;
@@ -172,7 +168,6 @@ public class MessagesCenterNewFragment extends BaseFragment
                 targetUser = messageHeaderDTO.senderUserId;
             }
             UserBaseKey targetUserKey = new UserBaseKey(targetUser);
-            thRouter.save(bundle, targetUserKey);
             Timber.d("messageHeaderDTO recipientUserId:%s,senderUserId:%s,currentUserId%s", messageHeaderDTO.recipientUserId,
                     messageHeaderDTO.senderUserId, currentUserId.get());
             if (currentUserId.toUserBaseKey().equals(targetUserKey))
@@ -181,6 +176,7 @@ public class MessagesCenterNewFragment extends BaseFragment
             }
             else
             {
+                PushableTimelineFragment.putUserBaseKey(bundle, targetUserKey);
                 navigator.get().pushFragment(PushableTimelineFragment.class, bundle);
             }
         }
@@ -340,16 +336,6 @@ public class MessagesCenterNewFragment extends BaseFragment
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(createMessageHeaderIdListCacheObserver()));
         }
-    }
-
-    @Override public void openMenu()
-    {
-
-    }
-
-    @Override public void closeMenu()
-    {
-
     }
 
     private void onRefreshCompleted()

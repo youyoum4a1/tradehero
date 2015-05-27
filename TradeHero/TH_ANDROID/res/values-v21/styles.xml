@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
   <style name="TradeHero"
       parent="Base.TradeHero">
-    <item name="android:windowNoTitle">true</item>
-    <item name="android:windowActionBarOverlay">false</item>
-    <item name="android:windowDrawsSystemBarBackgrounds">false</item>
   </style>
+
+  <style name="TradeHero.Dashboard"
+      parent="TradeHero">
+    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    <item name="android:statusBarColor">@android:color/transparent</item>
+    <item name="android:windowTranslucentStatus">true</item>
+  </style>
+  
 </resources>

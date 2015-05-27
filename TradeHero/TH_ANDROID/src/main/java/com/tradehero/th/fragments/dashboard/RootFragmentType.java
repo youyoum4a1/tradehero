@@ -29,35 +29,35 @@ import java.util.List;
 public enum RootFragmentType
 {
     // Tab host
-    TRENDING(R.layout.tab_indicator_holo,
+    TRENDING(R.layout.left_drawer_item,
             R.string.dashboard_trending,
             R.string.dashboard_trending_key,
             R.drawable.icn_menu_trending,
             TrendingMainFragment.class,
             null,
             AnalyticsConstants.TabBar_Trade),
-    DISCOVERY(R.layout.tab_indicator_holo,
+    DISCOVERY(R.layout.left_drawer_item,
             R.string.discovery,
             R.string.dashboard_discovery_key,
             R.drawable.icn_menu_compass_white,
             DiscoveryMainFragment.class,
             null,
             AnalyticsConstants.TabBar_Discovery),
-    COMMUNITY(R.layout.tab_indicator_holo,
+    COMMUNITY(R.layout.left_drawer_item,
             R.string.dashboard_community,
             R.string.dashboard_community_key,
             R.drawable.icn_menu_leaderboards,
             LeaderboardCommunityFragment.class,
             null,
             AnalyticsConstants.TabBar_Community),
-    CONTEST_CENTER(R.layout.tab_indicator_holo,
+    CONTEST_CENTER(R.layout.left_drawer_item,
             R.string.dashboard_contest_center,
             R.string.dashboard_contest_center_key,
             R.drawable.icn_menu_contest_center,
             ContestCenterFragment.class,
             null,
             AnalyticsConstants.TabBar_ContestCenter),
-    ME(R.layout.home_selector,
+    ME(R.layout.left_drawer_item,
             R.string.dashboard_timeline,
             R.string.dashboard_timeline_key,
             R.drawable.icn_menu_home,
@@ -65,42 +65,42 @@ public enum RootFragmentType
             null,
             AnalyticsConstants.TabBar_Me),
     // Side menu
-    UPDATE_CENTER(R.layout.residemenu_item_update_center,
+    UPDATE_CENTER(R.layout.left_drawer_item_update_center,
             R.string.dashboard_message_center,
             R.string.dashboard_message_center_key,
             R.drawable.icn_side_menu_inbox,
             null,
             UpdateCenterActivity.class,
             AnalyticsConstants.TabBar_UpdateCenter),
-    ALERTS(R.layout.tab_indicator_holo,
+    ALERTS(R.layout.left_drawer_item,
             R.string.dashboard_alerts,
             R.string.dashboard_alerts_key,
             R.drawable.icn_side_menu_alerts,
             null,
             AlertManagerActivity.class,
             AnalyticsConstants.TabBar_Alerts),
-    FRIEND_REFERRAL(R.layout.tab_indicator_holo,
+    FRIEND_REFERRAL(R.layout.left_drawer_item,
             R.string.dashboard_referral,
             R.string.dashboard_referral_key,
             R.drawable.icn_side_menu_refer,
             null,
             FriendsInvitationActivity.class,
             AnalyticsConstants.TabBar_FriendReferral),
-    STORE(R.layout.tab_indicator_holo,
+    STORE(R.layout.left_drawer_item,
             R.string.dashboard_store,
             R.string.dashboard_store_key,
             R.drawable.icn_side_menu_store,
             null,
             StoreScreenActivity.class,
             AnalyticsConstants.TabBar_Store),
-    SETTING(R.layout.residemenu_item_settings,
+    SETTING(R.layout.left_drawer_item_settings,
             R.string.dashboard_menu_settings,
             R.string.dashboard_menu_settings_key,
             R.drawable.icn_side_menu_settings,
             null,
             SettingsActivity.class,
             AnalyticsConstants.TabBar_Settings),
-    ADMIN_SETTINGS(R.layout.tab_indicator_holo,
+    ADMIN_SETTINGS(R.layout.left_drawer_item,
             R.string.dashboard_admin_settings,
             R.string.dashboard_admin_settings_key,
             R.drawable.icn_side_menu_settings,
@@ -108,7 +108,7 @@ public enum RootFragmentType
             AdminSettingsActivity.class,
             AnalyticsConstants.TabBar_AdminSettings);
 
-    @LayoutRes private static final int DEFAULT_VIEW_LAYOUT_ID = R.layout.tab_indicator_holo;
+    @LayoutRes private static final int DEFAULT_VIEW_LAYOUT_ID = R.layout.left_drawer_item;
 
     @LayoutRes public final int viewResId;
     @StringRes public final int stringResId;
@@ -141,27 +141,27 @@ public enum RootFragmentType
         return viewResId != DEFAULT_VIEW_LAYOUT_ID;
     }
 
-    @NonNull public static Collection<RootFragmentType> forResideMenu()
+    @NonNull public static Collection<RootFragmentType> forLeftDrawer()
     {
-        List<RootFragmentType> forResideMenu = new ArrayList<>();
-        for (RootFragmentType type: values())
+        List<RootFragmentType> forLeftDrawer = new ArrayList<>();
+        for (RootFragmentType type : values())
         {
             if (type.activityClass != null)
             {
-                forResideMenu.add(type);
+                forLeftDrawer.add(type);
             }
         }
         if (Constants.RELEASE)
         {
-            forResideMenu.remove(ADMIN_SETTINGS);
+            forLeftDrawer.remove(ADMIN_SETTINGS);
         }
-        return Collections.unmodifiableCollection(forResideMenu);
+        return Collections.unmodifiableCollection(forLeftDrawer);
     }
 
     @NonNull public static Collection<RootFragmentType> forBottomBar()
     {
         List<RootFragmentType> forBottomBar = new ArrayList<>();
-        for (RootFragmentType type: values())
+        for (RootFragmentType type : values())
         {
             if (type.fragmentClass != null)
             {

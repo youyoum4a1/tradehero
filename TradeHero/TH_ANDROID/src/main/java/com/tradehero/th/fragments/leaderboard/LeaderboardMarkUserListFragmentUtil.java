@@ -28,7 +28,6 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
-import com.tradehero.th.utils.route.THRouter;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
@@ -41,7 +40,6 @@ public class LeaderboardMarkUserListFragmentUtil
         implements Action1<LeaderboardMarkUserItemView.UserAction>
 {
     @NonNull private final DashboardNavigator navigator;
-    @NonNull private final THRouter thRouter;
     @NonNull private final CurrentUserId currentUserId;
     @NonNull private final LeaderboardDefCacheRx leaderboardDefCache;
     @NonNull private final Analytics analytics;
@@ -54,14 +52,12 @@ public class LeaderboardMarkUserListFragmentUtil
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardMarkUserListFragmentUtil(
             @NonNull DashboardNavigator navigator,
-            @NonNull THRouter thRouter,
             @NonNull CurrentUserId currentUserId,
             @NonNull LeaderboardDefCacheRx leaderboardDefCache,
             @NonNull Analytics analytics,
             @NonNull ProviderUtil providerUtil)
     {
         this.navigator = navigator;
-        this.thRouter = thRouter;
         this.currentUserId = currentUserId;
         this.leaderboardDefCache = leaderboardDefCache;
         this.analytics = analytics;
@@ -113,13 +109,13 @@ public class LeaderboardMarkUserListFragmentUtil
     {
         Bundle bundle = new Bundle();
         UserBaseKey userToSee = dto.leaderboardUserDTO.getBaseKey();
-        thRouter.save(bundle, userToSee);
         if (currentUserId.toUserBaseKey().equals(userToSee))
         {
             navigator.pushFragment(MeTimelineFragment.class, bundle);
         }
         else
         {
+            PushableTimelineFragment.putUserBaseKey(bundle, userToSee);
             navigator.pushFragment(PushableTimelineFragment.class, bundle);
         }
     }
