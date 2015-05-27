@@ -28,13 +28,10 @@ import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
-import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.appsflyer.AppsFlyerConstants;
 import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Module;
-import dagger.Provides;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +60,7 @@ public class AuthenticationActivity extends BaseActivity
     @Inject Provider<LoginSignUpFormDTO.Builder2> authenticationFormBuilderProvider;
     @Inject SessionServiceWrapper sessionServiceWrapper;
 
-    private DashboardNavigator navigator;
+    private AuthenticationActivityModule activityModule;
     private Subscription socialButtonsSubscription;
     private PublishSubject<SocialNetworkEnum> selectedSocialNetworkSubject;
     private Observable<Pair<AuthData, UserProfileDTO>> authenticationObservable;
@@ -93,7 +90,7 @@ public class AuthenticationActivity extends BaseActivity
         {
             GuideAuthenticationFragment.putDeepLink(args, deepLink);
         }
-        navigator = new DashboardNavigator(this, R.id.fragment_content, GuideAuthenticationFragment.class, 0, args);
+        activityModule.navigator = new DashboardNavigator(this, R.id.fragment_content, GuideAuthenticationFragment.class, 0, args);
     }
 
     @Override protected void onResume()
@@ -111,7 +108,8 @@ public class AuthenticationActivity extends BaseActivity
     @NonNull @Override protected List<Object> getModules()
     {
         List<Object> superModules = new ArrayList<>(super.getModules());
-        superModules.add(new AuthenticationActivityModule());
+        activityModule = new AuthenticationActivityModule();
+        superModules.add(activityModule);
         return superModules;
     }
 
@@ -242,7 +240,7 @@ public class AuthenticationActivity extends BaseActivity
             {
                 progressDialog.hide();
                 return signUpAndLoginWithTwitterEmail(
-                        navigator.pushFragment(TwitterEmailFragment.class),
+                        activityModule.navigator.pushFragment(TwitterEmailFragment.class),
                         authData,
                         progressDialog);
             }
@@ -314,19 +312,5 @@ public class AuthenticationActivity extends BaseActivity
                 this,
                 String.format(AppsFlyerConstants.REGISTRATION_SOCIAL,
                         socialNetworkEnum.name()));
-    }
-
-    @Module(
-            addsTo = AppModule.class,
-            library = true,
-            complete = false,
-            overrides = true
-    )
-    public class AuthenticationActivityModule
-    {
-        @Provides DashboardNavigator provideDashboardNavigator()
-        {
-            return navigator;
-        }
     }
 }

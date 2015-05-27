@@ -19,29 +19,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AbsListView;
 import android.widget.TabHost;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
-import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
-import com.etiennelawlor.quickreturn.library.listeners.QuickReturnScrollViewOnScrollChangedListener;
-import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.NotifyingWebView;
-import com.tradehero.common.widget.QuickReturnWebViewOnScrollChangedListener;
 import com.tradehero.metrics.Analytics;
-import com.tradehero.th.BottomTabs;
-import com.tradehero.th.BottomTabsQuickReturnListViewListener;
-import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
-import com.tradehero.th.BottomTabsQuickReturnWebViewListener;
 import com.tradehero.th.R;
-import com.tradehero.th.UIModule;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderUtil;
@@ -57,38 +45,14 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
-import com.tradehero.th.fragments.NavigationAnalyticsReporter;
-import com.tradehero.th.fragments.base.DashboardFragmentOuterElements;
-import com.tradehero.th.fragments.base.FragmentOuterElements;
-import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentBroadcastSignal;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
-import com.tradehero.th.fragments.competition.MainCompetitionFragment;
-import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.DrawerLayoutUtil;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
-import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
-import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
-import com.tradehero.th.fragments.news.NewsWebFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardingBroadcastSignal;
-import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.settings.AskForReviewSuggestedDialogFragment;
-import com.tradehero.th.fragments.settings.SettingsFragment;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
-import com.tradehero.th.fragments.trade.FXInfoFragment;
-import com.tradehero.th.fragments.trade.FXMainFragment;
-import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trending.TrendingMainFragment;
-import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
-import com.tradehero.th.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
-import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.notification.NotificationCacheRx;
@@ -104,13 +68,10 @@ import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.ui.LeftDrawerMenuItemClickListener;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
-import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
 import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
-import dagger.Module;
-import dagger.Provides;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -118,8 +79,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
 import rx.Notification;
 import rx.Observable;
 import rx.Observer;
@@ -140,7 +99,6 @@ import static rx.android.content.ContentObservable.fromLocalBroadcast;
 public class DashboardActivity extends BaseActivity
         implements AchievementAcceptor
 {
-    private DashboardNavigator navigator;
     @Inject Set<DashboardNavigator.DashboardFragmentWatcher> dashboardFragmentWatchers;
 
     // It is important to have Lazy here because we set the current Activity after the injection
@@ -173,12 +131,10 @@ public class DashboardActivity extends BaseActivity
 
     private Subscription notificationFetchSubscription;
 
-    private DashboardTabHost dashboardTabHost;
-    private int tabHostHeight;
+    private DashboardActivityModule activityModule;
     private BroadcastReceiver onlineStateReceiver;
     private MenuItem networkIndicator;
     private CompositeSubscription subscriptions;
-    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -186,6 +142,7 @@ public class DashboardActivity extends BaseActivity
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
 
         super.onCreate(savedInstanceState);
+        activityModule.analytics = analytics;
         setContentView(R.layout.dashboard_with_bottom_bar);
 
         ActivityBuildTypeUtil.setUpCrashReports(currentUserId.toUserBaseKey());
@@ -200,18 +157,19 @@ public class DashboardActivity extends BaseActivity
         showStartDialogsPlease();
 
         ButterKnife.inject(this);
+        activityModule.drawerLayout = drawerLayout;
 
         setSupportActionBar(toolbar);
 
         setupDrawerLayout();
 
-        tabHostHeight = (int) getResources().getDimension(R.dimen.dashboard_tabhost_height);
+        activityModule.tabHostHeight = (int) getResources().getDimension(R.dimen.dashboard_tabhost_height);
         setupNavigator();
         setupDashboardTabHost();
 
-        if (savedInstanceState == null && navigator.getCurrentFragment() == null)
+        if (savedInstanceState == null && activityModule.navigator.getCurrentFragment() == null)
         {
-            navigator.goToTab(RootFragmentType.getInitialTab());
+            activityModule.navigator.goToTab(RootFragmentType.getInitialTab());
         }
 
         if (getIntent() != null)
@@ -229,43 +187,43 @@ public class DashboardActivity extends BaseActivity
 
     private void setupNavigator()
     {
-        navigator = new DashboardNavigator(this, R.id.realtabcontent);
+        activityModule.navigator = new DashboardNavigator(this, R.id.realtabcontent);
         CollectionUtils.apply(dashboardFragmentWatchers, new Action1<DashboardNavigator.DashboardFragmentWatcher>()
         {
             @Override public void call(DashboardNavigator.DashboardFragmentWatcher watcher)
             {
-                navigator.addDashboardFragmentWatcher(watcher);
+                activityModule.navigator.addDashboardFragmentWatcher(watcher);
             }
         });
     }
 
     private void setupDashboardTabHost()
     {
-        dashboardTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
-        dashboardTabHost.setup();
-        dashboardTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
+        activityModule.dashboardTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
+        activityModule.dashboardTabHost.setup();
+        activityModule.dashboardTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
         {
             @Override public void onTabChanged(String tabId)
             {
                 try
                 {
                     RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
-                    navigator.goToTab(selectedFragmentType);
+                    activityModule.navigator.goToTab(selectedFragmentType);
                 } catch (IllegalStateException e)
                 {
                     Timber.d("setOnTabChangedListener goToTab " + e.toString());
                 }
             }
         });
-        navigator.addDashboardFragmentWatcher(analyticsReporter.get());
-        navigator.addDashboardFragmentWatcher(dashboardTabHost);
+        activityModule.navigator.addDashboardFragmentWatcher(analyticsReporter.get());
+        activityModule.navigator.addDashboardFragmentWatcher(activityModule.dashboardTabHost);
     }
 
     private void setupDrawerLayout()
     {
         //Setup Drawer Layout.
-        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
-        drawerLayout.setDrawerListener(mDrawerToggle);
+        activityModule.mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+        drawerLayout.setDrawerListener(activityModule.mDrawerToggle);
 
         if (getSupportActionBar() != null)
         {
@@ -353,7 +311,7 @@ public class DashboardActivity extends BaseActivity
 
     @Override public void onBackPressed()
     {
-        navigator.popFragment();
+        activityModule.navigator.popFragment();
     }
 
     private void suggestUpgradeIfNecessary()
@@ -367,21 +325,21 @@ public class DashboardActivity extends BaseActivity
     @Override protected void onPostCreate(@Nullable Bundle savedInstanceState)
     {
         super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
+        activityModule.mDrawerToggle.syncState();
     }
 
     @Override public void onConfigurationChanged(Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
+        activityModule.mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     private void pushFragmentIfNecessary(Class<? extends Fragment> fragmentClass)
     {
-        Fragment currentDashboardFragment = navigator.getCurrentFragment();
+        Fragment currentDashboardFragment = activityModule.navigator.getCurrentFragment();
         if (!(fragmentClass.isInstance(currentDashboardFragment)))
         {
-            navigator.pushFragment(fragmentClass);
+            activityModule.navigator.pushFragment(fragmentClass);
         }
     }
 
@@ -405,7 +363,7 @@ public class DashboardActivity extends BaseActivity
                             @Override public void call(Intent intent)
                             {
                                 isOnboardShown.set(true);
-                                navigator.launchActivity(OnBoardActivity.class);
+                                activityModule.navigator.launchActivity(OnBoardActivity.class);
                             }
                         },
                         new Action1<Throwable>()
@@ -457,7 +415,7 @@ public class DashboardActivity extends BaseActivity
                                                 CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
                                                         providerDTO.getProviderId()
                                                 ));
-                                                navigator.pushFragment(CompetitionWebViewFragment.class, args);
+                                                activityModule.navigator.pushFragment(CompetitionWebViewFragment.class, args);
                                             }
                                         }
 
@@ -548,11 +506,11 @@ public class DashboardActivity extends BaseActivity
 
         networkIndicator = null;
 
-        if (navigator != null)
+        if (activityModule.navigator != null)
         {
-            navigator.onDestroy();
+            activityModule.navigator.onDestroy();
         }
-        navigator = null;
+        activityModule.navigator = null;
 
         localBroadcastManager.unregisterReceiver(onlineStateReceiver);
 
@@ -602,7 +560,8 @@ public class DashboardActivity extends BaseActivity
     @NonNull @Override protected List<Object> getModules()
     {
         List<Object> superModules = new ArrayList<>(super.getModules());
-        superModules.add(new DashboardActivityModule());
+        activityModule = new DashboardActivityModule();
+        superModules.add(activityModule);
         return superModules;
     }
 
@@ -668,102 +627,8 @@ public class DashboardActivity extends BaseActivity
 
         // TODO remove
         // for DEBUGGING purpose only
-        Fragment currentFragmentName = navigator.getCurrentFragment();
+        Fragment currentFragmentName = activityModule.navigator.getCurrentFragment();
         Timber.e(new RuntimeException("LowMemory " + currentFragmentName), "%s", currentFragmentName);
         ActivityBuildTypeUtil.flagLowMemory();
-    }
-
-    @Module(
-            addsTo = AppModule.class,
-            includes = {
-                    UIModule.class
-            },
-            library = true,
-            complete = false,
-            overrides = true
-    )
-    public class DashboardActivityModule
-    {
-        @Provides DashboardNavigator provideDashboardNavigator()
-        {
-            return navigator;
-        }
-
-        @Provides @Singleton THRouter provideTHRouter(Context context, Provider<DashboardNavigator> navigatorProvider)
-        {
-            THRouter router = new THRouter(context, navigatorProvider);
-            router.registerRoutes(
-                    BuySellStockFragment.class,
-                    CompetitionWebViewFragment.class,
-                    DiscoveryMainFragment.class,
-                    FacebookShareActivity.class,
-                    FriendsInvitationFragment.class,
-                    FXInfoFragment.class,
-                    FXMainFragment.class,
-                    FXMainFragment.class,
-                    LeaderboardCommunityFragment.class,
-                    MainCompetitionFragment.class,
-                    MessagesCenterNewFragment.class,
-                    MeTimelineFragment.class,
-                    NewsWebFragment.class,
-                    NotificationsCenterFragment.class,
-                    PositionListFragment.class,
-                    ProviderVideoListFragment.class,
-                    PushableTimelineFragment.class,
-                    SettingsFragment.class,
-                    StoreScreenFragment.class,
-                    TabbedPositionListFragment.class,
-                    TradeListFragment.class,
-                    TrendingMainFragment.class,
-                    UpdateCenterFragment.class,
-                    WebViewFragment.class
-            );
-            DiscoveryMainFragment.registerAliases(router);
-            StoreScreenFragment.registerAliases(router);
-            UpdateCenterFragment.registerAliases(router);
-            return router;
-        }
-
-        @Provides DrawerLayout provideDrawerLayout(){
-            return drawerLayout;
-        }
-
-        @Provides ActionBarDrawerToggle provideActionBarDrawerToggle()
-        {
-            return mDrawerToggle;
-        }
-
-        @Provides FragmentOuterElements provideFragmentElements(DashboardFragmentOuterElements dashboardFragmentElements)
-        {
-            return dashboardFragmentElements;
-        }
-
-        @Provides @BottomTabs DashboardTabHost provideDashboardBottomBar()
-        {
-            return dashboardTabHost;
-        }
-
-        @Provides @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener provideDashboardBottomTabScrollListener()
-        {
-            QuickReturnListViewOnScrollListener listener =
-                    new QuickReturnListViewOnScrollListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
-            listener.setCanSlideInIdleScrollState(true);
-            return listener;
-        }
-
-        @Provides @BottomTabsQuickReturnScrollViewListener NotifyingScrollView.OnScrollChangedListener provideQuickReturnListViewOnScrollListener()
-        {
-            return new QuickReturnScrollViewOnScrollChangedListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
-        }
-
-        @Provides @BottomTabsQuickReturnWebViewListener NotifyingWebView.OnScrollChangedListener provideQuickReturnWebViewOnScrollListener()
-        {
-            return new QuickReturnWebViewOnScrollChangedListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
-        }
-
-        @Provides @ForAnalytics DashboardNavigator.DashboardFragmentWatcher provideAnalyticsReporter()
-        {
-            return new NavigationAnalyticsReporter(analytics, dashboardTabHost);
-        }
     }
 }

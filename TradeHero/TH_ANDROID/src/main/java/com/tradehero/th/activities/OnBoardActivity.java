@@ -1,6 +1,5 @@
 package com.tradehero.th.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,29 +10,21 @@ import butterknife.ButterKnife;
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.R;
-import com.tradehero.th.UIModule;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.base.BaseFragmentOuterElements;
-import com.tradehero.th.fragments.base.FragmentOuterElements;
 import com.tradehero.th.fragments.onboarding.OnBoardFragment;
-import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Module;
-import dagger.Provides;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
 import rx.functions.Action1;
 
 public class OnBoardActivity extends BaseActivity
 {
     @Inject protected THRouter thRouter;
     @Inject Set<ActivityResultRequester> activityResultRequesters;
-    protected DashboardNavigator navigator;
+    OnBoardActivityModule activityModule;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -41,12 +32,11 @@ public class OnBoardActivity extends BaseActivity
         setContentView(R.layout.activity_on_board);
         ButterKnife.inject(this);
 
-
-        navigator = new DashboardNavigator(this, R.id.realtabcontent);
+        activityModule.navigator = new DashboardNavigator(this, R.id.realtabcontent);
 
         if (savedInstanceState == null)
         {
-            navigator.pushFragment(
+            activityModule.navigator.pushFragment(
                     OnBoardFragment.class,
                     getInitialBundle(),
                     null,
@@ -82,7 +72,8 @@ public class OnBoardActivity extends BaseActivity
     @NonNull @Override protected List<Object> getModules()
     {
         List<Object> superModules = new ArrayList<>(super.getModules());
-        superModules.add(new OnBoardActivityModule());
+        activityModule = new OnBoardActivityModule();
+        superModules.add(activityModule);
         return superModules;
     }
 
@@ -106,7 +97,7 @@ public class OnBoardActivity extends BaseActivity
         }
         else
         {
-            navigator.popFragment();
+            activityModule.navigator.popFragment();
         }
     }
 
@@ -120,32 +111,5 @@ public class OnBoardActivity extends BaseActivity
                 requester.onActivityResult(OnBoardActivity.this, requestCode, resultCode, data);
             }
         });
-    }
-
-    @Module(
-            addsTo = AppModule.class,
-            includes = {
-                    UIModule.class
-            },
-            library = true,
-            complete = false,
-            overrides = true
-    )
-    public class OnBoardActivityModule
-    {
-        @Provides DashboardNavigator provideDashboardNavigator()
-        {
-            return navigator;
-        }
-
-        @Provides @Singleton THRouter provideTHRouter(Context context, Provider<DashboardNavigator> navigatorProvider)
-        {
-            return new THRouter(context, navigatorProvider);
-        }
-
-        @Provides FragmentOuterElements provideFragmentElements()
-        {
-            return new BaseFragmentOuterElements();
-        }
     }
 }
