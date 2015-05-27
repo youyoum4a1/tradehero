@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import android.widget.TabHost;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
@@ -31,6 +34,7 @@ import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
+import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.THTabView;
 import dagger.Lazy;
 import java.text.MessageFormat;
@@ -38,15 +42,32 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseManagerFragment*/
+@Routable({
+        "user/me/followers",
+        "user/me/followers/tab-index/:tabIndexMe",
+        "user/:heroId/followers",
+        "user/:heroIdWithTab/followers/tab-index/:tabIndex",
+        "user/:heroIdForAll/followers/all",
+        "user/:heroIdForFree/followers/free",
+        "user/:heroIdForPremium/followers/premium",
+})
+public class FollowerManagerFragment extends DashboardFragment
         implements OnFollowersLoadedListener
 {
     static final int FRAGMENT_LAYOUT_ID = 10000;
-    private static final String BUNDLE_KEY_HERO_ID =
-            FollowerManagerFragment.class.getName() + ".heroId";
+    private static final String BUNDLE_KEY_HERO_ID = FollowerManagerFragment.class.getName() + ".heroId";
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
+    @Inject THRouter router;
+
+    @RouteProperty("heroId") Integer routedHeroId;
+    @RouteProperty("heroIdWithTab") Integer routedHeroIdWithTab;
+    @RouteProperty("heroIdForAll") Integer routedHeroIdForAll;
+    @RouteProperty("heroIdForFree") Integer routedHeroIdForFree;
+    @RouteProperty("heroIdForPremium") Integer routedHeroIdForPremium;
+    @RouteProperty("tabIndex") Integer routedTabIndex;
+    @RouteProperty("tabIndexMe") Integer routedTabIndexMe;
 
     private UserBaseKey heroId;
     @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
@@ -59,15 +80,55 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         args.putBundle(BUNDLE_KEY_HERO_ID, heroId.getArgs());
     }
 
-    @NonNull public static UserBaseKey getHeroId(@NonNull Bundle args)
+    @Nullable public static UserBaseKey getHeroId(@NonNull Bundle args)
     {
-        return new UserBaseKey(args.getBundle(BUNDLE_KEY_HERO_ID));
+        if (args.containsKey(BUNDLE_KEY_HERO_ID))
+        {
+            return new UserBaseKey(args.getBundle(BUNDLE_KEY_HERO_ID));
+        }
+        return null;
+    }
+
+    public static void registerAliases(@NonNull THRouter router)
+    {
+        router.registerAlias("user/me/followers/all", "user/me/followers/tab-index/" + new AllHeroTypeResourceDTO().followerTabIndex);
+        router.registerAlias("user/me/followers/free", "user/me/followers/tab-index/" + new FreeHeroTypeResourceDTO().followerTabIndex);
+        router.registerAlias("user/me/followers/premium", "user/me/followers/tab-index/" + new PremiumHeroTypeResourceDTO().followerTabIndex);
+        router.registerAlias("user/:heroIdWithTab/followers/all", "user/:heroIdWithTab/followers/tab-index/" + new AllHeroTypeResourceDTO().followerTabIndex);
+        router.registerAlias("user/:heroIdWithTab/followers/free", "user/:heroIdWithTab/followers/tab-index/" + new FreeHeroTypeResourceDTO().followerTabIndex);
+        router.registerAlias("user/:heroIdWithTab/followers/premium", "user/:heroIdWithTab/followers/tab-index/" + new PremiumHeroTypeResourceDTO().followerTabIndex);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.heroId = getHeroId(getArguments());
+        router.inject(this);
+        UserBaseKey heroId = getHeroId(getArguments());
+        if (heroId == null && routedHeroId != null)
+        {
+            heroId = new UserBaseKey(routedHeroId);
+        }
+        else if (heroId == null && routedHeroIdWithTab != null)
+        {
+            heroId = new UserBaseKey(routedHeroIdWithTab);
+        }
+        else if (heroId == null && routedHeroIdForAll != null)
+        {
+            heroId = new UserBaseKey(routedHeroIdForAll);
+        }
+        else if (heroId == null && routedHeroIdForFree != null)
+        {
+            heroId = new UserBaseKey(routedHeroIdForFree);
+        }
+        else if (heroId == null && routedHeroIdForPremium != null)
+        {
+            heroId = new UserBaseKey(routedHeroIdForPremium);
+        }
+        else if (heroId == null)
+        {
+            heroId = currentUserId.toUserBaseKey();
+        }
+        this.heroId = heroId;
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -172,19 +233,9 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         super.onDestroyView();
     }
 
-    private boolean isCurrentUser()
-    {
-        UserBaseKey heroId = getHeroId(getArguments());
-        if (currentUserId != null)
-        {
-            return heroId.equals(currentUserId.toUserBaseKey());
-        }
-        return false;
-    }
-
     private void showSendMessageLayoutIfNecessary()
     {
-        if (isCurrentUser())
+        if (heroId.equals(currentUserId.toUserBaseKey()))
         {
             broadcastView.setVisibility(View.VISIBLE);
         }
@@ -222,6 +273,28 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
                 FollowerManagerFragment.this.onTabChanged(tabId);
             }
         });
+        if (routedTabIndex != null)
+        {
+            mTabHost.setCurrentTab(routedTabIndex);
+            routedTabIndex = null;
+        }
+        else if (routedTabIndexMe != null)
+        {
+            mTabHost.setCurrentTab(routedTabIndexMe);
+            routedTabIndexMe = null;
+        }
+        else if (routedHeroIdForAll != null)
+        {
+            mTabHost.setCurrentTab(new AllHeroTypeResourceDTO().followerTabIndex);
+        }
+        else if (routedHeroIdForFree != null)
+        {
+            mTabHost.setCurrentTab(new FreeHeroTypeResourceDTO().followerTabIndex);
+        }
+        else if (routedHeroIdForPremium != null)
+        {
+            mTabHost.setCurrentTab(new PremiumHeroTypeResourceDTO().followerTabIndex);
+        }
         return mTabHost;
     }
 
