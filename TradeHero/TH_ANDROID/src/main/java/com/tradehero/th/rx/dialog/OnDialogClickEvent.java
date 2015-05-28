@@ -2,13 +2,14 @@ package com.tradehero.th.rx.dialog;
 
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import com.tradehero.common.annotation.DialogButton;
 
 public class OnDialogClickEvent
 {
     @NonNull public final DialogInterface dialog;
-    public final int which;
+    @DialogButton public final int which;
 
-    public OnDialogClickEvent(@NonNull DialogInterface dialog, int which)
+    public OnDialogClickEvent(@NonNull DialogInterface dialog, @DialogButton int which)
     {
         this.dialog = dialog;
         this.which = which;
