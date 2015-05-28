@@ -199,6 +199,15 @@ public class TrendingStockFragment extends TrendingBaseFragment
         return super.onOptionsItemSelected(item);
     }
 
+    @Override public void onDestroyOptionsMenu()
+    {
+        if (mExchangeSelection != null)
+        {
+            mExchangeSelection.setOnItemSelectedListener(null);
+        }
+        super.onDestroyOptionsMenu();
+    }
+
     @Override public void onDestroy()
     {
         exchangeAdapter = null;
