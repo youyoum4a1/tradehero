@@ -31,7 +31,7 @@ public class TimelineDTO implements DTO
         return null;
     }
 
-    public List<TimelineItemDTO> getEnhancedItems()
+    @Nullable public List<TimelineItemDTO> getEnhancedItems()
     {
         if (enhancedItems != null)
         {
