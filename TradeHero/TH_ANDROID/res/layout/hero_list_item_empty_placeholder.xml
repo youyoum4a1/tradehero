@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,34 +8,29 @@
     >
 
   <TextView
-      android:id="@+id/empty_follow_title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_alignParentTop="true"
       android:layout_marginTop="@dimen/margin_small"
       style="@style/TH.Subhead"
       android:text="@string/manage_heroes_empty_title"
       />
 
   <TextView
-      android:id="@+id/empty_follow_description"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@id/empty_follow_title"
       android:layout_marginTop="@dimen/margin_small"
       style="@style/TH.Body"
       android:text="@string/manage_heroes_empty_description"
       />
 
-  <Button
-      android:id="@+id/btn_leaderboard_most_skilled"
+  <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@id/empty_follow_description"
+      android:minHeight="@dimen/clickable_element_min_dimen"
       style="@style/TH.Button.Accented"
       android:layout_marginTop="@dimen/margin_medium"
       android:text="@string/manage_heroes_empty_leaderboard_link"
-      android:background="@drawable/basic_transparent_selector"
+      android:gravity="center"
       />
 
-</RelativeLayout>
+</LinearLayout>

@@ -2,8 +2,10 @@ package com.tradehero.th.fragments.social.hero;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.persistence.social.HeroType;
+import java.util.List;
 import javax.inject.Inject;
 
 public class AllHeroFragment extends HeroesTabContentFragment
@@ -15,8 +17,8 @@ public class AllHeroFragment extends HeroesTabContentFragment
         return HeroType.ALL;
     }
 
-    @Override protected void display(HeroDTOExtWrapper heroDTOExtWrapper)
+    @Override protected List<HeroDTO> getHeroes(@NonNull HeroDTOExtWrapper heroDTOExtWrapper)
     {
-        display(heroDTOExtWrapper.allActiveHeroes);
+        return heroDTOExtWrapper.allActiveHeroes;
     }
 }

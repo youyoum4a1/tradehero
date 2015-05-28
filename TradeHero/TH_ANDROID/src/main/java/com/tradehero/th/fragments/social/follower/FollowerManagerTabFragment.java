@@ -18,7 +18,6 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
@@ -29,7 +28,6 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
@@ -37,9 +35,10 @@ import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 abstract public class FollowerManagerTabFragment extends DashboardFragment
@@ -59,10 +58,12 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
     private UserBaseKey heroId;
     private FollowerSummaryDTO followerSummaryDTO;
 
+    //<editor-fold desc="Argument passing">
     public static void putHeroId(@NonNull Bundle args, @NonNull UserBaseKey followerId)
     {
         args.putBundle(HERO_ID_BUNDLE_KEY, followerId.getArgs());
     }
+    //</editor-fold>
 
     @Override public void onAttach(Activity activity)
     {
@@ -120,8 +121,48 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
     {
         super.onStart();
         onStopSubscriptions.add(followerSummaryCache.get(heroId)
+                .subscribeOn(Schedulers.computation())
+                .map(new Func1<Pair<UserBaseKey, FollowerSummaryDTO>, Pair<FollowerSummaryDTO, List<Object>>>()
+                {
+                    @Override public Pair<FollowerSummaryDTO, List<Object>> call(Pair<UserBaseKey, FollowerSummaryDTO> pair)
+                    {
+                        followerSummaryDTO = pair.second;
+                        List<UserFollowerDTO> followerDTOs = getFollowers(pair.second);
+                        return Pair.create(
+                                pair.second,
+                                followerDTOs == null
+                                        ? null
+                                        : FollowerListItemAdapter.createObjects(getResources(), followerDTOs));
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new FollowerManagerFollowerSummaryObserver()));
+                .subscribe(
+                        new Action1<Pair<FollowerSummaryDTO, List<Object>>>()
+                        {
+                            @Override public void call(Pair<FollowerSummaryDTO, List<Object>> followerSummaryDTOListPair)
+                            {
+                                displayProgress(false);
+                                followerListAdapter.setNotifyOnChange(false);
+                                followerListAdapter.clear();
+                                if (followerSummaryDTOListPair.second != null)
+                                {
+                                    followerListAdapter.addAll(followerSummaryDTOListPair.second);
+                                }
+                                followerListAdapter.setNotifyOnChange(true);
+                                followerListAdapter.notifyDataSetChanged();
+                                notifyFollowerLoaded(followerSummaryDTOListPair.first);
+                            }
+                        },
+                        new ToastAndLogOnErrorAction(
+                                getString(R.string.error_fetch_follower),
+                                "Failed to fetch FollowerSummary")
+                        {
+                            @Override public void call(Throwable throwable)
+                            {
+                                super.call(throwable);
+                                displayProgress(false);
+                            }
+                        }));
 
         onStopSubscriptions.add(followerListAdapter.getUserActionObservable()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -146,28 +187,6 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
     {
         followerListAdapter = null;
         super.onDetach();
-    }
-
-    protected class FollowerManagerFollowerSummaryObserver
-            implements Observer<Pair<UserBaseKey, FollowerSummaryDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, FollowerSummaryDTO> pair)
-        {
-            displayProgress(false);
-            display(pair.second);
-            notifyFollowerLoaded(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            displayProgress(false);
-            THToast.show(R.string.error_fetch_follower);
-            Timber.e("Failed to fetch FollowerSummary", e);
-        }
     }
 
     private void notifyFollowerLoaded(FollowerSummaryDTO value)
@@ -195,20 +214,6 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
     @NonNull abstract protected HeroType getFollowerType();
 
     @Nullable abstract protected List<UserFollowerDTO> getFollowers(@NonNull FollowerSummaryDTO fromServer);
-
-    public void display(@NonNull FollowerSummaryDTO summaryDTO)
-    {
-        this.followerSummaryDTO = summaryDTO;
-        List<UserFollowerDTO> list = getFollowers(summaryDTO);
-        followerListAdapter.setNotifyOnChange(false);
-        followerListAdapter.clear();
-        if (list != null)
-        {
-            followerListAdapter.addAll(FollowerListItemAdapter.createObjects(getResources(), list));
-        }
-        followerListAdapter.setNotifyOnChange(true);
-        followerListAdapter.notifyDataSetChanged();
-    }
 
     private void redisplayProgress()
     {
