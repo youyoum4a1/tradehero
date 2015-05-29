@@ -167,6 +167,10 @@ abstract public class DashboardFragment extends BaseFragment {
                 onClickHeadRight0();
             }
         });
+
+        //hide sub header and right button as default
+        tvHeadRight0.setVisibility(View.GONE);
+        tvHeadMiddleSub.setVisibility(View.GONE);
     }
 
     public void popCurrentFragment() {
