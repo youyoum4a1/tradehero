@@ -38,7 +38,6 @@ import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -277,6 +276,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public static final int ERROR_NO_COMPETITION_PROTFOLIO = 3;
 
     boolean isFromCompetition = false;
+
+
+    private boolean isNews = false;
 
     public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
             SecurityDetailFragment.class.getName() + ".purchaseApplicablePortfolioId";
@@ -1698,6 +1700,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             Bundle bundle = new Bundle();
             bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, dto.getDiscussionKey().getArgs());
             bundle.putInt(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_TYPE, TimeLineItemDetailFragment.DISCUSSION_DISCUSSION_TYPE);
+            bundle.putBoolean(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_IS_NEWS, isNews);
             pushFragment(TimeLineItemDetailFragment.class, bundle);
         }
     }
@@ -1948,6 +1951,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
         else if (view.getId() == R.id.btnTabDiscuss)
         {
+            isNews = false;
             setDiscussOrNewsView(0);
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
                     AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_DISCUSS));
@@ -1955,6 +1959,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         else if (view.getId() == R.id.btnTabNews)
         {
+            isNews = true;
             setDiscussOrNewsView(1);
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
                     AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_NEWS));
@@ -2144,14 +2149,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public void linkWith(TradeDTOList tradeDTOs)
-    {
-        for(TradeDTO tradeDTO: tradeDTOs){
-            THLog.d("tradeDTO.id : " + tradeDTO.id);
-            THLog.d("tradeDTO.positionId : " + tradeDTO.positionId);
-            THLog.d("tradeDTO.displayTradeQuantity() : " + tradeDTO.displayTradeQuantity());
-            THLog.d("tradeDTO.displayTradeMoney() : " + tradeDTO.displayTradeMoney());
-        }
+    public void linkWith(TradeDTOList tradeDTOs) {
         this.tradeDTOList = tradeDTOs;
         adapter.setTradeList(tradeDTOList);
     }

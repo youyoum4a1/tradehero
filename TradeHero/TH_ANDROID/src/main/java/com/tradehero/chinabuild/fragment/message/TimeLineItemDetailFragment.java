@@ -207,7 +207,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     public static final String BUNDLE_ARGUMENT_DISCUSSION_TYPE = "bundle_argument_discuss_type";
     public static final int DISCUSSION_TIME_LINE_TYPE = 1;
     public static final int DISCUSSION_DISCUSSION_TYPE = 2;
+    public static final String BUNDLE_ARGUMENT_IS_NEWS = "bundle_argument_is_news";
     private int discussion_type = 1;
+    private boolean isNews = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -235,13 +237,20 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         if (bundle.containsKey(BUNDLE_ARGUMENT_DISCUSSION_TYPE)) {
             discussion_type = bundle.getInt(BUNDLE_ARGUMENT_DISCUSSION_TYPE, DISCUSSION_TIME_LINE_TYPE);
         }
+        if (bundle.containsKey(BUNDLE_ARGUMENT_IS_NEWS)){
+            isNews = bundle.getBoolean(BUNDLE_ARGUMENT_IS_NEWS, false);
+        }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain("详情");
-        setHeadViewRight0(getString(R.string.discovery_discuss_send_more));
+        if (isNews) {
+            setHeadViewRight0(getString(R.string.discovery_discuss_send_share));
+        } else {
+            setHeadViewRight0(getString(R.string.discovery_discuss_send_more));
+        }
     }
 
     @Override
@@ -873,11 +882,17 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
     @Override
     public void onClickHeadRight0() {
-        if (dialogFactory == null) {
-            dialogFactory = new DialogFactory();
-        }
         if (getActivity() == null) {
             return;
+        }
+        if(isNews){
+            share();
+            return;
+        }
+
+
+        if (dialogFactory == null) {
+            dialogFactory = new DialogFactory();
         }
 
         boolean isDeleteAllowed = isDeleteAllowed(dataDto);
