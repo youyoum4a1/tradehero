@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
+import com.tradehero.chinabuild.data.db.THDatabaseHelper;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
@@ -196,7 +196,7 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
         if (answer.equals("")) {
             return;
         }
-        StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
+        THDatabaseHelper stockLearningDatabaseHelper = new THDatabaseHelper(getActivity());
         QuestionStatusRecord questionStatusRecord = new QuestionStatusRecord();
         questionStatusRecord.question_choice = answer;
         questionStatusRecord.question_id = question.id;
@@ -330,7 +330,7 @@ public class OneQuestionFragment extends Fragment implements View.OnClickListene
 
     private void refreshAnswerViews() {
         if (question != null) {
-            StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
+            THDatabaseHelper stockLearningDatabaseHelper = new THDatabaseHelper(getActivity());
             questionStatusRecord = stockLearningDatabaseHelper.retrieveQuestionRecord(question.id, user_id, question.subcategory);
             if (type.equals(AnswerQuestionFragment.TYPE_ERROR)) {
                 if (StockLearningQuestionManager.getInstance().isNeedReAnswer(question.id)) {

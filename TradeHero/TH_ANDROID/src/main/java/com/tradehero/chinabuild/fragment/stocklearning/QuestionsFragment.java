@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
+import com.tradehero.chinabuild.data.db.THDatabaseHelper;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -131,7 +131,7 @@ public class QuestionsFragment extends DashboardFragment {
                 if (categories == null || categories.length <= 0) {
                     return;
                 }
-                StockLearningDatabaseHelper dbHelper = new StockLearningDatabaseHelper(getActivity());
+                THDatabaseHelper dbHelper = new THDatabaseHelper(getActivity());
                 int user_id = currentUserId.get();
 
                 if (categories != null) {
@@ -167,7 +167,7 @@ public class QuestionsFragment extends DashboardFragment {
         if (getActivity() == null) {
             return;
         }
-        StockLearningDatabaseHelper dbHelper = new StockLearningDatabaseHelper(getActivity());
+        THDatabaseHelper dbHelper = new THDatabaseHelper(getActivity());
         int user_id = currentUserId.get();
         ArrayList<QuestionGroup> questionGroups = dbHelper.retrieveQuestionGroup(user_id);
         levelAItems.clear();

@@ -100,11 +100,17 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
     private Dialog mShareSheetDialog;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
+    public final static String BUNDLE_ARGUMENT_IS_NEWS = "bundle_argument_is_news";
+    private boolean isNews = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
+        if(args.containsKey(BUNDLE_ARGUMENT_IS_NEWS)){
+            isNews = args.getBoolean(BUNDLE_ARGUMENT_IS_NEWS, false);
+        }
         if (args != null)
         {
             securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);

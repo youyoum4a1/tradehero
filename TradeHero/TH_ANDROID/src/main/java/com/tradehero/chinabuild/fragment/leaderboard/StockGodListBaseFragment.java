@@ -8,9 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
+import com.tradehero.chinabuild.data.db.THDatabaseHelper;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
@@ -33,11 +36,12 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.TradeHeroProgressBar;
+
 import javax.inject.Inject;
+
 import org.jetbrains.annotations.NotNull;
 
-public class StockGodListBaseFragment extends DashboardFragment
-{
+public class StockGodListBaseFragment extends DashboardFragment {
     public static final String BUNLDE_LEADERBOARD_KEY = "bundle_leaderboard_key";
 
     @Inject LeaderboardCache leaderboardCache;
@@ -52,72 +56,67 @@ public class StockGodListBaseFragment extends DashboardFragment
     private LeaderboardListAdapter adapter;
     private int currentPage = 0;
     private int ITEMS_PER_PAGE = 20;
-    private int leaderboard_key = 0;//所有榜单根据key来判断 30day，60day，6months 。。。
+    private int leaderboard_key = 0;//所有榜单根据key来判断 土豪榜，收益榜。。。
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new LeaderboardListAdapter(getActivity());
         Bundle args = getArguments();
-        if (args != null)
-        {
+        if (args != null) {
             leaderboard_key = args.getInt(BUNLDE_LEADERBOARD_KEY);
         }
         leaderboardCacheListener = new BaseLeaderboardFragmentLeaderboardCacheListener();
     }
 
     //<editor-fold desc="ActionBar">
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
         setHeadViewMiddleMain(LeaderboardDefKeyKnowledge.getLeaderboardName(getLeaderboardDTO()));
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stock_god_list, container, false);
         ButterKnife.inject(this, view);
 
         initView();
-
-        if (adapter.getCount() == 0)
-        {
+        adapter = new LeaderboardListAdapter(getActivity());
+        adapter.setLeaderboardType(leaderboard_key);
+        THDatabaseHelper stockLearningDatabaseHelper = new THDatabaseHelper(getActivity());
+        LeaderboardUserDTOList leaderboardUserDTOs = stockLearningDatabaseHelper.retrieveUserDTOList(leaderboard_key);
+        if (leaderboardUserDTOs == null || leaderboardUserDTOs.size() <= 0) {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_heros);
             progressBar.startLoading();
-        }
-        else
-        {
+        } else {
+            adapter.setListData(leaderboardUserDTOs);
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.listBang);
         }
+        listBang.setAdapter(adapter);
         showLoginContinuousDialog();
+        fetchLeaderboard();
         return view;
     }
 
-    private void initView()
-    {
-        listBang.setAdapter(adapter);
-        listBang.setMode(PullToRefreshBase.Mode.BOTH);
-        listBang.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
-        {
-            @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
+    private void initView() {
+        listBang.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        listBang.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 fetchLeaderboard();
             }
 
-            @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
                 fetchLeaderboardMore();
             }
         });
 
-        listBang.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long position)
-            {
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.LEADERBOARD_USER_CLICKED_POSITION, ""+position));
+        listBang.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long position) {
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.LEADERBOARD_USER_CLICKED_POSITION, "" + position));
                 Bundle bundle = new Bundle();
                 LeaderboardUserDTO userDTO = (LeaderboardUserDTO) adapter.getItem((int) position);
                 bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userDTO.id);
@@ -126,65 +125,57 @@ public class StockGodListBaseFragment extends DashboardFragment
         });
     }
 
-    /*
-进入持仓页面
- */
-    @Override public void onResume()
-    {
-        super.onResume();
-        if (adapter != null && adapter.getCount() == 0)
-        {
-            fetchLeaderboard();
-        }
-    }
-
-    @Override public void onPause()
-    {
+    @Override
+    public void onPause() {
         detachLeaderboardCacheListener();
-        if(listBang!=null)
-        {
+        if (listBang != null) {
             listBang.onRefreshComplete();
         }
         super.onPause();
     }
 
-    public LeaderboardDefKey getLeaderboardDTO()
-    {
+    public LeaderboardDefKey getLeaderboardDTO() {
         return new LeaderboardDefKey(leaderboard_key);
     }
 
-    protected void fetchLeaderboard()
-    {
+    protected void fetchLeaderboard() {
         detachLeaderboardCacheListener();
         PagedLeaderboardKey key = new PagedLeaderboardKey(getLeaderboardDTO().key, PagedLeaderboardKey.FIRST_PAGE);
         key.perPage = ITEMS_PER_PAGE;
         key.page = 1;
         leaderboardCache.register(key, leaderboardCacheListener);
-        leaderboardCache.getOrFetchAsync(key,true);
+        leaderboardCache.getOrFetchAsync(key, true);
     }
 
-    protected void fetchLeaderboardMore()
-    {
+    protected void fetchLeaderboardMore() {
         detachLeaderboardCacheListener();
         PagedLeaderboardKey key = new PagedLeaderboardKey(getLeaderboardDTO().key, currentPage + 1);
         key.perPage = ITEMS_PER_PAGE;
         leaderboardCache.register(key, leaderboardCacheListener);
-        leaderboardCache.getOrFetchAsync(key);
+        leaderboardCache.getOrFetchAsync(key, true);
     }
 
-    protected void detachLeaderboardCacheListener()
-    {
+    protected void detachLeaderboardCacheListener() {
         leaderboardCache.unregister(leaderboardCacheListener);
     }
 
-    protected class BaseLeaderboardFragmentLeaderboardCacheListener implements DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO>
-    {
-        @Override public void onDTOReceived(@NotNull LeaderboardKey key, @NotNull LeaderboardDTO value) {
+    protected class BaseLeaderboardFragmentLeaderboardCacheListener implements DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> {
+        @Override
+        public void onDTOReceived(@NotNull LeaderboardKey key, @NotNull LeaderboardDTO value) {
             setListData(key, value.users);
+            if (((PagedLeaderboardKey) key).page == PagedLeaderboardKey.FIRST_PAGE) {
+                THDatabaseHelper stockLearningDatabaseHelper = new THDatabaseHelper(getActivity());
+                stockLearningDatabaseHelper.storeLeaderboadrUsers(value.users, leaderboard_key);
+                listBang.setMode(PullToRefreshBase.Mode.BOTH);
+            }
             onFinish();
         }
 
-        @Override public void onErrorThrown(@NotNull LeaderboardKey key, @NotNull Throwable error) {
+        @Override
+        public void onErrorThrown(@NotNull LeaderboardKey key, @NotNull Throwable error) {
+            if (((PagedLeaderboardKey) key).page == PagedLeaderboardKey.FIRST_PAGE) {
+                listBang.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+            }
             onFinish();
         }
 
@@ -199,8 +190,6 @@ public class StockGodListBaseFragment extends DashboardFragment
         if (((PagedLeaderboardKey) key).page == PagedLeaderboardKey.FIRST_PAGE) {
             currentPage = 0;
             adapter.setListData(listData);
-            adapter.setLeaderboardType(getLeaderboardDTO().key);
-
         } else {
             adapter.addItems(listData);
         }
@@ -212,9 +201,9 @@ public class StockGodListBaseFragment extends DashboardFragment
         adapter.notifyDataSetChanged();
     }
 
-    private void showLoginContinuousDialog(){
+    private void showLoginContinuousDialog() {
         int loginTimes = THSharePreferenceManager.Login_Continuous_Time;
-        if(loginTimes >=3){
+        if (loginTimes >= 3) {
             if (leaderboard_key == LeaderboardDefKeyKnowledge.DAYS_ROI) {
                 int userId = currentUserId.toUserBaseKey().getUserId();
                 if (THSharePreferenceManager.isShareDialogLoginContinually(userId, getActivity())) {

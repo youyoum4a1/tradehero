@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
+import com.tradehero.chinabuild.data.db.THDatabaseHelper;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -103,7 +103,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
         if (questionGroup == null) {
             popCurrentFragment();
         } else {
-            StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
+            THDatabaseHelper stockLearningDatabaseHelper = new THDatabaseHelper(getActivity());
             questions = stockLearningDatabaseHelper.retrieveQuestions(questionGroup.id);
         }
     }
@@ -165,7 +165,7 @@ public class AnswersSummaryFragment extends DashboardFragment implements View.On
     }
 
     public void refreshSummary() {
-        StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
+        THDatabaseHelper stockLearningDatabaseHelper = new THDatabaseHelper(getActivity());
         questionStatusRecords = stockLearningDatabaseHelper.retrieveQuestionRecords(currentUserId.get(), questionGroup.id);
         reAnswerQuestions.clear();
         for (Question question : questions) {

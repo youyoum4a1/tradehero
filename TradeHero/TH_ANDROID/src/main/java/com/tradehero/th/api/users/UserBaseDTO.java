@@ -22,8 +22,6 @@ public class UserBaseDTO extends ExtendedDTO
     public String lastName;
     public Date memberSince;
     public boolean isAdmin;
-    public String activeSurveyURL;
-    public String activeSurveyImageURL;
     public Double roiSinceInception;
     @Nullable public String countryCode;
 
@@ -34,11 +32,6 @@ public class UserBaseDTO extends ExtendedDTO
     @JsonIgnore @NotNull public UserBaseKey getBaseKey()
     {
         return new UserBaseKey(id);
-    }
-
-    @JsonIgnore public boolean isOfficialAccount()
-    {
-        return getBaseKey().isOfficialAccount();
     }
 
     @JsonIgnore @Nullable public Country getCountry()

@@ -10,7 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.view.Menu;
 import android.view.MenuInflater;
-import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
+import com.tradehero.chinabuild.data.db.THDatabaseHelper;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -95,7 +95,7 @@ public class StockLearningHistoryFragment extends DashboardFragment {
             if (getActivity() == null) {
                 return;
             }
-            StockLearningDatabaseHelper stockLearningDatabaseHelper = new StockLearningDatabaseHelper(getActivity());
+            THDatabaseHelper stockLearningDatabaseHelper = new THDatabaseHelper(getActivity());
             records = stockLearningDatabaseHelper.retrieveQuestionRecords(currentUserId.get(), questionGroup.id);
             questions = stockLearningDatabaseHelper.retrieveQuestions(questionGroup.id);
             if(adapter!=null){

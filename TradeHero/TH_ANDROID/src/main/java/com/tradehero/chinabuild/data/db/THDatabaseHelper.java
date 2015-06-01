@@ -6,26 +6,25 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+
 import com.tradehero.chinabuild.fragment.stocklearning.Question;
 import com.tradehero.chinabuild.fragment.stocklearning.QuestionGroup;
 import com.tradehero.chinabuild.fragment.stocklearning.QuestionStatusRecord;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
+
 import java.util.ArrayList;
 
 /**
  * Database
- * <p>
+ * <p/>
  * Created by palmer on 15/4/13.
  */
-public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
+public class THDatabaseHelper extends SQLiteOpenHelper {
 
-    private final static int VERSION = 1;
+    private final static int VERSION = 2;
 
-    public StockLearningDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
-                                       int version) {
-        super(context, name, factory, version);
-    }
-
-    public StockLearningDatabaseHelper(Context context) {
+    public THDatabaseHelper(Context context) {
         super(context, SQLs.SQL_DB_NAME, null, VERSION);
     }
 
@@ -34,12 +33,13 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQLs.SQL_CREATE_TABLE_QUESTION_RECORD);
         db.execSQL(SQLs.SQL_CREATE_TABLE_QUESTION_GROUP);
         db.execSQL(SQLs.SQL_CREATE_TABLE_QUESTION);
+        db.execSQL(SQLs.SQL_CREATE_TABLE_LEADERBOARD);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (newVersion > oldVersion) {
-
+            db.execSQL(SQLs.SQL_CREATE_TABLE_LEADERBOARD);
         }
     }
 
@@ -151,7 +151,7 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         try {
             db.beginTransaction();
-            for(QuestionGroup questionGroup: questionGroups) {
+            for (QuestionGroup questionGroup : questionGroups) {
                 Cursor cursor = db.query(SQLs.TABLE_QUESTION_GROUP, null, SQLs.QUESTION_GROUP_USER_ID + " =? and " + SQLs.QUESTION_GROUP_GROUP_ID + " =? ",
                         new String[]{String.valueOf(user_id), String.valueOf(questionGroup.id)}, null, null, null);
                 if (cursor.moveToFirst()) {
@@ -182,12 +182,12 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public ArrayList<QuestionGroup> retrieveQuestionGroup(int user_id){
+    public ArrayList<QuestionGroup> retrieveQuestionGroup(int user_id) {
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<QuestionGroup> questionGroups = new ArrayList();
         Cursor cursor = db.query(SQLs.TABLE_QUESTION_GROUP, null, SQLs.QUESTION_GROUP_USER_ID + " =? ",
                 new String[]{String.valueOf(user_id)}, null, null, null);
-        while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
             QuestionGroup questionGroup = new QuestionGroup();
             int progress = cursor.getInt(cursor.getColumnIndex(SQLs.QUESTION_GROUP_PROGRESS));
             int group_id = cursor.getInt(cursor.getColumnIndex(SQLs.QUESTION_GROUP_GROUP_ID));
@@ -205,14 +205,14 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
         return questionGroups;
     }
 
-    public void insertQuestions(Question[] questions){
-        if(questions == null || questions.length<=0){
+    public void insertQuestions(Question[] questions) {
+        if (questions == null || questions.length <= 0) {
             return;
         }
         SQLiteDatabase db = getWritableDatabase();
-        try{
+        try {
             db.beginTransaction();
-            for(Question question: questions) {
+            for (Question question : questions) {
                 db.delete(SQLs.TABLE_QUESTION, SQLs.QUESTION_GROUP_GROUP_ID + " =? and " + SQLs.QUESTION_QUESTION_ID + " =? ",
                         new String[]{String.valueOf(question.subcategory), String.valueOf(question.id)});
                 ContentValues values = new ContentValues();
@@ -228,19 +228,19 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
                 db.insert(SQLs.TABLE_QUESTION, null, values);
             }
             db.setTransactionSuccessful();
-        }catch (SQLiteException e){
+        } catch (SQLiteException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             db.endTransaction();
             db.close();
         }
     }
 
-    public ArrayList<Question> retrieveQuestions(int group_id){
+    public ArrayList<Question> retrieveQuestions(int group_id) {
         ArrayList<Question> questions = new ArrayList();
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(SQLs.TABLE_QUESTION, null, SQLs.QUESTION_QUESTION_GROUP_ID + " =? ", new String[]{String.valueOf(group_id)}, null, null, null);
-        while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
             Question question = new Question();
             int question_id = cursor.getInt(cursor.getColumnIndex(SQLs.QUESTION_QUESTION_ID));
             String content = cursor.getString(cursor.getColumnIndex(SQLs.QUESTION_DESCRIPTION));
@@ -264,6 +264,70 @@ public class StockLearningDatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return questions;
+    }
+
+
+    /**
+     * Insert users into leaderboard
+     */
+    public void storeLeaderboadrUsers(LeaderboardUserDTOList leaderboardUserDTOList, int type) {
+        if (leaderboardUserDTOList == null || leaderboardUserDTOList.size() <= 0) {
+            return;
+        }
+        ArrayList<LeaderboardUserDTO> userDTOs = leaderboardUserDTOList;
+        SQLiteDatabase db = getWritableDatabase();
+        try {
+            db.beginTransaction();
+            db.delete(SQLs.TABLE_LEADERBOARD, SQLs.LB_TYPE + " = ? ", new String[]{String.valueOf(type)});
+            for (LeaderboardUserDTO leaderboardUserDTO : userDTOs) {
+                ContentValues values = new ContentValues();
+                values.put(SQLs.LB_ID, leaderboardUserDTO.id);
+                values.put(SQLs.LB_TYPE, type);
+                values.put(SQLs.LB_DISPLAYNAME, leaderboardUserDTO.displayName);
+                values.put(SQLs.LB_PICTURE, leaderboardUserDTO.picture);
+                values.put(SQLs.LB_FOLLOWERCOUNT, leaderboardUserDTO.followerCount);
+                values.put(SQLs.LB_PERFROI, leaderboardUserDTO.perfRoi);
+                values.put(SQLs.LB_ROIINPERIOD, leaderboardUserDTO.roiInPeriod);
+                values.put(SQLs.LB_TOTALWEALTH, leaderboardUserDTO.totalWealth);
+                db.insert(SQLs.TABLE_LEADERBOARD, null, values);
+            }
+            db.setTransactionSuccessful();
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+
+    public LeaderboardUserDTOList retrieveUserDTOList(int type) {
+        if (type <= 0) {
+            return null;
+        }
+        LeaderboardUserDTOList leaderboardUserDTOList =  new LeaderboardUserDTOList();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(SQLs.TABLE_LEADERBOARD, null, SQLs.LB_TYPE + " =? ",
+                new String[]{String.valueOf(type)}, null, null, null);
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex(SQLs.LB_ID));
+            String displayName = cursor.getString(cursor.getColumnIndex(SQLs.LB_DISPLAYNAME));
+            String picture = cursor.getString(cursor.getColumnIndex(SQLs.LB_PICTURE));
+            int followCount =  cursor.getInt(cursor.getColumnIndex(SQLs.LB_FOLLOWERCOUNT));
+            double perfRoi = cursor.getDouble(cursor.getColumnIndex(SQLs.LB_PERFROI));
+            double roiInPeriod = cursor.getDouble(cursor.getColumnIndex(SQLs.LB_ROIINPERIOD));
+            double totalWealth = cursor.getDouble(cursor.getColumnIndex(SQLs.LB_TOTALWEALTH));
+            LeaderboardUserDTO leaderboardUserDTO = new LeaderboardUserDTO();
+            leaderboardUserDTO.id = id;
+            leaderboardUserDTO.displayName = displayName;
+            leaderboardUserDTO.picture = picture;
+            leaderboardUserDTO.followerCount = followCount;
+            leaderboardUserDTO.perfRoi = perfRoi;
+            leaderboardUserDTO.roiInPeriod = roiInPeriod;
+            leaderboardUserDTO.totalWealth = totalWealth;
+            leaderboardUserDTOList.add(leaderboardUserDTO);
+        }
+        return leaderboardUserDTOList;
     }
 
 

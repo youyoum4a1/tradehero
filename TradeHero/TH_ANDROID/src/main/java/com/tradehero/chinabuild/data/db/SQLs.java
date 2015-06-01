@@ -62,4 +62,27 @@ public class SQLs {
             + QUESTION_DESCRIPTION + "' TEXT)";
     //Stock Learning
 
+
+    //LeaderBoard
+    public final static String TABLE_LEADERBOARD = "leaderboard";
+    public final static String LB_TYPE = "lb_type";
+    public final static String LB_ID = "lb_id";
+    public final static String LB_DISPLAYNAME = "lb_displayName";
+    public final static String LB_PICTURE = "lb_picture";
+    public final static String LB_PERFROI = "lb_perfRoi";
+    public final static String LB_FOLLOWERCOUNT = "lb_followerCount";
+    public final static String LB_TOTALWEALTH = "lb_totalWealth";
+    public final static String LB_ROIINPERIOD = "lb_roiInPeriod";
+
+    public final static String SQL_CREATE_TABLE_LEADERBOARD = "CREATE TABLE '"
+            + TABLE_LEADERBOARD + "' ('id' INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , '"
+            + LB_TYPE +"' INTEGER NOT NULL , '"
+            + LB_ID +"' TEXT NOT NULL , '"
+            + LB_DISPLAYNAME +"' TEXT, '"
+            + LB_PICTURE +"' TEXT, '"
+            + LB_PERFROI +"' DOUBLE, '"
+            + LB_FOLLOWERCOUNT +"' INTEGER, '"
+            + LB_TOTALWEALTH+"' DOUBLE, '"
+            + LB_ROIINPERIOD+"' DOUBLE)";
+
 }

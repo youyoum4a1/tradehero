@@ -25,7 +25,7 @@ public class LeaderboardListAdapter extends BaseAdapter {
 
     private Context context;
     private LayoutInflater inflater;
-    private LeaderboardUserDTOList leaderboardUserDTOs;
+    private LeaderboardUserDTOList leaderboardUserDTOs = new LeaderboardUserDTOList();
     public boolean hasLeaderboard;
 
     public int leaderboardType = -1;

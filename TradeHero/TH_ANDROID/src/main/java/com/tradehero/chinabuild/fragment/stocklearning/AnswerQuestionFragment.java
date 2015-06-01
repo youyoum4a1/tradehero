@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.widget.RelativeLayout;
 
-import com.tradehero.chinabuild.data.db.StockLearningDatabaseHelper;
+import com.tradehero.chinabuild.data.db.THDatabaseHelper;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -107,7 +107,7 @@ public class AnswerQuestionFragment extends DashboardFragment implements ViewPag
                 popCurrentFragment();
             }
             if (type.equals(TYPE_NORMAL)) {
-                StockLearningDatabaseHelper dbHelper = new StockLearningDatabaseHelper(getActivity());
+                THDatabaseHelper dbHelper = new THDatabaseHelper(getActivity());
                 questions = dbHelper.retrieveQuestions(questionGroup.id);
             }
             if (type.equals(TYPE_ERROR)) {
