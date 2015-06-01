@@ -309,7 +309,6 @@ public class DiscussSendFragment extends DashboardFragment
 
         String extraText = "";
 
-
         if (extraInput instanceof SecurityCompactDTO)
         {
             SecurityCompactDTO taggedSecurity = (SecurityCompactDTO) extraInput;

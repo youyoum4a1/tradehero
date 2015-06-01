@@ -3,13 +3,13 @@ package com.tradehero.chinabuild.fragment.portfolio;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
@@ -28,7 +28,6 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.position.PositionCache;
-import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.StringUtils;
@@ -50,7 +49,6 @@ public class PositionDetailFragment extends DashboardFragment
 
     @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<TradeListCache> tradeListCache;
-    @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject PositionDTOKeyFactory positionDTOKeyFactory;
 
     protected PositionDTOKey positionDTOKey;
@@ -90,8 +88,8 @@ public class PositionDetailFragment extends DashboardFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        fetchPositionListener = createPositionCacheListener();
-        fetchTradesListener = createTradeListeCacheListener();
+        fetchPositionListener = new TradeListFragmentPositionCacheListener();
+        fetchTradesListener = new GetTradesListener();
         adapter = new PositionTradeListAdapter(getActivity());
     }
 
@@ -161,14 +159,8 @@ public class PositionDetailFragment extends DashboardFragment
         return view;
     }
 
-    @Override public void onStop()
-    {
-        super.onStop();
-    }
-
     public void initListView()
     {
-
         listView.setAdapter(adapter);
         listView.setMode(PullToRefreshBase.Mode.DISABLED);
     }
@@ -180,11 +172,6 @@ public class PositionDetailFragment extends DashboardFragment
 
         ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
     }
 
     @Override public void onResume()
@@ -214,11 +201,6 @@ public class PositionDetailFragment extends DashboardFragment
         detachFetchPosition();
         positionCache.get().register(positionDTOKey, fetchPositionListener);
         positionCache.get().getOrFetchAsync(positionDTOKey);
-    }
-
-    protected DTOCacheNew.Listener<PositionDTOKey, PositionDTO> createPositionCacheListener()
-    {
-        return new TradeListFragmentPositionCacheListener();
     }
 
     protected class TradeListFragmentPositionCacheListener implements DTOCacheNew.Listener<PositionDTOKey, PositionDTO>
@@ -278,16 +260,10 @@ public class PositionDetailFragment extends DashboardFragment
         }
     }
 
-    protected TradeListCache.Listener<OwnedPositionId, TradeDTOList> createTradeListeCacheListener()
-    {
-        return new GetTradesListener();
-    }
-
     private class GetTradesListener implements TradeListCache.Listener<OwnedPositionId, TradeDTOList>
     {
         @Override public void onDTOReceived(@NotNull OwnedPositionId key, @NotNull TradeDTOList tradeDTOs)
         {
-
             linkWith(tradeDTOs, true);
             onFinish();
         }

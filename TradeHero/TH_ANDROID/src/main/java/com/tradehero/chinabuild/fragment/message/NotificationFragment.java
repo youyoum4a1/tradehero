@@ -83,8 +83,8 @@ public class NotificationFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         middleCallbacks = new MiddleCallbackWeakList<>();
-        notificationListFetchListener = createNotificationFetchListener();
-        notificationListRefreshListener = createNotificationRefreshListener();
+        notificationListFetchListener = new NotificationFetchListener(true);
+        notificationListRefreshListener = new NotificationRefreshListener();
         adapter = new NotificationListAdapter(getActivity());
     }
 
@@ -187,11 +187,6 @@ public class NotificationFragment extends DashboardFragment
         }
     }
 
-    private DTOCacheNew.Listener<NotificationListKey, PaginatedNotificationDTO> createNotificationFetchListener()
-    {
-        return new NotificationFetchListener(true);
-    }
-
     private class NotificationFetchListener implements DTOCacheNew.Listener<NotificationListKey, PaginatedNotificationDTO>
     {
         private final boolean shouldAppend;
@@ -203,7 +198,6 @@ public class NotificationFragment extends DashboardFragment
 
         @Override public void onDTOReceived(@NotNull NotificationListKey key, @NotNull PaginatedNotificationDTO value)
         {
-
             onFinish();
             initListData(value, key);
         }
@@ -219,11 +213,6 @@ public class NotificationFragment extends DashboardFragment
             listView.onRefreshComplete();
             progressBar.stopLoading();
         }
-    }
-
-    private DTOCacheNew.Listener<NotificationListKey, PaginatedNotificationDTO> createNotificationRefreshListener()
-    {
-        return new NotificationRefreshListener();
     }
 
     private class NotificationRefreshListener implements DTOCacheNew.Listener<NotificationListKey, PaginatedNotificationDTO>
@@ -373,7 +362,6 @@ public class NotificationFragment extends DashboardFragment
         pushFragment(CompetitionMainFragment.class, bundle);
     }
 
-
     //Empty All Notifications Dialog
     private void showEmptyAllNotificationsDialog(){
         if(getActivity()==null){
@@ -479,7 +467,4 @@ public class NotificationFragment extends DashboardFragment
         userProfileDTO.unreadNotificationsCount=0;
         userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
     }
-
-
-
 }

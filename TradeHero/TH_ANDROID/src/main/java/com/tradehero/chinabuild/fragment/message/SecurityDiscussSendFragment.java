@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public class SecurityDiscussSendFragment extends DiscussSendFragment
 {
     public static final String BUNDLE_KEY_SECURITY_ID = SecurityDiscussSendFragment.class.getName() + ".securityId";
+    @Nullable private SecurityId securityId;
 
     @Nullable public static SecurityId getSecurityId(@Nullable Bundle args)
     {
@@ -24,8 +25,6 @@ public class SecurityDiscussSendFragment extends DiscussSendFragment
         }
         return extracted;
     }
-
-    @Nullable private SecurityId securityId;
 
     private void linkWith(SecurityId securityId, boolean andDisplay)
     {

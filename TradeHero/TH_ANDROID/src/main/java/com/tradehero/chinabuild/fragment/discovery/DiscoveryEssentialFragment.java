@@ -174,10 +174,8 @@ public class DiscoveryEssentialFragment extends DashboardFragment
     {
         Bundle bundle = new Bundle();
         bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, dto.getDiscussionKey().getArgs());
-
         //For Administrator
         bundle.putString(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_TIMELINE_FROM, TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_FAVORITE);
-
         pushFragment(TimeLineItemDetailFragment.class, bundle);
     }
 

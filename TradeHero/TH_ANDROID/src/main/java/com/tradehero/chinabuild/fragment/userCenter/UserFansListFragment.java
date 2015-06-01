@@ -32,7 +32,6 @@ import java.util.List;
  * Created by palmer on 15/2/25.
  */
 public class UserFansListFragment extends DashboardFragment {
-
     private TradeHeroProgressBar tradeheroprogressbar_users;
     private PullToRefreshListView fansLV;
     private ImageView emptyIV;
@@ -147,7 +146,6 @@ public class UserFansListFragment extends DashboardFragment {
             }
         }
     }
-
 
     private void showProgressDlg() {
         if (tradeheroprogressbar_users != null) {

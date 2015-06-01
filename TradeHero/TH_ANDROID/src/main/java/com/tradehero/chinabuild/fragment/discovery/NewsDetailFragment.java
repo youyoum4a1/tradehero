@@ -85,7 +85,6 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
     @Inject DiscussionListCacheNew discussionListCache;
     @Inject protected DiscussionCache discussionCache;
 
-
     private PullToRefreshListView pullToRefreshListView;
 
     private RelativeLayout sendDiscussionRL;
@@ -379,7 +378,6 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
                     }
                 }, false, isDeleteAllowed, isReportAllowed);
     }
-
 
     private void fetchComments(){
         if(discussionListKey == null) {
@@ -690,7 +688,6 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
         discussionEditMiddleCallback = null;
     }
 
-
     protected void postDiscussion()
     {
         if (validate())
@@ -828,7 +825,6 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
         }
         timeline_detail_tvTLComment.setText(String.valueOf(newsItemDTO.commentCount));
     }
-
 
     private void clickPraiseUp(){
         if(newsItemDTO.voteDirection == 0){

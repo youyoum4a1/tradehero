@@ -6,19 +6,18 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
@@ -56,7 +55,6 @@ import timber.log.Timber;
  */
 public class SearchFragment extends DashboardFragment implements HasSelectedItem
 {
-
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject CurrentUserId currentUserId;
     @Inject UserServiceWrapper userServiceWrapper;
@@ -68,7 +66,6 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
     @InjectView(R.id.progressbar_trade_security_search) TradeHeroProgressBar pbSearch;
     @InjectView(R.id.tvSearch) TextView tvSearch;
     @InjectView(R.id.edtSearchInput) EditText tvSearchInput;
-    @InjectView(R.id.btn_search_x) Button btnSearch_x;
     @InjectView(R.id.listSearch) SecurityListView listSearch;
     @InjectView(R.id.textview_security_searchresult) TextView tvResult;
 
@@ -86,8 +83,8 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        securityListTypeCacheListener = createSecurityListFetchListener();
-        securityListTypeHotCacheListener = createSecurityListFetchListener();
+        securityListTypeCacheListener = new TrendingSecurityListFetchListener();
+        securityListTypeHotCacheListener = new TrendingSecurityListFetchListener();
         adapter = new SecuritySearchListAdapter(getActivity());
     }
 
@@ -238,12 +235,6 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         }
     }
 
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-    }
-
     @Override public void onPause()
     {
         super.onPause();
@@ -263,25 +254,7 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         super.onDestroyView();
     }
 
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-    }
-
-    protected DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityListFetchListener()
-    {
-        return new TrendingSecurityListFetchListener();
-    }
-
-    @Nullable
-    @Override
+    @Nullable @Override
     public Object getSelectedItem()
     {
         return selectedItem;

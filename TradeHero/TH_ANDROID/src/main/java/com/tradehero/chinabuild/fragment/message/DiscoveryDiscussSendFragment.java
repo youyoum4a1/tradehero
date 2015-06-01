@@ -15,14 +15,8 @@ import retrofit.client.Response;
  */
 public class DiscoveryDiscussSendFragment extends DiscussSendFragment
 {
-
-    @Override protected void postDiscussion()
-    {
-        postDiscoveryDiscusstion();
-    }
-
     //发布普通的自己的TIMELINE流入最新动态
-    protected void postDiscoveryDiscusstion()
+    @Override protected void postDiscussion()
     {
         if (validate())
         {
