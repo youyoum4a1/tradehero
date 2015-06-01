@@ -2,6 +2,8 @@ package com.tradehero.chinabuild.fragment.portfolio;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -10,8 +12,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.chinabuild.cache.PortfolioCompactNewCache;
 import com.tradehero.chinabuild.data.PositionInterface;
@@ -22,8 +22,8 @@ import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.MyTradePositionListAdapter;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
@@ -43,29 +43,23 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.PositionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
-import com.tradehero.th.persistence.prefs.BindGuestUser;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by huhaiping on 14-9-14. 个人持仓页。比赛持仓页
@@ -96,10 +90,7 @@ public class PortfolioFragment extends DashboardFragment {
 
     private UserBaseKey showUserBaseKey;
     private UserProfileDTO currentUserProfileDTO;
-    @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-
-    @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
 
     @InjectView(R.id.listPortfilio) SecurityListView listView;
     private MyTradePositionListAdapter adapter;
@@ -110,8 +101,6 @@ public class PortfolioFragment extends DashboardFragment {
 
     public int portfolio_type = 0;
     public boolean isNeedShowMainPage = true;
-
-    @Inject @BindGuestUser BooleanPreference mBindGuestUserDialogKeyPreference;
 
     private int user_id = 0;
     private int portfolio_id = 0;
@@ -138,7 +127,7 @@ public class PortfolioFragment extends DashboardFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fetchGetPositionsDTOListener = createGetPositionsCacheListener();
-        currentUserProfileCacheListener = createCurrentUserProfileFetchListener();
+        currentUserProfileCacheListener = new CurrentUserProfileFetchListener();
         initArgment();
 
         //Download Portfolio
@@ -415,7 +404,8 @@ public class PortfolioFragment extends DashboardFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        initPositionSecurity(value);
+        initPositionSecurityOpened(value);
+        initPositionSecurityClosed(value);
     }
 
     protected class GetPositionsListener
@@ -483,11 +473,6 @@ public class PortfolioFragment extends DashboardFragment {
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    private void initPositionSecurity(GetPositionsDTO value) {
-        initPositionSecurityOpened(value);
-        initPositionSecurityClosed(value);
-    }
-
     public boolean isNeedShowLock() {
         return portfolio_type != PORTFOLIO_TYPE_MINE;
     }
@@ -544,10 +529,6 @@ public class PortfolioFragment extends DashboardFragment {
                 currentPage = 1;
             }
         }
-    }
-
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createCurrentUserProfileFetchListener() {
-        return new CurrentUserProfileFetchListener();
     }
 
     protected class CurrentUserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> {
@@ -683,7 +664,6 @@ public class PortfolioFragment extends DashboardFragment {
         String vsCash = String.format("%s %,.0f", portfolio.getNiceCurrency(), portfolio.cashBalance);
         tvItemCash.setText(vsCash);
     }
-
 
     //Download user portfolio
     protected class BasePurchaseManagementPortfolioCompactNewFetchListener implements DTOCacheNew.Listener<PortfolioId, PortfolioCompactDTO> {

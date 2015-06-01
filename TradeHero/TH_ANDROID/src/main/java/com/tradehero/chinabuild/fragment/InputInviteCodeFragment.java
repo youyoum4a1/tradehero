@@ -24,19 +24,13 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class InputInviteCodeFragment extends DashboardFragment implements View.OnClickListener
+public class InputInviteCodeFragment extends DashboardFragment
 {
     @InjectView(R.id.invite_code) EditText mInviteCode;
     @Inject CurrentUserId currentUserId;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Nullable private MiddleCallback<Response> middleCallbackUpdateInviteCode;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -72,34 +66,12 @@ public class InputInviteCodeFragment extends DashboardFragment implements View.O
         return view;
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-
-    }
-
-    @Override public void onClick(View view)
-    {
-        switch (view.getId())
-        {
-        }
-    }
-
-    @Override public void onStop()
-    {
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-    }
     protected class InviteCodeUpdateInviteCallback implements Callback<Response>
     {
         @Override public void success(Response response, Response response2)
