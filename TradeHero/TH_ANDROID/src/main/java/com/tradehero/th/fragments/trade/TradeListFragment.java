@@ -87,8 +87,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Inject Analytics analytics;
 
     @InjectView(R.id.trade_list) protected ListView tradeListView;
-    @InjectView(R.id.bottom_button) protected View bottomButtons;
-    @InjectView(R.id.btn_sell) protected View buttonSell;
+    @InjectView(R.id.btn_trade_now) protected View buttonTrade;
     protected StockActionBarRelativeLayout actionBarLayout;
 
     @RouteProperty("userId") Integer routeUserId;
@@ -154,8 +153,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         ButterKnife.inject(this, view);
         tradeListView.setAdapter(adapter);
         tradeListView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
-        bottomButtons.setVisibility(View.GONE);
-        buttonSell.setVisibility(View.VISIBLE);
     }
 
     @Override public void onStart()
@@ -171,7 +168,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         {
             @Override public void onTranslate(float x, float y)
             {
-                bottomButtons.setTranslationY(y);
+                buttonTrade.setTranslationY(y);
             }
         });
     }
@@ -363,12 +360,12 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     public void displayBuySellContainer()
     {
-        if (securityCompactDTO != null && bottomButtons.getVisibility() == View.GONE)
+        if (securityCompactDTO != null && buttonTrade.getVisibility() == View.GONE)
         {
             Animation slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_from_bottom);
             slideIn.setFillAfter(true);
-            bottomButtons.setVisibility(View.VISIBLE);
-            bottomButtons.startAnimation(slideIn);
+            buttonTrade.setVisibility(View.VISIBLE);
+            buttonTrade.startAnimation(slideIn);
         }
     }
 
@@ -417,10 +414,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     }
 
     @SuppressWarnings("unused")
-    @OnClick({
-            R.id.btn_sell,
-            R.id.btn_buy,
-    })
+    @OnClick(R.id.btn_trade_now)
     protected void handleButtonSellClicked(View view)
     {
         if (securityId == null)
@@ -440,18 +434,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                 BuySellFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
             }
             BuySellFragment.putSecurityId(args, securityId);
-            if (view.getId() == R.id.btn_buy)
-            {
-                BuySellFragment.putBuyQuantity(args, 10);
-            }
-            else if (view.getId() == R.id.btn_sell)
-            {
-                BuySellFragment.putIsSell(args);
-                BuySellFragment.putSellQuantity(args, positionDTO != null && positionDTO.shares != null
-                        ? positionDTO.shares / 2
-                        : 10);
-            }
-            BuySellFragment.putShowConfirmation(args, true);
             navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
         }
     }

@@ -282,7 +282,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         displayBuySellSwitch();
 
         mQuoteRefreshProgressBar.startAnimation(progressAnimation);
-        conditionalShowConfirmation();
     }
 
     protected void setInitialBuyQuantityIfCan()
@@ -369,7 +368,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         setInitialSellQuantityIfCan();
         displayBuySellSwitch();
         displayBuySellContainer();
-        conditionalShowConfirmation();
     }
 
     public void displayStockName()
@@ -541,15 +539,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                             }
                         },
                         new EmptyAction1<Throwable>());
-    }
-
-    protected void conditionalShowConfirmation()
-    {
-        if (showConfirmation && isBuySellReady())
-        {
-            showConfirmation = false;
-            showBuySellDialog(isTransactionTypeBuy ? mBuyQuantity : mSellQuantity);
-        }
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -758,7 +747,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                                     }
                                 }
                                 BuySellFragment.this.displayBuySellContainer();
-                                conditionalShowConfirmation();
                             }
                         },
                         new TimberOnErrorAction("Failed to get the applicable portfolio ids"));

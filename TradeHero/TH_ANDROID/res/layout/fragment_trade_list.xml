@@ -2,21 +2,34 @@
 
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tradehero.th.widget.list.ExpandingListView
-        android:id="@+id/trade_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:clipToPadding="false"
-        android:divider="@color/tradehero_divider_grey"
-        android:dividerHeight="1dp"
-        android:paddingBottom="@dimen/size_12"
+  <com.tradehero.th.widget.list.ExpandingListView
+      android:id="@+id/trade_list"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_alignParentTop="true"
+      android:clipToPadding="false"
+      android:divider="@color/tradehero_divider_grey"
+      android:dividerHeight="1dp"
+      android:paddingBottom="@dimen/size_12"
       />
 
-    <include layout="@layout/buy_sell_buttons"/>
+  <Button
+      android:id="@+id/btn_trade_now"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      style="@style/TH.Btn_Buy_Sell"
+      android:layout_alignParentBottom="true"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
+      android:layout_marginBottom="@dimen/margin_small"
+      android:text="@string/timeline_trade"
+      android:visibility="gone"
+      tools:visibility="visible"
+      />
 
 </RelativeLayout>
