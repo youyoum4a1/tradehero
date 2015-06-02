@@ -290,7 +290,10 @@ abstract public class BasePagedListRxFragment<
 
     protected void onError(@NonNull PagedDTOKeyType key, @NonNull Throwable error)
     {
-        nearEndScrollListener.lowerEndFlag();
+        if (nearEndScrollListener != null)
+        {
+            nearEndScrollListener.lowerEndFlag();
+        }
         updateVisibilities();
         THToast.show(R.string.error_fetch_leaderboard_info);
     }
