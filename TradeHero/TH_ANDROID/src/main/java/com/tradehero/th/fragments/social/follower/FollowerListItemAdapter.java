@@ -22,7 +22,7 @@ public class FollowerListItemAdapter extends ArrayAdapter<Object>
 
     @LayoutRes protected final int followerResId;
     @LayoutRes protected final int actionResId;
-    @NonNull private final PublishSubject<FollowerListItemView.UserAction> userActionSubject;
+    @NonNull private final PublishSubject<UserAction> userActionSubject;
 
     //<editor-fold desc="Constructors">
     public FollowerListItemAdapter(
@@ -88,6 +88,10 @@ public class FollowerListItemAdapter extends ArrayAdapter<Object>
         {
             ((FollowerListItemView) view).getUserActionObservable().subscribe(userActionSubject);
         }
+        if (view instanceof FollowerListCallToActionItemView)
+        {
+            ((FollowerListCallToActionItemView) view).getTradeClickedObservable().subscribe(userActionSubject);
+        }
         return view;
     }
 
@@ -108,11 +112,20 @@ public class FollowerListItemAdapter extends ArrayAdapter<Object>
 
     @Override public boolean areAllItemsEnabled()
     {
-        return true;
+        return false;
     }
 
-    @NonNull public Observable<FollowerListItemView.UserAction> getUserActionObservable()
+    @Override public boolean isEnabled(int position)
+    {
+        return getItemViewType(position) == VIEW_TYPE_DTO;
+    }
+
+    @NonNull public Observable<UserAction> getUserActionObservable()
     {
         return userActionSubject.asObservable();
+    }
+
+    public interface UserAction
+    {
     }
 }

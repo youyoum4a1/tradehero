@@ -82,9 +82,10 @@ public class FollowerManagerFragment extends DashboardFragment
 
     @Nullable public static UserBaseKey getHeroId(@NonNull Bundle args)
     {
-        if (args.containsKey(BUNDLE_KEY_HERO_ID))
+        Bundle heroBundle = args.getBundle(BUNDLE_KEY_HERO_ID);
+        if (heroBundle != null)
         {
-            return new UserBaseKey(args.getBundle(BUNDLE_KEY_HERO_ID));
+            return new UserBaseKey(heroBundle);
         }
         return null;
     }

@@ -77,6 +77,7 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        //noinspection ConstantConditions
         this.heroId = new UserBaseKey(getArguments().getBundle(HERO_ID_BUNDLE_KEY));
     }
 
@@ -167,9 +168,9 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
         onStopSubscriptions.add(followerListAdapter.getUserActionObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<FollowerListItemView.UserAction>()
+                        new Action1<FollowerListItemAdapter.UserAction>()
                         {
-                            @Override public void call(FollowerListItemView.UserAction userAction)
+                            @Override public void call(FollowerListItemAdapter.UserAction userAction)
                             {
                                 onUserAction(userAction);
                             }
@@ -273,28 +274,27 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
                 navigator.get().pushFragment(PushableTimelineFragment.class, bundle);
             }
         }
-        else if (item.equals(FollowerListItemAdapter.ITEM_CALL_TO_ACTION))
-        {
-            navigator.get().goToTab(RootFragmentType.TRENDING);
-        }
         else
         {
             Timber.e(new IllegalArgumentException(), "Unhandled item " + item);
         }
     }
 
-    protected void onUserAction(@NonNull FollowerListItemView.UserAction userAction)
+    protected void onUserAction(@NonNull FollowerListItemAdapter.UserAction userAction)
     {
-        switch (userAction.actionType)
+        if (userAction instanceof FollowerListItemView.ProfileUserAction)
         {
-            case PROFILE:
-                Bundle bundle = new Bundle();
-                PushableTimelineFragment.putUserBaseKey(bundle, userAction.dto.userFollowerDTO.getBaseKey());
-                navigator.get().pushFragment(PushableTimelineFragment.class, bundle);
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unhandled ActionType." + userAction.actionType);
+            Bundle bundle = new Bundle();
+            PushableTimelineFragment.putUserBaseKey(bundle, ((FollowerListItemView.ProfileUserAction) userAction).dto.getBaseKey());
+            navigator.get().pushFragment(PushableTimelineFragment.class, bundle);
+        }
+        else if (userAction instanceof FollowerListCallToActionItemView.TradeNowUserAction)
+        {
+            navigator.get().goToTab(RootFragmentType.TRENDING);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled UserAction: " + userAction);
         }
     }
 }

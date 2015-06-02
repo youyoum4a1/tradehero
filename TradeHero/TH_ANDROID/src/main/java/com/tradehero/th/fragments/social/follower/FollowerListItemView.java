@@ -49,7 +49,7 @@ public class FollowerListItemView extends RelativeLayout
     @InjectView(R.id.follower_roi_info) @Optional TextView roiInfo;
     @InjectView(R.id.revenue_switcher) @Optional ViewSwitcher typeSwitcher;
 
-    @NonNull final PublishSubject<UserAction> userActionSubject;
+    @NonNull final PublishSubject<FollowerListItemAdapter.UserAction> userActionSubject;
     @Nullable protected DTO dto;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
@@ -109,7 +109,7 @@ public class FollowerListItemView extends RelativeLayout
     {
         if (dto != null)
         {
-            userActionSubject.onNext(new UserAction(dto, UserActionType.PROFILE));
+            userActionSubject.onNext(new ProfileUserAction(dto.userFollowerDTO));
         }
     }
 
@@ -149,7 +149,7 @@ public class FollowerListItemView extends RelativeLayout
         }
     }
 
-    @NonNull public Observable<UserAction> getUserActionObservable()
+    @NonNull public Observable<FollowerListItemAdapter.UserAction> getUserActionObservable()
     {
         return userActionSubject.asObservable();
     }
@@ -191,20 +191,13 @@ public class FollowerListItemView extends RelativeLayout
         return list;
     }
 
-    public enum UserActionType
+    public static class ProfileUserAction implements FollowerListItemAdapter.UserAction
     {
-        PROFILE;
-    }
+        @NonNull public final UserFollowerDTO dto;
 
-    public static class UserAction
-    {
-        @NonNull public final DTO dto;
-        @NonNull public final UserActionType actionType;
-
-        public UserAction(@NonNull DTO dto, @NonNull UserActionType actionType)
+        public ProfileUserAction(@NonNull UserFollowerDTO dto)
         {
             this.dto = dto;
-            this.actionType = actionType;
         }
     }
 }

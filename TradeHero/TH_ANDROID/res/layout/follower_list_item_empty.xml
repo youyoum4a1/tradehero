@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.tradehero.th.fragments.social.follower.FollowerListCallToActionItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -17,6 +17,7 @@
         />
 
     <TextView
+        android:id="@+id/btn_trade_now"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_small"
@@ -28,4 +29,4 @@
         android:gravity="center"
         />
 
-</LinearLayout>
+</com.tradehero.th.fragments.social.follower.FollowerListCallToActionItemView>
