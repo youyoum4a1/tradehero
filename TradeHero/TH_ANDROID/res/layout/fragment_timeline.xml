@@ -27,6 +27,7 @@
         android:headerDividersEnabled="true"
         android:smoothScrollbar="true"
         android:clipToPadding="false"
+        android:paddingBottom="@dimen/dashboard_tabhost_height"
         />
 
   </android.support.v4.widget.SwipeRefreshLayout>
@@ -39,8 +40,8 @@
       android:measureWithLargestChild="true"
       android:orientation="horizontal"
       android:layout_alignParentBottom="true"
-      android:layout_marginBottom="@dimen/dashboard_tabhost_height"
-      android:alpha="0.95">
+      android:alpha="0.95"
+      >
 
     <Button
         android:id="@+id/follow_button"
