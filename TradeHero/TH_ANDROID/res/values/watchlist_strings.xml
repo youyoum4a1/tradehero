@@ -11,6 +11,7 @@
   <string name="watchlist_button_done">@string/done</string>
   <string name="watchlist_button_delete">Delete</string>
   <string name="watchlist_average_price_header">Average Price (US$)</string>
+  <string name="watchlist_average_price_header_with_currency">Average Price (%s)</string>
   <string name="watchlist_quantity_header">Quantity</string>
   <string name="watchlist_quantity_initial">1</string>
   <string name="watchlist_view_graph">View Graph</string>

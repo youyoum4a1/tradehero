@@ -9,6 +9,7 @@
   <string name="watchlist_button_done">完成</string>
   <string name="watchlist_button_delete">删除</string>
   <string name="watchlist_average_price_header">平均价格 (US$)</string>
+  <string name="watchlist_average_price_header_with_currency">平均价格 (%s)</string>
   <string name="watchlist_quantity_header">数量</string>
   <string name="watchlist_quantity_initial">1</string>
   <string name="watchlist_view_graph">查看图表</string>

@@ -11,6 +11,7 @@
   <string name="watchlist_button_done">@string/done</string>
   <string name="watchlist_button_delete">ลบ</string>
   <string name="watchlist_average_price_header">ราคาเฉลี่ย (US$)</string>
+  <string name="watchlist_average_price_header_with_currency">ราคาเฉลี่ย (%s)</string>
   <string name="watchlist_quantity_header">ปริมาณ</string>
   <string name="watchlist_quantity_initial">1</string>
   <string name="watchlist_view_graph">ดูกราฟ</string>

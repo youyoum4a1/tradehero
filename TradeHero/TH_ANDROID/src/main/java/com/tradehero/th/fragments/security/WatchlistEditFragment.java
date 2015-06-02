@@ -54,6 +54,7 @@ public class WatchlistEditFragment extends DashboardFragment
     @InjectView(R.id.edit_watchlist_item_security_logo) ImageView securityLogo;
     @InjectView(R.id.edit_watchlist_item_security_name) TextView securityTitle;
     @InjectView(R.id.edit_watchlist_item_security_desc) TextView securityDesc;
+    @InjectView(R.id.edit_watchlist_item_security_currency) TextView watchCurrency;
     @InjectView(R.id.edit_watchlist_item_security_price) TextView watchPrice;
     @InjectView(R.id.edit_watchlist_item_done) TextView doneButton;
     @InjectView(R.id.edit_watchlist_item_delete) TextView deleteButton;
@@ -188,6 +189,9 @@ public class WatchlistEditFragment extends DashboardFragment
             securityLogo.setImageResource(securityCompactDTO.getExchangeLogoId());
             securityLogo.setVisibility(View.VISIBLE);
         }
+
+        watchCurrency.setText(getString(R.string.watchlist_average_price_header_with_currency,
+                securityCompactDTO.currencyDisplay));
     }
 
     protected void display(@Nullable WatchlistPositionDTO watchlistPositionDTO, @NonNull SecurityCompactDTO securityCompactDTO)
