@@ -28,6 +28,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -78,12 +79,16 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
                         return socialShareHelper.handleNeedToLink(socialNetworkEnum);
                     }
                 })
+                .doOnError(new ToastAndLogOnErrorAction("Failed to listen to social network"))
+                .retry()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<UserProfileDTO>()
                         {
                             @Override public void call(UserProfileDTO userProfileDTO)
                             {
                                 setCurrentUserProfileDTO(userProfileDTO);
+                                requestDtos();
                             }
                         },
                         new ToastAndLogOnErrorAction("Failed to listen to social network")));

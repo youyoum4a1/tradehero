@@ -236,6 +236,5 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
     public void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
     {
         this.currentUserProfileDTO = currentUserProfileDTO;
-        notifyDataSetChanged();
     }
 }
