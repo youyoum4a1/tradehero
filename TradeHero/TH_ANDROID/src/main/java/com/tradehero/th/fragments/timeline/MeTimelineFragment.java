@@ -101,17 +101,9 @@ public class MeTimelineFragment extends TimelineFragment
     @Override protected void onMainItemClick(AdapterView<?> adapterView, View view, int i, long l)
     {
         Object item = adapterView.getItemAtPosition(i);
-        if (item instanceof DisplayablePortfolioDTO)
+        if (item instanceof DummyFxDisplayablePortfolioDTO)
         {
-            DisplayablePortfolioDTO displayablePortfolioDTO = (DisplayablePortfolioDTO) item;
-            if (displayablePortfolioDTO instanceof DummyFxDisplayablePortfolioDTO)
-            {
-                popEnrollFx();
-            }
-            else
-            {
-                super.onMainItemClick(adapterView, view, i, l);
-            }
+            popEnrollFx();
         }
         else
         {
