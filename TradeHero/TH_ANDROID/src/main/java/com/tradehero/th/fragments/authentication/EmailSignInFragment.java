@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.Optional;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.BuildConfig;
@@ -36,6 +35,7 @@ import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction0;
@@ -82,6 +82,7 @@ public class EmailSignInFragment extends Fragment
     @InjectView(R.id.et_pwd_login) ValidatedText password;
     TextValidator passwordValidator;
     @InjectView(R.id.btn_login) View loginButton;
+    @InjectView(R.id.social_network_button_list) SocialNetworkButtonListLinear socialNetworkButtonList;
     SubscriptionList onStopSubscriptions;
 
     @Nullable Observer<SocialNetworkEnum> socialNetworkEnumObserver;
@@ -240,6 +241,19 @@ public class EmailSignInFragment extends Fragment
                 .subscribe(
                         new EmptyAction1<Pair<AuthData, UserProfileDTO>>(),
                         new EmptyAction1<Throwable>()));
+        onStopSubscriptions.add(socialNetworkButtonList.getSocialNetworkEnumSubject()
+                .subscribe(
+                        new Action1<SocialNetworkEnum>()
+                        {
+                            @Override public void call(SocialNetworkEnum socialNetworkEnum)
+                            {
+                                if (socialNetworkEnumObserver != null)
+                                {
+                                    socialNetworkEnumObserver.onNext(socialNetworkEnum);
+                                }
+                            }
+                        },
+                        new ToastAndLogOnErrorAction("Failed to listent to social network button")));
     }
 
     @Override public void onStop()
@@ -260,21 +274,6 @@ public class EmailSignInFragment extends Fragment
     {
         socialNetworkEnumObserver = null;
         super.onDetach();
-    }
-
-    @SuppressWarnings({"unused"}) @OnClick({
-            R.id.btn_linkedin_signin,
-            R.id.btn_facebook_signin,
-            R.id.btn_twitter_signin,
-            R.id.btn_qq_signin,
-            R.id.btn_weibo_signin,
-    }) @Optional
-    protected void onSignInButtonClicked(View view)
-    {
-        if (socialNetworkEnumObserver != null)
-        {
-            socialNetworkEnumObserver.onNext(((AuthenticationImageButton) view).getType());
-        }
     }
 
     @NonNull protected Observer<ValidationMessage> createValidatorObserver(@NonNull final ValidatedText validatedText)
