@@ -32,6 +32,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
+import rx.functions.Action0;
 import rx.functions.Func1;
 
 public class SocialShareHelper
@@ -170,8 +171,10 @@ public class SocialShareHelper
                 R.string.authentication_connecting_to,
                 activityHolder.get().getString(socialNetwork.nameResId)));
         progressDialog.show();
+        Action0 dismissAction = new DismissDialogAction0(progressDialog);
         return socialLink(socialNetwork)
-                .finallyDo(new DismissDialogAction0(progressDialog));
+                .finallyDo(dismissAction)
+                .doOnUnsubscribe(dismissAction);
     }
 
     @NonNull public Observable<UserProfileDTO> socialLink(@NonNull SocialNetworkEnum socialNetwork)

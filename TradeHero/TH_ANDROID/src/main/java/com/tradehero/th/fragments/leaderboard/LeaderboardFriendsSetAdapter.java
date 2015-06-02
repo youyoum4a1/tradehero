@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedDTOAdapterImpl;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -27,35 +28,41 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
 {
     public static final int VIEW_TYPE_MARK = 0;
     public static final int VIEW_TYPE_SOCIAL = 1;
+    public static final int VIEW_TYPE_CALL_ACTION = 2;
 
     @LayoutRes private final int markedLayoutResId;
     @LayoutRes private final int socialLayoutResId;
+    @LayoutRes private final int callToActionLayoutResId;
 
     @NonNull final CurrentUserId currentUserId;
     protected UserProfileDTO currentUserProfileDTO;
 
     @NonNull private final Map<Object, Boolean> expandedStatuses;
     @NonNull private final PublishSubject<LeaderboardMarkUserItemView.UserAction> followRequestedBehavior;
+    @NonNull private final PublishSubject<SocialNetworkEnum> socialNetworkEnumSubject;
 
     //<editor-fold desc="Constructors">
     public LeaderboardFriendsSetAdapter(
             @NonNull Context context,
             @NonNull CurrentUserId currentUserId,
             @LayoutRes int markedLayoutResId,
-            @LayoutRes int socialLayoutResId)
+            @LayoutRes int socialLayoutResId,
+            @LayoutRes int callToActionLayoutResId)
     {
         super(context, markedLayoutResId);
         this.currentUserId = currentUserId;
         this.markedLayoutResId = markedLayoutResId;
         this.socialLayoutResId = socialLayoutResId;
+        this.callToActionLayoutResId = callToActionLayoutResId;
         this.expandedStatuses = new HashMap<>();
         this.followRequestedBehavior = PublishSubject.create();
+        socialNetworkEnumSubject = PublishSubject.create();
     }
     //</editor-fold>
 
     @Override public int getViewTypeCount()
     {
-        return 2;
+        return 3;
     }
 
     @Override public int getItemViewType(int position)
@@ -69,6 +76,10 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
         {
             return VIEW_TYPE_SOCIAL;
         }
+        if (item instanceof FriendLeaderboardCallToActionUserDTO)
+        {
+            return VIEW_TYPE_CALL_ACTION;
+        }
         throw new IllegalStateException("Unhandled class type " + item.getClass());
     }
 
@@ -81,6 +92,9 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
 
             case VIEW_TYPE_SOCIAL:
                 return socialLayoutResId;
+
+            case VIEW_TYPE_CALL_ACTION:
+                return callToActionLayoutResId;
         }
         throw new IllegalStateException("Unhandled item view type " + getItemViewType(position));
     }
@@ -88,6 +102,11 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
     @NonNull public Observable<LeaderboardMarkUserItemView.UserAction> getFollowRequestObservable()
     {
         return followRequestedBehavior.asObservable();
+    }
+
+    @NonNull public Observable<SocialNetworkEnum> getSocialNetworkEnumObservable()
+    {
+        return socialNetworkEnumSubject.asObservable();
     }
 
     @NonNull @Override protected List<FriendLeaderboardUserDTO> makeItems()
@@ -183,7 +202,8 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
         return convertView;
     }
 
-    private void setBackgroundColor(View view, int position) {
+    private void setBackgroundColor(View view, int position)
+    {
         GraphicUtil.setEvenOddBackground(position, view);
     }
 
@@ -195,7 +215,22 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
             ((LeaderboardMarkUserItemView) view).getFollowRequestedObservable()
                     .subscribe(followRequestedBehavior);
         }
+        else if (view instanceof LeaderboardFriendCallToActionItemView)
+        {
+            ((LeaderboardFriendCallToActionItemView) view).getSocialNetworkEnumObservable()
+                    .subscribe(socialNetworkEnumSubject);
+        }
         return view;
+    }
+
+    @Override public boolean areAllItemsEnabled()
+    {
+        return false;
+    }
+
+    @Override public boolean isEnabled(int position)
+    {
+        return getItemViewType(position) != VIEW_TYPE_CALL_ACTION;
     }
 
     public void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)

@@ -14,16 +14,22 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedDTOAdapter;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsKey;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
+import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxFragment<
         LeaderboardFriendsKey,
@@ -35,6 +41,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardFriendsCacheRx leaderboardFriendsCache;
     @Inject LeaderboardMarkUserListFragmentUtil fragmentUtil;
+    @Inject SocialShareHelper socialShareHelper;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -63,6 +70,23 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
                 .subscribe(
                         fragmentUtil,
                         new TimberOnErrorAction("Error on follow requested")));
+        onStopSubscriptions.add(((LeaderboardFriendsSetAdapter) itemViewAdapter).getSocialNetworkEnumObservable()
+                .flatMap(new Func1<SocialNetworkEnum, Observable<UserProfileDTO>>()
+                {
+                    @Override public Observable<UserProfileDTO> call(SocialNetworkEnum socialNetworkEnum)
+                    {
+                        return socialShareHelper.handleNeedToLink(socialNetworkEnum);
+                    }
+                })
+                .subscribe(
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO userProfileDTO)
+                            {
+                                setCurrentUserProfileDTO(userProfileDTO);
+                            }
+                        },
+                        new ToastAndLogOnErrorAction("Failed to listen to social network")));
         if ((itemViewAdapter != null) && (itemViewAdapter.getCount() == 0))
         {
             requestDtos();
@@ -110,13 +134,16 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
                 getActivity(),
                 currentUserId,
                 R.layout.lbmu_item_roi_mode,
-                R.layout.leaderboard_friends_social_item_view);
+                R.layout.leaderboard_friends_social_item_view,
+                R.layout.leaderboard_friends_call_action);
     }
 
     @NonNull @Override protected DTOCacheRx<LeaderboardFriendsKey, ProcessableLeaderboardFriendsDTO> getCache()
     {
         return new ProcessableLeaderboardFriendsCache(
                 leaderboardFriendsCache,
+                userProfileCache,
+                currentUserId,
                 ((LeaderboardFriendsSetAdapter) itemViewAdapter).createItemFactory());
     }
 
