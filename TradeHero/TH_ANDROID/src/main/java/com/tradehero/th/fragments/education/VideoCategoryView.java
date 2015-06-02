@@ -26,7 +26,6 @@ import com.tradehero.th.api.education.VideoDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.education.PaginatedVideoCacheRx;
-import java.util.Comparator;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
@@ -62,13 +61,6 @@ public class VideoCategoryView extends RelativeLayout
         HierarchyInjector.inject(this);
         galleryAdapter = new VideoAdapter(
                 getContext(),
-                new Comparator<VideoDTO>()
-                {
-                    @Override public int compare(VideoDTO lhs, VideoDTO rhs)
-                    {
-                        return lhs.getVideoId().compareTo(rhs.getVideoId());
-                    }
-                },
                 R.layout.video_view);
     }
     //</editor-fold>

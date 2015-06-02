@@ -74,7 +74,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        videoAdapter = new VideoAdapter(activity, null, R.layout.video_view);
+        videoAdapter = new VideoAdapter(activity, R.layout.video_view);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -153,6 +153,10 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
 
                     @Override public void onNext(List<VideoDTO> videoDTOs)
                     {
+                        if (videoDTOs.size() <= 1)
+                        {
+                            videosGrid.setNumColumns(1);
+                        }
                         videoAdapter.appendHead(videoDTOs);
                         videoAdapter.notifyDataSetChanged();
                     }
