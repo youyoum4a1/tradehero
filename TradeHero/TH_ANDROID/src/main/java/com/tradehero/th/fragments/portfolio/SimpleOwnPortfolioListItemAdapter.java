@@ -29,13 +29,16 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
     private static final int VIEW_TYPE_FIRST_POSITION = 0;
     private static final int VIEW_TYPE_REGULAR_POSITION = 1;
     private static final int VIEW_TYPE_LOADING = 2;
+    private static final int VIEW_TYPE_SPACING = 3;
 
     public static final String DTO_LOADING = "Loading";
+    public static final String DTO_SPACING = "Spacing";
 
     private List<Object> orderedItems;
     private final DisplayablePortfolioDTOWithinUserComparator ownDisplayablePortfolioDTOWithinUserComparator;
     private final boolean isCurrentUser;
     @LayoutRes private final int loadingLayoutRes;
+    @LayoutRes private final int spacingLayoutRes;
     @NonNull private final PublishSubject<TimelineFragment.TabType> tabTypeSubject;
 
     @NonNull private TimelineFragment.TabType currentTabType = TimelineFragment.TabType.TIMELINE;
@@ -45,11 +48,13 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
             @NonNull Context context,
             boolean isCurrentUser,
             @LayoutRes int portfolioLayoutResourceId,
-            @LayoutRes int loadingLayoutRes)
+            @LayoutRes int loadingLayoutRes,
+            @LayoutRes int spacingLayoutRes)
     {
         super(context, portfolioLayoutResourceId);
         this.isCurrentUser = isCurrentUser;
         this.loadingLayoutRes = loadingLayoutRes;
+        this.spacingLayoutRes = spacingLayoutRes;
         this.ownDisplayablePortfolioDTOWithinUserComparator = new DisplayablePortfolioDTOWithinUserComparator();
         this.tabTypeSubject = PublishSubject.create();
         orderedItems = new ArrayList<>();
@@ -93,8 +98,21 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
                     ownPortfolios.add(new DummyFxDisplayablePortfolioDTO());
                 }
             }
+            boolean hadCompetition = false;
             for (DisplayablePortfolioDTO displayablePortfolioDTO : ownPortfolios)
             {
+                if (displayablePortfolioDTO.portfolioDTO != null)
+                {
+                    if (displayablePortfolioDTO.portfolioDTO.isWatchlist)
+                    {
+                        preparedOrderedItems.add(DTO_SPACING);
+                    }
+                    else if (displayablePortfolioDTO.portfolioDTO.providerId != null && !hadCompetition)
+                    {
+                        hadCompetition = true;
+                        preparedOrderedItems.add(DTO_SPACING);
+                    }
+                }
                 preparedOrderedItems.add(displayablePortfolioDTO);
             }
         }
@@ -114,16 +132,26 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
 
     @Override public int getViewTypeCount()
     {
-        return 3;
+        return 4;
     }
 
     @Override public int getItemViewType(int position)
     {
-        return position == 0
-                ? VIEW_TYPE_FIRST_POSITION
-                : getItem(position).equals(DTO_LOADING)
-                        ? VIEW_TYPE_LOADING
-                        : VIEW_TYPE_REGULAR_POSITION;
+        if (position == 0)
+        {
+            return VIEW_TYPE_FIRST_POSITION;
+        }
+        Object item = getItem(position);
+        if (item.equals(DTO_LOADING))
+        {
+            return VIEW_TYPE_LOADING;
+        }
+        if (item.equals(DTO_SPACING))
+        {
+            return VIEW_TYPE_SPACING;
+        }
+
+        return VIEW_TYPE_REGULAR_POSITION;
     }
 
     @Override public long getItemId(int position)
@@ -161,6 +189,13 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
                 }
                 break;
 
+            case VIEW_TYPE_SPACING:
+                if (convertView == null)
+                {
+                    convertView = getInflater().inflate(spacingLayoutRes, parent, false);
+                }
+                break;
+
             default:
                 throw new UnsupportedOperationException("Not implemented");
         }
@@ -174,7 +209,9 @@ public class SimpleOwnPortfolioListItemAdapter extends GenericArrayAdapter<Objec
 
     @Override public boolean isEnabled(int position)
     {
-        return getItemViewType(position) != VIEW_TYPE_LOADING;
+        int viewType = getItemViewType(position);
+        return viewType != VIEW_TYPE_LOADING
+                && viewType != VIEW_TYPE_SPACING;
     }
 
     @Nullable protected Boolean containsMainFx(@NonNull Collection<DisplayablePortfolioDTO> items)

@@ -179,7 +179,8 @@ public class TimelineFragment extends DashboardFragment
                 getActivity(),
                 currentUserId.toUserBaseKey().equals(shownUserBaseKey),
                 R.layout.portfolio_list_item,
-                R.layout.timeline_list_item_loading);
+                R.layout.timeline_list_item_loading,
+                R.layout.timeline_list_item_spacing);
         portfolioListAdapter.setCurrentTabType(currentTab);
         //noinspection ArraysAsListWithZeroOrOneArgument
         portfolioListAdapter.setItems(Arrays.<Object>asList(SimpleOwnPortfolioListItemAdapter.DTO_LOADING));
