@@ -86,7 +86,7 @@ public class UpdateCenterDrawerMenuItem extends LinearLayout
 
     public void linkWith(@NonNull UserProfileDTO currentUserProfile)
     {
-        int unReadCount = currentUserProfile.unreadNotificationsCount;
+        int unReadCount = currentUserProfile.unreadMessageThreadsCount;
         tvUnreadCount.setVisibility(unReadCount > 0 ? View.VISIBLE : View.INVISIBLE);
         tvUnreadCount.setText(" " + unReadCount + " ");
     }

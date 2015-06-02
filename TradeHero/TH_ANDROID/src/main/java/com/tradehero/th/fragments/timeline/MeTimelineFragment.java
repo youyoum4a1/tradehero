@@ -89,8 +89,8 @@ public class MeTimelineFragment extends TimelineFragment
     {
         if (shownProfile != null && unreadCountView != null)
         {
-            unreadCountView.setVisibility(shownProfile.unreadNotificationsCount > 0 ? View.VISIBLE : View.GONE);
-            unreadCountView.setText(THSignedNumber.builder(shownProfile.unreadNotificationsCount)
+            unreadCountView.setVisibility(shownProfile.unreadMessageThreadsCount > 0 ? View.VISIBLE : View.GONE);
+            unreadCountView.setText(THSignedNumber.builder(shownProfile.unreadMessageThreadsCount)
                     .build().toString());
         }
     }
