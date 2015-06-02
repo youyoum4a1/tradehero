@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOSetAdapter;
 import com.tradehero.th.api.pagination.RangeDTO;
@@ -61,7 +60,6 @@ public class SubTimelineAdapterNew extends DTOSetAdapter<Object>
         List<Object> objects = new ArrayList<>();
         if (showingLoadingItem() && (dtos == null || dtos.size() == 0))
         {
-            THToast.show("Adding call to action");
             objects.add(DTO_CALL_ACTION);
         }
         else
