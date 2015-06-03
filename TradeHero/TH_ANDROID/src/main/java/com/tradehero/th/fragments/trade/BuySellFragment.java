@@ -33,7 +33,9 @@ import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.OnMovableBottomTranslateListener;
+import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
 import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
@@ -694,6 +696,10 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             TabbedPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
             TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
             TabbedPositionListFragment.putPositionType(args, positionType);
+            if (providerId != null)
+            {
+                DashboardNavigator.putReturnFragment(args, MainCompetitionFragment.class.getName());
+            }
             navigator.get().pushFragment(TabbedPositionListFragment.class, args);
         }
     }
