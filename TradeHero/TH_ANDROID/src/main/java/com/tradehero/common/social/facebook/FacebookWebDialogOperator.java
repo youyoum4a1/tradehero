@@ -6,6 +6,7 @@ import com.facebook.FacebookException;
 import com.facebook.widget.WebDialog;
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.internal.Assertions;
 
 public class FacebookWebDialogOperator implements Observable.OnSubscribe<Bundle>
 {
@@ -20,6 +21,7 @@ public class FacebookWebDialogOperator implements Observable.OnSubscribe<Bundle>
 
     @Override public void call(final Subscriber<? super Bundle> subscriber)
     {
+        Assertions.assertUiThread();
         dialogBuilder.setOnCompleteListener(
                 new WebDialog.OnCompleteListener()
                 {
