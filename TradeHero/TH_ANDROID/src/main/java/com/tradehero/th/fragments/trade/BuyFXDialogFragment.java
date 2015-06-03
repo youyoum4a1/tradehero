@@ -4,8 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.android.internal.util.Predicate;
 import com.tradehero.th.R;
-import com.tradehero.th.api.position.PositionDTOCompactUtil;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -44,22 +45,25 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
 
     @Override @Nullable protected Double getProfitOrLossUsd()
     {
-        if (positionDTOList == null || portfolioCompactDTO == null)
+        if (positionDTOList == null || portfolioCompactDTO == null || quoteDTO == null || quoteDTO.ask == null)
         {
             return null;
         }
-        Integer shareCount = PositionDTOCompactUtil.getShareCountIn(positionDTOList, portfolioCompactDTO.getPortfolioId());
-        if (shareCount != null && shareCount >= 0)
+        PositionDTO positionDTO = positionDTOList.findFirstWhere(new Predicate<PositionDTO>()
+        {
+            @Override public boolean apply(PositionDTO positionDTO)
+            {
+                return positionDTO.portfolioId == portfolioCompactDTO.id
+                        && positionDTO.shares != null
+                        && positionDTO.shares < 0;
+            }
+        });
+        if (positionDTO == null || positionDTO.averagePriceSecCcy == null)
         {
             return null;
         }
 
-        Double total = PositionDTOCompactUtil.getUnRealizedPLRefCcy(positionDTOList, quoteDTO, portfolioCompactDTO);
-        if (total == null || shareCount == null)
-        {
-            return null;
-        }
-        return (total * (double) mTransactionQuantity / Math.abs((double) shareCount));
+        return - getQuantity() * quoteDTO.toUSDRate * (quoteDTO.ask - positionDTO.averagePriceSecCcy);
     }
 
     @Override @Nullable protected Boolean isClosingPosition()
