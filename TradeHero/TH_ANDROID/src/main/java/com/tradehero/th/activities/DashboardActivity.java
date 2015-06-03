@@ -134,10 +134,12 @@ public class DashboardActivity extends BaseActivity
     private DashboardActivityModule activityModule;
     private BroadcastReceiver onlineStateReceiver;
     private MenuItem networkIndicator;
-    private CompositeSubscription subscriptions;
+    private CompositeSubscription onDestroySubscriptions;
+    private CompositeSubscription onPauseSubscriptions;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
+        onDestroySubscriptions = new CompositeSubscription();
         AppTiming.dashboardCreate = System.currentTimeMillis();
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
 
@@ -231,7 +233,7 @@ public class DashboardActivity extends BaseActivity
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        currentUserId.getKeyObservable()
+        onDestroySubscriptions.add(currentUserId.getKeyObservable()
                 .filter(new Func1<Integer, Boolean>()
                 {
                     @Override public Boolean call(Integer userId)
@@ -281,7 +283,7 @@ public class DashboardActivity extends BaseActivity
                                 }
                             }
                         },
-                        new TimberOnErrorAction("Failed to load drawer"));
+                        new TimberOnErrorAction("Failed to load drawer")));
 
         drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.tradehero_blue_status_bar));
     }
@@ -301,12 +303,12 @@ public class DashboardActivity extends BaseActivity
     {
         // TODO fetch more stuff?
         //noinspection unchecked
-        bindActivity(
+        onDestroySubscriptions.add(bindActivity(
                 this,
                 billingInteractorRx.get().restorePurchasesAndClear(false))
                 .subscribe(
                         new EmptyAction1<OnDialogClickEvent>(),
-                        new TimberOnErrorAction("Failed to restore"));
+                        new TimberOnErrorAction("Failed to restore")));
     }
 
     @Override public void onBackPressed()
@@ -354,9 +356,9 @@ public class DashboardActivity extends BaseActivity
     {
         super.onResume();
 
-        subscriptions = new CompositeSubscription();
+        onPauseSubscriptions = new CompositeSubscription();
 
-        subscriptions.add(fromLocalBroadcast(this, ONBOARD_INTENT_FILTER)
+        onPauseSubscriptions.add(fromLocalBroadcast(this, ONBOARD_INTENT_FILTER)
                 .subscribe(
                         new Action1<Intent>()
                         {
@@ -377,7 +379,7 @@ public class DashboardActivity extends BaseActivity
         if (!launchActions(getIntent()))
         {
             // get providers for enrollment page
-            subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
+            onPauseSubscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
                             .flatMap(new Func1<Intent, Observable<? extends Pair<ProviderListKey, ProviderDTOList>>>()
                             {
                                 @Override public Observable<? extends Pair<ProviderListKey, ProviderDTOList>> call(Intent intent)
@@ -432,7 +434,7 @@ public class DashboardActivity extends BaseActivity
             );
         }
 
-        subscriptions.add(fromLocalBroadcast(this, SEND_LOVE_INTENT_FILTER)
+        onPauseSubscriptions.add(fromLocalBroadcast(this, SEND_LOVE_INTENT_FILTER)
                 .subscribe(new Action1<Intent>()
                 {
                     @Override public void call(Intent intent)
@@ -489,7 +491,7 @@ public class DashboardActivity extends BaseActivity
 
     @Override protected void onPause()
     {
-        subscriptions.unsubscribe();
+        onPauseSubscriptions.unsubscribe();
         super.onPause();
     }
 
@@ -502,6 +504,7 @@ public class DashboardActivity extends BaseActivity
 
     @Override protected void onDestroy()
     {
+        onDestroySubscriptions.unsubscribe();
         notificationFetchSubscription = null;
 
         networkIndicator = null;
