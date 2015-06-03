@@ -1,9 +1,7 @@
 package com.tradehero.th.fragments.leaderboard;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -12,327 +10,103 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.Optional;
-import com.facebook.FacebookOperationCanceledException;
+import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
-import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.social.UserFriendsFacebookDTO;
-import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
-import com.tradehero.th.api.social.UserFriendsTwitterDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.social.friend.SocialFriendHandlerFacebook;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.rx.ToastOnErrorAction;
-import com.tradehero.th.rx.view.DismissDialogAction0;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.MethodEvent;
-import dagger.Lazy;
-import java.util.Arrays;
 import javax.inject.Inject;
-import javax.inject.Provider;
-import rx.Observer;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import timber.log.Timber;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public class LeaderboardFriendsItemView extends RelativeLayout
-        implements DTOView<UserFriendsDTO>, View.OnClickListener
+        implements DTOView<UserFriendsDTO>
 {
+    @Inject Picasso picasso;
+
     @InjectView(R.id.leaderboard_user_item_network_label) ImageView networkLabel;
     @InjectView(R.id.leaderboard_user_item_profile_picture) ImageView avatar;
     @InjectView(R.id.leaderboard_user_item_social_name) TextView socialName;
-    @InjectView(R.id.leaderboard_user_item_invite_btn) TextView inviteBtn;
-
-    @InjectView(R.id.leaderboard_user_item_follow) @Optional View lbmuFollowUser;
-    @InjectView(R.id.leaderboard_user_item_following) @Optional View lbmuFollowingUser;
 
     @Nullable private UserFriendsDTO userFriendsDTO;
-    @Nullable private Subscription inviteSubscription;
-    protected UserProfileDTO currentUserProfileDTO;
-    @Inject CurrentUserId currentUserId;
-    @Inject Picasso picasso;
-    @Inject Provider<Activity> activityProvider;
-    @Inject Lazy<SocialFriendHandlerFacebook> socialFriendHandlerFacebookLazy;
-    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject Analytics analytics;
-    @Inject DashboardNavigator dashboardNavigator;
-    private Subscription facebookInvitationSubscription;
+    @NonNull private final PublishSubject<UserAction> userActionSubject;
 
+    //<editor-fold desc="Constructors">
     public LeaderboardFriendsItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        userActionSubject = PublishSubject.create();
         HierarchyInjector.inject(this);
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        loadDefaultPicture();
-        if (lbmuFollowUser != null)
-        {
-            lbmuFollowUser.setOnClickListener(this);
-        }
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
         ButterKnife.inject(this);
-        loadDefaultPicture();
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        avatar.setOnClickListener(null);
-        inviteBtn.setOnClickListener(null);
-        detachInviteSubscription();
-        detachFacebookSubscription();
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
-    protected void loadDefaultPicture()
+    @NonNull public Observable<UserAction> getUserActionObservable()
     {
-        if (avatar != null)
-        {
-            picasso.load(R.drawable.superman_facebook)
-                    .into(avatar);
-        }
+        return userActionSubject.asObservable();
     }
 
-    @Override public void display(UserFriendsDTO dto)
+    @Override public void display(@NonNull UserFriendsDTO dto)
     {
         userFriendsDTO = dto;
-        if (userFriendsDTO != null)
-        {
-            updatePosition();
-            displayPicture();
-            updateName();
-            updateInviteButton();
-        }
-    }
 
-    private void updatePosition()
-    {
         if (networkLabel != null)
         {
-            networkLabel.setBackgroundResource(userFriendsDTO.getNetworkLabelImage());
-            networkLabel.setVisibility(VISIBLE);
+            networkLabel.setBackgroundResource(dto.getNetworkLabelImage());
         }
-    }
 
-    public void displayPicture()
-    {
         if (avatar != null)
         {
-            loadDefaultPicture();
-            if (userFriendsDTO != null && userFriendsDTO.getProfilePictureURL() != null)
+            String url = dto.getProfilePictureURL();
+            if (url != null)
             {
-                picasso.load(userFriendsDTO.getProfilePictureURL())
-                        .placeholder(avatar.getDrawable())
+                picasso.load(url)
+                        .placeholder(R.drawable.superman_facebook)
                         .into(avatar);
             }
         }
-    }
 
-    public void updateName()
-    {
-        socialName.setVisibility(VISIBLE);
-        socialName.setText(userFriendsDTO.name);
-    }
-
-    private void updateInviteButton()
-    {
-        if (inviteBtn != null)
+        if (socialName != null)
         {
-            inviteBtn.setOnClickListener(this);
+            socialName.setText(dto.name);
         }
     }
 
-    @Override public void onClick(View v)
+    @SuppressWarnings("unused")
+    @OnClick(R.id.leaderboard_user_item_invite_btn)
+    void invite(View view)
     {
-        switch (v.getId())
+        if (userFriendsDTO != null)
         {
-            case R.id.leaderboard_user_item_profile_picture:
-                if (userFriendsDTO.isTradeHeroUser())
-                {
-                    handleOpenProfileButtonClicked();
-                }
-                break;
-            case R.id.leaderboard_user_item_invite_btn:
-                invite();
-                break;
-            case R.id.leaderboard_user_item_follow:
-                THToast.show("TODO");
-                break;
+            userActionSubject.onNext(new UserAction(userFriendsDTO));
         }
     }
 
-    public void linkWith(UserProfileDTO currentUserProfileDTO, boolean andDisplay)
+    public static class UserAction
     {
-        this.currentUserProfileDTO = currentUserProfileDTO;
-        if (andDisplay)
+        @NonNull public final UserFriendsDTO userFriendsDTO;
+
+        public UserAction(@NonNull UserFriendsDTO userFriendsDTO)
         {
-            displayFollow();
+            this.userFriendsDTO = userFriendsDTO;
         }
-    }
-
-    private void displayFollow()
-    {
-        Boolean isFollowing = isCurrentUserFollowing();
-        boolean showFollow = isFollowing == null || !isFollowing;
-        if (lbmuFollowUser != null)
-        {
-            lbmuFollowUser.setVisibility(showFollow ? VISIBLE : GONE);
-        }
-        if (lbmuFollowingUser != null)
-        {
-            lbmuFollowingUser.setVisibility(!showFollow ? VISIBLE : GONE);
-        }
-    }
-
-    @Nullable public Boolean isCurrentUserFollowing()
-    {
-        if (currentUserProfileDTO == null || userFriendsDTO == null || !userFriendsDTO.isTradeHeroUser())
-        {
-            return null;
-        }
-        return currentUserProfileDTO.isFollowingUser(userFriendsDTO.thUserId);
-    }
-
-    private void handleOpenProfileButtonClicked()
-    {
-        if (userFriendsDTO != null && currentUserId != null && dashboardNavigator != null)
-        {
-            Bundle bundle = new Bundle();
-            if (currentUserId.get() == userFriendsDTO.thUserId)
-            {
-                dashboardNavigator.pushFragment(MeTimelineFragment.class, bundle);
-            }
-            else
-            {
-                PushableTimelineFragment.putUserBaseKey(bundle, new UserBaseKey(userFriendsDTO.thUserId));
-                dashboardNavigator.pushFragment(PushableTimelineFragment.class, bundle);
-            }
-        }
-    }
-
-    private void invite()
-    {
-        if (userFriendsDTO instanceof UserFriendsLinkedinDTO || userFriendsDTO instanceof UserFriendsTwitterDTO)
-        {
-            if (userFriendsDTO instanceof UserFriendsLinkedinDTO)
-            {
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Linkedin));
-            }
-            else
-            {
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Twitter));
-            }
-            InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
-            inviteFriendForm.add(userFriendsDTO);
-            final ProgressDialog progressDialog = getProgressDialog();
-            detachInviteSubscription();
-            inviteSubscription = userServiceWrapperLazy.get()
-                    .inviteFriendsRx(currentUserId.toUserBaseKey(), inviteFriendForm)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .finallyDo(new DismissDialogAction0(progressDialog))
-                    .subscribe(
-                            new Action1<BaseResponseDTO>()
-                            {
-                                @Override public void call(BaseResponseDTO response)
-                                {
-                                    LeaderboardFriendsItemView.this.onInvitationDone(response);
-                                }
-                            },
-                            new ToastOnErrorAction());
-        }
-        else if (userFriendsDTO instanceof UserFriendsFacebookDTO)
-        {
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Facebook));
-            detachFacebookSubscription();
-            facebookInvitationSubscription = socialFriendHandlerFacebookLazy.get()
-                    .createShareRequestObservable(Arrays.asList((UserFriendsFacebookDTO) userFriendsDTO), null)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<Bundle>()
-                    {
-                        @Override public void onCompleted()
-                        {
-                            Timber.d("completed");
-                        }
-
-                        @Override public void onError(Throwable e)
-                        {
-                            if (e instanceof FacebookOperationCanceledException)
-                            {
-                                THToast.show(R.string.invite_friend_request_cancelled);
-                            }
-                            Timber.e(e, "Error on subscribing to Facebook");
-                        }
-
-                        @Override public void onNext(Bundle bundle)
-                        {
-                            final String requestId = bundle.getString("request");
-                            if (requestId != null)
-                            {
-                                THToast.show(R.string.invite_friend_request_sent);
-                            }
-                            else
-                            {
-                                THToast.show(R.string.invite_friend_request_cancelled);
-                            }
-
-                            Timber.d("next %s", bundle);
-                        }
-                    });
-        }
-    }
-
-    private void detachInviteSubscription()
-    {
-        Subscription copy = inviteSubscription;
-        if (copy != null)
-        {
-            copy.unsubscribe();
-        }
-        inviteSubscription = null;
-    }
-
-    private void detachFacebookSubscription()
-    {
-        Subscription copy = facebookInvitationSubscription;
-        if (copy != null)
-        {
-            copy.unsubscribe();
-        }
-        facebookInvitationSubscription = null;
-    }
-
-    @SuppressWarnings("UnusedParameters")
-    protected void onInvitationDone(BaseResponseDTO args)
-    {
-        THToast.show(R.string.invite_friend_success);
-    }
-
-    private ProgressDialog getProgressDialog()
-    {
-        return ProgressDialog.show(
-                activityProvider.get(),
-                activityProvider.get().getString(R.string.loading_loading),
-                activityProvider.get().getString(R.string.alert_dialog_please_wait),
-                true);
     }
 }
