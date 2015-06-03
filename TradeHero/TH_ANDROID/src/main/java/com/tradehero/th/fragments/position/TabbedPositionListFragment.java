@@ -51,7 +51,7 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
     @InjectView(R.id.pager) ViewPager tabViewPager;
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
-    @NonNull protected GetPositionsDTOKey getPositionsDTOKey;
+    protected GetPositionsDTOKey getPositionsDTOKey;
     protected PortfolioDTO portfolioDTO;
     protected UserBaseKey shownUser;
     @Nullable protected UserProfileDTO userProfileDTO;
@@ -239,7 +239,7 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
 
             PositionListFragment.putApplicablePortfolioId(args, purchaseApplicableOwnedPortfolioId);
             PositionListFragment.putGetPositionsDTOKey(args, getPositionsDTOKey);
-            PositionListFragment.putShownUser(args, purchaseApplicableOwnedPortfolioId.getUserBaseKey());
+            PositionListFragment.putShownUser(args, shownUser);
             TabType positionType;
             if (isFX)
             {
