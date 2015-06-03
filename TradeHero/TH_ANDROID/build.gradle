@@ -93,7 +93,7 @@ android {
             applicationIdSuffix '.dev'
         }
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles 'proguard/proguard-android.txt'
             zipAlignEnabled true
             shrinkResources false

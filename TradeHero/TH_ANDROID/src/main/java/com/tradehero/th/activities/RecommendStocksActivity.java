@@ -175,11 +175,15 @@ public class RecommendStocksActivity extends AppCompatActivity implements View.O
             recommendPRLV.onRefreshComplete();
             securities.clear();
             heroes.clear();
-            for (RecommendStock stock : recommendItems.securities) {
-                securities.add(stock);
+            if(recommendItems.securities!=null) {
+                for (RecommendStock stock : recommendItems.securities) {
+                    securities.add(stock);
+                }
             }
-            for (RecommendHero hero : recommendItems.users) {
-                heroes.add(hero);
+            if(recommendItems.users!=null) {
+                for (RecommendHero hero : recommendItems.users) {
+                    heroes.add(hero);
+                }
             }
             //If not recommend heroes and stocks, go to the main activity directly.
             if (heroes.size() == 0 && securities.size() == 0) {
