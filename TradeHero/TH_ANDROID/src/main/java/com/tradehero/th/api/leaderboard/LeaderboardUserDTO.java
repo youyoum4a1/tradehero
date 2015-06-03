@@ -9,6 +9,8 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
+import com.tradehero.th.api.social.FollowDetailsDTO;
+import com.tradehero.th.api.social.FollowStatesDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
@@ -62,6 +64,8 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public Integer commentCount;
     public String currencyDisplay;
     public String currencyISO;
+    public FollowDetailsDTO relationship;
+    public FollowStatesDTO followStates;
     @Nullable public String criteria;
 
     @Nullable public GetPositionsDTOKey getGetPositionsDTOKey()
