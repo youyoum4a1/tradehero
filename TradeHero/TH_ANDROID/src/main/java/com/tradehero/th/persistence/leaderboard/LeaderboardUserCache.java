@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Singleton public class LeaderboardUserCache extends StraightDTOCacheNew<LeaderboardUserId, LeaderboardUserDTO>
 {
@@ -22,13 +19,12 @@ import org.jetbrains.annotations.Nullable;
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override @NotNull public LeaderboardUserDTO fetch(@NotNull LeaderboardUserId key) throws Throwable
+    @Override public LeaderboardUserDTO fetch(LeaderboardUserId key) throws Throwable
     {
         throw new IllegalStateException("There is no fetch on LeaderboardUserCache");
     }
 
-    @Contract("null -> null; !null -> !null")
-    public void put(@Nullable Map<LeaderboardUserId, LeaderboardUserDTO> leaderboardUserDTOs)
+    public void put(Map<LeaderboardUserId, LeaderboardUserDTO> leaderboardUserDTOs)
     {
         if (leaderboardUserDTOs == null)
         {
@@ -41,8 +37,7 @@ import org.jetbrains.annotations.Nullable;
         }
     }
 
-    @Contract("null -> null; !null -> !null") @Nullable
-    public LeaderboardUserDTOList get(@Nullable List<LeaderboardUserId> leaderboardUserIds)
+    public LeaderboardUserDTOList get(List<LeaderboardUserId> leaderboardUserIds)
     {
         if (leaderboardUserIds == null)
         {
@@ -50,7 +45,7 @@ import org.jetbrains.annotations.Nullable;
         }
 
         LeaderboardUserDTOList  returned = new LeaderboardUserDTOList();
-        for (@NotNull LeaderboardUserId leaderboardUserId: leaderboardUserIds)
+        for (LeaderboardUserId leaderboardUserId: leaderboardUserIds)
         {
             returned.add(get(leaderboardUserId));
         }

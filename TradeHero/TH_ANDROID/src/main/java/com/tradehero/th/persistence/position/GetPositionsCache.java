@@ -16,28 +16,26 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Singleton public class GetPositionsCache extends StraightCutDTOCacheNew<GetPositionsDTOKey, GetPositionsDTO, GetPositionsCutDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
-    @NotNull private final Lazy<PositionServiceWrapper> positionServiceWrapper;
-    @NotNull private final Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper;
-    @NotNull private final Lazy<SecurityCompactCache> securityCompactCache;
-    @NotNull private final Lazy<PortfolioCache> portfolioCache;
-    @NotNull private final Lazy<PositionCache> filedPositionCache;
-    @NotNull private final Lazy<LeaderboardUserCache> leaderboardUserCache;
+     private final Lazy<PositionServiceWrapper> positionServiceWrapper;
+     private final Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper;
+     private final Lazy<SecurityCompactCache> securityCompactCache;
+     private final Lazy<PortfolioCache> portfolioCache;
+     private final Lazy<PositionCache> filedPositionCache;
+     private final Lazy<LeaderboardUserCache> leaderboardUserCache;
 
     //<editor-fold desc="Constructors">
     @Inject public GetPositionsCache(
-            @NotNull Lazy<PositionServiceWrapper> positionServiceWrapper,
-            @NotNull Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper,
-            @NotNull Lazy<SecurityCompactCache> securityCompactCache,
-            @NotNull Lazy<PortfolioCache> portfolioCache,
-            @NotNull Lazy<PositionCache> filedPositionCache,
-            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache)
+             Lazy<PositionServiceWrapper> positionServiceWrapper,
+             Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper,
+             Lazy<SecurityCompactCache> securityCompactCache,
+             Lazy<PortfolioCache> portfolioCache,
+             Lazy<PositionCache> filedPositionCache,
+             Lazy<LeaderboardUserCache> leaderboardUserCache)
     {
         this(DEFAULT_MAX_SIZE,
                 positionServiceWrapper,
@@ -49,12 +47,12 @@ import org.jetbrains.annotations.Nullable;
     }
 
     public GetPositionsCache(final int maxSize,
-            @NotNull Lazy<PositionServiceWrapper> positionServiceWrapper,
-            @NotNull Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper,
-            @NotNull Lazy<SecurityCompactCache> securityCompactCache,
-            @NotNull Lazy<PortfolioCache> portfolioCache,
-            @NotNull Lazy<PositionCache> filedPositionCache,
-            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache)
+             Lazy<PositionServiceWrapper> positionServiceWrapper,
+             Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper,
+             Lazy<SecurityCompactCache> securityCompactCache,
+             Lazy<PortfolioCache> portfolioCache,
+             Lazy<PositionCache> filedPositionCache,
+             Lazy<LeaderboardUserCache> leaderboardUserCache)
     {
         super(maxSize);
         this.positionServiceWrapper = positionServiceWrapper;
@@ -66,7 +64,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override @NotNull public GetPositionsDTO fetch(@NotNull final GetPositionsDTOKey key) throws Throwable
+    @Override  public GetPositionsDTO fetch( final GetPositionsDTOKey key) throws Throwable
     {
         if (key instanceof OwnedPortfolioId)
         {
@@ -79,12 +77,12 @@ import org.jetbrains.annotations.Nullable;
         throw new IllegalArgumentException("Unhandled key type " + key.getClass());
     }
 
-    @NotNull @Override protected GetPositionsCutDTO cutValue(@NotNull GetPositionsDTOKey key, @NotNull GetPositionsDTO value)
+     @Override protected GetPositionsCutDTO cutValue( GetPositionsDTOKey key,  GetPositionsDTO value)
     {
         return new GetPositionsCutDTO(value, securityCompactCache.get(), filedPositionCache.get());
     }
 
-    @Nullable @Override protected GetPositionsDTO inflateValue(@NotNull GetPositionsDTOKey key, @Nullable GetPositionsCutDTO cutValue)
+    @Override protected GetPositionsDTO inflateValue( GetPositionsDTOKey key, GetPositionsCutDTO cutValue)
     {
         if (cutValue == null)
         {
@@ -93,10 +91,9 @@ import org.jetbrains.annotations.Nullable;
         return cutValue.create(securityCompactCache.get(), filedPositionCache.get());
     }
 
-    @Nullable
     @Override public GetPositionsDTO put(
-            @NotNull final GetPositionsDTOKey key,
-            @NotNull final GetPositionsDTO value)
+             final GetPositionsDTOKey key,
+             final GetPositionsDTO value)
     {
         // We invalidate the previous list of positions before it get updated
         invalidateMatchingPositionCache(get(key));
@@ -115,9 +112,9 @@ import org.jetbrains.annotations.Nullable;
      * Invalidates all the info about the given user
      * @param userBaseKey
      */
-    public void invalidate(@NotNull final UserBaseKey userBaseKey)
+    public void invalidate( final UserBaseKey userBaseKey)
     {
-        for (@NotNull GetPositionsDTOKey key : snapshot().keySet())
+        for ( GetPositionsDTOKey key : snapshot().keySet())
         {
             if (key instanceof OwnedPortfolioId && ((OwnedPortfolioId) key).userId.equals(userBaseKey.key))
             {
@@ -131,7 +128,7 @@ import org.jetbrains.annotations.Nullable;
 
         // Below is an attempt to find out more about this user. It is not 100%
         // fail-safe
-        for (@NotNull LeaderboardUserId leaderboardUserId : leaderboardUserCache.get().getAllKeys())
+        for ( LeaderboardUserId leaderboardUserId : leaderboardUserCache.get().getAllKeys())
         {
             if (userBaseKey.key == leaderboardUserId.userId)
             {
@@ -140,17 +137,17 @@ import org.jetbrains.annotations.Nullable;
         }
     }
 
-    @Override public void invalidate(@NotNull final GetPositionsDTOKey key)
+    @Override public void invalidate( final GetPositionsDTOKey key)
     {
         invalidateMatchingPositionCache(get(key));
         super.invalidate(key);
     }
 
-    protected void invalidateMatchingPositionCache(@Nullable final GetPositionsDTO value)
+    protected void invalidateMatchingPositionCache(final GetPositionsDTO value)
     {
         if (value != null && value.positions != null)
         {
-            for (@Nullable PositionDTO positionDTO: value.positions)
+            for (PositionDTO positionDTO: value.positions)
             {
                 if (positionDTO != null)
                 {
