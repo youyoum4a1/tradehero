@@ -1,8 +1,10 @@
 package com.tradehero.th.api.social;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.key.FacebookFriendKey;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 
 public class UserFriendsFacebookDTO extends UserFriendsDTO
 {
@@ -36,7 +38,7 @@ public class UserFriendsFacebookDTO extends UserFriendsDTO
         return new FacebookFriendKey(fbId);
     }
 
-    @Override public int getNetworkLabelImage()
+    @Override @DrawableRes public int getNetworkLabelImage()
     {
         return R.drawable.icon_share_fb_on;
     }
@@ -49,6 +51,11 @@ public class UserFriendsFacebookDTO extends UserFriendsDTO
     @Override public InviteDTO createInvite()
     {
         return new InviteFacebookDTO(fbId);
+    }
+
+    @NonNull @Override public String getAnalyticsTag()
+    {
+        return AnalyticsConstants.Facebook;
     }
 
     @Override public int hashCode()

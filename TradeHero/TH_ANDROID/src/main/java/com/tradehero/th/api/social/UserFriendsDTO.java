@@ -1,5 +1,6 @@
 package com.tradehero.th.api.social;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
@@ -17,7 +18,7 @@ abstract public class UserFriendsDTO
 
     @NonNull abstract public FriendKey getFriendKey();
 
-    abstract public int getNetworkLabelImage();
+    @DrawableRes abstract public int getNetworkLabelImage();
 
     public String getProfilePictureURL()
     {
@@ -25,6 +26,8 @@ abstract public class UserFriendsDTO
     }
 
     abstract public InviteDTO createInvite();
+
+    @NonNull abstract public String getAnalyticsTag();
 
     public boolean isTradeHeroUser()
     {
