@@ -40,8 +40,9 @@
 
       <GridView
           android:id="@+id/introduction_videos_grid"
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="@dimen/size_21"
+          android:layout_centerHorizontal="true"
           android:listSelector="@drawable/basic_transparent_selector"
           android:numColumns="2"
           tools:listitem="@layout/video_view"

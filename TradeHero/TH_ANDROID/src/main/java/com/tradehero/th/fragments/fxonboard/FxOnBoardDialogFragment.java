@@ -74,7 +74,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        videoAdapter = new VideoAdapter(activity, R.layout.video_view);
+        videoAdapter = new VideoAdapter(activity, R.layout.video_view_large);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

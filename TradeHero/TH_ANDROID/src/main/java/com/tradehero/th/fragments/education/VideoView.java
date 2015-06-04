@@ -10,12 +10,10 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.education.VideoDTO;
 import com.tradehero.th.inject.HierarchyInjector;
-import javax.inject.Inject;
 
 public class VideoView extends RelativeLayout implements DTOView<VideoDTO>
 {
@@ -39,7 +37,6 @@ public class VideoView extends RelativeLayout implements DTOView<VideoDTO>
     {
         title.setText(dto.name);
         ImageLoader.getInstance().displayImage(dto.thumbnail, thumbnail);
-        //picasso.load(dto.thumbnail).into(thumbnail);
         if (dto.locked)
         {
             padlock.setVisibility(View.VISIBLE);

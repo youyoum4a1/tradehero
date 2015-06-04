@@ -2,6 +2,8 @@
 <resources>
   <dimen name="video_thumbnail_width">@dimen/size_15</dimen>
   <dimen name="video_thumbnail_height">@dimen/size_10</dimen>
+  <dimen name="video_thumbnail_width_large">@dimen/size_24</dimen>
+  <dimen name="video_thumbnail_height_large">@dimen/size_16</dimen>
   <dimen name="video_thumbnail_spacing">10dp</dimen>
   <dimen name="video_thumbnail_container_height">@dimen/size_11</dimen>
 

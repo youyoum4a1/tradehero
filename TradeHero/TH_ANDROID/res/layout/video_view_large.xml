@@ -2,37 +2,30 @@
 <com.tradehero.th.fragments.education.VideoView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/video_thumbnail_width"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
 
   <ImageView
       android:id="@+id/video_thumbnail"
-      android:layout_width="@dimen/video_thumbnail_width"
-      android:layout_height="@dimen/video_thumbnail_height"
-      android:scaleType="centerCrop"
-      android:layout_centerInParent="true"/>
-
-  <TextView
-      android:id="@+id/video_title"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:padding="2dp"
-      android:singleLine="true"
-      style="@style/TH.Caption.Inverse"
-      android:background="@color/black"
-      android:gravity="center_horizontal"
-      tools:text="What is Technical Analytics?"
+      android:layout_width="@dimen/video_thumbnail_width_large"
+      android:layout_height="@dimen/video_thumbnail_height_large"
+      android:layout_alignParentTop="true"
+      android:layout_centerHorizontal="true"
+      android:scaleType="fitCenter"
+      tools:src="@drawable/superman_facebook"
       />
 
   <LinearLayout
       android:id="@+id/video_padlock"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/video_thumbnail_height_large"
+      android:layout_alignParentTop="true"
+      android:layout_centerHorizontal="true"
       android:orientation="vertical"
-      android:layout_above="@id/video_title"
-      android:background="@color/grey_transparent">
+      android:background="@color/grey_transparent"
+      tools:visibility="gone"
+      >
 
     <ImageView
         android:layout_width="@dimen/size_3"
@@ -54,5 +47,20 @@
         android:text="@string/video_locked_hint"/>
 
   </LinearLayout>
+
+  <TextView
+      android:id="@+id/video_title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_below="@id/video_thumbnail"
+      android:layout_centerHorizontal="true"
+      android:padding="2dp"
+      android:singleLine="true"
+      style="@style/TH.Caption.Inverse"
+      android:background="@color/black"
+      android:gravity="center_horizontal"
+      tools:text="What is Technical Analytics?"
+      />
 
 </com.tradehero.th.fragments.education.VideoView>
