@@ -335,7 +335,12 @@ public class MainCompetitionFragment extends DashboardFragment
                                 {
                                     @Override public List<CompetitionPreSeasonDTO> call(Throwable throwable)
                                     {
-                                        Timber.e(throwable, "Failed fetching preseason for %s", providerId);
+                                        if (!(throwable instanceof RetrofitError)
+                                                || ((RetrofitError) throwable).getResponse() == null
+                                                || ((RetrofitError) throwable).getResponse().getStatus() != 404)
+                                        {
+                                            Timber.e(throwable, "Failed fetching preseason for %s", providerId);
+                                        }
                                         return Collections.emptyList();
                                     }
                                 }),

@@ -177,7 +177,6 @@ public class PreferenceModule
             }
         }
 
-        Timber.e(new NullPointerException(), "There was no AuthHeader available");
         return null;
     }
 
