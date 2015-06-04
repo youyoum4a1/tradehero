@@ -114,7 +114,7 @@ public class DashboardActivity extends BaseActivity
     @Inject THRouter thRouter;
     @Inject Analytics analytics;
     @Inject Lazy<BroadcastUtils> broadcastUtilsLazy;
-    @Inject @IsOnBoardShown BooleanPreference isOnboardShown;
+    @Inject @IsOnBoardShown BooleanPreference isOnBoardShown;
     @Inject @IsFxShown BooleanPreference isFxShown;
     @Inject Set<ActivityResultRequester> activityResultRequesters;
     @Inject @ForAnalytics Lazy<DashboardNavigator.DashboardFragmentWatcher> analyticsReporter;
@@ -364,7 +364,7 @@ public class DashboardActivity extends BaseActivity
                         {
                             @Override public void call(Intent intent)
                             {
-                                isOnboardShown.set(true);
+                                isOnBoardShown.set(true);
                                 activityModule.navigator.launchActivity(OnBoardActivity.class);
                             }
                         },
@@ -541,7 +541,7 @@ public class DashboardActivity extends BaseActivity
                         {
                             @Override public void call(UserProfileDTO userProfileDTO)
                             {
-                                if (!isOnboardShown.get() && userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
+                                if (!isOnBoardShown.get() && userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
                                 {
                                     broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
                                     return;

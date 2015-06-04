@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -15,6 +16,7 @@ import com.tradehero.th.models.user.DTOProcessorLogout;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserLogin;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
+import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
@@ -33,6 +35,7 @@ import timber.log.Timber;
     @NonNull private final DTOCacheUtilImpl dtoCacheUtil;
     @NonNull private final Context context;
     @NonNull private final Lazy<SystemStatusCache> systemStatusCache;
+    @NonNull private final BooleanPreference isOnBoardShown;
 
     //<editor-fold desc="Constructors">
     @Inject public SessionServiceWrapper(
@@ -41,7 +44,8 @@ import timber.log.Timber;
             @NonNull UserProfileCacheRx userProfileCache,
             @NonNull DTOCacheUtilImpl dtoCacheUtil,
             @NonNull Context context,
-            @NonNull Lazy<SystemStatusCache> systemStatusCache)
+            @NonNull Lazy<SystemStatusCache> systemStatusCache,
+            @NonNull @IsOnBoardShown BooleanPreference isOnBoardShown)
     {
         this.currentUserId = currentUserId;
         this.sessionServiceRx = sessionServiceRx;
@@ -49,6 +53,7 @@ import timber.log.Timber;
         this.dtoCacheUtil = dtoCacheUtil;
         this.context = context;
         this.systemStatusCache = systemStatusCache;
+        this.isOnBoardShown = isOnBoardShown;
     }
     //</editor-fold>
 
@@ -76,7 +81,8 @@ import timber.log.Timber;
                 userProfileCache,
                 currentUserId,
                 context,
-                dtoCacheUtil);
+                dtoCacheUtil,
+                isOnBoardShown);
     }
 
     @NonNull public Observable<UserLoginDTO> loginRx(

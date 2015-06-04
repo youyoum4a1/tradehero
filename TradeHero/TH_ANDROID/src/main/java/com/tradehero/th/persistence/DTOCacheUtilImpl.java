@@ -115,7 +115,7 @@ import rx.functions.Func2;
             Lazy<QuestBonusListCacheRx> questBonusListCacheLazy,
             @ServerEndpoint StringPreference serverEndpointPreference,
             @ForUser SharedPreferences userSharedPreferences,
-            @IsOnBoardShown BooleanPreference isOnboardShown,
+            @IsOnBoardShown BooleanPreference isOnBoardShown,
             @NonNull BroadcastUtils broadcastUtils,
             @NonNull Context context)
     {
@@ -144,7 +144,7 @@ import rx.functions.Func2;
 
         this.serverEndpointPreference = serverEndpointPreference;
         this.userSharedPreferences = userSharedPreferences;
-        this.isOnboardShown = isOnboardShown;
+        this.isOnboardShown = isOnBoardShown;
         this.broadcastUtils = broadcastUtils;
         this.context = context;
     }

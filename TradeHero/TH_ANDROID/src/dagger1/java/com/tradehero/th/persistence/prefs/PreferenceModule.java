@@ -144,7 +144,8 @@ public class PreferenceModule
 
     @Provides @Singleton @IsOnBoardShown BooleanPreference provideIsOnBoardShown(@ForApp SharedPreferences sharedPreferences)
     {
-        return new BooleanPreference(sharedPreferences, PREF_IS_ONBOARD_SHOWN_FLAG, false);
+        // We show the on-boarding only when the server says firstTimeLogin
+        return new BooleanPreference(sharedPreferences, PREF_IS_ONBOARD_SHOWN_FLAG, true);
     }
 
     @Provides @Singleton @IsFxShown BooleanPreference provideIsFxShown(@ForApp SharedPreferences sharedPreferences)

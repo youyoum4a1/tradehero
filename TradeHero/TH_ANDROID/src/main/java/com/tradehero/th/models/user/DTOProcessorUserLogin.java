@@ -2,6 +2,7 @@ package com.tradehero.th.models.user;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -29,7 +30,8 @@ public class DTOProcessorUserLogin extends ThroughDTOProcessor<UserLoginDTO>
             @NonNull UserProfileCacheRx userProfileCache,
             @NonNull CurrentUserId currentUserId,
             @NonNull Context context,
-            @NonNull DTOCacheUtilImpl dtoCacheUtil)
+            @NonNull DTOCacheUtilImpl dtoCacheUtil,
+            @NonNull BooleanPreference isOnBoardShown)
     {
         this.authData = authData;
         this.systemStatusCache = systemStatusCache;
@@ -40,7 +42,8 @@ public class DTOProcessorUserLogin extends ThroughDTOProcessor<UserLoginDTO>
                 userProfileCache,
                 currentUserId,
                 authData,
-                dtoCacheUtil);
+                dtoCacheUtil,
+                isOnBoardShown);
     }
     //</editor-fold>
 
