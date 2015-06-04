@@ -10,7 +10,9 @@ import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import com.android.internal.util.Predicate;
 import com.facebook.FacebookOperationCanceledException;
+import com.facebook.Session;
 import com.tradehero.common.persistence.DTOCacheRx;
+import com.tradehero.common.rx.PairGetFirst;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -26,7 +28,6 @@ import com.tradehero.th.api.social.UserFriendsTwitterDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandlerFacebook;
-import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
@@ -55,7 +56,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardFriendsCacheRx leaderboardFriendsCache;
     @Inject LeaderboardMarkUserListFragmentUtil fragmentUtil;
-    @Inject SocialShareHelper socialShareHelper;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject SocialFriendHandlerFacebook socialFriendHandlerFacebook;
 
@@ -114,7 +114,8 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
                 {
                     @Override public Observable<UserProfileDTO> call(SocialNetworkEnum socialNetworkEnum)
                     {
-                        return socialShareHelper.handleNeedToLink(socialNetworkEnum);
+                        return socialFriendHandlerFacebook.createProfileSessionObservable()
+                                .map(new PairGetFirst<UserProfileDTO, Session>());
                     }
                 })
                 .doOnError(new ToastAndLogOnErrorAction("Failed to listen to social network"))
