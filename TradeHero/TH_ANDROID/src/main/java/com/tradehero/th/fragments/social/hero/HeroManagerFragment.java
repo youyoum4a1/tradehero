@@ -33,11 +33,11 @@ import javax.inject.Inject;
 @Routable({
         "user/me/heroes",
         "user/me/heroes/tab-index/:tabIndexMe",
-        "user/:followerId/heroes",
-        "user/:followerIdWithTab/heroes/tab-index/:tabIndex",
-        "user/:followerIdForAll/heroes/all",
-        "user/:followerIdForFree/heroes/free",
-        "user/:followerIdForPremium/heroes/premium",
+        "user/id/:followerId/heroes",
+        "user/id/:followerIdWithTab/heroes/tab-index/:tabIndex",
+        "user/id/:followerIdForAll/heroes/all",
+        "user/id/:followerIdForFree/heroes/free",
+        "user/id/:followerIdForPremium/heroes/premium",
 })
 public class HeroManagerFragment extends DashboardFragment
         implements OnHeroesLoadedListener

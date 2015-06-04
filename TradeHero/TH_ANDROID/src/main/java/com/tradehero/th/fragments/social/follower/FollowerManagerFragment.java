@@ -45,11 +45,11 @@ import timber.log.Timber;
 @Routable({
         "user/me/followers",
         "user/me/followers/tab-index/:tabIndexMe",
-        "user/:heroId/followers",
-        "user/:heroIdWithTab/followers/tab-index/:tabIndex",
-        "user/:heroIdForAll/followers/all",
-        "user/:heroIdForFree/followers/free",
-        "user/:heroIdForPremium/followers/premium",
+        "user/id/:heroId/followers",
+        "user/id/:heroIdWithTab/followers/tab-index/:tabIndex",
+        "user/id/:heroIdForAll/followers/all",
+        "user/id/:heroIdForFree/followers/free",
+        "user/id/:heroIdForPremium/followers/premium",
 })
 public class FollowerManagerFragment extends DashboardFragment
         implements OnFollowersLoadedListener

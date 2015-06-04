@@ -53,9 +53,9 @@ import rx.functions.Func1;
 import timber.log.Timber;
 
 @Routable({
-        "user/:" + PushableTimelineFragment.ROUTER_USER_ID,
-        "user/:" + PushableTimelineFragment.ROUTER_HERO_ID_FREE + "/follow/free",
-        "user/:" + PushableTimelineFragment.ROUTER_HERO_ID_PREMIUM + "/follow/premium",
+        "user/id/:" + PushableTimelineFragment.ROUTER_USER_ID,
+        "user/id/:" + PushableTimelineFragment.ROUTER_HERO_ID_FREE + "/follow/free",
+        "user/id/:" + PushableTimelineFragment.ROUTER_HERO_ID_PREMIUM + "/follow/premium",
 })
 public class PushableTimelineFragment extends TimelineFragment
 {
