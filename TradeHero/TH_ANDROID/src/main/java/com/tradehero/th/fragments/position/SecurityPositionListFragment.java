@@ -203,9 +203,9 @@ public class SecurityPositionListFragment
         layouts.put(PositionItemAdapter.VIEW_TYPE_HEADER, R.layout.position_item_header);
         layouts.put(PositionItemAdapter.VIEW_TYPE_PLACEHOLDER, R.layout.position_quick_nothing);
         layouts.put(PositionItemAdapter.VIEW_TYPE_LOCKED, R.layout.position_locked_item);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_LONG, R.layout.position_top_view);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_SHORT, R.layout.position_top_view);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED, R.layout.position_top_view);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_LONG, R.layout.position_top_view_3_1);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_SHORT, R.layout.position_top_view_3_1);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED, R.layout.position_top_view_3_1);
         return layouts;
     }
 
@@ -323,7 +323,7 @@ public class SecurityPositionListFragment
                                     : R.string.position_list_header_open_unsure),
                             null,
                             null,
-                            PositionSectionHeaderItemView.INFO_TYPE_LONG));
+                            PositionSectionHeaderItemView.Type.LONG));
             filtered.addAll(longList);
         }
         if (!shortList.isEmpty())
@@ -333,7 +333,7 @@ public class SecurityPositionListFragment
                     getString(R.string.position_list_header_open_short),
                     null,
                     null,
-                    PositionSectionHeaderItemView.INFO_TYPE_SHORT));
+                    PositionSectionHeaderItemView.Type.SHORT));
             filtered.addAll(shortList);
         }
         if (!closedList.isEmpty())
@@ -343,7 +343,7 @@ public class SecurityPositionListFragment
                     getString(R.string.position_list_header_closed_unsure),
                     null,
                     null,
-                    PositionSectionHeaderItemView.INFO_TYPE_CLOSED));
+                    PositionSectionHeaderItemView.Type.CLOSED));
             filtered.addAll(closedList);
         }
 
