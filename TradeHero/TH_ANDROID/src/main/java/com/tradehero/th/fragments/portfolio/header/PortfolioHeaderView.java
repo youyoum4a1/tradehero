@@ -10,12 +10,12 @@ import rx.Observable;
  */
 public interface PortfolioHeaderView
 {
-    public void linkWith(UserProfileDTO userProfileDTO);
-    public void linkWith(PortfolioCompactDTO portfolioCompactDTO);
+    void linkWith(UserProfileDTO userProfileDTO);
+    void linkWith(PortfolioCompactDTO portfolioCompactDTO);
 
     @NonNull Observable<UserAction> getUserActionObservable();
 
-    public static class UserAction
+    class UserAction
     {
         @NonNull public final UserProfileDTO requested;
 
@@ -25,7 +25,7 @@ public interface PortfolioHeaderView
         }
     }
 
-    public static class FollowUserAction extends UserAction
+    class FollowUserAction extends UserAction
     {
         public FollowUserAction(@NonNull UserProfileDTO requested)
         {
@@ -33,7 +33,7 @@ public interface PortfolioHeaderView
         }
     }
 
-    public static class TimelineUserAction extends UserAction
+    class TimelineUserAction extends UserAction
     {
         public TimelineUserAction(@NonNull UserProfileDTO requested)
         {

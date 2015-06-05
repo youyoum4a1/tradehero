@@ -37,8 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fadingEdge="none"
-            android:paddingTop="80dp"
-            android:paddingBottom="@dimen/size_12"
+            android:paddingBottom="@dimen/dashboard_tabhost_height"
             android:clipToPadding="false"
             />
 
@@ -69,13 +68,5 @@
         />
 
   </ViewAnimator>
-
-  <ViewStub
-      android:id="@+id/position_list_header_stub"
-      android:inflatedId="@+id/position_list_header_stub"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentTop="true"
-      />
 
 </RelativeLayout>
