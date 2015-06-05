@@ -1,6 +1,7 @@
 package com.tradehero.th.api.position;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityIntegerId;
@@ -64,7 +65,7 @@ public class PositionDTO extends PositionDTOCompact
         return new SecurityIntegerId(securityId);
     }
 
-    public Double getROISinceInception()
+    @Nullable public Double getROISinceInception()
     {
         if (shares == null || realizedPLRefCcy == null || unrealizedPLRefCcy == null)
         {

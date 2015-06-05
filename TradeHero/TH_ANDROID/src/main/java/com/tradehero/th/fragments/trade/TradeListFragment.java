@@ -13,10 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -43,6 +45,7 @@ import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
+import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.position.PositionCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
@@ -435,6 +438,16 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             }
             BuySellFragment.putSecurityId(args, securityId);
             navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @OnItemClick(R.id.trade_list)
+    public void onTradeItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        if (view instanceof TradeListItemView)
+        {
+            ((TradeListItemView) view).toggleTradeDateLook();
         }
     }
 }

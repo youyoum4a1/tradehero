@@ -3,6 +3,7 @@ package com.tradehero.th.api.position;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserPositionId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
@@ -17,15 +18,17 @@ public class PositionInPeriodDTO extends PositionDTO
     public Double totalPLInPeriodRefCcy;
     public Double marketValueStartPeriodRefCcy;
     public Double marketValueEndPeriodRefCcy;
-    public Double sum_salesInPeriodRefCcy;
-    public Double sum_purchasesInPeriodRefCcy;
+    @JsonProperty("sum_salesInPeriodRefCcy")
+    public Double sumSalesInPeriodRefCcy;
+    @JsonProperty("sum_purchasesInPeriodRefCcy")
+    public Double sumPurchasesInPeriodRefCcy;
 
     public boolean isProperInPeriod()
     {
         return marketValueStartPeriodRefCcy != null ||
                 marketValueEndPeriodRefCcy != null ||
-                sum_salesInPeriodRefCcy != null ||
-                sum_purchasesInPeriodRefCcy != null;
+                sumSalesInPeriodRefCcy != null ||
+                sumPurchasesInPeriodRefCcy != null;
     }
 
     public LeaderboardMarkUserPositionId getLbPositionId()
@@ -75,12 +78,12 @@ public class PositionInPeriodDTO extends PositionDTO
 
     private double getInvestedInPeriod()
     {
-        return marketValueStartPeriodRefCcy + sum_purchasesInPeriodRefCcy;
+        return marketValueStartPeriodRefCcy + sumPurchasesInPeriodRefCcy;
     }
 
     private double getInPeriodPL()
     {
-        return marketValueEndPeriodRefCcy + sum_salesInPeriodRefCcy - getInvestedInPeriod();
+        return marketValueEndPeriodRefCcy + sumSalesInPeriodRefCcy - getInvestedInPeriod();
     }
 
     @Override public String toString()
@@ -106,8 +109,8 @@ public class PositionInPeriodDTO extends PositionDTO
                 ", totalPLInPeriodRefCcy=" + totalPLInPeriodRefCcy +
                 ", marketValueStartPeriodRefCcy=" + marketValueStartPeriodRefCcy +
                 ", marketValueEndPeriodRefCcy=" + marketValueEndPeriodRefCcy +
-                ", sum_salesInPeriodRefCcy=" + sum_salesInPeriodRefCcy +
-                ", sum_purchasesInPeriodRefCcy=" + sum_purchasesInPeriodRefCcy +
+                ", sumSalesInPeriodRefCcy=" + sumSalesInPeriodRefCcy +
+                ", sumPurchasesInPeriodRefCcy=" + sumPurchasesInPeriodRefCcy +
                 '}';
     }
 }

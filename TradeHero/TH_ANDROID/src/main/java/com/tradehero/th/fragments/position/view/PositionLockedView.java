@@ -3,23 +3,20 @@ package com.tradehero.th.fragments.position.view;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.text.Spanned;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.models.position.PositionDTOUtils;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 
 public class PositionLockedView extends LinearLayout
         implements DTOView<PositionLockedView.DTO>
 {
-    @InjectView(R.id.color_indicator) protected ColorIndicator colorIndicator;
     @InjectView(R.id.position_percentage) protected TextView positionPercent;
     @InjectView(R.id.unrealised_pl_value_header) protected TextView unrealisedPLValueHeader;
     @InjectView(R.id.unrealised_pl_value) protected TextView unrealisedPLValue;
@@ -52,10 +49,6 @@ public class PositionLockedView extends LinearLayout
 
     @Override public void display(DTO dto)
     {
-        if (colorIndicator != null)
-        {
-            colorIndicator.linkWith(dto.roi);
-        }
         if (positionPercent != null)
         {
             positionPercent.setText(dto.positionPercent);
@@ -84,47 +77,70 @@ public class PositionLockedView extends LinearLayout
 
     public static class DTO
     {
-        @Nullable public final Double roi;
-        @NonNull public final Spanned positionPercent;
-        @NonNull public final String unrealisedPLValueHeader;
-        @NonNull public final Spanned unrealisedPLValue;
-        @NonNull public final String realisedPLValueHeader;
-        @NonNull public final Spanned realisedPLValue;
-        @NonNull public final String totalInvestedValue;
+        @NonNull public final CharSequence positionPercent;
+        @NonNull public final CharSequence unrealisedPLValueHeader;
+        @NonNull public final CharSequence unrealisedPLValue;
+        @NonNull public final CharSequence realisedPLValueHeader;
+        @NonNull public final CharSequence realisedPLValue;
+        @NonNull public final CharSequence totalInvestedValue;
 
         public DTO(@NonNull Resources resources, @NonNull PositionDTO positionDTO)
         {
-            roi = positionDTO.getROISinceInception();
+            String na = resources.getString(R.string.na);
 
-            positionPercent = PositionDTOUtils.getROISpanned(resources, positionDTO.getROISinceInception());
-
-            //<editor-fold desc="Unrealised PL Value Header">
-            if (positionDTO.unrealizedPLRefCcy != null && positionDTO.unrealizedPLRefCcy < 0)
-            {
-                unrealisedPLValueHeader = resources.getString(R.string.position_unrealised_loss_header);
-            }
-            else
-            {
-                unrealisedPLValueHeader = resources.getString(R.string.position_unrealised_profit_header);
-            }
+            //<editor-fold desc="ROI Since Inception">
+            Double roi = positionDTO.getROISinceInception();
+            positionPercent = roi == null
+                    ? na
+                    : THSignedPercentage.builder(roi * 100.0)
+                            .signTypePlusMinusAlways()
+                            .withDefaultColor()
+                            .relevantDigitCount(3)
+                            .build()
+                            .createSpanned();
             //</editor-fold>
 
-            unrealisedPLValue = PositionDTOUtils.getUnrealisedPLSpanned(resources, positionDTO);
-
-            //<editor-fold desc="Realised PL Value Header">
-            if (positionDTO.unrealizedPLRefCcy != null && positionDTO.realizedPLRefCcy < 0)
-            {
-                realisedPLValueHeader = resources.getString(R.string.position_realised_loss_header);
-            }
-            else
-            {
-                realisedPLValueHeader = resources.getString(R.string.position_realised_profit_header);
-            }
+            //<editor-fold desc="Unrealised PL">
+            Double unrealisedPLRefCcy = positionDTO.unrealizedPLRefCcy;
+            unrealisedPLValueHeader = resources.getString(
+                    unrealisedPLRefCcy != null && unrealisedPLRefCcy < 0
+                            ? R.string.position_unrealised_loss_header
+                            : R.string.position_unrealised_profit_header);
+            unrealisedPLValue = unrealisedPLRefCcy == null
+                    ? na
+                    : THSignedMoney.builder(unrealisedPLRefCcy)
+                            .withOutSign()
+                            .withDefaultColor()
+                            .currency(positionDTO.getNiceCurrency())
+                            .build()
+                            .createSpanned();
             //</editor-fold>
 
-            realisedPLValue = PositionDTOUtils.getRealisedPLSpanned(resources, positionDTO);
+            //<editor-fold desc="Realised PL">
+            Double realisedPLRefCcy = positionDTO.realizedPLRefCcy;
+            realisedPLValueHeader = resources.getString(realisedPLRefCcy != null && realisedPLRefCcy < 0
+                    ? R.string.position_realised_loss_header
+                    : R.string.position_realised_profit_header);
+            realisedPLValue = realisedPLRefCcy == null
+                    ? na
+                    : THSignedMoney.builder(realisedPLRefCcy)
+                            .withOutSign()
+                            .withDefaultColor()
+                            .currency(positionDTO.getNiceCurrency())
+                            .build()
+                            .createSpanned();
+            //</editor-fold>
 
-            totalInvestedValue = PositionDTOUtils.getSumInvested(resources, positionDTO);
+            //<editor-fold desc="Sum Invested">
+            Double sumInvestedRefCcy = positionDTO.sumInvestedAmountRefCcy;
+            totalInvestedValue = sumInvestedRefCcy == null
+                    ? na
+                    : THSignedMoney.builder(sumInvestedRefCcy)
+                            .withOutSign()
+                            .currency(positionDTO.getNiceCurrency())
+                            .build()
+                            .createSpanned();
+            //</editor-fold>
         }
     }
 }

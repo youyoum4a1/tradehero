@@ -77,10 +77,8 @@ public class TradeListItemAdapter
                         new TradeListItemView.DTO(
                                 resources,
                                 positionDTO,
-                                securityCompactDTO,
                                 expandedTradeId != null && expandedTradeId.equals(dto.id),
                                 dto,
-                                i == 0,
                                 prettyTime));
             }
         }
@@ -176,8 +174,6 @@ public class TradeListItemAdapter
                 TradeListItemView.DTO dto = (TradeListItemView.DTO) item;
                 TradeListItemView tradeListItemView = ((TradeListItemView) convertView);
                 tradeListItemView.display(dto);
-                boolean expanded = dto.isExpanded();
-                tradeListItemView.expandingLayout.expandWithNoAnimation(expanded);
                 break;
             default:
                 throw new IllegalStateException("Unknown ItemType " + itemViewType);

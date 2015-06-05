@@ -2,28 +2,25 @@ package com.tradehero.th.fragments.trade.view;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import com.tradehero.common.annotation.ViewVisibilityValue;
-import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.trade.TradeDTO;
-import com.tradehero.th.fragments.leaderboard.ExpandingLayout;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.models.position.PositionDTOUtils;
 import java.text.DateFormat;
 import java.util.TimeZone;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -31,23 +28,14 @@ import org.ocpsoft.prettytime.PrettyTime;
 public class TradeListItemView extends LinearLayout
         implements DTOView<TradeListItemView.DTO>
 {
-    @InjectView(R.id.ic_position_profit_indicator_left) protected ColorIndicator profitIndicatorView;
+    @InjectView(R.id.gain_indicator) protected ImageView gainIndicator;
     @InjectView(R.id.trade_date_label) protected TextView dateTextView;
     @InjectView(R.id.traded_quantity_verbose) protected TextView tradedQuantityVerbose;
-    @InjectView(R.id.holding_quantity_verbose) protected TextView holdingQuantityVerbose;
-    @InjectView(R.id.trade_avg_price) protected TextView averagePriceTextView;
-    @InjectView(R.id.realised_pl_value_header) protected TextView realisedPLValueHeader;
-    @InjectView(R.id.realised_pl_value) protected TextView realisedPLValue;
-    @InjectView(R.id.unrealised_pl_container) protected View unrealisedPLContainer;
-    @InjectView(R.id.unrealised_pl_value_header) protected TextView unrealisedPLValueHeader;
-    @InjectView(R.id.unrealised_pl_value) protected TextView unrealizedPLValue;
-    @InjectView(R.id.trade_value_header) protected TextView tradeValueHeader;
-    @InjectView(R.id.trade_value) protected TextView tradeValue;
-    @InjectView(R.id.trade_list_comment_section) protected View commentSection;
-    @InjectView(R.id.trade_list_comment) protected TextView commentText;
-    @InjectView(R.id.expanding_layout) public ExpandingLayout expandingLayout;
+    @InjectView(R.id.pl_container) protected View plContainer;
+    @InjectView(R.id.pl_value_header) protected TextView plValueHeader;
+    @InjectView(R.id.pl_value) protected TextView plValue;
 
-    private DTO tradeItemViewDTO;
+    @Nullable private DTO tradeItemViewDTO;
 
     //<editor-fold desc="Constructors">
     public TradeListItemView(Context context)
@@ -73,181 +61,97 @@ public class TradeListItemView extends LinearLayout
         ButterKnife.inject(this);
     }
 
-    @Override public void display(TradeListItemView.DTO dto)
+    @Override public void display(@NonNull DTO dto)
     {
         this.tradeItemViewDTO = dto;
-        displayTopSection(dto);
-        displayExpandableSection(dto);
-    }
 
-    private void displayTopSection(DTO dto)
-    {
-        if (this.profitIndicatorView != null)
+        if (gainIndicator != null)
         {
-            this.profitIndicatorView.linkWith(dto.getNumberToDisplay());
+            gainIndicator.setVisibility(dto.gainIndicatorVisibility);
+            gainIndicator.setImageResource(dto.gainIndicator);
         }
 
-        displayTradeBoughtText(dto);
-        displayTradeDate(dto);
-        displayHoldingQuantity(dto);
-    }
-
-    private void displayTradeBoughtText(DTO dto)
-    {
         if (tradedQuantityVerbose != null)
         {
-            tradedQuantityVerbose.setText(dto.getTradeBoughtText());
+            tradedQuantityVerbose.setText(dto.tradeBought);
         }
-    }
 
-    private void displayHoldingQuantity(DTO dto)
-    {
-        if (this.holdingQuantityVerbose != null)
-        {
-            this.holdingQuantityVerbose.setText(dto.getHoldingQuantityText());
-        }
-    }
-
-    private void displayTradeDate(DTO dto)
-    {
         if (dateTextView != null)
         {
             dateTextView.setText(dto.getTradeDateText());
         }
-    }
 
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.trade_date_label)
-    protected void toggleTradeDateLook(View view)
-    {
-        tradeItemViewDTO.togglePrettyDate();
-        displayTradeDate(tradeItemViewDTO);
-    }
-
-    private void displayExpandableSection(DTO dto)
-    {
-        displayAveragePrice(dto);
-        displayUnrealisedPLContainer(dto);
-        displayUnrealisedPLValueHeader(dto);
-        displayUnrealisedPLValue(dto);
-        displayRealisedPLValueHeader(dto);
-        displayRealisedPLValue(dto);
-        displayTradeValue(dto);
-        displayCommentSection(dto);
-        displayCommentText(dto);
-    }
-
-    private void displayAveragePrice(DTO dto)
-    {
-        if (this.averagePriceTextView != null)
+        if (plContainer != null)
         {
-            this.averagePriceTextView.setText(dto.getAveragePrice());
+            plContainer.setVisibility(dto.pLVisibility);
+        }
+
+        if (plValueHeader != null)
+        {
+            plValueHeader.setText(dto.plHeader);
+        }
+
+        if (plValue != null)
+        {
+            plValue.setText(dto.plValue);
+            plValue.setTextColor(dto.plValueColor);
         }
     }
 
-    private void displayUnrealisedPLContainer(DTO dto)
+    public void toggleTradeDateLook()
     {
-        if (this.unrealisedPLContainer != null)
+        if (tradeItemViewDTO != null)
         {
-            this.unrealisedPLContainer.setVisibility(dto.getUnrealisedPLVisibility());
-        }
-    }
-
-    private void displayUnrealisedPLValueHeader(DTO dto)
-    {
-        if (unrealisedPLValueHeader != null)
-        {
-            unrealisedPLValueHeader.setText(dto.getUnrealisedPLValueHeaderText());
-        }
-    }
-
-    private void displayUnrealisedPLValue(DTO dto)
-    {
-        if (this.unrealizedPLValue != null)
-        {
-            this.unrealizedPLValue.setText(dto.getUnrealisedPLValueText());
-        }
-    }
-
-    private void displayRealisedPLValueHeader(DTO dto)
-    {
-        if (realisedPLValueHeader != null)
-        {
-            realisedPLValueHeader.setText(dto.getRealisedPLValueHeaderText());
-        }
-    }
-
-    private void displayRealisedPLValue(DTO dto)
-    {
-        if (this.realisedPLValue != null)
-        {
-            this.realisedPLValue.setText(dto.getRealisedPLValueText());
-        }
-    }
-
-    private void displayTradeValue(DTO dto)
-    {
-        if (tradeValue != null)
-        {
-            tradeValue.setText(dto.getTradeValueText());
-        }
-    }
-
-    private void displayCommentSection(DTO dto)
-    {
-        if (this.commentSection != null)
-        {
-            this.commentSection.setVisibility(dto.getCommentSectionVisibility());
-        }
-    }
-
-    private void displayCommentText(DTO dto)
-    {
-        if (this.commentText != null)
-        {
-            this.commentText.setText(dto.getCommentText());
+            tradeItemViewDTO.togglePrettyDate();
+            if (dateTextView != null)
+            {
+                dateTextView.setText(tradeItemViewDTO.getTradeDateText());
+            }
         }
     }
 
     public static class DTO extends ExpandableListItem<TradeDTO>
     {
-        private final boolean lastTrade;
         private boolean isPrettyDate = true;
-        @Nullable Double numberToDisplay;
-        String tradeBought;
-        String currencyDisplay;
-        String prettyDate;
-        String normalDate;
-        String holdingQuantity;
-        String averagePrice;
-        @ViewVisibilityValue int unrealisedPLVisibility;
-        String unrealisedHeader;
-        CharSequence unrealisedValue;
-        String realisedHeader;
-        CharSequence realisedValue;
-        String tradeValue;
-        @ViewVisibilityValue int commentVisibility;
-        String commentText;
+        @Nullable public final Double numberToDisplayRefCcy;
+        @ViewVisibilityValue public final int gainIndicatorVisibility;
+        @DrawableRes public final int gainIndicator;
+        @NonNull public final CharSequence tradeBought;
+        @NonNull public final CharSequence prettyDate;
+        @NonNull public final CharSequence normalDate;
+        @ViewVisibilityValue public final int pLVisibility;
+        @NonNull public final CharSequence plHeader;
+        @NonNull public final CharSequence plValue;
+        public final int plValueColor;
 
         public DTO(
                 @NonNull Resources resources,
                 @NonNull PositionDTO positionDTO,
-                @NonNull SecurityCompactDTO securityCompactDTO,
                 boolean expanded,
                 @NonNull TradeDTO tradeDTO,
-                boolean lastTrade,
                 @NonNull PrettyTime prettyTime)
         {
             super(expanded, tradeDTO);
-            this.lastTrade = lastTrade;
 
-            Boolean isClosed = positionDTO.isClosed();
-            if (isLastTrade() && isClosed != null && !isClosed)
+            numberToDisplayRefCcy = tradeDTO.realizedPLAfterTradeRefCcy;
+
+            if (numberToDisplayRefCcy == 0)
             {
-                numberToDisplay = positionDTO.unrealizedPLRefCcy;
+                gainIndicatorVisibility = VISIBLE;
+                gainIndicator = R.drawable.default_image;
             }
-            numberToDisplay = tradeDTO.realizedPLAfterTradeRefCcy;
+            else if (numberToDisplayRefCcy > 0)
+            {
+                gainIndicatorVisibility = VISIBLE;
+                gainIndicator = R.drawable.indicator_up;
+            }
+            else
+            {
+                gainIndicatorVisibility = VISIBLE;
+                gainIndicator = R.drawable.indicator_down;
+            }
 
+            //<editor-fold desc="Action text">
             int textResId =
                     tradeDTO.quantity >= 0 ? R.string.trade_bought_quantity_verbose : R.string.trade_sold_quantity_verbose;
             THSignedNumber tradeQuantityL = THSignedNumber.builder((double) Math.abs(tradeDTO.quantity))
@@ -255,19 +159,15 @@ public class TradeListItemView extends LinearLayout
                     .build();
             THSignedNumber tradeValueL = THSignedMoney.builder(tradeDTO.unitPriceRefCcy)
                     .withOutSign()
-                    .currency(getCurrencyDisplay())
+                    .currency(positionDTO.getNiceCurrency())
                     .build();
             tradeBought = resources.getString(
                     textResId,
                     tradeQuantityL.toString(),
                     tradeValueL.toString());
+            //</editor-fold>
 
-            if (securityCompactDTO.currencyDisplay != null)
-            {
-                currencyDisplay = securityCompactDTO.currencyDisplay;
-            }
-            currencyDisplay = positionDTO.getNiceCurrency();
-
+            //<editor-fold desc="Date">
             if (tradeDTO.dateTime != null)
             {
                 prettyDate = prettyTime.format(tradeDTO.dateTime);
@@ -280,85 +180,28 @@ public class TradeListItemView extends LinearLayout
                 normalDate = "";
                 prettyDate = "";
             }
+            //</editor-fold>
 
-            THSignedNumber tradeQuantityAfterTrade = THSignedNumber
-                    .builder((double) Math.abs(tradeDTO.quantityAfterTrade))
-                    .withOutSign()
-                    .build();
-            holdingQuantity = resources.getString(
-                    isLastTrade() ? R.string.trade_holding_quantity_verbose : R.string.trade_held_quantity_verbose,
-                    tradeQuantityAfterTrade.toString());
+            pLVisibility = VISIBLE;
 
-            averagePrice = String.format("%s %,.2f", positionDTO.getNiceCurrency(), tradeDTO.averagePriceAfterTradeRefCcy);
+            plHeader = resources.getString(numberToDisplayRefCcy < 0
+                    ? R.string.position_realised_loss_header
+                    : R.string.position_realised_profit_header);
 
-            unrealisedPLVisibility = (isLastTrade() && isClosed != null && !isClosed) ? VISIBLE : GONE;
-
-            if (positionDTO.unrealizedPLRefCcy != null && positionDTO.unrealizedPLRefCcy < 0)
-            {
-                unrealisedHeader = resources.getString(R.string.position_unrealised_loss_header);
-            }
-            else
-            {
-                unrealisedHeader = resources.getString(R.string.position_unrealised_profit_header);
-            }
-
-            if (isLastTrade() && isClosed != null && !isClosed)
-            {
-                unrealisedValue = PositionDTOUtils.getUnrealisedPLSpanned(resources, positionDTO);
-            }
-            else
-            {
-                unrealisedValue = resources.getString(R.string.na);
-            }
-
-            if (tradeDTO.realizedPLAfterTradeRefCcy < 0)
-            {
-                realisedHeader = resources.getString(R.string.position_realised_loss_header);
-            }
-            else
-            {
-                realisedHeader = resources.getString(R.string.position_realised_profit_header);
-            }
-
-            realisedValue = THSignedMoney
-                    .builder(tradeDTO.realizedPLAfterTradeRefCcy)
+            plValue = THSignedMoney.builder(numberToDisplayRefCcy)
                     .withOutSign()
                     .currency(positionDTO.getNiceCurrency())
                     .build()
                     .createSpanned();
-
-            tradeValue = THSignedMoney.builder(tradeDTO.quantity * tradeDTO.unitPriceRefCcy)
-                    .withOutSign()
-                    .currency(getCurrencyDisplay())
-                    .build().toString();
-
-            commentVisibility = tradeDTO.commentText == null ? GONE : VISIBLE;
-            commentText = tradeDTO.commentText;
-        }
-
-        public boolean isLastTrade()
-        {
-            return this.lastTrade;
-        }
-
-        @Nullable private Double getNumberToDisplay()
-        {
-            return numberToDisplay;
-        }
-
-        public String getTradeBoughtText()
-        {
-            return tradeBought;
+            plValueColor = resources.getColor(numberToDisplayRefCcy == 0
+                    ? R.color.black
+                    : numberToDisplayRefCcy > 0
+                            ? R.color.number_up
+                            : R.color.number_down);
         }
 
         @NonNull
-        private String getCurrencyDisplay()
-        {
-            return currencyDisplay;
-        }
-
-        @NonNull
-        protected String getTradeDateText()
+        protected CharSequence getTradeDateText()
         {
             if (isPrettyDate)
             {
@@ -373,56 +216,6 @@ public class TradeListItemView extends LinearLayout
         public void togglePrettyDate()
         {
             isPrettyDate = !isPrettyDate;
-        }
-
-        protected String getHoldingQuantityText()
-        {
-            return holdingQuantity;
-        }
-
-        public String getAveragePrice()
-        {
-            return averagePrice;
-        }
-
-        @ViewVisibilityValue public int getUnrealisedPLVisibility()
-        {
-            return unrealisedPLVisibility;
-        }
-
-        public String getUnrealisedPLValueHeaderText()
-        {
-            return unrealisedHeader;
-        }
-
-        public CharSequence getUnrealisedPLValueText()
-        {
-            return unrealisedValue;
-        }
-
-        public String getRealisedPLValueHeaderText()
-        {
-            return realisedHeader;
-        }
-
-        public CharSequence getRealisedPLValueText()
-        {
-            return realisedValue;
-        }
-
-        protected String getTradeValueText()
-        {
-            return tradeValue;
-        }
-
-        @ViewVisibilityValue public int getCommentSectionVisibility()
-        {
-            return commentVisibility;
-        }
-
-        public String getCommentText()
-        {
-            return commentText;
         }
     }
 }
