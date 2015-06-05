@@ -188,6 +188,11 @@
   protected <fields>;
 }
 
+-keep public class com.tradehero.chinabuild.data.** {
+  public <fields>;
+  protected <fields>;
+}
+
 # Keep constructors that are called by reflection
 -keepclassmembers public class * extends com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO{
   public <init>(...);
