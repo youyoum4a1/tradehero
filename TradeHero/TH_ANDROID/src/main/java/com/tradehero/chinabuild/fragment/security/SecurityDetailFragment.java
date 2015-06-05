@@ -105,6 +105,7 @@ import com.tradehero.th.persistence.trade.TradeListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -236,11 +237,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     TextView tvSecurityPrice;//当前价格
     TextView tvSecurityDetailRate;//涨跌幅
     TextView tvSecurityDetailNum;//涨跌值
-    TextView tvSecurityDetailNumHead;//涨跌值的符号占位
     TextView tvInfo0Value;//最高
     TextView tvInfo1Value;//最低
     TextView tvInfo2Value;//成交量
-    TextView tvInfo3Value;//平均量
 
     LinearLayout llDisscurssOrNews;
     ImageView imgSecurityTLUserHeader;
@@ -587,11 +586,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         tvSecurityPrice = (TextView) tabView0.findViewById(R.id.tvSecurityDetailPrice);
         tvSecurityDetailRate = (TextView) tabView0.findViewById(R.id.tvSecurityDetailRate);
         tvSecurityDetailNum = (TextView) tabView0.findViewById(R.id.tvSecurityDetailNum);
-        tvSecurityDetailNumHead = (TextView) tabView0.findViewById(R.id.tvSecurityDetailNumHead);
         tvInfo0Value = (TextView) tabView0.findViewById(R.id.tvInfo0Value);
         tvInfo1Value = (TextView) tabView0.findViewById(R.id.tvInfo1Value);
         tvInfo2Value = (TextView) tabView0.findViewById(R.id.tvInfo2Value);
-        tvInfo3Value = (TextView) tabView0.findViewById(R.id.tvInfo3Value);
 
         llDisscurssOrNews = (LinearLayout) tabView0.findViewById(R.id.llDisscurssOrNews);
         imgSecurityTLUserHeader = (ImageView) tabView0.findViewById(R.id.imgSecurityTLUserHeader);
@@ -1175,7 +1172,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
                 THSignedNumber roi = THSignedPercentage.builder(securityCompactDTO.risePercent * 100)
                         .withSign()
-                        .signTypeArrow()
+                        .signTypePlusMinusAlways()
                         .build();
 
                 tvSecurityDetailRate.setText(roi.toString());
@@ -1185,15 +1182,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 tvSecurityPrice.setTextColor(getResources().getColor(roi.getColorResId()));
 
                 tvSecurityDetailNum.setText(securityCompactDTO.getPriceDifferent());
-
-                if (securityCompactDTO.getPriceDifferent().startsWith("-") || securityCompactDTO.getPriceDifferent().startsWith("0.00"))
-                {
-                    tvSecurityDetailNumHead.setVisibility(View.GONE);
-                }
-                else
-                {
-                    tvSecurityDetailNumHead.setVisibility(View.INVISIBLE);
-                }
+                tvSecurityDetailNum.setTextColor(getResources().getColor(roi.getColorResId()));
 
                 if (securityCompactDTO.high != null)
                 {
@@ -1212,11 +1201,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 if (securityCompactDTO.volume != null)
                 {
                     tvInfo2Value.setText(NumberDisplayUtils.getString(securityCompactDTO.volume));
-                }
-
-                if (securityCompactDTO.averageDailyVolume != null)
-                {
-                    tvInfo3Value.setText(NumberDisplayUtils.getString(securityCompactDTO.averageDailyVolume));
                 }
             }
         }
