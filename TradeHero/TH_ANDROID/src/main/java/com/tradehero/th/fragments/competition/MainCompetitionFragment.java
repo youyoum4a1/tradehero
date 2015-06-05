@@ -73,7 +73,6 @@ import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
@@ -116,7 +115,6 @@ public class MainCompetitionFragment extends DashboardFragment
     @Inject THIntentFactory thIntentFactory;
     @Inject CompetitionPreseasonCacheRx competitionPreSeasonCacheRx;
     @Inject ProviderServiceWrapper providerServiceWrapper;
-    @Inject Lazy<ProviderTradableSecuritiesHelper> providerTradableSecuritiesHelperLazy;
     @Inject protected CurrentUserId currentUserId;
     @Inject Analytics analytics;
 
@@ -457,7 +455,8 @@ public class MainCompetitionFragment extends DashboardFragment
     {
         Bundle args = new Bundle();
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        providerTradableSecuritiesHelperLazy.get().pushTradableSecuritiesList(args, ownedPortfolioId, providerDTO.associatedPortfolio, providerId);
+        ProviderTradableSecuritiesHelper.pushTradableSecuritiesList(navigator.get(), args, ownedPortfolioId, providerDTO.associatedPortfolio,
+                providerId);
     }
 
     private void displayTradeNowButton()

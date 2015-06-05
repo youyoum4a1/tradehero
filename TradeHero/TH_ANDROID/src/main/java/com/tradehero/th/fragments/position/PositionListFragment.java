@@ -125,7 +125,6 @@ public class PositionListFragment
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject BroadcastUtils broadcastUtils;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject Lazy<ProviderTradableSecuritiesHelper> providerTradableSecuritiesHelper;
 
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
@@ -328,7 +327,8 @@ public class PositionListFragment
         }
         else
         {
-            providerTradableSecuritiesHelper.get().pushTradableSecuritiesList(
+            ProviderTradableSecuritiesHelper.pushTradableSecuritiesList(
+                    navigator.get(),
                     args,
                     ownedPortfolioId,
                     portfolioDTO,

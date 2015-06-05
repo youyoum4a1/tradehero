@@ -8,7 +8,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
-import dagger.Lazy;
 import javax.inject.Inject;
 
 //TODO need refactor by alex
@@ -19,7 +18,6 @@ public class CompetitionLeaderboardPositionListFragment extends TabbedPositionLi
     private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardPositionListFragment.class + ".providerId";
 
     protected ProviderId providerId;
-    @Inject Lazy<ProviderTradableSecuritiesHelper> providerTradableSecuritiesHelperLazy;
 
     public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {
@@ -46,7 +44,7 @@ public class CompetitionLeaderboardPositionListFragment extends TabbedPositionLi
     {
         Bundle args = new Bundle();
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        providerTradableSecuritiesHelperLazy.get().pushTradableSecuritiesList(args, ownedPortfolioId, portfolioDTO, providerId);
+        ProviderTradableSecuritiesHelper.pushTradableSecuritiesList(navigator.get(), args, ownedPortfolioId, portfolioDTO, providerId);
     }
 
     @VisibleForTesting public ProviderId getProviderId()
