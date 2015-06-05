@@ -191,6 +191,63 @@
         </RelativeLayout>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/linearlayout_security_detail_notice"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:background="#e1e5e6"
+        android:layout_height="18dp">
+        <ImageView
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:scaleType="centerInside"
+            android:src="@drawable/security_detail_notice"/>
+        <TextView
+            android:layout_marginLeft="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#6c6c6c"
+            android:text="持仓成本"/>
+        <TextView
+            android:id="@+id/textview_security_detail_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#e2494b"
+            android:text="$100"/>
+
+        <TextView
+            android:layout_marginLeft="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#6c6c6c"
+            android:text="盈亏"/>
+        <TextView
+            android:id="@+id/textview_security_detail_benefit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#e2494b"
+            android:text="10000"/>
+        <TextView
+            android:layout_marginLeft="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#6c6c6c"
+            android:text="盈亏比"/>
+        <TextView
+            android:id="@+id/textview_security_detail_benefit_percentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#e2494b"
+            android:text="66%"/>
+    </LinearLayout>
 
 </LinearLayout>
 
