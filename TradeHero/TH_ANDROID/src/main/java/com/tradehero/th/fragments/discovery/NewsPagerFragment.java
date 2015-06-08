@@ -21,7 +21,6 @@ import com.tradehero.th.R;
 
 public final class NewsPagerFragment extends Fragment
 {
-    @InjectView(R.id.news_pager) ViewPager mViewPager;
     @InjectView(R.id.spinner_news) Spinner newsSpinner;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -35,7 +34,6 @@ public final class NewsPagerFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
-        mViewPager.setAdapter(new DiscoveryNewsFragmentAdapter(this.getChildFragmentManager()));
         newsSpinner.setAdapter(new NewsSpinnerAdapter(getActivity(), NewsType.values()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -55,7 +53,8 @@ public final class NewsPagerFragment extends Fragment
     @OnItemSelected(value = R.id.spinner_news, callback = OnItemSelected.Callback.ITEM_SELECTED)
     public void onNewsItemSelected(AdapterView<?> parent, View view, int position, long id)
     {
-        mViewPager.setCurrentItem(position);
+        Fragment f = NewsHeadlineFragment.newInstance(NewsType.values()[position]);
+        getChildFragmentManager().beginTransaction().replace(R.id.news_container, f).addToBackStack(null).commit();
     }
 
     class NewsSpinnerAdapter extends ArrayAdapter<NewsType>
@@ -85,30 +84,6 @@ public final class NewsPagerFragment extends Fragment
                 view.setVisibility(View.GONE);
             }
             return rootView;
-        }
-    }
-
-    private class DiscoveryNewsFragmentAdapter extends FragmentPagerAdapter
-    {
-        public DiscoveryNewsFragmentAdapter(FragmentManager fm)
-        {
-            super(fm);
-        }
-
-        @Override public Fragment getItem(int position)
-        {
-            return NewsHeadlineFragment.newInstance(NewsType.values()[position]);
-        }
-
-        @Override public int getCount()
-        {
-            return NewsType.values().length;
-        }
-
-        @Override public CharSequence getPageTitle(int position)
-        {
-            NewsType newsType = NewsType.values()[position];
-            return getString(newsType.titleResourceId);
         }
     }
 }
