@@ -437,22 +437,12 @@ public class PositionPartialTopView extends LinearLayout
             }
             if (positionDTO.shares == null)
             {
-                shareCountText = resources.getString(R.string.na);
+                shareCountText = resources.getString(R.string.position_share_count_qty_prefix, resources.getString(R.string.na));
             }
             else
             {
-                final int shareHeader;
-                if (securityCompactDTO instanceof FxSecurityCompactDTO)
-                {
-                    shareHeader = R.plurals.position_unit_count;
-
-                }
-                else
-                {
-                    shareHeader = R.plurals.position_share_count;
-                }
                 shareCountText = THSignedNumber.builder(Math.abs(positionDTO.shares))
-                        .format(resources.getQuantityString(shareHeader, positionDTO.shares))
+                        .format(resources.getString(R.string.position_share_count_qty_prefix))
                         .build()
                         .createSpanned();
             }
@@ -623,21 +613,26 @@ public class PositionPartialTopView extends LinearLayout
             lastAmountHeaderVisibility = isOpen == null || isOpen
                     ? GONE
                     : VISIBLE;
+            String lastAmountFormat = resources.getString(R.string.position_last_amount_header);
             if (isClosed != null && isClosed && realisedPLRefCcy != null)
             {
                 lastAmount = THSignedMoney.builder(realisedPLRefCcy)
+                        .relevantDigitCount(3)
                         .withSign()
                         .signTypeMinusOnly()
                         .currency(positionDTO.getNiceCurrency())
+                        .format(lastAmountFormat)
                         .build()
                         .createSpanned();
             }
             else if (isClosed != null && !isClosed)
             {
                 lastAmount = THSignedMoney.builder(positionDTO.marketValueRefCcy)
+                        .relevantDigitCount(3)
                         .withSign()
                         .signTypeMinusOnly()
                         .currency(positionDTO.getNiceCurrency())
+                        .format(lastAmountFormat)
                         .build()
                         .createSpanned();
             }
