@@ -189,25 +189,49 @@ android {
       }
     }
 
-    googleplayNoPushDebug {
+    googleplayGameNoPushDebug {
       java {
         srcDir 'src/googleplayDebug/java'
       }
     }
 
-    googleplayAirshipDebug {
+    googleplayLiveNoPushDebug {
       java {
         srcDir 'src/googleplayDebug/java'
       }
     }
 
-    googleplayBaiduDebug {
+    googleplayGameAirshipDebug {
       java {
         srcDir 'src/googleplayDebug/java'
       }
     }
 
-    googleplayNoPushRelease {
+    googleplayLiveAirshipDebug {
+      java {
+        srcDir 'src/googleplayDebug/java'
+      }
+    }
+
+    googleplayGameBaiduDebug {
+      java {
+        srcDir 'src/googleplayDebug/java'
+      }
+    }
+
+    googleplayLiveBaiduDebug {
+      java {
+        srcDir 'src/googleplayDebug/java'
+      }
+    }
+
+    googleplayGameNoPushRelease {
+      java {
+        srcDir 'src/googleplayRelease/java'
+      }
+    }
+
+    googleplayLiveNoPushRelease {
       java {
         srcDir 'src/googleplayRelease/java'
       }
@@ -219,7 +243,13 @@ android {
       }
     }
 
-    googleplayBaiduRelease {
+    googleplayGameBaiduRelease {
+      java {
+        srcDir 'src/googleplayRelease/java'
+      }
+    }
+
+    googleplayLiveBaiduRelease {
       java {
         srcDir 'src/googleplayRelease/java'
       }
@@ -270,13 +300,19 @@ android {
       }
     }
 
-    samsungNoPushDebug {
+    samsungGameNoPushDebug {
       java {
         srcDir 'src/samsungDebug/java'
       }
     }
 
-    samsungAirshipDebug {
+    samsungLiveNoPushDebug {
+      java {
+        srcDir 'src/samsungDebug/java'
+      }
+    }
+
+    samsungGameAirshipDebug {
       manifest {
         srcFile 'src/googleplayAirship/java' // Reuse until there is something special for Samsung
       }
@@ -285,19 +321,40 @@ android {
       }
     }
 
-    samsungBaiduDebug {
+    samsungLiveAirshipDebug {
+      manifest {
+        srcFile 'src/googleplayAirship/java' // Reuse until there is something special for Samsung
+      }
       java {
         srcDir 'src/samsungDebug/java'
       }
     }
 
-    samsungNoPushRelease {
+    samsungGameBaiduDebug {
+      java {
+        srcDir 'src/samsungDebug/java'
+      }
+    }
+
+    samsungLiveBaiduDebug {
+      java {
+        srcDir 'src/samsungDebug/java'
+      }
+    }
+
+    samsungGameNoPushRelease {
       java {
         srcDir 'src/samsungRelease/java'
       }
     }
 
-    samsungAirshipRelease {
+    samsungLiveNoPushRelease {
+      java {
+        srcDir 'src/samsungRelease/java'
+      }
+    }
+
+    samsungGameAirshipRelease {
       manifest {
         srcFile 'src/googleplayAirship/java' // Reuse until there is something special for Samsung
       }
@@ -306,7 +363,22 @@ android {
       }
     }
 
-    samsungBaiduRelease {
+    samsungLiveAirshipRelease {
+      manifest {
+        srcFile 'src/googleplayAirship/java' // Reuse until there is something special for Samsung
+      }
+      java {
+        srcDir 'src/samsungRelease/java'
+      }
+    }
+
+    samsungGameBaiduRelease {
+      java {
+        srcDir 'src/samsungRelease/java'
+      }
+    }
+
+    samsungLiveBaiduRelease {
       java {
         srcDir 'src/samsungRelease/java'
       }
@@ -318,37 +390,73 @@ android {
       }
     }
 
-    amazonNoPushDebug {
+    amazonGameNoPushDebug {
       java {
         srcDir 'src/amazonDebug/java'
       }
     }
 
-    amazonAirshipDebug {
+    amazonLiveNoPushDebug {
       java {
         srcDir 'src/amazonDebug/java'
       }
     }
 
-    amazonBaiduDebug {
+    amazonGameAirshipDebug {
       java {
         srcDir 'src/amazonDebug/java'
       }
     }
 
-    amazonNoPushRelease {
+    amazonLiveAirshipDebug {
+      java {
+        srcDir 'src/amazonDebug/java'
+      }
+    }
+
+    amazonGameBaiduDebug {
+      java {
+        srcDir 'src/amazonDebug/java'
+      }
+    }
+
+    amazonLiveBaiduDebug {
+      java {
+        srcDir 'src/amazonDebug/java'
+      }
+    }
+
+    amazonGameNoPushRelease {
       java {
         srcDir 'src/amazonRelease/java'
       }
     }
 
-    amazonAirshipRelease {
+    amazonLiveNoPushRelease {
       java {
         srcDir 'src/amazonRelease/java'
       }
     }
 
-    amazonBaiduRelease {
+    amazonGameAirshipRelease {
+      java {
+        srcDir 'src/amazonRelease/java'
+      }
+    }
+
+    amazonLiveAirshipRelease {
+      java {
+        srcDir 'src/amazonRelease/java'
+      }
+    }
+
+    amazonGameBaiduRelease {
+      java {
+        srcDir 'src/amazonRelease/java'
+      }
+    }
+
+    amazonLiveBaiduRelease {
       java {
         srcDir 'src/amazonRelease/java'
       }
