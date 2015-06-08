@@ -52,6 +52,8 @@
   <dimen name="size_24">192dp</dimen>
   <dimen name="size_25">200dp</dimen>
 
+  <dimen name="max_drawer_size">296dp</dimen>
+
 
   <dimen name="activity_horizontal_margin">@dimen/size_2</dimen>
   <dimen name="activity_vertical_margin">@dimen/size_2</dimen>

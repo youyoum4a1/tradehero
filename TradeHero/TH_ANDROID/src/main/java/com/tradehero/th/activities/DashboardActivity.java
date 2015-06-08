@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +16,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
+import android.util.TypedValue;
+import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +70,7 @@ import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.ui.LeftDrawerMenuItemClickListener;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.metrics.ForAnalytics;
 import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
@@ -128,6 +132,7 @@ public class DashboardActivity extends BaseActivity
     @InjectView(R.id.my_toolbar) Toolbar toolbar;
     @InjectView(R.id.dashboard_drawer_layout) DrawerLayout drawerLayout;
     @InjectView(R.id.drawer_content_container) ViewGroup drawerContents;
+    @InjectView(R.id.left_drawer) ViewGroup leftDrawerContainer;
 
     private Subscription notificationFetchSubscription;
 
@@ -286,6 +291,25 @@ public class DashboardActivity extends BaseActivity
                         new TimberOnErrorAction("Failed to load drawer")));
 
         drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.tradehero_blue_status_bar));
+
+        int width = DeviceUtil.getScreenWidth(this);
+        Integer actionBarHeight = getActionBarHeight();
+        if (actionBarHeight != null)
+        {
+            int maxWidth = getResources().getDimensionPixelSize(R.dimen.max_drawer_size);
+            int drawerWidth = width - actionBarHeight;
+            leftDrawerContainer.getLayoutParams().width = drawerWidth > maxWidth ? maxWidth : drawerWidth;
+        }
+    }
+
+    @Nullable private Integer getActionBarHeight()
+    {
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(R.attr.actionBarSize, tv, true))
+        {
+            return TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+        return null;
     }
 
     private void initBroadcastReceivers()
