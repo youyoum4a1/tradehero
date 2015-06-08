@@ -318,7 +318,7 @@
     <item name="android:listSelector">?attr/selectableItemBackground</item>
     <item name="android:dropDownSelector">?attr/selectableItemBackground</item>
     <item name="android:background">?attr/selectableItemBackground</item>
-    <item name="android:theme">@style/ThemeOverlay.AppCompat.Light</item>
+    <item name="android:popupBackground">@drawable/abc_popup_background_mtrl_mult</item>
   </style>
 
   <style name="TH.Button.Timeline" parent="TH.Button">

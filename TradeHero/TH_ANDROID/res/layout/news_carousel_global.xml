@@ -3,6 +3,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/news_global"
     >
 
   <TextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,7 +14,6 @@
       android:paddingLeft="@dimen/size_2"
       android:text="@string/global_news"
       style="@style/TH.Title.Inverse"
-      android:background="@color/news_global"
       />
 
   <ImageView
