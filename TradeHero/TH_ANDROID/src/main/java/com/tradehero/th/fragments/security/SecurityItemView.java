@@ -224,9 +224,9 @@ public class SecurityItemView extends RelativeLayout
                         .signTypeArrow()
                         .withValueColor(R.color.text_primary)
                         .withCurrencyColor(R.color.text_primary)
-                        .withSignValue(securityCompactDTO.pc50DMA)
                         .currency(securityCompactDTO.currencyDisplay)
                         .withDefaultColor()
+                        .withOutSign()
                         .boldValue()
                         .build()
                         .into(lastPrice);
@@ -298,7 +298,7 @@ public class SecurityItemView extends RelativeLayout
                         .relevantDigitCount(3)
                         .withDefaultColor()
                         .defaultColorForBackground()
-                        .signTypePlusMinusAlways()
+                        .signTypeArrow()
                         .build()
                         .into(stockRoi);
             }
