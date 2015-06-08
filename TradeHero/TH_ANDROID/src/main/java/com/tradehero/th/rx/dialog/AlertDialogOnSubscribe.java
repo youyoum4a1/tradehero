@@ -3,7 +3,6 @@ package com.tradehero.th.rx.dialog;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.internal.Assertions;
@@ -22,36 +21,7 @@ class AlertDialogOnSubscribe implements Observable.OnSubscribe<OnDialogClickEven
     @Override public void call(final Subscriber<? super OnDialogClickEvent> subscriber)
     {
         Assertions.assertUiThread();
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(builder.activityContext)
-                .setCancelable(builder.cancelable);
-        if (builder.iconRes != null)
-        {
-            dialogBuilder.setIcon(R.drawable.th_app_logo);
-        }
-        else if (builder.icon != null)
-        {
-            dialogBuilder.setIcon(builder.icon);
-        }
-        if (builder.titleRes != null)
-        {
-            dialogBuilder.setTitle(builder.titleRes);
-        }
-        else if (builder.title != null)
-        {
-            dialogBuilder.setTitle(builder.title);
-        }
-        if (builder.messageRes != null)
-        {
-            dialogBuilder.setMessage(builder.messageRes);
-        }
-        else if (builder.message != null)
-        {
-            dialogBuilder.setMessage(builder.message);
-        }
-        if (builder.view != null)
-        {
-            dialogBuilder.setView(builder.view);
-        }
+        AlertDialog.Builder dialogBuilder = builder.dialogBuilder;
 
         DialogInterface.OnClickListener passingOnListener = new DialogInterface.OnClickListener()
         {

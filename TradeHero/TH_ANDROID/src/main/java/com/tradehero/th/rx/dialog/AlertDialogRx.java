@@ -1,5 +1,6 @@
 package com.tradehero.th.rx.dialog;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
@@ -8,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.ListAdapter;
+import com.tradehero.th.R;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -20,14 +22,6 @@ public class AlertDialogRx
 
     public static class Builder
     {
-        boolean cancelable;
-        @Nullable @DrawableRes Integer iconRes;
-        @Nullable Drawable icon;
-        @Nullable @StringRes Integer titleRes;
-        @Nullable String title;
-        @Nullable @StringRes Integer messageRes;
-        @Nullable String message;
-        @Nullable View view;
         @Nullable CharSequence positiveButton;
         @Nullable @StringRes Integer positiveButtonRes;
         @Nullable CharSequence negativeButton;
@@ -38,60 +32,66 @@ public class AlertDialogRx
         @Nullable ListAdapter singleChoiceAdapter;
         int singleChoiceCheckedItem;
 
-        @NonNull final Context activityContext;
+        @NonNull final AlertDialog.Builder dialogBuilder;
 
         //<editor-fold desc="Constructors">
         public Builder(@NonNull Context activityContext)
         {
-            this.activityContext = activityContext;
+            this.dialogBuilder = new AlertDialog.Builder(activityContext)
+                    .setIcon(R.drawable.th_app_logo);
+        }
+
+        public Builder(@NonNull AlertDialog.Builder dialogBuilder)
+        {
+            this.dialogBuilder = dialogBuilder;
         }
         //</editor-fold>
 
         @NonNull public Builder setCancelable(boolean cancelable)
         {
-            this.cancelable = cancelable;
+            dialogBuilder.setCancelable(cancelable);
             return this;
         }
 
         @NonNull public Builder setIcon(@DrawableRes int iconRes)
         {
-            this.iconRes = iconRes;
+            dialogBuilder.setIcon(iconRes);
             return this;
         }
 
         @NonNull public Builder setIcon(@Nullable Drawable icon)
         {
-            this.icon = icon;
+            dialogBuilder.setIcon(icon);
             return this;
         }
 
         @NonNull public Builder setTitle(@StringRes int titleRes)
         {
-            this.titleRes = titleRes;
+            dialogBuilder.setTitle(titleRes);
             return this;
         }
 
         @NonNull public Builder setTitle(@Nullable String title)
         {
-            this.title = title;
+            dialogBuilder.setTitle(title);
             return this;
         }
 
         @NonNull public Builder setMessage(@StringRes int messageRes)
         {
-            this.messageRes = messageRes;
+            dialogBuilder.setMessage(messageRes);
             return this;
         }
 
         @NonNull public Builder setMessage(@Nullable String message)
         {
-            this.message = message;
+            dialogBuilder.setMessage(message);
             return this;
         }
 
         @NonNull public Builder setView(@Nullable View view)
         {
-            this.view = view;
+            dialogBuilder.setView(view);
             return this;
         }
 
