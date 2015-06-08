@@ -11,6 +11,7 @@ import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.models.number.THSignedPercentage;
 import rx.Observable;
 
 /**
@@ -22,6 +23,7 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
 
     @InjectView(R.id.header_portfolio_total_value) protected TextView totalValueTextView;
     @InjectView(R.id.header_portfolio_cash_value) @Optional protected  TextView cashValueTextView;
+    @InjectView(R.id.roi_value) @Optional protected TextView roiTextView;
 
     //<editor-fold desc="Constructors">
     public CurrentUserPortfolioHeaderView(Context context)
@@ -57,6 +59,20 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
 
         displayTotalValueTextView();
         displayCashValueTextView();
+
+        if (roiTextView != null)
+        {
+            if (portfolioCompactDTO != null && portfolioCompactDTO.roiSinceInception != null)
+            {
+                THSignedPercentage.builder(portfolioCompactDTO.roiSinceInception * 100)
+                        .relevantDigitCount(3)
+                        .withDefaultColor()
+                        .withSign()
+                        .signTypeArrow()
+                        .build()
+                        .into(roiTextView);
+            }
+        }
     }
 
     @Override public void linkWith(UserProfileDTO userProfileDTO)
