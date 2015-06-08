@@ -12,6 +12,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.number.THSignedPercentage;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import rx.Observable;
 
 /**
@@ -22,8 +24,9 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
     protected PortfolioCompactDTO portfolioCompactDTO;
 
     @InjectView(R.id.header_portfolio_total_value) protected TextView totalValueTextView;
-    @InjectView(R.id.header_portfolio_cash_value) @Optional protected  TextView cashValueTextView;
+    @InjectView(R.id.header_portfolio_cash_value) @Optional protected TextView cashValueTextView;
     @InjectView(R.id.roi_value) @Optional protected TextView roiTextView;
+    @InjectView(R.id.last_updated_date) @Optional protected TextView lastUpdatedDate;
 
     //<editor-fold desc="Constructors">
     public CurrentUserPortfolioHeaderView(Context context)
@@ -71,6 +74,17 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
                         .signTypeArrow()
                         .build()
                         .into(roiTextView);
+            }
+        }
+
+        if (lastUpdatedDate != null)
+        {
+            if (portfolioCompactDTO != null && portfolioCompactDTO.markingAsOfUtc != null)
+            {
+                DateFormat sdf = SimpleDateFormat.getDateTimeInstance();
+                lastUpdatedDate.setText(getContext().getString(
+                        R.string.watchlist_marking_date,
+                        sdf.format(portfolioCompactDTO.markingAsOfUtc)));
             }
         }
     }
