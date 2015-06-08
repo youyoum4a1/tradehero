@@ -51,11 +51,11 @@ public class PositionPartialTopView extends LinearLayout
     @InjectView(R.id.flags_container) FxFlagContainer flagsContainer;
     @InjectView(R.id.stock_symbol) @Optional TextView stockSymbol;
     @InjectView(R.id.company_name) @Optional TextView companyName;
+    @InjectView(R.id.last_price_and_rise) @Optional TextView lastPriceAndRise;
     @InjectView(R.id.share_count_row) @Optional View shareCountRow;
     @InjectView(R.id.share_count_header) @Optional TextView shareCountHeader;
     @InjectView(R.id.share_count_text) @Optional TextView shareCountText;
     @InjectView(R.id.share_count) @Optional TextView shareCount;
-    @InjectView(R.id.last_price_container) @Optional View lastPriceContainer;
     @InjectView(R.id.hint_forward) @Optional View forwardCaret;
 
     @InjectView(R.id.gain_loss_header) @Optional TextView gainLossHeader;
@@ -64,6 +64,7 @@ public class PositionPartialTopView extends LinearLayout
     @InjectView(R.id.total_invested_value) @Optional TextView totalInvested;
     @InjectView(R.id.position_percentage) @Optional TextView positionPercent;
     @InjectView(R.id.position_unrealised_pl) @Optional TextView positionUnrealisedPL;
+    @InjectView(R.id.last_amount_container) @Optional View lastAmountContainer;
     @InjectView(R.id.position_last_amount_header) @Optional TextView positionLastAmountHeader;
     @InjectView(R.id.position_last_amount) @Optional TextView positionLastAmount;
     @InjectView(R.id.btn_position_close) @Optional TextView btnClose;
@@ -218,6 +219,11 @@ public class PositionPartialTopView extends LinearLayout
             companyName.setText(dto.companyName);
         }
 
+        if (lastPriceAndRise != null)
+        {
+            lastPriceAndRise.setText(dto.lastPriceAndRise);
+        }
+
         if (shareCountRow != null)
         {
             shareCountRow.setVisibility(dto.shareCountRowVisibility);
@@ -261,11 +267,6 @@ public class PositionPartialTopView extends LinearLayout
             totalInvested.setText(dto.totalInvested);
         }
 
-        if (lastPriceContainer != null)
-        {
-            lastPriceContainer.setVisibility(dto.lastPriceContainerVisibility);
-        }
-
         if (positionPercent != null)
         {
             positionPercent.setVisibility(dto.positionPercentVisibility);
@@ -276,6 +277,11 @@ public class PositionPartialTopView extends LinearLayout
         {
             positionUnrealisedPL.setVisibility(dto.unrealisedPLVisibility);
             positionUnrealisedPL.setText(dto.unrealisedPL);
+        }
+
+        if (lastAmountContainer != null)
+        {
+            lastAmountContainer.setVisibility(dto.lastAmountContainerVisibility);
         }
 
         if (positionLastAmountHeader != null)
@@ -311,12 +317,13 @@ public class PositionPartialTopView extends LinearLayout
         @ViewVisibilityValue public final int btnCloseVisibility;
         @ViewVisibilityValue public final int companyNameVisibility;
         @NonNull public final String companyName;
+        @NonNull public final CharSequence lastPriceAndRise;
         @ViewVisibilityValue public final int shareCountRowVisibility;
         @NonNull public final CharSequence shareCountHeader;
         @ViewVisibilityValue public final int shareCountVisibility;
         @NonNull public final CharSequence shareCount;
         @NonNull public final CharSequence shareCountText;
-        @ViewVisibilityValue public final int lastPriceContainerVisibility;
+        @ViewVisibilityValue public final int lastAmountContainerVisibility;
         @ViewVisibilityValue public final int positionPercentVisibility;
         @NonNull public final CharSequence positionPercent;
         @DrawableRes public final int gainIndicator;
@@ -386,39 +393,86 @@ public class PositionPartialTopView extends LinearLayout
             }
             //</editor-fold>
 
+            //<editor-fold desc="Last Price and Rise">
+            final CharSequence lastPrice;
+            if (securityCompactDTO.lastPrice != null)
+            {
+                lastPrice = THSignedMoney.builder(securityCompactDTO.lastPrice)
+                        .relevantDigitCount(3)
+                        .currency(securityCompactDTO.currencyDisplay)
+                         .build()
+                         .createSpanned();
+            }
+            else
+            {
+                lastPrice = resources.getString(R.string.na);
+            }
+            final String formatter = lastPrice + " (%s)";
+            if (securityCompactDTO.risePercent != null)
+            {
+                lastPriceAndRise = THSignedPercentage.builder(securityCompactDTO.risePercent * 100)
+                        .relevantDigitCount(3)
+                        .signTypeArrow()
+                        .withSign()
+                        .withDefaultColor()
+                        .format(formatter)
+                        .build()
+                        .createSpanned();
+            }
+            else
+            {
+                lastPriceAndRise = lastPrice;
+            }
+            //</editor-fold>
+
             //<editor-fold desc="Share Count">
+            if ((positionDTO.positionStatus == PositionStatus.CLOSED
+                    || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED))
+            {
+                shareCountVisibility = GONE;
+            }
+            else
+            {
+                shareCountVisibility = VISIBLE;
+            }
+            if (positionDTO.shares == null)
+            {
+                shareCountText = resources.getString(R.string.na);
+            }
+            else
+            {
+                final int shareHeader;
+                if (securityCompactDTO instanceof FxSecurityCompactDTO)
+                {
+                    shareHeader = R.plurals.position_unit_count;
+
+                }
+                else
+                {
+                    shareHeader = R.plurals.position_share_count;
+                }
+                shareCountText = THSignedNumber.builder(Math.abs(positionDTO.shares))
+                        .format(resources.getQuantityString(shareHeader, positionDTO.shares))
+                        .build()
+                        .createSpanned();
+            }
+
             if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
                 shareCountHeader = resources.getString(R.string.position_share_count_header_fx);
-                if ((positionDTO.positionStatus == PositionStatus.CLOSED
-                        || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED))
+                if (positionDTO.positionStatus == PositionStatus.CLOSED
+                        || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED)
                 {
-                    shareCountVisibility = GONE;
                     btnCloseVisibility = GONE;
                 }
                 else
                 {
-                    shareCountVisibility = VISIBLE;
                     btnCloseVisibility = VISIBLE;
-                }
-                if (positionDTO.shares == null)
-                {
-                    shareCountText = resources.getString(R.string.na);
-                }
-                else
-                {
-                    String unitFormat = resources.getQuantityString(R.plurals.position_unit_count, positionDTO.shares);
-                    shareCountText = THSignedNumber.builder(Math.abs(positionDTO.shares))
-                            .format(unitFormat)
-                            .build()
-                            .createSpanned();
                 }
             }
             else
             {
                 shareCountHeader = resources.getString(R.string.position_share_count_header);
-                shareCountVisibility = GONE;
-                shareCountText = "";
                 btnCloseVisibility = GONE;
             }
 
@@ -437,7 +491,7 @@ public class PositionPartialTopView extends LinearLayout
             }
             //</editor-fold>
 
-            lastPriceContainerVisibility = securityCompactDTO instanceof FxSecurityCompactDTO ? GONE : VISIBLE;
+            lastAmountContainerVisibility = securityCompactDTO instanceof FxSecurityCompactDTO ? GONE : VISIBLE;
 
             final Double realisedPLRefCcy = positionDTO.realizedPLRefCcy;
             final Double unrealisedPLRefCcy = positionDTO.unrealizedPLRefCcy;
@@ -474,7 +528,8 @@ public class PositionPartialTopView extends LinearLayout
                 positionPercent = gainPercent == null
                         ? na
                         : THSignedPercentage.builder(gainPercent * 100.0)
-                                .signTypePlusMinusAlways()
+                                .signTypeArrow()
+                                .withSign()
                                 .withDefaultColor()
                                 .relevantDigitCount(3)
                                 .build()

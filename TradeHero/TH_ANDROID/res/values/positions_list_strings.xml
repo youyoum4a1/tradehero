@@ -30,6 +30,10 @@
     <item quantity="one">%1$s unit</item>
     <item quantity="other">%1$s units</item>
   </plurals>
+  <plurals name="position_share_count">
+    <item quantity="one">%1$s share</item>
+    <item quantity="other">%1$s shares</item>
+  </plurals>
   <string name="position_share_count_header">Shares:</string>
   <string name="position_share_count_header_fx">Units:</string>
   <string name="position_force_closed">Force Closed</string>
