@@ -30,7 +30,6 @@
           android:scrollbars="vertical"
           android:scrollbarStyle="outsideOverlay"
           android:background="@null"
-          android:paddingBottom="@dimen/dashboard_tabhost_height"
           />
   </ViewSwitcher>
 

@@ -19,7 +19,6 @@
       android:id="@android:id/list"
       android:layout_height="wrap_content"
       android:layout_width="match_parent"
-      android:paddingBottom="@dimen/dashboard_tabhost_height"
       android:dividerHeight="@dimen/margin_xsmall"
       android:divider="@color/transparent"
       android:clipToPadding="false"
