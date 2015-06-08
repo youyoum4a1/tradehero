@@ -313,9 +313,12 @@
   </style>
 
   <style name="TH.Spinner"
-      parent="android:Widget.Holo.Light.Spinner">
-    <item name="android:background">@drawable/tradehero_spinner_background_holo_light</item>
+      parent="Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
     <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
+    <item name="android:listSelector">?attr/selectableItemBackground</item>
+    <item name="android:dropDownSelector">?attr/selectableItemBackground</item>
+    <item name="android:background">?attr/selectableItemBackground</item>
+    <item name="android:theme">@style/ThemeOverlay.AppCompat.Light</item>
   </style>
 
   <style name="TH.Button.Timeline" parent="TH.Button">
