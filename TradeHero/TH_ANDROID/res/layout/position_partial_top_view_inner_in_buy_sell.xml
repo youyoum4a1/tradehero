@@ -2,7 +2,7 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="@layout/position_top_view_3_1"
+    tools:showIn="@layout/position_top_view_in_buy_sell"
     >
 
   <ImageView
@@ -140,6 +140,7 @@
         android:layout_marginBottom="4dp"
         style="@style/TH.FX_CLOSE"
         android:text="@string/security_close"
+        tools:visibility="gone"
         />
 
   </RelativeLayout>
