@@ -10,6 +10,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -19,6 +20,8 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -30,6 +33,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @InjectView(R.id.header_portfolio_username) TextView usernameTextView;
     @InjectView(R.id.header_portfolio_following_image) ImageView followingImageView;
     @InjectView(R.id.follow_button) TextView followButton;
+    @InjectView(R.id.last_updated_date) @Optional protected TextView lastUpdatedDate;
 
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userCache;
@@ -119,7 +123,21 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     @Override public void linkWith(PortfolioCompactDTO portfolioCompactDTO)
     {
-        // Nothing to do
+        if (lastUpdatedDate != null)
+        {
+            if (portfolioCompactDTO != null && portfolioCompactDTO.markingAsOfUtc != null)
+            {
+                DateFormat sdf = SimpleDateFormat.getDateTimeInstance();
+                lastUpdatedDate.setText(getContext().getString(
+                        R.string.watchlist_marking_date,
+                        sdf.format(portfolioCompactDTO.markingAsOfUtc)));
+                lastUpdatedDate.setVisibility(VISIBLE);
+            }
+            else
+            {
+                lastUpdatedDate.setVisibility(GONE);
+            }
+        }
     }
 
     private void configureUserViews()

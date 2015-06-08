@@ -3,7 +3,6 @@
 <com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/portfolio_header_background_color"
@@ -30,7 +29,9 @@
         android:layout_height="@dimen/medium_image_w_h"
         android:background="@drawable/layout_oval"
         android:src="@drawable/default_image"
-        android:contentDescription="@null"/>
+        android:contentDescription="@null"
+        tools:src="@drawable/superman_facebook"
+        />
 
     <TextView
         android:id="@+id/header_portfolio_username"
@@ -55,6 +56,7 @@
       android:layout_alignParentRight="true"
       android:layout_centerVertical="true"
       >
+
     <ImageView
         android:id="@+id/header_portfolio_following_image"
         android:layout_width="match_parent"
@@ -69,5 +71,17 @@
     <include layout="@layout/follow_button_merge"/>
 
   </RelativeLayout>
+
+  <TextView
+      android:id="@+id/last_updated_date"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingTop="@dimen/margin_xsmall"
+      android:layout_below="@+id/portfolio_person_container"
+      android:gravity="center"
+      tools:text="Last Updated: 8 Jun 2015 12:14"
+      android:ellipsize="start"
+      style="@style/TH.Caption"
+      />
 
 </com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView>

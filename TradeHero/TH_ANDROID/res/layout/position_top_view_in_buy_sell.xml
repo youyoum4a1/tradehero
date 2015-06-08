@@ -8,6 +8,6 @@
     android:gravity="center_vertical"
     >
 
-    <include layout="@layout/position_partial_top_view_inner_3_1"/>
+    <include layout="@layout/position_partial_top_view_inner_in_buy_sell"/>
 
 </com.tradehero.th.fragments.position.partial.PositionPartialTopView>

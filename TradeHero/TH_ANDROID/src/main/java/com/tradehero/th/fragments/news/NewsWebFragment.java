@@ -317,19 +317,19 @@ public class NewsWebFragment extends WebViewFragment
             latestPrice.setText(formatLastPrice(dto));
             if (dto.risePercent != null)
             {
-                double roi = dto.risePercent;
+                double risePercent = dto.risePercent;
                 THSignedPercentage
-                        .builder(roi * 100)
+                        .builder(risePercent * 100)
                         .relevantDigitCount(3)
                         .signTypePlusMinusAlways()
                         .build()
                         .into(riseRate);
                 riseRate.setTextColor(getResources().getColor(R.color.text_primary_inverse));
-                if (roi > 0)
+                if (risePercent > 0)
                 {
                     riseRate.setBackgroundResource(R.drawable.round_label_up);
                 }
-                else if (roi < 0)
+                else if (risePercent < 0)
                 {
                     riseRate.setBackgroundResource(R.drawable.round_label_down);
                 }
