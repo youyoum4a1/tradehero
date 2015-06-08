@@ -85,6 +85,11 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
                 lastUpdatedDate.setText(getContext().getString(
                         R.string.watchlist_marking_date,
                         sdf.format(portfolioCompactDTO.markingAsOfUtc)));
+                lastUpdatedDate.setVisibility(VISIBLE);
+            }
+            else
+            {
+                lastUpdatedDate.setVisibility(GONE);
             }
         }
     }
