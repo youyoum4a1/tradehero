@@ -16,6 +16,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.BaseActivity;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.inject.Provider;
@@ -81,6 +82,18 @@ public class THRouter extends Router
                 Timber.e(ex, "No route for %s when context is %s", url, context.getClass().getName());
             }
         }
+    }
+
+    @Override protected RouterParams paramsForUrl(String url)
+    {
+        if (routes.containsKey(url)) // This is a bit hacky
+        {
+            RouterParams params = new RouterParams();
+            params.openParams = new HashMap<>();
+            params.routerOptions = routes.get(url);
+            return params;
+        }
+        return super.paramsForUrl(url);
     }
 
     @Override public Router registerRoutes(Class<?>... targets)

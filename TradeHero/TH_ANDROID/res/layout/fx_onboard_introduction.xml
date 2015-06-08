@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
   <com.tradehero.th.fragments.fxonboard.IntroductionView
       android:layout_width="match_parent"
@@ -37,9 +40,12 @@
 
       <GridView
           android:id="@+id/introduction_videos_grid"
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="@dimen/size_21"
+          android:layout_centerHorizontal="true"
           android:listSelector="@drawable/basic_transparent_selector"
+          android:numColumns="2"
+          tools:listitem="@layout/video_view"
           />
 
       <ProgressBar
@@ -48,6 +54,7 @@
           android:layout_height="wrap_content"
           android:layout_centerInParent="true"
           />
+
     </RelativeLayout>
 
     <TextView
@@ -58,5 +65,7 @@
         android:text="@string/next"
         style="@style/TH.FxOnBoardDialog.NextButton"
         />
+
   </com.tradehero.th.fragments.fxonboard.IntroductionView>
+
 </merge>

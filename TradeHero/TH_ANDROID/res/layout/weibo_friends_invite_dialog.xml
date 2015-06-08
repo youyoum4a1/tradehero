@@ -49,7 +49,7 @@
       >
 
     <Button
-        android:id="@+id/btnCancle"
+        android:id="@+id/btn_cancel"
         android:layout_height="40dp"
         android:layout_width="0dp"
         android:layout_weight="1"
@@ -59,7 +59,7 @@
         />
 
     <Button
-        android:id="@+id/btnComfirm"
+        android:id="@+id/btn_comfirm"
         android:layout_height="40dp"
         android:layout_width="0dp"
         android:layout_weight="1"

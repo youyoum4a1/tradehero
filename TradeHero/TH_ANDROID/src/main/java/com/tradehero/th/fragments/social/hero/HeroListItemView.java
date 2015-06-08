@@ -1,11 +1,11 @@
 package com.tradehero.th.fragments.social.hero;
 
 import android.content.Context;
-import android.os.Bundle;
+import android.content.res.Resources;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,6 +14,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
@@ -21,8 +22,6 @@ import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -33,10 +32,8 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
 public class HeroListItemView extends RelativeLayout
-        implements DTOView<HeroDTO>
+        implements DTOView<HeroListItemView.DTO>
 {
-    @DrawableRes public static final int RES_ID_CROSS_RED = android.R.drawable.ic_delete;
-
     @InjectView(R.id.follower_profile_picture) ImageView userIcon;
     @InjectView(R.id.hero_title) TextView title;
     @InjectView(R.id.hero_revenue) TextView revenueInfo;
@@ -44,14 +41,11 @@ public class HeroListItemView extends RelativeLayout
     @InjectView(R.id.ic_status) ImageView statusIcon;
     @InjectView(R.id.country_logo) ImageView countryLogo;
 
-    private UserBaseKey followerId;
-    private HeroDTO heroDTO;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
-    @Inject CurrentUserId currentUserId;
-    @Inject DashboardNavigator navigator;
 
     @NonNull private BehaviorSubject<UserAction> userActionSubject;
+    @Nullable private DTO dto;
 
     //<editor-fold desc="Constructors">
     public HeroListItemView(Context context)
@@ -76,41 +70,23 @@ public class HeroListItemView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
         HierarchyInjector.inject(this);
+        ButterKnife.inject(this);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.ic_status) void onStatusIconClicked()
+    @Override protected void onAttachedToWindow()
     {
-        userActionSubject.onNext(new UserActionDelete(heroDTO));
+        super.onAttachedToWindow();
+        ButterKnife.inject(this);
     }
-
-    //<editor-fold desc="Reset views">
-    private void resetIcons()
-    {
-        resetStatusIcon();
-
-        resetUserIcon();
-    }
-
-    private void resetUserIcon()
-    {
-        picasso.get().cancelRequest(userIcon);
-        userIcon.setImageDrawable(null);
-    }
-
-    private void resetStatusIcon()
-    {
-        picasso.get().cancelRequest(statusIcon);
-        statusIcon.setImageDrawable(null);
-    }
-    //</editor-fold>
 
     @Override protected void onDetachedFromWindow()
     {
-        resetIcons();
-
+        if (userIcon != null)
+        {
+            picasso.get().cancelRequest(userIcon);
+            userIcon.setImageDrawable(null);
+        }
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
@@ -121,157 +97,126 @@ public class HeroListItemView extends RelativeLayout
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.follower_profile_picture) void onFollowerProfilePictureClicked(View v)
+    @OnClick(R.id.ic_status) void onStatusIconClicked()
     {
-        if (heroDTO != null)
+        if (dto != null)
         {
-            Bundle bundle = new Bundle();
-            PushableTimelineFragment.putUserBaseKey(bundle, new UserBaseKey(heroDTO.id));
-            navigator.pushFragment(PushableTimelineFragment.class, bundle);
+            userActionSubject.onNext(new UserActionDelete(dto.heroDTO));
         }
     }
 
-    public void setFollowerId(UserBaseKey followerId)
+    @Override public void display(@NonNull DTO dto)
     {
-        this.followerId = followerId;
-    }
+        this.dto = dto;
 
-    public void display(HeroDTO heroDTO)
-    {
-        displayDefaultUserIcon();
-        this.heroDTO = heroDTO;
-        display();
-    }
-
-    //<editor-fold desc="Display Methods">
-    public void display()
-    {
-        displayUserIcon();
-        displayTitle();
-        displayDateInfo();
-        displayStatus();
-        displayRevenue();
-        displayCountryLogo();
-    }
-
-    public void displayUserIcon()
-    {
-        displayDefaultUserIcon();
-
-        if (heroDTO != null)
+        if (userIcon != null)
         {
-            picasso.get().load(heroDTO.picture)
+            picasso.get().load(dto.heroDTO.picture)
                     .placeholder(userIcon.getDrawable())
                     .transform(peopleIconTransformation)
                     .error(R.drawable.superman_facebook)
                     .into(userIcon);
         }
-    }
 
-    public void displayDefaultUserIcon()
-    {
-        picasso.get().load(R.drawable.superman_facebook)
-                .transform(peopleIconTransformation)
-                .into(userIcon);
-    }
-
-    public void displayTitle()
-    {
-        title.setText(UserBaseDTOUtil.getShortDisplayName(getContext(), heroDTO));
-    }
-
-    public void displayDateInfo()
-    {
-        if (heroDTO != null)
+        if (title != null)
         {
+            title.setText(dto.titleText);
+        }
+
+        if (dateInfo != null)
+        {
+            dateInfo.setText(dto.dateText);
+        }
+
+        if (statusIcon != null)
+        {
+            statusIcon.setVisibility(dto.statusIconVisibility);
+        }
+
+        if (countryLogo != null)
+        {
+            countryLogo.setImageResource(dto.countryFlagRes);
+        }
+
+        if (revenueInfo != null)
+        {
+            revenueInfo.setText(dto.revenueSpan);
+        }
+    }
+
+    public static class DTO
+    {
+        @NonNull public final UserBaseKey followerId;
+        @NonNull public final HeroDTO heroDTO;
+        @NonNull public final String titleText;
+        @NonNull public final String dateText;
+        @ViewVisibilityValue public final int statusIconVisibility;
+        @DrawableRes public final int countryFlagRes;
+        @NonNull public final CharSequence revenueSpan;
+
+        public DTO(@NonNull Resources resources,
+                @NonNull CurrentUserId currentUserId,
+                @NonNull UserBaseKey followerId,
+                @NonNull HeroDTO heroDTO)
+        {
+            this.followerId = followerId;
+            this.heroDTO = heroDTO;
+            this.titleText = UserBaseDTOUtil.getShortDisplayName(resources, heroDTO);
+
             SimpleDateFormat df = new SimpleDateFormat(
-                    getResources().getString(R.string.manage_heroes_datetime_format));
+                    resources.getString(R.string.manage_heroes_datetime_format));
             if (heroDTO.active && heroDTO.followingSince != null)
             {
-                dateInfo.setText(String.format(
-                        getResources().getString(R.string.manage_heroes_following_since),
-                        df.format(heroDTO.followingSince)));
+                dateText = String.format(
+                        resources.getString(R.string.manage_heroes_following_since),
+                        df.format(heroDTO.followingSince));
             }
             else if (!heroDTO.active && heroDTO.stoppedFollowingOn != null)
             {
-                dateInfo.setText(String.format(
-                        getResources().getString(R.string.manage_heroes_not_following_since),
-                        df.format(heroDTO.stoppedFollowingOn)));
+                dateText = String.format(
+                        resources.getString(R.string.manage_heroes_not_following_since),
+                        df.format(heroDTO.stoppedFollowingOn));
             }
             else
             {
-                dateInfo.setText(R.string.na);
+                dateText = resources.getString(R.string.na);
             }
-        }
-        else
-        {
-            dateInfo.setText(R.string.na);
-        }
-    }
 
-    public void displayStatus()
-    {
-        if (statusIcon != null)
-        {
-            statusIcon.setImageResource(RES_ID_CROSS_RED);
-            statusIcon.setVisibility((isFollowerCurrentUser() && !isHeroOfficial()) ? View.VISIBLE : View.GONE);
-        }
-    }
+            statusIconVisibility = currentUserId.toUserBaseKey().equals(followerId) && !heroDTO.isOfficialAccount()
+                    ? VISIBLE
+                    : GONE;
 
-    public void displayCountryLogo()
-    {
-        if (countryLogo != null)
-        {
-            int imageResId = R.drawable.default_image;
-            if (heroDTO != null)
+            countryFlagRes = Country.getCountryLogo(R.drawable.default_image, heroDTO.countryCode);
+
+            if (heroDTO.roiSinceInception != null)
             {
-                imageResId = Country.getCountryLogo(R.drawable.default_image, heroDTO.countryCode);
-            }
-            countryLogo.setImageResource(imageResId);
-        }
-    }
-
-    public void displayRevenue()
-    {
-        if (revenueInfo != null)
-        {
-            if (heroDTO != null && heroDTO.roiSinceInception != null)
-            {
-                THSignedPercentage.builder(heroDTO.roiSinceInception * 100)
+                revenueSpan = THSignedPercentage.builder(heroDTO.roiSinceInception * 100)
                         .withDefaultColor()
                         .build()
-                        .into(revenueInfo);
+                        .createSpanned();
             }
             else
             {
-                revenueInfo.setText(R.string.na);
+                revenueSpan = resources.getString(R.string.na);
             }
         }
     }
 
-    public boolean isFollowerCurrentUser()
-    {
-        return followerId != null && followerId.equals(currentUserId.toUserBaseKey());
-    }
-
-    public boolean isHeroOfficial()
-    {
-        return heroDTO != null && heroDTO.isOfficialAccount();
-    }
-    //</editor-fold>
-
-    public static interface UserAction
-    {
-    }
-
-    public static class UserActionDelete implements UserAction
+    public static class UserAction
     {
         @NonNull public final HeroDTO heroDTO;
 
+        public UserAction(@NonNull HeroDTO heroDTO)
+        {
+            this.heroDTO = heroDTO;
+        }
+    }
+
+    public static class UserActionDelete extends UserAction
+    {
         public UserActionDelete(@NonNull HeroDTO heroDTO)
         {
-            super();
-            this.heroDTO = heroDTO;
+            super(heroDTO);
         }
     }
 }

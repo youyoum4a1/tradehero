@@ -1,37 +1,42 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.th.R;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public class TimelineHeaderButtonView extends LinearLayout
 {
-    @InjectView(R.id.btn_profile_timeline) TextView btnTimeline;
     @InjectView(R.id.btn_profile_portfolios) TextView btnPortfolioList;
-    @InjectView(R.id.btn_profile_stats) TextView btnStats;
+    @InjectView(R.id.btn_profile_timeline) TextView btnTimeline;
 
-    private TimelineProfileClickListener clickListener;
+    @NonNull private final PublishSubject<TimelineFragment.TabType> tabTypeSubject;
 
     //<editor-fold desc="Constructors">
     public TimelineHeaderButtonView(Context context)
     {
         super(context);
+        tabTypeSubject = PublishSubject.create();
     }
 
     public TimelineHeaderButtonView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        tabTypeSubject = PublishSubject.create();
     }
 
     public TimelineHeaderButtonView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
+        tabTypeSubject = PublishSubject.create();
     }
     //</editor-fold>
 
@@ -44,52 +49,48 @@ public class TimelineHeaderButtonView extends LinearLayout
 
     @Override protected void onAttachedToWindow()
     {
-        btnTimeline.setOnClickListener(createBtnClickListener(TimelineFragment.TabType.TIMELINE));
-        btnPortfolioList.setOnClickListener(createBtnClickListener(TimelineFragment.TabType.PORTFOLIO_LIST));
-        btnStats.setOnClickListener(createBtnClickListener(TimelineFragment.TabType.STATS));
         super.onAttachedToWindow();
+        ButterKnife.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        btnTimeline.setOnClickListener(null);
-        btnPortfolioList.setOnClickListener(null);
-        btnStats.setOnClickListener(null);
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
-    public void setTimelineProfileClickListener(TimelineProfileClickListener clickListener)
+    @NonNull public Observable<TimelineFragment.TabType> getTabTypeObservable()
     {
-        this.clickListener = clickListener;
+        return tabTypeSubject.asObservable();
     }
 
-    protected OnClickListener createBtnClickListener(final TimelineFragment.TabType tabType)
+    @SuppressWarnings("unused")
+    @OnClick(R.id.btn_profile_portfolios)
+    protected void onPortfoliosClicked(View view)
     {
-        return new OnClickListener()
-        {
-            @Override public void onClick(View view)
-            {
-                TimelineHeaderButtonView.this.notifyClicked(tabType);
-            }
-        };
+        tabTypeSubject.onNext(TimelineFragment.TabType.PORTFOLIO_LIST);
     }
 
-    protected void notifyClicked(TimelineFragment.TabType tabType)
+    @SuppressWarnings("unused")
+    @OnClick(R.id.btn_profile_timeline)
+    protected void onTimelineClicked(View view)
     {
-        if (clickListener != null)
+        tabTypeSubject.onNext(TimelineFragment.TabType.TIMELINE);
+    }
+
+    public void setActive(@NonNull TimelineFragment.TabType activeType)
+    {
+        if (btnTimeline != null)
         {
-            clickListener.onBtnClicked(tabType);
+            changeButtonLook(activeType, btnTimeline, TimelineFragment.TabType.TIMELINE);
+        }
+        if (btnPortfolioList != null)
+        {
+            changeButtonLook(activeType, btnPortfolioList, TimelineFragment.TabType.PORTFOLIO_LIST);
         }
     }
 
-    public void changeButtonLook(TimelineFragment.TabType activeType)
-    {
-        changeButtonLook(activeType, btnTimeline, TimelineFragment.TabType.TIMELINE);
-        changeButtonLook(activeType, btnPortfolioList, TimelineFragment.TabType.PORTFOLIO_LIST);
-        changeButtonLook(activeType, btnStats, TimelineFragment.TabType.STATS);
-    }
-
-    protected void changeButtonLook(TimelineFragment.TabType activeType, TextView view, TimelineFragment.TabType viewType)
+    protected void changeButtonLook(@NonNull TimelineFragment.TabType activeType, @NonNull TextView view, @NonNull TimelineFragment.TabType viewType)
     {
         view.setSelected(activeType == viewType);
     }

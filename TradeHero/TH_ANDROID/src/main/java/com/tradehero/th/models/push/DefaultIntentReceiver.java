@@ -3,8 +3,9 @@ package com.tradehero.th.models.push;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import com.tradehero.th.base.THApp;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.push.handlers.PushNotificationHandler;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.Set;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -16,7 +17,7 @@ public abstract class DefaultIntentReceiver extends BroadcastReceiver
     public DefaultIntentReceiver()
     {
         super();
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(THApp.context(), this);
     }
 
     @Override public void onReceive(Context context, Intent intent)

@@ -28,7 +28,7 @@
     <Button
         android:id="@+id/news_action_share_cancel"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_toRightOf="@id/news_action_share_title2"
         android:layout_toEndOf="@id/news_action_share_title2"
         android:layout_alignParentRight="true"

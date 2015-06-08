@@ -28,25 +28,24 @@ public class FollowerSummaryDTO implements DTO
         return count;
     }
 
-    @Nullable public FollowerSummaryDTO getPaidFollowerSummaryDTO()
+    @Nullable public List<UserFollowerDTO> getPaidFollowers()
     {
         if (userFollowers == null)
         {
             return null;
         }
-        FollowerSummaryDTO followerSummaryDTO =  new FollowerSummaryDTO();
-        followerSummaryDTO.userFollowers = new ArrayList<>();
+
+        List<UserFollowerDTO> list = new ArrayList<>();
 
         for (UserFollowerDTO userFollowerDTO : userFollowers)
         {
             if (!userFollowerDTO.isFreeFollow)
             {
-                followerSummaryDTO.userFollowers.add(userFollowerDTO);
+                list.add(userFollowerDTO);
             }
         }
-        return followerSummaryDTO;
+        return list;
     }
-
     public int getFreeFollowerCount()
     {
         if (userFollowers == null)
@@ -64,25 +63,24 @@ public class FollowerSummaryDTO implements DTO
         return count;
     }
 
-    @Nullable public FollowerSummaryDTO getFreeFollowerSummaryDTO()
+    @Nullable public List<UserFollowerDTO> getFreeFollowers()
     {
         if (userFollowers == null)
         {
             return null;
         }
-        FollowerSummaryDTO followerSummaryDTO =  new FollowerSummaryDTO();
-        followerSummaryDTO.userFollowers = new ArrayList<>();
+
+        List<UserFollowerDTO> list = new ArrayList<>();
 
         for (UserFollowerDTO userFollowerDTO : userFollowers)
         {
             if (userFollowerDTO.isFreeFollow)
             {
-                followerSummaryDTO.userFollowers.add(userFollowerDTO);
+                list.add(userFollowerDTO);
             }
         }
-        return followerSummaryDTO;
+        return list;
     }
-
 
     @Override public String toString()
     {

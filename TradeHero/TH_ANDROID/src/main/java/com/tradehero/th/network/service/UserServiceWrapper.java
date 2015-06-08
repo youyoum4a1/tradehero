@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
@@ -50,6 +51,7 @@ import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -73,6 +75,7 @@ import rx.functions.Func1;
     @NonNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
     @NonNull private final Lazy<HeroListCacheRx> heroListCache;
     @NonNull private final Lazy<ProviderListCacheRx> providerListCache;
+    @NonNull private final BooleanPreference isOnBoardShown;
 
     //<editor-fold desc="Constructors">
     @Inject public UserServiceWrapper(
@@ -85,7 +88,8 @@ import rx.functions.Func1;
             @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
             @NonNull Lazy<HeroListCacheRx> heroListCache,
             @NonNull Lazy<ProviderListCacheRx> providerListCache,
-            @NonNull Provider<UserFormDTO.Builder2> userFormBuilderProvider)
+            @NonNull Provider<UserFormDTO.Builder2> userFormBuilderProvider,
+            @NonNull @IsOnBoardShown BooleanPreference isOnBoardShown)
     {
         this.context = context;
         this.currentUserId = currentUserId;
@@ -97,6 +101,7 @@ import rx.functions.Func1;
         this.providerListCache = providerListCache;
         this.userServiceRx = userServiceRx;
         this.userFormBuilderProvider = userFormBuilderProvider;
+        this.isOnBoardShown = isOnBoardShown;
     }
     //</editor-fold>
 
@@ -151,16 +156,8 @@ import rx.functions.Func1;
                 userProfileCache.get(),
                 currentUserId,
                 authData,
-                dtoCacheUtil));
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Sign-Up">
-    @NonNull public Observable<UserProfileDTO> signUpRx(
-            String authorization,
-            UserFormDTO userFormDTO)
-    {
-        return userServiceRx.signUp(authorization, userFormDTO);
+                dtoCacheUtil,
+                isOnBoardShown));
     }
     //</editor-fold>
 

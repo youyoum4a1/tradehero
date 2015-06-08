@@ -101,8 +101,8 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
         View view = inflater.inflate(R.layout.weibo_friends_invite_dialog, null);
         edtMessageInvite = (EditText) view.findViewById(R.id.edtInviteMessage);
         tvMessageCount = (TextView) view.findViewById(R.id.tvMessageCount);
-        btnMessageCancel = (Button) view.findViewById(R.id.btnCancle);
-        btnMessageComfirm = (Button) view.findViewById(R.id.btnComfirm);
+        btnMessageCancel = (Button) view.findViewById(R.id.btn_cancel);
+        btnMessageComfirm = (Button) view.findViewById(R.id.btn_comfirm);
 
         btnMessageCancel.setOnClickListener(new View.OnClickListener()
         {

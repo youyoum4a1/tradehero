@@ -6,7 +6,7 @@ public class DummyFxDisplayablePortfolioDTO extends DisplayablePortfolioDTO
     {
         super();
         portfolioDTO = new PortfolioDTO();
-        portfolioDTO.title = "FX - Main";
+        portfolioDTO.title = "My FX";
         portfolioDTO.assetClass = AssetClass.FX;
     }
 }

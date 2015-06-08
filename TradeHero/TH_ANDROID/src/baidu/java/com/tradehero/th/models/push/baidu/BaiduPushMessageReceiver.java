@@ -11,12 +11,13 @@ import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.THApp;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.THNotificationBuilder;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.prefs.BaiduPushDeviceIdentifierSentFlag;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
@@ -41,7 +42,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
     public BaiduPushMessageReceiver()
     {
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(THApp.context(), this);
     }
 
     /**

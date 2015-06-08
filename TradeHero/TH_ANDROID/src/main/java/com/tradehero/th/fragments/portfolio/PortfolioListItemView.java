@@ -206,7 +206,7 @@ public class PortfolioListItemView extends RelativeLayout
     {
         if (title != null)
         {
-            title.setText(DisplayablePortfolioUtil.getLongTitle(getContext(),
+            title.setText(DisplayablePortfolioUtil.getLongTitle(getResources(),
                     displayablePortfolioDTO));
             title.setTextColor(DisplayablePortfolioUtil.getLongTitleTextColor(getContext(),
                     displayablePortfolioDTO));
@@ -226,7 +226,7 @@ public class PortfolioListItemView extends RelativeLayout
 
     public String getDescription()
     {
-        return DisplayablePortfolioUtil.getLongSubTitle(getContext(), currentUserId, displayablePortfolioDTO);
+        return DisplayablePortfolioUtil.getLongSubTitle(getResources(), currentUserId, displayablePortfolioDTO);
     }
 
     public void displayRoiValue()

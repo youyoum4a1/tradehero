@@ -11,7 +11,7 @@
     android:paddingLeft="@dimen/margin_small"
     android:paddingRight="@dimen/margin_small"
     android:background="@drawable/buy_sell_action_buttons_background"
-    android:paddingBottom="@dimen/dashboard_tabhost_height"
+    android:paddingBottom="@dimen/margin_small"
     android:animateLayoutChanges="true"
     >
 

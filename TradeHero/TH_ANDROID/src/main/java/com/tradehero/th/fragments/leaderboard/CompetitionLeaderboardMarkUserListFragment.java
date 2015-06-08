@@ -168,11 +168,6 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
         super.onDestroy();
     }
 
-    @Override protected int getMenuResource()
-    {
-        return R.menu.competition_leaderboard_list_menu;
-    }
-
     @Override protected PerPagedLeaderboardKey getInitialLeaderboardKey()
     {
         return new CompetitionLeaderboardId(providerId.key, competitionId.key, null, null);

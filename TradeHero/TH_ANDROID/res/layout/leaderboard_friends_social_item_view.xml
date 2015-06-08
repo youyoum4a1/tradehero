@@ -25,12 +25,8 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         style="@style/TH.Title"
-        android:shadowColor="@color/grey"
-        android:shadowDy="1"
-        android:shadowRadius="1"
-        android:layout_centerVertical="true"
         android:visibility="invisible"
-        tools:text="1"
+        tools:text="Here to provide dimension only"
         />
 
     <ImageView
@@ -38,7 +34,10 @@
         android:layout_width="@dimen/small_image_w_h"
         android:layout_height="@dimen/small_image_w_h"
         android:layout_marginLeft="@dimen/margin_small"
-        android:layout_centerVertical="true"/>
+        android:layout_marginStart="@dimen/margin_small"
+        android:layout_centerVertical="true"
+        tools:src="@drawable/icon_share_fb_on"
+        />
 
     <ImageView
         android:id="@+id/leaderboard_user_item_profile_picture"
@@ -47,23 +46,26 @@
         android:contentDescription="@null"
         android:src="@drawable/superman_facebook"
         android:layout_toRightOf="@id/leaderboard_user_item_position"
+        android:layout_toEndOf="@id/leaderboard_user_item_position"
         android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
         />
 
     <TextView
         android:id="@+id/leaderboard_user_item_social_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:ellipsize="end"
         android:textStyle="bold"
         android:textSize="@dimen/leaderboard_title_text_size"
-        android:lines="2"
         android:maxLines="2"
         android:singleLine="false"
         android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
+        android:layout_toEndOf="@id/leaderboard_user_item_profile_picture"
         android:layout_toLeftOf="@+id/leaderboard_user_item_invite_btn"
+        android:layout_toStartOf="@+id/leaderboard_user_item_invite_btn"
         android:shadowColor="@color/grey"
         android:shadowDy="1"
         android:shadowRadius="1"
@@ -80,6 +82,7 @@
         android:layout_marginEnd="@dimen/margin_small"
         android:text="@string/invite"
         style="@style/TH.Btn_Invite_Action"
+        android:gravity="center"
         />
 
   </RelativeLayout>

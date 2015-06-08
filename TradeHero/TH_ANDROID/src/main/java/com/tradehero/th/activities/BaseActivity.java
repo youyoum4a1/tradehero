@@ -3,7 +3,6 @@ package com.tradehero.th.activities;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OnAccountsUpdateListener;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,27 +10,23 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.UIModule;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.inject.Injector;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.dagger.AppModule;
-import dagger.Module;
-import dagger.Provides;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-public class BaseActivity extends ActionBarActivity
+public class BaseActivity extends AppCompatActivity
         implements OnAccountsUpdateListener, Injector
 {
     public static final int REQUEST_CODE_ROUTE = "REQUEST_CODE_ROUTE".hashCode() & 0xFF; // 16 bit only
@@ -90,7 +85,7 @@ public class BaseActivity extends ActionBarActivity
 
     @NonNull protected List<Object> getModules()
     {
-        return Arrays.<Object>asList(new BaseActivityModule());
+        return Arrays.<Object>asList(new BaseActivityModule(this));
     }
 
     @Override protected void onResume()
@@ -196,20 +191,6 @@ public class BaseActivity extends ActionBarActivity
         if (newInjector != null)
         {
             newInjector.inject(o);
-        }
-    }
-
-    @Module(
-            addsTo = AppModule.class,
-            includes = UIModule.class,
-            library = true,
-            complete = false
-    )
-    public class BaseActivityModule
-    {
-        @Provides Activity provideActivity()
-        {
-            return BaseActivity.this;
         }
     }
 

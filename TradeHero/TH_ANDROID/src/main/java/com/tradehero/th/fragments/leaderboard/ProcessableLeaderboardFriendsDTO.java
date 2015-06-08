@@ -6,19 +6,23 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 
 public class ProcessableLeaderboardFriendsDTO implements DTO, ContainerDTO<FriendLeaderboardUserDTO, FriendLeaderboardUserDTOList>
 {
     @NonNull private final FriendLeaderboardUserDTOFactory factory;
     @NonNull public final LeaderboardFriendsDTO leaderboardFriendsDTO;
+    @NonNull private final UserProfileDTO currentUserProfile;
 
     //<editor-fold desc="Constructors">
     public ProcessableLeaderboardFriendsDTO(
             @NonNull FriendLeaderboardUserDTOFactory factory,
-            @NonNull LeaderboardFriendsDTO leaderboardFriendsDTO)
+            @NonNull LeaderboardFriendsDTO leaderboardFriendsDTO,
+            @NonNull UserProfileDTO currentUserProfile)
     {
         this.factory = factory;
         this.leaderboardFriendsDTO = leaderboardFriendsDTO;
+        this.currentUserProfile = currentUserProfile;
     }
     //</editor-fold>
 
@@ -30,6 +34,7 @@ public class ProcessableLeaderboardFriendsDTO implements DTO, ContainerDTO<Frien
 
     @Override public FriendLeaderboardUserDTOList getList()
     {
+        boolean containsCurrentUser = false;
         FriendLeaderboardUserDTOList list = new FriendLeaderboardUserDTOList();
         if (leaderboardFriendsDTO.leaderboard != null)
         {
@@ -37,6 +42,10 @@ public class ProcessableLeaderboardFriendsDTO implements DTO, ContainerDTO<Frien
             FriendLeaderboardUserDTO created;
             for (LeaderboardUserDTO userDTO : leaderboardFriendsDTO.leaderboard.getList())
             {
+                if (userDTO.id == currentUserProfile.id)
+                {
+                    containsCurrentUser = true;
+                }
                 created = factory.create(userDTO);
                 created.setPosition(position);
                 list.add(created);
@@ -50,6 +59,12 @@ public class ProcessableLeaderboardFriendsDTO implements DTO, ContainerDTO<Frien
                 list.add(factory.create(friend));
             }
         }
+
+        if (list.size() <= (containsCurrentUser ? 1 : 0))
+        {
+            list.add(new FriendLeaderboardCallToActionUserDTO(false));
+        }
+
         return list;
     }
 }

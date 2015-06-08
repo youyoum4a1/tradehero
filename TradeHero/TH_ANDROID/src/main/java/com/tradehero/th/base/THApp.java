@@ -18,7 +18,6 @@ import com.tradehero.th.inject.BaseInjector;
 import com.tradehero.th.inject.ExInjector;
 import com.tradehero.th.models.level.UserXPAchievementHandler;
 import com.tradehero.th.models.push.PushNotificationManager;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ImageUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import dagger.ObjectGraph;
@@ -46,8 +45,6 @@ public class THApp extends PApplication
         Timber.plant(TimberUtil.createTree());
 
         buildObjectGraphAndInject();
-
-        DaggerUtils.setObjectGraph(objectGraph);
 
         userXPAchievementHandler.register(this);
 

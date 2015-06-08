@@ -61,10 +61,11 @@
       >
 
     <TextView
+        android:id="@+id/edit_watchlist_item_security_currency"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/watchlist_average_price_header"
+        tools:text="@string/watchlist_average_price_header"
         android:gravity="end"
         />
 

@@ -2,17 +2,11 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/position_top_view"
     >
 
-  <TextView
-      android:id="@+id/title"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center_vertical"
-      android:layout_marginLeft="@dimen/margin_small"
-      android:layout_weight="0"/>
-
-  <ImageView android:id="@+id/gain_indicator"
+  <ImageView
+      android:id="@+id/gain_indicator"
       android:layout_width="@dimen/size_1"
       android:layout_height="@dimen/size_1"
       android:layout_marginRight="@dimen/margin_small"
@@ -73,12 +67,13 @@
           />
 
       <TextView
-          android:id="@+id/share_count"
+          android:id="@+id/share_count_text"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           style="@style/TH.COMPANY"
           tools:text="100,000 units"
           />
+
     </LinearLayout>
 
   </RelativeLayout>
@@ -89,12 +84,14 @@
       android:layout_weight="0"
       android:layout_marginRight="4dp"
       android:layout_marginEnd="4dp">
+
   <LinearLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:gravity="right|end"
       android:layout_centerVertical="true"
       android:orientation="vertical">
+
     <TextView
         android:id="@+id/position_percentage"
         android:layout_width="wrap_content"
@@ -104,13 +101,14 @@
         tools:text="5.8%"
         tools:visibility="gone"
         />
+
     <LinearLayout
         android:id="@+id/last_price_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="end"
-        tools:visibility="gone"
+        tools:visibility="visible"
         >
 
       <TextView
@@ -135,6 +133,7 @@
           />
 
     </LinearLayout>
+
     <TextView
         android:id="@+id/position_unrealised_pl"
         android:layout_width="wrap_content"
@@ -143,6 +142,7 @@
         style="@style/TH.UserROI"
         tools:text="-US$ 0.2465"
         />
+
     <TextView
         android:id="@+id/btn_position_close"
         android:layout_width="wrap_content"
@@ -151,10 +151,13 @@
         android:layout_marginBottom="4dp"
         style="@style/TH.FX_CLOSE"
         android:text="@string/security_close"
+        tools:visibility="gone"
         />
+
   </LinearLayout>
 
   </RelativeLayout>
+
   <ImageView
       android:id="@+id/hint_forward"
       android:layout_width="wrap_content"

@@ -6,7 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.base.THApp;
+import com.tradehero.th.inject.HierarchyInjector;
 import java.util.List;
 import javax.inject.Inject;
 import retrofit.Endpoint;
@@ -24,7 +25,7 @@ public class ProviderPageIntent extends OneProviderIntent
         super(resources);
         setData(getProviderActionUri(providerId, uri));
 
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(THApp.context(), this);
     }
     //</editor-fold>
 

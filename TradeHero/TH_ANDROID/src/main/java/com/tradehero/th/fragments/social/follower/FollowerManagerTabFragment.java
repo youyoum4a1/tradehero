@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.social.follower;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,7 +17,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.utils.THToast;
+import butterknife.OnItemClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
@@ -24,43 +25,60 @@ import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import java.util.List;
 import javax.inject.Inject;
-import rx.Observer;
-import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 abstract public class FollowerManagerTabFragment extends DashboardFragment
         implements SwipeRefreshLayout.OnRefreshListener
 {
     public static final int ITEM_ID_REFRESH_MENU = 0;
-    private static final String HERO_ID_BUNDLE_KEY =
-            FollowerManagerTabFragment.class.getName() + ".heroId";
+    private static final String HERO_ID_BUNDLE_KEY = FollowerManagerTabFragment.class.getName() + ".heroId";
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected FollowerSummaryCacheRx followerSummaryCache;
+
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
     @InjectView(R.id.follower_list) ListView followerList;
-    @InjectView(android.R.id.empty) View emptyView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
+
     private FollowerListItemAdapter followerListAdapter;
     private UserBaseKey heroId;
     private FollowerSummaryDTO followerSummaryDTO;
 
+    //<editor-fold desc="Argument passing">
     public static void putHeroId(@NonNull Bundle args, @NonNull UserBaseKey followerId)
     {
         args.putBundle(HERO_ID_BUNDLE_KEY, followerId.getArgs());
     }
+    //</editor-fold>
 
-    @NonNull public static UserBaseKey getHeroId(@NonNull Bundle args)
+    @Override public void onAttach(Activity activity)
     {
-        return new UserBaseKey(args.getBundle(HERO_ID_BUNDLE_KEY));
+        super.onAttach(activity);
+        followerListAdapter = new FollowerListItemAdapter(
+                activity,
+                R.layout.follower_list_item,
+                R.layout.follower_list_item_empty);
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        //noinspection ConstantConditions
+        this.heroId = new UserBaseKey(getArguments().getBundle(HERO_ID_BUNDLE_KEY));
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,29 +91,17 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        if (followerListAdapter == null)
-        {
-            followerListAdapter = new FollowerListItemAdapter(getActivity(),
-                    R.layout.follower_list_item
-            );
-        }
         swipeRefreshLayout.setOnRefreshListener(this);
         followerList.setAdapter(followerListAdapter);
         followerList.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
-        followerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> parent, View view1, int position, long id)
-            {
-                ListView listView = (ListView) parent;
-                FollowerManagerTabFragment.this.handleFollowerItemClicked(view1, position - listView.getHeaderViewsCount(), id);
-            }
-        });
         displayProgress(true);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        setActionBarTitle(getTitle());
+        setActionBarTitle(isCurrentUser()
+                ? R.string.manage_my_followers_title
+                : R.string.manage_followers_title);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -115,95 +121,100 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
     @Override public void onStart()
     {
         super.onStart();
+        onStopSubscriptions.add(followerSummaryCache.get(heroId)
+                .subscribeOn(Schedulers.computation())
+                .map(new Func1<Pair<UserBaseKey, FollowerSummaryDTO>, Pair<FollowerSummaryDTO, List<Object>>>()
+                {
+                    @Override public Pair<FollowerSummaryDTO, List<Object>> call(Pair<UserBaseKey, FollowerSummaryDTO> pair)
+                    {
+                        followerSummaryDTO = pair.second;
+                        List<UserFollowerDTO> followerDTOs = getFollowers(pair.second);
+                        return Pair.create(
+                                pair.second,
+                                followerDTOs == null
+                                        ? null
+                                        : FollowerListItemAdapter.createObjects(getResources(), followerDTOs));
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<Pair<FollowerSummaryDTO, List<Object>>>()
+                        {
+                            @Override public void call(Pair<FollowerSummaryDTO, List<Object>> followerSummaryDTOListPair)
+                            {
+                                displayProgress(false);
+                                followerListAdapter.setNotifyOnChange(false);
+                                followerListAdapter.clear();
+                                if (followerSummaryDTOListPair.second != null)
+                                {
+                                    followerListAdapter.addAll(followerSummaryDTOListPair.second);
+                                }
+                                followerListAdapter.setNotifyOnChange(true);
+                                followerListAdapter.notifyDataSetChanged();
+                                notifyFollowerLoaded(followerSummaryDTOListPair.first);
+                            }
+                        },
+                        new ToastAndLogOnErrorAction(
+                                getString(R.string.error_fetch_follower),
+                                "Failed to fetch FollowerSummary")
+                        {
+                            @Override public void call(Throwable throwable)
+                            {
+                                super.call(throwable);
+                                displayProgress(false);
+                            }
+                        }));
 
-        Timber.d("FollowerManagerTabFragment onResume");
-        heroId = getHeroId(getArguments());
-        fetchFollowers();
+        onStopSubscriptions.add(followerListAdapter.getUserActionObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<FollowerListItemAdapter.UserAction>()
+                        {
+                            @Override public void call(FollowerListItemAdapter.UserAction userAction)
+                            {
+                                onUserAction(userAction);
+                            }
+                        },
+                        new ToastAndLogOnErrorAction("Failed to listen to user actions")));
     }
 
     @Override public void onDestroyView()
     {
-        this.followerListAdapter = null;
         ButterKnife.reset(this);
         super.onDestroyView();
     }
 
-    protected void fetchFollowers()
+    @Override public void onDetach()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
-                followerSummaryCache.get(heroId))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createFollowerSummaryCacheObserver()));
+        followerListAdapter = null;
+        super.onDetach();
+    }
+
+    private void notifyFollowerLoaded(FollowerSummaryDTO value)
+    {
+        Timber.d("notifyFollowerLoaded for followerTabIndex:%d",
+                getHeroTypeResource().followerTabIndex);
+        OnFollowersLoadedListener loadedListener =
+                FragmentUtils.getParent(this, OnFollowersLoadedListener.class);
+        if (loadedListener != null && !isDetached())
+        {
+            loadedListener.onFollowerLoaded(getHeroTypeResource().followerTabIndex, value);
+        }
     }
 
     private boolean isCurrentUser()
     {
-        UserBaseKey heroId = getHeroId(getArguments());
-        if (currentUserId != null)
-        {
-            return heroId.equals(currentUserId.toUserBaseKey());
-        }
-        return false;
+        return heroId.equals(currentUserId.toUserBaseKey());
     }
 
-    private int getTitle()
-    {
-        if (isCurrentUser())
-        {
-            return R.string.manage_my_followers_title;
-        }
-        else
-        {
-            return R.string.manage_followers_title;
-        }
-    }
-
-    protected HeroTypeResourceDTO getHeroTypeResource()
+    @NonNull protected HeroTypeResourceDTO getHeroTypeResource()
     {
         return HeroTypeResourceDTOFactory.create(getFollowerType());
     }
 
-    abstract protected HeroType getFollowerType();
+    @NonNull abstract protected HeroType getFollowerType();
 
-    abstract protected void handleFollowerSummaryDTOReceived(FollowerSummaryDTO fromServer);
-
-    public void display(FollowerSummaryDTO summaryDTO)
-    {
-        Timber.d("onDTOReceived display followerType:%s,%s", getFollowerType(), summaryDTO);
-        linkWith(summaryDTO, true);
-    }
-
-    public void linkWith(FollowerSummaryDTO summaryDTO, boolean andDisplay)
-    {
-        this.followerSummaryDTO = summaryDTO;
-        if (andDisplay)
-        {
-            displayFollowerList();
-        }
-    }
-
-    public void display()
-    {
-        displayFollowerList();
-    }
-
-    public void displayFollowerList()
-    {
-        if (this.followerListAdapter != null)
-        {
-            if (this.followerSummaryDTO.userFollowers.isEmpty())
-            {
-                emptyView.setVisibility(View.VISIBLE);
-            }
-            else
-            {
-                emptyView.setVisibility(View.GONE);
-                this.followerListAdapter.setFollowerSummaryDTO(this.followerSummaryDTO);
-                this.followerListAdapter.notifyDataSetChanged();
-            }
-        }
-    }
+    @Nullable abstract protected List<UserFollowerDTO> getFollowers(@NonNull FollowerSummaryDTO fromServer);
 
     private void redisplayProgress()
     {
@@ -236,99 +247,54 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
 
     private void doRefreshContent()
     {
-        Timber.d("refreshContent");
+        followerSummaryCache.get(heroId);
+    }
 
-        if (heroId == null)
+    @SuppressWarnings("unused")
+    @OnItemClick(R.id.follower_list)
+    protected void onFollowerItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        Object item = parent.getItemAtPosition(position);
+        if (item instanceof FollowerListItemView.DTO)
         {
-            heroId = getHeroId(getArguments());
-        }
-        fetchFollowers();
-    }
-
-    private void pushTimelineFragment(int followerId)
-    {
-        Bundle bundle = new Bundle();
-        PushableTimelineFragment.putUserBaseKey(bundle, new UserBaseKey(followerId));
-        navigator.get().pushFragment(PushableTimelineFragment.class, bundle);
-    }
-
-    private void pushPayoutFragment(UserFollowerDTO followerDTO)
-    {
-        FollowerHeroRelationId followerHeroRelationId =
-                new FollowerHeroRelationId(currentUserId.get(),
-                        followerDTO.id, followerDTO.displayName);
-        Bundle args = new Bundle();
-        FollowerPayoutManagerFragment.put(args, followerHeroRelationId);
-        navigator.get().pushFragment(FollowerPayoutManagerFragment.class, args);
-    }
-
-    private void handleFollowerItemClicked(
-            @SuppressWarnings("UnusedParameters") View view,
-            int position,
-            @SuppressWarnings("UnusedParameters") long id)
-    {
-        if (followerListAdapter != null)
-        {
-            UserFollowerDTO followerDTO =
-                    (UserFollowerDTO) followerListAdapter.getItem(position);
-            if (followerDTO != null)
+            UserFollowerDTO userFollowerDTO = ((FollowerListItemView.DTO) item).userFollowerDTO;
+            if (isCurrentUser() && !userFollowerDTO.isFreeFollow)
             {
-                if (isCurrentUser() && !followerDTO.isFreeFollow)
-                {
-                    pushPayoutFragment(followerDTO);
-                }
-                else
-                {
-                    pushTimelineFragment(followerDTO.id);
-                }
+                FollowerHeroRelationId followerHeroRelationId =
+                        new FollowerHeroRelationId(currentUserId.get(),
+                                userFollowerDTO.id, userFollowerDTO.displayName);
+                Bundle args = new Bundle();
+                FollowerPayoutManagerFragment.put(args, followerHeroRelationId);
+                navigator.get().pushFragment(FollowerPayoutManagerFragment.class, args);
             }
             else
             {
-                Timber.d("handleFollowerItemClicked: FollowerDTO was null");
+                Bundle bundle = new Bundle();
+                PushableTimelineFragment.putUserBaseKey(bundle, new UserBaseKey(userFollowerDTO.id));
+                navigator.get().pushFragment(PushableTimelineFragment.class, bundle);
             }
         }
         else
         {
-            Timber.d("Position clicked ", position);
+            Timber.e(new IllegalArgumentException(), "Unhandled item " + item);
         }
     }
 
-    protected Observer<Pair<UserBaseKey, FollowerSummaryDTO>> createFollowerSummaryCacheObserver()
+    protected void onUserAction(@NonNull FollowerListItemAdapter.UserAction userAction)
     {
-        return new FollowerManagerFollowerSummaryObserver();
-    }
-
-    protected class FollowerManagerFollowerSummaryObserver
-            implements Observer<Pair<UserBaseKey, FollowerSummaryDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, FollowerSummaryDTO> pair)
+        if (userAction instanceof FollowerListItemView.ProfileUserAction)
         {
-            displayProgress(false);
-            handleFollowerSummaryDTOReceived(pair.second);
-            notifyFollowerLoaded(pair.second);
+            Bundle bundle = new Bundle();
+            PushableTimelineFragment.putUserBaseKey(bundle, ((FollowerListItemView.ProfileUserAction) userAction).dto.getBaseKey());
+            navigator.get().pushFragment(PushableTimelineFragment.class, bundle);
         }
-
-        @Override public void onCompleted()
+        else if (userAction instanceof FollowerListCallToActionItemView.TradeNowUserAction)
         {
+            navigator.get().goToTab(RootFragmentType.TRENDING);
         }
-
-        @Override public void onError(Throwable e)
+        else
         {
-            displayProgress(false);
-            THToast.show(R.string.error_fetch_follower);
-            Timber.e("Failed to fetch FollowerSummary", e);
-        }
-    }
-
-    private void notifyFollowerLoaded(FollowerSummaryDTO value)
-    {
-        Timber.d("notifyFollowerLoaded for followerTabIndex:%d",
-                getHeroTypeResource().followerTabIndex);
-        OnFollowersLoadedListener loadedListener =
-                FragmentUtils.getParent(this, OnFollowersLoadedListener.class);
-        if (loadedListener != null && !isDetached())
-        {
-            loadedListener.onFollowerLoaded(getHeroTypeResource().followerTabIndex, value);
+            throw new IllegalArgumentException("Unhandled UserAction: " + userAction);
         }
     }
 }

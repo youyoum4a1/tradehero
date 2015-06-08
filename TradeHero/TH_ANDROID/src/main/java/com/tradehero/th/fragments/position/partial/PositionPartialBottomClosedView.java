@@ -3,15 +3,14 @@ package com.tradehero.th.fragments.position.partial;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.text.Spanned;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.models.position.PositionDTOUtils;
-import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 
 public class PositionPartialBottomClosedView extends AbstractPartialBottomView
 {
@@ -19,9 +18,6 @@ public class PositionPartialBottomClosedView extends AbstractPartialBottomView
     @InjectView(R.id.realised_pl_value) protected TextView realisedPLValue;
     @InjectView(R.id.roi_value) protected TextView roiValue;
     @InjectView(R.id.total_invested_value) protected TextView totalInvestedValue;
-    @InjectView(R.id.opened_date) protected TextView openedDate;
-    @InjectView(R.id.closed_date) protected TextView closedDate;
-    @InjectView(R.id.period_value) protected TextView periodHeld;
 
     protected PositionPartialBottomInPeriodViewHolder inPeriodViewHolder;
 
@@ -69,19 +65,6 @@ public class PositionPartialBottomClosedView extends AbstractPartialBottomView
         {
             totalInvestedValue.setText(((DTO) dto).totalInvestedValue);
         }
-        if (openedDate != null)
-        {
-            openedDate.setText(((DTO) dto).openedDate);
-        }
-        if (closedDate != null)
-        {
-            closedDate.setText(((DTO) dto).closedDate);
-        }
-        if (periodHeld != null)
-        {
-            periodHeld.setText(((DTO) dto).periodHeld);
-        }
-
         if (inPeriodViewHolder != null)
         {
             inPeriodViewHolder.display(((DTO) dto).positionPartialBottomInPeriodDTO);
@@ -90,13 +73,10 @@ public class PositionPartialBottomClosedView extends AbstractPartialBottomView
 
     public static class DTO extends AbstractPartialBottomView.DTO
     {
-        @NonNull public final String realisedPLValueHeader;
-        @NonNull public final Spanned realisedPLValue;
-        @NonNull public final Spanned roiValue;
-        @NonNull public final String totalInvestedValue;
-        @NonNull public final String openedDate;
-        @NonNull public final String closedDate;
-        @NonNull public final String periodHeld;
+        @NonNull public final CharSequence realisedPLValueHeader;
+        @NonNull public final CharSequence realisedPLValue;
+        @NonNull public final CharSequence roiValue;
+        @NonNull public final CharSequence totalInvestedValue;
 
         @NonNull public final PositionPartialBottomInPeriodViewHolder.DTO positionPartialBottomInPeriodDTO;
 
@@ -105,38 +85,46 @@ public class PositionPartialBottomClosedView extends AbstractPartialBottomView
             super(expandablePositionDTO);
 
             PositionDTO positionDTO = expandablePositionDTO.getModel();
+            String na = resources.getString(R.string.na);
 
-            //<editor-fold desc="Realised PL Value Header">
-            if (positionDTO.unrealizedPLRefCcy != null && positionDTO.realizedPLRefCcy < 0)
-            {
-                realisedPLValueHeader = resources.getString(R.string.position_realised_loss_header);
-            }
-            else
-            {
-                realisedPLValueHeader = resources.getString(R.string.position_realised_profit_header);
-            }
+            //<editor-fold desc="Realised PL">
+            Double realisedPLRefCcy = positionDTO.realizedPLRefCcy;
+            realisedPLValueHeader = resources.getString(realisedPLRefCcy != null && realisedPLRefCcy < 0
+                    ? R.string.position_realised_loss_header
+                    : R.string.position_realised_profit_header);
+
+            realisedPLValue = realisedPLRefCcy == null
+                    ? na
+                    : THSignedMoney.builder(realisedPLRefCcy)
+                            .withOutSign()
+                            .currency(positionDTO.getNiceCurrency())
+                            .relevantDigitCount(3)
+                            .build()
+                            .createSpanned();
             //</editor-fold>
 
-            realisedPLValue = PositionDTOUtils.getRealisedPLSpanned(resources, positionDTO);
+            //<editor-fold desc="ROI">
+            Double roiSinceInception = positionDTO.getROISinceInception();
+            roiValue = roiSinceInception == null
+                    ? na
+                    : THSignedPercentage.builder(roiSinceInception * 100.0)
+                            .signTypePlusMinusAlways()
+                            .withDefaultColor()
+                            .relevantDigitCount(3)
+                            .format("(%s)")
+                            .build()
+                            .createSpanned();
+            //</editor-fold>
 
-            roiValue = PositionDTOUtils.getROISpanned(resources, positionDTO.getROISinceInception());
-
-            totalInvestedValue = PositionDTOUtils.getSumInvested(resources, positionDTO);
-
-            openedDate = DateUtils.getDisplayableDate(resources, positionDTO.earliestTradeUtc);
-
-            closedDate = DateUtils.getDisplayableDate(resources, positionDTO.latestTradeUtc);
-
-            //<editor-fold desc="Period Held">
-            if (positionDTO.earliestTradeUtc != null && positionDTO.latestTradeUtc != null)
-            {
-                int nDays = DateUtils.getNumberOfDaysBetweenDates(positionDTO.earliestTradeUtc, positionDTO.latestTradeUtc);
-                periodHeld = resources.getQuantityString(R.plurals.position_period_held_day, nDays, nDays);
-            }
-            else
-            {
-                periodHeld = resources.getString(R.string.na);
-            }
+            //<editor-fold desc="Sum Invested">
+            Double sumInvestedRefCcy = positionDTO.sumInvestedAmountRefCcy;
+            totalInvestedValue = sumInvestedRefCcy == null
+                    ? na
+                    : THSignedMoney.builder(sumInvestedRefCcy)
+                            .withOutSign()
+                            .currency(positionDTO.getNiceCurrency())
+                            .build()
+                            .createSpanned();
             //</editor-fold>
 
             positionPartialBottomInPeriodDTO = new PositionPartialBottomInPeriodViewHolder.DTO(resources, positionDTO);

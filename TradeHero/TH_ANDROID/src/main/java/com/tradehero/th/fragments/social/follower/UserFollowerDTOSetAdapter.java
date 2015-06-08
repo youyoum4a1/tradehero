@@ -5,20 +5,19 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
-import com.tradehero.th.api.social.UserFollowerDTO;
 import java.util.Comparator;
 
-public class UserFollowerDTOSetAdapter extends ViewDTOSetAdapter<UserFollowerDTO, FollowerListItemView>
+public class UserFollowerDTOSetAdapter extends ViewDTOSetAdapter<FollowerListItemView.DTO, FollowerListItemView>
 {
     //<editor-fold desc="Constructors">
     public UserFollowerDTOSetAdapter(@NonNull Context context)
     {
         super(context,
-                new Comparator<UserFollowerDTO>()
+                new Comparator<FollowerListItemView.DTO>()
                 {
-                    @Override public int compare(UserFollowerDTO lhs, UserFollowerDTO rhs)
+                    @Override public int compare(FollowerListItemView.DTO lhs, FollowerListItemView.DTO rhs)
                     {
-                        return Integer.valueOf(lhs.id).compareTo(rhs.id);
+                        return Integer.valueOf(lhs.userFollowerDTO.id).compareTo(rhs.userFollowerDTO.id);
                     }
                 });
     }
@@ -36,6 +35,6 @@ public class UserFollowerDTOSetAdapter extends ViewDTOSetAdapter<UserFollowerDTO
 
     @Override public long getItemId(int position)
     {
-        return getItem(position).id;
+        return getItem(position).userFollowerDTO.id;
     }
 }

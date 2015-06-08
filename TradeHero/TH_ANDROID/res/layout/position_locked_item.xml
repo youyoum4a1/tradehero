@@ -3,163 +3,147 @@
 <com.tradehero.th.fragments.position.view.PositionLockedView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/basic_white_selector">
-
-  <com.tradehero.common.widget.ColorIndicator
-      android:id="@+id/color_indicator"
-      android:layout_height="match_parent"
-      android:layout_width="10dp"
-      android:background="@color/number_green"
-      android:layout_marginLeft="2dp"
-      android:layout_marginTop="2dp"
-      android:layout_marginBottom="2dp"
-      />
+    android:background="@drawable/basic_white_selector"
+    android:paddingLeft="@dimen/margin_small">
 
   <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="100dp"
+      android:padding="8dp"
+      android:orientation="horizontal"
+      >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:padding="8dp"
-        android:orientation="horizontal"
-        >
+    <ImageView
+        android:layout_width="@dimen/big_image_w_h"
+        android:layout_weight="1"
+        android:layout_height="@dimen/big_image_w_h"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/lock"
+        />
 
-      <ImageView
-          android:layout_width="@dimen/big_image_w_h"
-          android:layout_weight="1"
-          android:layout_height="@dimen/big_image_w_h"
-          android:contentDescription="@null"
-          android:scaleType="fitCenter"
-          android:layout_gravity="center_vertical"
-          android:src="@drawable/lock"
-          />
-
-      <RelativeLayout
-          android:layout_width="0dp"
-          android:layout_weight="3"
-          android:layout_height="match_parent"
-          android:gravity="center_vertical">
-
-        <TextView
-            android:id="@+id/position_locked_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:maxLines="1"
-            style="@style/TH.Subhead"
-            android:text="@string/position_locked_title"
-            />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/TH.Body"
-            android:text="@string/position_locked_follow_to_unlock"
-            android:layout_marginTop="@dimen/margin_small"
-            android:layout_below="@+id/position_locked_title"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            />
-
-      </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical">
 
       <TextView
-          android:id="@+id/position_percentage"
-          android:layout_width="0dp"
+          android:id="@+id/position_locked_title"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_weight="1"
+          android:layout_alignParentTop="true"
+          android:layout_alignParentLeft="true"
           android:maxLines="1"
-          android:visibility="gone"
+          style="@style/TH.Subhead"
+          android:text="@string/position_locked_title"
           />
 
-    </LinearLayout>
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Body"
+          android:text="@string/position_locked_follow_to_unlock"
+          android:layout_marginTop="@dimen/margin_small"
+          android:layout_below="@+id/position_locked_title"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentStart="true"
+          />
 
-    <TableLayout
-        android:layout_width="match_parent"
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/position_percentage"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="left"
+        android:layout_weight="1"
+        android:maxLines="1"
         android:visibility="gone"
-        >
-
-      <TableRow
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          >
-
-        <TextView
-            style="@style/TH.InfoKey"
-            android:id="@+id/unrealised_pl_value_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:text="@string/trade_list_unrealized_pl"
-            />
-
-        <TextView
-            android:id="@+id/unrealised_pl_value"
-            style="@style/TH.InfoValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-
-      </TableRow>
-
-      <TableRow
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:visibility="gone">
-
-        <TextView
-            android:id="@+id/realised_pl_value_header"
-            style="@style/TH.InfoKey"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            tools:text="Realized Profit"
-            />
-
-        <TextView
-            android:id="@+id/realised_pl_value"
-            style="@style/TH.InfoValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="US$ 700"
-            />
-
-      </TableRow>
-
-      <TableRow
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          >
-
-        <TextView
-            style="@style/TH.InfoKey"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:text="@string/position_total_invested_header"
-            />
-
-        <TextView
-            android:id="@+id/total_invested_value"
-            style="@style/TH.InfoValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="US$ 20,000"
-            />
-
-      </TableRow>
-
-    </TableLayout>
+        />
 
   </LinearLayout>
+
+  <TableLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="left"
+      android:visibility="gone"
+      >
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+      <TextView
+          style="@style/TH.InfoKey"
+          android:id="@+id/unrealised_pl_value_header"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="right"
+          android:text="@string/trade_list_unrealized_pl"
+          />
+
+      <TextView
+          android:id="@+id/unrealised_pl_value"
+          style="@style/TH.InfoValue"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+      <TextView
+          android:id="@+id/realised_pl_value_header"
+          style="@style/TH.InfoKey"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="right"
+          tools:text="Realized Profit"
+          />
+
+      <TextView
+          android:id="@+id/realised_pl_value"
+          style="@style/TH.InfoValue"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="US$ 700"
+          />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+      <TextView
+          style="@style/TH.InfoKey"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="right"
+          android:text="@string/position_total_invested_header"
+          />
+
+      <TextView
+          android:id="@+id/total_invested_value"
+          style="@style/TH.InfoValue"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="US$ 20,000"
+          />
+
+    </TableRow>
+
+  </TableLayout>
 
 </com.tradehero.th.fragments.position.view.PositionLockedView>

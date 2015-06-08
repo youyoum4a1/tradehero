@@ -18,7 +18,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.squareup.picasso.Picasso;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.ContainerDTO;
@@ -41,7 +40,6 @@ import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MarkdownTextView;
-import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.internal.util.SubscriptionList;
@@ -359,6 +357,9 @@ public class LeaderboardMarkUserItemView
 
             lbmuFollowUserVisibility = createLbmuFollowUserVisibility(currentUserProfileDTO, leaderboardItem.getBaseKey());
             lbmuFollowingUserVisibility = createLbmuFollowingUserVisibility(currentUserProfileDTO, leaderboardItem.getBaseKey());
+            // To use when server correctly sets the relationship in LeaderboardUserDTO
+            //lbmuFollowUserVisibility = createLbmuFollowUserVisibility(leaderboardItem);
+            //lbmuFollowingUserVisibility = createLbmuFollowingUserVisibility(leaderboardItem);
         }
 
         @ViewVisibilityValue protected int createLbmuFollowUserVisibility(
@@ -393,6 +394,30 @@ public class LeaderboardMarkUserItemView
         {
             this.lbmuFollowUserVisibility = createLbmuFollowUserVisibility(currentUserProfileDTO, heroId);
             this.lbmuFollowingUserVisibility = createLbmuFollowingUserVisibility(currentUserProfileDTO, heroId);
+        }
+
+        @ViewVisibilityValue protected int createLbmuFollowUserVisibility(
+                @NonNull LeaderboardUserDTO leaderboardItem)
+        {
+            if (leaderboardItem.relationship == null)
+            {
+                // you can't follow yourself
+                return GONE;
+            }
+            else
+            {
+                return !leaderboardItem.relationship.isMyHero
+                        ? VISIBLE
+                        : GONE;
+            }
+        }
+
+        @ViewVisibilityValue protected int createLbmuFollowingUserVisibility(
+                @NonNull LeaderboardUserDTO leaderboardItem)
+        {
+            return leaderboardItem.relationship.isMyHero
+                    ? VISIBLE
+                    : GONE;
         }
 
         @Override public boolean isExpanded()

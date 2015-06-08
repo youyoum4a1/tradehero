@@ -151,11 +151,26 @@ android {
 
   sourceSets {
     main {
+      java {
+        srcDir 'src/dagger1/java'
+      }
       res {
         srcDir 'res'
       }
       assets {
         srcDir 'assets'
+      }
+    }
+
+    debug {
+      java {
+        srcDir 'src/dagger1Debug/java'
+      }
+    }
+
+    release {
+      java {
+        srcDir 'src/dagger1Release/java'
       }
     }
 

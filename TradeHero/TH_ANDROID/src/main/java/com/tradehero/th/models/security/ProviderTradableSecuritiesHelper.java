@@ -11,20 +11,11 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.competition.ProviderFxListFragment;
 import com.tradehero.th.fragments.security.ProviderSecurityListRxFragment;
 import com.tradehero.th.fragments.security.WarrantCompetitionPagerFragment;
-import javax.inject.Inject;
 
 public class ProviderTradableSecuritiesHelper
 {
-    @NonNull private final DashboardNavigator navigator;
-
-    //<editor-fold desc="Constructors">
-    @Inject ProviderTradableSecuritiesHelper(@NonNull DashboardNavigator navigator)
-    {
-        this.navigator = navigator;
-    }
-    //</editor-fold>
-
-    public void pushTradableSecuritiesList(
+    public static void pushTradableSecuritiesList(
+            @NonNull DashboardNavigator navigator,
             @NonNull Bundle args,
             @Nullable OwnedPortfolioId ownedPortfolioId,
             @NonNull PortfolioCompactDTO portfolioCompactDTO,

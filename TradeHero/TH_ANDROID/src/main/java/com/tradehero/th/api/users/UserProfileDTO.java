@@ -51,6 +51,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
             // // user's top-traders ranking across all LBs
 
     public boolean firstFollowAllTime;
+    public boolean firstTimeLogin;
 
     public boolean useTHPrice;
 

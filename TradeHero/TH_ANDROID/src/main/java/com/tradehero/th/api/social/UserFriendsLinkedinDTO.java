@@ -1,8 +1,10 @@
 package com.tradehero.th.api.social;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.key.LinkedinFriendKey;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 
 public class UserFriendsLinkedinDTO extends UserFriendsDTO
 {
@@ -30,7 +32,7 @@ public class UserFriendsLinkedinDTO extends UserFriendsDTO
         return new LinkedinFriendKey(liId);
     }
 
-    @Override public int getNetworkLabelImage()
+    @Override @DrawableRes public int getNetworkLabelImage()
     {
         return R.drawable.icon_share_linkedin_on;
     }
@@ -43,6 +45,11 @@ public class UserFriendsLinkedinDTO extends UserFriendsDTO
     @Override public InviteDTO createInvite()
     {
         return new InviteLinkedinDTO(liId);
+    }
+
+    @NonNull @Override public String getAnalyticsTag()
+    {
+        return AnalyticsConstants.Linkedin;
     }
 
     @Override public int hashCode()

@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -10,6 +11,7 @@ import com.tradehero.th.api.users.SuggestHeroesListTypeNew;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -34,7 +36,8 @@ public class UserServiceWrapperStub extends UserServiceWrapper
             @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
             @NonNull Lazy<HeroListCacheRx> heroListCache,
             @NonNull Lazy<ProviderListCacheRx> providerListCache,
-            @NonNull Provider<UserFormDTO.Builder2> userFormBuilderProvider)
+            @NonNull Provider<UserFormDTO.Builder2> userFormBuilderProvider,
+            @NonNull @IsOnBoardShown BooleanPreference isOnBoardShown)
     {
         super(context,
                 userServiceRx,
@@ -45,7 +48,8 @@ public class UserServiceWrapperStub extends UserServiceWrapper
                 userMessagingRelationshipCache,
                 heroListCache,
                 providerListCache,
-                userFormBuilderProvider);
+                userFormBuilderProvider,
+                isOnBoardShown);
     }
     //</editor-fold>
 

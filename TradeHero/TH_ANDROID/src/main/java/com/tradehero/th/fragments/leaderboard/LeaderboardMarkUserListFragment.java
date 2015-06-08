@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.DTOCacheRx;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
@@ -43,6 +44,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import javax.inject.Inject;
+import retrofit.RetrofitError;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -419,6 +421,12 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     @Override protected void onError(@NonNull PagedLeaderboardKey key, @NonNull Throwable error)
     {
         super.onError(key, error);
+        if (!(error instanceof RetrofitError) || ((RetrofitError) error).getResponse() == null
+                || ((RetrofitError) error).getResponse().getStatus() != 404)
+        {
+            Timber.e(error, "Failed fetching leaderboard");
+        }
+        THToast.show(R.string.error_fetch_leaderboard_info);
         //swipeContainer.setRefreshing(false);
     }
 }

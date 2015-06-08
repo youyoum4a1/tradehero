@@ -19,6 +19,10 @@ public class PositionDTOCompact implements DTO
     // This is the portfolio currency
     @Nullable public String currencyDisplay;
     @Nullable public String currencyISO;
+
+    // This price is always in the security currency
+    @Nullable public Double averagePriceSecCcy;
+
     @Nullable public Double fxRate;
     @Nullable public PositionStatus positionStatus;
 

@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.social.hero;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,78 +16,69 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.billing.purchase.PurchaseResult;
-import com.tradehero.common.utils.THToast;
+import butterknife.OnItemClick;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
-import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
-import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Observer;
-import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import timber.log.Timber;
+import rx.schedulers.Schedulers;
 
 abstract public class HeroesTabContentFragment extends DashboardFragment
         implements SwipeRefreshLayout.OnRefreshListener
 {
-    private static final String BUNDLE_KEY_FOLLOWER_ID =
-            HeroesTabContentFragment.class.getName() + ".followerId";
+    private static final String BUNDLE_KEY_FOLLOWER_ID = HeroesTabContentFragment.class.getName() + ".followerId";
 
+    @Inject protected HeroListCacheRx heroListCache;
+    @Inject protected CurrentUserId currentUserId;
+
+    @InjectView(R.id.swipe_to_refresh_layout) protected SwipeRefreshLayout swipeRefreshLayout;
+    @InjectView(R.id.heros_list) protected ListView heroListView;
+    @InjectView(android.R.id.progress) protected ProgressBar progressBar;
+
+    private UserBaseKey followerId;
     private HeroListItemAdapter heroListAdapter;
-    // The follower whose heroes we are listing
-    @NonNull private UserBaseKey followerId;
-
-    @Inject HeroListCacheRx heroListCache;
-    /** when no heroes */
-    @Inject Lazy<LeaderboardDefCacheRx> leaderboardDefCache;
-    @Inject CurrentUserId currentUserId;
-
-    @InjectView(android.R.id.progress) public ProgressBar progressBar;
-    @InjectView(R.id.heros_list) public ListView heroListView;
-    @InjectView(R.id.swipe_to_refresh_layout) public SwipeRefreshLayout swipeRefreshLayout;
-    @Inject protected THBillingInteractorRx userInteractorRx;
 
     //<editor-fold desc="Argument Passing">
-    public static void putFollowerId(Bundle args, UserBaseKey followerId)
+    public static void putFollowerId(@NonNull Bundle args, @NonNull UserBaseKey followerId)
     {
         args.putBundle(BUNDLE_KEY_FOLLOWER_ID, followerId.getArgs());
     }
-
-    @NonNull public static UserBaseKey getFollowerId(@NonNull Bundle args)
-    {
-        return new UserBaseKey(args.getBundle(BUNDLE_KEY_FOLLOWER_ID));
-    }
     //</editor-fold>
+
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        this.heroListAdapter = new HeroListItemAdapter(
+                activity,
+                R.layout.hero_list_item,
+                R.layout.hero_list_item_empty_placeholder,
+                R.layout.hero_list_item_empty_placeholder_for_other);
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.followerId = getFollowerId(getArguments());
+        this.followerId = new UserBaseKey(getArguments().getBundle(BUNDLE_KEY_FOLLOWER_ID));
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,367 +92,156 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
-        this.heroListAdapter = new HeroListItemAdapter(
-                getActivity(),
-                /**R.layout.hero_list_item_empty_placeholder*/getEmptyViewLayout(),
-                R.layout.hero_list_item,
-                R.layout.hero_list_header,
-                R.layout.hero_list_header);
-        this.heroListAdapter.setFollowerId(followerId);
-        if (this.swipeRefreshLayout != null)
-        {
-            this.swipeRefreshLayout.setOnRefreshListener(this);
-        }
-        if (this.heroListView != null)
-        {
-            this.heroListView.setAdapter(this.heroListAdapter);
-            this.heroListView.setOnItemClickListener(
-                    new AdapterView.OnItemClickListener()
-                    {
-                        @Override public void onItemClick(AdapterView<?> parent, View view1, int position, long id)
-                        {
-                            HeroesTabContentFragment.this.handleHeroClicked(parent, view1, position, id);
-                        }
-                    }
-            );
-        }
-        setListShown(false);
+        this.swipeRefreshLayout.setOnRefreshListener(this);
+        this.heroListView.setAdapter(this.heroListAdapter);
         this.heroListView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
-    }
-
-    private void setListShown(boolean shown)
-    {
-        if (shown)
-        {
-            this.heroListView.setVisibility(View.VISIBLE);
-            this.progressBar.setVisibility(View.INVISIBLE);
-        }
-        else
-        {
-            this.heroListView.setVisibility(View.INVISIBLE);
-            this.progressBar.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        setActionBarTitle(getTitle());
+        setActionBarTitle(followerId.equals(currentUserId.toUserBaseKey())
+                ? R.string.manage_my_heroes_title
+                : R.string.manage_heroes_title);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onStart()
     {
         super.onStart();
+        progressBar.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setEnabled(false);
+        onStopSubscriptions.add(heroListCache.get(followerId)
+                .subscribeOn(Schedulers.computation())
+                .map(new Func1<Pair<UserBaseKey, HeroDTOExtWrapper>, Pair<HeroDTOExtWrapper, List<Object>>>()
+                {
+                    @Override public Pair<HeroDTOExtWrapper, List<Object>> call(Pair<UserBaseKey, HeroDTOExtWrapper> pair)
+                    {
+                        return Pair.create(
+                                pair.second,
+                                HeroListItemAdapter.createObjects(
+                                        getResources(),
+                                        currentUserId,
+                                        followerId,
+                                        getHeroes(pair.second)));
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<Pair<HeroDTOExtWrapper, List<Object>>>()
+                        {
+                            @Override public void call(Pair<HeroDTOExtWrapper, List<Object>> pair)
+                            {
+                                swipeRefreshLayout.setRefreshing(false);
+                                progressBar.setVisibility(View.GONE);
+                                heroListAdapter.setNotifyOnChange(false);
+                                heroListAdapter.clear();
+                                heroListAdapter.addAll(pair.second);
+                                heroListAdapter.setNotifyOnChange(true);
+                                heroListAdapter.notifyDataSetChanged();
+                                swipeRefreshLayout.setEnabled(true);
+                                notifyHeroesLoaded(pair.first);
+                            }
+                        },
+                        new ToastAndLogOnErrorAction(
+                                getString(R.string.error_fetch_hero),
+                                "Could not fetch heroes")
+                        {
+                            @Override public void call(Throwable throwable)
+                            {
+                                super.call(throwable);
+                                progressBar.setVisibility(View.GONE);
+                                swipeRefreshLayout.setEnabled(true);
+                            }
+                        }));
+
         onStopSubscriptions.add(heroListAdapter.getUserActionObservable()
                 .subscribe(
                         new Action1<HeroListItemView.UserAction>()
                         {
                             @Override public void call(HeroListItemView.UserAction userAction)
                             {
-                                handleUserAction(userAction);
+                                if (userAction instanceof HeroListItemView.UserActionDelete)
+                                {
+                                    unfollow(((HeroListItemView.UserActionDelete) userAction).heroDTO);
+                                }
+                                else
+                                {
+                                    throw new IllegalArgumentException("Unhandled userAction " + userAction);
+                                }
                             }
                         },
-                        new EmptyAction1<Throwable>()));
+                        new TimberOnErrorAction("Failed to handle UserAction")));
     }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        enableSwipeRefresh(false);
-        displayProgress(true);
-        fetchHeroes();
-    }
-
-    private boolean isCurrentUser()
-    {
-        UserBaseKey followerId = getFollowerId(getArguments());
-        return currentUserId != null && (followerId.key.intValue() == currentUserId.toUserBaseKey().key.intValue());
-    }
-
-    @LayoutRes private int getEmptyViewLayout()
-    {
-        if (isCurrentUser())
-        {
-            return R.layout.hero_list_item_empty_placeholder;
-        }
-        else
-        {
-            return R.layout.hero_list_item_empty_placeholder_for_other;
-        }
-    }
-
-    private int getTitle()
-    {
-        if (isCurrentUser())
-        {
-            return R.string.manage_my_heroes_title;
-        }
-        else
-        {
-            return R.string.manage_heroes_title;
-        }
-    }
-
-    private void refreshContent()
-    {
-        fetchHeroes();
-    }
-
-    protected HeroTypeResourceDTO getHeroTypeResource()
-    {
-        return HeroTypeResourceDTOFactory.create(getHeroType());
-    }
-
-    @NonNull abstract protected HeroType getHeroType();
 
     @Override public void onDestroyView()
     {
-        this.heroListAdapter = null;
         if (this.heroListView != null)
         {
-            this.heroListView.setOnItemClickListener(null);
             this.heroListView.setOnScrollListener(null);
         }
         ButterKnife.reset(this);
         super.onDestroyView();
     }
 
-    protected void fetchHeroes()
+    @Override public void onDetach()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
-                heroListCache.get(followerId))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new HeroManagerHeroListCacheObserver()));
+        heroListAdapter = null;
+        super.onDetach();
     }
 
-    private void handleHeroClicked(AdapterView<?> parent, View view, int position, long id)
-    {
-        pushTimelineFragment(((HeroDTO) parent.getItemAtPosition(position)).getBaseKey());
-    }
+    @NonNull abstract protected HeroType getHeroType();
 
-    protected void unfollow(@NonNull UserBaseKey userBaseKey)
-    {
-        onStopSubscriptions.add(
-                AppObservable.bindFragment(
-                        this,
-                        new SimpleFollowUserAssistant(getActivity(), userBaseKey)
-                                .launchUnFollowRx())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                new Action1<UserProfileDTO>()
-                                {
-                                    @Override public void call(UserProfileDTO profile)
-                                    {
-                                        HeroesTabContentFragment.this.fetchHeroes();
-                                    }
-                                },
-                                new ToastOnErrorAction()));
-    }
+    abstract protected List<HeroDTO> getHeroes(@NonNull HeroDTOExtWrapper heroDTOExtWrapper);
 
-    private void pushTimelineFragment(UserBaseKey userBaseKey)
+    @SuppressWarnings("unused")
+    @OnItemClick(R.id.heros_list)
+    protected void handleHeroClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        Bundle args = new Bundle();
-        PushableTimelineFragment.putUserBaseKey(args, userBaseKey);
-        navigator.get().pushFragment(PushableTimelineFragment.class, args);
-    }
-
-    protected void handleUserAction(@NonNull HeroListItemView.UserAction userAction)
-    {
-        if (userAction instanceof HeroListItemAdapter.UserActionMostSkilled)
+        Object item = parent.getItemAtPosition(position);
+        if (item instanceof HeroListItemView.DTO)
         {
-            handleGoMostSkilled();
+            Bundle args = new Bundle();
+            PushableTimelineFragment.putUserBaseKey(args, ((HeroListItemView.DTO) parent.getItemAtPosition(position)).heroDTO.getBaseKey());
+            navigator.get().pushFragment(PushableTimelineFragment.class, args);
         }
-        else if (userAction instanceof HeroListItemView.UserActionDelete)
+        else if (item.equals(HeroListItemAdapter.DTO_CALL_ACTION))
         {
-            handleHeroStatusChangeRequired(((HeroListItemView.UserActionDelete) userAction).heroDTO);
-        }
-        else
-        {
-            throw new IllegalArgumentException("Unhandled userAction " + userAction);
+            navigator.get().goToTab(RootFragmentType.COMMUNITY);
         }
     }
 
-    private void handleGoMostSkilled()
+    private void unfollow(@NonNull final HeroDTO clickedHeroDTO)
     {
-        // TODO this feels HACKy
-        //navigator.popFragment();
-
-        // TODO make it go to most skilled
-        //navigator.goToTab(DashboardTabType.COMMUNITY);
-
-        LeaderboardDefKey key =
-                new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID);
-        LeaderboardDefDTO dto = leaderboardDefCache.get().getCachedValue(key);
-        Bundle bundle = new Bundle(getArguments());
-        if (dto != null)
-        {
-            LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
-        }
-        else
-        {
-            LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID));
-        }
-        navigator.get().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
-    }
-
-    private void handleHeroStatusChangeRequired(@NonNull final HeroDTO clickedHeroDTO)
-    {
-        if (!clickedHeroDTO.active)
-        {
-            //noinspection unchecked
-            onStopSubscriptions.add(AppObservable.bindFragment(
-                    this,
-                    HeroAlertDialogRxUtil.popAlertFollowHero(getActivity()))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .flatMap(new Func1<OnDialogClickEvent, Observable<PurchaseResult>>()
+        onStopSubscriptions.add(HeroAlertDialogRxUtil.popAlertUnFollowHero(getActivity())
+                .flatMap(new Func1<OnDialogClickEvent, Observable<UserProfileDTO>>()
+                {
+                    @Override public Observable<UserProfileDTO> call(OnDialogClickEvent onDialogClickEvent)
                     {
-                        @Override public Observable<PurchaseResult> call(OnDialogClickEvent event)
+                        if (onDialogClickEvent.isPositive())
                         {
-                            if (event.isPositive())
-                            {
-                                //noinspection unchecked
-                                return userInteractorRx.purchaseAndPremiumFollowAndClear(clickedHeroDTO.getBaseKey());
-                            }
-                            return Observable.empty();
+                            return new SimpleFollowUserAssistant(getActivity(), clickedHeroDTO.getBaseKey())
+                                    .launchUnFollowRx();
                         }
-                    })
-                    .subscribe(
-                            new Action1<PurchaseResult>()
+                        return Observable.empty();
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<UserProfileDTO>()
+                        {
+                            @Override public void call(UserProfileDTO profile)
                             {
-                                @Override public void call(PurchaseResult result)
-                                {
-                                    Timber.d("onUserFollowSuccess");
-                                    THToast.show(HeroesTabContentFragment.this.getString(R.string.manage_heroes_unfollow_success));
-                                    HeroesTabContentFragment.this.fetchHeroes();
-                                }
-                            },
-                            new Action1<Throwable>()
-                            {
-                                @Override public void call(Throwable error)
-                                {
-                                    //TODO offical accounts, do not unfollow
-                                    if (clickedHeroDTO.isOfficialAccount())
-                                    {
-                                        THToast.show(
-                                                HeroesTabContentFragment.this.getString(R.string.manage_heroes_unfollow_official_accounts_failed));
-                                    }
-                                    else
-                                    {
-                                        Timber.e(error, "onUserFollowFailed error");
-                                        THToast.show(HeroesTabContentFragment.this.getString(R.string.manage_heroes_unfollow_failed));
-                                    }
-                                }
+                                heroListCache.get(followerId);
                             }
-                    ));
-        }
-        else
-        {
-            onStopSubscriptions.add(HeroAlertDialogRxUtil.popAlertUnFollowHero(getActivity())
-                    .subscribe(
-                            new Action1<OnDialogClickEvent>()
-                            {
-                                @Override public void call(OnDialogClickEvent event)
-                                {
-                                    if (event.isPositive())
-                                    {
-                                        THToast.show(HeroesTabContentFragment.this.getString(R.string.manage_heroes_unfollow_progress_message));
-                                        HeroesTabContentFragment.this.unfollow(clickedHeroDTO.getBaseKey());
-                                    }
-                                }
-                            },
-                            new ToastOnErrorAction()
-                    ));
-        }
-    }
-
-    abstract protected void display(HeroDTOExtWrapper heroDTOExtWrapper);
-
-    protected void display(List<HeroDTO> heroDTOs)
-    {
-        linkWith(heroDTOs);
-    }
-
-    public void linkWith(List<HeroDTO> heroDTOs)
-    {
-        heroListAdapter.setItems(heroDTOs);
-        displayHeroList();
-    }
-
-    public void display()
-    {
-        displayHeroList();
+                        },
+                        new ToastOnErrorAction()
+                ));
     }
 
     @Override public void onRefresh()
     {
-        refreshContent();
-    }
-
-    private void onRefreshCompleted()
-    {
-        if (swipeRefreshLayout != null)
-        {
-            swipeRefreshLayout.setRefreshing(false);
-        }
-    }
-
-    private void enableSwipeRefresh(boolean enable)
-    {
-        if (swipeRefreshLayout != null)
-        {
-            if (!enable)
-            {
-                swipeRefreshLayout.setEnabled(false);
-            }
-            else
-            {
-                swipeRefreshLayout.setEnabled(true);
-            }
-        }
-    }
-
-    private void displayHeroList()
-    {
-        if (heroListAdapter != null)
-        {
-            heroListAdapter.notifyDataSetChanged();
-        }
-    }
-
-    private void displayProgress(boolean running)
-    {
-        if (progressBar != null)
-        {
-            progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
-        }
-    }
-
-    private class HeroManagerHeroListCacheObserver
-            implements Observer<Pair<UserBaseKey, HeroDTOExtWrapper>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, HeroDTOExtWrapper> pair)
-        {
-            //displayProgress(false);
-            onRefreshCompleted();
-            setListShown(true);
-            display(pair.second);
-            enableSwipeRefresh(true);
-            notifyHeroesLoaded(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            displayProgress(false);
-            setListShown(true);
-            enableSwipeRefresh(true);
-            Timber.e(e, "Could not fetch heroes");
-            THToast.show(R.string.error_fetch_hero);
-        }
+        swipeRefreshLayout.setEnabled(false);
+        heroListCache.get(followerId);
     }
 
     private void notifyHeroesLoaded(HeroDTOExtWrapper value)
@@ -470,7 +250,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
                 FragmentUtils.getParent(this, OnHeroesLoadedListener.class);
         if (listener != null && !isDetached())
         {
-            listener.onHerosLoaded(getHeroTypeResource(), value);
+            listener.onHeroesLoaded(HeroTypeResourceDTOFactory.create(getHeroType()), value);
         }
     }
 }

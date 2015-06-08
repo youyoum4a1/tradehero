@@ -52,6 +52,7 @@
   </string>
   <string name="leaderboard_connect_accounts">Connect Accounts…</string>
   <string name="leaderboard_follow">@string/follow</string>
+  <string name="leaderboard_friend_call_action">Connect your social media accounts and start adding your friends.</string>
 
   <string name="error_fetch_leaderboard_def_list_key">There was an error when fetching the definition list of leaderboards</string>
   <string name="error_fetch_leaderboard_def">There was an error when fetching the leaderboard definition</string>

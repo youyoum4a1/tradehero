@@ -1,6 +1,7 @@
 package com.tradehero.th.api.portfolio;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
@@ -10,20 +11,20 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 public class DisplayablePortfolioUtil
 {
     @NonNull public static String getLongTitle(
-            @NonNull Context context,
+            @NonNull Resources resources,
             @Nullable DisplayablePortfolioDTO displayablePortfolioDTO)
     {
         String title = null;
         if (displayablePortfolioDTO != null && displayablePortfolioDTO.portfolioDTO != null)
         {
-            title = PortfolioDTOUtil.getLongTitle(context,
+            title = PortfolioDTOUtil.getLongTitle(resources,
                     displayablePortfolioDTO.portfolioDTO);
         }
         if (title != null)
         {
             return title;
         }
-        return context.getString(R.string.portfolio_title_unnamed);
+        return resources.getString(R.string.portfolio_title_unnamed);
     }
 
     public static int getLongTitleTextColor(
@@ -43,14 +44,14 @@ public class DisplayablePortfolioUtil
     }
 
     @Nullable public static String getLongSubTitle(
-            @NonNull Context context,
+            @NonNull Resources resources,
             @NonNull CurrentUserId currentUserId,
             @Nullable DisplayablePortfolioDTO displayablePortfolioDTO)
     {
         String subTitle = null;
         if (displayablePortfolioDTO instanceof DummyFxDisplayablePortfolioDTO)
         {
-            subTitle = context.getString(R.string.portfolio_tap_to_enroll_fx);
+            subTitle = resources.getString(R.string.portfolio_tap_to_enroll_fx);
         }
         else if (displayablePortfolioDTO != null)
         {
@@ -58,14 +59,14 @@ public class DisplayablePortfolioUtil
             if (!isCurrentUser)
             {
                 subTitle = PortfolioDTOUtil.getLongSubTitle(
-                        context,
+                        resources,
                         displayablePortfolioDTO.portfolioDTO,
-                        UserBaseDTOUtil.getLongDisplayName(context, displayablePortfolioDTO.userBaseDTO));
+                        UserBaseDTOUtil.getLongDisplayName(resources, displayablePortfolioDTO.userBaseDTO));
             }
             else
             {
                 subTitle = PortfolioDTOUtil.getLongSubTitle(
-                        context,
+                        resources,
                         displayablePortfolioDTO.portfolioDTO);
             }
         }

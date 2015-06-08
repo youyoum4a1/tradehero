@@ -1,8 +1,10 @@
 package com.tradehero.th.api.social;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.key.WeiboFriendKey;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 
 public class UserFriendsWeiboDTO extends UserFriendsDTO
 {
@@ -29,7 +31,7 @@ public class UserFriendsWeiboDTO extends UserFriendsDTO
         return new WeiboFriendKey(wbId);
     }
 
-    @Override public int getNetworkLabelImage()
+    @Override @DrawableRes public int getNetworkLabelImage()
     {
         return R.drawable.icn_wb_white;
     }
@@ -42,6 +44,11 @@ public class UserFriendsWeiboDTO extends UserFriendsDTO
     @Override public InviteDTO createInvite()
     {
         return new InviteWeiboDTO(wbId);
+    }
+
+    @NonNull @Override public String getAnalyticsTag()
+    {
+        return AnalyticsConstants.WeiBo;
     }
 
     @Override public int hashCode()

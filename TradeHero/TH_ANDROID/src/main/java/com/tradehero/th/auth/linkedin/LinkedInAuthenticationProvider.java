@@ -32,7 +32,11 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
     private static final String REQUEST_TOKEN_URL = "https://www.linkedin.com/uas/oauth/requestToken";
     private static final String ACCESS_TOKEN_URL = "https://www.linkedin.com/uas/oauth/accessToken";
     private static final String AUTHORIZE_URL = "https://www.linkedin.com/uas/oauth/authorize";
-    private static final String PERMISSION_SCOPE = "r_basicprofile r_emailaddress r_network r_contactinfo rw_nus w_messages";
+    private static final String PERMISSION_SCOPE = "r_basicprofile r_emailaddress w_share";
+    // OK r_basicprofile r_emailaddress
+    // Not OK w_messages r_network
+    // Unavailable to us: r_contactinfo
+    // Deprecated rw_nus, replaced with w_share
     private static final String CALLBACK_URL = "x-oauthflow-linkedin://callback";
     private static final String SERVICE_URL_ID = "www.linkedin";
 

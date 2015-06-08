@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.portfolio.header;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -17,19 +18,19 @@ public class PortfolioHeaderFactory
 {
     @LayoutRes public static int layoutIdFor(
             @NonNull GetPositionsDTOKey getPositionsDTOKey,
-            @NonNull PortfolioCompactDTO portfolioCompactDTO,
+            @Nullable PortfolioCompactDTO portfolioCompactDTO,
             @NonNull CurrentUserId currentUserId)
     {
-        if (portfolioCompactDTO.isFx())
+        if (portfolioCompactDTO != null && portfolioCompactDTO.isFx())
         {
             // TODO more tests
-            return layoutIdForFx(portfolioCompactDTO.getOwnedPortfolioId());
+            return R.layout.portfolio_header_fx_current_user_view;
         }
         else
         {
             if (getPositionsDTOKey instanceof LeaderboardMarkUserId)
             {
-                return layoutIdForStocks((LeaderboardMarkUserId) getPositionsDTOKey);
+                return R.layout.portfolio_header_other_user_view;
             }
             else if (getPositionsDTOKey instanceof OwnedPortfolioId)
             {
@@ -37,18 +38,6 @@ public class PortfolioHeaderFactory
             }
         }
         throw new IllegalArgumentException("Unhandled getPositionDTOKey type " + getPositionsDTOKey.getClass());
-    }
-
-    @LayoutRes static int layoutIdForFx(@NonNull OwnedPortfolioId ownedPortfolioId)
-    {
-        // TODO more tests
-        return R.layout.portfolio_header_fx_current_user_view;
-    }
-
-    @LayoutRes static int layoutIdForStocks(LeaderboardMarkUserId leaderboardMarkUserId)
-    {
-        // TODO check whether we need to see this is current user or not
-        return R.layout.portfolio_header_other_user_view;
     }
 
     @LayoutRes static int layoutIdForStocks(

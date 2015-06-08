@@ -97,6 +97,7 @@ public class FXMainFragment extends BuySellFragment
 
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
+        pagerSlidingTabStrip.setDistributeEvenly(true);
     }
 
     @Nullable @Override protected PortfolioCompactDTO getPreferredApplicablePortfolio(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)

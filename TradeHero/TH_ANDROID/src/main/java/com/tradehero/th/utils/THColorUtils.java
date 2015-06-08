@@ -14,12 +14,12 @@ public class THColorUtils
         return PApplication.context().getResources().getColor(getColorResourceIdForNumber(percentage));
     }
 
-    public static int getColorResourceIdForNumber(double n)
+    @ColorRes public static int getColorResourceIdForNumber(double n)
     {
         return getColorResourceIdForNumber(n, R.color.black);
     }
 
-    public static int getColorResourceIdForNumber(double n, @ColorRes int defaultColorResId)
+    @ColorRes public static int getColorResourceIdForNumber(double n, @ColorRes int defaultColorResId)
     {
         return n < 0 ? R.color.number_down : n > 0 ? R.color.number_up : defaultColorResId;
     }

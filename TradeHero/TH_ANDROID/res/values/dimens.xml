@@ -47,6 +47,10 @@
   <dimen name="size_19">152dp</dimen>
   <dimen name="size_20">160dp</dimen>
   <dimen name="size_21">168dp</dimen>
+  <dimen name="size_22">176dp</dimen>
+  <dimen name="size_23">184dp</dimen>
+  <dimen name="size_24">192dp</dimen>
+  <dimen name="size_25">200dp</dimen>
 
 
   <dimen name="activity_horizontal_margin">@dimen/size_2</dimen>

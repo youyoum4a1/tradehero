@@ -1,6 +1,5 @@
 package com.tradehero.th.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,29 +11,21 @@ import butterknife.InjectView;
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.R;
-import com.tradehero.th.UIModule;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.base.BaseFragmentOuterElements;
-import com.tradehero.th.fragments.base.FragmentOuterElements;
-import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Module;
-import dagger.Provides;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
 import rx.functions.Action1;
 
 abstract public class OneFragmentActivity extends BaseActivity
         implements AchievementAcceptor
 {
+    OneFragmentActivityModule activityModule;
     @Inject protected THRouter thRouter;
     @Inject Set<ActivityResultRequester> activityResultRequesters;
-    protected DashboardNavigator navigator;
     @InjectView(R.id.my_toolbar) protected Toolbar toolbar;
 
     @Override protected void onCreate(Bundle savedInstanceState)
@@ -45,11 +36,11 @@ abstract public class OneFragmentActivity extends BaseActivity
 
         setSupportActionBar(toolbar);
 
-        navigator = new DashboardNavigator(this, R.id.realtabcontent);
+        activityModule.navigator = new DashboardNavigator(this, R.id.realtabcontent);
 
         if (savedInstanceState == null)
         {
-            navigator.pushFragment(
+            activityModule.navigator.pushFragment(
                     getInitialFragment(),
                     getInitialBundle(),
                     null,
@@ -81,7 +72,8 @@ abstract public class OneFragmentActivity extends BaseActivity
     @NonNull @Override protected List<Object> getModules()
     {
         List<Object> superModules = new ArrayList<>(super.getModules());
-        superModules.add(new OneFragmentActivityModule());
+        activityModule = new OneFragmentActivityModule();
+        superModules.add(activityModule);
         return superModules;
     }
 
@@ -105,7 +97,7 @@ abstract public class OneFragmentActivity extends BaseActivity
         }
         else
         {
-            navigator.popFragment();
+            activityModule.navigator.popFragment();
         }
     }
 
@@ -123,33 +115,6 @@ abstract public class OneFragmentActivity extends BaseActivity
         if (routeParams != null)
         {
             thRouter.open(routeParams.deepLink, routeParams.extras, this);
-        }
-    }
-
-    @Module(
-            addsTo = AppModule.class,
-            includes = {
-                    UIModule.class
-            },
-            library = true,
-            complete = false,
-            overrides = true
-    )
-    public class OneFragmentActivityModule
-    {
-        @Provides DashboardNavigator provideDashboardNavigator()
-        {
-            return navigator;
-        }
-
-        @Provides @Singleton THRouter provideTHRouter(Context context, Provider<DashboardNavigator> navigatorProvider)
-        {
-            return new THRouter(context, navigatorProvider);
-        }
-
-        @Provides FragmentOuterElements provideFragmentElements()
-        {
-            return new BaseFragmentOuterElements();
         }
     }
 }

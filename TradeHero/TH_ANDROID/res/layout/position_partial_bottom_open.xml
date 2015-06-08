@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
+<com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    >
+    android:id="@+id/expanding_layout"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
-  <com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView
-      android:id="@+id/expanding_layout"
-      android:orientation="vertical"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+  <TableLayout
+      android:id="@+id/position_partial_bottom_open_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      >
 
-    <TableLayout
-        android:id="@+id/position_partial_bottom_open_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <include
+        layout="@layout/position_partial_bottom_open_merge"
+        />
 
-      <include
-          layout="@layout/position_partial_bottom_open_merge"
-          />
+  </TableLayout>
 
-    </TableLayout>
-
-  </com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView>
-
-</merge>
+</com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView>

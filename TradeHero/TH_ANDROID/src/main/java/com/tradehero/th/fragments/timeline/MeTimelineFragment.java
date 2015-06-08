@@ -1,22 +1,29 @@
 package com.tradehero.th.fragments.timeline;
 
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.TextView;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.UpdateCenterActivity;
+import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
+import com.tradehero.th.api.portfolio.DummyFxDisplayablePortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import javax.inject.Inject;
+import rx.functions.Action1;
 
 @Routable({
         "user/me", "profiles/me"
@@ -28,6 +35,7 @@ public class MeTimelineFragment extends TimelineFragment
     @Inject DTOCacheUtilImpl dtoCacheUtil;
 
     TextView unreadCountView;
+    @Nullable FxOnBoardDialogFragment onBoardDialogFragment;
 
     @Nullable @Override protected UserBaseKey getShownUserBaseKey()
     {
@@ -74,11 +82,6 @@ public class MeTimelineFragment extends TimelineFragment
         return R.layout.tutorial_timeline;
     }
 
-    @Override protected void fetchMessageThreadHeader()
-    {
-        // Nothing to do
-    }
-
     @Override protected void linkWith(@NonNull UserProfileDTO userProfileDTO)
     {
         super.linkWith(userProfileDTO);
@@ -89,9 +92,47 @@ public class MeTimelineFragment extends TimelineFragment
     {
         if (shownProfile != null && unreadCountView != null)
         {
-            unreadCountView.setVisibility(shownProfile.unreadNotificationsCount > 0 ? View.VISIBLE : View.GONE);
-            unreadCountView.setText(THSignedNumber.builder(shownProfile.unreadNotificationsCount)
+            unreadCountView.setVisibility(shownProfile.unreadMessageThreadsCount > 0 ? View.VISIBLE : View.GONE);
+            unreadCountView.setText(THSignedNumber.builder(shownProfile.unreadMessageThreadsCount)
                     .build().toString());
+        }
+    }
+
+    @Override protected void onMainItemClick(AdapterView<?> adapterView, View view, int i, long l)
+    {
+        Object item = adapterView.getItemAtPosition(i);
+        if (item instanceof DummyFxDisplayablePortfolioDTO)
+        {
+            popEnrollFx();
+        }
+        else
+        {
+            super.onMainItemClick(adapterView, view, i, l);
+        }
+    }
+
+    private void popEnrollFx()
+    {
+        if (onBoardDialogFragment == null)
+        {
+            onBoardDialogFragment = FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
+            onBoardDialogFragment.getDismissedObservable()
+                    .subscribe(
+                            new Action1<DialogInterface>()
+                            {
+                                @Override public void call(DialogInterface dialog)
+                                {
+                                    onBoardDialogFragment = null;
+                                    swipeRefreshContainer.setRefreshing(true);
+                                    portfolioCompactListCache.invalidate(shownUserBaseKey);
+                                    portfolioCompactListCache.get(shownUserBaseKey);
+                                    userProfileCache.get().invalidate(shownUserBaseKey);
+                                    userProfileCache.get().get(shownUserBaseKey);
+                                    swipeRefreshContainer.setRefreshing(false);
+                                }
+                            },
+                            new ToastOnErrorAction()
+                    );
         }
     }
 }

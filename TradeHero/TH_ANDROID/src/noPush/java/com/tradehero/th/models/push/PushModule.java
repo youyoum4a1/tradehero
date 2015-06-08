@@ -13,8 +13,6 @@ import java.util.Set;
 import javax.inject.Singleton;
 
 @Module(
-        includes = {
-        },
         injects = {
                 DefaultIntentReceiver.class,
         },

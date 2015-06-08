@@ -10,6 +10,7 @@
   <string name="watchlist_button_done">완료</string>
   <string name="watchlist_button_delete">삭제</string>
   <string name="watchlist_average_price_header">평균가 (US$)</string>
+  <string name="watchlist_average_price_header_with_currency">평균가 (%s)</string>
   <string name="watchlist_quantity_header">수량</string>
   <string name="watchlist_quantity_initial">1</string>
   <string name="watchlist_view_graph">그래프 보기</string>

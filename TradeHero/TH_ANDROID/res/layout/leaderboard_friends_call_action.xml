@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tradehero.th.fragments.leaderboard.LeaderboardFriendCallToActionItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    >
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_small"
+      android:layout_marginBottom="@dimen/margin_small"
+      android:text="@string/leaderboard_friend_call_action"
+      style="@style/TH.Title"
+      android:gravity="center"
+      />
+
+  <include
+      layout="@layout/social_network_button_list_wrapper"
+      android:id="@+id/social_network_button_list"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      />
+
+  <Space
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/margin_small"
+      />
+
+</com.tradehero.th.fragments.leaderboard.LeaderboardFriendCallToActionItemView>

@@ -2,8 +2,6 @@ package com.tradehero.th.fragments.position.partial;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -14,7 +12,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
-import com.tradehero.th.models.position.PositionDTOUtils;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DateUtils;
 
 public class PositionPartialBottomInPeriodViewHolder implements DTOView<PositionPartialBottomInPeriodViewHolder.DTO>
@@ -51,7 +50,6 @@ public class PositionPartialBottomInPeriodViewHolder implements DTOView<Position
         {
             overallTitle.setVisibility(dto.inPeriodVisibility);
         }
-
         if (inPeriodPLHeader != null)
         {
             inPeriodPLHeader.setText(dto.inPeriodPLHeader);
@@ -83,75 +81,77 @@ public class PositionPartialBottomInPeriodViewHolder implements DTOView<Position
         @NonNull public final PositionDTO positionDTO;
 
         @ViewVisibilityValue public final int inPeriodVisibility;
-        @NonNull public final String inPeriodPLHeader;
-        @NonNull public final String inPeriodPL;
-        @NonNull public final String inPeriodAdditionalInvested;
-        @NonNull public final String inPeriodValueAtStart;
-        @NonNull public final String inPeriodValueStartDate;
-        @NonNull public final Spanned inPeriodRoiValue;
+        @NonNull public final CharSequence inPeriodPLHeader;
+        @NonNull public final CharSequence inPeriodPL;
+        @NonNull public final CharSequence inPeriodAdditionalInvested;
+        @NonNull public final CharSequence inPeriodValueAtStart;
+        @NonNull public final CharSequence inPeriodValueStartDate;
+        @NonNull public final CharSequence inPeriodRoiValue;
 
         public DTO(@NonNull Resources resources, @NonNull PositionDTO positionDTO)
         {
             this.positionDTO = positionDTO;
+            String na = resources.getString(R.string.na);
 
             inPeriodVisibility = positionDTO instanceof PositionInPeriodDTO ? View.VISIBLE : View.GONE;
 
-            //<editor-fold desc="In Period PL Header">
-            if (positionDTO instanceof PositionInPeriodDTO && ((PositionInPeriodDTO) positionDTO).totalPLInPeriodRefCcy != null)
-            {
-                inPeriodPLHeader = resources.getString(
-                        ((PositionInPeriodDTO) positionDTO).totalPLInPeriodRefCcy >= 0 ?
-                                R.string.position_in_period_profit :
-                                R.string.position_in_period_loss);
-            }
-            else
-            {
-                inPeriodPLHeader = resources.getString(R.string.na);
-            }
-            //</editor-fold>
-
             //<editor-fold desc="In Period PL">
-            if (positionDTO instanceof PositionInPeriodDTO)
-            {
-                inPeriodPL = PositionDTOUtils.getInPeriodRealizedPL(resources, (PositionInPeriodDTO) positionDTO);
-            }
-            else
-            {
-                inPeriodPL = resources.getString(R.string.na);
-            }
+            Double totalPLInPeriodRefCcy = positionDTO instanceof PositionInPeriodDTO
+                    ? ((PositionInPeriodDTO) positionDTO).totalPLInPeriodRefCcy
+                    : null;
+            inPeriodPLHeader = totalPLInPeriodRefCcy == null
+                    ? na
+                    : resources.getString(
+                            totalPLInPeriodRefCcy >= 0 ?
+                                    R.string.position_in_period_profit :
+                                    R.string.position_in_period_loss);
+            inPeriodPL = totalPLInPeriodRefCcy == null
+                    ? na
+                    : THSignedMoney.builder(totalPLInPeriodRefCcy)
+                            .withOutSign()
+                            .currency(positionDTO.getNiceCurrency())
+                            .build()
+                            .createSpanned();
             //</editor-fold>
 
             //<editor-fold desc="In Period ROI Value">
-            if (positionDTO instanceof PositionInPeriodDTO)
-            {
-                inPeriodRoiValue = PositionDTOUtils.getROISpanned(resources, ((PositionInPeriodDTO) positionDTO).getROIInPeriod());
-            }
-            else
-            {
-                inPeriodRoiValue = new SpannableString(resources.getString(R.string.na));
-            }
+            Double roiInPeriod = positionDTO instanceof PositionInPeriodDTO
+                    ? ((PositionInPeriodDTO) positionDTO).getROIInPeriod()
+                    : null;
+            inPeriodRoiValue = roiInPeriod == null
+                    ? na
+                    : THSignedPercentage.builder(roiInPeriod * 100.0)
+                            .signTypePlusMinusAlways()
+                            .withDefaultColor()
+                            .relevantDigitCount(3)
+                            .build()
+                            .createSpanned();
             //</editor-fold>
 
             //<editor-fold desc="In Period Additional Invested">
-            if (positionDTO instanceof PositionInPeriodDTO)
-            {
-                inPeriodAdditionalInvested = PositionDTOUtils.getAdditionalInvested(resources, (PositionInPeriodDTO) positionDTO);
-            }
-            else
-            {
-                inPeriodAdditionalInvested = resources.getString(R.string.na);
-            }
+            Double sumPurchasesInPeriodRefCcy = positionDTO instanceof PositionInPeriodDTO
+                    ? ((PositionInPeriodDTO) positionDTO).sumPurchasesInPeriodRefCcy
+                    : null;
+            inPeriodAdditionalInvested = sumPurchasesInPeriodRefCcy == null
+                    ? na
+                    : THSignedMoney.builder(sumPurchasesInPeriodRefCcy)
+                            .withOutSign()
+                            .currency(positionDTO.getNiceCurrency())
+                            .build()
+                            .createSpanned();
             //</editor-fold>
 
             //<editor-fold desc="In Period Value At Start">
-            if (positionDTO instanceof PositionInPeriodDTO)
-            {
-                inPeriodValueAtStart = PositionDTOUtils.getValueAtStart(resources, (PositionInPeriodDTO) positionDTO);
-            }
-            else
-            {
-                inPeriodValueAtStart = resources.getString(R.string.na);
-            }
+            Double marketValueStartPeriodRefCcy = positionDTO instanceof PositionInPeriodDTO
+                    ? ((PositionInPeriodDTO) positionDTO).marketValueStartPeriodRefCcy
+                    : null;
+            inPeriodValueAtStart = marketValueStartPeriodRefCcy == null || /* It appears iOS version does that */ marketValueStartPeriodRefCcy <= 0
+                    ? na
+                    : THSignedMoney.builder(marketValueStartPeriodRefCcy)
+                            .withOutSign()
+                            .currency(positionDTO.getNiceCurrency())
+                            .build()
+                            .createSpanned();
             //</editor-fold>
 
             inPeriodValueStartDate = resources.getString(

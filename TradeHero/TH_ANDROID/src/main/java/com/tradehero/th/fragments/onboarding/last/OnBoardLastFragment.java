@@ -109,6 +109,6 @@ public class OnBoardLastFragment extends BaseFragment
     @OnClick(android.R.id.button2)
     protected void buySharesLaterButtonClicked(View view)
     {
-        thRouter.open("user/me", getActivity());
+        thRouter.open("trending-securities", getActivity());
     }
 }

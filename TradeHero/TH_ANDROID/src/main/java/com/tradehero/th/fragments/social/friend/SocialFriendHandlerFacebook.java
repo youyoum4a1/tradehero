@@ -172,7 +172,8 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
                         new WebDialog.RequestsDialogBuilder(
                                 activityProvider.get(),
                                 session,
-                                params)));
+                                params)))
+                .subscribeOn(AndroidSchedulers.mainThread());
     }
 
     @NonNull String concatIds(@NonNull List<String> fbIds)

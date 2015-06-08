@@ -77,17 +77,22 @@ public class OnBoardFragment extends BaseFragment
     private SectorDTOList selectedSectors;
     private LeaderboardUserDTOList selectedHeroes;
     private SecurityCompactDTOList selectedStocks;
-    @NonNull private final Subscription[] fragmentSubscriptions;
+    private Subscription[] fragmentSubscriptions;
     @NonNull private final BehaviorSubject<ExchangeCompactDTOList> selectedExchangesSubject;
     @NonNull private final BehaviorSubject<SectorDTOList> selectedSectorsSubject;
     @NonNull private BehaviorSubject<SecurityCompactDTOList> selectedSecuritiesBehavior;
 
     public OnBoardFragment()
     {
-        fragmentSubscriptions = new Subscription[getTabCount()];
         selectedExchangesSubject = BehaviorSubject.create();
         selectedSectorsSubject = BehaviorSubject.create();
         selectedSecuritiesBehavior = BehaviorSubject.create();
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        fragmentSubscriptions = new Subscription[getTabCount()];
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

@@ -8,7 +8,8 @@ import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.base.THApp;
+import com.tradehero.th.inject.HierarchyInjector;
 import java.util.Date;
 import java.util.Random;
 import javax.inject.Inject;
@@ -66,7 +67,7 @@ public class MessageHeaderDTO implements DTO, KeyGenerator
 
     protected void init()
     {
-        DaggerUtils.inject(this);
+        HierarchyInjector.inject(THApp.context(), this);
     }
 
     @Override @NonNull public MessageHeaderId getDTOKey()

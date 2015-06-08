@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.AbsListView;
@@ -32,12 +33,14 @@ public class FollowerManagerViewContainer
     // TODO this view and the one in FollowerRevenueReportFragment point to same thing, should be merged.
     @InjectView(R.id.follower_list) AbsListView followerListView;
 
+    @NonNull private Resources resources;
     private FollowerSummaryDTO followerSummaryDTO;
-    private UserFollowerDTOSetAdapter adapter;
+    @NonNull private UserFollowerDTOSetAdapter adapter;
 
     public FollowerManagerViewContainer(@NonNull Context context)
     {
         super();
+        this.resources = context.getResources();
         adapter = new UserFollowerDTOSetAdapter(context);
     }
 
@@ -57,7 +60,7 @@ public class FollowerManagerViewContainer
         this.followerSummaryDTO = followerSummaryDTO;
 
         adapter.clear();
-        adapter.appendTail(followerSummaryDTO.userFollowers);
+        adapter.appendTail(FollowerListItemView.createList(resources, followerSummaryDTO.userFollowers));
         adapter.notifyDataSetChanged();
         displayChild(INDEX_VIEW_LIST);
 

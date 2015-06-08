@@ -1,5 +1,6 @@
 package com.tradehero.th.api.social;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.key.ContactFriendKey;
@@ -11,7 +12,7 @@ public class UserFriendsContactEntryDTO extends UserFriendsDTO
         return new ContactFriendKey(email);
     }
 
-    @Override public int getNetworkLabelImage()
+    @Override @DrawableRes public int getNetworkLabelImage()
     {
         return R.drawable.default_image;
     }
@@ -19,6 +20,11 @@ public class UserFriendsContactEntryDTO extends UserFriendsDTO
     @Override public InviteDTO createInvite()
     {
         return new InviteContactEntryDTO(email);
+    }
+
+    @NonNull @Override public String getAnalyticsTag()
+    {
+        return "Contact";
     }
 
     @Override public int hashCode()

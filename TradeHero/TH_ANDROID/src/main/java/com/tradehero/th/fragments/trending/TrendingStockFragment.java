@@ -178,7 +178,10 @@ public class TrendingStockFragment extends TrendingBaseFragment
             {
                 @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
                 {
-                    onExchangeSelected(parent, view, position, id);
+                    if (itemViewAdapter != null) // HACK because of the disconnect between destroy and destroyOptionsMenu
+                    {
+                        onExchangeSelected(parent, view, position, id);
+                    }
                 }
 
                 @Override public void onNothingSelected(AdapterView<?> parent)
@@ -197,6 +200,15 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        if (mExchangeSelection != null)
+        {
+            mExchangeSelection.setOnItemSelectedListener(null);
+        }
+        super.onDestroyOptionsMenu();
     }
 
     @Override public void onDestroy()

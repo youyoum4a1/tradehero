@@ -4,8 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.android.internal.util.Predicate;
 import com.tradehero.th.R;
-import com.tradehero.th.api.position.PositionDTOCompactUtil;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -44,27 +45,25 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
 
     @Override @Nullable protected Double getProfitOrLossUsd()
     {
-        if (positionDTOList == null || portfolioCompactDTO == null)
+        if (positionDTOList == null || portfolioCompactDTO == null || quoteDTO == null || quoteDTO.bid == null)
         {
             return null;
         }
-        Integer maxSellableShares = getMaxSellableShares();
-        if(maxSellableShares == null || maxSellableShares <= 0)
+        PositionDTO positionDTO = positionDTOList.findFirstWhere(new Predicate<PositionDTO>()
+        {
+            @Override public boolean apply(PositionDTO positionDTO)
+            {
+                return positionDTO.portfolioId == portfolioCompactDTO.id
+                        && positionDTO.shares != null
+                        && positionDTO.shares > 0;
+            }
+        });
+        if (positionDTO == null || positionDTO.averagePriceSecCcy == null)
         {
             return null;
         }
-        Double netProceedsUsd = PositionDTOCompactUtil.getNetSellProceedsUsd(
-                mTransactionQuantity,
-                quoteDTO,
-                getPortfolioId(),
-                true,
-                portfolioCompactDTO.getProperTxnCostUsd());
-        Double totalSpentUsd = PositionDTOCompactUtil.getSpentOnQuantityUsd(positionDTOList, mTransactionQuantity, portfolioCompactDTO);
-        if (netProceedsUsd == null || totalSpentUsd == null)
-        {
-            return null;
-        }
-        return netProceedsUsd - totalSpentUsd;
+
+        return getQuantity() * quoteDTO.toUSDRate * (quoteDTO.bid - positionDTO.averagePriceSecCcy);
     }
 
     @Override @Nullable protected Boolean isClosingPosition()
