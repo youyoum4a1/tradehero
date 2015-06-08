@@ -1,96 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/security_detail_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
     android:background="@color/bg_fragment"
-    >
-  <include
-      android:id="@+id/ic_info_data"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      layout="@layout/security_info_data"/>
+    android:orientation="vertical">
 
-  <ScrollView android:layout_width="fill_parent"
-      android:layout_above="@id/bvaViewAll"
-      android:layout_below="@id/ic_info_data"
-      android:layout_height="fill_parent" android:fillViewport="false">
+    <include
+        android:id="@+id/ic_info_data"
+        layout="@layout/security_info_data"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical">
-
-
-      <include
-          android:layout_marginLeft="10dp"
-          android:layout_marginRight="10dp"
-          android:id="@+id/ic_info_chart"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:layout_below="@id/ic_info_data"
-          layout="@layout/security_info_chart"/>
-
-      <LinearLayout
-          android:layout_width="fill_parent"
-          android:layout_height="fill_parent"
-          android:layout_marginLeft="10dp"
-          android:layout_marginRight="10dp"
-          android:layout_below="@id/ic_info_chart"
-          android:layout_above="@id/ic_info_buy_sale_btns"
-          android:orientation="vertical">
+        android:layout_above="@id/bvaViewAll"
+        android:layout_below="@id/ic_info_data"
+        android:fillViewport="false">
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="32dp"
-            android:orientation="horizontal">
-          <View android:layout_width="1px" android:layout_height="match_parent" android:background="#cecece"/>
-          <Button
-              android:id="@+id/btnTabDiscuss"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:text="讨论"
-              android:textColor="@color/black"
-              android:textSize="15sp"
-              android:background="@drawable/tab_blue_head_active"
-              android:layout_weight="1"/>
-            <View android:layout_width="1px" android:layout_height="match_parent" android:background="#cecece"/>
-          <Button
-              android:id="@+id/btnTabNews"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:text="资讯"
-              android:textColor="@color/black"
-              android:textSize="15sp"
-              android:background="@drawable/tab_blue_head_normal"
-              android:layout_marginRight="1px"
-              android:layout_weight="1"/>
-            <View android:layout_width="1px" android:layout_height="match_parent" android:background="#cecece"/>
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+
+            <include
+                android:id="@+id/ic_info_chart"
+                layout="@layout/security_info_chart"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ic_info_data" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_above="@id/ic_info_buy_sale_btns"
+                android:layout_below="@id/ic_info_chart"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="38dp"
+                    android:background="#f1f4f5"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btnTabDiscuss"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:background="@color/transparent"
+                            android:text="讨论"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                        <View
+                            android:layout_width="1px"
+                            android:layout_height="match_parent"
+                            android:background="#e6e6e6"
+                            android:layout_alignParentRight="true"/>
+                        <View
+                            android:id="@+id/view_discuss_focus"
+                            android:layout_width="match_parent"
+                            android:background="@color/color_blue"
+                            android:visibility="gone"
+                            android:layout_alignParentBottom="true"
+                            android:layout_height="2dp" />
+                        <TextView
+                            android:id="@+id/textview_discuss_num"
+                            android:layout_width="25dp"
+                            android:layout_height="15dp"
+                            android:textColor="@color/white"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_margin="5dp"
+                            android:textSize="10sp"
+                            android:gravity="center"
+                            android:background="@drawable/security_detail_discuss_num"
+                            android:text="99"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btnTabNews"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginRight="1px"
+                            android:background="@color/transparent"
+                            android:text="资讯"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                        <View
+                            android:layout_width="1px"
+                            android:layout_height="match_parent"
+                            android:background="#e6e6e6"
+                            android:layout_alignParentRight="true"/>
+                        <View
+                            android:id="@+id/view_news_focus"
+                            android:layout_width="match_parent"
+                            android:background="@color/color_blue"
+                            android:visibility="gone"
+                            android:layout_alignParentBottom="true"
+                            android:layout_height="2dp" />
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btnTabUserOperation"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginRight="1px"
+                            android:background="@color/transparent"
+                            android:text="用户操作"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                        <View
+                            android:layout_width="1px"
+                            android:layout_height="match_parent"
+                            android:background="#e6e6e6"
+                            android:layout_alignParentRight="true"/>
+                        <View
+                            android:id="@+id/view_operation_focus"
+                            android:layout_width="match_parent"
+                            android:background="@color/color_blue"
+                            android:visibility="gone"
+                            android:layout_alignParentBottom="true"
+                            android:layout_height="2dp" />
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btnTabUserPosition"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginRight="1px"
+                            android:background="@color/transparent"
+                            android:text="用户持仓"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+                        <View
+                            android:id="@+id/view_position_focus"
+                            android:layout_width="match_parent"
+                            android:background="@color/color_blue"
+                            android:visibility="gone"
+                            android:layout_alignParentBottom="true"
+                            android:layout_height="2dp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <include
+                    android:id="@+id/llDisscurssOrNews"
+                    layout="@layout/security_time_line_item" />
+
+                <include layout="@layout/separate_line" />
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/tvSecurityDiscussOrNewsMore"
+                android:layout_width="fill_parent"
+                android:layout_height="32dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/listview_item_selector"
+                android:gravity="center"
+                android:text="@string/click_to_get_more"
+                android:visibility="visible" />
 
         </LinearLayout>
-
-        <include layout="@layout/security_time_line_item" android:id="@+id/llDisscurssOrNews"/>
-        <include layout="@layout/separate_line"/>
-      </LinearLayout>
-
-
-      <TextView
-          android:id="@+id/tvSecurityDiscussOrNewsMore"
-          android:background="@drawable/listview_item_selector"
-          android:layout_width="fill_parent"
-          android:layout_marginLeft="10dp"
-          android:layout_marginRight="10dp"
-          android:layout_marginTop="5dp"
-          android:layout_marginBottom="10dp"
-          android:layout_height="32dp"
-          android:gravity="center"
-          android:visibility="visible"
-          android:text="@string/click_to_get_more"/>
-
-    </LinearLayout>
-  </ScrollView>
+    </ScrollView>
 </LinearLayout>
 

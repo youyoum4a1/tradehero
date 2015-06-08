@@ -223,9 +223,16 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     Button btnChart2;
     Button btnChart3;
 
-    private Button[] btnDiscussOrNews;
-    Button btnDiscuss;
-    Button btnNews;
+    private Button btnDiscuss;
+    private Button btnNews;
+    private Button btnUserOperation;
+    private Button btnUserPosition;
+    private TextView discussNumTV;
+    private View discussFocusView;
+    private View newsFocusView;
+    private View operationFocusView;
+    private View positionFocusView;
+
 
     protected BetterViewAnimator chartImageWrapper;
     protected ChartImageView chartImage;
@@ -471,9 +478,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         btnChart[1] = btnChart1;
         btnChart[2] = btnChart2;
         btnChart[3] = btnChart3;
-        btnDiscussOrNews = new Button[2];
-        btnDiscussOrNews[0] = btnDiscuss;
-        btnDiscussOrNews[1] = btnNews;
         setDefaultBtnTabView();
 
         chartDTO.setIncludeVolume(chartImage.includeVolume);
@@ -577,6 +581,13 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         btnDiscuss = (Button) tabView0.findViewById(R.id.btnTabDiscuss);
         btnNews = (Button) tabView0.findViewById(R.id.btnTabNews);
+        btnUserOperation = (Button)tabView0.findViewById(R.id.btnTabUserOperation);
+        btnUserPosition = (Button)tabView0.findViewById(R.id.btnTabUserPosition);
+        discussNumTV = (TextView)tabView0.findViewById(R.id.textview_discuss_num);
+        discussFocusView = tabView0.findViewById(R.id.view_discuss_focus);
+        newsFocusView = tabView0.findViewById(R.id.view_news_focus);
+        operationFocusView = tabView0.findViewById(R.id.view_operation_focus);
+        positionFocusView = tabView0.findViewById(R.id.view_position_focus);
 
         chartImageWrapper = (BetterViewAnimator) tabView0.findViewById(R.id.chart_image_wrapper);
         chartImage = (ChartImageView) tabView0.findViewById(R.id.chart_imageView);
@@ -606,14 +617,17 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         bottomBarLL = (LinearLayout) tabView0.findViewById(R.id.ic_info_buy_sale_btns);
     }
 
-    public void setOnclickListeners()
-    {
+    public void setOnclickListeners() {
         btnChart0.setOnClickListener(this);
         btnChart1.setOnClickListener(this);
         btnChart2.setOnClickListener(this);
         btnChart3.setOnClickListener(this);
+
         btnDiscuss.setOnClickListener(this);
         btnNews.setOnClickListener(this);
+        btnUserPosition.setOnClickListener(this);
+        btnUserOperation.setOnClickListener(this);
+
         llTLComment.setOnClickListener(this);
         llTLPraiseDown.setOnClickListener(this);
         llTLPraise.setOnClickListener(this);
@@ -773,7 +787,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
         if (indexDiscussOrNews == -1)
         {
-            btnDiscussOrNews[0].performClick();
+            btnDiscuss.performClick();
         }
         else
         {
@@ -1083,23 +1097,44 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     public void setDiscussOrNewsViewDefault()
     {
-        for (int i = 0; i < btnDiscussOrNews.length; i++)
-        {
-            btnDiscussOrNews[i].setBackgroundResource(
-                    (i == indexDiscussOrNews ? R.drawable.tab_blue_head_active : R.drawable.tab_blue_head_normal));
-        }
+        setCategoryViews();
         tvSecurityDiscussOrNewsMore.setText("");
     }
 
     public void setDiscussOrNewsView(int select)
     {
         indexDiscussOrNews = select;
-        for (int i = 0; i < btnDiscussOrNews.length; i++)
-        {
-            btnDiscussOrNews[i].setBackgroundResource(
-                    (i == indexDiscussOrNews ? R.drawable.tab_blue_head_active : R.drawable.tab_blue_head_normal));
-        }
+        setCategoryViews();
         displayDiscussOrNewsDTO();
+    }
+
+    private void setCategoryViews(){
+        switch(indexDiscussOrNews){
+            case 0:
+                discussFocusView.setVisibility(View.VISIBLE);
+                newsFocusView.setVisibility(View.GONE);
+                operationFocusView.setVisibility(View.GONE);
+                positionFocusView.setVisibility(View.GONE);
+                break;
+            case 1:
+                discussFocusView.setVisibility(View.GONE);
+                newsFocusView.setVisibility(View.VISIBLE);
+                operationFocusView.setVisibility(View.GONE);
+                positionFocusView.setVisibility(View.GONE);
+                break;
+            case 2:
+                discussFocusView.setVisibility(View.GONE);
+                newsFocusView.setVisibility(View.GONE);
+                operationFocusView.setVisibility(View.VISIBLE);
+                positionFocusView.setVisibility(View.GONE);
+                break;
+            case 3:
+                discussFocusView.setVisibility(View.GONE);
+                newsFocusView.setVisibility(View.GONE);
+                operationFocusView.setVisibility(View.GONE);
+                positionFocusView.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 
     public long getChartTimeSpanDuration(int index)
@@ -1752,8 +1787,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     {
         AbstractDiscussionCompactDTO item = getAbstractDiscussionCompactDTO();
 
-        if (item.voteDirection == 1)
-        {
+        if (item.voteDirection == 1) {
             item.voteDirection = 0;
             item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
             updateVoting(VoteDirection.UnVote, item);
@@ -1763,8 +1797,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             item.voteDirection = 1;
             item.upvoteCount += 1;
             updateVoting(VoteDirection.UpVote, item);
-        }
-        else if (item.voteDirection == -1)
+        } else if (item.voteDirection == -1)
         {
             item.voteDirection = 1;
             item.upvoteCount += 1;
@@ -1794,8 +1827,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             item.voteDirection = -1;
             item.downvoteCount += 1;
             updateVoting(VoteDirection.DownVote, item);
-        }
-        else if (item.voteDirection == -1)
+        } else if (item.voteDirection == -1)
         {
             item.voteDirection = 0;
             item.downvoteCount = item.downvoteCount > 0 ? (item.downvoteCount - 1) : 0;
@@ -1905,53 +1937,50 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    //@OnClick({R.id.btnTabChart0, R.id.btnTabChart1, R.id.btnTabChart2, R.id.btnTabChart3
-    //        , R.id.btnTabDiscuss, R.id.btnTabNews
-    //})
-    public void onChartBtnClicked(View view)
-    {
-        if (view.getId() == R.id.btnTabChart0)
-        {
+    public void onChartBtnClicked(View view) {
+        if (view.getId() == R.id.btnTabChart0) {
             setChartView(0);
-            analytics.addEvent(
-                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_ONEDAY));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_ONEDAY));
+            return;
         }
-        else if (view.getId() == R.id.btnTabChart1)
-        {
+        if (view.getId() == R.id.btnTabChart1) {
             setChartView(1);
-            analytics.addEvent(
-                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_FIVEDAY));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_FIVEDAY));
+            return;
         }
-        else if (view.getId() == R.id.btnTabChart2)
-        {
+        if (view.getId() == R.id.btnTabChart2) {
             setChartView(2);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
-                    AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_90DAY));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_90DAY));
+            return;
         }
-        else if (view.getId() == R.id.btnTabChart3)
-        {
+        if (view.getId() == R.id.btnTabChart3) {
             setChartView(3);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
-                    AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_YEAR));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_YEAR));
+            return;
         }
-        else if (view.getId() == R.id.btnTabDiscuss)
-        {
+        if (view.getId() == R.id.btnTabDiscuss) {
             isNews = false;
             setDiscussOrNewsView(0);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
-                    AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_DISCUSS));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_DISCUSS));
+            return;
         }
-
-        else if (view.getId() == R.id.btnTabNews)
-        {
+        if (view.getId() == R.id.btnTabNews) {
             isNews = true;
             setDiscussOrNewsView(1);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
-                    AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_NEWS));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_NEWS));
+        }
+        if (view.getId() == R.id.btnTabUserOperation){
+            isNews = false;
+            setDiscussOrNewsView(2);
+            return;
+        }
+        if (view.getId() == R.id.btnTabUserPosition) {
+            isNews = false;
+            setDiscussOrNewsView(3);
+            return;
         }
     }
 
-    //@OnClick({R.id.llTLComment, R.id.llTLPraise, R.id.llTLShare, R.id.llDisscurssOrNews, R.id.imgSecurityTLUserHeader, R.id.tvUserTLContent})
     public void onOperaterClicked(View view)
     {
         if (view.getId() == R.id.llDisscurssOrNews)
@@ -1990,31 +2019,25 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    @Override public void onClick(View view)
-    {
+    @Override public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.llTLComment
-                || id == R.id.llTLPraise
-                || id == R.id.llTLPraiseDown
+                || id == R.id.llTLPraise || id == R.id.llTLPraiseDown
                 //|| id == R.id.llTLShare
-                || id == R.id.llDisscurssOrNews
-                || id == R.id.imgSecurityTLUserHeader
-                || id == R.id.tvUserTLContent)
-        {
+                || id == R.id.llDisscurssOrNews || id == R.id.imgSecurityTLUserHeader || id == R.id.tvUserTLContent) {
             onOperaterClicked(view);
+            return;
         }
-        else if (id == R.id.btnTabChart0
-                || id == R.id.btnTabChart1
-                || id == R.id.btnTabChart2
-                || id == R.id.btnTabChart3
-                || id == R.id.btnTabDiscuss
-                || id == R.id.btnTabNews)
-        {
+        if (id == R.id.btnTabChart0
+                || id == R.id.btnTabChart1 || id == R.id.btnTabChart2 || id == R.id.btnTabChart3
+                || id == R.id.btnTabDiscuss || id == R.id.btnTabUserOperation || id == R.id.btnTabUserPosition
+                || id == R.id.btnTabNews) {
             onChartBtnClicked(view);
+            return;
         }
-        else if (id == R.id.tvSecurityDiscussOrNewsMore)
-        {
+        if (id == R.id.tvSecurityDiscussOrNewsMore) {
             onDiscussOrNewsMore();
+            return;
         }
     }
 
