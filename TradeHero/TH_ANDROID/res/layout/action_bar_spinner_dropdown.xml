@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<CheckedTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/size_7"
-    android:orientation="horizontal"
-    android:background="@drawable/action_bar_spinner_dropdown_item"
-    >
-
-<CheckedTextView
     android:id="@+id/spinner_text"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/size_1"
-    android:paddingRight="@dimen/size_1"
+    android:layout_height="?android:attr/listPreferredItemHeightSmall"
+    android:paddingLeft="?attr/listPreferredItemPaddingLeft"
+    android:paddingRight="?attr/listPreferredItemPaddingRight"
+    android:gravity="center_vertical"
     android:layout_gravity="center_vertical"
     android:singleLine="true"
     android:ellipsize="marquee"
-    style="@style/TH.Title.Inverse.DropDown"
+    style="@style/TH.Title"
     tools:text="Stocks Heroes"
     />
-
-</LinearLayout>

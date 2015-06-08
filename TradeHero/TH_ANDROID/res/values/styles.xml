@@ -318,7 +318,7 @@
     <item name="android:listSelector">?attr/selectableItemBackground</item>
     <item name="android:dropDownSelector">?attr/selectableItemBackground</item>
     <item name="android:background">?attr/selectableItemBackground</item>
-    <item name="android:popupBackground">@drawable/abc_popup_background_mtrl_mult</item>
+    <item name="android:theme">@style/ThemeOverlay.AppCompat.Light</item>
   </style>
 
   <style name="TH.Button.Timeline" parent="TH.Button">
@@ -609,7 +609,4 @@
     <item name="android:background">@color/tradehero_blue</item>
   </style>
   
-  <style name="TH.Title.Inverse.DropDown" parent="TH.Title.Inverse">
-    <item name="android:textColor">@color/tradehero_blue</item>
-  </style>
 </resources>
