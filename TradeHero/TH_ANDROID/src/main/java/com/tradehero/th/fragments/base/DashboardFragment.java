@@ -95,6 +95,14 @@ abstract public class DashboardFragment extends BaseFragment {
         }
     }
 
+    public void setHeadViewMiddleSubText(String middleSubText, int color){
+        if (tvHeadMiddleSub != null) {
+            tvHeadMiddleSub.setVisibility(View.VISIBLE);
+            tvHeadMiddleSub.setText(middleSubText);
+            tvHeadMiddleSub.setTextColor(color);
+        }
+    }
+
     public void setHeadViewRight0(String right0) {
         if (tvHeadRight0 != null) {
             tvHeadRight0.setVisibility(View.VISIBLE);

@@ -1105,7 +1105,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     {
         indexDiscussOrNews = select;
         setCategoryViews();
-        displayDiscussOrNewsDTO();
+        if(indexDiscussOrNews <= 1) {
+            displayDiscussOrNewsDTO();
+        }
+        if(indexDiscussOrNews == 2 ){
+            enterUserOptFragment();
+        }
     }
 
     private void setCategoryViews(){
@@ -2189,5 +2194,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         } catch (Exception e)
         {
         }
+    }
+
+    private void enterUserOptFragment()
+    {
+        Bundle bundle = new Bundle();
+        pushFragment(SecurityUserOptFragment.class, bundle);
     }
 }
