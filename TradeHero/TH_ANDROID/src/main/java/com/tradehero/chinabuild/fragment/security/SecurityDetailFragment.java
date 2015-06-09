@@ -1008,8 +1008,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     private void initKey()
     {
-        discussionListKey = new PaginatedDiscussionListKey(DiscussionType.SECURITY, securityCompactDTO.id, 1, 20);
-        listKey = new NewsItemListSecurityKey(new SecurityIntegerId(securityCompactDTO.id), 1, 20);
+        discussionListKey = new PaginatedDiscussionListKey(DiscussionType.SECURITY, securityCompactDTO.id, 1, 5);
+        listKey = new NewsItemListSecurityKey(new SecurityIntegerId(securityCompactDTO.id), 1, 5);
         fetchSecurityDiscuss(true);
         fetchSecurityNews(true);
     }
