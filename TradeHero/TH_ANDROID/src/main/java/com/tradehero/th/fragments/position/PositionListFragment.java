@@ -365,6 +365,19 @@ public class PositionListFragment
                             }
                         },
                         new TimberOnErrorAction("Failed to collect all")));
+
+        onStopSubscriptions.add(positionItemAdapter.getUserActionObservable()
+                .subscribe(
+                        new Action1<PositionPartialTopView.CloseUserAction>()
+                        {
+                            @Override public void call(PositionPartialTopView.CloseUserAction userAction)
+                            {
+                                handleDialogGoToTrade(true,
+                                        userAction.securityCompactDTO,
+                                        userAction.positionDTO);
+                            }
+                        },
+                        new ToastAndLogOnErrorAction("Failed to listen to user action")));
     }
 
     @Override public void onPause()
@@ -577,10 +590,12 @@ public class PositionListFragment
                                     securityIdAlertCompactDTOMap);
                         }
                     })
+                    .retry()
                     .observeOn(AndroidSchedulers.mainThread())
                     .flatMap(new Func1<StockActionBarRelativeLayout.Requisite, Observable<StockActionBarRelativeLayout.UserAction>>()
                     {
-                        @Override public Observable<StockActionBarRelativeLayout.UserAction> call(final StockActionBarRelativeLayout.Requisite requisite)
+                        @Override
+                        public Observable<StockActionBarRelativeLayout.UserAction> call(final StockActionBarRelativeLayout.Requisite requisite)
                         {
                             final StockActionBarRelativeLayout actionView =
                                     (StockActionBarRelativeLayout) LayoutInflater.from(getActivity()).inflate(R.layout.position_simple_action, null);
@@ -607,9 +622,13 @@ public class PositionListFragment
                                             {
                                                 @Override public void call(OnDialogClickEvent onDialogClickEvent)
                                                 {
-                                                    handleDialogUserAction(onDialogClickEvent,
-                                                            dto.securityCompactDTO,
-                                                            dto.positionDTO);
+                                                    if (onDialogClickEvent.which != DialogInterface.BUTTON_NEUTRAL)
+                                                    {
+                                                        handleDialogGoToTrade(
+                                                                onDialogClickEvent.which == DialogInterface.BUTTON_POSITIVE,
+                                                                dto.securityCompactDTO,
+                                                                dto.positionDTO);
+                                                    }
                                                 }
                                             }),
                                     new Func2<StockActionBarRelativeLayout.UserAction, OnDialogClickEvent, StockActionBarRelativeLayout.UserAction>()
@@ -622,7 +641,8 @@ public class PositionListFragment
                                         }
                                     });
                         }
-                    }).subscribe(
+                    })
+                    .subscribe(
                             new Action1<StockActionBarRelativeLayout.UserAction>()
                             {
                                 @Override public void call(StockActionBarRelativeLayout.UserAction userAction)
@@ -676,30 +696,22 @@ public class PositionListFragment
         }
     }
 
-    public void handleDialogUserAction(@NonNull OnDialogClickEvent clickEvent,
+    public void handleDialogGoToTrade(boolean andClose,
             @NonNull SecurityCompactDTO securityCompactDTO,
             @NonNull PositionDTO positionDTO)
     {
         Bundle args = new Bundle();
-        switch (clickEvent.which)
+        if (andClose && positionDTO.shares != null)
         {
-            case DialogInterface.BUTTON_POSITIVE:
-                if (positionDTO.shares != null)
-                {
-                    BuySellFragment.putCloseAttribute(args, positionDTO.shares);
-                }
-
-            case DialogInterface.BUTTON_NEGATIVE:
-                BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-                BuySellFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
-                navigator.get().pushFragment(
-                        securityCompactDTO instanceof FxSecurityCompactDTO
-                                ? FXMainFragment.class
-                                : BuySellStockFragment.class,
-                        args);
-
-                break;
+            BuySellFragment.putCloseAttribute(args, positionDTO.shares);
         }
+        BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+        BuySellFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
+        navigator.get().pushFragment(
+                securityCompactDTO instanceof FxSecurityCompactDTO
+                        ? FXMainFragment.class
+                        : BuySellStockFragment.class,
+                args);
     }
 
     @NonNull protected Observable<Pair<UserProfileDTO, PortfolioHeaderView>> getProfileAndHeaderObservable()
