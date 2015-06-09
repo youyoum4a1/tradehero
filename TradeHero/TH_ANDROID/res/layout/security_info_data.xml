@@ -179,7 +179,7 @@
                             android:singleLine="true"
                             android:text="成交额："/>
                         <TextView
-                            android:id="@+id/tvTotalAccount"
+                            android:id="@+id/tvTotalAmount"
                             style="@style/security_data_info"
                             android:textSize="@dimen/sucurity_detail_info"
                             android:textColor="@color/black"

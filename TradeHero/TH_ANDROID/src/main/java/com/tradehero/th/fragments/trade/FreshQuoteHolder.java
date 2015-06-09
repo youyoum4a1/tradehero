@@ -227,7 +227,7 @@ public class FreshQuoteHolder
     /**
      * Implementers should be strongly referenced elsewhere because the FreshQuoteHolder only keeps weak references.
      */
-    public static interface FreshQuoteListener
+    public interface FreshQuoteListener
     {
         void onMilliSecToRefreshQuote(long milliSecToRefresh);
         void onIsRefreshing(boolean refreshing);
