@@ -150,6 +150,8 @@
     <color name="security_detail_bar_up">#e2494b</color>
     <color name="security_detail_bar_normal">#a3daff</color>
     <color name="security_detail_bar_down">#20d088</color>
+    <color name="security_detail_bug">#fe0000</color>
+    <color name="security_detail_sell">#00d86b</color>
     <!--Security Detail -->
 
 </resources>
