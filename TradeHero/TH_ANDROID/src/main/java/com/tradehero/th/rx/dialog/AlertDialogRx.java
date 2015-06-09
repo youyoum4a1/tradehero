@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ListAdapter;
 import com.tradehero.th.R;
 import rx.Observable;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class AlertDialogRx
@@ -18,6 +19,11 @@ public class AlertDialogRx
     @NonNull public static Builder build(@NonNull Context activityContext)
     {
         return new Builder(activityContext);
+    }
+
+    @NonNull public static Builder build(@NonNull AlertDialog.Builder dialogBuilder)
+    {
+        return new Builder(dialogBuilder);
     }
 
     public static class Builder
@@ -31,6 +37,7 @@ public class AlertDialogRx
         boolean canceledOnTouchOutside;
         @Nullable ListAdapter singleChoiceAdapter;
         int singleChoiceCheckedItem;
+        @Nullable Observer<AlertDialog> alertDialogObserver;
 
         @NonNull final AlertDialog.Builder dialogBuilder;
 
@@ -141,6 +148,12 @@ public class AlertDialogRx
         {
             this.singleChoiceAdapter = adapter;
             this.singleChoiceCheckedItem = checkedItem;
+            return this;
+        }
+
+        @NonNull public Builder setAlertDialogObserver(@Nullable Observer<AlertDialog> alertDialogObserver)
+        {
+            this.alertDialogObserver = alertDialogObserver;
             return this;
         }
 

@@ -1,11 +1,11 @@
 package com.tradehero.th.fragments.position;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -111,6 +111,7 @@ import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
+import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
 public class PositionListFragment
@@ -601,16 +602,30 @@ public class PositionListFragment
                                     (StockActionBarRelativeLayout) LayoutInflater.from(getActivity()).inflate(R.layout.position_simple_action, null);
                             actionView.display(requisite);
                             Boolean isClosed = dto.positionDTO.isClosed();
+                            final BehaviorSubject<AlertDialog> alertDialogSubject =
+                                    BehaviorSubject.create(); // We do this to be able to dismiss the dialog
                             return Observable.zip(
-                                    actionView.getUserActionObservable()
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .doOnNext(new Action1<StockActionBarRelativeLayout.UserAction>()
+                                    alertDialogSubject.flatMap(
+                                            new Func1<AlertDialog, Observable<StockActionBarRelativeLayout.UserAction>>()
                                             {
-                                                @Override public void call(StockActionBarRelativeLayout.UserAction userAction)
+                                                @Override
+                                                public Observable<StockActionBarRelativeLayout.UserAction> call(final AlertDialog alertDialog)
                                                 {
-                                                    handleDialogUserAction(userAction);
+                                                    return actionView.getUserActionObservable()
+                                                            .observeOn(AndroidSchedulers.mainThread())
+                                                            .doOnNext(
+                                                                    new Action1<StockActionBarRelativeLayout.UserAction>()
+                                                                    {
+                                                                        @Override public void call(
+                                                                                StockActionBarRelativeLayout.UserAction userAction)
+                                                                        {
+                                                                            handleDialogUserAction(userAction);
+                                                                            alertDialog.dismiss();
+                                                                        }
+                                                                    });
                                                 }
-                                            }),
+                                            })
+                                    ,
                                     AlertDialogRx.build(getActivity())
                                             .setView(actionView)
                                             .setCancelable(true)
@@ -621,20 +636,22 @@ public class PositionListFragment
                                                             : getString(R.string.position_close_position_action))
                                             .setNegativeButton(R.string.timeline_trade)
                                             .setNeutralButton(R.string.cancel)
+                                            .setAlertDialogObserver(alertDialogSubject)
                                             .build()
-                                            .doOnNext(new Action1<OnDialogClickEvent>()
-                                            {
-                                                @Override public void call(OnDialogClickEvent onDialogClickEvent)
-                                                {
-                                                    if (onDialogClickEvent.which != DialogInterface.BUTTON_NEUTRAL)
+                                            .doOnNext(
+                                                    new Action1<OnDialogClickEvent>()
                                                     {
-                                                        handleDialogGoToTrade(
-                                                                onDialogClickEvent.which == DialogInterface.BUTTON_POSITIVE,
-                                                                dto.securityCompactDTO,
-                                                                dto.positionDTO);
-                                                    }
-                                                }
-                                            }),
+                                                        @Override public void call(OnDialogClickEvent onDialogClickEvent)
+                                                        {
+                                                            if (!onDialogClickEvent.isNeutral())
+                                                            {
+                                                                handleDialogGoToTrade(
+                                                                        onDialogClickEvent.isPositive(),
+                                                                        dto.securityCompactDTO,
+                                                                        dto.positionDTO);
+                                                            }
+                                                        }
+                                                    }),
                                     new Func2<StockActionBarRelativeLayout.UserAction, OnDialogClickEvent, StockActionBarRelativeLayout.UserAction>()
                                     {
                                         @Override

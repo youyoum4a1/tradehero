@@ -81,6 +81,11 @@ class AlertDialogOnSubscribe implements Observable.OnSubscribe<OnDialogClickEven
         }
 
         final AlertDialog dialog = dialogBuilder.create();
+        if (builder.alertDialogObserver != null)
+        {
+            builder.alertDialogObserver.onNext(dialog);
+            builder.alertDialogObserver.onCompleted();
+        }
         subscriber.add(Subscriptions.create(new Action0()
         {
             @Override public void call()
