@@ -64,4 +64,6 @@
   <string name="position_in_period_start_value">Value at Start</string>
   <string name="position_in_period_as_of">as of %1$s</string>
 
+  <string name="position_close_position_action">Close Position</string>
+
 </resources>

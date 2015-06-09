@@ -1,13 +1,11 @@
 package com.tradehero.th.fragments.position;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -18,6 +16,8 @@ import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.position.view.PositionView;
 import com.tradehero.th.utils.GraphicUtil;
 import java.util.Map;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public class PositionItemAdapter extends ArrayAdapter<Object>
 {
@@ -32,6 +32,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
     private UserProfileDTO userProfileDTO;
 
     @NonNull protected final CurrentUserId currentUserId;
+    @NonNull protected final PublishSubject<PositionPartialTopView.CloseUserAction> userActionSubject;
 
     //<editor-fold desc="Constructors">
     public PositionItemAdapter(
@@ -42,6 +43,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         super(context, 0);
         this.itemTypeToLayoutId = itemTypeToLayoutId;
         this.currentUserId = currentUserId;
+        this.userActionSubject = PublishSubject.create();
     }
     //</editor-fold>
 
@@ -136,6 +138,10 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         if (convertView == null)
         {
             convertView = LayoutInflater.from(getContext()).inflate(layoutToInflate, parent, false);
+            if (convertView instanceof PositionPartialTopView)
+            {
+                ((PositionPartialTopView) convertView).getUserActionObservable().subscribe(userActionSubject);
+            }
         }
 
         Object item = getItem(position);
@@ -170,5 +176,10 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
     public void linkWith(UserProfileDTO userProfileDTO)
     {
         this.userProfileDTO = userProfileDTO;
+    }
+
+    @NonNull public Observable<PositionPartialTopView.CloseUserAction> getUserActionObservable()
+    {
+        return userActionSubject.asObservable();
     }
 }

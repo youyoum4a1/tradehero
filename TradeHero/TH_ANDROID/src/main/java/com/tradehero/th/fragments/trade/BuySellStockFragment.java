@@ -228,6 +228,7 @@ public class BuySellStockFragment extends BuySellFragment
         defaultPortfolio = portfolioCompactDTOs.getDefaultPortfolio();
         addDefaultMainPortfolioIfShould();
         setInitialSellQuantityIfCan();
+        showCloseDialog();
     }
 
     protected void addDefaultMainPortfolioIfShould()

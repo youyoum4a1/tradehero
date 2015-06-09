@@ -1,11 +1,13 @@
 package com.tradehero.th.rx.dialog;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.internal.Assertions;
+import rx.functions.Action0;
+import rx.subscriptions.Subscriptions;
 
 class AlertDialogOnSubscribe implements Observable.OnSubscribe<OnDialogClickEvent>
 {
@@ -78,7 +80,19 @@ class AlertDialogOnSubscribe implements Observable.OnSubscribe<OnDialogClickEven
                     passingOnListener);
         }
 
-        AlertDialog dialog = dialogBuilder.create();
+        final AlertDialog dialog = dialogBuilder.create();
+        if (builder.alertDialogObserver != null)
+        {
+            builder.alertDialogObserver.onNext(dialog);
+            builder.alertDialogObserver.onCompleted();
+        }
+        subscriber.add(Subscriptions.create(new Action0()
+        {
+            @Override public void call()
+            {
+                dialog.dismiss();
+            }
+        }));
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener()
         {
             @Override public void onDismiss(DialogInterface dialogInterface)

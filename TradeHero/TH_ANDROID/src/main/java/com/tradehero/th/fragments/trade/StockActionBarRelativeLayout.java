@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.trade;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -14,6 +15,12 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+import com.tradehero.common.annotation.ViewVisibilityValue;
+import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -23,8 +30,11 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
+import com.tradehero.th.fragments.security.FxFlagContainer;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.StringUtils;
 import java.util.Map;
+import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -36,6 +46,10 @@ public class StockActionBarRelativeLayout extends RelativeLayout
     @ColorRes private static final int COLOR_RES_UNWATCHED = R.color.watchlist_button_color_none;
     @ColorRes private static final int COLOR_RES_WATCHED = R.color.watchlist_button_color;
 
+    @Inject Picasso picasso;
+
+    @InjectView(R.id.stock_logo) @Optional ImageView stockLogo;
+    @InjectView(R.id.flags_container) @Optional FxFlagContainer flagsContainer;
     @InjectView(R.id.tv_stock_title) protected TextView stockTitle;
     @InjectView(R.id.tv_stock_sub_title) protected TextView stockSubTitle;
     @InjectView(R.id.btn_watched) protected ImageView btnWatched;
@@ -68,6 +82,11 @@ public class StockActionBarRelativeLayout extends RelativeLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
+        HierarchyInjector.inject(this);
+        if (stockLogo != null)
+        {
+            stockLogo.setLayerType(LAYER_TYPE_SOFTWARE, null);
+        }
     }
 
     @Override protected void onAttachedToWindow()
@@ -78,13 +97,51 @@ public class StockActionBarRelativeLayout extends RelativeLayout
 
     @Override protected void onDetachedFromWindow()
     {
+        if (stockLogo != null)
+        {
+            picasso.cancelRequest(stockLogo);
+        }
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(@NonNull Requisite dto)
+    @Override public void display(@NonNull final Requisite dto)
     {
         this.dto = dto;
+
+        if (stockLogo != null)
+        {
+            stockLogo.setVisibility(dto.stockLogoVisibility);
+            RequestCreator request;
+            if (dto.stockLogoUrl != null)
+            {
+                request = picasso.load(dto.stockLogoUrl);
+            }
+            else
+            {
+                request = picasso.load(dto.stockLogoRes);
+            }
+            request.placeholder(R.drawable.default_image)
+                    .transform(new WhiteToTransparentTransformation())
+                    .into(stockLogo, new Callback()
+                    {
+                        @Override public void onSuccess()
+                        {
+                        }
+
+                        @Override public void onError()
+                        {
+                            stockLogo.setImageResource(dto.stockLogoRes);
+                        }
+                    });
+        }
+
+        if (flagsContainer != null)
+        {
+            flagsContainer.setVisibility(dto.flagsContainerVisibility);
+            flagsContainer.display(dto.fxPair);
+        }
+
         if (dto.securityCompactDTO != null)
         {
             FxPairSecurityId fxPairSecurityId = null;
@@ -220,6 +277,12 @@ public class StockActionBarRelativeLayout extends RelativeLayout
         @Nullable final WatchlistPositionDTOList watchedList;
         @Nullable final Map<SecurityId, AlertCompactDTO> mappedAlerts;
 
+        @ViewVisibilityValue public final int stockLogoVisibility;
+        @Nullable public final String stockLogoUrl;
+        @DrawableRes public final int stockLogoRes;
+        @Nullable public final FxPairSecurityId fxPair;
+        @ViewVisibilityValue public final int flagsContainerVisibility;
+
         public Requisite(
                 @NonNull SecurityId securityId,
                 @Nullable SecurityCompactDTO securityCompactDTO,
@@ -230,10 +293,50 @@ public class StockActionBarRelativeLayout extends RelativeLayout
             this.securityCompactDTO = securityCompactDTO;
             this.watchedList = watchedList;
             this.mappedAlerts = mappedAlerts;
+
+            //<editor-fold desc="Stock Logo">
+            if (securityCompactDTO != null && securityCompactDTO.imageBlobUrl != null)
+            {
+                stockLogoVisibility = VISIBLE;
+                flagsContainerVisibility = GONE;
+                stockLogoUrl = securityCompactDTO.imageBlobUrl;
+                stockLogoRes = R.drawable.default_image;
+            }
+            else if (securityCompactDTO instanceof FxSecurityCompactDTO)
+            {
+                stockLogoVisibility = GONE;
+                flagsContainerVisibility = VISIBLE;
+                stockLogoUrl = null;
+                stockLogoRes = R.drawable.default_image;
+            }
+            else if (securityCompactDTO != null)
+            {
+                stockLogoVisibility = VISIBLE;
+                flagsContainerVisibility = GONE;
+                stockLogoUrl = null;
+                stockLogoRes = securityCompactDTO.getExchangeLogoId();
+            }
+            else
+            {
+                stockLogoVisibility = GONE;
+                flagsContainerVisibility = GONE;
+                stockLogoUrl = null;
+                stockLogoRes = R.drawable.default_image;
+            }
+            //</editor-fold>
+
+            if (securityCompactDTO instanceof FxSecurityCompactDTO)
+            {
+                fxPair = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
+            }
+            else
+            {
+                fxPair = null;
+            }
         }
     }
 
-    public static class UserAction
+    abstract public static class UserAction
     {
         @NonNull public final SecurityId securityId;
 

@@ -71,6 +71,7 @@ import rx.functions.Func3;
 abstract public class BuySellFragment extends AbstractBuySellFragment
         implements WithTutorial
 {
+    private final static String BUNDLE_KEY_CLOSE_UNITS_BUNDLE = FXMainFragment.class.getName() + ".units";
     public static final int MS_DELAY_FOR_BG_IMAGE = 200;
 
     public static final boolean DEFAULT_IS_SHARED_TO_WECHAT = false;
@@ -104,6 +105,17 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     @Inject protected OwnedPortfolioIdListCacheRx ownedPortfolioIdListCache;
     @Nullable protected OwnedPortfolioIdList applicableOwnedPortfolioIds;
     @Nullable protected Subscription securityApplicableOwnedPortfolioIdListSubscription;
+    private int closeUnits;
+
+    public static void putCloseAttribute(@NonNull Bundle args, int units)
+    {
+        args.putInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, units);
+    }
+
+    private int getCloseAttribute(@NonNull Bundle args)
+    {
+        return args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
+    }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
@@ -128,6 +140,8 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         mQuoteRefreshProgressBar.setAnimation(progressAnimation);
 
         listenToBuySellDialog();
+
+        closeUnits = getCloseAttribute(getArguments());
     }
 
     //<editor-fold desc="ActionBar">
@@ -272,6 +286,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             displayStockName();
             displayBuySellPrice();
         }
+        showCloseDialog();
     }
 
     @Override protected void linkWith(QuoteDTO quoteDTO)
@@ -284,6 +299,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         displayBuySellSwitch();
 
         mQuoteRefreshProgressBar.startAnimation(progressAnimation);
+        showCloseDialog();
     }
 
     protected void setInitialBuyQuantityIfCan()
@@ -521,6 +537,18 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     {
         super.setTransactionTypeBuy(transactionTypeBuy);
         displayBuySellSwitch();
+    }
+
+    protected void showCloseDialog()
+    {
+        if (closeUnits != 0
+                && quoteDTO != null
+                && securityCompactDTO != null)
+        {
+            isTransactionTypeBuy = closeUnits < 0;
+            showBuySellDialog(Math.abs(closeUnits));
+            closeUnits = 0;
+        }
     }
 
     @SuppressWarnings("UnusedDeclaration")

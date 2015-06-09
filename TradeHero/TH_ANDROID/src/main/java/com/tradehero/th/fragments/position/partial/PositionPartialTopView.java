@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.position.partial;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,23 +27,20 @@ import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.FxFlagContainer;
-import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
-import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Subscription;
+import rx.subjects.PublishSubject;
 
 public class PositionPartialTopView extends LinearLayout
         implements DTOView<PositionPartialTopView.DTO>
 {
     @Inject protected Picasso picasso;
-    @Inject protected DashboardNavigator navigator;
 
     @InjectView(R.id.gain_indicator) @Optional ImageView gainIndicator;
     @InjectView(R.id.stock_logo) ImageView stockLogo;
@@ -70,24 +66,28 @@ public class PositionPartialTopView extends LinearLayout
     @InjectView(R.id.btn_position_close) @Optional TextView btnClose;
 
     @Nullable protected DTO viewDTO;
+    @NonNull private final PublishSubject<CloseUserAction> userActionSubject;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
     public PositionPartialTopView(Context context)
     {
         super(context);
+        userActionSubject = PublishSubject.create();
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public PositionPartialTopView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        userActionSubject = PublishSubject.create();
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public PositionPartialTopView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
+        userActionSubject = PublishSubject.create();
     }
     //</editor-fold>
 
@@ -124,6 +124,11 @@ public class PositionPartialTopView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
+    @NonNull public Observable<CloseUserAction> getUserActionObservable()
+    {
+        return userActionSubject.asObservable();
+    }
+
     public void hideCaret()
     {
         if (forwardCaret != null)
@@ -146,18 +151,7 @@ public class PositionPartialTopView extends LinearLayout
     {
         if (viewDTO != null)
         {
-            Bundle args = new Bundle();
-            BuySellFragment.putSecurityId(args, viewDTO.securityCompactDTO.getSecurityId());
-            BuySellFragment.putApplicablePortfolioId(args, viewDTO.positionDTO.getOwnedPortfolioId());
-            if (viewDTO.positionDTO.shares != null)
-            {
-                FXMainFragment.putCloseAttribute(args, viewDTO.positionDTO.shares);
-            }
-            navigator.pushFragment(
-                    viewDTO.securityCompactDTO instanceof FxSecurityCompactDTO
-                            ? FXMainFragment.class
-                            : BuySellStockFragment.class,
-                    args);
+            userActionSubject.onNext(new CloseUserAction(viewDTO.positionDTO, viewDTO.securityCompactDTO));
         }
     }
 
@@ -400,8 +394,8 @@ public class PositionPartialTopView extends LinearLayout
                 lastPrice = THSignedMoney.builder(securityCompactDTO.lastPrice)
                         .relevantDigitCount(3)
                         .currency(securityCompactDTO.currencyDisplay)
-                         .build()
-                         .createSpanned();
+                        .build()
+                        .createSpanned();
             }
             else
             {
@@ -641,6 +635,18 @@ public class PositionPartialTopView extends LinearLayout
                 lastAmount = na;
             }
             //</editor-fold>
+        }
+    }
+
+    public static class CloseUserAction
+    {
+        @NonNull public final PositionDTO positionDTO;
+        @NonNull public final SecurityCompactDTO securityCompactDTO;
+
+        public CloseUserAction(@NonNull PositionDTO positionDTO, @NonNull SecurityCompactDTO securityCompactDTO)
+        {
+            this.positionDTO = positionDTO;
+            this.securityCompactDTO = securityCompactDTO;
         }
     }
 }

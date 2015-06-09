@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,12 +19,15 @@ import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import butterknife.OnItemLongClick;
 import com.tradehero.common.billing.purchase.PurchaseResult;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.HelpActivity;
+import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -35,11 +39,18 @@ import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.GetPositionsDTOKeyFactory;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.billing.THBillingInteractorRx;
+import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
+import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
+import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
+import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
@@ -47,11 +58,16 @@ import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.security.SecurityListRxFragment;
+import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
 import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogRxUtil;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
+import com.tradehero.th.fragments.trade.FXMainFragment;
+import com.tradehero.th.fragments.trade.StockActionBarRelativeLayout;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -59,6 +75,7 @@ import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
 import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.position.GetPositionsCacheRx;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
@@ -67,8 +84,12 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.dialog.AlertDialogRx;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -90,6 +111,7 @@ import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
+import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
 public class PositionListFragment
@@ -120,6 +142,8 @@ public class PositionListFragment
     @Inject BroadcastUtils broadcastUtils;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject THBillingInteractorRx userInteractorRx;
+    @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
+    @Inject AlertCompactListCacheRx alertCompactListCache;
 
     @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
@@ -250,49 +274,6 @@ public class PositionListFragment
         });
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    @OnItemClick(R.id.position_list)
-    protected void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
-    {
-        if (view instanceof PositionNothingView)
-        {
-            pushSecuritiesFragment();
-        }
-        else if (view instanceof PositionLockedView && userProfileDTO != null)
-        {
-            onStopSubscriptions.add(showFollowDialog(userProfileDTO)
-                    .subscribe(
-                            Actions.empty(), // TODO ?
-                            new Action1<Throwable>()
-                            {
-                                @Override public void call(Throwable e)
-                                {
-                                    AlertDialogRxUtil.popErrorMessage(
-                                            PositionListFragment.this.getActivity(),
-                                            e);
-                                    // TODO
-                                }
-                            }
-                    ));
-        }
-        else
-        {
-            Bundle args = new Bundle();
-            // By default tries
-            TradeListFragment.putPositionDTOKey(args,
-                    ((PositionPartialTopView.DTO) parent.getItemAtPosition(position)).positionDTO.getPositionDTOKey());
-            OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-            if (ownedPortfolioId != null)
-            {
-                TradeListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-            }
-            if (navigator != null)
-            {
-                navigator.get().pushFragment(TradeListFragment.class, args);
-            }
-        }
-    }
-
     protected void pushSecuritiesFragment()
     {
         Bundle args = new Bundle();
@@ -385,6 +366,19 @@ public class PositionListFragment
                             }
                         },
                         new TimberOnErrorAction("Failed to collect all")));
+
+        onStopSubscriptions.add(positionItemAdapter.getUserActionObservable()
+                .subscribe(
+                        new Action1<PositionPartialTopView.CloseUserAction>()
+                        {
+                            @Override public void call(PositionPartialTopView.CloseUserAction userAction)
+                            {
+                                handleDialogGoToTrade(true,
+                                        userAction.securityCompactDTO,
+                                        userAction.positionDTO);
+                            }
+                        },
+                        new ToastAndLogOnErrorAction("Failed to listen to user action")));
     }
 
     @Override public void onPause()
@@ -466,6 +460,49 @@ public class PositionListFragment
         throw new IllegalArgumentException("Unhandled PortfolioHeaderView.UserAction " + userAction);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
+    @OnItemClick(R.id.position_list)
+    protected void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
+    {
+        if (view instanceof PositionNothingView)
+        {
+            pushSecuritiesFragment();
+        }
+        else if (view instanceof PositionLockedView && userProfileDTO != null)
+        {
+            onStopSubscriptions.add(showFollowDialog(userProfileDTO)
+                    .subscribe(
+                            Actions.empty(), // TODO ?
+                            new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable e)
+                                {
+                                    AlertDialogRxUtil.popErrorMessage(
+                                            PositionListFragment.this.getActivity(),
+                                            e);
+                                    // TODO
+                                }
+                            }
+                    ));
+        }
+        else
+        {
+            Bundle args = new Bundle();
+            // By default tries
+            TradeListFragment.putPositionDTOKey(args,
+                    ((PositionPartialTopView.DTO) parent.getItemAtPosition(position)).positionDTO.getPositionDTOKey());
+            OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+            if (ownedPortfolioId != null)
+            {
+                TradeListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+            }
+            if (navigator != null)
+            {
+                navigator.get().pushFragment(TradeListFragment.class, args);
+            }
+        }
+    }
+
     @NonNull protected Observable<UserProfileDTO> showFollowDialog(@NonNull UserProfileDTO toBeFollowed)
     {
         return HeroAlertDialogRxUtil.showFollowDialog(
@@ -527,6 +564,175 @@ public class PositionListFragment
                 AnalyticsConstants.PositionList));
         swipeToRefreshLayout.setRefreshing(true);
         refreshSimplePage();
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    @OnItemLongClick(R.id.position_list)
+    protected boolean handlePositionItemLongClicked(AdapterView<?> parent, View view, int position, long id)
+    {
+        Object item = parent.getItemAtPosition(position);
+        if (item instanceof PositionPartialTopView.DTO)
+        {
+            final PositionPartialTopView.DTO dto = (PositionPartialTopView.DTO) item;
+            onStopSubscriptions.add(Observable.zip(
+                    userWatchlistPositionCache.getOne(currentUserId.toUserBaseKey())
+                            .subscribeOn(Schedulers.computation())
+                            .map(new PairGetSecond<UserBaseKey, WatchlistPositionDTOList>()),
+                    alertCompactListCache.getOneSecurityMappedAlerts(currentUserId.toUserBaseKey()),
+                    new Func2<WatchlistPositionDTOList, Map<SecurityId, AlertCompactDTO>, StockActionBarRelativeLayout.Requisite>()
+                    {
+                        @Override public StockActionBarRelativeLayout.Requisite call(WatchlistPositionDTOList watchlistPositionDTOs,
+                                Map<SecurityId, AlertCompactDTO> securityIdAlertCompactDTOMap)
+                        {
+                            return new StockActionBarRelativeLayout.Requisite(
+                                    dto.securityCompactDTO.getSecurityId(),
+                                    dto.securityCompactDTO,
+                                    watchlistPositionDTOs,
+                                    securityIdAlertCompactDTOMap);
+                        }
+                    })
+                    .retry()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .flatMap(new Func1<StockActionBarRelativeLayout.Requisite, Observable<StockActionBarRelativeLayout.UserAction>>()
+                    {
+                        @Override
+                        public Observable<StockActionBarRelativeLayout.UserAction> call(final StockActionBarRelativeLayout.Requisite requisite)
+                        {
+                            final StockActionBarRelativeLayout actionView =
+                                    (StockActionBarRelativeLayout) LayoutInflater.from(getActivity()).inflate(R.layout.position_simple_action, null);
+                            actionView.display(requisite);
+                            Boolean isClosed = dto.positionDTO.isClosed();
+                            final BehaviorSubject<AlertDialog> alertDialogSubject =
+                                    BehaviorSubject.create(); // We do this to be able to dismiss the dialog
+                            return Observable.zip(
+                                    alertDialogSubject.flatMap(
+                                            new Func1<AlertDialog, Observable<StockActionBarRelativeLayout.UserAction>>()
+                                            {
+                                                @Override
+                                                public Observable<StockActionBarRelativeLayout.UserAction> call(final AlertDialog alertDialog)
+                                                {
+                                                    return actionView.getUserActionObservable()
+                                                            .observeOn(AndroidSchedulers.mainThread())
+                                                            .doOnNext(
+                                                                    new Action1<StockActionBarRelativeLayout.UserAction>()
+                                                                    {
+                                                                        @Override public void call(
+                                                                                StockActionBarRelativeLayout.UserAction userAction)
+                                                                        {
+                                                                            handleDialogUserAction(userAction);
+                                                                            alertDialog.dismiss();
+                                                                        }
+                                                                    });
+                                                }
+                                            })
+                                    ,
+                                    AlertDialogRx.build(getActivity())
+                                            .setView(actionView)
+                                            .setCancelable(true)
+                                            .setCanceledOnTouchOutside(true)
+                                            .setPositiveButton(
+                                                    isClosed != null && isClosed
+                                                            ? null
+                                                            : getString(R.string.position_close_position_action))
+                                            .setNegativeButton(R.string.timeline_trade)
+                                            .setNeutralButton(R.string.cancel)
+                                            .setAlertDialogObserver(alertDialogSubject)
+                                            .build()
+                                            .doOnNext(
+                                                    new Action1<OnDialogClickEvent>()
+                                                    {
+                                                        @Override public void call(OnDialogClickEvent onDialogClickEvent)
+                                                        {
+                                                            if (!onDialogClickEvent.isNeutral())
+                                                            {
+                                                                handleDialogGoToTrade(
+                                                                        onDialogClickEvent.isPositive(),
+                                                                        dto.securityCompactDTO,
+                                                                        dto.positionDTO);
+                                                            }
+                                                        }
+                                                    }),
+                                    new Func2<StockActionBarRelativeLayout.UserAction, OnDialogClickEvent, StockActionBarRelativeLayout.UserAction>()
+                                    {
+                                        @Override
+                                        public StockActionBarRelativeLayout.UserAction call(StockActionBarRelativeLayout.UserAction userAction,
+                                                OnDialogClickEvent onDialogClickEvent)
+                                        {
+                                            return userAction;
+                                        }
+                                    });
+                        }
+                    })
+                    .subscribe(
+                            new Action1<StockActionBarRelativeLayout.UserAction>()
+                            {
+                                @Override public void call(StockActionBarRelativeLayout.UserAction userAction)
+                                {
+                                    Timber.d("Received");
+                                }
+                            },
+                            new ToastAndLogOnErrorAction("Failed")));
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public void handleDialogUserAction(@NonNull StockActionBarRelativeLayout.UserAction userAction)
+    {
+        if (userAction instanceof StockActionBarRelativeLayout.UpdateAlertUserAction)
+        {
+            AlertEditDialogFragment.newInstance(((StockActionBarRelativeLayout.UpdateAlertUserAction) userAction).alertCompactDTO
+                    .getAlertId(currentUserId.toUserBaseKey()))
+                    .show(getFragmentManager(), AlertEditDialogFragment.class.getName());
+        }
+        else if (userAction instanceof StockActionBarRelativeLayout.CreateAlertUserAction)
+        {
+            AlertCreateDialogFragment.newInstance(userAction.securityId)
+                    .show(getFragmentManager(), BaseAlertEditDialogFragment.class.getName());
+        }
+        else if (userAction instanceof StockActionBarRelativeLayout.WatchlistUserAction)
+        {
+            Bundle args = new Bundle();
+            WatchlistEditFragment.putSecurityId(args, userAction.securityId);
+            if (((StockActionBarRelativeLayout.WatchlistUserAction) userAction).add)
+            {
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
+                ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_add_title));
+            }
+            else
+            {
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
+                ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
+            }
+            if (navigator != null)
+            {
+                navigator.get().pushFragment(WatchlistEditFragment.class, args);
+            }
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled userAction: " + userAction);
+        }
+    }
+
+    public void handleDialogGoToTrade(boolean andClose,
+            @NonNull SecurityCompactDTO securityCompactDTO,
+            @NonNull PositionDTO positionDTO)
+    {
+        Bundle args = new Bundle();
+        if (andClose && positionDTO.shares != null)
+        {
+            BuySellFragment.putCloseAttribute(args, positionDTO.shares);
+        }
+        BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+        BuySellFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
+        navigator.get().pushFragment(
+                securityCompactDTO instanceof FxSecurityCompactDTO
+                        ? FXMainFragment.class
+                        : BuySellStockFragment.class,
+                args);
     }
 
     @NonNull protected Observable<Pair<UserProfileDTO, PortfolioHeaderView>> getProfileAndHeaderObservable()
