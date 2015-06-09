@@ -7,24 +7,24 @@
     android:background="@color/bg_fragment"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/ic_info_data"
-        layout="@layout/security_info_data"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/bvaViewAll"
-        android:layout_below="@id/ic_info_data"
         android:fillViewport="false">
+
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical">
 
+            <include
+                android:id="@+id/ic_info_data"
+                layout="@layout/security_info_data"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
 
             <include
                 android:id="@+id/ic_info_chart"
@@ -63,27 +63,29 @@
                         <View
                             android:layout_width="1px"
                             android:layout_height="match_parent"
-                            android:background="#e6e6e6"
-                            android:layout_alignParentRight="true"/>
+                            android:layout_alignParentRight="true"
+                            android:background="#e6e6e6" />
+
                         <View
                             android:id="@+id/view_discuss_focus"
                             android:layout_width="match_parent"
-                            android:background="@color/color_blue"
-                            android:visibility="gone"
+                            android:layout_height="2dp"
                             android:layout_alignParentBottom="true"
-                            android:layout_height="2dp" />
+                            android:background="@color/color_blue"
+                            android:visibility="gone" />
+
                         <TextView
                             android:id="@+id/textview_discuss_num"
                             android:layout_width="25dp"
                             android:layout_height="15dp"
-                            android:textColor="@color/white"
-                            android:layout_alignParentTop="true"
                             android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="true"
                             android:layout_margin="5dp"
-                            android:textSize="10sp"
-                            android:gravity="center"
                             android:background="@drawable/security_detail_discuss_num"
-                            android:text="99"/>
+                            android:gravity="center"
+                            android:text="99"
+                            android:textColor="@color/white"
+                            android:textSize="10sp" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -104,16 +106,18 @@
                         <View
                             android:layout_width="1px"
                             android:layout_height="match_parent"
-                            android:background="#e6e6e6"
-                            android:layout_alignParentRight="true"/>
+                            android:layout_alignParentRight="true"
+                            android:background="#e6e6e6" />
+
                         <View
                             android:id="@+id/view_news_focus"
                             android:layout_width="match_parent"
-                            android:background="@color/color_blue"
-                            android:visibility="gone"
+                            android:layout_height="2dp"
                             android:layout_alignParentBottom="true"
-                            android:layout_height="2dp" />
+                            android:background="@color/color_blue"
+                            android:visibility="gone" />
                     </RelativeLayout>
+
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -132,16 +136,18 @@
                         <View
                             android:layout_width="1px"
                             android:layout_height="match_parent"
-                            android:background="#e6e6e6"
-                            android:layout_alignParentRight="true"/>
+                            android:layout_alignParentRight="true"
+                            android:background="#e6e6e6" />
+
                         <View
                             android:id="@+id/view_operation_focus"
                             android:layout_width="match_parent"
-                            android:background="@color/color_blue"
-                            android:visibility="gone"
+                            android:layout_height="2dp"
                             android:layout_alignParentBottom="true"
-                            android:layout_height="2dp" />
+                            android:background="@color/color_blue"
+                            android:visibility="gone" />
                     </RelativeLayout>
+
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -156,13 +162,14 @@
                             android:text="用户持仓"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
+
                         <View
                             android:id="@+id/view_position_focus"
                             android:layout_width="match_parent"
-                            android:background="@color/color_blue"
-                            android:visibility="gone"
+                            android:layout_height="2dp"
                             android:layout_alignParentBottom="true"
-                            android:layout_height="2dp" />
+                            android:background="@color/color_blue"
+                            android:visibility="gone" />
                     </RelativeLayout>
                 </LinearLayout>
 

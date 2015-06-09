@@ -27,8 +27,8 @@
             android:layout_height="fill_parent"
             android:layout_alignParentRight="true"
             android:background="#cecece"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp" />
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -50,8 +50,8 @@
             android:layout_height="fill_parent"
             android:layout_alignParentRight="true"
             android:background="#cecece"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp" />
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -73,8 +73,8 @@
             android:layout_height="fill_parent"
             android:layout_alignParentRight="true"
             android:background="#cecece"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp" />
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -90,14 +90,6 @@
             android:text="＋自选"
             android:textColor="@color/color_blue"
             android:textSize="16sp" />
-
-        <View
-            android:layout_width="1px"
-            android:layout_height="fill_parent"
-            android:layout_alignParentRight="true"
-            android:background="#cecece"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp" />
     </RelativeLayout>
 
 </LinearLayout>
