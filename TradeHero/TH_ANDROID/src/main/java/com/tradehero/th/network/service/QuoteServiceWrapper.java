@@ -30,6 +30,8 @@ public class QuoteServiceWrapper {
 
     private static final int DEFAULT_REFRESH_QUOTE_DELAY = 10 * 1000;
 
+    public static final int MAX_API_RETRIES = 5;
+
     public static final String K_LINE_DAY = "day";
     public static final String K_LINE_WEEK = "week";
     public static final String K_LINE_MONTH = "month";
@@ -74,8 +76,8 @@ public class QuoteServiceWrapper {
     }
     //</editor-fold>
 
-    public void getQuoteDetails(final String securitySymbol, final int quoteDetailDelay, final Callback<QuoteDetail> callback) {
-        final RepeatingTaskCallBack<QuoteDetail> myCallback = new RepeatingTaskCallBack<>(callback, handler, quoteDetailDelay);
+    public void getRepeatingQuoteDetails(final String securitySymbol, final Callback<QuoteDetail> callback) {
+        final RepeatingTaskCallBack<QuoteDetail> myCallback = new RepeatingTaskCallBack<>(callback, handler, DEFAULT_REFRESH_QUOTE_DETAIL_DELAY);
         if (quoteDetailTask != null) {
             handler.removeCallbacks(quoteDetailTask);
         }
@@ -88,10 +90,6 @@ public class QuoteServiceWrapper {
         myCallback.setTask(quoteDetailTask);
         handler.post(quoteDetailTask);
 
-    }
-
-    public void getQuoteDetails(final String securitySymbol, final Callback<QuoteDetail> callback) {
-        getQuoteDetails(securitySymbol, DEFAULT_REFRESH_QUOTE_DETAIL_DELAY, callback);
     }
 
     public void getQuoteTicks(final String securitySymbol, final int quoteTicksDelay, final Callback<List<QuoteTick>> callback) {
@@ -113,8 +111,8 @@ public class QuoteServiceWrapper {
         getQuoteTicks(securitySymbol, DEFAULT_REFRESH_QUOTE_TICKS_DELAY, callback);
     }
 
-    public void getQuote(final String securitySymbol, final int quoteDelay, final Callback<SignedQuote> callback) {
-        final RepeatingTaskCallBack<SignedQuote> myCallback = new RepeatingTaskCallBack<>(callback, handler, quoteDelay);
+    public void getRepeatingQuote(final String securitySymbol, final Callback<SignedQuote> callback) {
+        final RepeatingTaskCallBack<SignedQuote> myCallback = new RepeatingTaskCallBack<>(callback, handler, DEFAULT_REFRESH_QUOTE_DELAY);
         if (quoteTask != null) {
             handler.removeCallbacks(quoteTask);
         }
@@ -129,7 +127,7 @@ public class QuoteServiceWrapper {
     }
 
     public void getQuote(final String securitySymbol, final Callback<SignedQuote> callback) {
-        getQuote(securitySymbol, DEFAULT_REFRESH_QUOTE_DELAY, callback);
+        quoteService.getQuote(securitySymbol, callback);
     }
 
     public void getKline(final String securitySymbol, final String type, final Callback<List<KLineItem>> callback) {
@@ -164,6 +162,7 @@ public class QuoteServiceWrapper {
         private Callback<T> callback;
         private Handler handler;
         private int delay;
+        private int failureCount;
 
         public RepeatingTaskCallBack(Callback<T> callback, Handler handler, int delay) {
             this.callback = callback;
@@ -186,9 +185,14 @@ public class QuoteServiceWrapper {
 
         @Override
         public void failure(RetrofitError error) {
+            if (failureCount < MAX_API_RETRIES) {
+                Log.e("test", "failureCount: " + failureCount);
+                handler.postDelayed(task, delay);
+                failureCount++;
+            }
+
             if (callback != null) {
                 callback.failure(error);
-                handler.removeCallbacks(task);
             }
         }
     }
