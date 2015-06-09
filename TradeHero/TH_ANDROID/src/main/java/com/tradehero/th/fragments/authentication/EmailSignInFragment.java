@@ -241,7 +241,7 @@ public class EmailSignInFragment extends Fragment
                 .subscribe(
                         new EmptyAction1<Pair<AuthData, UserProfileDTO>>(),
                         new EmptyAction1<Throwable>()));
-        onStopSubscriptions.add(socialNetworkButtonList.getSocialNetworkEnumSubject()
+        onStopSubscriptions.add(socialNetworkButtonList.getSocialNetworkEnumObservable()
                 .subscribe(
                         new Action1<SocialNetworkEnum>()
                         {

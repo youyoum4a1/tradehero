@@ -173,7 +173,7 @@ public class EmailSignUpFragment extends Fragment
                 .subscribe(
                         new EmptyAction1<Pair<AuthData, UserProfileDTO>>(),
                         new TimberOnErrorAction("Failed to listen to sign-up observable")));
-        onStopSubscriptions.add(socialNetworkButtonList.getSocialNetworkEnumSubject()
+        onStopSubscriptions.add(socialNetworkButtonList.getSocialNetworkEnumObservable()
                 .subscribe(
                         new Action1<SocialNetworkEnum>()
                         {

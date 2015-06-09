@@ -34,6 +34,20 @@ public class FriendLeaderboardUserComparator implements Comparator<FriendLeaderb
             return lhu.compareTo(rhu);
         }
 
+        if (lhs instanceof FriendLeaderboardCallToActionUserDTO
+                && rhs instanceof FriendLeaderboardCallToActionUserDTO)
+        {
+            return 0;
+        }
+        if (lhs instanceof FriendLeaderboardCallToActionUserDTO)
+        {
+            return 1;
+        }
+        if (rhs instanceof FriendLeaderboardCallToActionUserDTO)
+        {
+            return -1;
+        }
+
         if (lhs instanceof FriendLeaderboardMarkedUserDTO &&
                 rhs instanceof FriendLeaderboardMarkedUserDTO)
         {
