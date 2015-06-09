@@ -55,9 +55,10 @@ public class RetrofitProtectedModule
         return adapter.create(ProviderServiceAsync.class);
     }
 
-    @Provides @Singleton QuoteServiceAsync provideQuoteServiceAsync(RestAdapter adapter)
+    @Provides @Singleton
+    QuoteService provideQuoteServiceAsync(RestAdapter adapter)
     {
-        return adapter.create(QuoteServiceAsync.class);
+        return adapter.create(QuoteService.class);
     }
 
     @Provides @Singleton SecurityServiceAsync provideSecurityServiceAsync(RestAdapter adapter)
