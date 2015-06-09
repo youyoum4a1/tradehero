@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -115,8 +115,8 @@ public class FollowerRevenueReportFragment extends DashboardFragment
         {
             int headerHeight = headerView.getMeasuredHeight();
             QuickReturnListViewOnScrollListener headerQuickReturnScrollListener =
-                    new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER, headerView,
-                            -headerHeight, null, 0);
+                    new QuickReturnListViewOnScrollListener.Builder(QuickReturnViewType.HEADER).header(headerView).minHeaderTranslation(
+                            -headerHeight).build();
 
             followerListView.setPadding(
                     followerListView.getPaddingLeft(),
