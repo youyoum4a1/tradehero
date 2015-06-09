@@ -600,6 +600,7 @@ public class PositionListFragment
                             final StockActionBarRelativeLayout actionView =
                                     (StockActionBarRelativeLayout) LayoutInflater.from(getActivity()).inflate(R.layout.position_simple_action, null);
                             actionView.display(requisite);
+                            Boolean isClosed = dto.positionDTO.isClosed();
                             return Observable.zip(
                                     actionView.getUserActionObservable()
                                             .observeOn(AndroidSchedulers.mainThread())
@@ -614,7 +615,10 @@ public class PositionListFragment
                                             .setView(actionView)
                                             .setCancelable(true)
                                             .setCanceledOnTouchOutside(true)
-                                            .setPositiveButton(R.string.position_close_position_action)
+                                            .setPositiveButton(
+                                                    isClosed != null && isClosed
+                                                            ? null
+                                                            : getString(R.string.position_close_position_action))
                                             .setNegativeButton(R.string.timeline_trade)
                                             .setNeutralButton(R.string.cancel)
                                             .build()
