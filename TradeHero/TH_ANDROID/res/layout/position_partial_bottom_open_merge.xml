@@ -18,17 +18,39 @@
     <TextView
         android:id="@+id/unrealised_pl_value_header"
         android:layout_marginRight="2dp"
-        android:layout_gravity="right"
+        android:layout_marginEnd="2dp"
+        android:layout_gravity="end"
         style="@style/TH.InfoKey"
-        android:gravity="right"
+        android:gravity="end"
         tools:text="Unrealized Profit"
         />
 
-    <TextView
-        android:id="@+id/unrealised_pl_value"
-        style="@style/TH.InfoValue"
-        tools:text="US$ 56,283"
-        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        >
+
+      <TextView
+          android:id="@+id/unrealised_pl_value"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/TH.InfoValue"
+          tools:text="US$ 56,283"
+          />
+
+      <TextView
+          android:id="@+id/unrealised_pl_percent"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/margin_xsmall"
+          android:layout_marginStart="@dimen/margin_xsmall"
+          style="@style/TH.Caption"
+          tools:text="+1.23%"
+          />
+
+    </LinearLayout>
 
   </TableRow>
 
@@ -41,9 +63,10 @@
     <TextView
         android:id="@+id/total_invested_header"
         android:layout_marginRight="2dp"
-        android:layout_gravity="right"
+        android:layout_marginEnd="2dp"
+        android:layout_gravity="end"
         style="@style/TH.InfoKey"
-        android:gravity="right"
+        android:gravity="end"
         android:text="@string/position_total_invested_header"
         />
 
@@ -64,9 +87,10 @@
     <TextView
         android:id="@+id/average_price_header"
         android:layout_marginRight="2dp"
-        android:layout_gravity="right"
+        android:layout_marginEnd="2dp"
+        android:layout_gravity="end"
         style="@style/TH.InfoKey"
-        android:gravity="right"
+        android:gravity="end"
         android:text="@string/position_average_price_header"
         />
 
