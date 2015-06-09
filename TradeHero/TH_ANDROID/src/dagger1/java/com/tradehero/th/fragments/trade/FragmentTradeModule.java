@@ -13,6 +13,8 @@ import dagger.Module;
                 SellStockDialogFragment.class,
                 BuyFXDialogFragment.class,
                 SellFXDialogFragment.class,
+                StockActionBarRelativeLayout.class,
+                StockDetailActionBarRelativeLayout.class,
                 TradeListFragment.class,
                 TradeListItemView.class,
         },

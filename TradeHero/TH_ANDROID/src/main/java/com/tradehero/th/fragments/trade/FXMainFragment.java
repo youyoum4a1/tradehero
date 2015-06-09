@@ -24,7 +24,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
@@ -48,7 +47,6 @@ import timber.log.Timber;
 //TODO need refactor by alex
 public class FXMainFragment extends BuySellFragment
 {
-    private final static String BUNDLE_KEY_CLOSE_UNITS_BUNDLE = FXMainFragment.class.getName() + ".units";
     private final static long MILLISECOND_FX_QUOTE_REFRESH = 5000;
     @ColorRes private static final int DEFAULT_BUTTON_TEXT_COLOR = R.color.text_primary_inverse;
 
@@ -57,23 +55,12 @@ public class FXMainFragment extends BuySellFragment
 
     @Inject CurrentUserId currentUserId;
 
-    private int closeUnits;
     private QuoteDTO oldQuoteDTO;
     private BuySellBottomFXPagerAdapter buySellBottomFXPagerAdapter;
     @Nullable private Observer<PortfolioCompactDTO> portfolioCompactDTOObserver;
 
     @RouteProperty("exchange") String exchange;
     @RouteProperty("symbol") String symbol;
-
-    public static void putCloseAttribute(@NonNull Bundle args, int units)
-    {
-        args.putInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, units);
-    }
-
-    private int getCloseAttribute(@NonNull Bundle args)
-    {
-        return args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
-    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -93,7 +80,6 @@ public class FXMainFragment extends BuySellFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        closeUnits = getCloseAttribute(getArguments());
 
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
@@ -103,18 +89,6 @@ public class FXMainFragment extends BuySellFragment
     @Nullable @Override protected PortfolioCompactDTO getPreferredApplicablePortfolio(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
     {
         return portfolioCompactDTOs.getDefaultFxPortfolio();
-    }
-
-    private void showCloseDialog()
-    {
-        if (closeUnits != 0
-                && quoteDTO != null
-                && securityCompactDTO != null)
-        {
-            isTransactionTypeBuy = closeUnits < 0;
-            showBuySellDialog(Math.abs(closeUnits));
-            closeUnits = 0;
-        }
     }
 
     @Override public void onDestroyView()
@@ -276,17 +250,10 @@ public class FXMainFragment extends BuySellFragment
     {
     }
 
-    @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
-    {
-        super.linkWith(securityCompactDTO, andDisplay);
-        showCloseDialog();
-    }
-
     @Override protected void linkWith(QuoteDTO quoteDTO)
     {
         this.oldQuoteDTO = this.quoteDTO;
         super.linkWith(quoteDTO);
-        showCloseDialog();
     }
 
     private class BuySellBottomFXPagerAdapter extends FragmentPagerAdapter
