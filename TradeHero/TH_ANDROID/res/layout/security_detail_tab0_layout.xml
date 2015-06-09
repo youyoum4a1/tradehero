@@ -57,12 +57,14 @@
                             android:layout_height="fill_parent"
                             android:background="@color/transparent"
                             android:text="讨论"
-                            android:textColor="@color/black"
+                            android:textColor="#3b3b3b"
                             android:textSize="15sp" />
 
                         <View
                             android:layout_width="1px"
                             android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="10dp"
                             android:layout_alignParentRight="true"
                             android:background="#e6e6e6" />
 
@@ -100,13 +102,15 @@
                             android:layout_marginRight="1px"
                             android:background="@color/transparent"
                             android:text="资讯"
-                            android:textColor="@color/black"
+                            android:textColor="#3b3b3b"
                             android:textSize="15sp" />
 
                         <View
                             android:layout_width="1px"
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="10dp"
                             android:background="#e6e6e6" />
 
                         <View
@@ -130,13 +134,15 @@
                             android:layout_marginRight="1px"
                             android:background="@color/transparent"
                             android:text="用户操作"
-                            android:textColor="@color/black"
+                            android:textColor="#3b3b3b"
                             android:textSize="15sp" />
 
                         <View
                             android:layout_width="1px"
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="10dp"
                             android:background="#e6e6e6" />
 
                         <View
@@ -160,7 +166,7 @@
                             android:layout_marginRight="1px"
                             android:background="@color/transparent"
                             android:text="用户持仓"
-                            android:textColor="@color/black"
+                            android:textColor="#3b3b3b"
                             android:textSize="15sp" />
 
                         <View

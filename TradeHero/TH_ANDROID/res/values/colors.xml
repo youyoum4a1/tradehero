@@ -61,7 +61,6 @@
     <color name="bg_fragment">#FFFFFF</color>
     <color name="color_gray">#bfbfbf</color>
     <color name="color_blue">#1789d5</color>
-    <color name="color_red">#ff0303</color>
     <color name="color_gray_plus">#333333</color>
     <!-- china build end -->
 
@@ -146,5 +145,11 @@
     <color name="stock_learning_summary_success_color">#000000</color>
     <color name="stock_learning_summary_failed_color">#f67079</color>
     <!--Stock Learning -->
+
+    <!--Security Detail -->
+    <color name="security_detail_bar_up">#e2494b</color>
+    <color name="security_detail_bar_normal">#a3daff</color>
+    <color name="security_detail_bar_down">#20d088</color>
+    <!--Security Detail -->
 
 </resources>
