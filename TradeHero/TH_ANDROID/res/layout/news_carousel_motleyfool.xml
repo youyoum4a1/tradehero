@@ -3,6 +3,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/news_motley_fool"
     >
 
   <ImageView
@@ -15,7 +16,6 @@
       android:src="@drawable/logo_tmf"
       android:layout_gravity="center"
       android:contentDescription="@string/motley_fool"
-      android:background="@color/news_motley_fool"
       />
   <ImageView
       android:id="@+id/spinner_arrow"

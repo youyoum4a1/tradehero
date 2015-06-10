@@ -3,7 +3,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@drawable/news_seeking_alpha"
     >
   <ImageView
       android:layout_width="match_parent"
@@ -12,8 +12,9 @@
       android:layout_gravity="center"
       android:scaleType="fitStart"
       android:paddingLeft="@dimen/size_2"
+      android:paddingTop="@dimen/size_1"
+      android:paddingBottom="@dimen/size_1"
       android:contentDescription="@string/seeking_alpha"
-      android:background="@color/news_seeking_alpha"
       />
   <ImageView
       android:id="@+id/spinner_arrow"

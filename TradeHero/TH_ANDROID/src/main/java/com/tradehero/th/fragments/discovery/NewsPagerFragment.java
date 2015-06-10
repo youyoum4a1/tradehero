@@ -35,12 +35,6 @@ public final class NewsPagerFragment extends Fragment
         ButterKnife.inject(this, view);
 
         newsSpinner.setAdapter(new NewsSpinnerAdapter(getActivity(), NewsType.values()));
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            int offset = (int) getResources().getDimension(R.dimen.size_6);
-            newsSpinner.setDropDownVerticalOffset(offset);
-        }
     }
 
     @Override public void onDestroyView()

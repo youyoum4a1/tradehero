@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.trending.filter;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
@@ -32,7 +33,7 @@ public class TrendingFilterSpinnerIconAdapter
     {
         if (convertView == null)
         {
-            convertView = View.inflate(getContext(), dropDownResId, null);
+            convertView = LayoutInflater.from(getContext()).inflate(dropDownResId, parent, false);
         }
         TrendingFilterSpinnerItemView dtoView = (TrendingFilterSpinnerItemView) convertView;
         dtoView.display(getItem(position));

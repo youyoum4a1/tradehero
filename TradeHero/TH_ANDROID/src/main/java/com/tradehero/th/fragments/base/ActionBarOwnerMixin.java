@@ -213,13 +213,6 @@ public class ActionBarOwnerMixin
         }
         toolbarSpinner.setOnItemSelectedListener(listener);
         toolbarSpinner.setVisibility(View.VISIBLE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            TypedValue value = new TypedValue();
-            fragment.getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, value, true);
-            int offset = (int) fragment.getActivity().getResources().getDimension(value.resourceId);
-            toolbarSpinner.setDropDownVerticalOffset(offset);
-        }
     }
 
     public void setSpinnerSelection(int index)

@@ -18,7 +18,6 @@
         android:id="@+id/watchlist_swipe_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/dashboard_tabhost_height"
         android:clipToPadding="false"
         swipe:swipeFrontView="@id/front"
         swipe:swipeBackView="@id/back"
