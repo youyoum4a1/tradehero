@@ -481,33 +481,16 @@ public class PositionPartialTopView extends LinearLayout
             final Double unrealisedPLRefCcy = positionDTO.unrealizedPLRefCcy;
 
             //<editor-fold desc="Percent and Gain">
-            final Double gainPercent;
+            final Double gainPercent = positionDTO instanceof PositionInPeriodDTO && ((PositionInPeriodDTO) positionDTO).isProperInPeriod()
+                    ? ((PositionInPeriodDTO) positionDTO).getROIInPeriod()
+                    : positionDTO.getROISinceInception();
             if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
                 positionPercentVisibility = GONE;
                 positionPercent = "";
-                if (unrealisedPLRefCcy != null)
-                {
-                    if (positionDTO.positionStatus == PositionStatus.CLOSED
-                            || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED)
-                    {
-                        gainPercent = positionDTO.realizedPLRefCcy;
-                    }
-                    else
-                    {
-                        gainPercent = unrealisedPLRefCcy;
-                    }
-                }
-                else
-                {
-                    gainPercent = null;
-                }
             }
             else
             {
-                gainPercent = positionDTO instanceof PositionInPeriodDTO && ((PositionInPeriodDTO) positionDTO).isProperInPeriod()
-                        ? ((PositionInPeriodDTO) positionDTO).getROIInPeriod()
-                        : positionDTO.getROISinceInception();
                 positionPercentVisibility = VISIBLE;
                 positionPercent = gainPercent == null
                         ? na
