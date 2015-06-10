@@ -292,6 +292,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     private boolean isNews = false;
 
+    private Double preClose;
+
     public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
             SecurityDetailFragment.class.getName() + ".purchaseApplicablePortfolioId";
     public static final String BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE = SecurityDetailFragment.class.getName() + ".positionDTOKey";
@@ -1197,6 +1199,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                         quoteDTO.bid = quoteDetail.bp1;
                         setInitialBuySaleQuantityIfCan();
                     }
+                    preClose = quoteDetail.prec;
                 }
 
                 @Override
@@ -1206,7 +1209,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             };
         }
         quoteServiceWrapper.getRepeatingQuoteDetails(securitySymbol, quoteDetailCallback);
-
     }
 
     public void displaySecurityInfo(QuoteDetail quoteDetail) {
@@ -1222,19 +1224,18 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         //涨跌幅
         int colorResId = R.color.black;
-        try {
-            double delta = quoteDetail.last - quoteDetail.prec;
-            double risePercent = delta / quoteDetail.prec;
-            THSignedNumber roi = THSignedPercentage.builder(risePercent * 100)
+
+        Double rate = quoteDetail.getRiseRate();
+        if (rate != null) {
+            THSignedNumber roi = THSignedPercentage.builder(rate * 100)
                     .withSign()
                     .signTypePlusMinusAlways()
                     .build();
             colorResId = roi.getColorResId();
             tvSecurityDetailRate.setText(roi.toString());
             tvSecurityDetailRate.setTextColor(getResources().getColor(colorResId));
-        } catch (Exception e) {
-            Timber.e(e, "Calc roi");
         }
+
 
         tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(quoteDetail.last));
         tvSecurityPrice.setTextColor(getResources().getColor(colorResId));
@@ -1420,6 +1421,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             bundle.putString(BuySaleSecurityFragment.KEY_SECURITY_NAME, securityName);
             bundle.putInt(BuySaleSecurityFragment.KEY_COMPETITION_ID, competitionID);
             bundle.putSerializable(BuySaleSecurityFragment.KEY_POSITION_COMPACT_DTO, positionDTOCompactList);
+            bundle.putDouble(BuySaleSecurityFragment.KEY_PRE_CLOSE, preClose == null? 0 : preClose);
             pushFragment(BuySaleSecurityFragment.class, bundle);
         }
     }

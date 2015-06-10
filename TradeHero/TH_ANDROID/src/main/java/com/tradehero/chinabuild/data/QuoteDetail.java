@@ -38,4 +38,12 @@ public class QuoteDetail {
     public String time;
     public String Id;
 
+    public Double getRiseRate() {
+        if ((last == null) || (prec == null) || (prec == 0)) {
+            return null;
+        }
+
+        return (last - prec) / prec;
+    }
+
 }

@@ -9,6 +9,11 @@ public class KLineItem {
     public Double high;
     public Double low;
     public Double preclose;
-    public Double volumn;
-    public Double time;
+    public Long volume;
+    public String time;
+
+    public String toString() {
+        return String.format("time[%s], open[%f], close[%f], high[%f], low[%f], preClose[%f], volume[%d]",
+                time, open, close, high, low, preclose, volume);
+    }
 }

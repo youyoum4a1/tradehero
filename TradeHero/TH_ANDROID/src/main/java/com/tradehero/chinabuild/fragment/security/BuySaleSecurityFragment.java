@@ -5,22 +5,37 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.*;
-import android.widget.*;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
+import android.util.Log;
+import android.view.ActionMode;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
+
+import com.tradehero.chinabuild.data.SignedQuote;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.chinabuild.fragment.ShareSellDialogFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.common.utils.IOUtils;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.MainActivity;
-import com.tradehero.th.api.portfolio.*;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
+import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOCompactList;
@@ -34,13 +49,13 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trade.AlertDialogUtilBuySell;
-import com.tradehero.th.fragments.trade.FreshQuoteHolder;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.PositionServiceWrapper;
+import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -51,18 +66,24 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.StringUtils;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-import dagger.Lazy;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
+
+import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
-
-import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-2.
@@ -78,6 +99,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
     public static final String KEY_SECURITY_NAME = BuySaleSecurityFragment.class.getName() + ".securit_name";
     public static final String KEY_COMPETITION_ID = BuySaleSecurityFragment.class.getName() + ".competition_id";
     public static final String KEY_POSITION_COMPACT_DTO = BuySaleSecurityFragment.class.getName() + ".position_compact_dto";
+    public static final String KEY_PRE_CLOSE = BuySaleSecurityFragment.class.getName() + ".preclose";
 
     public final static long MILLISEC_QUOTE_REFRESH = 10000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
@@ -139,12 +161,14 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
     protected SecurityPositionDetailDTO securityPositionDetailDTO;
     private OwnedPortfolioId shownPortfolioId;
-    protected FreshQuoteHolder freshQuoteHolder;
     @Nullable protected QuoteDTO quoteDTO;
-    protected boolean refreshingQuote = false;
     public ShareDialogFragment shareDialogFragment;
 
     @Inject Analytics analytics;
+    @Inject QuoteServiceWrapper quoteServiceWrapper;
+    private Callback<SignedQuote> quoteCallback;
+
+    private Double preClose;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -170,6 +194,8 @@ public class BuySaleSecurityFragment extends DashboardFragment
         View view = inflater.inflate(R.layout.buy_sale_layout, container, false);
         ButterKnife.inject(this, view);
         isBuyDirectly = getArguments().getBoolean(KEY_IS_BUY_DIRECTLY, false);
+        preClose = getArguments().getDouble(KEY_PRE_CLOSE, 0);
+
         if (isBuyDirectly)
         {
             initDirectly();
@@ -192,10 +218,9 @@ public class BuySaleSecurityFragment extends DashboardFragment
         mQuantityEditText.setText(String.valueOf(mTransactionQuantity));
         mQuantityEditText.addTextChangedListener(getQuantityTextChangeListener());
         mQuantityEditText.setCustomSelectionActionModeCallback(createActionModeCallBackForQuantityEditText());
-        mQuantityEditText.setOnEditorActionListener(new TextView.OnEditorActionListener()
-        {
-            @Override public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent)
-            {
+        mQuantityEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 return false;
             }
         });
@@ -388,25 +413,64 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
     public void updateTransactionDialog()
     {
-        updateSeekbar();
-        updateQuantityView();
-        updateProfitLoss();
-        updateTradeValueAndCashShareLeft();
-        updateRate();
+        if (getActivity() == null) {
+            return;
+        }
+        mSeekBar.setProgress(mTransactionQuantity);
+        mQuantityEditText.setText(String.valueOf(mTransactionQuantity));
+        mQuantityEditText.setSelection(mQuantityEditText.getText().length());
+
+        Double profitLoss = getProfitOrLoss(isBuy);
+        if (profitLoss != null && mTransactionQuantity != null && mTransactionQuantity > 0) {
+            tvBuySaleMayProfit.setText(
+                    THSignedMoney.builder(profitLoss)
+                            .withSign()
+                            .build().toString());
+
+            tvBuySaleMayProfit.setTextColor(getResources().getColor(ColorUtils.getColorResourceIdForNumber(profitLoss)));
+        } else {
+            tvBuySaleMayProfit.setText("--");
+        }
+        tvBuySaleCashLeft.setText(getCashShareLeft());
+        tvBuySaleTotalValue.setText(getTradeValueText());
+
+        Double rate = getRiseRate();
+        if ((tvBuySaleRate != null) && (rate != null)) {
+            THSignedNumber roi = THSignedPercentage.builder(rate * 100)
+                    .withSign()
+                    .signTypeArrow()
+                    .build();
+            tvBuySaleRate.setText(roi.toString());
+            tvBuySaleRate.setTextColor(getResources().getColor(roi.getColorResId()));
+        }
+
         updatePositionInfo();
         tvBuySalePrice.setText(String.valueOf(getLabel()));
     }
 
+    private Double getRiseRate() {
+        if (quoteDTO == null
+        || quoteDTO.bid == null
+        || quoteDTO.ask == null
+        || preClose == null
+        || preClose == 0) {
+            return null;
+        }
+
+        if (isBuy) {
+            return (quoteDTO.ask - preClose) / preClose;
+        } else {
+            return (quoteDTO.bid - preClose) / preClose;
+        }
+    }
+
     //显示 累计盈亏，持有股数，成本均价
-    public void updatePositionInfo()
-    {
-        if (positionDTOCompactList != null && portfolioCompactDTO != null)
-        {
+    public void updatePositionInfo() {
+        if (positionDTOCompactList != null && portfolioCompactDTO != null) {
             int shared = positionDTOCompactList.getShareCountIn(portfolioCompactDTO.getPortfolioId());
             double avPrice = positionDTOCompactList.getAvPrice(portfolioCompactDTO.getPortfolioId());
 
-            if (shared != 0 && avPrice != 0)
-            {
+            if (shared != 0 && avPrice != 0) {
                 tvBuySaleShared.setText(String.valueOf(shared));
                 tvBuySaleALLAV.setText(securityCompactDTO.getCurrencyDisplay() + " " + PositionDTOCompact.getShortDouble(avPrice));
                 llBuySaleLine8.setVisibility(View.VISIBLE);
@@ -414,33 +478,8 @@ public class BuySaleSecurityFragment extends DashboardFragment
                 return;
             }
         }
-        setNoTradeHistroy();
-    }
-
-    public void setNoTradeHistroy() {
         llBuySaleLine8.setVisibility(View.GONE);
         llBuySaleLine9.setVisibility(View.GONE);
-    }
-
-    private void updateRate() {
-        if(tvBuySaleRate==null){
-            return;
-        }
-        if (securityCompactDTO != null) {
-            tvBuySaleRate.setText("" + securityCompactDTO.risePercent);
-            THSignedNumber roi = THSignedPercentage.builder(securityCompactDTO.risePercent * 100)
-                    .withSign()
-                    .signTypeArrow()
-                    .build();
-            tvBuySaleRate.setText(roi.toString());
-            tvBuySaleRate.setTextColor(getResources().getColor(roi.getColorResId()));
-        }
-    }
-
-    private void updateTradeValueAndCashShareLeft()
-    {
-        tvBuySaleCashLeft.setText(getCashShareLeft());
-        tvBuySaleTotalValue.setText(getTradeValueText());
     }
 
     public String getTradeValueText()
@@ -516,24 +555,6 @@ public class BuySaleSecurityFragment extends DashboardFragment
         return quoteDTO.getPriceRefCcy(portfolioCompactDTO, isBuy);
     }
 
-    private void updateProfitLoss()
-    {
-        Double profitLoss = getProfitOrLoss(isBuy);
-        if (profitLoss != null && mTransactionQuantity != null && mTransactionQuantity > 0)
-        {
-            tvBuySaleMayProfit.setText(
-                    THSignedMoney.builder(profitLoss)
-                            .withSign()
-                            .build().toString());
-
-            tvBuySaleMayProfit.setTextColor(getResources().getColor(ColorUtils.getColorResourceIdForNumber(profitLoss)));
-        }
-        else
-        {
-            tvBuySaleMayProfit.setText("--");
-        }
-    }
-
     protected Double getProfitOrLoss(boolean isBuy)
     {
         if (isBuy)
@@ -559,17 +580,6 @@ public class BuySaleSecurityFragment extends DashboardFragment
             }
             return netProceeds - totalSpent;
         }
-    }
-
-    private void updateQuantityView()
-    {
-        mQuantityEditText.setText(String.valueOf(mTransactionQuantity));
-        mQuantityEditText.setSelection(mQuantityEditText.getText().length());
-    }
-
-    private void updateSeekbar()
-    {
-        mSeekBar.setProgress(mTransactionQuantity);
     }
 
     protected Integer clampedQuantity(Integer candidate)
@@ -676,6 +686,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        quoteServiceWrapper.stopQuoteTask();
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -688,13 +699,13 @@ public class BuySaleSecurityFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        prepareFreshQuoteHolder();
+        refreshQuote();
     }
 
     @Override public void onPause()
     {
         super.onPause();
-        destroyFreshQuoteHolder();
+        quoteServiceWrapper.stopQuoteTask();
     }
 
     public void setBuyOrSale(boolean isBuy)
@@ -1091,69 +1102,21 @@ public class BuySaleSecurityFragment extends DashboardFragment
         }
     }
 
-    protected void prepareFreshQuoteHolder()
-    {
-        destroyFreshQuoteHolder();
-        freshQuoteHolder = new FreshQuoteHolder(securityId, MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION);
-        freshQuoteHolder.setListener(new BuySellFreshQuoteListener());
-        freshQuoteHolder.start();
-    }
-
-    protected void destroyFreshQuoteHolder()
-    {
-        if (freshQuoteHolder != null)
-        {
-            freshQuoteHolder.destroy();
-        }
-        freshQuoteHolder = null;
-    }
-
-    abstract protected class AbstractBuySellFreshQuoteListener implements FreshQuoteHolder.FreshQuoteListener
-    {
-        @Override abstract public void onMilliSecToRefreshQuote(long milliSecToRefresh);
-
-        @Override public void onIsRefreshing(boolean refreshing)
-        {
-            setRefreshingQuote(refreshing);
-        }
-
-        @Override public void onFreshQuote(QuoteDTO quoteDTO)
-        {
-            if (quoteDTO == null) return;
-            if (quoteDTO.ask != null && quoteDTO.ask == 0) return;
-            if (quoteDTO.bid != null && quoteDTO.bid == 0) return;
-            linkWith(quoteDTO, true);
-        }
-    }
-
-    protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
+    protected void updateQuoteInfo(QuoteDTO quoteDTO)
     {
         this.quoteDTO = quoteDTO;
-        if (andDisplay)
-        {
-            Timber.d("QuoteDTO linkWith quoteDTO.ask = " + quoteDTO.ask + "  quoteDTO.bid" + quoteDTO.bid);
+
+        if ((quoteDTO == null)
+            || (quoteDTO.ask != null && quoteDTO.ask == 0)
+            || (quoteDTO.bid != null && quoteDTO.bid == 0)) {
+            return;
         }
 
-        if(isBuyOrSaleValid())
-        {
+        if (isBuyOrSaleValid()) {
             updateTransactionDialog();
             updateBuyDirectlyInfoLoading();
-        }
-        else
-        {
+        } else {
             loadBuyDirectlyFailed();
-        }
-    }
-
-    protected void setRefreshingQuote(boolean refreshingQuote)
-    {
-        this.refreshingQuote = refreshingQuote;
-    }
-
-    protected class BuySellFreshQuoteListener extends AbstractBuySellFreshQuoteListener
-    {
-        @Override public void onMilliSecToRefreshQuote(long milliSecToRefresh)
-        {
         }
     }
 
@@ -1218,6 +1181,36 @@ public class BuySaleSecurityFragment extends DashboardFragment
         {
             THToast.show("这只股票涨停了");
         }
+    }
+
+    void refreshQuote() {
+        if (securityId == null) {
+            return;
+        }
+
+        if (quoteCallback == null) {
+            quoteCallback = new Callback<SignedQuote>() {
+                @Override
+                public void success(SignedQuote signedQuote, Response response) {
+                    if (signedQuote == null) {
+                        return;
+                    }
+                    QuoteDTO quoteDTO = signedQuote.signedObject;
+                    try {
+                        quoteDTO.rawResponse = new String(IOUtils.streamToBytes(response.getBody().in()));
+                    } catch (IOException e) {
+                        Timber.e(e, "Get raw response");
+                    }
+                    updateQuoteInfo(quoteDTO);
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    //
+                }
+            };
+        }
+        quoteServiceWrapper.getRepeatingQuote(securityId.getSecuritySymbol(), quoteCallback);
     }
 
 }
