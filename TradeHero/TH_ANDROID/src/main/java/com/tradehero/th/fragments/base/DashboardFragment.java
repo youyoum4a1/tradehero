@@ -124,9 +124,9 @@ abstract public class DashboardFragment extends BaseFragment {
     }
 
     public void setHeadViewRight1(int drawable){
-        if (tvHeadRight0 != null) {
-            tvHeadRight0.setVisibility(View.VISIBLE);
-            tvHeadRight0.setBackgroundResource(drawable);
+        if (tvHeadRight1 != null) {
+            tvHeadRight1.setVisibility(View.VISIBLE);
+            tvHeadRight1.setBackgroundResource(drawable);
         }
     }
 
@@ -206,9 +206,15 @@ abstract public class DashboardFragment extends BaseFragment {
 
         //hide sub header and right button as default
         tvHeadRight0.setVisibility(View.GONE);
+        tvHeadRight0.setText("");
         tvHeadMiddleSub.setVisibility(View.GONE);
+        tvHeadMiddleSub.setText("");
         tvHeadMiddleSub.setTextColor(subMainTextColor);
         tvHeadRight1.setVisibility(View.GONE);
+        tvHeadRight1.setText("");
+        tvHeadRight0.setBackgroundResource(R.drawable.basic_transparent_selector);
+        tvHeadRight1.setBackgroundResource(R.drawable.basic_transparent_selector);
+        tvHeadRight0.setCompoundDrawables(null, null, null, null);
     }
 
     public void popCurrentFragment() {
