@@ -228,6 +228,16 @@ public class DashboardActivity extends BaseActivity
 
     private void setupDrawerLayout()
     {
+        try
+        {
+            getWindow().getDecorView().findViewById(R.id.drawer_bg_image).setBackgroundResource(R.drawable.login_bg_1);
+        } catch (Throwable e)
+        {
+            Timber.e(e, "Failed to set drawer background");
+            getWindow().getDecorView().findViewById(R.id.left_drawer).setBackgroundColor(
+                    getResources().getColor(R.color.authentication_guide_bg_color));
+        }
+
         //Setup Drawer Layout.
         activityModule.mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.setDrawerListener(activityModule.mDrawerToggle);
