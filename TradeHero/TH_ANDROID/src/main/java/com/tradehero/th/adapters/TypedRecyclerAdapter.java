@@ -24,8 +24,8 @@ public abstract class TypedRecyclerAdapter<T>
 {
     protected final SortedList<T> mSortedList;
     private TypedRecyclerComparator<T> mComparator;
-    @NonNull protected OnItemClickedListener<T> mOnItemClickedListener;
-    @NonNull protected OnItemLongClickedListener<T> mOnItemLongClickedListener;
+    protected OnItemClickedListener<T> mOnItemClickedListener;
+    protected OnItemLongClickedListener<T> mOnItemLongClickedListener;
 
     public TypedRecyclerAdapter(Class<T> klass)
     {
@@ -153,29 +153,35 @@ public abstract class TypedRecyclerAdapter<T>
         return mSortedList.size();
     }
 
-    public abstract TypedViewHolder<T> instantiateViewHolder(ViewGroup parent, int viewType);
+    @NonNull public abstract TypedViewHolder<T> onCreateTypedViewHolder(ViewGroup parent, int viewType);
 
     @Override
-    public TypedViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType)
+    final public TypedViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        TypedViewHolder<T> vh = instantiateViewHolder(parent, viewType);
-        vh.setOnItemClickListener(new TypedViewHolder.OnItemViewClickedListener()
+        final TypedViewHolder<T> vh = onCreateTypedViewHolder(parent, viewType);
+        if (mOnItemClickedListener != null)
         {
-            @Override
-            public void onItemViewClicked(TypedViewHolder viewHolder)
+            vh.itemView.setOnClickListener(new View.OnClickListener()
             {
-                int position = viewHolder.getAdapterPosition();
-                mOnItemClickedListener.onItemClicked(position, viewHolder.itemView, getItem(position));
-            }
-        });
-        vh.setOnItemLongClickListener(new TypedViewHolder.OnItemViewLongClickedListener()
+
+                @Override public void onClick(View v)
+                {
+                    int position = vh.getAdapterPosition();
+                    mOnItemClickedListener.onItemClicked(position, vh.itemView, getItem(position));
+                }
+            });
+        }
+        if (mOnItemLongClickedListener != null)
         {
-            @Override public boolean onItemViewLongClicked(TypedViewHolder viewHolder)
+            vh.itemView.setOnLongClickListener(new View.OnLongClickListener()
             {
-                int position = viewHolder.getAdapterPosition();
-                return mOnItemLongClickedListener.onItemLongClicked(position, viewHolder.itemView, getItem(position));
-            }
-        });
+                @Override public boolean onLongClick(View v)
+                {
+                    int position = vh.getAdapterPosition();
+                    return mOnItemLongClickedListener.onItemLongClicked(position, vh.itemView, getItem(position));
+                }
+            });
+        }
         return vh;
     }
 
@@ -240,42 +246,6 @@ public abstract class TypedRecyclerAdapter<T>
         }
 
         public abstract void display(T t);
-
-        public void setOnItemClickListener(@NonNull final OnItemViewClickedListener onItemViewClickedListener)
-        {
-            final TypedViewHolder<T> holder = this;
-            itemView.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    onItemViewClickedListener.onItemViewClicked(holder);
-                }
-            });
-        }
-
-        public void setOnItemLongClickListener(@NonNull final OnItemViewLongClickedListener onItemViewLongClickedListener)
-        {
-            final TypedViewHolder<T> holder = this;
-            itemView.setOnLongClickListener(new View.OnLongClickListener()
-            {
-                @Override
-                public boolean onLongClick(View v)
-                {
-                    return onItemViewLongClickedListener.onItemViewLongClicked(holder);
-                }
-            });
-        }
-
-        public interface OnItemViewClickedListener
-        {
-            void onItemViewClicked(TypedViewHolder viewHolder);
-        }
-
-        public interface OnItemViewLongClickedListener
-        {
-            boolean onItemViewLongClicked(TypedViewHolder viewHolder);
-        }
     }
 
     public static class DividerItemDecoration extends RecyclerView.ItemDecoration

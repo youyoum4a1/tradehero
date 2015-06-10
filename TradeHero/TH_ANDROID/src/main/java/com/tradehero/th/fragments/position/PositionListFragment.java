@@ -428,8 +428,7 @@ public class PositionListFragment
                 {
                     @Override public void onItemClicked(int position, View view, Object object)
                     {
-                        //TODO
-                        Timber.d("Pressed %d %s", position, object);
+                        handlePositionItemClicked(view, position, object);
                     }
                 });
         adapter.setOnItemLongClickedListener(
@@ -481,7 +480,7 @@ public class PositionListFragment
 
     @SuppressWarnings("UnusedDeclaration")
     //@OnItemClick(R.id.position_list)
-    protected void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
+    protected void handlePositionItemClicked(View view, int position, Object object)
     {
         if (view instanceof PositionNothingView)
         {
@@ -509,7 +508,7 @@ public class PositionListFragment
             Bundle args = new Bundle();
             // By default tries
             TradeListFragment.putPositionDTOKey(args,
-                    ((PositionPartialTopView.DTO) parent.getItemAtPosition(position)).positionDTO.getPositionDTOKey());
+                    ((PositionPartialTopView.DTO) object).positionDTO.getPositionDTOKey());
             OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
             if (ownedPortfolioId != null)
             {

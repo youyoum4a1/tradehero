@@ -102,7 +102,7 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
         return userActionSubject.asObservable();
     }
 
-    @Override public TypedViewHolder<Object> instantiateViewHolder(ViewGroup parent, int viewType)
+    @Override public TypedViewHolder<Object> onCreateTypedViewHolder(ViewGroup parent, int viewType)
     {
         int layoutToInflate = getLayoutForViewType(viewType);
         View v = LayoutInflater.from(parent.getContext()).inflate(layoutToInflate, parent, false);
