@@ -59,6 +59,7 @@ import com.tradehero.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDiscussOrNewsFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityUserOptFragment;
+import com.tradehero.chinabuild.fragment.security.SecurityUserPositionFragment;
 import com.tradehero.chinabuild.fragment.stocklearning.AnswerQuestionFragment;
 import com.tradehero.chinabuild.fragment.stocklearning.AnswersSummaryFragment;
 import com.tradehero.chinabuild.fragment.stocklearning.OneQuestionFragment;
@@ -234,6 +235,7 @@ import dagger.Provides;
                         DiscussSendFragment.class,
                         BuySaleSecurityFragment.class,
                         SecurityUserOptFragment.class,
+                        SecurityUserPositionFragment.class,
 
                         SecurityDetailDialogLayout.class,
                         TimeLineDetailDialogLayout.class,

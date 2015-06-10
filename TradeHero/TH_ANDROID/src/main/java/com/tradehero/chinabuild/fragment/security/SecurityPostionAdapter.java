@@ -5,21 +5,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 import com.tradehero.th.R;
 
 import java.util.ArrayList;
 
 /**
- * Created by palmer on 15/6/9.
+ * Created by palmer on 15/6/10.
  */
-public class SecurityDetailOptAdapter extends BaseAdapter {
+public class SecurityPostionAdapter extends BaseAdapter {
 
-    private ArrayList<SecurityDetailOptDTO> opts = new ArrayList();
+    private ArrayList<SecurityUserPositionDTO> opts = new ArrayList();
     private LayoutInflater inflater;
 
-    public SecurityDetailOptAdapter(Context context, ArrayList<SecurityDetailOptDTO> opts){
+    public SecurityPostionAdapter(Context context, ArrayList<SecurityUserPositionDTO> opts){
         if(opts!=null){
             this.opts.addAll(opts);
         }
@@ -46,7 +45,7 @@ public class SecurityDetailOptAdapter extends BaseAdapter {
 
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.item_security_detail_opt, null);
+            convertView = inflater.inflate(R.layout.item_security_position, null);
             viewHolder = new ViewHolder();
             convertView.setTag(viewHolder);
         } else {
@@ -55,7 +54,7 @@ public class SecurityDetailOptAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void setData(ArrayList<SecurityDetailOptDTO> opts){
+    public void setData(ArrayList<SecurityUserPositionDTO> opts){
         if(opts!=null){
             this.opts.clear();
             this.opts.addAll(opts);
@@ -63,7 +62,7 @@ public class SecurityDetailOptAdapter extends BaseAdapter {
         }
     }
 
-    public void addMoreData(ArrayList<SecurityDetailOptDTO> opts){
+    public void addMoreData(ArrayList<SecurityUserPositionDTO> opts){
         if(opts!=null){
             this.opts.addAll(opts);
             notifyDataSetChanged();
@@ -71,6 +70,5 @@ public class SecurityDetailOptAdapter extends BaseAdapter {
     }
 
     public final class ViewHolder {
-        public TextView quesDescTV;
     }
 }

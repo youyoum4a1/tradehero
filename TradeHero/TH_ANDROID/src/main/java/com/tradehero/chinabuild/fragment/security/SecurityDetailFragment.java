@@ -1064,11 +1064,13 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     {
         indexDiscussOrNews = select;
         setCategoryViews();
-        if(indexDiscussOrNews <= 1) {
+        if (indexDiscussOrNews <= 1) {
             displayDiscussOrNewsDTO();
         }
-        if(indexDiscussOrNews == 2 ){
-            enterUserOptFragment();
+        if (indexDiscussOrNews == 2){
+        }
+        if (indexDiscussOrNews == 3){
+
         }
     }
 
@@ -1995,6 +1997,14 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     //@OnClick(R.id.tvSecurityDiscussOrNewsMore)
     public void onDiscussOrNewsMore()
     {
+        if (indexDiscussOrNews==2) {
+            enterUserOptsPage();
+            return;
+        }
+        if (indexDiscussOrNews==3) {
+            enterUserPositionsPage();
+            return;
+        }
         if (getString(R.string.no_useful_data).equals(tvSecurityDiscussOrNewsMore.getText().toString())) return;
         if (securityCompactDTO == null) return;
         if (getAbstractDiscussionCompactDTO() != null)
@@ -2271,9 +2281,13 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void enterUserOptFragment()
-    {
+    private void enterUserOptsPage() {
         Bundle bundle = new Bundle();
         pushFragment(SecurityUserOptFragment.class, bundle);
+    }
+
+    private void enterUserPositionsPage(){
+        Bundle bundle = new Bundle();
+        pushFragment(SecurityUserPositionFragment.class, bundle);
     }
 }

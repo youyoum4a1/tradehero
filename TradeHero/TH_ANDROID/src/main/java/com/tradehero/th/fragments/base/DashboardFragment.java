@@ -31,11 +31,14 @@ abstract public class DashboardFragment extends BaseFragment {
     private RelativeLayout rlCustomHeadView;
     private TextView tvHeadLeft;
     private TextView tvHeadRight0;
+    private TextView tvHeadRight1;
     private TextView tvHeadMiddleMain;
     private TextView tvHeadMiddleSub;
 
     private LoginSuggestDialogFragment dialogFragment;
     private FragmentManager fm;
+
+    private int subMainTextColor;
 
     //Listen to back pressed
     private boolean needToMonitorBackPressed = false;
@@ -64,6 +67,10 @@ abstract public class DashboardFragment extends BaseFragment {
     }
 
     public void onClickHeadRight0() {
+
+    }
+
+    public void onClickHeadRight1() {
 
     }
 
@@ -106,6 +113,20 @@ abstract public class DashboardFragment extends BaseFragment {
         if (tvHeadRight0 != null) {
             tvHeadRight0.setVisibility(View.VISIBLE);
             tvHeadRight0.setText(right0);
+        }
+    }
+
+    public void setHeadViewRight0(int drawable){
+        if (tvHeadRight0 != null) {
+            tvHeadRight0.setVisibility(View.VISIBLE);
+            tvHeadRight0.setBackgroundResource(drawable);
+        }
+    }
+
+    public void setHeadViewRight1(int drawable){
+        if (tvHeadRight0 != null) {
+            tvHeadRight0.setVisibility(View.VISIBLE);
+            tvHeadRight0.setBackgroundResource(drawable);
         }
     }
 
@@ -154,10 +175,11 @@ abstract public class DashboardFragment extends BaseFragment {
         if (toolbar == null) {
             return;
         }
-
+        subMainTextColor = getResources().getColor(R.color.bar_normal);
         rlCustomHeadView = (RelativeLayout) toolbar.findViewById(R.id.rlCustomHeadView);
         tvHeadLeft = (TextView) toolbar.findViewById(R.id.tvHeadLeft);
         tvHeadRight0 = (TextView) toolbar.findViewById(R.id.tvHeadRight0);
+        tvHeadRight1 = (TextView)toolbar.findViewById(R.id.tvHeadRight1);
         tvHeadMiddleMain = (TextView) toolbar.findViewById(R.id.tvHeadMiddleMain);
         tvHeadMiddleSub = (TextView) toolbar.findViewById(R.id.tvHeadMiddleSub);
 
@@ -175,9 +197,18 @@ abstract public class DashboardFragment extends BaseFragment {
             }
         });
 
+        tvHeadRight1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickHeadRight1();
+            }
+        });
+
         //hide sub header and right button as default
         tvHeadRight0.setVisibility(View.GONE);
         tvHeadMiddleSub.setVisibility(View.GONE);
+        tvHeadMiddleSub.setTextColor(subMainTextColor);
+        tvHeadRight1.setVisibility(View.GONE);
     }
 
     public void popCurrentFragment() {

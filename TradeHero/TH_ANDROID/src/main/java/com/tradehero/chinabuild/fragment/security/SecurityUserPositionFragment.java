@@ -20,7 +20,7 @@ import java.util.ArrayList;
 /**
  * Created by palmer on 15/6/9.
  */
-public class SecurityUserOptFragment extends DashboardFragment{
+public class SecurityUserPositionFragment extends DashboardFragment {
 
     private int upColor;
     private int normalColor;
@@ -29,8 +29,8 @@ public class SecurityUserOptFragment extends DashboardFragment{
     private PullToRefreshListView optsLV;
     private ImageView emptyIV;
 
-    private SecurityOptAdapter adapter;
-    private ArrayList<SecurityUserOptDTO> opts = new ArrayList();
+    private SecurityPostionAdapter adapter;
+    private ArrayList<SecurityUserPositionDTO> opts = new ArrayList();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,7 @@ public class SecurityUserOptFragment extends DashboardFragment{
         emptyIV = (ImageView)view.findViewById(R.id.imgEmpty);
         optsLV = (PullToRefreshListView)view.findViewById(R.id.listOpts);
         if(adapter==null){
-            adapter = new SecurityOptAdapter(getActivity(), opts);
+            adapter = new SecurityPostionAdapter(getActivity(), opts);
         }
         optsLV.setMode(PullToRefreshBase.Mode.BOTH);
         optsLV.setAdapter(adapter);
@@ -79,11 +79,10 @@ public class SecurityUserOptFragment extends DashboardFragment{
         return view;
     }
 
-
     private void setOpts(){
         opts.clear();
         for(int num=0;num<20;num++){
-            SecurityUserOptDTO dto = new SecurityUserOptDTO();
+            SecurityUserPositionDTO dto = new SecurityUserPositionDTO();
             opts.add(dto);
         }
         adapter.setData(opts);

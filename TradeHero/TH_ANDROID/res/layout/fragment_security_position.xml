@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:background="#f1f4f5"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="用户"
+            android:textColor="#3b3b3b" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="持仓股数"
+            android:textColor="#3b3b3b" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="成本"
+            android:textColor="#3b3b3b" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="收益率"
+            android:textColor="#3b3b3b" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tradehero.th.widget.TradeHeroProgressBar
+            android:id="@+id/tradeheroprogressbar_opt"
+            android:layout_width="@dimen/loading_logo_width"
+            android:layout_height="@dimen/loading_logo_height"
+            android:layout_centerInParent="true"
+            android:background="@drawable/logo"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/imgEmpty"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:background="@drawable/empty" />
+
+        <com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView xmlns:ptr="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/listOpts"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:divider="#e6e6e6"
+            android:dividerHeight="1px"
+            android:fadingEdge="none"
+            android:listSelector="@android:color/transparent"
+            android:scrollingCache="false"
+            ptr:ptrHeaderTextColor="@color/black" />
+
+
+    </RelativeLayout>
+</LinearLayout>
