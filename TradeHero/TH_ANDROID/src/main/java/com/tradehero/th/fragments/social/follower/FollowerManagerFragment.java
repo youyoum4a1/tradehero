@@ -102,29 +102,32 @@ public class FollowerManagerFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         router.inject(this);
         UserBaseKey heroId = getHeroId(getArguments());
-        if (heroId == null && routedHeroId != null)
+        if (heroId == null)
         {
-            heroId = new UserBaseKey(routedHeroId);
-        }
-        else if (heroId == null && routedHeroIdWithTab != null)
-        {
-            heroId = new UserBaseKey(routedHeroIdWithTab);
-        }
-        else if (heroId == null && routedHeroIdForAll != null)
-        {
-            heroId = new UserBaseKey(routedHeroIdForAll);
-        }
-        else if (heroId == null && routedHeroIdForFree != null)
-        {
-            heroId = new UserBaseKey(routedHeroIdForFree);
-        }
-        else if (heroId == null && routedHeroIdForPremium != null)
-        {
-            heroId = new UserBaseKey(routedHeroIdForPremium);
-        }
-        else if (heroId == null)
-        {
-            heroId = currentUserId.toUserBaseKey();
+            if (routedHeroId != null)
+            {
+                heroId = new UserBaseKey(routedHeroId);
+            }
+            else if (routedHeroIdWithTab != null)
+            {
+                heroId = new UserBaseKey(routedHeroIdWithTab);
+            }
+            else if (routedHeroIdForAll != null)
+            {
+                heroId = new UserBaseKey(routedHeroIdForAll);
+            }
+            else if (routedHeroIdForFree != null)
+            {
+                heroId = new UserBaseKey(routedHeroIdForFree);
+            }
+            else if (routedHeroIdForPremium != null)
+            {
+                heroId = new UserBaseKey(routedHeroIdForPremium);
+            }
+            else
+            {
+                heroId = currentUserId.toUserBaseKey();
+            }
         }
         this.heroId = heroId;
     }

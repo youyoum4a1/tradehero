@@ -13,6 +13,7 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.authentication.SocialNetworkButtonListLinear;
 import com.tradehero.th.utils.GraphicUtil;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -227,9 +228,9 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
             ((LeaderboardFriendsItemView) view).getUserActionObservable()
                     .subscribe(inviteRequestedSubject);
         }
-        else if (view instanceof LeaderboardFriendCallToActionItemView)
+        else if (view instanceof SocialNetworkButtonListLinear)
         {
-            ((LeaderboardFriendCallToActionItemView) view).getSocialNetworkEnumObservable()
+            ((SocialNetworkButtonListLinear) view).getSocialNetworkEnumObservable()
                     .subscribe(socialNetworkEnumSubject);
         }
         return view;

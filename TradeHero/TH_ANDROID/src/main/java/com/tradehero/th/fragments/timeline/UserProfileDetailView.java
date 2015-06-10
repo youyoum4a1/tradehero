@@ -25,13 +25,19 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(userProfileDetailViewHolder, this);
+        if (!isInEditMode())
+        {
+            ButterKnife.inject(userProfileDetailViewHolder, this);
+        }
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(userProfileDetailViewHolder, this);
+        if (!isInEditMode())
+        {
+            ButterKnife.inject(userProfileDetailViewHolder, this);
+        }
     }
 
     @Override protected void onDetachedFromWindow()

@@ -69,9 +69,10 @@ public class HeroManagerFragment extends DashboardFragment
 
     @Nullable public static UserBaseKey getFollowerId(@NonNull Bundle args)
     {
-        if (args.containsKey(BUNDLE_KEY_FOLLOWER_ID))
+        Bundle followerBundle = args.getBundle(BUNDLE_KEY_FOLLOWER_ID);
+        if (followerBundle != null)
         {
-            return new UserBaseKey(args.getBundle(BUNDLE_KEY_FOLLOWER_ID));
+            return new UserBaseKey(followerBundle);
         }
         return null;
     }
@@ -88,29 +89,32 @@ public class HeroManagerFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         router.inject(this);
         UserBaseKey followerId = getFollowerId(getArguments());
-        if (followerId == null && routedFollowerId != null)
+        if (followerId == null)
         {
-            followerId = new UserBaseKey(routedFollowerId);
-        }
-        else if (followerId == null && routedFollowerIdWithTab != null)
-        {
-            followerId = new UserBaseKey(routedFollowerIdWithTab);
-        }
-        else if (followerId == null && routedFollowerIdForAll != null)
-        {
-            followerId = new UserBaseKey(routedFollowerIdForAll);
-        }
-        else if (followerId == null && routedFollowerIdForFree != null)
-        {
-            followerId = new UserBaseKey(routedFollowerIdForFree);
-        }
-        else if (followerId == null && routedFollowerIdForPremium != null)
-        {
-            followerId = new UserBaseKey(routedFollowerIdForPremium);
-        }
-        else
-        {
-            followerId = currentUserId.toUserBaseKey();
+            if (routedFollowerId != null)
+            {
+                followerId = new UserBaseKey(routedFollowerId);
+            }
+            else if (routedFollowerIdWithTab != null)
+            {
+                followerId = new UserBaseKey(routedFollowerIdWithTab);
+            }
+            else if (routedFollowerIdForAll != null)
+            {
+                followerId = new UserBaseKey(routedFollowerIdForAll);
+            }
+            else if (routedFollowerIdForFree != null)
+            {
+                followerId = new UserBaseKey(routedFollowerIdForFree);
+            }
+            else if (routedFollowerIdForPremium != null)
+            {
+                followerId = new UserBaseKey(routedFollowerIdForPremium);
+            }
+            else
+            {
+                followerId = currentUserId.toUserBaseKey();
+            }
         }
         this.followerId = followerId;
     }

@@ -89,7 +89,7 @@ public class PagedDTOAdapterImpl<DTOType> extends ArrayAdapter<DTOType>
         //save page
         pagedObjects.put(page, objects);
         //add new page
-        super.addAll(pagedObjects.get(page));
+        rebuild();
         //notify
         notifyDataSetChanged();
         setNotifyOnChange(true);

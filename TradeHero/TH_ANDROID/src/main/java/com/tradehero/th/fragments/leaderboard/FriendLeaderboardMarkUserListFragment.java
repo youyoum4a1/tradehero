@@ -28,10 +28,13 @@ import com.tradehero.th.api.social.UserFriendsTwitterDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandlerFacebook;
+import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.dialog.AlertDialogRx;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -58,6 +61,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
     @Inject LeaderboardMarkUserListFragmentUtil fragmentUtil;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject SocialFriendHandlerFacebook socialFriendHandlerFacebook;
+    @Inject SocialShareHelper socialShareHelper;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -114,20 +118,50 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
                 {
                     @Override public Observable<UserProfileDTO> call(SocialNetworkEnum socialNetworkEnum)
                     {
-                        return socialFriendHandlerFacebook.createProfileSessionObservable()
-                                .map(new PairGetFirst<UserProfileDTO, Session>());
+                        if (socialNetworkEnum.equals(SocialNetworkEnum.FB))
+                        {
+                            final ProgressDialog progress = ProgressDialog.show(getActivity(),
+                                    getString(R.string.loading_loading),
+                                    getString(R.string.alert_dialog_please_wait));
+                            return socialFriendHandlerFacebook.createProfileSessionObservable()
+                                    .map(new PairGetFirst<UserProfileDTO, Session>())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .doOnUnsubscribe(new DismissDialogAction0(progress));
+                        }
+                        else
+                        {
+                            return socialShareHelper.handleNeedToLink(socialNetworkEnum);
+                        }
                     }
                 })
                 .doOnError(new ToastAndLogOnErrorAction("Failed to listen to social network"))
                 .retry()
                 .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<UserProfileDTO, Observable<UserProfileDTO>>()
+                {
+                    @Override public Observable<UserProfileDTO> call(final UserProfileDTO userProfileDTO)
+                    {
+                        setCurrentUserProfileDTO(userProfileDTO);
+                        requestDtos();
+                        return AlertDialogRx.build(getActivity())
+                                .setPositiveButton(R.string.ok)
+                                .setTitle(R.string.account_already_linked)
+                                .setMessage(R.string.friend_list_update_message)
+                                .build()
+                                .map(new Func1<OnDialogClickEvent, UserProfileDTO>()
+                                {
+                                    @Override public UserProfileDTO call(OnDialogClickEvent clickEvent)
+                                    {
+                                        return userProfileDTO;
+                                    }
+                                });
+                    }
+                })
                 .subscribe(
                         new Action1<UserProfileDTO>()
                         {
                             @Override public void call(UserProfileDTO userProfileDTO)
                             {
-                                setCurrentUserProfileDTO(userProfileDTO);
-                                requestDtos();
                             }
                         },
                         new ToastAndLogOnErrorAction("Failed to listen to social network")));

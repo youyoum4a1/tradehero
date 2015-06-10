@@ -10,12 +10,15 @@ import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 
 public class PositionPartialBottomOpenView extends AbstractPartialBottomView
 {
     @InjectView(R.id.unrealised_pl_value_header) protected TextView unrealisedPLValueHeader;
     @InjectView(R.id.unrealised_pl_value) protected TextView unrealisedPLValue;
+    @InjectView(R.id.unrealised_pl_percent) @Optional protected TextView unrealisedPLPercent;
     @InjectView(R.id.realised_pl_value_header) @Optional protected TextView realisedPLValueHeader;
     @InjectView(R.id.realised_pl_value) @Optional protected TextView realisedPLValue;
     @InjectView(R.id.total_invested_value) protected TextView totalInvestedValue;
@@ -64,6 +67,11 @@ public class PositionPartialBottomOpenView extends AbstractPartialBottomView
             unrealisedPLValue.setText(((DTO) dto).unrealisedPLValue);
         }
 
+        if (unrealisedPLPercent != null)
+        {
+            unrealisedPLPercent.setText(((DTO) dto).unrealisedPLPercent);
+        }
+
         if (realisedPLValueHeader != null)
         {
             realisedPLValueHeader.setText(((DTO) dto).realisedPLValueHeader);
@@ -94,6 +102,7 @@ public class PositionPartialBottomOpenView extends AbstractPartialBottomView
     {
         @NonNull public final CharSequence unrealisedPLValueHeader;
         @NonNull public final CharSequence unrealisedPLValue;
+        @NonNull public final CharSequence unrealisedPLPercent;
         @NonNull public final CharSequence realisedPLValueHeader;
         @NonNull public final CharSequence realisedPLValue;
         @NonNull public final CharSequence totalInvestedValue;
@@ -118,6 +127,18 @@ public class PositionPartialBottomOpenView extends AbstractPartialBottomView
                     : THSignedMoney.builder(unrealisedPLRefCcy)
                             .withOutSign()
                             .currency(positionDTO.getNiceCurrency())
+                            .withDefaultColor()
+                            .build()
+                            .createSpanned();
+            Double gainPercent = positionDTO instanceof PositionInPeriodDTO && ((PositionInPeriodDTO) positionDTO).isProperInPeriod()
+                    ? ((PositionInPeriodDTO) positionDTO).getROIInPeriod()
+                    : positionDTO.getROISinceInception();
+            unrealisedPLPercent = gainPercent == null
+                    ? na
+                    : THSignedPercentage.builder(gainPercent)
+                            .signTypePlusMinusAlways()
+                            .relevantDigitCount(3)
+                            .format("(%s)")
                             .withDefaultColor()
                             .build()
                             .createSpanned();

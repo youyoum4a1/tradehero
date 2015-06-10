@@ -67,7 +67,7 @@ public class SocialNetworkButtonListLinear extends LinearLayout
         socialNetworkEnumSubject.onNext(((AuthenticationImageButton) view).getType());
     }
 
-    @NonNull public Observable<SocialNetworkEnum> getSocialNetworkEnumSubject()
+    @NonNull public Observable<SocialNetworkEnum> getSocialNetworkEnumObservable()
     {
         return socialNetworkEnumSubject.asObservable();
     }
