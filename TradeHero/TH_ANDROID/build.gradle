@@ -201,6 +201,24 @@ android {
       }
     }
 
+    googleplayGameAirship {
+      manifest {
+        srcFile 'src/googleplayAirship/AndroidManifest.xml'
+      }
+      java {
+        srcDir 'src/googleplayAirship/java'
+      }
+    }
+
+    googleplayLiveAirship {
+      manifest {
+        srcFile 'src/googleplayAirship/AndroidManifest.xml'
+      }
+      java {
+        srcDir 'src/googleplayAirship/java'
+      }
+    }
+
     googleplayGameAirshipDebug {
       java {
         srcDir 'src/googleplayDebug/java'
@@ -237,7 +255,19 @@ android {
       }
     }
 
-    googleplayAirshipRelease {
+    googleplayGameAirshipRelease {
+      manifest {
+        srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml'
+      }
+      java {
+        srcDir 'src/googleplayRelease/java'
+      }
+    }
+
+    googleplayLiveAirshipRelease {
+      manifest {
+        srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml'
+      }
       java {
         srcDir 'src/googleplayRelease/java'
       }
@@ -267,6 +297,7 @@ android {
     chinaAirshipDebug {
       java {
         srcDir 'src/chinaDebug/java'
+        srcDir 'src/chinaAirship/java'
       }
     }
 
@@ -285,6 +316,7 @@ android {
     chinaAirshipRelease {
       java {
         srcDir 'src/chinaRelease/java'
+        srcDir 'src/chinaAirship/java'
       }
     }
 
@@ -312,19 +344,31 @@ android {
       }
     }
 
-    samsungGameAirshipDebug {
+    samsungGameAirship {
       manifest {
-        srcFile 'src/googleplayAirship/java' // Reuse until there is something special for Samsung
+        srcFile 'src/googleplayAirship/AndroidManifest.xml' // Reuse until there is something special for Samsung
       }
+      java {
+        srcDir 'src/samsungAirship/java'
+      }
+    }
+
+    samsungLiveAirship {
+      manifest {
+        srcFile 'src/googleplayAirship/AndroidManifest.xml' // Reuse until there is something special for Samsung
+      }
+      java {
+        srcDir 'src/samsungAirship/java'
+      }
+    }
+
+    samsungGameAirshipDebug {
       java {
         srcDir 'src/samsungDebug/java'
       }
     }
 
     samsungLiveAirshipDebug {
-      manifest {
-        srcFile 'src/googleplayAirship/java' // Reuse until there is something special for Samsung
-      }
       java {
         srcDir 'src/samsungDebug/java'
       }
@@ -356,7 +400,7 @@ android {
 
     samsungGameAirshipRelease {
       manifest {
-        srcFile 'src/googleplayAirship/java' // Reuse until there is something special for Samsung
+        srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml' // Reuse until there is something special for Samsung
       }
       java {
         srcDir 'src/samsungRelease/java'
@@ -365,7 +409,7 @@ android {
 
     samsungLiveAirshipRelease {
       manifest {
-        srcFile 'src/googleplayAirship/java' // Reuse until there is something special for Samsung
+        srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml' // Reuse until there is something special for Samsung
       }
       java {
         srcDir 'src/samsungRelease/java'
@@ -399,6 +443,24 @@ android {
     amazonLiveNoPushDebug {
       java {
         srcDir 'src/amazonDebug/java'
+      }
+    }
+
+    amazonGameAirship {
+      manifest {
+        srcFile 'src/amazonAirship/AndroidManifest.xml'
+      }
+      java {
+        srcDir 'src/amazonAirship/java'
+      }
+    }
+
+    amazonLiveAirship {
+      manifest {
+        srcFile 'src/amazonAirship/AndroidManifest.xml'
+      }
+      java {
+        srcDir 'src/amazonAirship/java'
       }
     }
 
@@ -562,7 +624,7 @@ dependencies {
 
   compile 'com.fasterxml.jackson.core:jackson-databind:2.4.0' // 2.5.0 ?
   compile 'com.tradehero.route:route:0.2-SNAPSHOT'
-  compile 'com.android.support:support-annotations:20.0.0'
+  compile 'com.android.support:support-annotations:22.+'
   releaseCompile 'com.crashlytics.android:crashlytics:1.+'
   compile('oauth.signpost:signpost-core:1.2.1.2') {
     exclude group: 'commons-codec', module: 'commons-codec'
