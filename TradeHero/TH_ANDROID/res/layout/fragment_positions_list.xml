@@ -32,8 +32,8 @@
           android:layout_height="match_parent"
           >
 
-        <ListView
-            android:id="@+id/position_list"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/position_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fadingEdge="none"

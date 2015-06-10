@@ -5,12 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -73,7 +74,7 @@ public class SecurityPositionListFragment
 
     @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
-    @InjectView(R.id.position_list) ListView positionListView;
+    @InjectView(R.id.position_recycler_view) RecyclerView positionListView;
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
@@ -112,7 +113,6 @@ public class SecurityPositionListFragment
     {
         super.onAttach(activity);
         this.positionItemAdapter = new PositionItemAdapter(
-                activity,
                 getLayoutResIds(),
                 currentUserId);
     }
@@ -142,13 +142,14 @@ public class SecurityPositionListFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+        positionListView.setLayoutManager(new LinearLayoutManager(getActivity()));
         positionListView.setAdapter(positionItemAdapter);
         positionListView.setPadding(
                 positionListView.getPaddingLeft(),
                 0,
                 positionListView.getPaddingRight(),
                 positionListView.getPaddingBottom());
-        positionListView.setOnScrollListener(fragmentElements.getListViewScrollListener());
+        //positionListView.setOnScrollListener(fragmentElements.getListViewScrollListener());
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
             @Override public void onRefresh()
@@ -167,7 +168,7 @@ public class SecurityPositionListFragment
 
     @Override public void onPause()
     {
-        firstPositionVisible = positionListView.getFirstVisiblePosition();
+        //firstPositionVisible = positionListView.getFirstVisiblePosition();
         super.onPause();
     }
 
@@ -203,9 +204,7 @@ public class SecurityPositionListFragment
         layouts.put(PositionItemAdapter.VIEW_TYPE_HEADER, R.layout.position_item_header);
         layouts.put(PositionItemAdapter.VIEW_TYPE_PLACEHOLDER, R.layout.position_quick_nothing);
         layouts.put(PositionItemAdapter.VIEW_TYPE_LOCKED, R.layout.position_locked_item);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_LONG, R.layout.position_top_view_in_buy_sell);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_SHORT, R.layout.position_top_view_in_buy_sell);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED, R.layout.position_top_view_in_buy_sell);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_POSITION, R.layout.position_top_view_in_buy_sell);
         return layouts;
     }
 
@@ -364,18 +363,14 @@ public class SecurityPositionListFragment
     public void linkWith(@NonNull List<Object> dtoList)
     {
         this.viewDTOs = dtoList;
-        positionItemAdapter.setNotifyOnChange(false);
-        positionItemAdapter.clear();
         positionItemAdapter.addAll(dtoList);
-        positionItemAdapter.setNotifyOnChange(true);
-        positionItemAdapter.notifyDataSetChanged();
-        swipeToRefreshLayout.setRefreshing(false);
         listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
-        positionListView.smoothScrollToPosition(0);
+        swipeToRefreshLayout.setRefreshing(false);
+        //positionListView.smoothScrollToPosition(0);
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnItemClick(R.id.position_list)
+    //@OnItemClick(R.id.position_list)
     protected void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
         if (view instanceof PositionPartialTopView)

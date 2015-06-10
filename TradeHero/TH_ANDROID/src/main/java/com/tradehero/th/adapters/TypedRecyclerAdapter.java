@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class TypedRecyclerAdapter<T> extends RecyclerView.Adapter<TypedRecyclerAdapter.TypedViewHolder<T>>
+public abstract class TypedRecyclerAdapter<T>
+        extends RecyclerView.Adapter<TypedRecyclerAdapter.TypedViewHolder<T>>
 {
     protected final SortedList<T> mSortedList;
     private TypedRecyclerComparator<T> mComparator;

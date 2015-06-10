@@ -5,24 +5,20 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.DTOView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 public class PositionSectionHeaderItemView extends RelativeLayout
-    implements DTOView<PositionSectionHeaderItemView.DTO>
 {
-    @InjectView(R.id.header_text) protected TextView headerText;
-    @InjectView(R.id.header_time_base) protected TextView timeBaseText;
-
-    @Nullable protected DTO viewDTO;
-
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
     public PositionSectionHeaderItemView(Context context)
@@ -42,26 +38,6 @@ public class PositionSectionHeaderItemView extends RelativeLayout
         super(context, attrs, defStyle);
     }
     //</editor-fold>
-
-    @Override protected void onFinishInflate()
-    {
-        super.onFinishInflate();
-        ButterKnife.inject(this);
-    }
-
-    @Override public void display(@NonNull DTO dto)
-    {
-        this.viewDTO = dto;
-        if (headerText != null)
-        {
-            headerText.setText(dto.header);
-        }
-
-        if (timeBaseText != null)
-        {
-            timeBaseText.setText(dto.timeBase);
-        }
-    }
 
     public static class DTO
     {
@@ -96,5 +72,33 @@ public class PositionSectionHeaderItemView extends RelativeLayout
     public enum Type
     {
         LONG, SHORT, CLOSED;
+    }
+
+    public static class ViewHolder extends TypedRecyclerAdapter.TypedViewHolder<Object>
+    {
+        @InjectView(R.id.header_text) protected TextView headerText;
+        @InjectView(R.id.header_time_base) protected TextView timeBaseText;
+
+        public ViewHolder(PositionSectionHeaderItemView itemView)
+        {
+            super(itemView);
+        }
+
+        @Override public void display(Object o)
+        {
+            if (o instanceof DTO)
+            {
+                DTO dto = (DTO) o;
+                if (headerText != null)
+                {
+                    headerText.setText(dto.header);
+                }
+
+                if (timeBaseText != null)
+                {
+                    timeBaseText.setText(dto.timeBase);
+                }
+            }
+        }
     }
 }

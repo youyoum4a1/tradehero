@@ -23,6 +23,7 @@ public class PositionView extends LinearLayout
 {
     @InjectView(R.id.position_partial_top) protected PositionPartialTopView topView;
     @InjectView(R.id.expanding_layout) protected AbstractPartialBottomView/*<PositionDTO, ExpandableListItem<PositionDTO>>*/ bottomView;
+    private PositionPartialTopView.ViewHolder topViewHolder;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -48,14 +49,12 @@ public class PositionView extends LinearLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
+        topViewHolder = new PositionPartialTopView.ViewHolder(topView);
     }
 
     @Override public void display(DTO dto)
     {
-        if (topView != null)
-        {
-            topView.display(dto.topViewDTO);
-        }
+        topViewHolder.display(dto.topViewDTO);
         if (bottomView != null)
         {
             bottomView.display(dto.bottomViewDTO);
@@ -64,16 +63,13 @@ public class PositionView extends LinearLayout
 
     public void showCaret(boolean show)
     {
-        if (topView != null)
+        if (show)
         {
-            if (show)
-            {
-                topView.showCaret();
-            }
-            else
-            {
-                topView.hideCaret();
-            }
+            topViewHolder.showCaret();
+        }
+        else
+        {
+            topViewHolder.hideCaret();
         }
     }
 

@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,12 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnItemClick;
-import butterknife.OnItemLongClick;
 import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
@@ -147,7 +146,7 @@ public class PositionListFragment
 
     @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
-    @InjectView(R.id.position_list) ListView positionListView;
+    @InjectView(R.id.position_recycler_view) RecyclerView positionListView;
     @InjectView(R.id.btn_help) ImageView btnHelp;
 
     @InjectRoute UserBaseKey injectedUserBaseKey;
@@ -257,6 +256,7 @@ public class PositionListFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+        positionListView.setLayoutManager(new LinearLayoutManager(getActivity()));
         btnHelp.setOnClickListener(new View.OnClickListener()
         {
             @Override public void onClick(View v)
@@ -383,7 +383,7 @@ public class PositionListFragment
 
     @Override public void onPause()
     {
-        firstPositionVisible = positionListView.getFirstVisiblePosition();
+        //firstPositionVisible = positionListView.getFirstVisiblePosition();
         super.onPause();
     }
 
@@ -418,7 +418,6 @@ public class PositionListFragment
     protected PositionItemAdapter createPositionItemAdapter()
     {
         return new PositionItemAdapter(
-                getActivity(),
                 getLayoutResIds(),
                 currentUserId
         );
@@ -430,9 +429,7 @@ public class PositionListFragment
         layouts.put(PositionItemAdapter.VIEW_TYPE_HEADER, R.layout.position_item_header);
         layouts.put(PositionItemAdapter.VIEW_TYPE_PLACEHOLDER, R.layout.position_quick_nothing);
         layouts.put(PositionItemAdapter.VIEW_TYPE_LOCKED, R.layout.position_locked_item);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_LONG, R.layout.position_top_view_in_my);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_SHORT, R.layout.position_top_view_in_my);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED, R.layout.position_top_view_in_my);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_POSITION, R.layout.position_top_view_in_my);
         return layouts;
     }
 
@@ -461,7 +458,7 @@ public class PositionListFragment
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnItemClick(R.id.position_list)
+    //@OnItemClick(R.id.position_list)
     protected void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
         if (view instanceof PositionNothingView)
@@ -567,7 +564,7 @@ public class PositionListFragment
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnItemLongClick(R.id.position_list)
+    //@OnItemLongClick(R.id.position_list)
     protected boolean handlePositionItemLongClicked(AdapterView<?> parent, View view, int position, long id)
     {
         Object item = parent.getItemAtPosition(position);
@@ -850,7 +847,7 @@ public class PositionListFragment
             int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);
             inflatedHeader = LayoutInflater.from(getActivity()).inflate(headerLayoutId, null);
             portfolioHeaderView = (PortfolioHeaderView) inflatedHeader;
-            positionListView.addHeaderView(inflatedHeader, null, false);
+            //positionListView.addHeaderView(inflatedHeader, null, false);
         }
         else
         {
@@ -930,11 +927,7 @@ public class PositionListFragment
     public void linkWith(@NonNull List<Object> dtoList)
     {
         this.viewDTOs = dtoList;
-        positionItemAdapter.setNotifyOnChange(false);
-        positionItemAdapter.clear();
         positionItemAdapter.addAll(filterViewDTOs(dtoList));
-        positionItemAdapter.notifyDataSetChanged();
-        positionItemAdapter.setNotifyOnChange(true);
         swipeToRefreshLayout.setRefreshing(false);
         listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
     }
