@@ -112,7 +112,6 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.GuideView;
-import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.viewpagerindicator.SquarePageIndicator;
 
@@ -132,13 +131,12 @@ import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 /**
  * Created by huhaiping on 14-9-1.
  */
 public class SecurityDetailFragment extends BasePurchaseManagerFragment
-        implements DiscussionListCacheNew.DiscussionKeyListListener, View.OnClickListener
+        implements View.OnClickListener
 {
     public final static String BUNDLE_KEY_SECURITY_NAME = SecurityDetailFragment.class.getName() + ".securityName";
     public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = SecurityDetailFragment.class.getName() + ".securityId";
@@ -146,8 +144,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public final static String BUNDLE_KEY_GOTO_TRADE_DETAIL = SecurityDetailFragment.class.getName() + ".gotoTradeDetail";
 
     @Inject Analytics analytics;
-    @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
-    private MiddleCallback<DiscussionDTO> voteCallback;
     @Inject CurrentUserId currentUserId;
 
     protected SecurityId securityId;
@@ -190,16 +186,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     @Nullable private MiddleCallback<WatchlistPositionDTO> middleCallbackDelete;
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
-    @Inject DiscussionCache discussionCache;
-    @Inject DiscussionListCacheNew discussionListCache;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
-    private PaginatedDiscussionListKey discussionListKey;
-    private NewsItemListKey listKey;
-    @Inject NewsItemCompactListCacheNew newsTitleCache;
-    @Nullable private DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> newsCacheListener;
-    @Inject public Lazy<PrettyTime> prettyTime;
-    private AbstractDiscussionCompactDTO dtoDiscuss;
-    private AbstractDiscussionCompactDTO dtoNews;
     protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionCacheFetchListener;
     private ProgressDialog progressBar;
     @Inject ProgressDialogUtil progressDialogUtil;
@@ -236,7 +223,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     protected BetterViewAnimator chartImageWrapper;
     protected ChartImageView chartImage;
     protected TextView tvLoadingChart;
-    protected TextView tvSecurityDiscussOrNewsMore;
 
     ImageLoadingListener chartLoadingListener;
 
@@ -254,21 +240,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     Callback<SignedQuote> quoteCallback;
     int quoteErrors;
 
-    LinearLayout llDisscurssOrNews;
-    ImageView imgSecurityTLUserHeader;
-    TextView tvUserTLTimeStamp;
-    TextView tvUserTLContent;
-    TextView tvUserTLName;
-    LinearLayout llTLPraise;
-    LinearLayout llTLPraiseDown;
-    LinearLayout llTLComment;
-    TextView tvTLPraise;
-    TextView btnTLPraise;
-    TextView tvTLPraiseDown;
-    TextView btnTLPraiseDown;
-    TextView tvTLComment;
     LinearLayout bottomBarLL;
-    //Security Detail Tab End
 
     //Portfolio Detail Tab Start
     TextView tvPositionTotalCcy;//累计盈亏
@@ -341,7 +313,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         positionNewCacheListener = new PositionNewCacheListener();
         userProfileCacheListener = new AbstractBuySellUserProfileCacheListener();
         userWatchlistPositionCacheFetchListener = new BuySellUserWatchlistCacheListener();
-        newsCacheListener = new NewsHeadlineNewsListListener();
 
         fetchPositionListener = new TradeListFragmentPositionCacheListener();
         fetchTradesListener = new GetTradesListener();
@@ -478,7 +449,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public void initView()
     {
         initTabPageView();
-        tvUserTLContent.setMaxLines(8);
         llBuySaleButtons.setVisibility(View.GONE);
 
         btnChart = new Button[4];
@@ -600,7 +570,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         chartImageWrapper = (BetterViewAnimator) tabView0.findViewById(R.id.chart_image_wrapper);
         chartImage = (ChartImageView) tabView0.findViewById(R.id.chart_imageView);
         tvLoadingChart = (TextView) tabView0.findViewById(R.id.chart_loading);
-        tvSecurityDiscussOrNewsMore = (TextView) tabView0.findViewById(R.id.tvSecurityDiscussOrNewsMore);
 
         tvSecurityPrice = (TextView) tabView0.findViewById(R.id.tvSecurityDetailPrice);
         tvSecurityDetailRate = (TextView) tabView0.findViewById(R.id.tvSecurityDetailRate);
@@ -614,20 +583,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         tvYesterdayPriceEnd = (TextView) tabView0.findViewById(R.id.tvYesterdayPriceEnd);
         tvTotalAmount = (TextView) tabView0.findViewById(R.id.tvTotalAmount);
 
-
-        llDisscurssOrNews = (LinearLayout) tabView0.findViewById(R.id.llDisscurssOrNews);
-        imgSecurityTLUserHeader = (ImageView) tabView0.findViewById(R.id.imgSecurityTLUserHeader);
-        tvUserTLTimeStamp = (TextView) tabView0.findViewById(R.id.tvUserTLTimeStamp);
-        tvUserTLContent = (TextView) tabView0.findViewById(R.id.tvUserTLContent);
-        tvUserTLName = (TextView) tabView0.findViewById(R.id.tvUserTLName);
-        llTLPraise = (LinearLayout) tabView0.findViewById(R.id.llTLPraise);
-        llTLPraiseDown = (LinearLayout) tabView0.findViewById(R.id.llTLPraiseDown);
-        llTLComment = (LinearLayout) tabView0.findViewById(R.id.llTLComment);
-        tvTLPraise = (TextView) tabView0.findViewById(R.id.tvTLPraise);
-        btnTLPraise = (TextView) tabView0.findViewById(R.id.btnTLPraise);
-        tvTLPraiseDown = (TextView) tabView0.findViewById(R.id.tvTLPraiseDown);
-        btnTLPraiseDown = (TextView) tabView0.findViewById(R.id.btnTLPraiseDown);
-        tvTLComment = (TextView) tabView0.findViewById(R.id.tvTLComment);
         bottomBarLL = (LinearLayout) tabView0.findViewById(R.id.ic_info_buy_sale_btns);
     }
 
@@ -641,14 +596,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         btnNews.setOnClickListener(this);
         btnUserPosition.setOnClickListener(this);
         btnUserOperation.setOnClickListener(this);
-
-        llTLComment.setOnClickListener(this);
-        llTLPraiseDown.setOnClickListener(this);
-        llTLPraise.setOnClickListener(this);
-        llDisscurssOrNews.setOnClickListener(this);
-        imgSecurityTLUserHeader.setOnClickListener(this);
-        tvUserTLContent.setOnClickListener(this);
-        tvSecurityDiscussOrNewsMore.setOnClickListener(this);
     }
 
     public void initRootViewTab1(View tabView1)
@@ -707,8 +654,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         detachSecurityPositionDetailCache();
         detachCompetitionPositionCache();
         detachWatchlistFetchTask();
-        detachSecurityDiscuss();
-        detachSecurityNews();
 
         detachFetchPosition();
         detachFetchTrades();
@@ -1008,21 +953,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void initKey()
-    {
-        discussionListKey = new PaginatedDiscussionListKey(DiscussionType.SECURITY, securityCompactDTO.id, 1, 5);
-        listKey = new NewsItemListSecurityKey(new SecurityIntegerId(securityCompactDTO.id), 1, 5);
-        fetchSecurityDiscuss(true);
-        fetchSecurityNews(true);
-    }
-
     private void linkWith(SecurityCompactDTO securityCompactDTO)
     {
         this.securityCompactDTO = securityCompactDTO;
 
         if (securityCompactDTO != null)
         {
-            initKey();
             chartDTO.setSecurityCompactDTO(securityCompactDTO);
         }
         displayChartImage();
@@ -1032,22 +968,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         getTradeTabDetail();
     }
 
-    public void setTextForMoreButton()
-    {
-        tvSecurityDiscussOrNewsMore.setVisibility(View.VISIBLE);
-        if (getAbstractDiscussionCompactDTO() == null)
-        {
-            tvSecurityDiscussOrNewsMore.setText(
-                    (indexDiscussOrNews == 0) ? getString(R.string.quickly_to_get_first) : getString(R.string.no_useful_data));
-        }
-        else
-        {
-            tvSecurityDiscussOrNewsMore.setText(getString(R.string.click_to_get_more));
-        }
-    }
-
-    public void setChartView(int select)
-    {
+    public void setChartView(int select) {
         indexChart = select;
         for (int i = 0; i < btnChart.length; i++)
         {
@@ -1056,18 +977,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         linkWith(new ChartTimeSpan(getChartTimeSpanDuration(indexChart)));
     }
 
-    public void setDiscussOrNewsViewDefault()
-    {
+    public void setDiscussOrNewsViewDefault() {
         setCategoryViews();
-        tvSecurityDiscussOrNewsMore.setText("");
     }
 
     public void setDiscussOrNewsView(int select)
     {
         indexDiscussOrNews = select;
         setCategoryViews();
-        if (indexDiscussOrNews <= 1) {
-            displayDiscussOrNewsDTO();
+        if (indexDiscussOrNews == 1) {
         }
         if (indexDiscussOrNews == 2){
         }
@@ -1145,7 +1063,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         if (!isDetached() && chartImage != null)
         {
             String imageURL = chartDTO.getChartUrl();
-            // HACK TODO find something better than skipCache to avoid OutOfMemory
             if ((indexChart == 0) && isValidTimerForChartImage0())
             {
                 ImageLoader.getInstance().displayImage(imageURL, chartImage, chartLoadingListener);
@@ -1176,9 +1093,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Timber.e(error, "Fail to get quote");
                     if (quoteErrors < QuoteServiceWrapper.MAX_API_RETRIES) {
-                        Timber.e("Retry......quoteErrors: " + quoteErrors);
                         quoteServiceWrapper.getQuote(securitySymbol, quoteCallback);
                         quoteErrors ++;
                     }
@@ -1192,7 +1107,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             quoteDetailCallback = new Callback<QuoteDetail>() {
                 @Override
                 public void success(QuoteDetail quoteDetail, Response response) {
-                    Timber.e("Refresh QuoteDetails......");
                     displaySecurityInfo(quoteDetail);
                     if (quoteDTO != null) {
                         quoteDTO.ask = quoteDetail.sp1;
@@ -1204,7 +1118,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Timber.e(error, "Error");
                 }
             };
         }
@@ -1424,13 +1337,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             bundle.putDouble(BuySaleSecurityFragment.KEY_PRE_CLOSE, preClose == null? 0 : preClose);
             pushFragment(BuySaleSecurityFragment.class, bundle);
         }
-    }
-
-    public void enterDiscussSend()
-    {
-        Bundle bundle = new Bundle();
-        bundle.putBundle(SecurityDiscussSendFragment.BUNDLE_KEY_SECURITY_ID, securityId.getArgs());
-        pushFragment(SecurityDiscussSendFragment.class, bundle);
     }
 
     protected class PositionNewCacheListener implements DTOCacheNew.Listener<PositionDTOKey, PositionDTO>
@@ -1670,7 +1576,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    //TODO this extends is better? maybe not alex
     protected class WatchlistDeletedTHCallback extends WatchlistEditTHCallback
     {
         @Override protected void success(@NotNull WatchlistPositionDTO watchlistPositionDTO,
@@ -1708,272 +1613,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         return competitionID;
     }
 
-    private void detachSecurityDiscuss()
-    {
-        discussionListCache.unregister(this);
-    }
-
-    private void detachSecurityNews()
-    {
-        newsTitleCache.unregister(newsCacheListener);
-    }
-
-    public void fetchSecurityDiscuss(boolean force)
-    {
-        if (discussionListKey != null)
-        {
-            detachSecurityDiscuss();
-            discussionListCache.register(discussionListKey, this);
-            discussionListCache.getOrFetchAsync(discussionListKey, force);
-        }
-    }
-
-    private void fetchSecurityNews(boolean force)
-    {
-        if (listKey != null)
-        {
-            detachSecurityNews();
-            newsTitleCache.register(listKey, newsCacheListener);
-            newsTitleCache.getOrFetchAsync(listKey, force);
-        }
-    }
-
-    @Override public void onDTOReceived(@NotNull DiscussionListKey key, @NotNull DiscussionKeyList value)
-    {
-        if (value != null && value.size() > 0)
-        {
-            AbstractDiscussionCompactDTO dto = discussionCache.get(value.get(0));
-            if (dto != null)
-            {
-                dtoDiscuss = dto;
-                displayDiscussOrNewsDTO();
-            }
-        }
-    }
-
-    @Override public void onErrorThrown(@NotNull DiscussionListKey key, @NotNull Throwable error)
-    {
-
-    }
-
-    protected class NewsHeadlineNewsListListener implements DTOCacheNew.HurriedListener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>
-    {
-        @Override public void onPreCachedDTOReceived(
-                @NotNull NewsItemListKey key,
-                @NotNull PaginatedDTO<NewsItemCompactDTO> value)
-        {
-            linkWith(value);
-            finish();
-        }
-
-        @Override public void onDTOReceived(
-                @NotNull NewsItemListKey key,
-                @NotNull PaginatedDTO<NewsItemCompactDTO> value)
-        {
-            linkWith(value);
-            finish();
-        }
-
-        @Override public void onErrorThrown(
-                @NotNull NewsItemListKey key,
-                @NotNull Throwable error)
-        {
-            finish();
-        }
-
-        public void finish()
-        {
-        }
-    }
-
-    public void linkWith(@NotNull PaginatedDTO<NewsItemCompactDTO> value)
-    {
-        if (value.getData() != null && value.getData().size() > 0)
-        {
-            NewsItemCompactDTO dto = value.getData().get(0);
-            dtoNews = dto;
-            displayDiscussOrNewsDTO();
-        }
-    }
-
-    public void enterTimeLineDetail(AbstractDiscussionCompactDTO dto)
-    {
-        if (dto != null)
-        {
-            Bundle bundle = new Bundle();
-            bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, dto.getDiscussionKey().getArgs());
-            bundle.putInt(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_TYPE, TimeLineItemDetailFragment.DISCUSSION_DISCUSSION_TYPE);
-            bundle.putBoolean(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_IS_NEWS, isNews);
-            pushFragment(TimeLineItemDetailFragment.class, bundle);
-        }
-    }
-
-    public void comments(AbstractDiscussionCompactDTO dto)
-    {
-        DiscussionKey discussionKey = dto.getDiscussionKey();
-        Bundle bundle = new Bundle();
-        bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE,
-                discussionKey.getArgs());
-        pushFragment(DiscussSendFragment.class, bundle);
-    }
-
-    private void openUserProfile(int userId)
-    {
-        if (userId >= 0)
-        {
-            Bundle bundle = new Bundle();
-            bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
-            pushFragment(UserMainPage.class, bundle);
-        }
-    }
-
-    public AbstractDiscussionCompactDTO getAbstractDiscussionCompactDTO()
-    {
-        return indexDiscussOrNews == 0 ? dtoDiscuss : dtoNews;
-    }
-
-    public void displayDiscussOrNewsDTO()
-    {
-        AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
-        llDisscurssOrNews.setVisibility(dto == null ? View.GONE : View.VISIBLE);
-        if (dto != null)
-        {
-            imgSecurityTLUserHeader.setVisibility(dto instanceof NewsItemCompactDTO ? View.GONE : View.VISIBLE);
-            tvUserTLName.setVisibility(dto instanceof NewsItemCompactDTO ? View.GONE : View.VISIBLE);
-            tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(dto.createdAtUtc));
-
-            if (dto instanceof NewsItemCompactDTO)
-            {
-                tvUserTLContent.setText(((NewsItemCompactDTO) dto).description);
-            }
-            else if (dto instanceof DiscussionDTO)
-            {
-                tvUserTLName.setText(((DiscussionDTO) dto).user.getDisplayName());
-                tvUserTLContent.setText(((DiscussionDTO) dto).text);
-                ImageLoader.getInstance()
-                        .displayImage(((DiscussionDTO) dto).user.picture,
-                                imgSecurityTLUserHeader,
-                                UniversalImageLoader.getAvatarImageLoaderOptions(false));
-            }
-
-            btnTLPraise.setBackgroundResource(dto.voteDirection==1?R.drawable.icon_praise_active:R.drawable.icon_praise_normal);
-            btnTLPraiseDown.setBackgroundResource(dto.voteDirection==-1?R.drawable.icon_praise_down_active:R.drawable.icon_praise_down_normal);
-
-            tvTLComment.setText("" + dto.commentCount);
-            tvTLPraise.setText(Html.fromHtml(dto.getVoteUpString()));
-            tvTLPraiseDown.setText(Html.fromHtml(dto.getVoteDownString()));
-        }
-
-        setTextForMoreButton();
-    }
-
-    public void clickedPraise()
-    {
-        AbstractDiscussionCompactDTO item = getAbstractDiscussionCompactDTO();
-
-        if (item.voteDirection == 1) {
-            item.voteDirection = 0;
-            item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
-            updateVoting(VoteDirection.UnVote, item);
-        }
-        else if (item.voteDirection == 0)
-        {
-            item.voteDirection = 1;
-            item.upvoteCount += 1;
-            updateVoting(VoteDirection.UpVote, item);
-        } else if (item.voteDirection == -1)
-        {
-            item.voteDirection = 1;
-            item.upvoteCount += 1;
-            item.downvoteCount = item.downvoteCount > 0 ? (item.downvoteCount - 1) : 0;
-            updateVoting(VoteDirection.UpVote, item);
-        }
-
-        displayDiscussOrNewsDTO();
-        if(item.voteDirection != 0) {
-            btnTLPraise.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.vote_praise));
-        }
-    }
-
-    public void clickedPraiseDown()
-    {
-        AbstractDiscussionCompactDTO item = getAbstractDiscussionCompactDTO();
-
-        if (item.voteDirection == 1)
-        {
-            item.voteDirection = -1;
-            item.downvoteCount += 1;
-            item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
-            updateVoting(VoteDirection.DownVote, item);
-        }
-        else if (item.voteDirection == 0)
-        {
-            item.voteDirection = -1;
-            item.downvoteCount += 1;
-            updateVoting(VoteDirection.DownVote, item);
-        } else if (item.voteDirection == -1)
-        {
-            item.voteDirection = 0;
-            item.downvoteCount = item.downvoteCount > 0 ? (item.downvoteCount - 1) : 0;
-            updateVoting(VoteDirection.UnVote, item);
-        }
-        displayDiscussOrNewsDTO();
-        if(item.voteDirection != 0){
-            btnTLPraiseDown.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.vote_ani));
-        }
-    }
-
-    protected void detachVoteMiddleCallback()
-    {
-        if (voteCallback != null)
-        {
-            voteCallback.setPrimaryCallback(null);
-        }
-        voteCallback = null;
-    }
-
-    private void updateVoting(VoteDirection voteDirection, AbstractDiscussionCompactDTO discussionDTO)
-    {
-        if (discussionDTO == null)
-        {
-            return;
-        }
-        DiscussionType discussionType = getDiscussionType(discussionDTO);
-
-        DiscussionVoteKey discussionVoteKey = new DiscussionVoteKey(
-                discussionType,
-                discussionDTO.id,
-                voteDirection);
-        detachVoteMiddleCallback();
-        voteCallback = discussionServiceWrapper.get().vote(discussionVoteKey, new VoteCallback(voteDirection));
-    }
-
-    private DiscussionType getDiscussionType(AbstractDiscussionCompactDTO discussionDTO)
-    {
-        if (discussionDTO != null && discussionDTO.getDiscussionKey() != null)
-        {
-            return discussionDTO.getDiscussionKey().getType();
-        }
-
-        throw new IllegalStateException("Unknown discussion type");
-    }
-
-    //TODO why null ?
-    protected class VoteCallback implements retrofit.Callback<DiscussionDTO>
-    {
-        public VoteCallback(VoteDirection voteDirection)
-        {
-        }
-
-        @Override public void success(DiscussionDTO discussionDTO, Response response)
-        {
-        }
-
-        @Override public void failure(RetrofitError error)
-        {
-        }
-    }
-
     private void showGuideView()
     {
         Handler handler = new Handler();
@@ -1996,40 +1635,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }, 500);
     }
 
-    //@OnClick(R.id.tvSecurityDiscussOrNewsMore)
-    public void onDiscussOrNewsMore()
-    {
-        if (indexDiscussOrNews==2) {
-            enterUserOptsPage();
-            return;
-        }
-        if (indexDiscussOrNews==3) {
-            enterUserPositionsPage();
-            return;
-        }
-        if (getString(R.string.no_useful_data).equals(tvSecurityDiscussOrNewsMore.getText().toString())) return;
-        if (securityCompactDTO == null) return;
-        if (getAbstractDiscussionCompactDTO() != null)
-        {//点击加载更多
-            //进入股票相关的更多讨论和资讯中
-            Bundle bundle = new Bundle();
-            bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_DISCUSS_OR_NEWS_TYPE, indexDiscussOrNews);
-            bundle.putBundle(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            bundle.putString(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
-            bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURIYT_COMPACT_ID, securityCompactDTO.id);
-            bundle.putBoolean(SecurityDiscussOrNewsFragment.BUNDLE_ARGUMENT_IS_NEWS, isNews);
-            pushFragment(SecurityDiscussOrNewsFragment.class, bundle);
-
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_GETMORE));
-        }
-        else
-        {//快来抢沙发
-            enterDiscussSend();
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_SAFA));
-        }
-    }
-
-    public void onChartBtnClicked(View view) {
+    @Override public void onClick(View view) {
         if (view.getId() == R.id.btnTabChart0) {
             setChartView(0);
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_ONEDAY));
@@ -2073,66 +1679,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public void onOperaterClicked(View view)
-    {
-        if (view.getId() == R.id.llDisscurssOrNews)
-        {
-            enterTimeLineDetail(getAbstractDiscussionCompactDTO());
-        }
-        else if (view.getId() == R.id.tvUserTLContent)
-        {
-            if (tvUserTLContent instanceof MarkdownTextView)
-            {
-                if (!((MarkdownTextView) tvUserTLContent).isClicked)
-                {
-                    enterTimeLineDetail(getAbstractDiscussionCompactDTO());
-                }
-                ((MarkdownTextView) view).isClicked = false;
-            }
-        }
-        else if (view.getId() == R.id.imgSecurityTLUserHeader)
-        {
-            openUserProfile(((DiscussionDTO) getAbstractDiscussionCompactDTO()).user.id);
-        }
-        else if (view.getId() == R.id.llTLPraise)
-        {
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_PRAISE));
-            clickedPraise();
-        }
-        else if (view.getId() == R.id.llTLPraiseDown)
-        {
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_PRAISE_DOWN));
-            clickedPraiseDown();
-        }
-        else if (view.getId() == R.id.llTLComment)
-        {
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_COMMENT));
-            enterTimeLineDetail(getAbstractDiscussionCompactDTO());
-        }
-    }
-
-    @Override public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.llTLComment
-                || id == R.id.llTLPraise || id == R.id.llTLPraiseDown
-                //|| id == R.id.llTLShare
-                || id == R.id.llDisscurssOrNews || id == R.id.imgSecurityTLUserHeader || id == R.id.tvUserTLContent) {
-            onOperaterClicked(view);
-            return;
-        }
-        if (id == R.id.btnTabChart0
-                || id == R.id.btnTabChart1 || id == R.id.btnTabChart2 || id == R.id.btnTabChart3
-                || id == R.id.btnTabDiscuss || id == R.id.btnTabUserOperation || id == R.id.btnTabUserPosition
-                || id == R.id.btnTabNews) {
-            onChartBtnClicked(view);
-            return;
-        }
-        if (id == R.id.tvSecurityDiscussOrNewsMore) {
-            onDiscussOrNewsMore();
-            return;
-        }
-    }
-
     public void linkWith(com.tradehero.th.api.position.PositionDTOKey newPositionDTOKey)
     {
         if (newPositionDTOKey != null)
@@ -2166,21 +1712,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         positionCache.get().getOrFetchAsync(positionDTOKey);
     }
 
-    protected class TradeListFragmentPositionCacheListener implements DTOCacheNew.Listener<com.tradehero.th.api.position.PositionDTOKey, PositionDTO>
-    {
-        @Override public void onDTOReceived(@NotNull com.tradehero.th.api.position.PositionDTOKey key, @NotNull PositionDTO value)
-        {
+    protected class TradeListFragmentPositionCacheListener implements DTOCacheNew.Listener<com.tradehero.th.api.position.PositionDTOKey, PositionDTO> {
+        @Override public void onDTOReceived(@NotNull com.tradehero.th.api.position.PositionDTOKey key, @NotNull PositionDTO value) {
             linkWith(value);
         }
 
-        @Override public void onErrorThrown(@NotNull com.tradehero.th.api.position.PositionDTOKey key, @NotNull Throwable error)
-        {
-            //THToast.show(R.string.error_fetch_position_list_info);
-        }
+        @Override public void onErrorThrown(@NotNull com.tradehero.th.api.position.PositionDTOKey key, @NotNull Throwable error) { }
     }
 
-    public void linkWith(PositionDTO positionDTO)
-    {
+    public void linkWith(PositionDTO positionDTO) {
         if (getActivity() == null) return;
         this.positionDTO = positionDTO;
         fetchTrades();
@@ -2283,13 +1823,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void enterUserOptsPage() {
+    private void enterDiscussSend() {
         Bundle bundle = new Bundle();
-        pushFragment(SecurityUserOptFragment.class, bundle);
-    }
-
-    private void enterUserPositionsPage(){
-        Bundle bundle = new Bundle();
-        pushFragment(SecurityUserPositionFragment.class, bundle);
+        bundle.putBundle(SecurityDiscussSendFragment.BUNDLE_KEY_SECURITY_ID, securityId.getArgs());
+        pushFragment(SecurityDiscussSendFragment.class, bundle);
     }
 }

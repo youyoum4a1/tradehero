@@ -57,6 +57,10 @@ import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.fragment.security.BasePurchaseManagerFragment;
 import com.tradehero.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
+import com.tradehero.chinabuild.fragment.security.SecurityDetailSubDiscussFragment;
+import com.tradehero.chinabuild.fragment.security.SecurityDetailSubNewsFragment;
+import com.tradehero.chinabuild.fragment.security.SecurityDetailSubOptFragment;
+import com.tradehero.chinabuild.fragment.security.SecurityDetailSubPositionFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDiscussOrNewsFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityUserOptFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityUserPositionFragment;
@@ -236,6 +240,10 @@ import dagger.Provides;
                         BuySaleSecurityFragment.class,
                         SecurityUserOptFragment.class,
                         SecurityUserPositionFragment.class,
+                        SecurityDetailSubDiscussFragment.class,
+                        SecurityDetailSubNewsFragment.class,
+                        SecurityDetailSubOptFragment.class,
+                        SecurityDetailSubPositionFragment.class,
 
                         SecurityDetailDialogLayout.class,
                         TimeLineDetailDialogLayout.class,

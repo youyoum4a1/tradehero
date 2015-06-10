@@ -178,27 +178,8 @@
                             android:visibility="gone" />
                     </RelativeLayout>
                 </LinearLayout>
-
-                <include
-                    android:id="@+id/llDisscurssOrNews"
-                    layout="@layout/security_time_line_item" />
-
-                <include layout="@layout/separate_line" />
             </LinearLayout>
 
-
-            <TextView
-                android:id="@+id/tvSecurityDiscussOrNewsMore"
-                android:layout_width="fill_parent"
-                android:layout_height="32dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/listview_item_selector"
-                android:gravity="center"
-                android:text="@string/click_to_get_more"
-                android:visibility="visible" />
 
         </LinearLayout>
     </ScrollView>
