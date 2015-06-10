@@ -1,18 +1,22 @@
 package com.tradehero.th.fragments.position;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.squareup.picasso.Picasso;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.GraphicUtil;
 import java.util.ArrayList;
 import java.util.Map;
+import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
@@ -29,9 +33,11 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
 
     @NonNull protected final CurrentUserId currentUserId;
     @NonNull protected final PublishSubject<PositionPartialTopView.CloseUserAction> userActionSubject;
+    @Inject Picasso picasso;
 
     //<editor-fold desc="Constructors">
     public PositionItemAdapter(
+            Context context,
             @NonNull Map<Integer, Integer> itemTypeToLayoutId,
             @NonNull CurrentUserId currentUserId)
     {
@@ -47,6 +53,7 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
         this.userActionSubject = PublishSubject.create();
         this.itemTypeToLayoutId = itemTypeToLayoutId;
         setHasStableIds(true);
+        HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
 
@@ -121,7 +128,7 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
         }
         else if (viewType == VIEW_TYPE_POSITION)
         {
-            return new PositionPartialTopView.ViewHolder((PositionPartialTopView) v);
+            return new PositionPartialTopView.ViewHolder((PositionPartialTopView) v, picasso);
         }
         return null;
     }

@@ -113,6 +113,7 @@ public class SecurityPositionListFragment
     {
         super.onAttach(activity);
         this.positionItemAdapter = new PositionItemAdapter(
+                getActivity(),
                 getLayoutResIds(),
                 currentUserId);
     }

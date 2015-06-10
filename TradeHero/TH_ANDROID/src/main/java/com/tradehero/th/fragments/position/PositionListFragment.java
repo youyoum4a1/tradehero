@@ -418,6 +418,7 @@ public class PositionListFragment
     protected PositionItemAdapter createPositionItemAdapter()
     {
         return new PositionItemAdapter(
+                getActivity(),
                 getLayoutResIds(),
                 currentUserId
         );

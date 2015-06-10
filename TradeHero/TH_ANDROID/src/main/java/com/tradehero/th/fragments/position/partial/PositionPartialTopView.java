@@ -11,8 +11,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.Optional;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 import com.tradehero.common.annotation.ViewVisibilityValue;
+import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.position.PositionDTO;
@@ -52,16 +57,6 @@ public class PositionPartialTopView extends LinearLayout
     }
     //</editor-fold>
 
-    //@SuppressWarnings("unused")
-    //@OnClick(R.id.btn_position_close) @Optional
-    //protected void handleBtnCloseClicked(View view)
-    //{
-    //    if (viewDTO != null)
-    //    {
-    //        userActionSubject.onNext(new CloseUserAction(viewDTO.positionDTO, viewDTO.securityCompactDTO));
-    //    }
-    //}
-
     protected void unsubscribe(@Nullable Subscription subscription)
     {
         if (subscription != null)
@@ -72,8 +67,6 @@ public class PositionPartialTopView extends LinearLayout
 
     public static class DTO
     {
-        @NonNull private final PublishSubject<CloseUserAction> userActionSubject;
-
         @NonNull public final PositionDTO positionDTO;
         @NonNull public final SecurityCompactDTO securityCompactDTO;
 
@@ -108,8 +101,6 @@ public class PositionPartialTopView extends LinearLayout
 
         public DTO(@NonNull Resources resources, @NonNull PositionDTO positionDTO, @NonNull SecurityCompactDTO securityCompactDTO)
         {
-            this.userActionSubject = PublishSubject.create();
-
             this.positionDTO = positionDTO;
             this.securityCompactDTO = securityCompactDTO;
 
@@ -441,8 +432,8 @@ public class PositionPartialTopView extends LinearLayout
         @InjectView(R.id.share_count_text) @Optional TextView shareCountText;
         @InjectView(R.id.share_count) @Optional TextView shareCount;
         @InjectView(R.id.hint_forward) @Optional View forwardCaret;
-
         @InjectView(R.id.gain_loss_header) @Optional TextView gainLossHeader;
+
         @InjectView(R.id.gain_loss) @Optional TextView gainLoss;
         @InjectView(R.id.gain_loss_percent) @Optional TextView gainLossPercent;
         @InjectView(R.id.total_invested_value) @Optional TextView totalInvested;
@@ -452,10 +443,16 @@ public class PositionPartialTopView extends LinearLayout
         @InjectView(R.id.position_last_amount_header) @Optional TextView positionLastAmountHeader;
         @InjectView(R.id.position_last_amount) @Optional TextView positionLastAmount;
         @InjectView(R.id.btn_position_close) @Optional TextView btnClose;
+        @NonNull private final PublishSubject<CloseUserAction> userActionSubject;
 
-        public ViewHolder(PositionPartialTopView view)
+        private DTO dto;
+        private final Picasso picasso;
+
+        public ViewHolder(PositionPartialTopView view, Picasso picasso)
         {
             super(view);
+            this.picasso = picasso;
+            this.userActionSubject = PublishSubject.create();
         }
 
         public void hideCaret()
@@ -474,11 +471,26 @@ public class PositionPartialTopView extends LinearLayout
             }
         }
 
+        @SuppressWarnings("unused")
+        @OnClick(R.id.btn_position_close) @Optional
+        protected void handleBtnCloseClicked(View view)
+        {
+            if (dto != null)
+            {
+                userActionSubject.onNext(new CloseUserAction(dto.positionDTO, dto.securityCompactDTO));
+            }
+        }
+
+        public Observable<CloseUserAction> getUserActionObservable()
+        {
+            return userActionSubject.asObservable();
+        }
+
         @Override public void display(Object o)
         {
             if (o instanceof DTO)
             {
-                DTO dto = (DTO) o;
+                this.dto = (DTO) o;
 
                 if (gainIndicator != null)
                 {
@@ -487,30 +499,29 @@ public class PositionPartialTopView extends LinearLayout
 
                 if (stockLogo != null)
                 {
-                    //TODO
-                    //stockLogo.setVisibility(dto.stockLogoVisibility);
-                    //RequestCreator request;
-                    //if (dto.stockLogoUrl != null)
-                    //{
-                    //    request = picasso.load(dto.stockLogoUrl);
-                    //}
-                    //else
-                    //{
-                    //    request = picasso.load(dto.stockLogoRes);
-                    //}
-                    //request.placeholder(R.drawable.default_image)
-                    //        .transform(new WhiteToTransparentTransformation())
-                    //        .into(stockLogo, new Callback()
-                    //        {
-                    //            @Override public void onSuccess()
-                    //            {
-                    //            }
-                    //
-                    //            @Override public void onError()
-                    //            {
-                    //                stockLogo.setImageResource(dto.stockLogoRes);
-                    //            }
-                    //        });
+                    stockLogo.setVisibility(dto.stockLogoVisibility);
+                    RequestCreator request;
+                    if (dto.stockLogoUrl != null)
+                    {
+                        request = picasso.load(dto.stockLogoUrl);
+                    }
+                    else
+                    {
+                        request = picasso.load(dto.stockLogoRes);
+                    }
+                    request.placeholder(R.drawable.default_image)
+                            .transform(new WhiteToTransparentTransformation())
+                            .into(stockLogo, new Callback()
+                            {
+                                @Override public void onSuccess()
+                                {
+                                }
+
+                                @Override public void onError()
+                                {
+                                    stockLogo.setImageResource(dto.stockLogoRes);
+                                }
+                            });
                 }
 
                 if (flagsContainer != null)
