@@ -16,7 +16,7 @@
   <string name="loading_required_information">Loading Required Information&#8230;</string>
   <string name="server_response">"Server response: "</string>
   <string name="link">Link %1$s</string>
-  <string name="link_description">You need to link your %1$s account before sharing…</string>
+  <string name="link_description">You need to link your %1$s account before sharing or seeing your friends…</string>
   <string name="link_now">Link now!</string>
   <string name="link_select_one_social">Select a Social Network</string>
   <string name="link_select_one_social_description">Please select at least one social network to share to</string>
