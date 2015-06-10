@@ -41,14 +41,7 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
             @NonNull Map<Integer, Integer> itemTypeToLayoutId,
             @NonNull CurrentUserId currentUserId)
     {
-        super(Object.class, new PositionItemComparator(), new ArrayList<>(), new OnItemClickedListener<Object>()
-        {
-            @Override public void onItemClicked(int position, View view, Object object)
-            {
-                //TODO
-                Timber.d("Pressed %d %s", position, object);
-            }
-        });
+        super(Object.class, new PositionItemComparator());
         this.currentUserId = currentUserId;
         this.userActionSubject = PublishSubject.create();
         this.itemTypeToLayoutId = itemTypeToLayoutId;
@@ -137,7 +130,7 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
     {
         super.onBindViewHolder(holder, position);
         GraphicUtil.setEvenOddBackground(position, holder.itemView);
-        if(holder instanceof PositionPartialTopView.ViewHolder)
+        if (holder instanceof PositionPartialTopView.ViewHolder)
         {
             ((PositionPartialTopView.ViewHolder) holder).getUserActionObservable().subscribe(userActionSubject);
         }

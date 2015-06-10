@@ -21,6 +21,7 @@ import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.HelpActivity;
+import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
@@ -116,6 +117,25 @@ public class SecurityPositionListFragment
                 getActivity(),
                 getLayoutResIds(),
                 currentUserId);
+        positionItemAdapter.setOnItemClickedListener(
+                new TypedRecyclerAdapter.OnItemClickedListener<Object>()
+                {
+                    @Override public void onItemClicked(int position, View view, Object object)
+                    {
+                        //TODO
+                        Timber.d("Pressed %d %s", position, object);
+                    }
+                });
+        positionItemAdapter.setOnItemLongClickedListener(
+                new TypedRecyclerAdapter.OnItemLongClickedListener<Object>()
+                {
+                    @Override public boolean onItemLongClicked(int position, View view, Object object)
+                    {
+                        Timber.d("Long Pressed %d %s", position, object);
+                        return false;
+                    }
+                }
+        );
     }
 
     @Override public void onCreate(Bundle savedInstanceState)

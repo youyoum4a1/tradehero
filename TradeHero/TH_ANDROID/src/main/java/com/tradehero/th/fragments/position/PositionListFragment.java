@@ -26,6 +26,7 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.HelpActivity;
+import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.AssetClass;
@@ -417,11 +418,31 @@ public class PositionListFragment
 
     protected PositionItemAdapter createPositionItemAdapter()
     {
-        return new PositionItemAdapter(
+        PositionItemAdapter adapter = new PositionItemAdapter(
                 getActivity(),
                 getLayoutResIds(),
                 currentUserId
         );
+        adapter.setOnItemClickedListener(
+                new TypedRecyclerAdapter.OnItemClickedListener<Object>()
+                {
+                    @Override public void onItemClicked(int position, View view, Object object)
+                    {
+                        //TODO
+                        Timber.d("Pressed %d %s", position, object);
+                    }
+                });
+        adapter.setOnItemLongClickedListener(
+                new TypedRecyclerAdapter.OnItemLongClickedListener<Object>()
+                {
+                    @Override public boolean onItemLongClicked(int position, View view, Object object)
+                    {
+                        Timber.d("Long Pressed %d %s", position, object);
+                        return true;
+                    }
+                }
+        );
+        return adapter;
     }
 
     @NonNull private Map<Integer, Integer> getLayoutResIds()

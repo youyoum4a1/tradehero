@@ -24,22 +24,22 @@ public abstract class TypedRecyclerAdapter<T>
 {
     protected final SortedList<T> mSortedList;
     private TypedRecyclerComparator<T> mComparator;
-    protected final OnItemClickedListener<T> mOnItemClickedListener;
+    @NonNull protected OnItemClickedListener<T> mOnItemClickedListener;
+    @NonNull protected OnItemLongClickedListener<T> mOnItemLongClickedListener;
 
-    public TypedRecyclerAdapter(Class<T> klass, List<T> list, OnItemClickedListener<T> onItemClickedListener)
+    public TypedRecyclerAdapter(Class<T> klass)
     {
-        this(klass, null, list, onItemClickedListener);
+        this(klass, null);
     }
 
-    public TypedRecyclerAdapter(Class<T> klass, @Nullable TypedRecyclerComparator<T> comparator, List<T> list,
-            OnItemClickedListener<T> onItemClickedListener)
+    public TypedRecyclerAdapter(Class<T> klass, @Nullable TypedRecyclerComparator<T> comparator)
     {
-        this.mOnItemClickedListener = onItemClickedListener;
         if (comparator == null)
         {
             comparator = this.createDefaultComparator();
         }
         this.mComparator = comparator;
+
         this.mSortedList = new SortedList<>(klass, new SortedListAdapterCallback<T>(this)
         {
             @Override
@@ -60,7 +60,6 @@ public abstract class TypedRecyclerAdapter<T>
                 return TypedRecyclerAdapter.this.mComparator.areItemsTheSame(item1, item2);
             }
         });
-        addAll(list);
     }
 
     private TypedRecyclerComparator<T> createDefaultComparator()
@@ -68,22 +67,43 @@ public abstract class TypedRecyclerAdapter<T>
         return new TypedRecyclerComparator<>();
     }
 
+    public void setOnItemClickedListener(@NonNull OnItemClickedListener<T> onItemClickedListener)
+    {
+        if (mSortedList.size() > 0)
+        {
+            throw new IllegalStateException("");
+        }
+        this.mOnItemClickedListener = onItemClickedListener;
+    }
+
+    public void setOnItemLongClickedListener(@NonNull OnItemLongClickedListener<T> onItemLongClickedListener)
+    {
+        if (mSortedList.size() > 0)
+        {
+            throw new IllegalStateException("");
+        }
+        this.mOnItemLongClickedListener = onItemLongClickedListener;
+    }
+
     public void setComparator(@NonNull TypedRecyclerComparator<T> comparator)
     {
         if (!comparator.equals(mComparator))
         {
             this.mComparator = comparator;
-            List<T> temp = new ArrayList<>();
             int size = mSortedList.size();
-            mSortedList.beginBatchedUpdates();
-            for (int i = 0; i < size; i++)
+            if (size > 0)
             {
-                T e = mSortedList.get(0);
-                temp.add(e);
-                mSortedList.removeItemAt(0);
+                List<T> temp = new ArrayList<>();
+                mSortedList.beginBatchedUpdates();
+                for (int i = 0; i < size; i++)
+                {
+                    T e = mSortedList.get(0);
+                    temp.add(e);
+                    mSortedList.removeItemAt(0);
+                }
+                mSortedList.endBatchedUpdates();
+                addAll(temp);
             }
-            mSortedList.endBatchedUpdates();
-            addAll(temp);
         }
     }
 
@@ -148,6 +168,14 @@ public abstract class TypedRecyclerAdapter<T>
                 mOnItemClickedListener.onItemClicked(position, viewHolder.itemView, getItem(position));
             }
         });
+        vh.setOnItemLongClickListener(new TypedViewHolder.OnItemViewLongClickedListener()
+        {
+            @Override public boolean onItemViewLongClicked(TypedViewHolder viewHolder)
+            {
+                int position = viewHolder.getAdapterPosition();
+                return mOnItemLongClickedListener.onItemLongClicked(position, viewHolder.itemView, getItem(position));
+            }
+        });
         return vh;
     }
 
@@ -162,11 +190,34 @@ public abstract class TypedRecyclerAdapter<T>
         void onItemClicked(int position, View view, T object);
     }
 
+    public interface OnItemLongClickedListener<T>
+    {
+        boolean onItemLongClicked(int position, View view, T object);
+    }
+
+    public static class EmptyItemClickedListener<T> implements OnItemClickedListener<T>
+    {
+
+        @Override public void onItemClicked(int position, View view, T object)
+        {
+            //Do nothing.
+        }
+    }
+
+    public static class EmptyItemLongClickedListener<T> implements OnItemLongClickedListener<T>
+    {
+
+        @Override public boolean onItemLongClicked(int position, View view, T object)
+        {
+            return true;
+        }
+    }
+
     public static class TypedRecyclerComparator<T>
     {
         protected int compare(T o1, T o2)
         {
-            return o1.toString().compareToIgnoreCase(o2.toString());
+            return 0;
         }
 
         protected boolean areContentsTheSame(T oldItem, T newItem)
@@ -203,9 +254,27 @@ public abstract class TypedRecyclerAdapter<T>
             });
         }
 
+        public void setOnItemLongClickListener(@NonNull final OnItemViewLongClickedListener onItemViewLongClickedListener)
+        {
+            final TypedViewHolder<T> holder = this;
+            itemView.setOnLongClickListener(new View.OnLongClickListener()
+            {
+                @Override
+                public boolean onLongClick(View v)
+                {
+                    return onItemViewLongClickedListener.onItemViewLongClicked(holder);
+                }
+            });
+        }
+
         public interface OnItemViewClickedListener
         {
             void onItemViewClicked(TypedViewHolder viewHolder);
+        }
+
+        public interface OnItemViewLongClickedListener
+        {
+            boolean onItemViewLongClicked(TypedViewHolder viewHolder);
         }
     }
 
