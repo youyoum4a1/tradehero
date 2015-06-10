@@ -27,7 +27,7 @@ public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
             @LayoutRes int mineResId,
             @LayoutRes int otherResId)
     {
-        super(context);
+        super(context, new AbstractDiscussionCompactItemViewDTODateComparator(false));
         this.discussionCache = discussionCache;
         this.currentUserId = currentUserId;
         this.mineResId = mineResId;
