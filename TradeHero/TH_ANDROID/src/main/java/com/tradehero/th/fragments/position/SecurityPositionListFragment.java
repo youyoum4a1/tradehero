@@ -122,20 +122,9 @@ public class SecurityPositionListFragment
                 {
                     @Override public void onItemClicked(int position, View view, Object object)
                     {
-                        //TODO
-                        Timber.d("Pressed %d %s", position, object);
+                        handlePositionItemClicked(view, position, object);
                     }
                 });
-        positionItemAdapter.setOnItemLongClickedListener(
-                new TypedRecyclerAdapter.OnItemLongClickedListener<Object>()
-                {
-                    @Override public boolean onItemLongClicked(int position, View view, Object object)
-                    {
-                        Timber.d("Long Pressed %d %s", position, object);
-                        return false;
-                    }
-                }
-        );
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -390,16 +379,14 @@ public class SecurityPositionListFragment
         //positionListView.smoothScrollToPosition(0);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    //@OnItemClick(R.id.position_list)
-    protected void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
+    protected void handlePositionItemClicked(View view, int position, Object object)
     {
         if (view instanceof PositionPartialTopView)
         {
             Bundle args = new Bundle();
             // By default tries
             TradeListFragment.putPositionDTOKey(args,
-                    ((PositionPartialTopView.DTO) parent.getItemAtPosition(position)).positionDTO.getPositionDTOKey());
+                    ((PositionPartialTopView.DTO) object).positionDTO.getPositionDTOKey());
             OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
             if (ownedPortfolioId != null)
             {

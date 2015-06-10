@@ -201,24 +201,6 @@ public abstract class TypedRecyclerAdapter<T>
         boolean onItemLongClicked(int position, View view, T object);
     }
 
-    public static class EmptyItemClickedListener<T> implements OnItemClickedListener<T>
-    {
-
-        @Override public void onItemClicked(int position, View view, T object)
-        {
-            //Do nothing.
-        }
-    }
-
-    public static class EmptyItemLongClickedListener<T> implements OnItemLongClickedListener<T>
-    {
-
-        @Override public boolean onItemLongClicked(int position, View view, T object)
-        {
-            return true;
-        }
-    }
-
     public static class TypedRecyclerComparator<T>
     {
         protected int compare(T o1, T o2)

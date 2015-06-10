@@ -257,7 +257,6 @@ public class PositionListFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        positionListView.setLayoutManager(new LinearLayoutManager(getActivity()));
         btnHelp.setOnClickListener(new View.OnClickListener()
         {
             @Override public void onClick(View v)
@@ -265,6 +264,8 @@ public class PositionListFragment
                 HelpActivity.slideInFromRight(getActivity());
             }
         });
+        positionListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        positionListView.setHasFixedSize(true);
         positionListView.setAdapter(positionItemAdapter);
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
@@ -436,8 +437,7 @@ public class PositionListFragment
                 {
                     @Override public boolean onItemLongClicked(int position, View view, Object object)
                     {
-                        Timber.d("Long Pressed %d %s", position, object);
-                        return true;
+                        return handlePositionItemLongClicked(view, position, object);
                     }
                 }
         );
@@ -586,9 +586,8 @@ public class PositionListFragment
 
     @SuppressWarnings("UnusedDeclaration")
     //@OnItemLongClick(R.id.position_list)
-    protected boolean handlePositionItemLongClicked(AdapterView<?> parent, View view, int position, long id)
+    protected boolean handlePositionItemLongClicked(View view, int position, Object item)
     {
-        Object item = parent.getItemAtPosition(position);
         if (item instanceof PositionPartialTopView.DTO)
         {
             final PositionPartialTopView.DTO dto = (PositionPartialTopView.DTO) item;
