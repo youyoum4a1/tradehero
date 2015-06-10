@@ -24,7 +24,7 @@ abstract public class DiscussionSetAdapter
     //<editor-fold desc="Constructors">
     public DiscussionSetAdapter(@NonNull Context context)
     {
-        super(context, new DiscussionDTOComparatorIdAsc());
+        super(context, new AbstractDiscussionCompactItemViewDTODateComparator());
         userDiscussionActionSubject = PublishSubject.create();
     }
 
@@ -39,7 +39,7 @@ abstract public class DiscussionSetAdapter
             @NonNull Context context,
             @Nullable Collection<AbstractDiscussionCompactItemViewLinear.DTO> objects)
     {
-        super(context, new DiscussionDTOComparatorIdAsc(), objects);
+        super(context, new AbstractDiscussionCompactItemViewDTODateComparator(), objects);
         userDiscussionActionSubject = PublishSubject.create();
     }
 
