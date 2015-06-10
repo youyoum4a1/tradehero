@@ -137,6 +137,10 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
     {
         super.onBindViewHolder(holder, position);
         GraphicUtil.setEvenOddBackground(position, holder.itemView);
+        if(holder instanceof PositionPartialTopView.ViewHolder)
+        {
+            ((PositionPartialTopView.ViewHolder) holder).getUserActionObservable().subscribe(userActionSubject);
+        }
     }
 
     private static class PositionItemComparator extends TypedRecyclerComparator<Object>
