@@ -19,7 +19,6 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_alignParentTop="true"
-      android:drawSelectorOnTop="true"
       android:gravity="center"
       android:horizontalSpacing="@dimen/trending_horizontal_spacing"
       android:verticalSpacing="@dimen/trending_vertical_spacing"
@@ -31,16 +30,8 @@
       android:clipToPadding="false"
       android:scrollbarStyle="outsideOverlay"
       android:listSelector="@drawable/basic_transparent_selector"
-      android:cacheColorHint="@android:color/transparent"
+      android:drawSelectorOnTop="true"
       />
-
-  <!--<include-->
-      <!--layout="@layout/fragment_trending_filter"-->
-      <!--android:id="@+id/trending_filter_selector_view"-->
-      <!--android:layout_width="match_parent"-->
-      <!--android:layout_height="wrap_content"-->
-      <!--android:layout_alignParentTop="true"-->
-      <!--/>-->
 
   <ProgressBar
       android:id="@+id/progress"

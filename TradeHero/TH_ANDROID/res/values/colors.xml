@@ -107,10 +107,21 @@
   <color name="lb_item_odd_pressed">@color/darker_grey</color>
 
   <color name="news_seeking_alpha">#4E0A00</color>
+  <color name="news_seeking_alpha_focused">#8e1200</color>
+  <color name="news_seeking_alpha_pressed">#e01d00</color>
+
   <color name="news_motley_fool">#89C8FF</color>
+  <color name="news_motley_fool_focused">#70a4d1</color>
+  <color name="news_motley_fool_pressed">#43607b</color>
+
   <color name="news_regional">#1FBFAF</color>
+  <color name="news_regional_focused">#24ddca</color>
+  <color name="news_regional_pressed">#28f8e3</color>
+
   <color name="news_global">#047ACD</color>
-  
+  <color name="news_global_focused">#0485df</color>
+  <color name="news_global_pressed">#0597fe</color>
+
   <string-array name="gauge_color_range" translatable="false">
     <item>#FF0C2B</item>
     <item>#FF1D0C</item>

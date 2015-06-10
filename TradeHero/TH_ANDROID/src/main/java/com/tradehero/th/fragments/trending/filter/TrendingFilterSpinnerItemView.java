@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
@@ -17,7 +18,7 @@ public class TrendingFilterSpinnerItemView extends LinearLayout
     implements DTOView<ExchangeCompactSpinnerDTO>
 {
     @InjectView(R.id.trending_filter_spinner_item_label) TextView label;
-    @InjectView(R.id.trending_filter_spinner_item_icon) ImageView icon;
+    @Optional @Nullable @InjectView(R.id.trending_filter_spinner_item_icon) ImageView icon;
 
     @Nullable private ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO;
 

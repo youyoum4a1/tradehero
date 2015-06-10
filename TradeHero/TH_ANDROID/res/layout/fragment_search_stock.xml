@@ -18,6 +18,8 @@
       android:padding="@dimen/search_stock_people_list_padding"
       android:scrollbarStyle="outsideOverlay"
       android:clipToPadding="false"
+      android:listSelector="@drawable/basic_transparent_selector"
+      android:drawSelectorOnTop="true"
       >
 
   </ListView>

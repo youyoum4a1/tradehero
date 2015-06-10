@@ -27,7 +27,7 @@
           android:id="@+id/action_bar_spinner"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:background="@android:color/transparent"
+          style="@style/TH.Spinner"
           android:visibility="gone"
           />
 
