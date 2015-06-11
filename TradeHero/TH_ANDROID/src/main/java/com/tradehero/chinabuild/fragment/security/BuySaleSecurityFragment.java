@@ -1195,6 +1195,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
                     if (signedQuote == null) {
                         return;
                     }
+                    Log.e("test", "Refresh - " + signedQuote);
                     QuoteDTO quoteDTO = signedQuote.signedObject;
                     try {
                         quoteDTO.rawResponse = new String(IOUtils.streamToBytes(response.getBody().in()));
@@ -1206,11 +1207,11 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
                 @Override
                 public void failure(RetrofitError error) {
-                    //
+                    Timber.e(error, "Error to get quoteDTO.");
                 }
             };
         }
-        quoteServiceWrapper.getRepeatingQuote(securityId.getSecuritySymbol(), quoteCallback);
+        quoteServiceWrapper.getRepeatingQuote(securityId, quoteCallback);
     }
 
 }
