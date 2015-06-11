@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.util.Pair;
@@ -65,7 +64,6 @@ public class LeaderboardMarkUserItemView
 
     // expanding view
     @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
-    @InjectView(R.id.lbmu_roi_annualized) TextView lbmuRoiAnnualized;
     @InjectView(R.id.leaderboard_user_item_fof) @Optional @Nullable MarkdownTextView lbmuFoF;
     @InjectView(R.id.leaderboard_user_item_follow) View lbmuFollowUser;
     @InjectView(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
@@ -174,10 +172,6 @@ public class LeaderboardMarkUserItemView
         {
             lbmuPosition.setText(getPosition(viewDTO));
             lbmuPosition.setTextColor(viewDTO.lbmuPositionColor);
-        }
-        if (lbmuRoiAnnualized != null)
-        {
-            lbmuRoiAnnualized.setText(viewDTO.lbmuRoiAnnualized);
         }
         if (lbmuFoF != null)
         {
@@ -305,24 +299,80 @@ public class LeaderboardMarkUserItemView
     public static class DTO implements com.tradehero.common.persistence.DTO, ExpandableItem
     {
         @NonNull final CurrentUserId currentUserId;
-        @NonNull final LeaderboardUserDTO leaderboardUserDTO;
-        @NonNull final UserStatisticView.DTO userStatisticsDto;
+        @Nullable final LeaderboardUserDTO leaderboardUserDTO;
+        @Nullable final UserStatisticView.DTO userStatisticsDto;
         final String lbmuDisplayName;
-        @NonNull final Spanned lbmuRoi;
+        @NonNull final CharSequence lbmuRoi;
         final int lbmuPositionColor;
-        @NonNull final Spanned lbmuRoiAnnualized;
         final String lbmuFoF;
+        String lbmuRanking;
+        String lbmuDisplayPicture;
         @ViewVisibilityValue final int lbmuFoFVisibility;
         @ViewVisibilityValue private int lbmuFollowUserVisibility;
         @ViewVisibilityValue private int lbmuFollowingUserVisibility;
         private String maxOwnLeaderRanking;
         private boolean expanded;
+        private boolean isHeader;
+        private int ranking = -1;
+
+        @Override
+        public int hashCode()
+        {
+            return 0;
+        }
+
+        /**
+         * This constructor can only be used for Header view (Current User Ranking) to show that we are loading required current user information
+         * @param resources
+         * @param currentUserId
+         */
+        public DTO(@NonNull Resources resources,
+                @NonNull CurrentUserId currentUserId)
+        {
+            //This constructor can only be used for Header view (Current User Ranking)
+            this.currentUserId = currentUserId;
+            this.leaderboardUserDTO = null;
+            this.userStatisticsDto = null;
+            this.lbmuDisplayName = resources.getString(R.string.loading_required_information);
+            this.lbmuRoi = "";
+            this.lbmuPositionColor = resources.getColor(R.color.text_primary);
+            this.lbmuFoF = "";
+            this.lbmuRanking = "-";
+            this.lbmuFoFVisibility = View.GONE;
+            this.isHeader = true;
+        }
+
+        /**
+         * This constructor can only be used for Header view (Current User Ranking) to show that the user is no ranked
+         * @param resources
+         * @param currentUserId
+         * @param currentUserProfileDTO
+         */
+        public DTO(@NonNull Resources resources,
+                @NonNull CurrentUserId currentUserId,
+                @NonNull UserProfileDTO currentUserProfileDTO)
+        {
+            this.currentUserId = currentUserId;
+            this.leaderboardUserDTO = null;
+            this.userStatisticsDto = null;
+            this.lbmuDisplayName = currentUserProfileDTO.displayName;
+            this.lbmuRoi = resources.getString(R.string.leaderboard_not_ranked);
+            this.lbmuPositionColor = resources.getColor(R.color.text_primary);
+            this.lbmuFoF = "";
+            this.lbmuRanking = "-";
+            this.lbmuFoFVisibility = View.GONE;
+            this.isHeader = true;
+            this.lbmuDisplayPicture = currentUserProfileDTO.picture;
+        }
 
         public DTO(@NonNull Resources resources,
                 @NonNull CurrentUserId currentUserId,
                 @NonNull LeaderboardUserDTO leaderboardItem,
                 @NonNull UserProfileDTO currentUserProfileDTO)
         {
+            this.ranking = leaderboardItem.ordinalPosition + 1;
+            this.lbmuRanking = String.valueOf(leaderboardItem.ordinalPosition + 1);
+
             this.currentUserId = currentUserId;
             this.leaderboardUserDTO = leaderboardItem;
             this.userStatisticsDto = new UserStatisticView.DTO(resources, leaderboardUserDTO, currentUserProfileDTO.mostSkilledLbmu);
@@ -339,16 +389,7 @@ public class LeaderboardMarkUserItemView
             this.lbmuPositionColor = currentUserId.get() == leaderboardItem.id ?
                     resources.getColor(R.color.light_green_normal) :
                     resources.getColor(R.color.text_primary);
-            String roiAnnualizedFormat = resources.getString(R.string.leaderboard_roi_annualized);
-            this.lbmuRoiAnnualized = THSignedPercentage
-                    .builder(leaderboardItem.roiAnnualizedInPeriod * 100)
-                    .withSign()
-                    .signTypeArrow()
-                    .relevantDigitCount(3)
-                    .boldValue()
-                    .format(roiAnnualizedFormat)
-                    .build().createSpanned();
-            this.lbmuFoF = leaderboardItem.friendOfMarkupString;
+            this.lbmuFoF = leaderboardItem.friendOfMarkupString;// **
             this.lbmuFoFVisibility = leaderboardItem.isIncludeFoF() != null
                     && leaderboardItem.isIncludeFoF()
                     && !StringUtils.isNullOrEmptyOrSpaces(leaderboardItem.friendOfMarkupString)
@@ -357,6 +398,7 @@ public class LeaderboardMarkUserItemView
 
             lbmuFollowUserVisibility = createLbmuFollowUserVisibility(currentUserProfileDTO, leaderboardItem.getBaseKey());
             lbmuFollowingUserVisibility = createLbmuFollowingUserVisibility(currentUserProfileDTO, leaderboardItem.getBaseKey());
+            this.lbmuDisplayPicture = leaderboardItem.picture;
             // To use when server correctly sets the relationship in LeaderboardUserDTO
             //lbmuFollowUserVisibility = createLbmuFollowUserVisibility(leaderboardItem);
             //lbmuFollowingUserVisibility = createLbmuFollowingUserVisibility(leaderboardItem);
@@ -428,6 +470,22 @@ public class LeaderboardMarkUserItemView
         @Override public void setExpanded(boolean expanded)
         {
             this.expanded = expanded;
+        }
+
+        public void setIsHeader(boolean isHeader)
+        {
+            this.isHeader = isHeader;
+        }
+
+        public boolean isHeader()
+        {
+            return isHeader;
+        }
+
+        public void setRanking(int ranking)
+        {
+            this.ranking = ranking;
+            lbmuRanking = String.valueOf(ranking);
         }
     }
 

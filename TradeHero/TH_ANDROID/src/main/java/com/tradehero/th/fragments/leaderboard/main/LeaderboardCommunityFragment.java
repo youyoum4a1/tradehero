@@ -32,7 +32,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserRecyclerFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardType;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -345,10 +345,10 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
                 return Fragment.instantiate(getActivity(), FriendLeaderboardMarkUserListFragment.class.getName(), args);
             }
 
-            LeaderboardMarkUserListFragment.setHasOptionMenu(args, false);
-            LeaderboardMarkUserListFragment.putLeaderboardDefKey(args, leaderboardDefDTO.getLeaderboardDefKey());
-            LeaderboardMarkUserListFragment.putLeaderboardType(args, leaderboardType);
-            return Fragment.instantiate(getActivity(), LeaderboardMarkUserListFragment.class.getName(), args);
+            LeaderboardMarkUserRecyclerFragment.setHasOptionMenu(args, false);
+            LeaderboardMarkUserRecyclerFragment.putLeaderboardDefKey(args, leaderboardDefDTO.getLeaderboardDefKey());
+            LeaderboardMarkUserRecyclerFragment.putLeaderboardType(args, leaderboardType);
+            return Fragment.instantiate(getActivity(), LeaderboardMarkUserRecyclerFragment.class.getName(), args);
         }
 
         @Override public int getCount()

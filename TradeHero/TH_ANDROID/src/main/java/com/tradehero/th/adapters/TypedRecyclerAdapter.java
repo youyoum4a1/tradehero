@@ -137,6 +137,17 @@ public abstract class TypedRecyclerAdapter<T>
         return this.mSortedList.removeItemAt(index);
     }
 
+    public void removeAll()
+    {
+        this.mSortedList.beginBatchedUpdates();
+        int size = mSortedList.size();
+        for (int i = 0; i < size; i++)
+        {
+            mSortedList.removeItemAt(0);
+        }
+        this.mSortedList.endBatchedUpdates();
+    }
+
     public int indexOf(T t)
     {
         return this.mSortedList.indexOf(t);

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,10 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import butterknife.ButterKnife;
-import com.android.internal.util.Predicate;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
@@ -38,10 +38,9 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.widget.MultiScrollListener;
+import com.tradehero.th.widget.MultiRecyclerScrollListener;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
@@ -53,14 +52,14 @@ import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxFragment<
+public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRecyclerRxFragment<
         PagedLeaderboardKey,
         LeaderboardMarkUserItemView.DTO,
         LeaderboardMarkUserItemView.DTOList,
         LeaderboardMarkUserItemView.DTOList>
 {
-    public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserListFragment.class.getName();
-    private static final String BUNDLE_KEY_LEADERBOARD_TYPE_ID = LeaderboardMarkUserListFragment.class.getName() + ".leaderboardTypeId";
+    public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserRecyclerFragment.class.getName();
+    private static final String BUNDLE_KEY_LEADERBOARD_TYPE_ID = LeaderboardMarkUserRecyclerFragment.class.getName() + ".leaderboardTypeId";
 
     @Inject Analytics analytics;
     @Inject @ForUser SharedPreferences preferences;
@@ -86,7 +85,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         //please make sure to get the type before get key
         currentLeaderboardType = getInitialLeaderboardType();
         currentLeaderboardKey = getInitialLeaderboardKey();
-        fragmentUtil.linkWith(this, currentLeaderboardType);
+        //fragmentUtil.linkWith(this, currentLeaderboardType);
         setHasOptionsMenu(true);
     }
 
@@ -119,7 +118,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     {
         View view = inflater.inflate(R.layout.leaderboard_mark_user_listview, container, false);
         ButterKnife.inject(this, view);
-        listView.setEmptyView(inflateEmptyView(inflater, container));
         return view;
     }
 
@@ -136,22 +134,15 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     {
         super.onStart();
         fragmentUtil.onStart();
-        onStopSubscriptions.add(((LeaderboardMarkUserListAdapter) itemViewAdapter).getFollowRequestedObservable()
+        onStopSubscriptions.add(((LeaderboardMarkUserRecyclerAdapter) itemViewAdapter).getFollowRequestedObservable()
                 .subscribe(
                         fragmentUtil,
                         new TimberOnErrorAction("Error when receiving user follow requested")));
-        if ((itemViewAdapter != null) && (itemViewAdapter.getCount() == 1))
+        if ((itemViewAdapter != null) && (itemViewAdapter.getItemCount() == 1))
         {
             requestDtos();
         }
-        if (ownRankRequisite == null)
-        {
-            fetchOwnRanking();
-        }
-        else
-        {
-            updateCurrentRankView(ownRankRequisite);
-        }
+        fetchOwnRanking();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -214,9 +205,9 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         super.onDestroy();
     }
 
-    @NonNull protected LeaderboardMarkUserListAdapter createItemViewAdapter()
+    @NonNull protected LeaderboardMarkUserRecyclerAdapter createItemViewAdapter()
     {
-        LeaderboardMarkUserListAdapter adapter = new LeaderboardMarkUserListAdapter(
+        LeaderboardMarkUserRecyclerAdapter adapter = new LeaderboardMarkUserRecyclerAdapter(
                 getActivity(),
                 R.layout.lbmu_item_roi_mode,
                 getCurrentRankLayoutResId(),
@@ -225,21 +216,19 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         return adapter;
     }
 
-    @NonNull @Override protected AbsListView.OnScrollListener createListViewScrollListener()
+    @NonNull @Override protected RecyclerView.OnScrollListener createRecyclerViewScrollListener()
     {
-        return new MultiScrollListener(
-                super.createListViewScrollListener(),
-                new AbsListView.OnScrollListener()
+        return new MultiRecyclerScrollListener(
+                super.createRecyclerViewScrollListener(),
+                new RecyclerView.OnScrollListener()
                 {
                     private boolean scrollStateChanged;
 
-                    @Override
                     public void onScrollStateChanged(AbsListView view, int scrollState)
                     {
                         scrollStateChanged = true;
                     }
 
-                    @Override
                     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
                     {
                         if (view instanceof ListView && scrollStateChanged)
@@ -289,7 +278,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         super.linkWithApplicable(purchaseApplicablePortfolioId, andDisplay);
         if (purchaseApplicablePortfolioId != null)
         {
-            ((LeaderboardMarkUserListAdapter) itemViewAdapter).setApplicablePortfolioId(purchaseApplicablePortfolioId);
+            ((LeaderboardMarkUserRecyclerAdapter) itemViewAdapter).setApplicablePortfolioId(purchaseApplicablePortfolioId);
         }
     }
 
@@ -298,11 +287,12 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 fetchOwnRankingInfoObservables())
+                .startWith(ownRankRequisite)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<LeaderboardMarkUserItemView.Requisite>()
                         {
-                            @Override public void call(LeaderboardMarkUserItemView.Requisite requisite)
+                            @Override public void call(@Nullable LeaderboardMarkUserItemView.Requisite requisite)
                             {
                                 updateCurrentRankView(requisite);
                             }
@@ -343,38 +333,47 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
 
     protected void updateCurrentRankView(@Nullable LeaderboardMarkUserItemView.Requisite requisite)
     {
-        if (requisite == null || requisite.currentLeaderboardUserDTO == null)
+        LeaderboardMarkUserItemView.DTO ownRankingDto;
+        if (requisite == null)
         {
-            ((LeaderboardMarkUserListAdapter) itemViewAdapter).isNotRanked(requisite.currentUserProfileDTO);
+            //Is Loading
+            ownRankingDto = new LeaderboardMarkUserItemView.DTO(getResources(), currentUserId);
+        }
+        else if (requisite.currentLeaderboardUserDTO == null)
+        {
+            //Not Ranked
+            ownRankingDto = new LeaderboardMarkUserItemView.DTO(getResources(), currentUserId, requisite.currentUserProfileDTO);
         }
         else
         {
-            ((LeaderboardMarkUserListAdapter) itemViewAdapter).isRanked(new LeaderboardMarkUserOwnRankingView.DTO(
+            ownRankingDto = new LeaderboardMarkUserOwnRankingView.DTO(
                     getResources(),
                     currentUserId,
                     requisite.currentLeaderboardUserDTO,
-                    requisite.currentUserProfileDTO));
+                    requisite.currentUserProfileDTO);
+            ownRankingDto.setIsHeader(true);
         }
-        ((ArrayAdapter) itemViewAdapter).notifyDataSetChanged();
+        itemViewAdapter.add(ownRankingDto);
     }
 
     @Override protected void updateListViewRow(@NonNull final UserProfileDTO currentUserProfile, @NonNull final UserBaseKey heroId)
     {
-        AdapterViewUtils.updateSingleRowWhere(
-                listView,
-                LeaderboardMarkUserItemView.DTO.class,
-                new Predicate<LeaderboardMarkUserItemView.DTO>()
-                {
-                    @Override public boolean apply(LeaderboardMarkUserItemView.DTO dto)
-                    {
-                        boolean isUpdatedRow = dto.leaderboardUserDTO.getBaseKey().equals(heroId);
-                        if (isUpdatedRow)
-                        {
-                            dto.followChanged(currentUserProfile, heroId);
-                        }
-                        return isUpdatedRow;
-                    }
-                });
+        //TODO
+        //AdapterViewUtils.updateSingleRowWhere(
+        //        recyclerView,
+        //        LeaderboardMarkUserItemView.DTO.class,
+        //        new Predicate<LeaderboardMarkUserItemView.DTO>()
+        //        {
+        //            @Override public boolean apply(LeaderboardMarkUserItemView.DTO dto)
+        //            {
+        //                boolean isUpdatedRow = dto.leaderboardUserDTO.getBaseKey().equals(heroId);
+        //                if (isUpdatedRow)
+        //                {
+        //                    dto.followChanged(currentUserProfile, heroId);
+        //                }
+        //                return isUpdatedRow;
+        //            }
+        //        });
     }
 
     protected void pushFilterFragmentIn()

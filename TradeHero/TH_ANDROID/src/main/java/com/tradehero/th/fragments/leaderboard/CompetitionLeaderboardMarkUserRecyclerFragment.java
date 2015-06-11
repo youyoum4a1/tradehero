@@ -39,10 +39,10 @@ import rx.functions.Action1;
 import rx.functions.Func3;
 import timber.log.Timber;
 
-public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
+public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardMarkUserRecyclerFragment
 {
-    private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".providerId";
-    private static final String BUNDLE_KEY_COMPETITION_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".competitionId";
+    private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardMarkUserRecyclerFragment.class.getName() + ".providerId";
+    private static final String BUNDLE_KEY_COMPETITION_ID = CompetitionLeaderboardMarkUserRecyclerFragment.class.getName() + ".competitionId";
 
     @Inject ProviderCacheRx providerCache;
     @Inject CompetitionCacheRx competitionCache;
@@ -112,7 +112,7 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
                 }
             }
         };
-        itemViewAdapter.registerDataSetObserver(innerAdapterObserver);
+        //itemViewAdapter.registerDataSetObserver(innerAdapterObserver);
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)
@@ -162,7 +162,7 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
 
     @Override public void onDestroy()
     {
-        itemViewAdapter.unregisterDataSetObserver(innerAdapterObserver);
+        //itemViewAdapter.unregisterDataSetObserver(innerAdapterObserver);
         this.competitionAdapter = null;
         this.webViewTHIntentPassedListener = null;
         super.onDestroy();
@@ -178,7 +178,7 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
         if (providerDTO != null && competitionAdapter == null)
         {
             competitionAdapter = createCompetitionLeaderboardMarkUserAdapter();
-            listView.setAdapter(competitionAdapter);
+            //recyclerView.setAdapter(competitionAdapter);
         }
 
         if (competitionAdapter != null && competitionLeaderboardDTO != null)
@@ -188,9 +188,9 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
         }
     }
 
-    @NonNull protected CompetitionLeaderboardMarkUserListAdapter createCompetitionLeaderboardMarkUserAdapter()
+    protected CompetitionLeaderboardMarkUserListAdapter createCompetitionLeaderboardMarkUserAdapter()
     {
-        return new CompetitionLeaderboardMarkUserListAdapter(getActivity(), providerDTO, itemViewAdapter);
+        return null;
     }
 
     protected void fetchProvider()
@@ -259,7 +259,7 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
                         {
                             @Override public void call(Throwable error)
                             {
-                                CompetitionLeaderboardMarkUserListFragment.this.handleFetchCompetitionLeaderboardFailed(error);
+                                CompetitionLeaderboardMarkUserRecyclerFragment.this.handleFetchCompetitionLeaderboardFailed(error);
                             }
                         }));
     }
@@ -323,18 +323,18 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
             CompetitionLeaderboardMarkUserItemView.Requisite thisRequisite = (CompetitionLeaderboardMarkUserItemView.Requisite) requisite;
             if (requisite.currentLeaderboardUserDTO == null)
             {
-                ((LeaderboardMarkUserListAdapter) itemViewAdapter).isNotRanked(requisite.currentUserProfileDTO);
+                //((LeaderboardMarkUserRecyclerAdapter) itemViewAdapter).isNotRanked(requisite.currentUserProfileDTO);
             }
             else
             {
                 CompetitionLeaderboardDTO competitionLeaderboardDTO = thisRequisite.competitionLeaderboardDTO;
-                ((LeaderboardMarkUserListAdapter) itemViewAdapter).isRanked(new CompetitionLeaderboardMarkUserOwnRankingView.DTO(
-                        getResources(),
-                        currentUserId,
-                        requisite.currentLeaderboardUserDTO,
-                        requisite.currentUserProfileDTO,
-                        competitionLeaderboardDTO.prizes == null ? 0 : competitionLeaderboardDTO.prizes.size(),
-                        thisRequisite.providerDTO));
+                //((LeaderboardMarkUserRecyclerAdapter) itemViewAdapter).isRanked(new CompetitionLeaderboardMarkUserOwnRankingView.DTO(
+                //        getResources(),
+                //        currentUserId,
+                //        requisite.currentLeaderboardUserDTO,
+                //        requisite.currentUserProfileDTO,
+                //        competitionLeaderboardDTO.prizes == null ? 0 : competitionLeaderboardDTO.prizes.size(),
+                //        thisRequisite.providerDTO));
             }
         }
         else
@@ -377,17 +377,17 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
 
         @Override protected WebViewFragment getApplicableWebViewFragment()
         {
-            return CompetitionLeaderboardMarkUserListFragment.this.webViewFragment;
+            return CompetitionLeaderboardMarkUserRecyclerFragment.this.webViewFragment;
         }
 
         @Override protected OwnedPortfolioId getApplicablePortfolioId()
         {
-            return CompetitionLeaderboardMarkUserListFragment.this.getApplicablePortfolioId();
+            return CompetitionLeaderboardMarkUserRecyclerFragment.this.getApplicablePortfolioId();
         }
 
         @Override protected ProviderId getProviderId()
         {
-            return CompetitionLeaderboardMarkUserListFragment.this.providerId;
+            return CompetitionLeaderboardMarkUserRecyclerFragment.this.providerId;
         }
 
         @Override protected DashboardNavigator getNavigator()
@@ -397,7 +397,7 @@ public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkU
 
         @Override protected Class<?> getClassToPop()
         {
-            return CompetitionLeaderboardMarkUserListFragment.class;
+            return CompetitionLeaderboardMarkUserRecyclerFragment.class;
         }
     }
 }
