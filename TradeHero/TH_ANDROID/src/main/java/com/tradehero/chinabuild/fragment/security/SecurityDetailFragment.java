@@ -1800,12 +1800,16 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         if(subFragments.size()<=0) {
             subFragments.clear();
             SecurityDetailSubDiscussFragment discussFragment = new SecurityDetailSubDiscussFragment();
+            discussFragment.setArguments(getArguments());
             subFragments.add(discussFragment);
             SecurityDetailSubNewsFragment newsFragment = new SecurityDetailSubNewsFragment();
+            newsFragment.setArguments(getArguments());
             subFragments.add(newsFragment);
             SecurityDetailSubOptFragment optFragment = new SecurityDetailSubOptFragment();
+            optFragment.setArguments(getArguments());
             subFragments.add(optFragment);
             SecurityDetailSubPositionFragment positionFragment = new SecurityDetailSubPositionFragment();
+            positionFragment.setArguments(getArguments());
             subFragments.add(positionFragment);
         }
     }

@@ -21,7 +21,7 @@ import javax.inject.Inject;
 /**
  * Created by palmer on 15/6/10.
  */
-public class SecurityDetailSubOptFragment extends Fragment{
+public class SecurityDetailSubOptFragment extends Fragment implements View.OnClickListener{
 
     @Inject Analytics analytics;
 
@@ -46,6 +46,7 @@ public class SecurityDetailSubOptFragment extends Fragment{
         emptyIV = (ImageView)view.findViewById(R.id.imageview_sub_opt_empty);
         optsLL = (LinearLayout)view.findViewById(R.id.linearlayout_opts);
         moreTV = (TextView)view.findViewById(R.id.textview_more);
+        moreTV.setOnClickListener(this);
         return view;
     }
 
@@ -65,5 +66,15 @@ public class SecurityDetailSubOptFragment extends Fragment{
 
     private Fragment pushFragment(Class fragmentClass, Bundle args) {
         return getDashboardNavigator().pushFragment(fragmentClass, args);
+    }
+
+    @Override
+    public void onClick(View view) {
+        int viewId = view.getId();
+        switch (viewId){
+            case R.id.textview_more:
+                enterUserOptsPage();
+                break;
+        }
     }
 }
