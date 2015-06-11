@@ -110,6 +110,7 @@ class DashboardActivityModule
         FollowerManagerFragment.registerAliases(router);
         HeroManagerFragment.registerAliases(router);
         StoreScreenFragment.registerAliases(router);
+        TrendingMainFragment.registerAliases(router);
         UpdateCenterFragment.registerAliases(router);
         return router;
     }

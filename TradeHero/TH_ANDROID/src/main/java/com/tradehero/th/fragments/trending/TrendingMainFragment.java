@@ -82,6 +82,18 @@ public class TrendingMainFragment extends DashboardFragment
     @Nullable private OwnedPortfolioId fxPortfolioId;
     public static boolean fxDialogShowed = false;
 
+    public static void registerAliases(@NonNull THRouter router)
+    {
+        router.registerAlias("trending-fx/my-fx", "trending-fx/tab-index/" + TrendingFXTabType.Portfolio.ordinal());
+        router.registerAlias("trending-fx/trade-fx", "trending-fx/tab-index/" + TrendingFXTabType.FX.ordinal());
+        router.registerAlias("trending-stocks/my-stocks", "trending-stocks/tab-index/" + TrendingStockTabType.StocksMain.ordinal());
+        router.registerAlias("trending-stocks/trending", "trending-stocks/tab-index/" + TrendingStockTabType.Trending.ordinal());
+        router.registerAlias("trending-stocks/price-action", "trending-stocks/tab-index/" + TrendingStockTabType.Price.ordinal());
+        router.registerAlias("trending-stocks/unusual-volumes", "trending-stocks/tab-index/" + TrendingStockTabType.Volume.ordinal());
+        router.registerAlias("trending-stocks/all-trending", "trending-stocks/tab-index/" + TrendingStockTabType.All.ordinal());
+        router.registerAlias("trending-stocks/favorites", "trending-stocks/tab-index/" + TrendingStockTabType.Favorites.ordinal());
+    }
+
     public static void putAssetClass(@NonNull Bundle args, @NonNull AssetClass assetClass)
     {
         args.putInt(KEY_ASSET_CLASS, assetClass.getValue());
