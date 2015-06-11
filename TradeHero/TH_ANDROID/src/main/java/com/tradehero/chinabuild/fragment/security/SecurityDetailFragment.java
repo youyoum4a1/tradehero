@@ -6,17 +6,17 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,13 +33,10 @@ import com.tradehero.chinabuild.data.SignedQuote;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.dialog.DialogFactory;
 import com.tradehero.chinabuild.dialog.SecurityDetailDialogLayout;
-import com.tradehero.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.chinabuild.fragment.message.SecurityDiscussSendFragment;
-import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
-import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.listview.SecurityListView;
-import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -48,19 +45,6 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.adapters.PositionTradeListAdapter;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionKeyList;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.VoteDirection;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.DiscussionListKey;
-import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
-import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.news.key.NewsItemListKey;
-import com.tradehero.th.api.news.key.NewsItemListSecurityKey;
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
@@ -73,7 +57,6 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -92,12 +75,8 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
-import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
-import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
@@ -117,7 +96,6 @@ import com.viewpagerindicator.SquarePageIndicator;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,6 +128,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     protected SecurityCompactDTO securityCompactDTO;
     @Inject ChartDTOFactory chartDTOFactory;
     private ChartDTO chartDTO;
+
+    private FragmentManager fragmentManager;
 
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     private DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
@@ -192,22 +172,23 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     @Inject ProgressDialogUtil progressDialogUtil;
     public int competitionID;
     private int indexChart = -1;
-    private int indexDiscussOrNews = -1;
+    private int indexSubFragment = 0;
 
     //Security Detail Tab Start
-    @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
-    @InjectView(R.id.ic_info_buy_sale_btns) LinearLayout llBuySaleButtons;//购买卖出栏
-    @InjectView(R.id.llSecurityBuy) RelativeLayout llSecurityBuy;//购买
-    @InjectView(R.id.llSecuritySale) RelativeLayout llSecuritySale;//出售
-    @InjectView(R.id.pager) ViewPager pager;
-    @InjectView(R.id.indicator) SquarePageIndicator indicator;
+    private BetterViewAnimator betterViewAnimator;
+    private LinearLayout llBuySaleButtons;//购买卖出栏
+    private RelativeLayout llSecurityBuy;//购买
+    private RelativeLayout llSecuritySale;//出售
+    private RelativeLayout llSecurityDiscuss;//讨论
+    private ViewPager pager;
+    private SquarePageIndicator indicator;
     private List<View> views = new ArrayList<>();
 
     private Button[] btnChart;
-    Button btnChart0;
-    Button btnChart1;
-    Button btnChart2;
-    Button btnChart3;
+    private Button btnChart0;
+    private Button btnChart1;
+    private Button btnChart2;
+    private Button btnChart3;
 
     private Button btnDiscuss;
     private Button btnNews;
@@ -224,35 +205,38 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     protected ChartImageView chartImage;
     protected TextView tvLoadingChart;
 
-    ImageLoadingListener chartLoadingListener;
+    private ImageLoadingListener chartLoadingListener;
 
-    TextView tvSecurityPrice;//当前价格
-    TextView tvSecurityDetailRate;//涨跌幅
-    TextView tvSecurityDetailNum;//涨跌值
-    TextView tvTodayPriceBegin; //今开
-    TextView tvYesterdayPriceEnd; //昨收
-    TextView tvInfo0Value;//最高
-    TextView tvInfo1Value;//最低
-    TextView tvInfo2Value;//成交量
-    TextView tvTotalAmount; //成交额
+    private TextView tvSecurityPrice;//当前价格
+    private TextView tvSecurityDetailRate;//涨跌幅
+    private TextView tvSecurityDetailNum;//涨跌值
+    private TextView tvTodayPriceBegin; //今开
+    private TextView tvYesterdayPriceEnd; //昨收
+    private TextView tvInfo0Value;//最高
+    private TextView tvInfo1Value;//最低
+    private TextView tvInfo2Value;//成交量
+    private TextView tvTotalAmount; //成交额
 
-    Callback<QuoteDetail> quoteDetailCallback;
-    Callback<SignedQuote> quoteCallback;
-    int quoteErrors;
-
-    LinearLayout bottomBarLL;
+    private Callback<QuoteDetail> quoteDetailCallback;
+    private Callback<SignedQuote> quoteCallback;
+    private int quoteErrors;
 
     //Portfolio Detail Tab Start
-    TextView tvPositionTotalCcy;//累计盈亏
-    TextView tvPositionSumAmont;//总投资
-    TextView tvPositionStartTime;//建仓时间
-    TextView tvPositionLastTime;//最后交易
-    TextView tvPositionHoldTime;//持有时间
-    TextView tvEmpty;//没有交易明细
-    SecurityListView listView;
-    TradeHeroProgressBar progressBarPortfolio;
-    BetterViewAnimator betterViewAnimatorPortfolio;
+    private TextView tvPositionTotalCcy;//累计盈亏
+    private TextView tvPositionSumAmont;//总投资
+    private TextView tvPositionStartTime;//建仓时间
+    private TextView tvPositionLastTime;//最后交易
+    private TextView tvPositionHoldTime;//持有时间
+    private TextView tvEmpty;//没有交易明细
+    private SecurityListView listView;
+    private TradeHeroProgressBar progressBarPortfolio;
+    private BetterViewAnimator betterViewAnimatorPortfolio;
     //Portfolio Detail Tab End
+
+    //Discuss, news, opts, postions
+    private SecurityDetailSubViewPager subViewPager;
+    private ArrayList<Fragment> subFragments = new ArrayList();
+    private SubFragmentPagerAdapter subFragmentPagerAdapter;
 
     public static final int ERROR_NO_ASK_BID = 0;
     public static final int ERROR_NO_ASK = 1;
@@ -260,9 +244,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public static final int ERROR_NO_COMPETITION_PROTFOLIO = 3;
 
     boolean isFromCompetition = false;
-
-
-    private boolean isNews = false;
 
     private Double preClose;
 
@@ -303,9 +284,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private boolean isGotoTradeDetail;
     private boolean isFristLunch;
 
+    private View view;
+
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         compactCacheListener = new StockInfoFragmentSecurityCompactCacheListener();
         chartDTO = chartDTOFactory.createChartDTO();
@@ -320,11 +302,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         isGotoTradeDetail = getArguments().getBoolean(BUNDLE_KEY_GOTO_TRADE_DETAIL, false);
         isFristLunch = true;
+
+        fragmentManager = getChildFragmentManager();
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
         Bundle args = getArguments();
@@ -350,8 +333,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.security_detail_layout, container, false);
-        ButterKnife.inject(this, view);
+        if(view != null){
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null) {
+                parent.removeView(view);
+            }
+            return view;
+        }
+        view = inflater.inflate(R.layout.security_detail_layout, container, false);
+        initBaseView(view);
         initView();
         updateHeadView(true);
         betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
@@ -446,8 +436,20 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public void initView()
-    {
+    private void initBaseView(View view){
+        betterViewAnimator = (BetterViewAnimator)view.findViewById(R.id.bvaViewAll);
+        llBuySaleButtons = (LinearLayout)view.findViewById(R.id.ic_info_buy_sale_btns);
+        llSecurityBuy = (RelativeLayout)view.findViewById(R.id.llSecurityBuy);
+        llSecurityBuy.setOnClickListener(this);
+        llSecuritySale = (RelativeLayout)view.findViewById(R.id.llSecuritySale);
+        llSecuritySale.setOnClickListener(this);
+        llSecurityDiscuss = (RelativeLayout)view.findViewById(R.id.llSecurityDiscuss);
+        llSecurityDiscuss.setOnClickListener(this);
+        pager = (ViewPager)view.findViewById(R.id.pager);
+        indicator = (SquarePageIndicator)view.findViewById(R.id.indicator);
+    }
+
+    private void initView() {
         initTabPageView();
         llBuySaleButtons.setVisibility(View.GONE);
 
@@ -520,8 +522,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public void initListView()
-    {
+    public void initListView() {
         listView.setAdapter(adapter);
         listView.setMode(PullToRefreshBase.Mode.DISABLED);
         listView.setEmptyView(tvEmpty);
@@ -583,8 +584,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         tvYesterdayPriceEnd = (TextView) tabView0.findViewById(R.id.tvYesterdayPriceEnd);
         tvTotalAmount = (TextView) tabView0.findViewById(R.id.tvTotalAmount);
 
-        bottomBarLL = (LinearLayout) tabView0.findViewById(R.id.ic_info_buy_sale_btns);
+        subViewPager = (SecurityDetailSubViewPager) tabView0.findViewById(R.id.securitydetailsubviewpager);
+        initSubViewPager();
     }
+
 
     public void setOnclickListeners() {
         btnChart0.setOnClickListener(this);
@@ -639,8 +642,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     };
 
-    @Override public void onPause()
-    {
+    @Override public void onPause() {
         detachSecurityCompactCache();
         quoteServiceWrapper.stopQuoteDetailTask();
         super.onPause();
@@ -734,23 +736,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void setDefaultBtnTabView()
-    {
-        if (indexChart == -1)
-        {
+    private void setDefaultBtnTabView() {
+        if (indexChart == -1) {
             btnChart[0].performClick();
-        }
-        else
-        {
+        } else {
             setChartView(indexChart);
-        }
-        if (indexDiscussOrNews == -1)
-        {
-            btnDiscuss.performClick();
-        }
-        else
-        {
-            setDiscussOrNewsViewDefault();
         }
     }
 
@@ -806,8 +796,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     {
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
-        if (this.mSellQuantity != null)
-        {
+        if (this.mSellQuantity != null) {
             setBuySaleButtonVisable(mSellQuantity > 0);//可以卖出
         }
     }
@@ -815,8 +804,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     protected void setInitialBuyQuantityIfCan()
     {
         Integer maxPurchasableShares = getMaxPurchasableShares();
-        if (maxPurchasableShares != null)
-        {
+        if (maxPurchasableShares != null) {
             linkWithBuyQuantity((int) Math.ceil(((double) maxPurchasableShares) / 2));
         }
     }
@@ -922,9 +910,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         {
             linkWith(portfolioCompactCache.get(purchaseApplicablePortfolioId.getPortfolioIdKey()));
             purchaseApplicableOwnedPortfolioId = purchaseApplicablePortfolioId;
-        }
-        else
-        {
+        } else {
             linkWith((PortfolioCompactDTO) null);
         }
     }
@@ -970,32 +956,41 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     public void setChartView(int select) {
         indexChart = select;
-        for (int i = 0; i < btnChart.length; i++)
-        {
+        for (int i = 0; i < btnChart.length; i++) {
             btnChart[i].setBackgroundResource((i == indexChart ? R.drawable.tab_blue_head_active : R.drawable.tab_blue_head_normal));
         }
         linkWith(new ChartTimeSpan(getChartTimeSpanDuration(indexChart)));
     }
 
-    public void setDiscussOrNewsViewDefault() {
-        setCategoryViews();
-    }
-
-    public void setDiscussOrNewsView(int select)
-    {
-        indexDiscussOrNews = select;
-        setCategoryViews();
-        if (indexDiscussOrNews == 1) {
+    public void setDiscussOrNewsView(int select) {
+        if(select > 0){
+            if(select == indexSubFragment){
+                return;
+            }
         }
-        if (indexDiscussOrNews == 2){
+        indexSubFragment = select;
+        setCategoryViews();
+        if (indexSubFragment == 0){
+            subViewPager.setCurrentItem(0);
+            return;
         }
-        if (indexDiscussOrNews == 3){
+        if (indexSubFragment == 1) {
+            subViewPager.setCurrentItem(1);
+            return;
+        }
+        if (indexSubFragment == 2){
+            subViewPager.setCurrentItem(2);
+            return;
+        }
+        if (indexSubFragment == 3){
+            subViewPager.setCurrentItem(3);
+            return;
 
         }
     }
 
     private void setCategoryViews(){
-        switch(indexDiscussOrNews){
+        switch(indexSubFragment){
             case 0:
                 discussFocusView.setVisibility(View.VISIBLE);
                 newsFocusView.setVisibility(View.GONE);
@@ -1240,31 +1235,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     {
         chartDTO.setChartTimeSpan(timeSpan);
         displayChartImage();
-    }
-
-    @OnClick({R.id.llSecurityBuy, R.id.llSecuritySale, R.id.llSecurityDiscuss})
-    public void onClickItems(View view)
-    {
-        if (betterViewAnimator.getDisplayedChildLayoutId() == R.id.progress) return;
-        int id = view.getId();
-        if (id == R.id.llSecurityBuy)
-        {
-            enterBuySale(id == R.id.llSecurityBuy);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
-                    AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_BUY));
-        }
-        else if (id == R.id.llSecuritySale)
-        {
-            enterBuySale(id == R.id.llSecurityBuy);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
-                    AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_SALE));
-        }
-        else if (id == R.id.llSecurityDiscuss)
-        {
-            enterDiscussSend();
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
-                            AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_DISCUSS));
-        }
     }
 
     public boolean isBuyOrSaleValid(boolean isBuy, boolean display)
@@ -1636,45 +1606,64 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     }
 
     @Override public void onClick(View view) {
-        if (view.getId() == R.id.btnTabChart0) {
+        int viewId = view.getId();
+
+        if (viewId == R.id.btnTabChart0) {
             setChartView(0);
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_ONEDAY));
             return;
         }
-        if (view.getId() == R.id.btnTabChart1) {
+        if (viewId == R.id.btnTabChart1) {
             setChartView(1);
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_FIVEDAY));
             return;
         }
-        if (view.getId() == R.id.btnTabChart2) {
+        if (viewId == R.id.btnTabChart2) {
             setChartView(2);
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_90DAY));
             return;
         }
-        if (view.getId() == R.id.btnTabChart3) {
+        if (viewId == R.id.btnTabChart3) {
             setChartView(3);
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_YEAR));
             return;
         }
-        if (view.getId() == R.id.btnTabDiscuss) {
-            isNews = false;
+        if (viewId == R.id.btnTabDiscuss) {
             setDiscussOrNewsView(0);
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_DISCUSS));
             return;
         }
-        if (view.getId() == R.id.btnTabNews) {
-            isNews = true;
+        if (viewId == R.id.btnTabNews) {
             setDiscussOrNewsView(1);
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_NEWS));
         }
-        if (view.getId() == R.id.btnTabUserOperation){
-            isNews = false;
+        if (viewId == R.id.btnTabUserOperation){
             setDiscussOrNewsView(2);
             return;
         }
-        if (view.getId() == R.id.btnTabUserPosition) {
-            isNews = false;
+        if (viewId == R.id.btnTabUserPosition) {
             setDiscussOrNewsView(3);
+            return;
+        }
+
+        if (betterViewAnimator.getDisplayedChildLayoutId() == R.id.progress) return;
+
+        if (viewId == R.id.llSecurityBuy) {
+            enterBuySale(true);
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
+                    AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_BUY));
+            return;
+        }
+        if (viewId == R.id.llSecuritySale) {
+            enterBuySale(false);
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
+                    AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_SALE));
+            return;
+        }
+        else if (viewId == R.id.llSecurityDiscuss) {
+            enterDiscussSend();
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
+                    AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_DISCUSS));
             return;
         }
     }
@@ -1746,17 +1735,13 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected void fetchTrades()
-    {
-        if (positionDTO != null)
-        {
+    protected void fetchTrades() {
+        if (positionDTO != null) {
             detachFetchTrades();
             OwnedPositionId key = positionDTO.getOwnedPositionId();
             tradeListCache.get().register(key, fetchTradesListener);
             tradeListCache.get().getOrFetchAsync(key, true);
-        }
-        else
-        {
+        } else {
             betterViewAnimatorPortfolio.setDisplayedChildByLayoutId(R.id.listTrade);
         }
     }
@@ -1765,7 +1750,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     {
         @Override public void onDTOReceived(@NotNull OwnedPositionId key, @NotNull TradeDTOList tradeDTOs)
         {
-
             linkWith(tradeDTOs);
             onFinish();
         }
@@ -1798,8 +1782,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     private Runnable runnable;
 
-    public void startTimerForView()
-    {
+    public void startTimerForView() {
         runnable = new Runnable()
         {
             @Override
@@ -1812,14 +1795,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         handler.postDelayed(runnable, 5000);
     }
 
-    public void closeTimerForView()
-    {
-        try
-        {
+    public void closeTimerForView() {
+        try {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTrade);
             handler.removeCallbacks(runnable);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -1827,5 +1808,63 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDiscussSendFragment.BUNDLE_KEY_SECURITY_ID, securityId.getArgs());
         pushFragment(SecurityDiscussSendFragment.class, bundle);
+    }
+
+    private void initSubFragments() {
+        if(subFragments.size()<=0) {
+            subFragments.clear();
+            SecurityDetailSubDiscussFragment discussFragment = new SecurityDetailSubDiscussFragment();
+            subFragments.add(discussFragment);
+            SecurityDetailSubNewsFragment newsFragment = new SecurityDetailSubNewsFragment();
+            subFragments.add(newsFragment);
+            SecurityDetailSubOptFragment optFragment = new SecurityDetailSubOptFragment();
+            subFragments.add(optFragment);
+            SecurityDetailSubPositionFragment positionFragment = new SecurityDetailSubPositionFragment();
+            subFragments.add(positionFragment);
+        }
+        THLog.d("dfasfdasfdsafds");
+    }
+
+    private void initSubViewPager(){
+        initSubFragments();
+        if(subFragmentPagerAdapter==null){
+            subFragmentPagerAdapter = new SubFragmentPagerAdapter(fragmentManager);
+        }
+        subViewPager.setAdapter(subFragmentPagerAdapter);
+        subViewPager.setCurrentItem(0);
+        subViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                indexSubFragment = position;
+                setCategoryViews();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    public class SubFragmentPagerAdapter extends FragmentPagerAdapter{
+
+        public SubFragmentPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return subFragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return subFragments.size();
+        }
     }
 }

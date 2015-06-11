@@ -35,7 +35,7 @@
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_above="@id/ic_info_buy_sale_btns"
                 android:layout_below="@id/ic_info_chart"
                 android:orientation="vertical">
@@ -178,8 +178,13 @@
                             android:visibility="gone" />
                     </RelativeLayout>
                 </LinearLayout>
-            </LinearLayout>
 
+
+            </LinearLayout>
+            <com.tradehero.chinabuild.fragment.security.SecurityDetailSubViewPager
+                android:id="@+id/securitydetailsubviewpager"
+                android:layout_width="match_parent"
+                android:layout_height="315dp"/>
 
         </LinearLayout>
     </ScrollView>

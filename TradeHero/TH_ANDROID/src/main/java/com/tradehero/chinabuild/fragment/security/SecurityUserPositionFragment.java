@@ -32,7 +32,7 @@ public class SecurityUserPositionFragment extends DashboardFragment {
     private int normalColor;
     private int downColor;
     private TradeHeroProgressBar tradeHeroProgressBar;
-    private PullToRefreshListView optsLV;
+    private PullToRefreshListView positionsLV;
     private ImageView emptyIV;
 
     private SecurityPostionAdapter adapter;
@@ -58,17 +58,17 @@ public class SecurityUserPositionFragment extends DashboardFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_security_opts, container, false);
-        tradeHeroProgressBar = (TradeHeroProgressBar)view.findViewById(R.id.tradeheroprogressbar_opt);
+        View view = inflater.inflate(R.layout.fragment_security_position, container, false);
+        tradeHeroProgressBar = (TradeHeroProgressBar)view.findViewById(R.id.tradeheroprogressbar_position);
         emptyIV = (ImageView)view.findViewById(R.id.imgEmpty);
-        optsLV = (PullToRefreshListView)view.findViewById(R.id.listOpts);
+        positionsLV = (PullToRefreshListView)view.findViewById(R.id.listPositions);
         if(adapter==null){
             adapter = new SecurityPostionAdapter(getActivity(), opts);
         }
-        optsLV.setMode(PullToRefreshBase.Mode.BOTH);
-        optsLV.setAdapter(adapter);
-        optsLV.getRefreshableView().setEmptyView(emptyIV);
-        optsLV.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+        positionsLV.setMode(PullToRefreshBase.Mode.BOTH);
+        positionsLV.setAdapter(adapter);
+        positionsLV.getRefreshableView().setEmptyView(emptyIV);
+        positionsLV.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 onFinish();
@@ -80,7 +80,7 @@ public class SecurityUserPositionFragment extends DashboardFragment {
             }
 
             private void onFinish() {
-                optsLV.onRefreshComplete();
+                positionsLV.onRefreshComplete();
             }
         });
         setOpts();

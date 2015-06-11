@@ -53,7 +53,7 @@
         android:layout_height="match_parent">
 
         <com.tradehero.th.widget.TradeHeroProgressBar
-            android:id="@+id/tradeheroprogressbar_opt"
+            android:id="@+id/tradeheroprogressbar_position"
             android:layout_width="@dimen/loading_logo_width"
             android:layout_height="@dimen/loading_logo_height"
             android:layout_centerInParent="true"
@@ -69,7 +69,7 @@
             android:background="@drawable/empty" />
 
         <com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView xmlns:ptr="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/listOpts"
+            android:id="@+id/listPositions"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:divider="#e6e6e6"
