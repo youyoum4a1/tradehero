@@ -21,7 +21,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -30,6 +30,7 @@ import com.squareup.widgets.AspectRatioImageView;
 import com.tradehero.chinabuild.cache.PositionCompactNewCache;
 import com.tradehero.chinabuild.cache.PositionDTOKey;
 import com.tradehero.chinabuild.data.QuoteDetail;
+import com.tradehero.chinabuild.data.QuoteTick;
 import com.tradehero.chinabuild.data.SignedQuote;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.dialog.DialogFactory;
@@ -92,20 +93,16 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.GuideView;
+import com.tradehero.th.widget.KChart.TimesView;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.viewpagerindicator.SquarePageIndicator;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
+import dagger.Lazy;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -204,6 +201,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     protected BetterViewAnimator chartImageWrapper;
     protected ChartImageView chartImage;
+    protected TimesView timeListView;
     protected TextView tvLoadingChart;
 
     private ImageLoadingListener chartLoadingListener;
@@ -220,6 +218,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     private Callback<QuoteDetail> quoteDetailCallback;
     private Callback<SignedQuote> quoteCallback;
+    private Callback<List<QuoteTick>> timeListCallback;
     private int quoteErrors;
 
     //Portfolio Detail Tab Start
@@ -491,7 +490,14 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 }
 
                 if (chartImageWrapper != null) {
-                    chartImageWrapper.setDisplayedChildByLayoutId(chartImage.getId());
+                    chartImageWrapper.setDisplayedChildByLayoutId(R.id.chart_view);
+                    if (quoteServiceWrapper.isChinaStock(securityId)) {
+                        timeListView.setVisibility(View.VISIBLE);
+                        chartImage.setVisibility(View.GONE);
+                    } else {
+                        chartImage.setVisibility(View.VISIBLE);
+                        timeListView.setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -560,6 +566,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         chartImageWrapper = (BetterViewAnimator) tabView0.findViewById(R.id.chart_image_wrapper);
         chartImage = (ChartImageView) tabView0.findViewById(R.id.chart_imageView);
+        timeListView = (TimesView) tabView0.findViewById(R.id.time_list_view);
         tvLoadingChart = (TextView) tabView0.findViewById(R.id.chart_loading);
 
         tvSecurityPrice = (TextView) tabView0.findViewById(R.id.tvSecurityDetailPrice);
@@ -1226,6 +1233,34 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             };
         }
         quoteServiceWrapper.getRepeatingQuoteDetails(securityId.getSecuritySymbol(), quoteDetailCallback);
+
+        //time list
+        if (timeListCallback == null) {
+            timeListCallback = new Callback<List<QuoteTick>>()
+            {
+                @Override public void success(List<QuoteTick> quoteTicks, Response response)
+                {
+                    timeListView.setTimesList(quoteTicks);
+                    if (chartImageWrapper != null)
+                    {
+                        chartImageWrapper.setDisplayedChildByLayoutId(R.id.chart_view);
+                    }
+                    if (quoteServiceWrapper.isChinaStock(securityId)) {
+                        timeListView.setVisibility(View.VISIBLE);
+                        chartImage.setVisibility(View.GONE);
+                    } else {
+                        chartImage.setVisibility(View.VISIBLE);
+                        timeListView.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override public void failure(RetrofitError error)
+                {
+
+                }
+            };
+        }
+        quoteServiceWrapper.getQuoteTicks(securityId.getSecuritySymbol(), timeListCallback);
     }
 
     public void updateSecurityInfoByQuoteDetails(QuoteDetail quoteDetail) {

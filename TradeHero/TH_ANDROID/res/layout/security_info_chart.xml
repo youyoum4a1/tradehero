@@ -70,6 +70,12 @@
                 android:text="@string/chart_loading_image"
                 />
 
+      <LinearLayout
+          android:id="@+id/chart_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
         <com.tradehero.th.fragments.security.ChartImageView
                 android:id="@+id/chart_imageView"
                 android:layout_width="match_parent"
@@ -82,6 +88,12 @@
                 app:dominantMeasurement="width"
                 app:aspectRatioEnabled="false"
                 />
+        <com.tradehero.th.widget.KChart.TimesView
+            android:id="@+id/time_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_margin="@dimen/margin_small"/>
+      </LinearLayout>
 
     </com.tradehero.common.widget.BetterViewAnimator>
 </LinearLayout>
