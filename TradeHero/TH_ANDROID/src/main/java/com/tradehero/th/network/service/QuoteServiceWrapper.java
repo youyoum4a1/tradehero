@@ -7,6 +7,8 @@ import com.tradehero.chinabuild.data.KLineItem;
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.QuoteTick;
 import com.tradehero.chinabuild.data.SignedQuote;
+import com.tradehero.th.api.market.Exchange;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.UrlEncoderHelper;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
@@ -30,6 +32,8 @@ public class QuoteServiceWrapper {
 
     private static final int DEFAULT_REFRESH_QUOTE_DELAY = 10 * 1000;
 
+    private static final int DEFAULT_REFRESH_SECURITY_DELAY = 60 * 1000;
+
     public static final int MAX_API_RETRIES = 5;
 
     public static final String K_LINE_DAY = "day";
@@ -46,6 +50,8 @@ public class QuoteServiceWrapper {
     private Runnable quoteTicksTask;
 
     private Runnable quoteTask;
+
+    private Runnable securityCompactTask;
 
     @Inject
     public QuoteServiceWrapper(
@@ -111,30 +117,84 @@ public class QuoteServiceWrapper {
         getQuoteTicks(securitySymbol, DEFAULT_REFRESH_QUOTE_TICKS_DELAY, callback);
     }
 
-    public void getRepeatingQuote(final String securitySymbol, final Callback<SignedQuote> callback) {
-        final RepeatingTaskCallBack<SignedQuote> myCallback = new RepeatingTaskCallBack<>(callback, handler, DEFAULT_REFRESH_QUOTE_DELAY);
+    public void getRepeatingQuote(final SecurityId securityId, final Callback<SignedQuote> callback) {
+        int delay = DEFAULT_REFRESH_QUOTE_DELAY;
+        if (!isChinaStock(securityId)) {
+            delay = DEFAULT_REFRESH_SECURITY_DELAY;
+        }
+        final RepeatingTaskCallBack<SignedQuote> myCallback = new RepeatingTaskCallBack<>(callback, handler, delay);
         if (quoteTask != null) {
             handler.removeCallbacks(quoteTask);
         }
-        quoteTask = new Runnable() {
-            @Override
-            public void run() {
-                quoteService.getQuote(securitySymbol, myCallback);
-            }
-        };
+        if (isChinaStock(securityId)) {
+            quoteTask = new Runnable() {
+                @Override
+                public void run() {
+                    quoteService.getQuote(securityId.getSecuritySymbol(), myCallback);
+                }
+            };
+        } else {
+            quoteTask = new Runnable() {
+                @Override
+                public void run() {
+                    quoteService.getQuoteLegacy(securityId.getExchange(),
+                            securityId.getSecuritySymbol(), myCallback);
+                }
+            };
+        }
         myCallback.setTask(quoteTask);
         handler.post(quoteTask);
     }
 
-    public void getQuote(final String securitySymbol, final Callback<SignedQuote> callback) {
-        quoteService.getQuote(securitySymbol, callback);
+    public static boolean isChinaStock(final SecurityId securityId) {
+        if (securityId == null) {
+            return false;
+        }
+        return  Exchange.SHA.name().equals(securityId.getExchange())
+                || Exchange.SHE.name().equals(securityId.getExchange());
+
+    }
+
+    public void getQuote(final SecurityId securityId, final Callback<SignedQuote> callback) {
+        if (isChinaStock(securityId)) {
+            quoteService.getQuote(securityId.getSecuritySymbol(), callback);
+        } else {
+            quoteService.getQuoteLegacy(securityId.getExchange(),
+                    securityId.getSecuritySymbol(), callback);
+        }
     }
 
     public void getKline(final String securitySymbol, final String type, final Callback<List<KLineItem>> callback) {
         quoteService.getKLines(securitySymbol, type, callback);
     }
 
+    public void getRepeatingSecurityCompactDTO(final SecurityId securityId, final Callback<SecurityCompactDTO> callback) {
+        final RepeatingTaskCallBack<SecurityCompactDTO> myCallback = new RepeatingTaskCallBack<>(callback, handler, DEFAULT_REFRESH_SECURITY_DELAY);
+        if (securityCompactTask != null) {
+            handler.removeCallbacks(securityCompactTask);
+        }
 
+        securityCompactTask = new Runnable() {
+            @Override
+            public void run() {
+                quoteService.getSecurityCompactDTO(securityId.getExchange(), securityId.getSecuritySymbol(), myCallback);
+            }
+        };
+
+        myCallback.setTask(securityCompactTask);
+        handler.post(securityCompactTask);
+    }
+
+    public void getSecurityCompactDTO(final SecurityId securityId, final Callback<SecurityCompactDTO> callback) {
+        quoteService.getSecurityCompactDTO(securityId.getExchange(), securityId.getSecuritySymbol(), callback);
+    }
+
+    public void stopSecurityCompactTask() {
+        if (securityCompactTask != null) {
+            handler.removeCallbacks(securityCompactTask);
+            Log.e("test", "Stop SecurityCompactTask................");
+        }
+    }
 
     public void stopQuoteDetailTask() {
         if (quoteDetailTask != null) {

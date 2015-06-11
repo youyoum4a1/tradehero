@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +37,7 @@ import com.tradehero.chinabuild.dialog.SecurityDetailDialogLayout;
 import com.tradehero.chinabuild.fragment.message.SecurityDiscussSendFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.utils.IOUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -96,6 +98,7 @@ import com.viewpagerindicator.SquarePageIndicator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,6 +109,7 @@ import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /**
  * Created by huhaiping on 14-9-1.
@@ -631,12 +635,16 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     @Override public void onPause() {
         detachSecurityCompactCache();
         quoteServiceWrapper.stopQuoteDetailTask();
+        quoteServiceWrapper.stopSecurityCompactTask();
+
         super.onPause();
     }
 
     @Override public void onDestroyView()
     {
         quoteServiceWrapper.stopQuoteDetailTask();
+        quoteServiceWrapper.stopSecurityCompactTask();
+
         detachUserProfileCache();
         detachSecurityCompactCache();
         detachSecurityPositionDetailCache();
@@ -736,7 +744,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         if (securityId != null)
         {
             queryCompactCache(securityId);
-            refreshQuoteInfo(securityId.getSecuritySymbol());
+            refreshQuoteInfo(securityId);
+
 
             if (competitionID == 0)//不是比赛
             {
@@ -932,10 +941,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         if (securityCompactDTO != null)
         {
             chartDTO.setSecurityCompactDTO(securityCompactDTO);
+            setHeadViewMiddleMain(securityCompactDTO.name);
         }
         displayChartImage();
 
-        displaySecurityInfo();
+        updateSecurityInfoByCompactDTO();
 
         getTradeTabDetail();
     }
@@ -1061,34 +1071,146 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void refreshQuoteInfo(final String securitySymbol) {
+    private void refreshQuoteInfo(final SecurityId securityId) {
+        if (QuoteServiceWrapper.isChinaStock(securityId)) {
+            refreshCNQuoteInfo(securityId);
+        } else {
+            refreshROWQuoteInfo(securityId);
+        }
+    }
+
+    private void refreshROWQuoteInfo(final SecurityId securityId) {
+        getQuote(securityId);
+
+        Callback<SecurityCompactDTO>  securityCallback = new Callback<SecurityCompactDTO>() {
+            @Override
+            public void success(SecurityCompactDTO securityDTO, Response response) {
+                if (securityDTO == null) {
+                    return;
+                }
+                Log.e("test", "Refresh - " + securityCompactDTO);
+                securityCompactDTO = securityDTO;
+                updateSecurityInfoByCompactDTO();
+                if (quoteDTO != null) {
+                    quoteDTO.ask = securityDTO.askPrice;
+                    quoteDTO.bid = securityDTO.bidPrice;
+                    setInitialBuySaleQuantityIfCan();
+                }
+                preClose = securityDTO.previousClose;
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        };
+
+        quoteServiceWrapper.getRepeatingSecurityCompactDTO(securityId, securityCallback);
+
+    }
+
+    private void updateSecurityInfoByCompactDTO() {
+        if (getActivity() == null
+                || securityCompactDTO == null
+                || quoteDTO == null) {
+            return;
+        }
+
+        String currency = "";
+        if (securityCompactDTO != null) {
+            currency = securityCompactDTO.getCurrencyDisplay();
+        }
+
+
+        //涨跌幅
+        int colorResId = R.color.black;
+
+        Double rate = securityCompactDTO.risePercent;
+        if (rate != null) {
+            THSignedNumber roi = THSignedPercentage.builder(rate * 100)
+                    .withSign()
+                    .signTypePlusMinusAlways()
+                    .build();
+            colorResId = roi.getColorResId();
+            tvSecurityDetailRate.setText(roi.toString());
+            tvSecurityDetailRate.setTextColor(getResources().getColor(colorResId));
+        }
+
+
+        tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(securityCompactDTO.lastPrice));
+        tvSecurityPrice.setTextColor(getResources().getColor(colorResId));
+
+        tvSecurityDetailNum.setText(securityCompactDTO.getPriceDifferent());
+        tvSecurityDetailNum.setTextColor(getResources().getColor(colorResId));
+
+        if (securityCompactDTO.high != null) {
+            tvInfo0Value.setText(THSignedMoney.builder(securityCompactDTO.high)
+                    .currency(currency)
+                    .build().toString());
+        }
+
+        if (securityCompactDTO.low != null) {
+            tvInfo1Value.setText(THSignedMoney.builder(securityCompactDTO.low)
+                    .currency(currency)
+                    .build().toString());
+        }
+
+        if (securityCompactDTO.volume != null) {
+            tvInfo2Value.setText(NumberDisplayUtils.getString(securityCompactDTO.volume));
+        }
+
+        if (securityCompactDTO.open != null) {
+            tvTodayPriceBegin.setText(THSignedMoney.builder(securityCompactDTO.open)
+                    .currency(currency)
+                    .build().toString());
+        }
+
+        if (securityCompactDTO.previousClose != null) {
+            tvYesterdayPriceEnd.setText(THSignedMoney.builder(securityCompactDTO.previousClose)
+                    .currency(currency)
+                    .build().toString());
+        }
+
+    }
+
+    private void getQuote(final SecurityId securityId) {
         quoteErrors = 0;
         if (quoteCallback == null) {
             quoteCallback = new Callback<SignedQuote>() {
                 @Override
                 public void success(SignedQuote signedQuote, Response response) {
-                    if (signedQuote != null) {
-                        quoteDTO = signedQuote.signedObject;
+                    if (signedQuote == null) {
+                        return;
+                    }
+                    quoteDTO = signedQuote.signedObject;
+                    try {
+                        quoteDTO.rawResponse = new String(IOUtils.streamToBytes(response.getBody().in()));
+                    } catch (IOException e) {
+                        Timber.e(e, "Get raw response");
                     }
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
                     if (quoteErrors < QuoteServiceWrapper.MAX_API_RETRIES) {
-                        quoteServiceWrapper.getQuote(securitySymbol, quoteCallback);
+                        quoteServiceWrapper.getQuote(securityId, quoteCallback);
                         quoteErrors ++;
                     }
-
+                    Timber.e(error, "Error to get quote.");
                 }
             };
         }
+        quoteServiceWrapper.getQuote(securityId, quoteCallback);
+    }
 
-        quoteServiceWrapper.getQuote(securitySymbol, quoteCallback);
+    private void refreshCNQuoteInfo(final SecurityId securityId) {
+        getQuote(securityId);
         if (quoteDetailCallback == null) {
             quoteDetailCallback = new Callback<QuoteDetail>() {
                 @Override
                 public void success(QuoteDetail quoteDetail, Response response) {
-                    displaySecurityInfo(quoteDetail);
+                    Log.e("test", "Refresh - " + quoteDetail);
+                    updateSecurityInfoByQuoteDetails(quoteDetail);
                     if (quoteDTO != null) {
                         quoteDTO.ask = quoteDetail.sp1;
                         quoteDTO.bid = quoteDetail.bp1;
@@ -1099,14 +1221,17 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
                 @Override
                 public void failure(RetrofitError error) {
+                    Timber.e(error, "Error to get quoteDetail.");
                 }
             };
         }
-        quoteServiceWrapper.getRepeatingQuoteDetails(securitySymbol, quoteDetailCallback);
+        quoteServiceWrapper.getRepeatingQuoteDetails(securityId.getSecuritySymbol(), quoteDetailCallback);
     }
 
-    public void displaySecurityInfo(QuoteDetail quoteDetail) {
-        if ((getActivity() == null) || (quoteDetail == null)) {
+    public void updateSecurityInfoByQuoteDetails(QuoteDetail quoteDetail) {
+        if ((getActivity() == null)
+                || (quoteDetail == null)
+                || (securityCompactDTO == null)) {
             return;
         }
 
@@ -1169,52 +1294,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             tvTotalAmount.setText(NumberDisplayUtils.getString(quoteDetail.amou));
         }
 
-    }
-
-    public void displaySecurityInfo()
-    {
-        if (securityCompactDTO != null)
-        {
-            setHeadViewMiddleMain(securityCompactDTO.name);
-
-            //涨跌幅
-            if (securityCompactDTO.risePercent != null)
-            {
-
-                THSignedNumber roi = THSignedPercentage.builder(securityCompactDTO.risePercent * 100)
-                        .withSign()
-                        .signTypePlusMinusAlways()
-                        .build();
-
-                tvSecurityDetailRate.setText(roi.toString());
-                tvSecurityDetailRate.setTextColor(getResources().getColor(roi.getColorResId()));
-
-                tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(securityCompactDTO.lastPrice));
-                tvSecurityPrice.setTextColor(getResources().getColor(roi.getColorResId()));
-
-                tvSecurityDetailNum.setText(securityCompactDTO.getPriceDifferent());
-                tvSecurityDetailNum.setTextColor(getResources().getColor(roi.getColorResId()));
-
-                if (securityCompactDTO.high != null)
-                {
-                    tvInfo0Value.setText(THSignedMoney.builder(securityCompactDTO.high)
-                            .currency(securityCompactDTO.getCurrencyDisplay())
-                            .build().toString());
-                }
-
-                if (securityCompactDTO.low != null)
-                {
-                    tvInfo1Value.setText(THSignedMoney.builder(securityCompactDTO.low)
-                            .currency(securityCompactDTO.getCurrencyDisplay())
-                            .build().toString());
-                }
-
-                if (securityCompactDTO.volume != null)
-                {
-                    tvInfo2Value.setText(NumberDisplayUtils.getString(securityCompactDTO.volume));
-                }
-            }
-        }
     }
 
     public void linkWith(ChartTimeSpan timeSpan)

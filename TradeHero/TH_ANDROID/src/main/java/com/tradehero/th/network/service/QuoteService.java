@@ -6,6 +6,7 @@ import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.QuoteTick;
 import com.tradehero.chinabuild.data.SignedQuote;
 import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Path;
+import retrofit.http.Query;
 
 interface QuoteService
 {
@@ -67,5 +69,16 @@ interface QuoteService
     @GET("/v2/quotes/{securitySymbol}/klines/{type}")
     void getKLines(@Path("securitySymbol") String securitySymbol, @Path("type") String type,
                    Callback<List<KLineItem>> callback);
+
+    @GET("/securities/{exchange}/{securitySymbol}/quote")
+    void getQuoteLegacy(
+            @Path("exchange") String exchange,
+            @Path("securitySymbol") String securitySymbol,
+            Callback<SignedQuote> callback);
+
+    @GET("/securities/compact")
+    void getSecurityCompactDTO(@Query("exch") String exchange,
+                               @Query("symbol") String symbol,
+                               Callback<SecurityCompactDTO> callback);
 
 }
