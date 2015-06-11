@@ -184,7 +184,7 @@
             <com.tradehero.chinabuild.fragment.security.SecurityDetailSubViewPager
                 android:id="@+id/securitydetailsubviewpager"
                 android:layout_width="match_parent"
-                android:layout_height="315dp"/>
+                android:layout_height="365dp"/>
 
         </LinearLayout>
     </ScrollView>

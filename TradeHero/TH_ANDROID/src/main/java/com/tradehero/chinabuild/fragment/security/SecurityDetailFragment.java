@@ -36,7 +36,6 @@ import com.tradehero.chinabuild.dialog.SecurityDetailDialogLayout;
 import com.tradehero.chinabuild.fragment.message.SecurityDiscussSendFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -103,8 +102,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -461,20 +458,17 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         setDefaultBtnTabView();
 
         chartDTO.setIncludeVolume(chartImage.includeVolume);
-        if (chartImage != null)
-        {
+        if (chartImage != null) {
             chartImage.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
         chartLoadingListener = new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String s, View view) {
-                //
             }
 
             @Override
             public void onLoadingFailed(String s, View view, FailReason failReason) {
-                //
             }
 
             @Override
@@ -484,29 +478,21 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 int imgWidth = aspectRatioImageView.getDrawable().getIntrinsicWidth();
                 aspectRatioImageView.setAspectRatioEnabled(true);
                 int dominantMeasurement = aspectRatioImageView.getDominantMeasurement();
-                if (dominantMeasurement == AspectRatioImageView.MEASUREMENT_WIDTH)
-                {
+                if (dominantMeasurement == AspectRatioImageView.MEASUREMENT_WIDTH) {
                     aspectRatioImageView.setAspectRatio((float) imgHeight / (float) imgWidth);
-                }
-                else if (dominantMeasurement == AspectRatioImageView.MEASUREMENT_HEIGHT)
-                {
+                } else if (dominantMeasurement == AspectRatioImageView.MEASUREMENT_HEIGHT) {
                     aspectRatioImageView.setAspectRatio((float) imgWidth / (float) imgHeight);
-                }
-                else
-                {
+                } else {
                     throw new IllegalArgumentException("Unhandled dominant measurement " + dominantMeasurement);
                 }
 
-                if (chartImageWrapper != null)
-                {
+                if (chartImageWrapper != null) {
                     chartImageWrapper.setDisplayedChildByLayoutId(chartImage.getId());
                 }
             }
 
             @Override
-            public void onLoadingCancelled(String s, View view) {
-                //
-            }
+            public void onLoadingCancelled(String s, View view) { }
         };
 
         initListView();
@@ -1822,7 +1808,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             SecurityDetailSubPositionFragment positionFragment = new SecurityDetailSubPositionFragment();
             subFragments.add(positionFragment);
         }
-        THLog.d("dfasfdasfdsafds");
     }
 
     private void initSubViewPager(){
@@ -1832,6 +1817,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
         subViewPager.setAdapter(subFragmentPagerAdapter);
         subViewPager.setCurrentItem(0);
+        setCategoryViews();
         subViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
