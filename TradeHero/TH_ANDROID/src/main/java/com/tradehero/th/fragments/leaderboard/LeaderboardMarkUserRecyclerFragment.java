@@ -138,7 +138,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
                 .subscribe(
                         fragmentUtil,
                         new TimberOnErrorAction("Error when receiving user follow requested")));
-        if ((itemViewAdapter != null) && (itemViewAdapter.getItemCount() == 1))
+        if ((itemViewAdapter != null) && (itemViewAdapter.getItemCount() == 0))
         {
             requestDtos();
         }
@@ -224,24 +224,25 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
                 {
                     private boolean scrollStateChanged;
 
-                    public void onScrollStateChanged(AbsListView view, int scrollState)
+                    @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy)
                     {
-                        scrollStateChanged = true;
-                    }
-
-                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-                    {
-                        if (view instanceof ListView && scrollStateChanged)
+                        if (scrollStateChanged)
                         {
-                            ListView listView = (ListView) view;
-                            int mTotalHeadersAndFooters = listView.getHeaderViewsCount() + listView.getFooterViewsCount();
-
-                            if (totalItemCount > mTotalHeadersAndFooters && (totalItemCount - visibleItemCount) < (firstVisibleItem + 1))
+                            LinearLayoutManager mLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                            int visibleItemCount = mLayoutManager.getChildCount();
+                            int totalItemCount = mLayoutManager.getItemCount();
+                            int firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
+                            if ((totalItemCount - visibleItemCount) < (firstVisibleItem + 1))
                             {
                                 scrollStateChanged = false;
                                 requestDtos();
                             }
                         }
+                    }
+
+                    @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState)
+                    {
+                        scrollStateChanged = true;
                     }
                 });
     }
