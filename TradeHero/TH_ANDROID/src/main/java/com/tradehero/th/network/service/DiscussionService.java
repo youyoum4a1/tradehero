@@ -1,12 +1,20 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.chinabuild.data.SecurityCommentList;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
-import retrofit.http.*;
 
 import java.util.Map;
+
+import retrofit.Callback;
+import retrofit.http.Body;
+import retrofit.http.GET;
+import retrofit.http.POST;
+import retrofit.http.Path;
+import retrofit.http.Query;
+import retrofit.http.QueryMap;
 
 public interface DiscussionService
 {
@@ -38,4 +46,11 @@ public interface DiscussionService
             @Path("inReplyToId") int inReplyToId,
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO);
     //</editor-fold>
+
+    @GET("/v2/securities/{exchange}/{securitySymbol}/discussions")
+    void getSecurityDiscussion(@Path("exchange") String exchange,
+                               @Path("securitySymbol") String securitySymbol,
+                               @Query("page") Integer page,
+                               @Query("perPage") Integer perPage,
+                               Callback<SecurityCommentList> callback);
 }

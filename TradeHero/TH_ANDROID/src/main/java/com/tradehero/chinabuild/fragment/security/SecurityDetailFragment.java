@@ -2,13 +2,18 @@ package com.tradehero.chinabuild.fragment.security;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -118,6 +123,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = SecurityDetailFragment.class.getName() + ".securityId";
     public final static String BUNDLE_KEY_COMPETITION_ID_BUNDLE = SecurityDetailFragment.class.getName() + ".competitionID";
     public final static String BUNDLE_KEY_GOTO_TRADE_DETAIL = SecurityDetailFragment.class.getName() + ".gotoTradeDetail";
+    public final static String BUNDLE_KEY_SECURITY_DTO_ID_BUNDLE = SecurityDetailFragment.class.getName() + ".SecurityCompactDTO.id";
+
+    public final static String ACTION_UPDATE_DISCUSSION_COUNT = SecurityDetailFragment.class.getName() + ".update.discussion.count";
+    public final static String BUNDLE_KEY_DISCUSSION_COUNT = SecurityDetailFragment.class.getName() + ".discussion.count";
 
     @Inject Analytics analytics;
     @Inject CurrentUserId currentUserId;
@@ -285,6 +294,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private boolean isFristLunch;
 
     private View view;
+
+    private LocalBroadcastManager broadcastManager;
+    private DiscussionCountReceiver discussionCountReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -582,7 +594,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         tvTotalAmount = (TextView) tabView0.findViewById(R.id.tvTotalAmount);
 
         subViewPager = (SecurityDetailSubViewPager) tabView0.findViewById(R.id.securitydetailsubviewpager);
-        initSubViewPager();
     }
 
 
@@ -651,7 +662,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     {
         quoteServiceWrapper.stopQuoteDetailTask();
         quoteServiceWrapper.stopSecurityCompactTask();
-
+        if (discussionCountReceiver != null) {
+            broadcastManager.unregisterReceiver(discussionCountReceiver);
+        }
         detachUserProfileCache();
         detachSecurityCompactCache();
         detachSecurityPositionDetailCache();
@@ -660,7 +673,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         detachFetchPosition();
         detachFetchTrades();
-
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -677,6 +689,14 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
 
         getTradeTabDetail();
+        //register discussion count receiver.
+        if (broadcastManager == null) {
+            broadcastManager = LocalBroadcastManager.getInstance(getActivity());
+        }
+        if (discussionCountReceiver == null) {
+            discussionCountReceiver = new DiscussionCountReceiver();
+        }
+        broadcastManager.registerReceiver(discussionCountReceiver, new IntentFilter(ACTION_UPDATE_DISCUSSION_COUNT));
     }
 
     public void getTradeTabDetail()
@@ -955,6 +975,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         updateSecurityInfoByCompactDTO();
 
         getTradeTabDetail();
+        initSubViewPager();
     }
 
     public void setChartView(int select) {
@@ -1219,8 +1240,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                     Log.e("test", "Refresh - " + quoteDetail);
                     updateSecurityInfoByQuoteDetails(quoteDetail);
                     if (quoteDTO != null) {
-                        quoteDTO.ask = quoteDetail.sp1;
-                        quoteDTO.bid = quoteDetail.bp1;
+                        if (quoteDetail.sp1 != null) {
+                            quoteDTO.ask = quoteDetail.sp1;
+                        }
+                        if (quoteDetail.bp1 != null) {
+                            quoteDTO.bid = quoteDetail.bp1;
+                        }
                         setInitialBuySaleQuantityIfCan();
                     }
                     preClose = quoteDetail.prec;
@@ -1914,7 +1939,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         if(subFragments.size()<=0) {
             subFragments.clear();
             SecurityDetailSubDiscussFragment discussFragment = new SecurityDetailSubDiscussFragment();
-            discussFragment.setArguments(getArguments());
+            Bundle args = getArguments();
+            args.putInt(BUNDLE_KEY_SECURITY_DTO_ID_BUNDLE, securityCompactDTO.id);
+            discussFragment.setArguments(args);
             subFragments.add(discussFragment);
             SecurityDetailSubNewsFragment newsFragment = new SecurityDetailSubNewsFragment();
             newsFragment.setArguments(getArguments());
@@ -1955,6 +1982,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         });
     }
 
+    void updateDiscussionCount(int count) {
+        if (discussNumTV != null) {
+            discussNumTV.setText(String.valueOf(count));
+        }
+    }
+
     public class SubFragmentPagerAdapter extends FragmentPagerAdapter{
 
         public SubFragmentPagerAdapter(FragmentManager fm) {
@@ -1969,6 +2002,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         @Override
         public int getCount() {
             return subFragments.size();
+        }
+    }
+
+    class DiscussionCountReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int count = intent.getIntExtra(BUNDLE_KEY_DISCUSSION_COUNT, 0);
+            updateDiscussionCount(count);
         }
     }
 }
