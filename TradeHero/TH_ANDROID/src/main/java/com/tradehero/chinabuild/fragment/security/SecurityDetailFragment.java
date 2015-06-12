@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
@@ -94,6 +95,7 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.GuideView;
 import com.tradehero.th.widget.KChart.TimesView;
+import com.tradehero.th.widget.ScrollViewExtend;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.viewpagerindicator.SquarePageIndicator;
 import dagger.Lazy;
@@ -233,6 +235,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private BetterViewAnimator betterViewAnimatorPortfolio;
     //Portfolio Detail Tab End
 
+    private ScrollViewExtend securityDetailSV;
+
     //Discuss, news, opts, postions
     private SecurityDetailSubViewPager subViewPager;
     private ArrayList<Fragment> subFragments = new ArrayList();
@@ -319,8 +323,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             {
                 securityId = new SecurityId(securityIdBundle);
             }
-            setHeadViewMiddleMain(securityName);
-            setHeadViewMiddleSub(securityId.getDisplayName());
+            setHeadViewMiddleMain(securityName + "(" + securityId.getSecuritySymbol()+ ")");
+            setHeadViewMiddleSub("交易中");
 
             if (watchedList != null && securityId != null)
             {

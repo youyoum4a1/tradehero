@@ -196,7 +196,8 @@
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:background="#e1e5e6"
-        android:layout_height="18dp">
+        android:layout_marginBottom="5dp"
+        android:layout_height="20dp">
         <ImageView
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"

@@ -8,7 +8,8 @@
     android:orientation="vertical">
 
 
-    <ScrollView
+    <com.tradehero.th.widget.ScrollViewExtend
+        android:id="@+id/scrollview_security_detail"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/bvaViewAll"
@@ -187,6 +188,6 @@
                 android:layout_height="365dp"/>
 
         </LinearLayout>
-    </ScrollView>
+    </com.tradehero.th.widget.ScrollViewExtend>
 </LinearLayout>
 
