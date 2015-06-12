@@ -172,4 +172,9 @@
   <dimen name="stock_learning_summary_des_size_b">20sp</dimen>
   <dimen name="stock_learning_question_item_selector_wh">24dp</dimen>
   <!--Stock Learning-->
+
+  <!--Security Detail -->
+  <dimen name="security_detail_stock_detail_height">79dp</dimen>
+  <!--Security Detail -->
+  
 </resources>

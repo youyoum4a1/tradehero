@@ -25,7 +25,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
@@ -101,6 +100,7 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.GuideView;
 import com.tradehero.th.widget.KChart.TimesView;
 import com.tradehero.th.widget.ScrollViewExtend;
+import com.tradehero.th.widget.ScrollViewListener;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.viewpagerindicator.SquarePageIndicator;
 import dagger.Lazy;
@@ -245,6 +245,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     //Portfolio Detail Tab End
 
     private ScrollViewExtend securityDetailSV;
+    private int stockDetailHeight;
+    private int colorUp;
+    private int colorNormal;
+    private int colorDown;
 
     //Discuss, news, opts, postions
     private SecurityDetailSubViewPager subViewPager;
@@ -295,12 +299,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private PositionTradeListAdapter adapter;
 
     private boolean isGotoTradeDetail;
-    private boolean isFristLunch;
+    private boolean isFirstLunch;
 
     private View view;
 
     private LocalBroadcastManager broadcastManager;
     private DiscussionCountReceiver discussionCountReceiver;
+
+    private QuoteDetail quoteDetail;
+    private int scrollY;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -317,9 +324,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         adapter = new PositionTradeListAdapter(getActivity());
 
         isGotoTradeDetail = getArguments().getBoolean(BUNDLE_KEY_GOTO_TRADE_DETAIL, false);
-        isFristLunch = true;
+        isFirstLunch = true;
 
         fragmentManager = getChildFragmentManager();
+
+        initResources();
     }
 
     @Override
@@ -335,8 +344,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             {
                 securityId = new SecurityId(securityIdBundle);
             }
-            setHeadViewMiddleMain(securityName + "(" + securityId.getSecuritySymbol()+ ")");
-            setHeadViewMiddleSub("交易中");
+            setHeadViewMiddleMain(securityName + "(" + securityId.getSecuritySymbol() + ")");
 
             if (watchedList != null && securityId != null)
             {
@@ -363,6 +371,13 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
 
         return view;
+    }
+
+    private void initResources(){
+        stockDetailHeight = (int)getResources().getDimension(R.dimen.security_detail_stock_detail_height);
+        colorUp = getResources().getColor(R.color.bar_up);
+        colorNormal = getResources().getColor(R.color.bar_normal);
+        colorDown = getResources().getColor(R.color.bar_down);
     }
 
     //+自选股 已添加
@@ -556,15 +571,24 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         pager.setAdapter(pageAdapter);
         indicator.setViewPager(pager);
 
-        if (isGotoTradeDetail && isFristLunch)
+        if (isGotoTradeDetail && isFirstLunch)
         {
-            isFristLunch = false;
+            isFirstLunch = false;
             indicator.setCurrentItem(1);
         }
     }
 
-    public void initRootViewTab0(View tabView0)
-    {
+    public void initRootViewTab0(View tabView0) {
+
+        securityDetailSV = (ScrollViewExtend)tabView0.findViewById(R.id.scrollview_security_detail);
+        securityDetailSV.setScrollViewListener(new ScrollViewListener() {
+            @Override
+            public void onScrollChanged(ScrollViewExtend scrollView, int x, int y, int oldx, int oldy) {
+                scrollY = y;
+                updateSubHead();
+            }
+        });
+
         btnChart0 = (Button) tabView0.findViewById(R.id.btnTabChart0);
         btnChart1 = (Button) tabView0.findViewById(R.id.btnTabChart1);
         btnChart2 = (Button) tabView0.findViewById(R.id.btnTabChart2);
@@ -972,7 +996,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         if (securityCompactDTO != null)
         {
             chartDTO.setSecurityCompactDTO(securityCompactDTO);
-            setHeadViewMiddleMain(securityCompactDTO.name);
+            setHeadViewMiddleMain(securityCompactDTO.name + "(" + securityCompactDTO.getSecurityId().getSecuritySymbol() + ")");
+            updateSubHead();
         }
         displayChartImage();
 
@@ -1241,7 +1266,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             quoteDetailCallback = new Callback<QuoteDetail>() {
                 @Override
                 public void success(QuoteDetail quoteDetail, Response response) {
-                    Log.e("test", "Refresh - " + quoteDetail);
+                    SecurityDetailFragment.this.quoteDetail = quoteDetail;
                     updateSecurityInfoByQuoteDetails(quoteDetail);
                     if (quoteDTO != null) {
                         if (quoteDetail.sp1 != null) {
@@ -1253,6 +1278,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                         setInitialBuySaleQuantityIfCan();
                     }
                     preClose = quoteDetail.prec;
+                    updateSubHead();
                 }
 
                 @Override
@@ -2016,5 +2042,37 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             int count = intent.getIntExtra(BUNDLE_KEY_DISCUSSION_COUNT, 0);
             updateDiscussionCount(count);
         }
+    }
+
+    private void updateSubHead(){
+        if(securityCompactDTO == null || quoteDetail == null){
+            setHeadViewMiddleSub("");
+            return;
+        }
+        if(scrollY%4 != 0){
+            return;
+        }
+        if(scrollY < stockDetailHeight){
+            setHeadViewMiddleSubTextColor(colorNormal);
+            if(securityCompactDTO.marketOpen){
+                setHeadViewMiddleSub("交易中");
+            } else {
+                setHeadViewMiddleSub("交易结束");
+            }
+        } else {
+            if(quoteDetail.getRiseRate() > 0){
+                setHeadViewMiddleSubTextColor(colorUp);
+                setHeadViewMiddleSub(quoteDetail.last + "  +" + quoteDetail.getRiseRate() + "  +" + quoteDetail.getRise());
+            }
+            if(quoteDetail.getRiseRate() == 0){
+                setHeadViewMiddleSubTextColor(colorNormal);
+                setHeadViewMiddleSub(quoteDetail.last + "  +0  +0");
+            }
+            if(quoteDetail.getRiseRate() < 0){
+                setHeadViewMiddleSubTextColor(colorDown);
+                setHeadViewMiddleSub(quoteDetail.last + "  -" + quoteDetail.getRiseRate() + "  -" + quoteDetail.getRise());
+            }
+        }
+
     }
 }
