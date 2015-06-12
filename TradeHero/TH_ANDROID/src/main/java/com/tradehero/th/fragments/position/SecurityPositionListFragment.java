@@ -11,12 +11,10 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -120,9 +118,9 @@ public class SecurityPositionListFragment
         positionItemAdapter.setOnItemClickedListener(
                 new TypedRecyclerAdapter.OnItemClickedListener<Object>()
                 {
-                    @Override public void onItemClicked(int position, View view, Object object)
+                    @Override public void onItemClicked(int position, TypedRecyclerAdapter.TypedViewHolder<Object> viewHolder, Object object)
                     {
-                        handlePositionItemClicked(view, position, object);
+                        handlePositionItemClicked(viewHolder.itemView, position, object);
                     }
                 });
     }

@@ -14,9 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import butterknife.ButterKnife;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.DTOCacheRx;
@@ -352,7 +350,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
                     currentUserId,
                     requisite.currentLeaderboardUserDTO,
                     requisite.currentUserProfileDTO);
-            ownRankingDto.setIsHeader(true);
+            ownRankingDto.setIsMyOwnRanking(true);
         }
         itemViewAdapter.add(ownRankingDto);
     }

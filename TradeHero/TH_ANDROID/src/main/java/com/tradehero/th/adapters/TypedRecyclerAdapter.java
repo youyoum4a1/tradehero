@@ -178,7 +178,7 @@ public abstract class TypedRecyclerAdapter<T>
                 @Override public void onClick(View v)
                 {
                     int position = vh.getAdapterPosition();
-                    mOnItemClickedListener.onItemClicked(position, vh.itemView, getItem(position));
+                    mOnItemClickedListener.onItemClicked(position, vh, getItem(position));
                 }
             });
         }
@@ -189,7 +189,7 @@ public abstract class TypedRecyclerAdapter<T>
                 @Override public boolean onLongClick(View v)
                 {
                     int position = vh.getAdapterPosition();
-                    return mOnItemLongClickedListener.onItemLongClicked(position, vh.itemView, getItem(position));
+                    return mOnItemLongClickedListener.onItemLongClicked(position, vh, getItem(position));
                 }
             });
         }
@@ -204,12 +204,12 @@ public abstract class TypedRecyclerAdapter<T>
 
     public interface OnItemClickedListener<T>
     {
-        void onItemClicked(int position, View view, T object);
+        void onItemClicked(int position, TypedViewHolder<T> viewHolder, T object);
     }
 
     public interface OnItemLongClickedListener<T>
     {
-        boolean onItemLongClicked(int position, View view, T object);
+        boolean onItemLongClicked(int position, TypedViewHolder<T> viewHolder, T object);
     }
 
     public static class TypedRecyclerComparator<T>

@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
@@ -427,17 +426,17 @@ public class PositionListFragment
         adapter.setOnItemClickedListener(
                 new TypedRecyclerAdapter.OnItemClickedListener<Object>()
                 {
-                    @Override public void onItemClicked(int position, View view, Object object)
+                    @Override public void onItemClicked(int position, TypedRecyclerAdapter.TypedViewHolder<Object> viewHolder, Object object)
                     {
-                        handlePositionItemClicked(view, position, object);
+                        handlePositionItemClicked(viewHolder.itemView, position, object);
                     }
                 });
         adapter.setOnItemLongClickedListener(
                 new TypedRecyclerAdapter.OnItemLongClickedListener<Object>()
                 {
-                    @Override public boolean onItemLongClicked(int position, View view, Object object)
+                    @Override public boolean onItemLongClicked(int position, TypedRecyclerAdapter.TypedViewHolder<Object> viewHolder, Object object)
                     {
-                        return handlePositionItemLongClicked(view, position, object);
+                        return handlePositionItemLongClicked(viewHolder.itemView, position, object);
                     }
                 }
         );

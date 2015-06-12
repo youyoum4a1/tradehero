@@ -67,8 +67,6 @@ public class LeaderboardMarkUserItemView
     @InjectView(R.id.leaderboard_user_item_fof) @Optional @Nullable MarkdownTextView lbmuFoF;
     @InjectView(R.id.leaderboard_user_item_follow) View lbmuFollowUser;
     @InjectView(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
-    @InjectView(R.id.mark_expand_down) @Optional @Nullable ImageView expandMark;
-
     @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
 
     @InjectView(R.id.lbmu_inner_view_container) @Optional @Nullable ViewGroup innerViewContainer;
@@ -248,21 +246,6 @@ public class LeaderboardMarkUserItemView
         }
     }
 
-    @Deprecated // Perhaps
-    protected void displayUserIsLoading()
-    {
-        // Strangely, those may be null
-        // https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/546d39eb65f8dfea1521d9f6
-        if (lbmuPosition != null)
-        {
-            lbmuPosition.setText("-");
-        }
-        if (lbmuRoi != null)
-        {
-            lbmuRoi.setText(R.string.loading_required_information);
-        }
-    }
-
     protected void displayUserIsNotRanked(@Nullable UserProfileDTO currentUserProfileDTO)
     {
         this.currentUserProfileDTO = currentUserProfileDTO;
@@ -312,7 +295,7 @@ public class LeaderboardMarkUserItemView
         @ViewVisibilityValue private int lbmuFollowingUserVisibility;
         private String maxOwnLeaderRanking;
         private boolean expanded;
-        private boolean isHeader;
+        private boolean isMyOwnRanking;
         public int ranking = -1;
 
         @Override
@@ -339,7 +322,7 @@ public class LeaderboardMarkUserItemView
             this.lbmuFoF = "";
             this.lbmuRanking = "-";
             this.lbmuFoFVisibility = View.GONE;
-            this.isHeader = true;
+            this.isMyOwnRanking = true;
         }
 
         /**
@@ -361,7 +344,7 @@ public class LeaderboardMarkUserItemView
             this.lbmuFoF = "";
             this.lbmuRanking = "-";
             this.lbmuFoFVisibility = View.GONE;
-            this.isHeader = true;
+            this.isMyOwnRanking = true;
             this.lbmuDisplayPicture = currentUserProfileDTO.picture;
         }
 
@@ -472,14 +455,14 @@ public class LeaderboardMarkUserItemView
             this.expanded = expanded;
         }
 
-        public void setIsHeader(boolean isHeader)
+        public void setIsMyOwnRanking(boolean isMyOwnRanking)
         {
-            this.isHeader = isHeader;
+            this.isMyOwnRanking = isMyOwnRanking;
         }
 
-        public boolean isHeader()
+        public boolean isMyOwnRanking()
         {
-            return isHeader;
+            return isMyOwnRanking;
         }
 
         public void setRanking(int ranking)

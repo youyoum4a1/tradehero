@@ -10,12 +10,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedRecyclerAdapter;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.GraphicUtil;
 import javax.inject.Inject;
@@ -49,6 +51,31 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
         this.leaderboardKey = leaderboardKey;
         this.ownRankingRes = ownRankingRes;
         this.followRequestedPublish = PublishSubject.create();
+        setOnItemClickedListener(new OnItemClickedListener<LeaderboardMarkUserItemView.DTO>()
+        {
+            @Override public void onItemClicked(int position, TypedViewHolder<LeaderboardMarkUserItemView.DTO> viewHolder,
+                    LeaderboardMarkUserItemView.DTO object)
+            {
+                if (viewHolder instanceof LbmuItemViewHolder && object.userStatisticsDto != null)
+                {
+                    LbmuItemViewHolder lbmuItemViewHolder = (LbmuItemViewHolder) viewHolder;
+                    if (lbmuItemViewHolder.userStatisticView != null)
+                    {
+                        boolean expand = !object.isExpanded();
+                        lbmuItemViewHolder.expandingLayout.expand(expand);
+                        object.setExpanded(expand);
+                        if (expand)
+                        {
+                            lbmuItemViewHolder.userStatisticView.display(object.userStatisticsDto);
+                        }
+                        else
+                        {
+                            lbmuItemViewHolder.userStatisticView.display(null);
+                        }
+                    }
+                }
+            }
+        });
         HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
@@ -65,7 +92,7 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
 
     @Override public int getItemViewType(int position)
     {
-        return getItem(position).isHeader() ? VIEW_TYPE_OWN : VIEW_TYPE_MAIN;
+        return getItem(position).isMyOwnRanking() ? VIEW_TYPE_OWN : VIEW_TYPE_MAIN;
     }
 
     @Override public int getItemCount()
@@ -76,7 +103,7 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
     @Override public LeaderboardMarkUserItemView.DTO getItem(int position)
     {
         LeaderboardMarkUserItemView.DTO item = super.getItem(position);
-        if (item.isHeader())
+        if (item.isMyOwnRanking())
         {
             return item;
         }
@@ -119,22 +146,17 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
             position--;
             GraphicUtil.setEvenOddBackground(position, holder.itemView);
         }
-
-        //boolean expanded = getItem(position).isExpanded();
-        //dtoView.linkWith(applicablePortfolioId);
-        //dtoView.expandingLayout.expandWithNoAnimation(expanded);
-        //dtoView.setExpanded(expanded);
     }
 
     private static class LeaderboardMarkUserItemComparator extends TypedRecyclerComparator<LeaderboardMarkUserItemView.DTO>
     {
         @Override protected int compare(LeaderboardMarkUserItemView.DTO o1, LeaderboardMarkUserItemView.DTO o2)
         {
-            if (o1.isHeader() && !o2.isHeader())
+            if (o1.isMyOwnRanking() && !o2.isMyOwnRanking())
             {
                 return -1;
             }
-            else if (!o1.isHeader() && o2.isHeader())
+            else if (!o1.isMyOwnRanking() && o2.isMyOwnRanking())
             {
                 return 1;
             }
@@ -155,7 +177,7 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
 
         @Override protected boolean areItemsTheSame(LeaderboardMarkUserItemView.DTO item1, LeaderboardMarkUserItemView.DTO item2)
         {
-            if (item1.isHeader() && item2.isHeader())
+            if (item1.isMyOwnRanking() && item2.isMyOwnRanking())
             {
                 return true; //There can only be 1 header.
             }
@@ -169,9 +191,27 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
 
     public static class LbmuHeaderViewHolder extends LbmuItemViewHolder
     {
+        @InjectView(R.id.mark_expand_down) @Optional @Nullable ImageView expandMark;
+
         public LbmuHeaderViewHolder(View itemView, Picasso picasso)
         {
             super(itemView, picasso);
+        }
+
+        @Override public void display(LeaderboardMarkUserItemView.DTO dto)
+        {
+            super.display(dto);
+            if (expandMark != null)
+            {
+                if (dto.userStatisticsDto == null)
+                {
+                    expandMark.setVisibility(View.GONE);
+                }
+                else
+                {
+                    expandMark.setVisibility(View.VISIBLE);
+                }
+            }
         }
     }
 
@@ -183,6 +223,9 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
         @InjectView(R.id.lbmu_roi) protected TextView lbmuRoi;
         @InjectView(R.id.leaderboard_user_item_profile_picture) ImageView lbmuProfilePicture;
         @InjectView(R.id.leaderboard_user_item_position) TextView lbmuPosition;
+
+        @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
+        @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
 
         public LbmuItemViewHolder(View itemView, Picasso picasso)
         {
@@ -210,6 +253,8 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
             {
                 picasso.load(R.drawable.superman_facebook).into(lbmuProfilePicture);
             }
+
+            expandingLayout.expandWithNoAnimation(dto.isExpanded());
         }
     }
 }
