@@ -11,7 +11,6 @@ import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOList;
-import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -76,17 +75,6 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
         return netProceedsUsd - totalSpentUsd;
 
         // TODO Replace with same calculation as on FX
-    }
-
-    @Override @Nullable protected Boolean isClosingPosition(@Nullable PositionDTOCompact closeablePosition)
-    {
-        if (closeablePosition == null)
-        {
-            // This means we have incomplete information
-            return null;
-        }
-        return closeablePosition.positionStatus != null
-                && closeablePosition.positionStatus.equals(PositionStatus.LONG);
     }
 
     @Override @NonNull public String getCashShareLeft(

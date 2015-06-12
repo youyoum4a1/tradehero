@@ -11,7 +11,6 @@ import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOList;
-import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -57,13 +56,6 @@ public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragme
         return null;
     }
 
-    @Override @Nullable protected Boolean isClosingPosition(@Nullable PositionDTOCompact closeablePosition)
-    {
-        return closeablePosition != null
-                && closeablePosition.positionStatus != null
-                && closeablePosition.positionStatus.equals(PositionStatus.SHORT);
-    }
-
     @Override @NonNull public String getCashShareLeft(
             @NonNull PortfolioCompactDTO portfolioCompactDTO,
             @NonNull QuoteDTO quoteDTO,
@@ -77,7 +69,7 @@ public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragme
             @NonNull QuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition)
     {
-        return getMaxPurchasableShares(portfolioCompactDTO, quoteDTO);
+        return getMaxPurchasableShares(portfolioCompactDTO, quoteDTO, closeablePosition);
     }
 
     @Override protected boolean hasValidInfo()

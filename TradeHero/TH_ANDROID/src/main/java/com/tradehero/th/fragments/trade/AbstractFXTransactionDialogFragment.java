@@ -38,8 +38,7 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
 
     @Override protected int getCashLeftLabelResId(@Nullable PositionDTOCompact closeablePosition)
     {
-        Boolean isClosing = isClosingPosition(closeablePosition);
-        return isClosing != null && isClosing
+        return closeablePosition != null
                 ? R.string.buy_sell_fx_quantity_left
                 : R.string.buy_sell_fx_cash_left;
     }

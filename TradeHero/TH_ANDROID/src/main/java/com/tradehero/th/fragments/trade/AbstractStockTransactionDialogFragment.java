@@ -31,8 +31,7 @@ public abstract class AbstractStockTransactionDialogFragment extends AbstractTra
 
     @Override protected int getCashLeftLabelResId(@Nullable PositionDTOCompact closeablePosition)
     {
-        Boolean isClosing = isClosingPosition(closeablePosition);
-        return isClosing != null && isClosing
+        return closeablePosition != null
                 ? R.string.buy_sell_share_left
                 : R.string.buy_sell_cash_left;
     }

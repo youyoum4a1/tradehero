@@ -78,7 +78,6 @@ import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.functions.Func2;
-import rx.functions.Func3;
 import rx.functions.Func6;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
@@ -287,23 +286,20 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                                 Boolean>()
                         {
                             @Override public Boolean call(
-                                    @Nullable SecurityCompactDTO securityCompactDTO,
-                                    @Nullable final PortfolioCompactDTO portfolioCompactDTO,
-                                    @Nullable QuoteDTO quoteDTO,
+                                    @NonNull SecurityCompactDTO securityCompactDTO,
+                                    @NonNull final PortfolioCompactDTO portfolioCompactDTO,
+                                    @NonNull QuoteDTO quoteDTO,
                                     @Nullable PositionDTO closeablePosition,
                                     @Nullable Integer maxValue,
                                     @Nullable Integer clamped)
                             {
-                                if (quoteDTO != null)
-                                {
-                                    initPortfolioRelatedInfo(portfolioCompactDTO, quoteDTO, closeablePosition);
-                                }
+                                initPortfolioRelatedInfo(portfolioCompactDTO, quoteDTO, closeablePosition);
 
                                 updateDisplay();
 
                                 mTradeValueTextView.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
                                 attachQuickPriceButtonSet(portfolioCompactDTO, quoteDTO, closeablePosition);
-                                if (portfolioCompactDTO != null && quoteDTO != null && clamped != null)
+                                if (clamped != null)
                                 {
                                     mCashShareLeftTextView.setText(getCashShareLeft(portfolioCompactDTO, quoteDTO, closeablePosition, clamped));
                                 }
@@ -315,7 +311,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                                 Double profitLoss = showProfitLossUsd
                                         ? getProfitOrLossUsd(portfolioCompactDTO, quoteDTO, closeablePosition, clamped)
                                         : getProfitOrLossUsd(portfolioCompactDTO, quoteDTO, closeablePosition, clamped);
-                                if (profitLoss != null && clamped != null && clamped > 0 && quoteDTO != null)
+                                if (profitLoss != null && clamped != null && clamped > 0)
                                 {
                                     int stringResId = profitLoss < 0 ? R.string.buy_sell_sell_loss : R.string.buy_sell_sell_profit;
                                     mProfitLossView.setText(
@@ -346,7 +342,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                                 new ToastAndLogOnErrorAction("Failed to fetch all")));
     }
 
-    @NonNull protected Observable<SecurityCompactDTO> getSecurityObservable() // It can pass null values
+    @NonNull protected Observable<SecurityCompactDTO> getSecurityObservable()
     {
         return securityCompactCache.getOne(requisite.securityId)
                 .map(new Func1<Pair<SecurityId, SecurityCompactDTO>, SecurityCompactDTO>()
@@ -357,11 +353,10 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                         return pair.second;
                     }
                 })
-                .startWith(usedDTO.securityCompactDTO)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<SecurityCompactDTO>()
                 {
-                    @Override public void call(@Nullable SecurityCompactDTO securityCompactDTO)
+                    @Override public void call(@NonNull SecurityCompactDTO securityCompactDTO)
                     {
                         initSecurityRelatedInfo(securityCompactDTO);
                     }
@@ -369,7 +364,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 .share();
     }
 
-    @NonNull protected Observable<PortfolioCompactDTO> getPortfolioCompactObservable() // It can pass null values
+    @NonNull protected Observable<PortfolioCompactDTO> getPortfolioCompactObservable()
     {
         return Observable.combineLatest(
                 requisite.getPortfolioIdObservable(),
@@ -390,14 +385,13 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .startWith(usedDTO.portfolioCompactDTO)
                 .doOnNext(new Action1<PortfolioCompactDTO>()
                 {
-                    @Override public void call(@Nullable PortfolioCompactDTO portfolioCompactDTO)
+                    @Override public void call(@NonNull PortfolioCompactDTO portfolioCompactDTO)
                     {
                         usedDTO.portfolioCompactDTO = portfolioCompactDTO;
                         mBtnAddCash.setVisibility(
-                                (portfolioCompactDTO != null && portfolioCompactDTO.isAllowedAddCash())
+                                portfolioCompactDTO.isAllowedAddCash()
                                         ? View.VISIBLE
                                         : View.GONE);
                     }
@@ -405,7 +399,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 .share();
     }
 
-    @NonNull protected Observable<QuoteDTO> getQuoteObservable() // It can pass null values
+    @NonNull protected Observable<QuoteDTO> getQuoteObservable()
     {
         return quoteServiceWrapper.getQuoteRx(requisite.securityId)
                 .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
@@ -424,7 +418,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                         mStockPriceTextView.setText(String.valueOf(getLabel(quoteDTO)));
                     }
                 })
-                .startWith(usedDTO.quoteDTO)
                 .share();
     }
 
@@ -461,22 +454,8 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                             return Observable.just(Math.abs(closeablePosition.shares));
                         }
                         return Observable.combineLatest(
-                                getPortfolioCompactObservable().filter(
-                                        new Func1<PortfolioCompactDTO, Boolean>()
-                                        {
-                                            @Override public Boolean call(@Nullable PortfolioCompactDTO portfolioCompactDTO)
-                                            {
-                                                return portfolioCompactDTO != null;
-                                            }
-                                        }),
-                                getQuoteObservable().filter(
-                                        new Func1<QuoteDTO, Boolean>()
-                                        {
-                                            @Override public Boolean call(@Nullable QuoteDTO quoteDTO)
-                                            {
-                                                return quoteDTO != null;
-                                            }
-                                        }),
+                                getPortfolioCompactObservable(),
+                                getQuoteObservable(),
                                 new Func2<PortfolioCompactDTO, QuoteDTO, Integer>()
                                 {
                                     @Override public Integer call(@NonNull PortfolioCompactDTO portfolioCompactDTO, @NonNull QuoteDTO quoteDTO)
@@ -563,22 +542,8 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @NonNull protected Observable<Integer> getProposedInitialQuantity() // It can pass null values
     {
         return Observable.combineLatest(
-                getPortfolioCompactObservable()
-                        .filter(new Func1<PortfolioCompactDTO, Boolean>()
-                        {
-                            @Override public Boolean call(PortfolioCompactDTO portfolioCompactDTO)
-                            {
-                                return portfolioCompactDTO != null;
-                            }
-                        }),
-                getQuoteObservable()
-                        .filter(new Func1<QuoteDTO, Boolean>()
-                        {
-                            @Override public Boolean call(QuoteDTO quoteDTO)
-                            {
-                                return quoteDTO != null;
-                            }
-                        }),
+                getPortfolioCompactObservable(),
+                getQuoteObservable(),
                 new Func2<PortfolioCompactDTO, QuoteDTO, Integer>() // It can pass null values
                 {
                     @Override public Integer call(@NonNull PortfolioCompactDTO portfolioCompactDTO, @NonNull QuoteDTO quoteDTO)
@@ -641,13 +606,15 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     protected abstract int getCashLeftLabelResId(@Nullable PositionDTOCompact closeablePosition);
 
-    @Nullable abstract protected Boolean isClosingPosition(@Nullable PositionDTOCompact closeablePosition);
-
-    @Nullable protected Integer getMaxPurchasableShares(@NonNull PortfolioCompactDTO portfolioCompactDTO, @NonNull QuoteDTO quoteDTO)
+    @Nullable protected Integer getMaxPurchasableShares(
+            @NonNull PortfolioCompactDTO portfolioCompactDTO,
+            @NonNull QuoteDTO quoteDTO,
+            @Nullable PositionDTOCompact closeablePosition)
     {
         return PortfolioCompactDTOUtil.getMaxPurchasableShares(
                 portfolioCompactDTO,
-                quoteDTO);
+                quoteDTO,
+                closeablePosition);
     }
 
     @Nullable protected Integer getMaxSellableShares(
@@ -702,10 +669,9 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             int quantity)
     {
         String cashLeftText = null;
-        Boolean isClosing = isClosingPosition(closeablePosition);
-        if (isClosing != null && isClosing)
+        if (closeablePosition != null)
         {
-            Integer maxPurchasableShares = getMaxPurchasableShares(portfolioCompactDTO, quoteDTO);
+            Integer maxPurchasableShares = getMaxPurchasableShares(portfolioCompactDTO, quoteDTO, closeablePosition);
             if (maxPurchasableShares != null && maxPurchasableShares != 0)
             {
                 cashLeftText = THSignedNumber.builder(maxPurchasableShares - quantity)
@@ -714,7 +680,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                         .build().toString();
             }
         }
-        else if (isClosing != null)
+        else
         {
             Double remaining = getRemainingForPurchaseInPortfolioRefCcy(portfolioCompactDTO, quoteDTO, quantity);
             if (remaining != null)
@@ -747,8 +713,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             int quantity)
     {
         String shareLeftText = null;
-        Boolean isClosing = isClosingPosition(closeablePosition);
-        if (isClosing != null && isClosing)
+        if (closeablePosition != null)
         {
             Integer maxSellableShares = getMaxSellableShares(portfolioCompactDTO, quoteDTO, closeablePosition);
             if (maxSellableShares != null && maxSellableShares != 0)
@@ -759,7 +724,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                         .build().toString();
             }
         }
-        else if (isClosing != null)
+        else
         {
             Double remaining = getRemainingForShortingInPortfolioRefCcy(portfolioCompactDTO, quoteDTO, quantity);
             if (remaining != null)
@@ -779,7 +744,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
         if (shareLeftText == null)
         {
-            shareLeftText = "0";//getResources().getString(R.string.na);
+            shareLeftText = getResources().getString(R.string.na);
         }
         return shareLeftText;
     }
