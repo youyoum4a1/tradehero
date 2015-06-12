@@ -31,6 +31,7 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -244,6 +245,14 @@ abstract public class BasePagedRecyclerRxFragment<
                                 }
                             }))
                     .observeOn(AndroidSchedulers.mainThread())
+                    .map(new Func1<Pair<PagedDTOKeyType, ContainerDTOType>, Pair<PagedDTOKeyType, ContainerDTOType>>()
+                    {
+                        @Override public Pair<PagedDTOKeyType, ContainerDTOType> call(
+                                Pair<PagedDTOKeyType, ContainerDTOType> pagedDTOKeyTypeContainerDTOTypePair)
+                        {
+                            return onMap(pagedDTOKeyTypeContainerDTOTypePair);
+                        }
+                    })
                     .subscribe(
                             new Action1<Pair<PagedDTOKeyType, ContainerDTOType>>()
                             {
@@ -272,6 +281,11 @@ abstract public class BasePagedRecyclerRxFragment<
                         subscription);
             }
         }
+    }
+
+    protected Pair<PagedDTOKeyType, ContainerDTOType> onMap(Pair<PagedDTOKeyType, ContainerDTOType> receivedPair)
+    {
+        return receivedPair;
     }
 
     protected void onNext(@NonNull PagedDTOKeyType key, @NonNull ContainerDTOType value)

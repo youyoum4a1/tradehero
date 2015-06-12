@@ -138,6 +138,10 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
             {
                 return 1;
             }
+            else if (o1.ranking > 0 && o2.ranking > 0)
+            {
+                return o1.ranking - o2.ranking;
+            }
             return super.compare(o1, o2);
         }
 

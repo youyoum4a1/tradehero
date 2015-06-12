@@ -313,7 +313,7 @@ public class LeaderboardMarkUserItemView
         private String maxOwnLeaderRanking;
         private boolean expanded;
         private boolean isHeader;
-        private int ranking = -1;
+        public int ranking = -1;
 
         @Override
         public int hashCode()

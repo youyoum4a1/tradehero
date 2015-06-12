@@ -99,7 +99,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         PerPagedFilteredLeaderboardKey initialKey = ((PerPagedFilteredLeaderboardKeyPreference) savedPreference)
                 .getPerPagedFilteredLeaderboardKey();
 
-        PerPagedFilteredLeaderboardKey filterKey = new PerPagedFilteredLeaderboardKey(initialKey, leaderboardDefKey.key, null, null);
+        PerPagedFilteredLeaderboardKey filterKey = new PerPagedFilteredLeaderboardKey(initialKey, leaderboardDefKey.key, null, perPage);
         filterKey.setAssetClass(currentLeaderboardType.assetClass);
         return filterKey;
     }
@@ -410,6 +410,19 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
     {
         singleExpandingListViewListener.onItemClick(parent, view, position, id);
         super.onItemClick(parent, view, position, id);
+    }
+
+    @Override protected Pair<PagedLeaderboardKey, LeaderboardMarkUserItemView.DTOList> onMap(
+            Pair<PagedLeaderboardKey, LeaderboardMarkUserItemView.DTOList> receivedPair)
+    {
+        int page = receivedPair.first.page == null ? FIRST_PAGE : receivedPair.first.page;
+        int rank = (page - FIRST_PAGE) * perPage;
+        for (LeaderboardMarkUserItemView.DTO dto : receivedPair.second)
+        {
+            rank++;
+            dto.setRanking(rank);
+        }
+        return super.onMap(receivedPair);
     }
 
     @Override protected void onNext(@NonNull PagedLeaderboardKey key, @NonNull LeaderboardMarkUserItemView.DTOList value)
