@@ -8,7 +8,6 @@ import com.tradehero.chinabuild.MainTabFragmentDiscovery;
 import com.tradehero.chinabuild.MainTabFragmentLearning;
 import com.tradehero.chinabuild.MainTabFragmentStockGod;
 import com.tradehero.chinabuild.MainTabFragmentTrade;
-import com.tradehero.chinabuild.dialog.SecurityDetailDialogLayout;
 import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.chinabuild.dialog.TimeLineCommentDialogLayout;
 import com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout;
@@ -245,7 +244,6 @@ import dagger.Provides;
                         SecurityDetailSubOptFragment.class,
                         SecurityDetailSubPositionFragment.class,
 
-                        SecurityDetailDialogLayout.class,
                         TimeLineDetailDialogLayout.class,
                         TimeLineCommentDialogLayout.class,
                         TimeLineReportDialogLayout.class,

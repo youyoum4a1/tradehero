@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -38,8 +39,6 @@ import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.QuoteTick;
 import com.tradehero.chinabuild.data.SignedQuote;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
-import com.tradehero.chinabuild.dialog.DialogFactory;
-import com.tradehero.chinabuild.dialog.SecurityDetailDialogLayout;
 import com.tradehero.chinabuild.fragment.message.SecurityDiscussSendFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
@@ -171,10 +170,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     protected PortfolioCompactDTO portfolioCompactDTO;
     @Inject PortfolioCompactCache portfolioCompactCache;
 
-    private boolean isAddWatchSheetOpen = false;
     private boolean isInWatchList = false;//是否是自选股
     private String securityName;
-    private DialogFactory dialogFactory;
     private Dialog dialog;
     @Nullable private MiddleCallback<WatchlistPositionDTO> middleCallbackUpdate;
     @Nullable private MiddleCallback<WatchlistPositionDTO> middleCallbackDelete;
@@ -261,6 +258,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private SecurityDetailSubViewPager subViewPager;
     private ArrayList<Fragment> subFragments = new ArrayList();
     private SubFragmentPagerAdapter subFragmentPagerAdapter;
+
+    //Watchlist Pop Window
+    private PopupWindow popWin;
+    private LinearLayout watchlistShareLL;
+    private LinearLayout watchlistRemoveLL;
 
     public static final int ERROR_NO_ASK_BID = 0;
     public static final int ERROR_NO_ASK = 1;
@@ -390,64 +392,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         colorDown = getResources().getColor(R.color.bar_down);
     }
 
-    public void openWatchSheet()
-    {
-        isAddWatchSheetOpen = true;
-        displayInWatchButton();
-
-        if (dialogFactory == null)
-        {
-            dialogFactory = new DialogFactory();
-        }
-
-        dialog = dialogFactory.createSecurityDetailDialog(getActivity(),
-                new SecurityDetailDialogLayout.OnMenuClickedListener()
-                {
-                    @Override public void onCancelClicked()
-                    {
-
-                    }
-
-                    @Override public void onShareRequestedClicked(int position)
-                    {
-                        dialog.dismiss();
-                        if (position == SecurityDetailDialogLayout.INDEX_CANCEL_WATCH)
-                        {
-                            //取消关注
-                            handleButtonDeleteClicked();
-                            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
-                                    AnalyticsConstants.BUTTON_STOCK_DETAIL_CANCELWATCH));
-                        }
-                    }
-                });
-
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                closeWatchSheet();
-            }
-        });
-    }
-
-    public void closeWatchSheet()
-    {
-        isAddWatchSheetOpen = false;
-        displayInWatchButton();
-    }
-
-    public void setBuySaleButtonVisable(boolean isCanSale)
-    {
-        try
-        {
+    private void setBuySaleButtonVisable(boolean isCanSale) {
+        try {
             llBuySaleButtons.setVisibility(View.VISIBLE);
             llSecurityBuy.setVisibility(View.VISIBLE);
             llSecuritySale.setVisibility(isCanSale ? View.VISIBLE : View.GONE);
-            if (isCanSale || isBuyOrSaleValid(true, false))
-            {
+            if (isCanSale || isBuyOrSaleValid(true, false)) {
                 betterViewAnimator.setDisplayedChildByLayoutId(R.id.ic_info_buy_sale_btns);
             }
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -1671,7 +1624,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             dismissProgress();
             THToast.show("添加自选成功");
             isInWatchList = true;
-            closeWatchSheet();
             displayInWatchButton();
         }
 
@@ -1682,16 +1634,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected class WatchlistDeletedTHCallback extends WatchlistEditTHCallback
-    {
+    protected class WatchlistDeletedTHCallback extends WatchlistEditTHCallback {
         @Override protected void success(@NotNull WatchlistPositionDTO watchlistPositionDTO,
-                THResponse response)
-        {
+                THResponse response) {
             dismissProgress();
             isInWatchList = false;
-            closeWatchSheet();
             displayInWatchButton();
-
             THToast.show("取消自选成功");
         }
     }
@@ -2070,13 +2018,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     }
 
-    private void enterSearchPage(){
-        pushFragment(SearchUnitFragment.class, new Bundle());
-    }
+
 
     @Override
     public void onClickHeadRight0() {
         enterSearchPage();
+    }
+
+    private void enterSearchPage(){
+        pushFragment(SearchUnitFragment.class, new Bundle());
     }
 
     @Override
@@ -2096,9 +2046,37 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     private void onAddWatchListBtnClicked(){
         if(isInWatchList){
-
+            showWatchListPopWindow(llWatchList);
         }else{
             handleWatchButtonClicked();
         }
+    }
+
+    private void showWatchListPopWindow(final View parent) {
+        if(popWin==null){
+            LayoutInflater lay = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View v = lay.inflate(R.layout.popwindow_security_detail_watchlistopt, null);
+            watchlistShareLL = (LinearLayout)v.findViewById(R.id.ll_popwin_share);
+            watchlistRemoveLL = (LinearLayout)v.findViewById(R.id.ll_popwin_removewathlist);
+            popWin = new PopupWindow(v,(int)getActivity().getResources().getDimension(R.dimen.security_detail_popwindow_width), (int)getActivity().getResources().getDimension(R.dimen.security_detail_popwindow_height));
+            popWin.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.popwindow_security_detail_bg));
+            popWin.setOutsideTouchable(true);
+            watchlistRemoveLL.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    handleButtonDeleteClicked();
+                    popWin.dismiss();
+                }
+            });
+            watchlistShareLL.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    enterWechatSharePage();
+                }
+            });
+        }
+        popWin.setFocusable(true);
+        popWin.update();
+        popWin.showAsDropDown(parent, -50, 0);
     }
 }
