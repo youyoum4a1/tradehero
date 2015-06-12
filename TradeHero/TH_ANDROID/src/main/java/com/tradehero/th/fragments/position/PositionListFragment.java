@@ -264,7 +264,6 @@ public class PositionListFragment
                 HelpActivity.slideInFromRight(getActivity());
             }
         });
-        positionListView.setAdapter(positionItemAdapter);
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
             @Override public void onRefresh()
@@ -807,8 +806,6 @@ public class PositionListFragment
         this.portfolioDTO = portfolioDTO;
         displayActionBarTitle(portfolioDTO);
         showPrettyReviewAndInvite(portfolioDTO);
-        getPortfolioHeaderView(portfolioDTO);
-        portfolioHeaderView.linkWith(portfolioDTO);
         if (portfolioDTO.assetClass == AssetClass.FX)
         {
             btnHelp.setVisibility(View.VISIBLE);
@@ -850,7 +847,9 @@ public class PositionListFragment
             int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);
             inflatedHeader = LayoutInflater.from(getActivity()).inflate(headerLayoutId, null);
             portfolioHeaderView = (PortfolioHeaderView) inflatedHeader;
+            portfolioHeaderView.linkWith(portfolioCompactDTO);
             positionListView.addHeaderView(inflatedHeader, null, false);
+            positionListView.setAdapter(positionItemAdapter);
         }
         else
         {
