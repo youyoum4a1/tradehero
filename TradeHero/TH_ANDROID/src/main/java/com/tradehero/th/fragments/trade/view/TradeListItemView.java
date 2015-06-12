@@ -17,6 +17,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
@@ -126,6 +127,7 @@ public class TradeListItemView extends LinearLayout
 
         public DTO(
                 @NonNull Resources resources,
+                @NonNull SecurityCompactDTO securityCompactDTO,
                 @NonNull PositionDTO positionDTO,
                 boolean expanded,
                 @NonNull TradeDTO tradeDTO,
@@ -157,9 +159,9 @@ public class TradeListItemView extends LinearLayout
             THSignedNumber tradeQuantityL = THSignedNumber.builder((double) Math.abs(tradeDTO.quantity))
                     .withOutSign()
                     .build();
-            THSignedNumber tradeValueL = THSignedMoney.builder(tradeDTO.unitPriceRefCcy)
+            THSignedNumber tradeValueL = THSignedMoney.builder(tradeDTO.unitPriceSecCcy)
                     .withOutSign()
-                    .currency(positionDTO.getNiceCurrency())
+                    .currency(securityCompactDTO.currencyDisplay)
                     .build();
             tradeBought = resources.getString(
                     textResId,

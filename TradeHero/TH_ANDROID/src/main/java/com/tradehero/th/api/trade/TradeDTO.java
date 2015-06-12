@@ -10,7 +10,7 @@ public class TradeDTO implements DTO
 {
     public int id;
     @JsonProperty("unit_price")
-    public double unitPriceRefCcy;
+    public double unitPriceSecCcy;
     @JsonProperty("transaction_cost")
     public double transactionCost;
     public int quantity;

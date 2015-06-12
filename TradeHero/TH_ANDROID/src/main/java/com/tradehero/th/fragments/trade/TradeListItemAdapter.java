@@ -76,6 +76,7 @@ public class TradeListItemAdapter
                 objects.add(
                         new TradeListItemView.DTO(
                                 resources,
+                                securityCompactDTO,
                                 positionDTO,
                                 expandedTradeId != null && expandedTradeId.equals(dto.id),
                                 dto,
