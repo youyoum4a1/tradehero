@@ -189,6 +189,9 @@ public class SecurityCompactDTO extends ExtendedDTO implements Serializable
 
     public String getPriceDifferent()
     {
+        if (lastPrice == null || previousClose == null) {
+            return "- -";
+        }
         double d1 = lastPrice - previousClose;
         DecimalFormat df = new DecimalFormat("#0.00");
         return df.format(d1);
