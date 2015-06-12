@@ -39,7 +39,7 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
     protected UserProfileDTO currentUserProfileDTO;
 
     @NonNull private final Map<Object, Boolean> expandedStatuses;
-    @NonNull private final PublishSubject<LeaderboardMarkUserItemView.UserAction> followRequestedSubject;
+    @NonNull private final PublishSubject<LeaderboardMarkUserRecyclerAdapter.LbmuItemViewHolder.UserAction> followRequestedSubject;
     @NonNull private final PublishSubject<LeaderboardFriendsItemView.UserAction> inviteRequestedSubject;
     @NonNull private final PublishSubject<SocialNetworkEnum> socialNetworkEnumSubject;
 
@@ -102,7 +102,7 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
         throw new IllegalStateException("Unhandled item view type " + getItemViewType(position));
     }
 
-    @NonNull public Observable<LeaderboardMarkUserItemView.UserAction> getFollowRequestObservable()
+    @NonNull public Observable<LeaderboardMarkUserRecyclerAdapter.LbmuItemViewHolder.UserAction> getFollowRequestObservable()
     {
         return followRequestedSubject.asObservable();
     }
@@ -220,8 +220,8 @@ public class LeaderboardFriendsSetAdapter extends PagedDTOAdapterImpl<FriendLead
         View view = super.inflate(position, viewGroup);
         if (view instanceof LeaderboardMarkUserItemView)
         {
-            ((LeaderboardMarkUserItemView) view).getFollowRequestedObservable()
-                    .subscribe(followRequestedSubject);
+            //((LeaderboardMarkUserItemView) view).getFollowRequestedObservable()
+            //        .subscribe(followRequestedSubject);
         }
         else if (view instanceof LeaderboardFriendsItemView)
         {

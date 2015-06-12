@@ -4,14 +4,17 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.Optional;
 import com.squareup.picasso.Picasso;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedRecyclerAdapter;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
@@ -20,6 +23,9 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.GraphicUtil;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th.widget.MarkdownTextView;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -36,8 +42,9 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
 
     @Inject Picasso picasso;
+    @Inject Analytics analytics;
 
-    @NonNull protected final PublishSubject<LeaderboardMarkUserItemView.UserAction> followRequestedPublish;
+    @NonNull protected final PublishSubject<LbmuItemViewHolder.UserAction> userActionPublishSubject;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserRecyclerAdapter(
@@ -50,7 +57,7 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
         this.itemLayoutRes = itemLayoutRes;
         this.leaderboardKey = leaderboardKey;
         this.ownRankingRes = ownRankingRes;
-        this.followRequestedPublish = PublishSubject.create();
+        this.userActionPublishSubject = PublishSubject.create();
         setOnItemClickedListener(new OnItemClickedListener<LeaderboardMarkUserItemView.DTO>()
         {
             @Override public void onItemClicked(int position, TypedViewHolder<LeaderboardMarkUserItemView.DTO> viewHolder,
@@ -85,9 +92,9 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
         this.applicablePortfolioId = ownedPortfolioId;
     }
 
-    @NonNull public Observable<LeaderboardMarkUserItemView.UserAction> getFollowRequestedObservable()
+    @NonNull public Observable<LbmuItemViewHolder.UserAction> getUserActionObservable()
     {
-        return followRequestedPublish.asObservable();
+        return userActionPublishSubject.asObservable();
     }
 
     @Override public int getItemViewType(int position)
@@ -125,16 +132,22 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
     @NonNull @Override
     public TypedViewHolder<LeaderboardMarkUserItemView.DTO> onCreateTypedViewHolder(ViewGroup parent, int viewType)
     {
-        //view.getFollowRequestedObservable().subscribe(followRequestedPublish);
+        LbmuItemViewHolder lbmuItemViewHolder;
         switch (viewType)
         {
             case VIEW_TYPE_OWN:
-                return new LbmuHeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(ownRankingRes, parent, false), picasso);
+                lbmuItemViewHolder =
+                        new LbmuHeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(ownRankingRes, parent, false), picasso, analytics);
+                break;
             case VIEW_TYPE_MAIN:
-                return new LbmuItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(itemLayoutRes, parent, false), picasso);
+                lbmuItemViewHolder =
+                        new LbmuItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(itemLayoutRes, parent, false), picasso, analytics);
+                break;
             default:
                 throw new IllegalArgumentException("Unhandled viewType " + viewType);
         }
+        lbmuItemViewHolder.getUserActionObservable().subscribe(userActionPublishSubject);
+        return lbmuItemViewHolder;
     }
 
     @Override public void onBindViewHolder(TypedViewHolder<LeaderboardMarkUserItemView.DTO> holder, int position)
@@ -193,9 +206,9 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
     {
         @InjectView(R.id.mark_expand_down) @Optional @Nullable ImageView expandMark;
 
-        public LbmuHeaderViewHolder(View itemView, Picasso picasso)
+        public LbmuHeaderViewHolder(View itemView, Picasso picasso, Analytics analytics)
         {
-            super(itemView, picasso);
+            super(itemView, picasso, analytics);
         }
 
         @Override public void display(LeaderboardMarkUserItemView.DTO dto)
@@ -217,7 +230,9 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
 
     public static class LbmuItemViewHolder extends TypedViewHolder<LeaderboardMarkUserItemView.DTO>
     {
+        private final Analytics analytics;
         private final Picasso picasso;
+        private final PublishSubject<UserAction> userActionSubject;
 
         @InjectView(R.id.leaderboard_user_item_display_name) protected TextView lbmuDisplayName;
         @InjectView(R.id.lbmu_roi) protected TextView lbmuRoi;
@@ -226,15 +241,22 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
 
         @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
         @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
+        @InjectView(R.id.leaderboard_user_item_fof) @Optional @Nullable MarkdownTextView lbmuFoF;
+        @InjectView(R.id.leaderboard_user_item_follow) View lbmuFollowUser;
+        @InjectView(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
+        @Nullable private LeaderboardMarkUserItemView.DTO currentDto;
 
-        public LbmuItemViewHolder(View itemView, Picasso picasso)
+        public LbmuItemViewHolder(View itemView, Picasso picasso, Analytics analytics)
         {
             super(itemView);
             this.picasso = picasso;
+            userActionSubject = PublishSubject.create();
+            this.analytics = analytics;
         }
 
         @Override public void display(LeaderboardMarkUserItemView.DTO dto)
         {
+            this.currentDto = dto;
             lbmuDisplayName.setText(dto.lbmuDisplayName);
             lbmuRoi.setText(dto.lbmuRoi);
             lbmuPosition.setText(dto.lbmuRanking);
@@ -265,6 +287,79 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
                 {
                     userStatisticView.display(null);
                 }
+            }
+
+            if (lbmuFoF != null)
+            {
+                lbmuFoF.setText(dto.lbmuFoF);
+                lbmuFoF.setVisibility(dto.lbmuFoFVisibility);
+                lbmuFoF.setMovementMethod(LinkMovementMethod.getInstance());
+            }
+
+            if (lbmuFollowUser != null)
+            {
+                lbmuFollowUser.setVisibility(dto.lbmuFollowUserVisibility);
+            }
+            if (lbmuFollowingUser != null)
+            {
+                lbmuFollowingUser.setVisibility(dto.lbmuFollowingUserVisibility);
+            }
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        @OnClick({R.id.leaderboard_user_item_open_profile, R.id.leaderboard_user_item_profile_picture})
+        protected void handleProfileClicked(View view)
+        {
+            if (this.currentDto != null)
+            {
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Profile));
+                userActionSubject.onNext(new UserAction(this.currentDto, UserActionType.PROFILE));
+            }
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        @OnClick(R.id.leaderboard_user_item_open_positions_list)
+        protected void handlePositionButtonClicked(View view)
+        {
+            if (this.currentDto != null)
+            {
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Positions));
+                userActionSubject.onNext(new UserAction(this.currentDto, UserActionType.POSITIONS));
+            }
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        @OnClick(R.id.leaderboard_user_item_follow)
+        protected void handleFollowButtonClicked(View view)
+        {
+            if (this.currentDto != null)
+            {
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
+                userActionSubject.onNext(new UserAction(this.currentDto, UserActionType.FOLLOW));
+            }
+        }
+
+        @NonNull public Observable<UserAction> getUserActionObservable()
+        {
+            return userActionSubject.asObservable();
+        }
+
+        public enum UserActionType
+        {
+            PROFILE, POSITIONS, FOLLOW, RULES
+        }
+
+        public static class UserAction
+        {
+            @NonNull public final LeaderboardMarkUserItemView.DTO dto;
+            @NonNull public final UserActionType actionType;
+
+            public UserAction(
+                    @NonNull LeaderboardMarkUserItemView.DTO dto,
+                    @NonNull UserActionType actionType)
+            {
+                this.dto = dto;
+                this.actionType = actionType;
             }
         }
     }

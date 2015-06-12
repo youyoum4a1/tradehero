@@ -83,7 +83,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         //please make sure to get the type before get key
         currentLeaderboardType = getInitialLeaderboardType();
         currentLeaderboardKey = getInitialLeaderboardKey();
-        //fragmentUtil.linkWith(this, currentLeaderboardType);
+        //fragmentUtil.linkWith(this, currentLeaderboardType); TODO
         setHasOptionsMenu(true);
     }
 
@@ -132,7 +132,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
     {
         super.onStart();
         fragmentUtil.onStart();
-        onStopSubscriptions.add(((LeaderboardMarkUserRecyclerAdapter) itemViewAdapter).getFollowRequestedObservable()
+        onStopSubscriptions.add(((LeaderboardMarkUserRecyclerAdapter) itemViewAdapter).getUserActionObservable()
                 .subscribe(
                         fragmentUtil,
                         new TimberOnErrorAction("Error when receiving user follow requested")));

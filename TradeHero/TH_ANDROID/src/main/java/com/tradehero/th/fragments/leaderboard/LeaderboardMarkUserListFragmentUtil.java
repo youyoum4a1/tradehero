@@ -37,7 +37,7 @@ import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 public class LeaderboardMarkUserListFragmentUtil
-        implements Action1<LeaderboardMarkUserItemView.UserAction>
+        implements Action1<LeaderboardMarkUserRecyclerAdapter.LbmuItemViewHolder.UserAction>
 {
     @NonNull private final DashboardNavigator navigator;
     @NonNull private final CurrentUserId currentUserId;
@@ -83,7 +83,7 @@ public class LeaderboardMarkUserListFragmentUtil
         onStopSubscriptions.unsubscribe();
     }
 
-    @Override public void call(LeaderboardMarkUserItemView.UserAction userAction)
+    @Override public void call(LeaderboardMarkUserRecyclerAdapter.LbmuItemViewHolder.UserAction userAction)
     {
         switch (userAction.actionType)
         {

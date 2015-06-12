@@ -72,7 +72,6 @@ public class LeaderboardMarkUserItemView
     @InjectView(R.id.lbmu_inner_view_container) @Optional @Nullable ViewGroup innerViewContainer;
 
     @NonNull protected SubscriptionList subscriptions;
-    @NonNull protected PublishSubject<UserAction> userActionSubject;
 
     protected UserProfileDTO currentUserProfileDTO;
 
@@ -98,7 +97,7 @@ public class LeaderboardMarkUserItemView
     private void init()
     {
         subscriptions = new SubscriptionList();
-        userActionSubject = PublishSubject.create();
+        //userActionSubject = PublishSubject.create();
     }
     //</editor-fold>
 
@@ -147,11 +146,6 @@ public class LeaderboardMarkUserItemView
     public void linkWith(OwnedPortfolioId applicablePortfolioId)
     {
         this.applicablePortfolioId = applicablePortfolioId;
-    }
-
-    @NonNull public Observable<UserAction> getFollowRequestedObservable()
-    {
-        return userActionSubject.asObservable();
     }
 
     @Override public void display(@NonNull DTO viewDTO)
@@ -213,39 +207,6 @@ public class LeaderboardMarkUserItemView
             }
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick({R.id.leaderboard_user_item_open_profile, R.id.leaderboard_user_item_profile_picture})
-    protected void handleProfileClicked(View view)
-    {
-        if (viewDTO != null)
-        {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Profile));
-            userActionSubject.onNext(new UserAction(viewDTO, UserActionType.PROFILE));
-        }
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.leaderboard_user_item_open_positions_list)
-    protected void handlePositionButtonClicked(View view)
-    {
-        if (viewDTO != null)
-        {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Positions));
-            userActionSubject.onNext(new UserAction(viewDTO, UserActionType.POSITIONS));
-        }
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.leaderboard_user_item_follow)
-    protected void handleFollowButtonClicked(View view)
-    {
-        if (viewDTO != null)
-        {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
-            userActionSubject.onNext(new UserAction(viewDTO, UserActionType.FOLLOW));
-        }
-    }
-
     protected void displayUserIsNotRanked(@Nullable UserProfileDTO currentUserProfileDTO)
     {
         this.currentUserProfileDTO = currentUserProfileDTO;
@@ -291,8 +252,8 @@ public class LeaderboardMarkUserItemView
         String lbmuRanking;
         String lbmuDisplayPicture;
         @ViewVisibilityValue final int lbmuFoFVisibility;
-        @ViewVisibilityValue private int lbmuFollowUserVisibility;
-        @ViewVisibilityValue private int lbmuFollowingUserVisibility;
+        @ViewVisibilityValue public int lbmuFollowUserVisibility;
+        @ViewVisibilityValue public int lbmuFollowingUserVisibility;
         private String maxOwnLeaderRanking;
         private boolean expanded;
         private boolean isMyOwnRanking;
@@ -531,25 +492,6 @@ public class LeaderboardMarkUserItemView
         {
             this.currentLeaderboardUserDTO = currentLeaderboardUserDTO;
             this.currentUserProfileDTO = currentUserProfileDTO;
-        }
-    }
-
-    public enum UserActionType
-    {
-        PROFILE, POSITIONS, FOLLOW, RULES
-    }
-
-    public static class UserAction
-    {
-        @NonNull public final DTO dto;
-        @NonNull public final UserActionType actionType;
-
-        public UserAction(
-                @NonNull DTO dto,
-                @NonNull UserActionType actionType)
-        {
-            this.dto = dto;
-            this.actionType = actionType;
         }
     }
 }

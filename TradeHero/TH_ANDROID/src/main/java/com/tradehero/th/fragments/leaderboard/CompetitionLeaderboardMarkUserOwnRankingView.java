@@ -100,7 +100,7 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
             {
                 if (viewDTO != null)
                 {
-                    userActionSubject.onNext(new UserAction(viewDTO, UserActionType.RULES));
+                    //userActionSubject.onNext(new UserAction(viewDTO, UserActionType.RULES));
                 }
             }
         };
