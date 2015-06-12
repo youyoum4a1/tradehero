@@ -36,6 +36,7 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.OnMovableBottomTranslateListener;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
 import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
@@ -716,24 +717,37 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         {
             DeviceUtil.dismissKeyboard(getActivity());
 
-            // TODO find a better way to remove this fragment from the stack
-            navigator.get().popFragment();
+            if (navigator.get().hasBackStackName(TabbedPositionListFragment.class.getName()))
+            {
+                navigator.get().popFragment(TabbedPositionListFragment.class.getName());
+            }
+            else if (navigator.get().hasBackStackName(CompetitionLeaderboardPositionListFragment.class.getName()))
+            {
+                navigator.get().popFragment(CompetitionLeaderboardPositionListFragment.class.getName());
+                // Test for other classes in the future
+            }
+            else
+            {
+                // TODO find a better way to remove this fragment from the stack
+                navigator.get().popFragment();
 
-            Bundle args = new Bundle();
-            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-            if (applicablePortfolioId != null)
-            {
-                TabbedPositionListFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-                TabbedPositionListFragment.putIsFX(args, portfolioDTO.assetClass);
+                Bundle args = new Bundle();
+                OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+                if (applicablePortfolioId != null)
+                {
+                    TabbedPositionListFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+                    TabbedPositionListFragment.putIsFX(args, portfolioDTO.assetClass);
+                }
+                TabbedPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+                TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
+                TabbedPositionListFragment.putPositionType(args, positionType);
+
+                if (providerId != null && navigator.get().hasBackStackName(MainCompetitionFragment.class.getName()))
+                {
+                    DashboardNavigator.putReturnFragment(args, MainCompetitionFragment.class.getName());
+                }
+                navigator.get().pushFragment(TabbedPositionListFragment.class, args);
             }
-            TabbedPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
-            TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
-            TabbedPositionListFragment.putPositionType(args, positionType);
-            if (providerId != null)
-            {
-                DashboardNavigator.putReturnFragment(args, MainCompetitionFragment.class.getName());
-            }
-            navigator.get().pushFragment(TabbedPositionListFragment.class, args);
         }
     }
 
