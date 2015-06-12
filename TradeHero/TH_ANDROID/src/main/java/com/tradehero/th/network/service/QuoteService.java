@@ -89,8 +89,9 @@ interface QuoteService
                                Callback<List<TradeRecord>> callback);
 
     @GET("/cn/v2/securities/{exchange}/{securitySymbol}/positions")
-    void getSharePositions(@Path("securitySymbol") String securitySymbol,
-                         @Query("page") Integer page,
-                         @Query("perPage") Integer perPage,
-                         Callback<List<SharePosition>> callback);
+    void getSharePositions(@Path("exchange") String exchange,
+                           @Path("securitySymbol") String securitySymbol,
+                           @Query("page") Integer page,
+                           @Query("perPage") Integer perPage,
+                           Callback<List<SharePosition>> callback);
 }

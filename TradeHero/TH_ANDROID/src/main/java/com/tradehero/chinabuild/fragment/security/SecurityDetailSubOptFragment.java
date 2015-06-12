@@ -242,6 +242,7 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
             THSignedNumber signedQuantity = THSignedNumber.builder(tradeRecord.quantity)
                     .build();
             quantity.setText(signedQuantity.toString());
+            quantity.setTextColor(signedQuantity.getColor());
             date.setText(prettyTime.formatUnrounded(tradeRecord.datetimeUtc));
 
             if (tradeRecord.quantity > 0) {

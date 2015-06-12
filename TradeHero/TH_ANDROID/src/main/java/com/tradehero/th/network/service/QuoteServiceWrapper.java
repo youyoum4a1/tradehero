@@ -6,6 +6,7 @@ import android.util.Log;
 import com.tradehero.chinabuild.data.KLineItem;
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.QuoteTick;
+import com.tradehero.chinabuild.data.SharePosition;
 import com.tradehero.chinabuild.data.SignedQuote;
 import com.tradehero.chinabuild.data.TradeRecord;
 import com.tradehero.th.api.market.Exchange;
@@ -199,8 +200,8 @@ public class QuoteServiceWrapper {
                 callback);
     }
 
-    public void getSharePosition() {
-
+    public void getSharePosition(final SecurityId securityId, int page, int perPage, Callback<List<SharePosition>> callback) {
+        quoteService.getSharePositions(securityId.getExchange(), securityId.getSecuritySymbol(), page, perPage, callback);
     }
 
     public void stopSecurityCompactTask() {

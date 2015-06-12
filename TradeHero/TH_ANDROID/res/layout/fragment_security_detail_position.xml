@@ -113,7 +113,8 @@
                     android:textSize="16sp" />
             </LinearLayout>
 
-            <include layout="@layout/separate_line" />
+            <include layout="@layout/separate_line"
+                     android:id="@+id/line0"/>
 
             <LinearLayout
                 android:id="@+id/linearlayout_position1"

@@ -9,6 +9,7 @@ public class SharePosition {
     public Integer positionId;
     public Integer userId;
     public String userName;
+    public String userPicUrl;
     public Integer quantity;
     public Double price;
     public String currencyDisplay;

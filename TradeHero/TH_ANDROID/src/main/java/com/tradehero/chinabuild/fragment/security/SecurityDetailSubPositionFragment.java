@@ -10,13 +10,30 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tradehero.chinabuild.data.SharePosition;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
+import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.util.List;
+
 import javax.inject.Inject;
+
+import dagger.Lazy;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by palmer on 15/6/10.
@@ -24,13 +41,28 @@ import javax.inject.Inject;
 public class SecurityDetailSubPositionFragment extends Fragment implements View.OnClickListener{
 
     @Inject Analytics analytics;
+    @Inject QuoteServiceWrapper quoteServiceWrapper;
+
     private ImageView emptyIV;
     private LinearLayout optsLL;
     private TextView moreTV;
 
+    private SecurityId securityId;
+
+    PositionViewHolder[] viewHolders = new PositionViewHolder[5];
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initArguments();
+    }
+
+    private void initArguments() {
+        Bundle args = getArguments();
+        Bundle securityIdBundle = args.getBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE);
+        if (securityIdBundle != null) {
+            securityId = new SecurityId(securityIdBundle);
+        }
     }
 
     @Override
@@ -46,7 +78,88 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
         optsLL = (LinearLayout)view.findViewById(R.id.linearlayout_positions);
         moreTV = (TextView)view.findViewById(R.id.textview_more);
         moreTV.setOnClickListener(this);
+
+        initViews(view);
         return view;
+    }
+
+    private void initViews(View view) {
+        View parent = view.findViewById(R.id.linearlayout_position0);
+        ImageView avatar = (ImageView) view.findViewById(R.id.imageview_security_position_avator0);
+        TextView username = (TextView) view.findViewById(R.id.textview_security_position_name0);
+        TextView quantity = (TextView) view.findViewById(R.id.textview_security_position_amount0);
+        TextView currency = (TextView) view.findViewById(R.id.textview_security_position_mark0);
+        TextView price = (TextView) view.findViewById(R.id.textview_security_position_price0);
+        TextView tvRoi = (TextView) view.findViewById(R.id.textview_security_position_percent0);
+        View separate = view.findViewById(R.id.line0);
+        viewHolders[0] = new PositionViewHolder(parent, avatar, username, quantity, currency, price, tvRoi, separate);
+
+        parent = view.findViewById(R.id.linearlayout_position1);
+        avatar = (ImageView) view.findViewById(R.id.imageview_security_position_avator1);
+        username = (TextView) view.findViewById(R.id.textview_security_position_name1);
+        quantity = (TextView) view.findViewById(R.id.textview_security_position_amount1);
+        currency = (TextView) view.findViewById(R.id.textview_security_position_mark1);
+        price = (TextView) view.findViewById(R.id.textview_security_position_price1);
+        tvRoi = (TextView) view.findViewById(R.id.textview_security_position_percent1);
+        separate = view.findViewById(R.id.line1);
+        viewHolders[1] = new PositionViewHolder(parent, avatar, username, quantity, currency, price, tvRoi, separate);
+
+        parent = view.findViewById(R.id.linearlayout_position2);
+        avatar = (ImageView) view.findViewById(R.id.imageview_security_position_avator2);
+        username = (TextView) view.findViewById(R.id.textview_security_position_name2);
+        quantity = (TextView) view.findViewById(R.id.textview_security_position_amount2);
+        currency = (TextView) view.findViewById(R.id.textview_security_position_mark2);
+        price = (TextView) view.findViewById(R.id.textview_security_position_price2);
+        tvRoi = (TextView) view.findViewById(R.id.textview_security_position_percent2);
+        separate = view.findViewById(R.id.line2);
+        viewHolders[2] = new PositionViewHolder(parent, avatar, username, quantity, currency, price, tvRoi, separate);
+
+        parent = view.findViewById(R.id.linearlayout_position3);
+        avatar = (ImageView) view.findViewById(R.id.imageview_security_position_avator3);
+        username = (TextView) view.findViewById(R.id.textview_security_position_name3);
+        quantity = (TextView) view.findViewById(R.id.textview_security_position_amount3);
+        currency = (TextView) view.findViewById(R.id.textview_security_position_mark3);
+        price = (TextView) view.findViewById(R.id.textview_security_position_price3);
+        tvRoi = (TextView) view.findViewById(R.id.textview_security_position_percent3);
+        separate = view.findViewById(R.id.line3);
+        viewHolders[3] = new PositionViewHolder(parent, avatar, username, quantity, currency, price, tvRoi, separate);
+
+        parent = view.findViewById(R.id.linearlayout_position4);
+        avatar = (ImageView) view.findViewById(R.id.imageview_security_position_avator4);
+        username = (TextView) view.findViewById(R.id.textview_security_position_name4);
+        quantity = (TextView) view.findViewById(R.id.textview_security_position_amount4);
+        currency = (TextView) view.findViewById(R.id.textview_security_position_mark4);
+        price = (TextView) view.findViewById(R.id.textview_security_position_price4);
+        tvRoi = (TextView) view.findViewById(R.id.textview_security_position_percent4);
+        separate = view.findViewById(R.id.line4);
+        viewHolders[4] = new PositionViewHolder(parent, avatar, username, quantity, currency, price, tvRoi, separate);
+        
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        retrieveSharePositions();
+    }
+
+    private void retrieveSharePositions() {
+        Callback<List<SharePosition>> callback = new Callback<List<SharePosition>>() {
+            @Override
+            public void success(List<SharePosition> sharePositionList, Response response) {
+                for (int i = 0; i < sharePositionList.size(); i++) {
+                    viewHolders[i].display(sharePositionList.get(i));
+                }
+                for (int i = sharePositionList.size(); i < viewHolders.length; i++) {
+                    viewHolders[i].gone();
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        };
+        quoteServiceWrapper.getSharePosition(securityId, 1, 5, callback);
     }
 
     @Override
@@ -74,5 +187,63 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
 
     private Fragment pushFragment(Class fragmentClass, Bundle args) {
         return getDashboardNavigator().pushFragment(fragmentClass, args);
+    }
+
+    static class PositionViewHolder {
+        View parent;
+        ImageView avatar;
+        TextView username;
+        TextView quantity;
+        TextView currency;
+        TextView price;
+        TextView tvRoi;
+        View separate;
+        
+        public PositionViewHolder(View parent,
+                ImageView avatar,
+                TextView username,
+                TextView quantity,
+                TextView currency,
+                TextView price,
+                TextView tvRoi,
+                View separate) {
+            this.parent = parent;
+            this.avatar = avatar;
+            this.username = username;
+            this.quantity = quantity;
+            this.currency = currency;
+            this.price = price;
+            this.tvRoi = tvRoi;
+            this.separate = separate;
+        }
+
+        public void display(SharePosition position) {
+            parent.setVisibility(View.VISIBLE);
+            if (separate != null) {
+                separate.setVisibility(View.VISIBLE);
+            }
+
+            ImageLoader.getInstance().displayImage(position.userPicUrl,
+                    avatar,
+                    UniversalImageLoader.getAvatarImageLoaderOptions());
+            username.setText(position.userName);
+            THSignedNumber signedQuantity = THSignedNumber.builder(position.quantity).build();
+            quantity.setText(signedQuantity.toString());
+            currency.setText(position.currencyDisplay);
+            price.setText(SecurityCompactDTO.getShortValue(position.price));
+            THSignedNumber roi = THSignedPercentage.builder(position.roi * 100)
+                    .withSign()
+                    .signTypeArrow()
+                    .build();
+            tvRoi.setText(roi.toString());
+            tvRoi.setTextColor(roi.getColor());
+        }
+
+        public void gone() {
+            parent.setVisibility(View.GONE);
+            if (separate != null) {
+                separate.setVisibility(View.GONE);
+            }
+        }
     }
 }
