@@ -454,11 +454,11 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         return getCloseablePositionObservable()
                 .flatMap(new Func1<PositionDTO, Observable<Integer>>()
                 {
-                    @Override public Observable<Integer> call(PositionDTO positionDTO)
+                    @Override public Observable<Integer> call(@Nullable final PositionDTO closeablePosition)
                     {
-                        if (positionDTO != null && positionDTO.shares != null)
+                        if (closeablePosition != null && closeablePosition.shares != null)
                         {
-                            return Observable.just(positionDTO.shares);
+                            return Observable.just(Math.abs(closeablePosition.shares));
                         }
                         return Observable.combineLatest(
                                 getPortfolioCompactObservable().filter(
@@ -477,11 +477,9 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                                                 return quoteDTO != null;
                                             }
                                         }),
-                                getCloseablePositionObservable(),
-                                new Func3<PortfolioCompactDTO, QuoteDTO, PositionDTO, Integer>()
+                                new Func2<PortfolioCompactDTO, QuoteDTO, Integer>()
                                 {
-                                    @Override public Integer call(@NonNull PortfolioCompactDTO portfolioCompactDTO, @NonNull QuoteDTO quoteDTO,
-                                            @Nullable PositionDTO closeablePosition)
+                                    @Override public Integer call(@NonNull PortfolioCompactDTO portfolioCompactDTO, @NonNull QuoteDTO quoteDTO)
                                     {
                                         return getMaxValue(portfolioCompactDTO, quoteDTO, closeablePosition);
                                     }

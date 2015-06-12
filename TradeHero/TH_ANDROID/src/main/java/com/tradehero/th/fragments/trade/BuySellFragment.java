@@ -619,7 +619,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                                     securityId,
                                     currentMenu.getPortfolioIdKey(),
                                     quoteDTO,
-                                    closeUnits));
+                                    closeUnits == null ? null : Math.abs(closeUnits)));
                 }
                 else
                 {
@@ -629,7 +629,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                                     securityId,
                                     currentMenu.getPortfolioIdKey(),
                                     quoteDTO,
-                                    closeUnits));
+                                    closeUnits == null ? null : Math.abs(closeUnits)));
                 }
                 abstractTransactionDialogFragment.show(getActivity().getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
                 listenToBuySellDialog();
