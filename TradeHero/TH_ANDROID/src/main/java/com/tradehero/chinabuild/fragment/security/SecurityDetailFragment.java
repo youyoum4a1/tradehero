@@ -41,6 +41,7 @@ import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.dialog.DialogFactory;
 import com.tradehero.chinabuild.dialog.SecurityDetailDialogLayout;
 import com.tradehero.chinabuild.fragment.message.SecurityDiscussSendFragment;
+import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.IOUtils;
@@ -64,6 +65,8 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -71,6 +74,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
+import com.tradehero.th.base.Application;
 import com.tradehero.th.fragments.security.ChartImageView;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -102,6 +106,7 @@ import com.tradehero.th.widget.KChart.TimesView;
 import com.tradehero.th.widget.ScrollViewExtend;
 import com.tradehero.th.widget.ScrollViewListener;
 import com.tradehero.th.widget.TradeHeroProgressBar;
+import com.tradehero.th.wxapi.WXEntryActivity;
 import com.viewpagerindicator.SquarePageIndicator;
 import dagger.Lazy;
 import java.io.IOException;
@@ -189,6 +194,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private RelativeLayout llSecurityBuy;//购买
     private RelativeLayout llSecuritySale;//出售
     private RelativeLayout llSecurityDiscuss;//讨论
+    private RelativeLayout llWatchList;//自选
+    private TextView addWatchListTV;
     private ViewPager pager;
     private SquarePageIndicator indicator;
     private List<View> views = new ArrayList<>();
@@ -335,6 +342,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
+        setHeadViewRight0(R.drawable.search);
+        setHeadViewRight1(R.drawable.share);
+
         Bundle args = getArguments();
         if (args != null)
         {
@@ -378,31 +388,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         colorUp = getResources().getColor(R.color.bar_up);
         colorNormal = getResources().getColor(R.color.bar_normal);
         colorDown = getResources().getColor(R.color.bar_down);
-    }
-
-    //+自选股 已添加
-    @Override public void onClickHeadRight0()
-    {
-        if (!isInWatchList)
-        {
-            if (securityId != null && securityCompactDTO != null)
-            {
-                handleWatchButtonClicked();
-            }
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_ADDWATCH));
-        }
-        else
-        {
-            if (isAddWatchSheetOpen)
-            {
-                closeWatchSheet();
-            }
-            else
-            {
-                openWatchSheet();
-            }
-            displayInWatchButton();
-        }
     }
 
     public void openWatchSheet()
@@ -476,6 +461,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         llSecuritySale.setOnClickListener(this);
         llSecurityDiscuss = (RelativeLayout)view.findViewById(R.id.llSecurityDiscuss);
         llSecurityDiscuss.setOnClickListener(this);
+        addWatchListTV = (TextView)view.findViewById(R.id.textview_add_watchlist);
+        llWatchList = (RelativeLayout)view.findViewById(R.id.llSecurityWatchList);
+        llWatchList.setOnClickListener(this);
         pager = (ViewPager)view.findViewById(R.id.pager);
         indicator = (SquarePageIndicator)view.findViewById(R.id.indicator);
     }
@@ -1592,18 +1580,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public void displayInWatchButton()
-    {
-        if (isInWatchList)//显示已添加^
-        {
-            setHeadViewRight0("已添加 ");
-            setHeadViewRight0Drawable(null, null,
-                    getResources().getDrawable(isAddWatchSheetOpen ? R.drawable.icon_arrow_up : R.drawable.icon_arrow_down), null);
-        }
-        else//显示 ＋自选股
-        {
-            setHeadViewRight0("+自选股");
-            setHeadViewRight0Drawable(null, null, null, null);
+    public void displayInWatchButton() {
+        if(isInWatchList){
+            addWatchListTV.setText("完成自选");
+        }else{
+            addWatchListTV.setText("+自选");
         }
     }
 
@@ -1815,10 +1796,14 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                     AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_SALE));
             return;
         }
-        else if (viewId == R.id.llSecurityDiscuss) {
+        if (viewId == R.id.llSecurityDiscuss) {
             enterDiscussSend();
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
                     AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_DISCUSS));
+            return;
+        }
+        if(viewId == R.id.llSecurityWatchList){
+            onAddWatchListBtnClicked();
             return;
         }
     }
@@ -2014,6 +1999,14 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     void updateDiscussionCount(int count) {
         if (discussNumTV != null) {
+            if(count <=0 ){
+                discussNumTV.setVisibility(View.GONE);
+                return;
+            }
+            if(count > 99){
+                discussNumTV.setText("99");
+                return;
+            }
             discussNumTV.setText(String.valueOf(count));
         }
     }
@@ -2060,19 +2053,52 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 setHeadViewMiddleSub("交易结束");
             }
         } else {
+            String raisePercent = quoteDetail.getRiseRate() * 100 + "%";
             if(quoteDetail.getRiseRate() > 0){
                 setHeadViewMiddleSubTextColor(colorUp);
-                setHeadViewMiddleSub(quoteDetail.last + "  +" + quoteDetail.getRiseRate() + "  +" + quoteDetail.getRise());
+                setHeadViewMiddleSub(quoteDetail.last + " +" + raisePercent + " +" + quoteDetail.getRise());
             }
             if(quoteDetail.getRiseRate() == 0){
                 setHeadViewMiddleSubTextColor(colorNormal);
-                setHeadViewMiddleSub(quoteDetail.last + "  +0  +0");
+                setHeadViewMiddleSub(quoteDetail.last + " 0 0");
             }
             if(quoteDetail.getRiseRate() < 0){
                 setHeadViewMiddleSubTextColor(colorDown);
-                setHeadViewMiddleSub(quoteDetail.last + "  -" + quoteDetail.getRiseRate() + "  -" + quoteDetail.getRise());
+                setHeadViewMiddleSub(quoteDetail.last + " " + raisePercent + " " + quoteDetail.getRise());
             }
         }
 
+    }
+
+    private void enterSearchPage(){
+        pushFragment(SearchUnitFragment.class, new Bundle());
+    }
+
+    @Override
+    public void onClickHeadRight0() {
+        enterSearchPage();
+    }
+
+    @Override
+    public void onClickHeadRight1() {
+        enterWechatSharePage();
+    }
+
+    private void enterWechatSharePage(){
+        WeChatDTO weChatDTO = new WeChatDTO();
+        weChatDTO.title = "一个股票涨涨涨";
+        weChatDTO.type = WeChatMessageType.Trade;
+        Intent gotoShareToWeChatIntent = new Intent(getActivity(), WXEntryActivity.class);
+        gotoShareToWeChatIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        WXEntryActivity.putWeChatDTO(gotoShareToWeChatIntent, weChatDTO);
+        Application.context().startActivity(gotoShareToWeChatIntent);
+    }
+
+    private void onAddWatchListBtnClicked(){
+        if(isInWatchList){
+
+        }else{
+            handleWatchButtonClicked();
+        }
     }
 }

@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/basic_transparent_selector"
+                android:background="@color/transparent"
                 android:gravity="center"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginRight="@dimen/margin_small"

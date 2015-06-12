@@ -216,7 +216,7 @@ public class NotificationListAdapter extends BaseAdapter
         public TextView tvNotificationUser = null;
     }
 
-    public static interface NotificationClickListener
+    public interface NotificationClickListener
     {
         void OnNotificationItemClicked(int position);
 

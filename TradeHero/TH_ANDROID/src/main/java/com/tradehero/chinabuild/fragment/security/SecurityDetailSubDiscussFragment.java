@@ -44,8 +44,10 @@ import retrofit.client.Response;
  */
 public class SecurityDetailSubDiscussFragment extends Fragment implements View.OnClickListener {
 
-    @Inject Analytics analytics;
-    @Inject public Lazy<PrettyTime> prettyTime;
+    @Inject
+    Analytics analytics;
+    @Inject
+    public Lazy<PrettyTime> prettyTime;
 
     private String securityName;
     private SecurityId securityId;
@@ -101,7 +103,8 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
     private View seperateV4;
 
     private PaginatedDiscussionListKey discussionListKey;
-    @Inject DiscussionServiceWrapper  discussionServiceWrapper;
+    @Inject
+    DiscussionServiceWrapper discussionServiceWrapper;
 
     private DiscussionViewHolder[] viewHolders = new DiscussionViewHolder[5];
 
@@ -120,11 +123,13 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_security_detail_discuss, container, false);
-        moreTV = (TextView)view.findViewById(R.id.textview_more);
+        moreTV = (TextView) view.findViewById(R.id.textview_more);
         moreTV.setOnClickListener(this);
-        emptyLL = (LinearLayout)view.findViewById(R.id.linearlayout_empty);
+        emptyLL = (LinearLayout) view.findViewById(R.id.linearlayout_empty);
         emptyLL.setOnClickListener(this);
-        discussLL = (LinearLayout)view.findViewById(R.id.linearlayout_discusses);
+        emptyLL.setVisibility(View.VISIBLE);
+        discussLL = (LinearLayout) view.findViewById(R.id.linearlayout_discusses);
+        discussLL.setVisibility(View.GONE);
         initViews(view);
         return view;
     }
@@ -145,44 +150,44 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         securityDTOId = args.getInt(SecurityDetailFragment.BUNDLE_KEY_SECURITY_DTO_ID_BUNDLE, -1);
     }
 
-    private void initViews(View view){
-        ll0 = (RelativeLayout)view.findViewById(R.id.relativelayout_user0);
-        avatarIV0 = (ImageView)view.findViewById(R.id.imageview_avatar0);
-        nameTV0 = (TextView)view.findViewById(R.id.textview_name0);
-        contentTV0 = (TextView)view.findViewById(R.id.textview_content0);
-        dateTV0 = (TextView)view.findViewById(R.id.textview_date0);
-        moreTV0 = (TextView)view.findViewById(R.id.textview_more0);
+    private void initViews(View view) {
+        ll0 = (RelativeLayout) view.findViewById(R.id.relativelayout_user0);
+        avatarIV0 = (ImageView) view.findViewById(R.id.imageview_avatar0);
+        nameTV0 = (TextView) view.findViewById(R.id.textview_name0);
+        contentTV0 = (TextView) view.findViewById(R.id.textview_content0);
+        dateTV0 = (TextView) view.findViewById(R.id.textview_date0);
+        moreTV0 = (TextView) view.findViewById(R.id.textview_more0);
 
-        ll1 = (RelativeLayout)view.findViewById(R.id.relativelayout_user1);
-        avatarIV1 = (ImageView)view.findViewById(R.id.imageview_avatar1);
-        nameTV1 = (TextView)view.findViewById(R.id.textview_name1);
-        contentTV1 = (TextView)view.findViewById(R.id.textview_content1);
-        dateTV1 = (TextView)view.findViewById(R.id.textview_date1);
-        moreTV1 = (TextView)view.findViewById(R.id.textview_more1);
+        ll1 = (RelativeLayout) view.findViewById(R.id.relativelayout_user1);
+        avatarIV1 = (ImageView) view.findViewById(R.id.imageview_avatar1);
+        nameTV1 = (TextView) view.findViewById(R.id.textview_name1);
+        contentTV1 = (TextView) view.findViewById(R.id.textview_content1);
+        dateTV1 = (TextView) view.findViewById(R.id.textview_date1);
+        moreTV1 = (TextView) view.findViewById(R.id.textview_more1);
         seperateV1 = view.findViewById(R.id.line1);
 
-        ll2 = (RelativeLayout)view.findViewById(R.id.relativelayout_user2);
-        avatarIV2 = (ImageView)view.findViewById(R.id.imageview_avatar2);
-        nameTV2 = (TextView)view.findViewById(R.id.textview_name2);
-        contentTV2 = (TextView)view.findViewById(R.id.textview_content2);
-        dateTV2 = (TextView)view.findViewById(R.id.textview_date2);
-        moreTV2 = (TextView)view.findViewById(R.id.textview_more2);
+        ll2 = (RelativeLayout) view.findViewById(R.id.relativelayout_user2);
+        avatarIV2 = (ImageView) view.findViewById(R.id.imageview_avatar2);
+        nameTV2 = (TextView) view.findViewById(R.id.textview_name2);
+        contentTV2 = (TextView) view.findViewById(R.id.textview_content2);
+        dateTV2 = (TextView) view.findViewById(R.id.textview_date2);
+        moreTV2 = (TextView) view.findViewById(R.id.textview_more2);
         seperateV2 = view.findViewById(R.id.line2);
 
-        ll3 = (RelativeLayout)view.findViewById(R.id.relativelayout_user3);
-        avatarIV3 = (ImageView)view.findViewById(R.id.imageview_avatar3);
-        nameTV3 = (TextView)view.findViewById(R.id.textview_name3);
-        contentTV3 = (TextView)view.findViewById(R.id.textview_content3);
-        dateTV3 = (TextView)view.findViewById(R.id.textview_date3);
-        moreTV3 = (TextView)view.findViewById(R.id.textview_more3);
+        ll3 = (RelativeLayout) view.findViewById(R.id.relativelayout_user3);
+        avatarIV3 = (ImageView) view.findViewById(R.id.imageview_avatar3);
+        nameTV3 = (TextView) view.findViewById(R.id.textview_name3);
+        contentTV3 = (TextView) view.findViewById(R.id.textview_content3);
+        dateTV3 = (TextView) view.findViewById(R.id.textview_date3);
+        moreTV3 = (TextView) view.findViewById(R.id.textview_more3);
         seperateV3 = view.findViewById(R.id.line3);
 
-        ll4 = (RelativeLayout)view.findViewById(R.id.relativelayout_user4);
-        avatarIV4 = (ImageView)view.findViewById(R.id.imageview_avatar4);
-        nameTV4 = (TextView)view.findViewById(R.id.textview_name4);
-        contentTV4 = (TextView)view.findViewById(R.id.textview_content4);
-        dateTV4 = (TextView)view.findViewById(R.id.textview_date4);
-        moreTV4 = (TextView)view.findViewById(R.id.textview_more4);
+        ll4 = (RelativeLayout) view.findViewById(R.id.relativelayout_user4);
+        avatarIV4 = (ImageView) view.findViewById(R.id.imageview_avatar4);
+        nameTV4 = (TextView) view.findViewById(R.id.textview_name4);
+        contentTV4 = (TextView) view.findViewById(R.id.textview_content4);
+        dateTV4 = (TextView) view.findViewById(R.id.textview_date4);
+        moreTV4 = (TextView) view.findViewById(R.id.textview_more4);
         seperateV4 = view.findViewById(R.id.line4);
 
         viewHolders[0] = new DiscussionViewHolder(ll0, avatarIV0, nameTV0, contentTV0, dateTV0, null);
@@ -213,8 +218,8 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         pushFragment(SecurityDiscussSendFragment.class, bundle);
     }
 
-    private void enterDiscussList(){
-        if(securityDTOId == -1){
+    private void enterDiscussList() {
+        if (securityDTOId == -1) {
             return;
         }
         Bundle bundle = new Bundle();
@@ -239,8 +244,7 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         return getDashboardNavigator().pushFragment(fragmentClass, args);
     }
 
-    public void fetchSecurityDiscuss(boolean force)
-    {
+    public void fetchSecurityDiscuss(boolean force) {
         if (securityDTOId == -1) {
             return;
         }
@@ -274,10 +278,22 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
 
         List<SecurityComment> comments = securityCommentList.comments;
-        for (int i =0; i < comments.size(); i++) {
+        if (comments.size() < 0) {
+            emptyLL.setVisibility(View.VISIBLE);
+            discussLL.setVisibility(View.GONE);
+        } else {
+            emptyLL.setVisibility(View.GONE);
+            discussLL.setVisibility(View.VISIBLE);
+            if (comments.size() >= 5) {
+                moreTV.setVisibility(View.VISIBLE);
+            } else {
+                moreTV.setVisibility(View.GONE);
+            }
+        }
+        for (int i = 0; i < comments.size(); i++) {
             viewHolders[i].displayContent(comments.get(i), prettyTime.get());
         }
-        for (int i =  comments.size(); i < viewHolders.length; i++) {
+        for (int i = comments.size(); i < viewHolders.length; i++) {
             viewHolders[i].gone();
         }
     }

@@ -1,5 +1,7 @@
 package com.tradehero.chinabuild.data;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by liangyx on 6/8/15.
  */
@@ -42,15 +44,16 @@ public class QuoteDetail {
         if ((last == null) || (prec == null) || (prec == 0)) {
             return 0;
         }
-
-        return (last - prec) / prec;
+        DecimalFormat df = new DecimalFormat("######0.00");
+        return Double.valueOf(df.format((last - prec) / prec));
     }
 
     public double getRise(){
         if ((last == null) || (prec == null) || (prec == 0)) {
             return 0;
         }
-        return (last - prec);
+        DecimalFormat df = new DecimalFormat("######0.00");
+        return Double.valueOf(df.format(last - prec));
     }
 
 }
