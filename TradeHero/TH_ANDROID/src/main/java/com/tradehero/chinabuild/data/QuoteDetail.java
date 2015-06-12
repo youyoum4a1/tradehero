@@ -7,6 +7,8 @@ import java.text.DecimalFormat;
  */
 public class QuoteDetail {
 
+    private static DecimalFormat df = new DecimalFormat("#0.00");
+
     public String symb;
     public String name;
     public Double prec;
@@ -48,6 +50,7 @@ public class QuoteDetail {
         return Double.valueOf(df.format((last - prec) / prec));
     }
 
+
     public double getRise(){
         if ((last == null) || (prec == null) || (prec == 0)) {
             return 0;
@@ -56,4 +59,11 @@ public class QuoteDetail {
         return Double.valueOf(df.format(last - prec));
     }
 
+    public String getPriceDifferent() {
+        if ((last == null) || (prec == null) || (prec == 0)) {
+            return "- -";
+        }
+        double d1 = last - prec;
+        return df.format(d1);
+    }
 }

@@ -6,8 +6,11 @@ import android.util.Log;
 import com.tradehero.chinabuild.data.KLineItem;
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.QuoteTick;
+import com.tradehero.chinabuild.data.SharePosition;
 import com.tradehero.chinabuild.data.SignedQuote;
+import com.tradehero.chinabuild.data.TradeRecord;
 import com.tradehero.th.api.market.Exchange;
+import com.tradehero.th.api.pagination.PaginationDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.UrlEncoderHelper;
@@ -187,6 +190,18 @@ public class QuoteServiceWrapper {
 
     public void getSecurityCompactDTO(final SecurityId securityId, final Callback<SecurityCompactDTO> callback) {
         quoteService.getSecurityCompactDTO(securityId.getExchange(), securityId.getSecuritySymbol(), callback);
+    }
+
+    public void getTradeRecords(final SecurityId securityId, int page, int perPage, Callback<List<TradeRecord>> callback) {
+        quoteService.getTradeRecords(securityId.getExchange(),
+                securityId.getSecuritySymbol(),
+                page,
+                perPage,
+                callback);
+    }
+
+    public void getSharePosition(final SecurityId securityId, int page, int perPage, Callback<List<SharePosition>> callback) {
+        quoteService.getSharePositions(securityId.getExchange(), securityId.getSecuritySymbol(), page, perPage, callback);
     }
 
     public void stopSecurityCompactTask() {

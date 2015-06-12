@@ -1290,7 +1290,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(quoteDetail.last));
         tvSecurityPrice.setTextColor(getResources().getColor(colorResId));
 
-        tvSecurityDetailNum.setText(securityCompactDTO.getPriceDifferent());
+        tvSecurityDetailNum.setText(quoteDetail.getPriceDifferent());
         tvSecurityDetailNum.setTextColor(getResources().getColor(colorResId));
 
         if (quoteDetail.high != null) {
