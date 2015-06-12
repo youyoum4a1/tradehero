@@ -47,7 +47,7 @@ public interface DiscussionService
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO);
     //</editor-fold>
 
-    @GET("/v2/securities/{exchange}/{securitySymbol}/discussions")
+    @GET("/cn/v2/securities/{exchange}/{securitySymbol}/discussions")
     void getSecurityDiscussion(@Path("exchange") String exchange,
                                @Path("securitySymbol") String securitySymbol,
                                @Query("page") Integer page,

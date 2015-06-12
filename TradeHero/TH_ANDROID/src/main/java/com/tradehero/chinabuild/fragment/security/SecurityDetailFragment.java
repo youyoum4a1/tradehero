@@ -1948,7 +1948,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             discussFragment.setArguments(args);
             subFragments.add(discussFragment);
             SecurityDetailSubNewsFragment newsFragment = new SecurityDetailSubNewsFragment();
-            newsFragment.setArguments(getArguments());
+            newsFragment.setArguments(args);
             subFragments.add(newsFragment);
             SecurityDetailSubOptFragment optFragment = new SecurityDetailSubOptFragment();
             optFragment.setArguments(getArguments());

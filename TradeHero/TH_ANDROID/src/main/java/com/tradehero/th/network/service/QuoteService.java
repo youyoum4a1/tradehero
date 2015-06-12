@@ -33,10 +33,10 @@ interface QuoteService
      * @param securitySymbol
      * @return
      */
-    @GET("/v2/quotes/{securitySymbol}/detail")
+    @GET("/cn/v2/quotes/{securitySymbol}/detail")
     QuoteDetail getQuoteDetails(@Path("securitySymbol") String securitySymbol);
 
-    @GET("/v2/quotes/{securitySymbol}/detail")
+    @GET("/cn/v2/quotes/{securitySymbol}/detail")
     void getQuoteDetails(@Path("securitySymbol") String securitySymbol, Callback<QuoteDetail> callback);
 
     /**
@@ -45,7 +45,7 @@ interface QuoteService
      * @param securitySymbol
      * @param callback
      */
-    @GET("/v2/quotes/{securitySymbol}")
+    @GET("/cn/v2/quotes/{securitySymbol}")
     void getQuote(@Path("securitySymbol") String securitySymbol, Callback<SignedQuote> callback);
 
     /**
@@ -54,10 +54,10 @@ interface QuoteService
      * @param securitySymbol
      * @return
      */
-    @GET("/v2/quotes/{securitySymbol}/ticks")
+    @GET("/cn/v2/quotes/{securitySymbol}/ticks")
     List<QuoteTick> getQuoteTicks(@Path("securitySymbol") String securitySymbol);
 
-    @GET("/v2/quotes/{securitySymbol}/ticks")
+    @GET("/cn/v2/quotes/{securitySymbol}/ticks")
     void getQuoteTicks(@Path("securitySymbol") String securitySymbol, Callback<List<QuoteTick>> callback);
 
     /**
@@ -66,7 +66,7 @@ interface QuoteService
      * @param type
      * @param callback
      */
-    @GET("/v2/quotes/{securitySymbol}/klines/{type}")
+    @GET("/cn/v2/quotes/{securitySymbol}/klines/{type}")
     void getKLines(@Path("securitySymbol") String securitySymbol, @Path("type") String type,
                    Callback<List<KLineItem>> callback);
 
