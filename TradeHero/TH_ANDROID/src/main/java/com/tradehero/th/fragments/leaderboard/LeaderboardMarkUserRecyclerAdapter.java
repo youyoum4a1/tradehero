@@ -255,6 +255,17 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
             }
 
             expandingLayout.expandWithNoAnimation(dto.isExpanded());
+            if (userStatisticView != null)
+            {
+                if (dto.isExpanded())
+                {
+                    userStatisticView.display(dto.userStatisticsDto);
+                }
+                else
+                {
+                    userStatisticView.display(null);
+                }
+            }
         }
     }
 }
