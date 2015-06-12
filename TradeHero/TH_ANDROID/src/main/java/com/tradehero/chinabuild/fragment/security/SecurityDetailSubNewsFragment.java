@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemListKey;
@@ -26,27 +25,25 @@ import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
 import com.tradehero.th.utils.DaggerUtils;
 
 import org.ocpsoft.prettytime.PrettyTime;
-import org.w3c.dom.Text;
 
 import java.sql.Time;
 
 import javax.inject.Inject;
 
 import dagger.Lazy;
-import timber.log.Timber;
 
 
 /**
  * Created by palmer on 15/6/10.
  */
-public class SecurityDetailSubNewsFragment extends Fragment {
+public class SecurityDetailSubNewsFragment extends Fragment implements View.OnClickListener{
 
     private String securityName;
     private SecurityId securityId;
 
-    @Inject Analytics analytics;
     private LinearLayout newsLL;
     private ImageView emptyIV;
+    private TextView moreTV;
 
     //Layout 0
     private RelativeLayout rl0;
@@ -129,8 +126,12 @@ public class SecurityDetailSubNewsFragment extends Fragment {
     }
 
     private void initViews(View view) {
+        moreTV = (TextView) view.findViewById(R.id.textview_more);
+        moreTV.setOnClickListener(this);
         newsLL = (LinearLayout) view.findViewById(R.id.linearlayout_news);
+        newsLL.setVisibility(View.GONE);
         emptyIV = (ImageView) view.findViewById(R.id.imageview_empty);
+        emptyIV.setVisibility(View.VISIBLE);
 
         rl0 = (RelativeLayout) view.findViewById(R.id.rl_news0);
         newsTV0 = (TextView) view.findViewById(R.id.textview_news_content0);
@@ -164,6 +165,20 @@ public class SecurityDetailSubNewsFragment extends Fragment {
 
     }
 
+    private void enterDiscussList() {
+        if (securityDTOId == -1) {
+            return;
+        }
+        Bundle bundle = new Bundle();
+        bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_DISCUSS_OR_NEWS_TYPE, 1);
+        bundle.putBundle(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        bundle.putString(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
+        bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURIYT_COMPACT_ID, securityDTOId);
+        bundle.putBoolean(SecurityDiscussOrNewsFragment.BUNDLE_ARGUMENT_IS_NEWS, true);
+        pushFragment(SecurityDiscussOrNewsFragment.class, bundle);
+
+    }
+
     private DashboardNavigator getDashboardNavigator() {
         DashboardNavigatorActivity activity = ((DashboardNavigatorActivity) getActivity());
         if (activity != null) {
@@ -189,6 +204,18 @@ public class SecurityDetailSubNewsFragment extends Fragment {
     }
 
     void updateNewsContent(PaginatedDTO<NewsItemCompactDTO> newsList) {
+        if(newsList ==null || newsList.getData() == null || newsList.getData().size()<=0){
+            emptyIV.setVisibility(View.VISIBLE);
+            newsLL.setVisibility(View.GONE);
+        }else{
+            emptyIV.setVisibility(View.GONE);
+            newsLL.setVisibility(View.VISIBLE);
+        }
+        if(newsList.getData().size()<5){
+            moreTV.setVisibility(View.GONE);
+        }else{
+            moreTV.setVisibility(View.VISIBLE);
+        }
 
         for (int i = 0; i < newsList.getData().size(); i++) {
             newsViewHolders[i].displayNews(newsList.getData().get(i), prettyTime.get());
@@ -198,32 +225,34 @@ public class SecurityDetailSubNewsFragment extends Fragment {
         }
     }
 
-    class NewsHeadlineNewsListListener implements DTOCacheNew.HurriedListener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>
-    {
+    @Override
+    public void onClick(View view) {
+        int viewId = view.getId();
+        switch (viewId){
+            case R.id.textview_more:
+                enterDiscussList();
+                break;
+        }
+    }
+
+    class NewsHeadlineNewsListListener implements DTOCacheNew.HurriedListener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>{
         @Override public void onPreCachedDTOReceived(
                 NewsItemListKey key,
-                PaginatedDTO<NewsItemCompactDTO> value)
-        {
-            Timber.e("onPreCachedDTOReceived: ========================= ");
+                PaginatedDTO<NewsItemCompactDTO> value){
             updateNewsContent(value);
 
         }
 
         @Override public void onDTOReceived(
                 NewsItemListKey key,
-                PaginatedDTO<NewsItemCompactDTO> value)
-        {
-            Timber.e("onDTOReceived: ========================= ");
+                PaginatedDTO<NewsItemCompactDTO> value){
             updateNewsContent(value);
 
         }
 
         @Override public void onErrorThrown(
                 NewsItemListKey key,
-                Throwable error)
-        {
-            Timber.e(error, "Error in retrieve news.");
-        }
+                Throwable error) { }
     }
 
     static class NewsViewHolder {

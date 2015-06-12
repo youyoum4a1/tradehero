@@ -64,7 +64,6 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
     private TextView nameTV0;
     private TextView contentTV0;
     private TextView dateTV0;
-    private TextView moreTV0;
 
     //Layout 1
     private RelativeLayout ll1;
@@ -72,7 +71,6 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
     private TextView nameTV1;
     private TextView contentTV1;
     private TextView dateTV1;
-    private TextView moreTV1;
     private View seperateV1;
 
     //Layout 2
@@ -81,7 +79,6 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
     private TextView nameTV2;
     private TextView contentTV2;
     private TextView dateTV2;
-    private TextView moreTV2;
     private View seperateV2;
 
     //Layout 3
@@ -90,7 +87,6 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
     private TextView nameTV3;
     private TextView contentTV3;
     private TextView dateTV3;
-    private TextView moreTV3;
     private View seperateV3;
 
     //Layout 4
@@ -99,7 +95,6 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
     private TextView nameTV4;
     private TextView contentTV4;
     private TextView dateTV4;
-    private TextView moreTV4;
     private View seperateV4;
 
     private PaginatedDiscussionListKey discussionListKey;
@@ -156,14 +151,12 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         nameTV0 = (TextView) view.findViewById(R.id.textview_name0);
         contentTV0 = (TextView) view.findViewById(R.id.textview_content0);
         dateTV0 = (TextView) view.findViewById(R.id.textview_date0);
-        moreTV0 = (TextView) view.findViewById(R.id.textview_more0);
 
         ll1 = (RelativeLayout) view.findViewById(R.id.relativelayout_user1);
         avatarIV1 = (ImageView) view.findViewById(R.id.imageview_avatar1);
         nameTV1 = (TextView) view.findViewById(R.id.textview_name1);
         contentTV1 = (TextView) view.findViewById(R.id.textview_content1);
         dateTV1 = (TextView) view.findViewById(R.id.textview_date1);
-        moreTV1 = (TextView) view.findViewById(R.id.textview_more1);
         seperateV1 = view.findViewById(R.id.line1);
 
         ll2 = (RelativeLayout) view.findViewById(R.id.relativelayout_user2);
@@ -171,7 +164,6 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         nameTV2 = (TextView) view.findViewById(R.id.textview_name2);
         contentTV2 = (TextView) view.findViewById(R.id.textview_content2);
         dateTV2 = (TextView) view.findViewById(R.id.textview_date2);
-        moreTV2 = (TextView) view.findViewById(R.id.textview_more2);
         seperateV2 = view.findViewById(R.id.line2);
 
         ll3 = (RelativeLayout) view.findViewById(R.id.relativelayout_user3);
@@ -179,7 +171,6 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         nameTV3 = (TextView) view.findViewById(R.id.textview_name3);
         contentTV3 = (TextView) view.findViewById(R.id.textview_content3);
         dateTV3 = (TextView) view.findViewById(R.id.textview_date3);
-        moreTV3 = (TextView) view.findViewById(R.id.textview_more3);
         seperateV3 = view.findViewById(R.id.line3);
 
         ll4 = (RelativeLayout) view.findViewById(R.id.relativelayout_user4);
@@ -187,7 +178,6 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         nameTV4 = (TextView) view.findViewById(R.id.textview_name4);
         contentTV4 = (TextView) view.findViewById(R.id.textview_content4);
         dateTV4 = (TextView) view.findViewById(R.id.textview_date4);
-        moreTV4 = (TextView) view.findViewById(R.id.textview_more4);
         seperateV4 = view.findViewById(R.id.line4);
 
         viewHolders[0] = new DiscussionViewHolder(ll0, avatarIV0, nameTV0, contentTV0, dateTV0, null);

@@ -377,6 +377,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             return view;
         }
         view = inflater.inflate(R.layout.security_detail_layout, container, false);
+        indexSubFragment = 0;
         initBaseView(view);
         initView();
         updateHeadView(true);
