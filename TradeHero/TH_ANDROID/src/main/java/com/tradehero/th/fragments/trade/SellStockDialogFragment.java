@@ -4,9 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.android.internal.util.Predicate;
 import com.tradehero.th.R;
-import com.tradehero.th.api.position.PositionDTOCompactUtil;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioId;
+import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionDTOCompact;
+import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.position.PositionStatus;
+import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.rx.view.DismissDialogAction0;
@@ -32,7 +38,7 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
         builder.setBuyEvent(IS_BUY);
     }
 
-    @Override protected String getLabel()
+    @Override protected String getLabel(@NonNull QuoteDTO quoteDTO)
     {
         if (quoteDTO.bid == null)
         {
@@ -42,45 +48,61 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
         return getString(R.string.buy_sell_dialog_sell, sthSignedNumber.toString());
     }
 
-    @Override @Nullable protected Double getProfitOrLossUsd()
+    @Override @Nullable protected Double getProfitOrLossUsd(
+            @Nullable PortfolioCompactDTO portfolioCompactDTO,
+            @Nullable QuoteDTO quoteDTO,
+            @Nullable PositionDTOCompact closeablePosition,
+            @Nullable Integer quantity)
     {
-        if (positionDTOList == null || portfolioCompactDTO == null)
+        if (portfolioCompactDTO == null || quoteDTO == null || quantity == null)
         {
             return null;
         }
-        Double netProceedsUsd = PositionDTOCompactUtil.getNetSellProceedsUsd(
-                mTransactionQuantity,
-                quoteDTO,
-                getPortfolioId(),
-                true,
-                portfolioCompactDTO.getProperTxnCostUsd());
-        Double totalSpentUsd = PositionDTOCompactUtil.getSpentOnQuantityUsd(positionDTOList, mTransactionQuantity, portfolioCompactDTO);
-        if (netProceedsUsd == null || totalSpentUsd == null)
+        Double bidUsd = quoteDTO.getBidUSD();
+        if (bidUsd == null)
+        {
+            return null;
+        }
+        double netProceedsUsd = quantity * bidUsd - portfolioCompactDTO.getProperTxnCostUsd();
+        Double totalSpentUsd = null;
+        if (closeablePosition != null && closeablePosition.averagePriceRefCcy != null)
+        {
+            totalSpentUsd = closeablePosition.averagePriceRefCcy * portfolioCompactDTO.getProperRefCcyToUsdRate() * quantity;
+        }
+        if (totalSpentUsd == null)
         {
             return null;
         }
         return netProceedsUsd - totalSpentUsd;
+
+        // TODO Replace with same calculation as on FX
     }
 
-    @Override @Nullable protected Boolean isClosingPosition()
+    @Override @Nullable protected Boolean isClosingPosition(@Nullable PositionDTOCompact closeablePosition)
     {
-        if (positionDTOCompact == null)
+        if (closeablePosition == null)
         {
             // This means we have incomplete information
             return null;
         }
-        return positionDTOCompact.positionStatus != null
-                && positionDTOCompact.positionStatus.equals(PositionStatus.LONG);
+        return closeablePosition.positionStatus != null
+                && closeablePosition.positionStatus.equals(PositionStatus.LONG);
     }
 
-    @Override @NonNull public String getCashShareLeft()
+    @Override @NonNull public String getCashShareLeft(
+            @NonNull PortfolioCompactDTO portfolioCompactDTO,
+            @NonNull QuoteDTO quoteDTO,
+            @Nullable PositionDTOCompact closeablePosition, int quantity)
     {
-        return getRemainingWhenSell();
+        return getRemainingWhenSell(portfolioCompactDTO, quoteDTO, closeablePosition, quantity);
     }
 
-    @Override @Nullable protected Integer getMaxValue()
+    @Override @Nullable protected Integer getMaxValue(
+            @NonNull PortfolioCompactDTO portfolioCompactDTO,
+            @NonNull QuoteDTO quoteDTO,
+            @Nullable PositionDTOCompact closeablePosition)
     {
-        return getMaxSellableShares();
+        return getMaxSellableShares(portfolioCompactDTO, quoteDTO, closeablePosition);
     }
 
     @Override protected boolean hasValidInfo()
@@ -90,16 +112,19 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
 
     @Override protected boolean isQuickButtonEnabled()
     {
-        return quoteDTO != null && quoteDTO.bid != null && quoteDTO.toUSDRate != null;
+        return usedDTO.quoteDTO != null && usedDTO.quoteDTO.bid != null && usedDTO.quoteDTO.toUSDRate != null;
     }
 
-    @Override protected double getQuickButtonMaxValue()
+    @Override protected double getQuickButtonMaxValue(
+            @NonNull PortfolioCompactDTO portfolioCompactDTO,
+            @NonNull QuoteDTO quoteDTO,
+            @Nullable PositionDTOCompact closeablePosition)
     {
-        Integer maxSellableShares = getMaxSellableShares();
-        if (maxSellableShares != null && quoteDTO != null && quoteDTO.bid != null)
+        Integer maxSellableShares = getMaxSellableShares(portfolioCompactDTO, quoteDTO, closeablePosition);
+        if (maxSellableShares != null && usedDTO.quoteDTO != null && usedDTO.quoteDTO.bid != null)
         {
             // TODO see other currencies
-            return maxSellableShares * quoteDTO.bid * quoteDTO.toUSDRate;
+            return maxSellableShares * usedDTO.quoteDTO.bid * usedDTO.quoteDTO.toUSDRate;
         }
         return 0;
     }
@@ -114,14 +139,16 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
 
         return AppObservable.bindFragment(
                 this,
-                securityServiceWrapper.doTransactionRx(securityId, transactionFormDTO, IS_BUY))
+                securityServiceWrapper.doTransactionRx(requisite.securityId, transactionFormDTO, IS_BUY))
                 .observeOn(AndroidSchedulers.mainThread())
                 .finallyDo(new DismissDialogAction0(progressDialog))
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
                 .subscribe(new BuySellObserver(IS_BUY));
     }
 
-    @Override public Double getPriceCcy()
+    @Nullable @Override public Double getPriceCcy(
+            @Nullable PortfolioCompactDTO portfolioCompactDTO,
+            @Nullable QuoteDTO quoteDTO)
     {
         if (quoteDTO == null)
         {
@@ -131,11 +158,25 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
         return quoteDTO.getPriceRefCcy(portfolioCompactDTO, IS_BUY);
     }
 
+    @NonNull @Override protected Predicate<PositionDTO> getCloseablePositionPredicate(
+            @NonNull PositionDTOList positionDTOs,
+            @NonNull final PortfolioId portfolioId)
+    {
+        return new Predicate<PositionDTO>()
+        {
+            @Override public boolean apply(PositionDTO positionDTO)
+            {
+                return positionDTO.portfolioId == portfolioId.key
+                        && positionDTO.shares != null
+                        && positionDTO.shares > 0;
+            }
+        };
+    }
+
     protected boolean hasValidInfoForSell()
     {
-        return securityId != null
-                && securityCompactDTO != null
-                && quoteDTO != null
-                && quoteDTO.bid != null;
+        return usedDTO.securityCompactDTO != null
+                && usedDTO.quoteDTO != null
+                && usedDTO.quoteDTO.bid != null;
     }
 }

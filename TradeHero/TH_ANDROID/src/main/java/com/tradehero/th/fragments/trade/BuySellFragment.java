@@ -386,6 +386,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         setInitialSellQuantityIfCan();
         displayBuySellSwitch();
         displayBuySellContainer();
+        showCloseDialog();
     }
 
     public void displayStockName()
@@ -543,7 +544,8 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     {
         if (closeUnits != 0
                 && quoteDTO != null
-                && securityCompactDTO != null)
+                && securityCompactDTO != null
+                && isBuySellReady())
         {
             isTransactionTypeBuy = closeUnits < 0;
             showBuySellDialog(Math.abs(closeUnits));
@@ -586,7 +588,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             default:
                 throw new IllegalArgumentException("Unhandled button " + view.getId());
         }
-        showBuySellDialog(0);
+        showBuySellDialog(null);
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -596,7 +598,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         notifyMarketClosed();
     }
 
-    public void showBuySellDialog(int closeUnits)
+    public void showBuySellDialog(@Nullable Integer closeUnits)
     {
         if (abstractTransactionDialogFragment != null
                 && abstractTransactionDialogFragment.isVisible())
@@ -612,19 +614,22 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                 if (securityCompactDTO instanceof FxSecurityCompactDTO)
                 {
                     abstractTransactionDialogFragment = AbstractFXTransactionDialogFragment.newInstance(
-                            securityId,
-                            currentMenu.getPortfolioIdKey(),
-                            quoteDTO,
                             isTransactionTypeBuy,
-                            closeUnits);
+                            new AbstractTransactionDialogFragment.Requisite(
+                                    securityId,
+                                    currentMenu.getPortfolioIdKey(),
+                                    quoteDTO,
+                                    closeUnits));
                 }
                 else
                 {
                     abstractTransactionDialogFragment = AbstractStockTransactionDialogFragment.newInstance(
-                            securityId,
-                            currentMenu.getPortfolioIdKey(),
-                            quoteDTO,
-                            isTransactionTypeBuy);
+                            isTransactionTypeBuy,
+                            new AbstractTransactionDialogFragment.Requisite(
+                                    securityId,
+                                    currentMenu.getPortfolioIdKey(),
+                                    quoteDTO,
+                                    closeUnits));
                 }
                 abstractTransactionDialogFragment.show(getActivity().getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
                 listenToBuySellDialog();
@@ -781,6 +786,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                                     }
                                 }
                                 BuySellFragment.this.displayBuySellContainer();
+                                showCloseDialog();
                             }
                         },
                         new TimberOnErrorAction("Failed to get the applicable portfolio ids"));
