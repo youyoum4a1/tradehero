@@ -1,8 +1,10 @@
 package com.tradehero.chinabuild.fragment.security;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +13,31 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tradehero.chinabuild.data.SecurityComment;
+import com.tradehero.chinabuild.data.SecurityCommentList;
 import com.tradehero.chinabuild.fragment.message.SecurityDiscussSendFragment;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.util.List;
+
 import javax.inject.Inject;
+
+import dagger.Lazy;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by palmer on 15/6/10.
@@ -27,6 +45,7 @@ import javax.inject.Inject;
 public class SecurityDetailSubDiscussFragment extends Fragment implements View.OnClickListener {
 
     @Inject Analytics analytics;
+    @Inject public Lazy<PrettyTime> prettyTime;
 
     private String securityName;
     private SecurityId securityId;
@@ -81,6 +100,11 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
     private TextView moreTV4;
     private View seperateV4;
 
+    private PaginatedDiscussionListKey discussionListKey;
+    @Inject DiscussionServiceWrapper  discussionServiceWrapper;
+
+    private DiscussionViewHolder[] viewHolders = new DiscussionViewHolder[5];
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +125,14 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         emptyLL = (LinearLayout)view.findViewById(R.id.linearlayout_empty);
         emptyLL.setOnClickListener(this);
         discussLL = (LinearLayout)view.findViewById(R.id.linearlayout_discusses);
+        initViews(view);
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        fetchSecurityDiscuss(true);
     }
 
     private void initArguments() {
@@ -111,6 +142,7 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         if (securityIdBundle != null) {
             securityId = new SecurityId(securityIdBundle);
         }
+        securityDTOId = args.getInt(SecurityDetailFragment.BUNDLE_KEY_SECURITY_DTO_ID_BUNDLE, -1);
     }
 
     private void initViews(View view){
@@ -152,6 +184,13 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         dateTV4 = (TextView)view.findViewById(R.id.textview_date4);
         moreTV4 = (TextView)view.findViewById(R.id.textview_more4);
         seperateV4 = view.findViewById(R.id.line4);
+
+        viewHolders[0] = new DiscussionViewHolder(ll0, avatarIV0, nameTV0, contentTV0, dateTV0, null);
+        viewHolders[1] = new DiscussionViewHolder(ll1, avatarIV1, nameTV1, contentTV1, dateTV1, seperateV1);
+        viewHolders[2] = new DiscussionViewHolder(ll2, avatarIV2, nameTV2, contentTV2, dateTV2, seperateV2);
+        viewHolders[3] = new DiscussionViewHolder(ll3, avatarIV3, nameTV3, contentTV3, dateTV3, seperateV3);
+        viewHolders[4] = new DiscussionViewHolder(ll4, avatarIV4, nameTV4, contentTV4, dateTV4, seperateV4);
+
     }
 
     @Override
@@ -200,4 +239,87 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         return getDashboardNavigator().pushFragment(fragmentClass, args);
     }
 
+    public void fetchSecurityDiscuss(boolean force)
+    {
+        if (securityDTOId == -1) {
+            return;
+        }
+        if (discussionListKey == null) {
+            discussionListKey = new PaginatedDiscussionListKey(DiscussionType.SECURITY, securityDTOId, 1, 5);
+        }
+
+        Callback<SecurityCommentList> callback = new Callback<SecurityCommentList>() {
+            @Override
+            public void success(SecurityCommentList securityCommentList, Response response) {
+                if (securityCommentList == null) {
+                    return;
+                }
+                updateDiscussionList(securityCommentList);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        };
+        discussionServiceWrapper.getSecurityComment(securityId, discussionListKey, callback);
+    }
+
+    private void updateDiscussionList(SecurityCommentList securityCommentList) {
+        if (getActivity() == null) {
+            return;
+        }
+        Intent intent = new Intent(SecurityDetailFragment.ACTION_UPDATE_DISCUSSION_COUNT);
+        intent.putExtra(SecurityDetailFragment.BUNDLE_KEY_DISCUSSION_COUNT, securityCommentList.commentCount);
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+
+        List<SecurityComment> comments = securityCommentList.comments;
+        for (int i =0; i < comments.size(); i++) {
+            viewHolders[i].displayContent(comments.get(i), prettyTime.get());
+        }
+        for (int i =  comments.size(); i < viewHolders.length; i++) {
+            viewHolders[i].gone();
+        }
+    }
+
+    static class DiscussionViewHolder {
+        private View parent;
+        private ImageView avatar;
+        private TextView name;
+        private TextView content;
+        private TextView date;
+        private View seprator;
+
+        public DiscussionViewHolder(View parent, ImageView avatar, TextView name, TextView content,
+                                    TextView date, View seprator) {
+            this.parent = parent;
+            this.avatar = avatar;
+            this.name = name;
+            this.content = content;
+            this.date = date;
+            this.seprator = seprator;
+        }
+
+        public void gone() {
+            parent.setVisibility(View.GONE);
+            if (seprator != null) {
+                seprator.setVisibility(View.GONE);
+            }
+        }
+
+        public void displayContent(SecurityComment comment, PrettyTime prettyTime) {
+            if (comment == null) {
+                return;
+            }
+            parent.setVisibility(View.VISIBLE);
+            if (seprator != null) {
+                seprator.setVisibility(View.VISIBLE);
+            }
+            ImageLoader.getInstance().displayImage(comment.userPicUrl, avatar,
+                    UniversalImageLoader.getAvatarImageLoaderOptions());
+            name.setText(comment.userName);
+            content.setText(comment.text);
+            date.setText(prettyTime.formatUnrounded(comment.createdAtUtc));
+        }
+    }
 }

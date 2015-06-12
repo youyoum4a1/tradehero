@@ -91,7 +91,7 @@
         <com.tradehero.th.widget.KChart.TimesView
             android:id="@+id/time_list_view"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="170dp"
             android:layout_margin="@dimen/margin_small"/>
       </LinearLayout>
 

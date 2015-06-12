@@ -3,11 +3,17 @@ package com.tradehero.th.network.service;
 import com.tradehero.chinabuild.data.ApplyCommentDTO;
 import com.tradehero.chinabuild.data.DiscoveryDiscussFormDTO;
 import com.tradehero.chinabuild.data.DiscussReportDTO;
+import com.tradehero.chinabuild.data.SecurityCommentList;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
-import com.tradehero.th.api.discussion.key.*;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
+import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
+import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.models.DTOProcessor;
@@ -17,13 +23,15 @@ import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
-import dagger.Lazy;
+
 import org.jetbrains.annotations.NotNull;
-import retrofit.Callback;
-import retrofit.client.Response;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import dagger.Lazy;
+import retrofit.Callback;
+import retrofit.client.Response;
 
 @Singleton public class DiscussionServiceWrapper
 {
@@ -185,6 +193,16 @@ import javax.inject.Singleton;
         ApplyCommentDTO applyCommentDTO = new ApplyCommentDTO();
         applyCommentDTO.commentId = commentId;
         discussionServiceAsync.applyRewardTimeLineAnswer(userId, timeLineItemId, applyCommentDTO, callback);
+    }
+
+    public void getSecurityComment(SecurityId securityId,
+                                   PaginatedDiscussionListKey discussionListKey,
+                                   Callback<SecurityCommentList> callback) {
+        discussionService.getSecurityDiscussion(securityId.getExchange(),
+                securityId.getSecuritySymbol(),
+                discussionListKey.page,
+                discussionListKey.perPage,
+                callback);
     }
 
 

@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service.stub;
 
+import com.tradehero.chinabuild.data.SecurityCommentList;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.pagination.PaginatedDTO;
@@ -7,8 +8,11 @@ import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.network.service.DiscussionService;
 
-import javax.inject.Inject;
 import java.util.Map;
+
+import javax.inject.Inject;
+
+import retrofit.Callback;
 
 public class DiscussionServiceStub implements DiscussionService
 {
@@ -57,5 +61,12 @@ public class DiscussionServiceStub implements DiscussionService
             TimelineItemShareRequestDTO timelineItemShareRequestDTO)
     {
         return null;
+    }
+
+    @Override
+    public void getSecurityDiscussion(String exchange, String securitySymbol,
+                                      Integer page, Integer perPage,
+                                      Callback<SecurityCommentList> callback) {
+        //nonthing to do
     }
 }
