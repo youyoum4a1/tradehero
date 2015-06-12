@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:descendantFocusability="blocksDescendants"
-    android:background="@color/lb_header_bg"
+    android:background="@drawable/lb_header_selector"
     >
 
   <include layout="@layout/lbmu_item_roi_mode_inner"

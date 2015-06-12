@@ -97,6 +97,8 @@
   <color name="yellow_dark">@color/orange</color>
 
   <color name="lb_header_bg">#C9F1FF</color>
+  <color name="lb_header_bg_focused">#b9deeb</color>
+  <color name="lb_header_bg_pressed">#7f98a1</color>
 
   <color name="lb_item_even">@android:color/white</color>
   <color name="lb_item_even_focused">@color/grey</color>
