@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.ActionMode;
 import android.view.KeyEvent;
@@ -989,15 +990,18 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @OnTextChanged(value = R.id.vquantity, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void afterQuantityTextChanged(Editable editable)
     {
-        if (usedDTO.portfolioCompactDTO != null && usedDTO.quoteDTO != null)
+        String stringValue = editable.toString();
+        if (usedDTO.portfolioCompactDTO != null
+                && usedDTO.quoteDTO != null
+                && !TextUtils.isEmpty(stringValue))
         {
             try
             {
-                int val = Integer.parseInt(editable.toString());
+                int val = Integer.parseInt(stringValue);
                 quantitySubject.onNext(val);
             } catch (NumberFormatException e)
             {
-                Timber.e(e, "Failed to parse number: " + editable.toString());
+                Timber.e(e, "Failed to parse number: " + stringValue);
             }
         }
     }
