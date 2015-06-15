@@ -289,11 +289,7 @@ public class PositionListFragment
             if (portfolioDTO != null && portfolioDTO.assetClass != null)
             {
                 TrendingMainFragment.putAssetClass(args, portfolioDTO.assetClass);
-                if (portfolioDTO.assetClass != null)
-                {
-                    TrendingMainFragment.setLastType(portfolioDTO.assetClass);
-                }
-                TrendingMainFragment.setLastPosition(1);
+                TrendingMainFragment.setLastType(portfolioDTO.assetClass);
             }
             navigator.get().pushFragment(TrendingMainFragment.class, args);
         }

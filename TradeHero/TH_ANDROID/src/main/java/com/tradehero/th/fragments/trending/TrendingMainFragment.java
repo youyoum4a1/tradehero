@@ -73,7 +73,8 @@ public class TrendingMainFragment extends DashboardFragment
     @RouteProperty("exchangeId") Integer routedExchangeId;
 
     @NonNull private static TrendingTabType lastType = TrendingTabType.STOCK;
-    private static int lastPosition = 1;
+    @NonNull private static TrendingStockTabType lastStockTab = TrendingStockTabType.getDefault();
+    @NonNull private static TrendingFXTabType lastFXTab = TrendingFXTabType.getDefault();
 
     private TradingStockPagerAdapter tradingStockPagerAdapter;
     private TradingFXPagerAdapter tradingFXPagerAdapter;
@@ -87,11 +88,11 @@ public class TrendingMainFragment extends DashboardFragment
         router.registerAlias("trending-fx/my-fx", "trending-fx/tab-index/" + TrendingFXTabType.Portfolio.ordinal());
         router.registerAlias("trending-fx/trade-fx", "trending-fx/tab-index/" + TrendingFXTabType.FX.ordinal());
         router.registerAlias("trending-stocks/my-stocks", "trending-stocks/tab-index/" + TrendingStockTabType.StocksMain.ordinal());
+        router.registerAlias("trending-stocks/favorites", "trending-stocks/tab-index/" + TrendingStockTabType.Favorites.ordinal());
         router.registerAlias("trending-stocks/trending", "trending-stocks/tab-index/" + TrendingStockTabType.Trending.ordinal());
         router.registerAlias("trending-stocks/price-action", "trending-stocks/tab-index/" + TrendingStockTabType.Price.ordinal());
         router.registerAlias("trending-stocks/unusual-volumes", "trending-stocks/tab-index/" + TrendingStockTabType.Volume.ordinal());
         router.registerAlias("trending-stocks/all-trending", "trending-stocks/tab-index/" + TrendingStockTabType.All.ordinal());
-        router.registerAlias("trending-stocks/favorites", "trending-stocks/tab-index/" + TrendingStockTabType.Favorites.ordinal());
     }
 
     public static void putAssetClass(@NonNull Bundle args, @NonNull AssetClass assetClass)
@@ -187,7 +188,17 @@ public class TrendingMainFragment extends DashboardFragment
 
             @Override public void onPageSelected(int i)
             {
-                lastPosition = i;
+                switch(lastType)
+                {
+                    case STOCK:
+                        lastStockTab = TrendingStockTabType.values()[i];
+                        break;
+                    case FX:
+                        lastFXTab = TrendingFXTabType.values()[i];
+                        break;
+                    default:
+                        throw new RuntimeException("Unhandled TrendingTabType." + lastType);
+                }
             }
 
             @Override public void onPageScrollStateChanged(int i)
@@ -324,7 +335,6 @@ public class TrendingMainFragment extends DashboardFragment
                                     }
                                     if (!oldType.equals(lastType))
                                     {
-                                        lastPosition = 1;
                                         clearChildFragmentManager();
                                         initViews();
                                     }
@@ -450,7 +460,6 @@ public class TrendingMainFragment extends DashboardFragment
                 userProfileCache.invalidate(currentUserId.toUserBaseKey());
             }
             lastType = TrendingTabType.FX;
-            lastPosition = 1;
         }
         else
         {
@@ -477,7 +486,7 @@ public class TrendingMainFragment extends DashboardFragment
             {
                 if (tabViewPager != null)
                 {
-                    lastPosition = selectedStockPageIndex;
+                    lastStockTab = TrendingStockTabType.values()[selectedStockPageIndex];
                     tabViewPager.setCurrentItem(selectedStockPageIndex, true);
                     selectedStockPageIndex = null;
                 }
@@ -494,7 +503,7 @@ public class TrendingMainFragment extends DashboardFragment
             {
                 if (tabViewPager != null)
                 {
-                    lastPosition = selectedFxPageIndex;
+                    lastFXTab = TrendingFXTabType.values()[selectedFxPageIndex];
                     tabViewPager.setCurrentItem(selectedFxPageIndex, true);
                     selectedFxPageIndex = null;
                 }
@@ -505,9 +514,17 @@ public class TrendingMainFragment extends DashboardFragment
                 actionBarOwnerMixin.setSpinnerSelection(TrendingTabType.FX.ordinal());
             }
         }
+        else if (lastType.equals(TrendingTabType.STOCK))
+        {
+            tabViewPager.setCurrentItem(lastStockTab.ordinal(), true);
+        }
+        else if (lastType.equals(TrendingTabType.FX))
+        {
+            tabViewPager.setCurrentItem(lastFXTab.ordinal(), true);
+        }
         else
         {
-            tabViewPager.setCurrentItem(lastPosition, true);
+            throw new RuntimeException("Unhandled TrendingTabType." + lastType);
         }
 
         if (routedExchangeId != null
@@ -528,15 +545,12 @@ public class TrendingMainFragment extends DashboardFragment
         if (assetClass.equals(AssetClass.STOCKS))
         {
             lastType = TrendingTabType.STOCK;
+            lastStockTab = TrendingStockTabType.getDefault();
         }
         else if (assetClass.equals(AssetClass.FX))
         {
             lastType = TrendingTabType.FX;
+            lastFXTab = TrendingFXTabType.getDefault();
         }
-    }
-
-    public static void setLastPosition(int lastPosition)
-    {
-        TrendingMainFragment.lastPosition = lastPosition;
     }
 }
