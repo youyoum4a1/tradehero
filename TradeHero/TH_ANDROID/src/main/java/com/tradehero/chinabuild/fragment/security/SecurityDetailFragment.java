@@ -1250,7 +1250,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 }
             };
         }
-        quoteServiceWrapper.getRepeatingQuoteDetails(securityId.getSecuritySymbol(), quoteDetailCallback);
+        quoteServiceWrapper.getRepeatingQuoteDetails(securityId, quoteDetailCallback);
 
         //time list
         if (timeListCallback == null) {
@@ -1278,7 +1278,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 }
             };
         }
-        quoteServiceWrapper.getQuoteTicks(securityId.getSecuritySymbol(), timeListCallback);
+        quoteServiceWrapper.getQuoteTicks(securityId, timeListCallback);
     }
 
     public void updateSecurityInfoByQuoteDetails(QuoteDetail quoteDetail) {

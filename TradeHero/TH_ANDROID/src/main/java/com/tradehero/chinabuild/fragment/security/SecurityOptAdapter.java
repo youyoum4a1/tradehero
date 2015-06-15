@@ -18,6 +18,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -28,7 +29,7 @@ import dagger.Lazy;
  */
 public class SecurityOptAdapter extends BaseAdapter {
 
-    @Inject public Lazy<PrettyTime> prettyTime;
+    static PrettyTime prettyTime;
 
     private ArrayList<SecurityUserOptDTO> opts = new ArrayList();
     private LayoutInflater inflater;
@@ -41,6 +42,7 @@ public class SecurityOptAdapter extends BaseAdapter {
         }
         inflater = LayoutInflater.from(context);
 
+        prettyTime = new PrettyTime();
         TRADE_TYPES[0] = context.getString(R.string.trade_list_button_buy);
         TRADE_TYPES[1] = context.getString(R.string.trade_list_button_sell);
     }
@@ -93,7 +95,7 @@ public class SecurityOptAdapter extends BaseAdapter {
         }
     }
 
-    public void addMoreData(ArrayList<SecurityUserOptDTO> opts){
+    public void addMoreData(List<SecurityUserOptDTO> opts){
         if(opts!=null){
             this.opts.addAll(opts);
             notifyDataSetChanged();
@@ -132,12 +134,16 @@ public class SecurityOptAdapter extends BaseAdapter {
             username.setText(securityUserOptDTO.userName);
 
             currency.setText(securityUserOptDTO.currencyDisplay);
-            price.setText(SecurityCompactDTO.getShortValue(securityUserOptDTO.price));
+            if (securityUserOptDTO.price != null) {
+                price.setText(SecurityCompactDTO.getShortValue(securityUserOptDTO.price));
+            } else {
+                price.setText("- -");
+            }
             THSignedNumber signedQuantity = THSignedNumber.builder(securityUserOptDTO.quantity)
                     .build();
             quantity.setText(signedQuantity.toString());
             quantity.setTextColor(signedQuantity.getColor());
-            date.setText(prettyTime.get().formatUnrounded(securityUserOptDTO.datetimeUtc));
+            date.setText(prettyTime.formatUnrounded(securityUserOptDTO.datetimeUtc));
 
             if (securityUserOptDTO.quantity > 0) {
                 optType.setText(TRADE_TYPES[0]);

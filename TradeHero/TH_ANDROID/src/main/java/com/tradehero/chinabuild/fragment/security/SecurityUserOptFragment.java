@@ -41,8 +41,6 @@ import retrofit.client.Response;
  */
 public class SecurityUserOptFragment extends DashboardFragment{
     @Inject QuoteServiceWrapper quoteServiceWrapper;
-    @Inject public Lazy<PrettyTime> prettyTime;
-
     private int upColor;
     private int normalColor;
     private int downColor;
@@ -122,8 +120,9 @@ public class SecurityUserOptFragment extends DashboardFragment{
         Callback<List<SecurityUserOptDTO>> callback = new Callback<List<SecurityUserOptDTO>>() {
             @Override
             public void success(List<SecurityUserOptDTO> optList, Response response) {
-                opts.addAll(optList);
+                adapter.addMoreData(optList);
                 adapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -136,10 +135,6 @@ public class SecurityUserOptFragment extends DashboardFragment{
 
     private void setOpts(){
         opts.clear();
-        for(int num=0;num<20;num++){
-            SecurityUserOptDTO dto = new SecurityUserOptDTO();
-            opts.add(dto);
-        }
         adapter.setData(opts);
     }
 
