@@ -100,6 +100,10 @@ public class QuoteServiceWrapper {
 
     }
 
+    public void getQuoteDetails(final SecurityId securityId, final Callback<QuoteDetail> callback) {
+        quoteService.getQuoteDetails(securityId.getExchange(), securityId.getSecuritySymbol(), callback);
+    }
+
     public void getQuoteTicks(final SecurityId securityId, final int quoteTicksDelay, final Callback<List<QuoteTick>> callback) {
         final RepeatingTaskCallBack<List<QuoteTick>> myCallback = new RepeatingTaskCallBack<>(callback, handler, quoteTicksDelay);
         if (quoteTicksTask != null) {

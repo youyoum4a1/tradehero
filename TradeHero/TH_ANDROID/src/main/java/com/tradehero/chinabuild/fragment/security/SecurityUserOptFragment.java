@@ -13,16 +13,20 @@ import android.widget.ListView;
 
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
+import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.SecurityUserOptDTO;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.tradehero.th.wxapi.WXEntryActivity;
@@ -38,6 +42,7 @@ import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /**
  * Created by palmer on 15/6/9.
@@ -59,6 +64,9 @@ public class SecurityUserOptFragment extends DashboardFragment{
 
     private int currentPage = 0;
     private final int perPage = 20;
+
+    SecurityCompactDTO securityCompactDTO;
+    QuoteDetail quoteDetail;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -134,6 +142,7 @@ public class SecurityUserOptFragment extends DashboardFragment{
             tradeHeroProgressBar.setVisibility(View.GONE);
         }
 
+        retriveLatestPriceInfo();
         return view;
     }
 
@@ -217,5 +226,83 @@ public class SecurityUserOptFragment extends DashboardFragment{
         Bundle bundle = new Bundle();
         bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userId);
         pushFragment(PortfolioFragment.class, bundle);
+    }
+
+    private Double getLatestPrice() {
+        try {
+            if (QuoteServiceWrapper.isChinaStock(securityId)) {
+                return quoteDetail.last;
+            } else {
+                return securityCompactDTO.lastPrice;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Double getRise() {
+        try {
+            if (QuoteServiceWrapper.isChinaStock(securityId)) {
+                return quoteDetail.last - quoteDetail.prec;
+            } else {
+                return securityCompactDTO.lastPrice - securityCompactDTO.previousClose;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private THSignedNumber getRisePercentage() {
+        try {
+            double roi = 0;
+            if (QuoteServiceWrapper.isChinaStock(securityId)) {
+                roi = quoteDetail.last - quoteDetail.prec;
+            } else {
+                roi = securityCompactDTO.lastPrice - securityCompactDTO.previousClose;
+            }
+            THSignedNumber roiPercentage = THSignedPercentage.builder(roi * 100)
+                    .withSign()
+                    .signTypeArrow()
+                    .build();
+            return roiPercentage;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private void retriveLatestPriceInfo() {
+        if (securityId == null) {
+            return;
+        }
+
+        if (QuoteServiceWrapper.isChinaStock(securityId)) {
+            Callback<QuoteDetail> callback = new Callback<QuoteDetail>() {
+                @Override
+                public void success(QuoteDetail detail, Response response) {
+                    quoteDetail = detail;
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    quoteDetail = null;
+                    Timber.e(error, "Error to get QuoteDetail");
+                }
+            };
+            quoteServiceWrapper.getQuoteDetails(securityId, callback);
+        } else {
+            Callback<SecurityCompactDTO> callback = new Callback<SecurityCompactDTO>() {
+                @Override
+                public void success(SecurityCompactDTO dto, Response response) {
+                    securityCompactDTO = dto;
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Timber.e(error, "Error to get SecurityCompactDTO");
+                    securityCompactDTO = null;
+                }
+            };
+            quoteServiceWrapper.getSecurityCompactDTO(securityId, callback);
+        }
     }
 }
