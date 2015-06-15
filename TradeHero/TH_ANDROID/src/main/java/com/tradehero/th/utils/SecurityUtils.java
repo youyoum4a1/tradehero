@@ -25,4 +25,9 @@ public class SecurityUtils
     {
         return String.format("%s:%s", securityId.getExchange(), securityId.getSecuritySymbol());
     }
+
+    public static boolean isFX(@NonNull SecurityId securityId)
+    {
+        return securityId.getExchange().equals(FX_EXCHANGE);
+    }
 }

@@ -23,6 +23,7 @@ import com.tradehero.th.models.discussion.OpenWatchlistUserAction;
 import com.tradehero.th.models.discussion.SecurityUserAction;
 import com.tradehero.th.models.discussion.UpdateStockAlertUserAction;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
+import com.tradehero.th.utils.SecurityUtils;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -127,7 +128,21 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
         if (securityId != null)
         {
             menuInflater.inflate(R.menu.timeline_stock_popup_menu, popupMenu.getMenu());
+            if (SecurityUtils.isFX(securityId))
+            {
+                MenuItem watchlistItem = popupMenu.getMenu().findItem(R.id.timeline_action_add_to_watchlist);
+                if (watchlistItem != null)
+                {
+                    watchlistItem.setVisible(false);
+                }
+                MenuItem alertItem = popupMenu.getMenu().findItem(R.id.timeline_action_add_alert);
+                if (alertItem != null)
+                {
+                    alertItem.setVisible(false);
+                }
+            }
         }
+
 
         return socialShareHelper.canTranslate(discussionCompactDTO)
                 .observeOn(AndroidSchedulers.mainThread())
