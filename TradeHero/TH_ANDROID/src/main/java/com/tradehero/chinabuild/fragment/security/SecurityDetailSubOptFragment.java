@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.SecurityUserOptDTO;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -75,14 +74,15 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
         moreTV.setOnClickListener(this);
         initViews(view);
 
-
-        SecurityDetailSubCache securityDetailSubCache = SecurityDetailSubCache.getInstance();
-        if(securityDetailSubCache.isSecuritySame(securityId)){
-            if(securityDetailSubCache.getTradeRecordList()!=null && securityDetailSubCache.getTradeRecordList().size()>0){
-                displayTrades(securityDetailSubCache.getTradeRecordList());
+        if(SecurityDetailSubCache.getInstance().isSecuritySame(securityId)){
+            if(SecurityDetailSubCache.getInstance().getTradeRecordList()!=null && SecurityDetailSubCache.getInstance().getTradeRecordList().size()>0){
+                displayTrades(SecurityDetailSubCache.getInstance().getTradeRecordList());
             } else {
                 retrieveTradeRecords();
             }
+        } else {
+            SecurityDetailSubCache.getInstance().clearAll();
+            retrieveTradeRecords();
         }
 
         return view;
@@ -205,6 +205,7 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
         if(tradeRecordList == null){
             emptyIV.setVisibility(View.VISIBLE);
             optsLL.setVisibility(View.GONE);
+            return;
         }else{
             emptyIV.setVisibility(View.GONE);
             optsLL.setVisibility(View.VISIBLE);

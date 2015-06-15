@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.SecurityUserPositionDTO;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -37,11 +36,10 @@ import retrofit.client.Response;
  */
 public class SecurityDetailSubPositionFragment extends Fragment implements View.OnClickListener{
 
-    @Inject Analytics analytics;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
 
     private ImageView emptyIV;
-    private LinearLayout optsLL;
+    private LinearLayout positionsLL;
     private TextView moreTV;
 
     private SecurityId securityId;
@@ -72,13 +70,22 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_security_detail_position, container, false);
         emptyIV = (ImageView)view.findViewById(R.id.imageview_sub_position_empty);
-        optsLL = (LinearLayout)view.findViewById(R.id.linearlayout_positions);
+        positionsLL = (LinearLayout)view.findViewById(R.id.linearlayout_positions);
         moreTV = (TextView)view.findViewById(R.id.textview_more);
         moreTV.setOnClickListener(this);
 
         initViews(view);
 
-        retrieveSharePositions();
+        if(SecurityDetailSubCache.getInstance().isSecuritySame(securityId)){
+            if(SecurityDetailSubCache.getInstance().getSharePositionList()!= null && SecurityDetailSubCache.getInstance().getSharePositionList().size() > 0){
+                displayPositions(SecurityDetailSubCache.getInstance().getSharePositionList());
+            } else {
+                retrieveSharePositions();
+            }
+        } else {
+            SecurityDetailSubCache.getInstance().clearAll();
+            retrieveSharePositions();
+        }
 
         return view;
     }
@@ -136,20 +143,37 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
         
     }
 
-    void displayUserPostions(List<SecurityUserPositionDTO> sharePositionList) {
-        if(emptyIV ==null || optsLL == null){
+    private void retrieveSharePositions() {
+        Callback<List<SecurityUserPositionDTO>> callback = new Callback<List<SecurityUserPositionDTO>>() {
+            @Override
+            public void success(List<SecurityUserPositionDTO> sharePositionList, Response response) {
+                displayPositions(sharePositionList);
+                SecurityDetailSubCache.getInstance().setSharePositionList(sharePositionList);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        };
+        quoteServiceWrapper.getSharePosition(securityId, 1, 5, callback);
+    }
+
+    private void displayPositions(List<SecurityUserPositionDTO> sharePositionList){
+        if(emptyIV==null || positionsLL == null){
             return;
         }
         if(sharePositionList == null){
             emptyIV.setVisibility(View.VISIBLE);
-            optsLL.setVisibility(View.GONE);
+            positionsLL.setVisibility(View.GONE);
+            return;
         }else{
             emptyIV.setVisibility(View.GONE);
-            optsLL.setVisibility(View.VISIBLE);
+            positionsLL.setVisibility(View.VISIBLE);
         }
-        if(sharePositionList.size()<5){
+        if(sharePositionList.size() < 5){
             moreTV.setVisibility(View.GONE);
-        }else{
+        } else {
             moreTV.setVisibility(View.VISIBLE);
         }
 
@@ -159,21 +183,6 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
         for (int i = sharePositionList.size(); i < viewHolders.length; i++) {
             viewHolders[i].gone();
         }
-    }
-
-    private void retrieveSharePositions() {
-        Callback<List<SecurityUserPositionDTO>> callback = new Callback<List<SecurityUserPositionDTO>>() {
-            @Override
-            public void success(List<SecurityUserPositionDTO> sharePositionList, Response response) {
-                displayUserPostions(sharePositionList);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        };
-        quoteServiceWrapper.getSharePosition(securityId, 1, 5, callback);
     }
 
     @Override
