@@ -117,9 +117,7 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         moreTV.setOnClickListener(this);
         emptyLL = (LinearLayout) view.findViewById(R.id.linearlayout_empty);
         emptyLL.setOnClickListener(this);
-        emptyLL.setVisibility(View.VISIBLE);
         discussLL = (LinearLayout) view.findViewById(R.id.linearlayout_discusses);
-        discussLL.setVisibility(View.GONE);
         initViews(view);
         return view;
     }
@@ -247,7 +245,6 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         if (getActivity() == null) {
             return;
         }
-
 
         if (keyList.size() < 0) {
             emptyLL.setVisibility(View.VISIBLE);
