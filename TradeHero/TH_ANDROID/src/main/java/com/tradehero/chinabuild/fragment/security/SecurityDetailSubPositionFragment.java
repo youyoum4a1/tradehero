@@ -196,7 +196,7 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
     }
 
     private void enterUserPositionsPage(){
-        Bundle bundle = new Bundle();
+        Bundle bundle = getArguments();
         pushFragment(SecurityUserPositionFragment.class, bundle);
     }
 
