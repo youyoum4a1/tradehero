@@ -1,10 +1,8 @@
 package com.tradehero.chinabuild.fragment.security;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,35 +12,34 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.tradehero.chinabuild.data.SecurityComment;
-import com.tradehero.chinabuild.data.SecurityCommentList;
 import com.tradehero.chinabuild.fragment.message.SecurityDiscussSendFragment;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
+import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.network.service.DiscussionServiceWrapper;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.utils.DaggerUtils;
 
+import org.jetbrains.annotations.NotNull;
 import org.ocpsoft.prettytime.PrettyTime;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.Lazy;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by palmer on 15/6/10.
  */
-public class SecurityDetailSubDiscussFragment extends Fragment implements View.OnClickListener {
+public class SecurityDetailSubDiscussFragment extends Fragment implements View.OnClickListener, DiscussionListCacheNew.DiscussionKeyListListener {
 
     @Inject
     Analytics analytics;
@@ -98,8 +95,8 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
     private View seperateV4;
 
     private PaginatedDiscussionListKey discussionListKey;
-    @Inject
-    DiscussionServiceWrapper discussionServiceWrapper;
+    @Inject DiscussionListCacheNew discussionListCache;
+    @Inject DiscussionCache discussionCache;
 
     private DiscussionViewHolder[] viewHolders = new DiscussionViewHolder[5];
 
@@ -235,57 +232,60 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
     }
 
     public void fetchSecurityDiscuss(boolean force) {
-        if (securityDTOId == -1) {
-            return;
-        }
         if (discussionListKey == null) {
-            discussionListKey = new PaginatedDiscussionListKey(DiscussionType.SECURITY, securityDTOId, 1, 5);
+            discussionListKey = new PaginatedDiscussionListKey(DiscussionType.SECURITY, securityDTOId, 1, 6);
         }
+        detachSecurityDiscuss();
+        discussionListCache.register(discussionListKey, this);
+        discussionListCache.getOrFetchAsync(discussionListKey, force);
 
-        Callback<SecurityCommentList> callback = new Callback<SecurityCommentList>() {
-            @Override
-            public void success(SecurityCommentList securityCommentList, Response response) {
-                if (securityCommentList == null) {
-                    return;
-                }
-                updateDiscussionList(securityCommentList);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        };
-        discussionServiceWrapper.getSecurityComment(securityId, discussionListKey, callback);
     }
 
-    private void updateDiscussionList(SecurityCommentList securityCommentList) {
+    private void detachSecurityDiscuss() {
+        discussionListCache.unregister(this);
+    }
+
+    private void updateDiscussionList(DiscussionKeyList keyList) {
         if (getActivity() == null) {
             return;
         }
-        Intent intent = new Intent(SecurityDetailFragment.ACTION_UPDATE_DISCUSSION_COUNT);
-        intent.putExtra(SecurityDetailFragment.BUNDLE_KEY_DISCUSSION_COUNT, securityCommentList.commentCount);
-        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
 
-        List<SecurityComment> comments = securityCommentList.comments;
-        if (comments.size() < 0) {
+
+        if (keyList.size() < 0) {
             emptyLL.setVisibility(View.VISIBLE);
             discussLL.setVisibility(View.GONE);
         } else {
             emptyLL.setVisibility(View.GONE);
             discussLL.setVisibility(View.VISIBLE);
-            if (comments.size() >= 5) {
+            if (keyList.size() >= 5) {
                 moreTV.setVisibility(View.VISIBLE);
             } else {
                 moreTV.setVisibility(View.GONE);
             }
         }
-        for (int i = 0; i < comments.size(); i++) {
-            viewHolders[i].displayContent(comments.get(i), prettyTime.get());
+        int maxLength = keyList.size() > 5 ? 5 : keyList.size();
+
+        for (int i = 0; i < maxLength; i++) {
+            DiscussionDTO dto = (DiscussionDTO) discussionCache.get(keyList.get(i));
+            viewHolders[i].displayContent(dto, prettyTime.get());
         }
-        for (int i = comments.size(); i < viewHolders.length; i++) {
+        for (int i = maxLength; i < viewHolders.length; i++) {
             viewHolders[i].gone();
         }
+    }
+
+    @Override
+    public void onDTOReceived(@NotNull DiscussionListKey key, @NotNull DiscussionKeyList value) {
+        if (value == null) {
+            return;
+        }
+        updateDiscussionList(value);
+
+    }
+
+    @Override
+    public void onErrorThrown(@NotNull DiscussionListKey key, @NotNull Throwable error) {
+        //
     }
 
     static class DiscussionViewHolder {
@@ -294,38 +294,39 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         private TextView name;
         private TextView content;
         private TextView date;
-        private View seprator;
+        private View separator;
 
         public DiscussionViewHolder(View parent, ImageView avatar, TextView name, TextView content,
-                                    TextView date, View seprator) {
+                                    TextView date, View separator) {
             this.parent = parent;
             this.avatar = avatar;
             this.name = name;
             this.content = content;
             this.date = date;
-            this.seprator = seprator;
+            this.separator = separator;
         }
 
         public void gone() {
             parent.setVisibility(View.GONE);
-            if (seprator != null) {
-                seprator.setVisibility(View.GONE);
+            if (separator != null) {
+                separator.setVisibility(View.GONE);
             }
         }
 
-        public void displayContent(SecurityComment comment, PrettyTime prettyTime) {
-            if (comment == null) {
+        public void displayContent(DiscussionDTO discussionDTO, PrettyTime prettyTime) {
+            if (discussionDTO == null) {
                 return;
             }
             parent.setVisibility(View.VISIBLE);
-            if (seprator != null) {
-                seprator.setVisibility(View.VISIBLE);
+            if (separator != null) {
+                separator.setVisibility(View.VISIBLE);
             }
-            ImageLoader.getInstance().displayImage(comment.userPicUrl, avatar,
+            ImageLoader.getInstance().displayImage(discussionDTO.user.picture, avatar,
                     UniversalImageLoader.getAvatarImageLoaderOptions());
-            name.setText(comment.userName);
-            content.setText(comment.text);
-            date.setText(prettyTime.formatUnrounded(comment.createdAtUtc));
+            name.setText(discussionDTO.user.displayName);
+            content.setText(discussionDTO.text);
+            date.setText(prettyTime.formatUnrounded(discussionDTO.createdAtUtc));
+
         }
     }
 }

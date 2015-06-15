@@ -3,9 +3,9 @@ package com.tradehero.th.network.service;
 import com.tradehero.chinabuild.data.KLineItem;
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.QuoteTick;
-import com.tradehero.chinabuild.data.SharePosition;
+import com.tradehero.chinabuild.data.SecurityUserPositionDTO;
 import com.tradehero.chinabuild.data.SignedQuote;
-import com.tradehero.chinabuild.data.TradeRecord;
+import com.tradehero.chinabuild.data.SecurityUserOptDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 
 import java.util.List;
@@ -86,12 +86,12 @@ interface QuoteService
                                @Path("securitySymbol") String securitySymbol,
                                @Query("page") Integer page,
                                @Query("perPage") Integer perPage,
-                               Callback<List<TradeRecord>> callback);
+                               Callback<List<SecurityUserOptDTO>> callback);
 
     @GET("/cn/v2/securities/{exchange}/{securitySymbol}/positions")
     void getSharePositions(@Path("exchange") String exchange,
                            @Path("securitySymbol") String securitySymbol,
                            @Query("page") Integer page,
                            @Query("perPage") Integer perPage,
-                           Callback<List<SharePosition>> callback);
+                           Callback<List<SecurityUserPositionDTO>> callback);
 }

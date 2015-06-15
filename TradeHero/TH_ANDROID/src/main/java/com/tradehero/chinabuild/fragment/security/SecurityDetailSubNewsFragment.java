@@ -194,7 +194,7 @@ public class SecurityDetailSubNewsFragment extends Fragment implements View.OnCl
 
     private void fetchSecurityNews(boolean force) {
         if (listKey == null) {
-            listKey = new NewsItemListSecurityKey(new SecurityIntegerId(securityDTOId), 1, 5);
+            listKey = new NewsItemListSecurityKey(new SecurityIntegerId(securityDTOId), 1, 6);
         }
 
         newsTitleCache.unregister(newsCacheListener);
@@ -217,10 +217,12 @@ public class SecurityDetailSubNewsFragment extends Fragment implements View.OnCl
             moreTV.setVisibility(View.VISIBLE);
         }
 
-        for (int i = 0; i < newsList.getData().size(); i++) {
+        int maxLength = newsList.getData().size() > 5 ? 5 : newsList.getData().size();
+
+        for (int i = 0; i < maxLength; i++) {
             newsViewHolders[i].displayNews(newsList.getData().get(i), prettyTime.get());
         }
-        for (int i = newsList.getData().size(); i < newsViewHolders.length; i++) {
+        for (int i = maxLength; i < newsViewHolders.length; i++) {
             newsViewHolders[i].gone();
         }
     }

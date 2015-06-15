@@ -5,13 +5,14 @@ import java.util.Date;
 /**
  * Created by liangyx on 6/12/15.
  */
-public class TradeRecord {
-    public Integer tradeId;
+public class SecurityUserPositionDTO {
+    public Integer positionId;
     public Integer userId;
-    public String userPicUrl;
     public String userName;
+    public String userPicUrl;
     public Integer quantity;
     public Double price;
     public String currencyDisplay;
-    public Date datetimeUtc;
+    public Double roi;
+    public Date openAtUtc;
 }

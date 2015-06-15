@@ -12,21 +12,36 @@ import android.widget.ListView;
 
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
+import com.tradehero.chinabuild.data.SecurityUserOptDTO;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.th.R;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.tradehero.th.wxapi.WXEntryActivity;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import dagger.Lazy;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by palmer on 15/6/9.
  */
 public class SecurityUserOptFragment extends DashboardFragment{
+    @Inject QuoteServiceWrapper quoteServiceWrapper;
+    @Inject public Lazy<PrettyTime> prettyTime;
 
     private int upColor;
     private int normalColor;
@@ -34,6 +49,9 @@ public class SecurityUserOptFragment extends DashboardFragment{
     private TradeHeroProgressBar tradeHeroProgressBar;
     private PullToRefreshListView optsLV;
     private ImageView emptyIV;
+
+    private SecurityId securityId;
+
 
     private SecurityOptAdapter adapter;
     private ArrayList<SecurityUserOptDTO> opts = new ArrayList();
@@ -44,6 +62,13 @@ public class SecurityUserOptFragment extends DashboardFragment{
         upColor = getResources().getColor(R.color.bar_up);
         normalColor = getResources().getColor(R.color.bar_normal);
         downColor = getResources().getColor(R.color.bar_down);
+
+        Bundle args = getArguments();
+        Bundle securityIdBundle = args.getBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE);
+        if (securityIdBundle != null) {
+            securityId = new SecurityId(securityIdBundle);
+        }
+
     }
 
     @Override
@@ -87,6 +112,27 @@ public class SecurityUserOptFragment extends DashboardFragment{
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        retrieveUserOpts();
+    }
+
+    private void retrieveUserOpts() {
+        Callback<List<SecurityUserOptDTO>> callback = new Callback<List<SecurityUserOptDTO>>() {
+            @Override
+            public void success(List<SecurityUserOptDTO> optList, Response response) {
+                opts.addAll(optList);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        };
+        quoteServiceWrapper.getTradeRecords(securityId, 1, 20, callback);
+    }
 
     private void setOpts(){
         opts.clear();
