@@ -71,7 +71,7 @@ public class SecurityPostionAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void setData(ArrayList<SecurityUserPositionDTO> opts) {
+    public void setData(List<SecurityUserPositionDTO> opts) {
         if (opts != null) {
             this.opts.clear();
             this.opts.addAll(opts);

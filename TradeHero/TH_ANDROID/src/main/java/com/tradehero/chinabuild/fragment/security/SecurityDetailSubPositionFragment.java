@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.SecurityUserPositionDTO;
+import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -44,7 +45,9 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
 
     private SecurityId securityId;
 
-    PositionViewHolder[] viewHolders = new PositionViewHolder[5];
+    private PositionViewHolder[] viewHolders = new PositionViewHolder[5];
+
+    private List<SecurityUserPositionDTO> sharePositionList = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,7 +94,7 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
     }
 
     private void initViews(View view) {
-        View parent = view.findViewById(R.id.linearlayout_position0);
+        View parent0 = view.findViewById(R.id.linearlayout_position0);
         ImageView avatar = (ImageView) view.findViewById(R.id.imageview_security_position_avator0);
         TextView username = (TextView) view.findViewById(R.id.textview_security_position_name0);
         TextView quantity = (TextView) view.findViewById(R.id.textview_security_position_amount0);
@@ -99,9 +102,17 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
         TextView price = (TextView) view.findViewById(R.id.textview_security_position_price0);
         TextView tvRoi = (TextView) view.findViewById(R.id.textview_security_position_percent0);
         View separate = view.findViewById(R.id.line0);
-        viewHolders[0] = new PositionViewHolder(parent, avatar, username, quantity, currency, price, tvRoi, separate);
+        viewHolders[0] = new PositionViewHolder(parent0, avatar, username, quantity, currency, price, tvRoi, separate);
+        parent0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(sharePositionList!=null && sharePositionList.size()>0){
+                    enterUserMainPage(sharePositionList.get(0).userId);
+                }
+            }
+        });
 
-        parent = view.findViewById(R.id.linearlayout_position1);
+        View parent1 = view.findViewById(R.id.linearlayout_position1);
         avatar = (ImageView) view.findViewById(R.id.imageview_security_position_avator1);
         username = (TextView) view.findViewById(R.id.textview_security_position_name1);
         quantity = (TextView) view.findViewById(R.id.textview_security_position_amount1);
@@ -109,9 +120,17 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
         price = (TextView) view.findViewById(R.id.textview_security_position_price1);
         tvRoi = (TextView) view.findViewById(R.id.textview_security_position_percent1);
         separate = view.findViewById(R.id.line1);
-        viewHolders[1] = new PositionViewHolder(parent, avatar, username, quantity, currency, price, tvRoi, separate);
+        viewHolders[1] = new PositionViewHolder(parent1, avatar, username, quantity, currency, price, tvRoi, separate);
+        parent1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(sharePositionList!=null && sharePositionList.size()>1){
+                    enterUserMainPage(sharePositionList.get(1).userId);
+                }
+            }
+        });
 
-        parent = view.findViewById(R.id.linearlayout_position2);
+        View parent2 = view.findViewById(R.id.linearlayout_position2);
         avatar = (ImageView) view.findViewById(R.id.imageview_security_position_avator2);
         username = (TextView) view.findViewById(R.id.textview_security_position_name2);
         quantity = (TextView) view.findViewById(R.id.textview_security_position_amount2);
@@ -119,9 +138,17 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
         price = (TextView) view.findViewById(R.id.textview_security_position_price2);
         tvRoi = (TextView) view.findViewById(R.id.textview_security_position_percent2);
         separate = view.findViewById(R.id.line2);
-        viewHolders[2] = new PositionViewHolder(parent, avatar, username, quantity, currency, price, tvRoi, separate);
+        viewHolders[2] = new PositionViewHolder(parent2, avatar, username, quantity, currency, price, tvRoi, separate);
+        parent2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(sharePositionList!=null && sharePositionList.size()>2){
+                    enterUserMainPage(sharePositionList.get(2).userId);
+                }
+            }
+        });
 
-        parent = view.findViewById(R.id.linearlayout_position3);
+        View parent3 = view.findViewById(R.id.linearlayout_position3);
         avatar = (ImageView) view.findViewById(R.id.imageview_security_position_avator3);
         username = (TextView) view.findViewById(R.id.textview_security_position_name3);
         quantity = (TextView) view.findViewById(R.id.textview_security_position_amount3);
@@ -129,9 +156,17 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
         price = (TextView) view.findViewById(R.id.textview_security_position_price3);
         tvRoi = (TextView) view.findViewById(R.id.textview_security_position_percent3);
         separate = view.findViewById(R.id.line3);
-        viewHolders[3] = new PositionViewHolder(parent, avatar, username, quantity, currency, price, tvRoi, separate);
+        viewHolders[3] = new PositionViewHolder(parent3, avatar, username, quantity, currency, price, tvRoi, separate);
+        parent3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(sharePositionList!=null && sharePositionList.size()>3){
+                    enterUserMainPage(sharePositionList.get(3).userId);
+                }
+            }
+        });
 
-        parent = view.findViewById(R.id.linearlayout_position4);
+        View parent4 = view.findViewById(R.id.linearlayout_position4);
         avatar = (ImageView) view.findViewById(R.id.imageview_security_position_avator4);
         username = (TextView) view.findViewById(R.id.textview_security_position_name4);
         quantity = (TextView) view.findViewById(R.id.textview_security_position_amount4);
@@ -139,7 +174,15 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
         price = (TextView) view.findViewById(R.id.textview_security_position_price4);
         tvRoi = (TextView) view.findViewById(R.id.textview_security_position_percent4);
         separate = view.findViewById(R.id.line4);
-        viewHolders[4] = new PositionViewHolder(parent, avatar, username, quantity, currency, price, tvRoi, separate);
+        viewHolders[4] = new PositionViewHolder(parent4, avatar, username, quantity, currency, price, tvRoi, separate);
+        parent4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(sharePositionList!=null && sharePositionList.size()>4){
+                    enterUserMainPage(sharePositionList.get(4).userId);
+                }
+            }
+        });
         
     }
 
@@ -163,6 +206,7 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
         if(emptyIV==null || positionsLL == null){
             return;
         }
+        this.sharePositionList = sharePositionList;
         if(sharePositionList == null || sharePositionList.size()<=0){
             emptyIV.setVisibility(View.VISIBLE);
             positionsLL.setVisibility(View.GONE);
@@ -268,5 +312,12 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
                 separate.setVisibility(View.GONE);
             }
         }
+    }
+
+    private void enterUserMainPage(int userId) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
+        bundle.putBoolean(UserMainPage.BUNDLE_NEED_SHOW_PROFILE, false);
+        pushFragment(UserMainPage.class, bundle);
     }
 }

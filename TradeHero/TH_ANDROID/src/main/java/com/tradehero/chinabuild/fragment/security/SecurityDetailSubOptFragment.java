@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.SecurityUserOptDTO;
+import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -24,6 +25,7 @@ import com.tradehero.th.utils.DaggerUtils;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -50,6 +52,8 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
     private TradeRecordViewHolder[] viewHolders = new TradeRecordViewHolder[5];
 
     private static String[] TRADE_TYPES = new  String[2];
+
+    private List<SecurityUserOptDTO> tradeRecordList = new ArrayList();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,7 +101,7 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
     }
 
     private void initViews(View view) {
-        View parent = view.findViewById(R.id.linearlayout_opt0);
+        View parent0 = view.findViewById(R.id.linearlayout_opt0);
         ImageView avatar = (ImageView) view.findViewById(R.id.imageview_security_opt_avator0);
         TextView username = (TextView) view.findViewById(R.id.textview_security_opt_name0);
         TextView tradeType = (TextView) view.findViewById(R.id.textview_security_opt_opt0);
@@ -106,9 +110,18 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
         TextView quantity = (TextView) view.findViewById(R.id.textview_security_opt_mount0);
         TextView date = (TextView) view.findViewById(R.id.textview_security_opt_date0);
         View separate = view.findViewById(R.id.line0);
-        viewHolders[0] = new TradeRecordViewHolder(parent, avatar, username, tradeType, currency, cost, quantity, date, separate);
+        viewHolders[0] = new TradeRecordViewHolder(parent0, avatar, username, tradeType, currency, cost, quantity, date, separate);
+        parent0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(tradeRecordList!=null && tradeRecordList.size() > 0){
+                    SecurityUserOptDTO dto = tradeRecordList.get(0);
+                    enterUserMainPage(dto.userId);
+                }
+            }
+        });
 
-        parent = view.findViewById(R.id.linearlayout_opt1);
+        View parent1 = view.findViewById(R.id.linearlayout_opt1);
         avatar = (ImageView) view.findViewById(R.id.imageview_security_opt_avator1);
         username = (TextView) view.findViewById(R.id.textview_security_opt_name1);
         tradeType = (TextView) view.findViewById(R.id.textview_security_opt_opt1);
@@ -117,9 +130,18 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
         quantity = (TextView) view.findViewById(R.id.textview_security_opt_mount1);
         date = (TextView) view.findViewById(R.id.textview_security_opt_date1);
         separate = view.findViewById(R.id.line1);
-        viewHolders[1] = new TradeRecordViewHolder(parent, avatar, username, tradeType, currency, cost, quantity, date, separate);
+        viewHolders[1] = new TradeRecordViewHolder(parent1, avatar, username, tradeType, currency, cost, quantity, date, separate);
+        parent1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(tradeRecordList!=null && tradeRecordList.size() > 1){
+                    SecurityUserOptDTO dto = tradeRecordList.get(1);
+                    enterUserMainPage(dto.userId);
+                }
+            }
+        });
 
-        parent = view.findViewById(R.id.linearlayout_opt2);
+        View parent2 = view.findViewById(R.id.linearlayout_opt2);
         avatar = (ImageView) view.findViewById(R.id.imageview_security_opt_avator2);
         username = (TextView) view.findViewById(R.id.textview_security_opt_name2);
         tradeType = (TextView) view.findViewById(R.id.textview_security_opt_opt2);
@@ -128,9 +150,18 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
         quantity = (TextView) view.findViewById(R.id.textview_security_opt_mount2);
         date = (TextView) view.findViewById(R.id.textview_security_opt_date2);
         separate = view.findViewById(R.id.line2);
-        viewHolders[2] = new TradeRecordViewHolder(parent, avatar, username, tradeType, currency, cost, quantity, date, separate);
+        viewHolders[2] = new TradeRecordViewHolder(parent2, avatar, username, tradeType, currency, cost, quantity, date, separate);
+        parent2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(tradeRecordList!=null && tradeRecordList.size() > 2){
+                    SecurityUserOptDTO dto = tradeRecordList.get(2);
+                    enterUserMainPage(dto.userId);
+                }
+            }
+        });
 
-        parent = view.findViewById(R.id.linearlayout_opt3);
+        View parent3 = view.findViewById(R.id.linearlayout_opt3);
         avatar = (ImageView) view.findViewById(R.id.imageview_security_opt_avator3);
         username = (TextView) view.findViewById(R.id.textview_security_opt_name3);
         tradeType = (TextView) view.findViewById(R.id.textview_security_opt_opt3);
@@ -139,9 +170,18 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
         quantity = (TextView) view.findViewById(R.id.textview_security_opt_mount3);
         date = (TextView) view.findViewById(R.id.textview_security_opt_date3);
         separate = view.findViewById(R.id.line3);
-        viewHolders[3] = new TradeRecordViewHolder(parent, avatar, username, tradeType, currency, cost, quantity, date, separate);
+        viewHolders[3] = new TradeRecordViewHolder(parent3, avatar, username, tradeType, currency, cost, quantity, date, separate);
+        parent3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(tradeRecordList!=null && tradeRecordList.size() > 3){
+                    SecurityUserOptDTO dto = tradeRecordList.get(3);
+                    enterUserMainPage(dto.userId);
+                }
+            }
+        });
 
-        parent = view.findViewById(R.id.linearlayout_opt4);
+        View parent4 = view.findViewById(R.id.linearlayout_opt4);
         avatar = (ImageView) view.findViewById(R.id.imageview_security_opt_avator4);
         username = (TextView) view.findViewById(R.id.textview_security_opt_name4);
         tradeType = (TextView) view.findViewById(R.id.textview_security_opt_opt4);
@@ -150,8 +190,24 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
         quantity = (TextView) view.findViewById(R.id.textview_security_opt_mount4);
         date = (TextView) view.findViewById(R.id.textview_security_opt_date4);
         separate = view.findViewById(R.id.line4);
-        viewHolders[4] = new TradeRecordViewHolder(parent, avatar, username, tradeType, currency, cost, quantity, date, separate);
+        viewHolders[4] = new TradeRecordViewHolder(parent4, avatar, username, tradeType, currency, cost, quantity, date, separate);
+        parent4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(tradeRecordList!=null && tradeRecordList.size() > 4){
+                    SecurityUserOptDTO dto = tradeRecordList.get(4);
+                    enterUserMainPage(dto.userId);
+                }
+            }
+        });
         
+    }
+
+    private void enterUserMainPage(int userId) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
+        bundle.putBoolean(UserMainPage.BUNDLE_NEED_SHOW_PROFILE, false);
+        pushFragment(UserMainPage.class, bundle);
     }
 
 
@@ -202,6 +258,7 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
         if(emptyIV ==null || optsLL == null){
             return;
         }
+        this.tradeRecordList = tradeRecordList;
         if(tradeRecordList == null || tradeRecordList.size()<=0){
             emptyIV.setVisibility(View.VISIBLE);
             optsLL.setVisibility(View.GONE);

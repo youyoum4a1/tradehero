@@ -29,6 +29,8 @@
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"
             android:textColor="#1789d5"
+            android:singleLine="true"
+            android:maxEms="6"
             android:textSize="10sp" />
     </LinearLayout>
 

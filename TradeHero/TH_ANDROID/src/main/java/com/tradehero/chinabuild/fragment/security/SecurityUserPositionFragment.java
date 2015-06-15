@@ -15,8 +15,8 @@ import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.SecurityUserPositionDTO;
-import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
+import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -24,12 +24,11 @@ import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.tradehero.th.wxapi.WXEntryActivity;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +37,6 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 /**
  * Created by palmer on 15/6/9.
@@ -60,8 +58,11 @@ public class SecurityUserPositionFragment extends DashboardFragment {
     private SecurityId securityId;
     private String securityName;
 
-    SecurityCompactDTO securityCompactDTO;
-    QuoteDetail quoteDetail;
+    private SecurityCompactDTO securityCompactDTO;
+    private QuoteDetail quoteDetail;
+
+    private int currentPage = 1;
+    private final int perPage = 20;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,8 +85,6 @@ public class SecurityUserPositionFragment extends DashboardFragment {
         if(securityId!=null) {
             setHeadViewMiddleMain(securityName + "(" + securityId.getSecuritySymbol() + ")");
         }
-        setHeadViewMiddleSub("999 +10.10% +10.10");
-        setHeadViewMiddleSubTextColor(upColor);
         setHeadViewRight0(R.drawable.search);
         setHeadViewRight1(R.drawable.share);
     }
@@ -99,33 +98,46 @@ public class SecurityUserPositionFragment extends DashboardFragment {
         if(adapter==null){
             adapter = new SecurityPostionAdapter(getActivity(), opts);
         }
-        positionsLV.setMode(PullToRefreshBase.Mode.BOTH);
         positionsLV.setAdapter(adapter);
-        positionsLV.getRefreshableView().setEmptyView(emptyIV);
+
         positionsLV.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                onFinish();
+                retrieveUserPositions();
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-                onFinish();
+                retrieveUserPositionsMore();
             }
 
-            private void onFinish() {
-                positionsLV.onRefreshComplete();
-            }
+
         });
         positionsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (adapter != null) {
-                    SecurityUserPositionDTO securityUserPositionDTO = adapter.getItem(i);
-                    jumpToUserPage(securityUserPositionDTO.userId);
+                    int index = --i ;
+                    if (i < 0) {
+                        i = 0;
+                    }
+                    SecurityUserPositionDTO securityUserPositionDTO = adapter.getItem(index);
+                    enterUserMainPage(securityUserPositionDTO.userId);
                 }
             }
         });
+
+        if(adapter.getCount() > 0){
+            tradeHeroProgressBar.stopLoading();
+            tradeHeroProgressBar.setVisibility(View.GONE);
+            positionsLV.getRefreshableView().setEmptyView(emptyIV);
+            positionsLV.setMode(PullToRefreshBase.Mode.BOTH);
+        } else {
+            tradeHeroProgressBar.startLoading();
+            tradeHeroProgressBar.setVisibility(View.VISIBLE);
+            positionsLV.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+            retrieveUserPositions();
+        }
         return view;
     }
 
@@ -140,17 +152,48 @@ public class SecurityUserPositionFragment extends DashboardFragment {
         Callback<List<SecurityUserPositionDTO>> callback = new Callback<List<SecurityUserPositionDTO>>() {
             @Override
             public void success(List<SecurityUserPositionDTO> optList, Response response) {
-                adapter.addMoreData(optList);
-                adapter.notifyDataSetChanged();
-
+                adapter.setData(optList);
+                positionsLV.setMode(PullToRefreshBase.Mode.BOTH);
+                onFinish();
             }
 
             @Override
             public void failure(RetrofitError error) {
+                positionsLV.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+                onFinish();
+            }
 
+            private void onFinish() {
+                tradeHeroProgressBar.stopLoading();
+                tradeHeroProgressBar.setVisibility(View.GONE);
+                positionsLV.getRefreshableView().setEmptyView(emptyIV);
+                positionsLV.onRefreshComplete();
             }
         };
-        quoteServiceWrapper.getSharePosition(securityId, 1, 20, callback);
+        currentPage = 1;
+        quoteServiceWrapper.getSharePosition(securityId, currentPage, perPage, callback);
+    }
+
+    private void retrieveUserPositionsMore() {
+        Callback<List<SecurityUserPositionDTO>> callback = new Callback<List<SecurityUserPositionDTO>>() {
+            @Override
+            public void success(List<SecurityUserPositionDTO> optList, Response response) {
+                adapter.addMoreData(optList);
+                onFinish();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                currentPage--;
+                onFinish();
+            }
+
+            private void onFinish() {
+                positionsLV.onRefreshComplete();
+            }
+        };
+        currentPage++;
+        quoteServiceWrapper.getSharePosition(securityId, currentPage, perPage, callback);
     }
 
     private void enterWechatSharePage(){
@@ -177,13 +220,14 @@ public class SecurityUserPositionFragment extends DashboardFragment {
         enterWechatSharePage();
     }
 
-    private void jumpToUserPage(int userId){
+    private void enterUserMainPage(int userId) {
         Bundle bundle = new Bundle();
-        bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userId);
-        pushFragment(PortfolioFragment.class, bundle);
+        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
+        bundle.putBoolean(UserMainPage.BUNDLE_NEED_SHOW_PROFILE, false);
+        pushFragment(UserMainPage.class, bundle);
     }
 
-    private Double getLatestPrice() {
+    private double getLatestPrice() {
         try {
             if (QuoteServiceWrapper.isChinaStock(securityId)) {
                 return quoteDetail.last;
@@ -191,11 +235,11 @@ public class SecurityUserPositionFragment extends DashboardFragment {
                 return securityCompactDTO.lastPrice;
             }
         } catch (Exception e) {
-            return null;
+            return 0.0;
         }
     }
 
-    private Double getRise() {
+    private double getRise() {
         try {
             if (QuoteServiceWrapper.isChinaStock(securityId)) {
                 return quoteDetail.last - quoteDetail.prec;
@@ -203,26 +247,20 @@ public class SecurityUserPositionFragment extends DashboardFragment {
                 return securityCompactDTO.lastPrice - securityCompactDTO.previousClose;
             }
         } catch (Exception e) {
-            return null;
+            return 0.0;
         }
     }
 
-    private THSignedNumber getRisePercentage() {
-        try {
-            double roi = 0;
-            if (QuoteServiceWrapper.isChinaStock(securityId)) {
-                roi = quoteDetail.last - quoteDetail.prec;
-            } else {
-                roi = securityCompactDTO.lastPrice - securityCompactDTO.previousClose;
-            }
-            THSignedNumber roiPercentage = THSignedPercentage.builder(roi * 100)
-                    .withSign()
-                    .signTypeArrow()
-                    .build();
-            return roiPercentage;
-        } catch (Exception e) {
-            return null;
+    private String getRisePercentage() {
+        double roi = 0;
+        if (QuoteServiceWrapper.isChinaStock(securityId)) {
+            roi = (quoteDetail.last - quoteDetail.prec)/quoteDetail.prec;
+        } else {
+            roi = (securityCompactDTO.lastPrice - securityCompactDTO.previousClose)/securityCompactDTO.previousClose;
         }
+        DecimalFormat df = new DecimalFormat("######0.00");
+        String percentage = df.format(roi * 100)  + "%";
+        return percentage;
     }
 
     private void retriveLatestPriceInfo() {
@@ -235,12 +273,12 @@ public class SecurityUserPositionFragment extends DashboardFragment {
                 @Override
                 public void success(QuoteDetail detail, Response response) {
                     quoteDetail = detail;
+                    updateSubHead();
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
                     quoteDetail = null;
-                    Timber.e(error, "Error to get QuoteDetail");
                 }
             };
             quoteServiceWrapper.getQuoteDetails(securityId, callback);
@@ -249,15 +287,34 @@ public class SecurityUserPositionFragment extends DashboardFragment {
                 @Override
                 public void success(SecurityCompactDTO dto, Response response) {
                     securityCompactDTO = dto;
+                    updateSubHead();
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Timber.e(error, "Error to get SecurityCompactDTO");
                     securityCompactDTO = null;
                 }
             };
             quoteServiceWrapper.getSecurityCompactDTO(securityId, callback);
+        }
+    }
+
+    private void updateSubHead() {
+        DecimalFormat df = new DecimalFormat("######0.00");
+        String price = df.format(getLatestPrice());
+        String raisePercent = getRisePercentage();
+        String raise = df.format(getRise());
+        if (quoteDetail.getRiseRate() > 0) {
+            setHeadViewMiddleSubTextColor(upColor);
+            setHeadViewMiddleSub(price + " +" + raisePercent + " +" + raise);
+        }
+        if (quoteDetail.getRiseRate() == 0) {
+            setHeadViewMiddleSubTextColor(normalColor);
+            setHeadViewMiddleSub(price + " 0 0");
+        }
+        if (quoteDetail.getRiseRate() < 0) {
+            setHeadViewMiddleSubTextColor(downColor);
+            setHeadViewMiddleSub(price + " " + raisePercent + " " + raise);
         }
     }
 }

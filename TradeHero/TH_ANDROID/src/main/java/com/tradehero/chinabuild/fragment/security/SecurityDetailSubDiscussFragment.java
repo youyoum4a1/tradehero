@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.fragment.message.SecurityDiscussSendFragment;
+import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -31,6 +32,8 @@ import com.tradehero.th.utils.DaggerUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.ocpsoft.prettytime.PrettyTime;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -97,6 +100,8 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
     @Inject DiscussionCache discussionCache;
 
     private DiscussionViewHolder[] viewHolders = new DiscussionViewHolder[5];
+
+    private ArrayList<DiscussionDTO> dtos = new ArrayList();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -168,9 +173,10 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
             }
         }
         int maxLength = keyList.size() > 5 ? 5 : keyList.size();
-
+        dtos.clear();
         for (int i = 0; i < maxLength; i++) {
             DiscussionDTO dto = (DiscussionDTO) discussionCache.get(keyList.get(i));
+            dtos.add(dto);
             viewHolders[i].displayContent(dto, prettyTime.get());
         }
         for (int i = maxLength; i < viewHolders.length; i++) {
@@ -238,6 +244,14 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         nameTV0 = (TextView) view.findViewById(R.id.textview_name0);
         contentTV0 = (TextView) view.findViewById(R.id.textview_content0);
         dateTV0 = (TextView) view.findViewById(R.id.textview_date0);
+        ll0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(dtos.size() >= 1) {
+                    enterTimeLineDetail(dtos.get(0));
+                }
+            }
+        });
 
         ll1 = (RelativeLayout) view.findViewById(R.id.relativelayout_user1);
         avatarIV1 = (ImageView) view.findViewById(R.id.imageview_avatar1);
@@ -245,6 +259,14 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         contentTV1 = (TextView) view.findViewById(R.id.textview_content1);
         dateTV1 = (TextView) view.findViewById(R.id.textview_date1);
         seperateV1 = view.findViewById(R.id.line1);
+        ll1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(dtos.size() >= 2) {
+                    enterTimeLineDetail(dtos.get(1));
+                }
+            }
+        });
 
         ll2 = (RelativeLayout) view.findViewById(R.id.relativelayout_user2);
         avatarIV2 = (ImageView) view.findViewById(R.id.imageview_avatar2);
@@ -252,6 +274,15 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         contentTV2 = (TextView) view.findViewById(R.id.textview_content2);
         dateTV2 = (TextView) view.findViewById(R.id.textview_date2);
         seperateV2 = view.findViewById(R.id.line2);
+        ll2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(dtos.size() >= 3) {
+                    enterTimeLineDetail(dtos.get(2));
+                }
+            }
+        });
+
 
         ll3 = (RelativeLayout) view.findViewById(R.id.relativelayout_user3);
         avatarIV3 = (ImageView) view.findViewById(R.id.imageview_avatar3);
@@ -259,6 +290,14 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         contentTV3 = (TextView) view.findViewById(R.id.textview_content3);
         dateTV3 = (TextView) view.findViewById(R.id.textview_date3);
         seperateV3 = view.findViewById(R.id.line3);
+        ll3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(dtos.size() >= 4) {
+                    enterTimeLineDetail(dtos.get(3));
+                }
+            }
+        });
 
         ll4 = (RelativeLayout) view.findViewById(R.id.relativelayout_user4);
         avatarIV4 = (ImageView) view.findViewById(R.id.imageview_avatar4);
@@ -266,6 +305,14 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         contentTV4 = (TextView) view.findViewById(R.id.textview_content4);
         dateTV4 = (TextView) view.findViewById(R.id.textview_date4);
         seperateV4 = view.findViewById(R.id.line4);
+        ll4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(dtos.size() >= 5) {
+                    enterTimeLineDetail(dtos.get(4));
+                }
+            }
+        });
 
         viewHolders[0] = new DiscussionViewHolder(ll0, avatarIV0, nameTV0, contentTV0, dateTV0, null);
         viewHolders[1] = new DiscussionViewHolder(ll1, avatarIV1, nameTV1, contentTV1, dateTV1, seperateV1);
@@ -321,7 +368,7 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         return getDashboardNavigator().pushFragment(fragmentClass, args);
     }
 
-    public void fetchSecurityDiscuss(boolean force) {
+    private void fetchSecurityDiscuss(boolean force) {
         if (discussionListKey == null) {
             discussionListKey = new PaginatedDiscussionListKey(DiscussionType.SECURITY, securityDTOId, 1, 6);
         }
@@ -329,5 +376,15 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         discussionListCache.register(discussionListKey, this);
         discussionListCache.getOrFetchAsync(discussionListKey, force);
 
+    }
+
+    private void enterTimeLineDetail(DiscussionDTO dto) {
+        if (dto != null) {
+            Bundle bundle = new Bundle();
+            bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, dto.getDiscussionKey().getArgs());
+            bundle.putInt(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_TYPE, TimeLineItemDetailFragment.DISCUSSION_DISCUSSION_TYPE);
+            bundle.putBoolean(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_IS_NEWS, false);
+            pushFragment(TimeLineItemDetailFragment.class, bundle);
+        }
     }
 }
