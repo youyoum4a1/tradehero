@@ -280,41 +280,41 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
         return R.layout.lbmu_item_own_ranking_competition_mode;
     }
 
-    @NonNull @Override public DTOCacheRx<PagedLeaderboardKey, LeaderboardMarkUserItemView.DTOList> getCache()
-    {
-        return new CompetitionLeaderboardMarkUserItemViewDTOCacheRx(
-                getResources(),
-                currentUserId,
-                providerId,
-                userProfileCache,
-                providerCache,
-                competitionLeaderboardCache);
-    }
+    //@NonNull @Override public DTOCacheRx<PagedLeaderboardKey, LeaderboardMarkedUserItemDisplayDto.DTOList> getCache()
+    //{
+    //    return new CompetitionLeaderboardMarkUserItemViewDTOCacheRx(
+    //            getResources(),
+    //            currentUserId,
+    //            providerId,
+    //            userProfileCache,
+    //            providerCache,
+    //            competitionLeaderboardCache);
+    //}
+    //
+    //@NonNull @Override protected Observable<LeaderboardMarkedUserItemDisplayDto.Requisite> fetchOwnRankingInfoObservables()
+    //{
+    //    return Observable.zip(
+    //            super.fetchOwnRankingInfoObservables(),
+    //            providerCache.getOne(providerId),
+    //            competitionLeaderboardCache.getOne(new CompetitionLeaderboardId(providerId.key, competitionId.key)),
+    //            new Func3<LeaderboardMarkUserItemView.Requisite,
+    //                    Pair<ProviderId, ProviderDTO>,
+    //                    Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO>, LeaderboardMarkUserItemView.Requisite>()
+    //            {
+    //                @Override public LeaderboardMarkUserItemView.Requisite call(
+    //                        LeaderboardMarkUserItemView.Requisite requisite,
+    //                        Pair<ProviderId, ProviderDTO> providerPair,
+    //                        Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO> competitionLeaderboardPair)
+    //                {
+    //                    return new CompetitionLeaderboardMarkUserItemView.Requisite(
+    //                            requisite,
+    //                            providerPair,
+    //                            competitionLeaderboardPair);
+    //                }
+    //            });
+    //}
 
-    @NonNull @Override protected Observable<LeaderboardMarkUserItemView.Requisite> fetchOwnRankingInfoObservables()
-    {
-        return Observable.zip(
-                super.fetchOwnRankingInfoObservables(),
-                providerCache.getOne(providerId),
-                competitionLeaderboardCache.getOne(new CompetitionLeaderboardId(providerId.key, competitionId.key)),
-                new Func3<LeaderboardMarkUserItemView.Requisite,
-                        Pair<ProviderId, ProviderDTO>,
-                        Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO>, LeaderboardMarkUserItemView.Requisite>()
-                {
-                    @Override public LeaderboardMarkUserItemView.Requisite call(
-                            LeaderboardMarkUserItemView.Requisite requisite,
-                            Pair<ProviderId, ProviderDTO> providerPair,
-                            Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO> competitionLeaderboardPair)
-                    {
-                        return new CompetitionLeaderboardMarkUserItemView.Requisite(
-                                requisite,
-                                providerPair,
-                                competitionLeaderboardPair);
-                    }
-                });
-    }
-
-    @Override protected void updateCurrentRankView(@Nullable LeaderboardMarkUserItemView.Requisite requisite)
+    @Override protected void updateCurrentRankView(@Nullable LeaderboardMarkedUserItemDisplayDto.Requisite requisite)
     {
         super.updateCurrentRankView(requisite);
 

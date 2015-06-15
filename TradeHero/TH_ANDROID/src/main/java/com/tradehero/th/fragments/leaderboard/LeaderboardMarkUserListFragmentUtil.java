@@ -37,7 +37,7 @@ import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 public class LeaderboardMarkUserListFragmentUtil
-        implements Action1<LeaderboardMarkUserRecyclerAdapter.LbmuItemViewHolder.UserAction>
+        implements Action1<LeaderboardItemUserAction>
 {
     @NonNull private final DashboardNavigator navigator;
     @NonNull private final CurrentUserId currentUserId;
@@ -45,7 +45,7 @@ public class LeaderboardMarkUserListFragmentUtil
     @NonNull private final Analytics analytics;
     @NonNull private final ProviderUtil providerUtil;
 
-    private BaseLeaderboardPagedListRxFragment fragment;
+    private BaseLeaderboardPagedRecyclerRxFragment fragment;
     private LeaderboardType leaderboardType;
     private SubscriptionList onStopSubscriptions;
 
@@ -66,7 +66,7 @@ public class LeaderboardMarkUserListFragmentUtil
     //</editor-fold>
 
     public void linkWith(
-            @NonNull BaseLeaderboardPagedListRxFragment fragment,
+            @NonNull BaseLeaderboardPagedRecyclerRxFragment fragment,
             @NonNull LeaderboardType leaderboardType)
     {
         this.fragment = fragment;
@@ -83,31 +83,45 @@ public class LeaderboardMarkUserListFragmentUtil
         onStopSubscriptions.unsubscribe();
     }
 
-    @Override public void call(LeaderboardMarkUserRecyclerAdapter.LbmuItemViewHolder.UserAction userAction)
+    public void onDestroy()
     {
-        switch (userAction.actionType)
+        this.fragment = null;
+        this.leaderboardType = null;
+    }
+
+    @Override public void call(LeaderboardItemUserAction userAction)
+    {
+        if (userAction.dto instanceof LeaderboardMarkedUserItemDisplayDto)
         {
-            case PROFILE:
-                openTimeline(userAction.dto);
-                break;
+            switch (userAction.actionType)
+            {
+                case PROFILE:
+                    openTimeline((LeaderboardMarkedUserItemDisplayDto) userAction.dto);
+                    break;
 
-            case FOLLOW:
-                handleFollowRequested(userAction.dto.leaderboardUserDTO);
-                break;
+                case FOLLOW:
+                    handleFollowRequested(((LeaderboardMarkedUserItemDisplayDto) userAction.dto).leaderboardUserDTO);
+                    break;
 
-            case POSITIONS:
-                handlePositionsRequested(userAction.dto);
-                break;
+                case POSITIONS:
+                    handlePositionsRequested((LeaderboardMarkedUserItemDisplayDto) userAction.dto);
+                    break;
 
-            case RULES:
-                handleRulesRequested((CompetitionLeaderboardMarkUserItemView.DTO) userAction.dto);
-                break;
+                case RULES:
+                    handleRulesRequested((CompetitionLeaderboardMarkUserItemView.CompetitionLeaderboardItemDisplayDto) userAction.dto);
+                    break;
+            }
         }
     }
 
-    protected void openTimeline(@NonNull LeaderboardMarkUserItemView.DTO dto)
+    protected void openTimeline(@NonNull LeaderboardMarkedUserItemDisplayDto dto)
     {
         Bundle bundle = new Bundle();
+        if (dto.leaderboardUserDTO == null)
+        {
+            navigator.pushFragment(MeTimelineFragment.class, bundle);
+            return;
+        }
         UserBaseKey userToSee = dto.leaderboardUserDTO.getBaseKey();
         if (currentUserId.toUserBaseKey().equals(userToSee))
         {
@@ -152,7 +166,7 @@ public class LeaderboardMarkUserListFragmentUtil
                 ));
     }
 
-    protected void handlePositionsRequested(@NonNull LeaderboardMarkUserItemView.DTO dto)
+    protected void handlePositionsRequested(@NonNull LeaderboardMarkedUserItemDisplayDto dto)
     {
         GetPositionsDTOKey getPositionsDTOKey = dto.leaderboardUserDTO.getGetPositionsDTOKey();
         if (getPositionsDTOKey == null)
@@ -191,15 +205,16 @@ public class LeaderboardMarkUserListFragmentUtil
             TabbedPositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
         }
 
-        if (dto instanceof CompetitionLeaderboardMarkUserItemView.DTO)
+        if (dto instanceof CompetitionLeaderboardMarkUserItemView.CompetitionLeaderboardItemDisplayDto)
         {
-            TabbedPositionListFragment.putProviderId(bundle, ((CompetitionLeaderboardMarkUserItemView.DTO) dto).providerDTO.getProviderId());
+            TabbedPositionListFragment.putProviderId(bundle,
+                    ((CompetitionLeaderboardMarkUserItemView.CompetitionLeaderboardItemDisplayDto) dto).providerDTO.getProviderId());
         }
 
         navigator.pushFragment(TabbedPositionListFragment.class, bundle);
     }
 
-    protected void handleRulesRequested(@NonNull CompetitionLeaderboardMarkUserItemView.DTO dto)
+    protected void handleRulesRequested(@NonNull CompetitionLeaderboardMarkUserItemView.CompetitionLeaderboardItemDisplayDto dto)
     {
         Bundle args = new Bundle();
         CompetitionWebViewFragment.putUrl(args, providerUtil.getRulesPage(dto.providerDTO.getProviderId()));

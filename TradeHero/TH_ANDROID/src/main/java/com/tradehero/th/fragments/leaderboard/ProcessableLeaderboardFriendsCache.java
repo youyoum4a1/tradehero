@@ -19,14 +19,14 @@ class ProcessableLeaderboardFriendsCache implements DTOCacheRx<LeaderboardFriend
     @NonNull private final LeaderboardFriendsCacheRx leaderboardFriendsCache;
     @NonNull private final UserProfileCacheRx userProfileCache;
     @NonNull private final CurrentUserId currentUserId;
-    @NonNull private final FriendLeaderboardUserDTOFactory factory;
+    @NonNull private final LeaderboardItemDisplayDTO.Factory factory;
 
     //<editor-fold desc="Constructors">
     public ProcessableLeaderboardFriendsCache(
             @NonNull LeaderboardFriendsCacheRx leaderboardFriendsCache,
             @NonNull UserProfileCacheRx userProfileCache,
             @NonNull CurrentUserId currentUserId,
-            @NonNull FriendLeaderboardUserDTOFactory factory)
+            @NonNull LeaderboardItemDisplayDTO.Factory factory)
     {
         this.leaderboardFriendsCache = leaderboardFriendsCache;
         this.userProfileCache = userProfileCache;

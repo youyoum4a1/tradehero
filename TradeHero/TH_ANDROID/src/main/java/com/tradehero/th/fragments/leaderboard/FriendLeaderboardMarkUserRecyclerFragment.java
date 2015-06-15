@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import butterknife.ButterKnife;
-import com.android.internal.util.Predicate;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.tradehero.common.persistence.DTOCacheRx;
@@ -16,8 +15,9 @@ import com.tradehero.common.rx.PairGetFirst;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedDTOAdapter;
+import com.tradehero.th.adapters.PagedRecyclerAdapter;
 import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsKey;
 import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -36,7 +36,6 @@ import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.dialog.AlertDialogRx;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction0;
-import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -49,10 +48,10 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
 
-public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxFragment<
+public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRecyclerRxFragment<
         LeaderboardFriendsKey,
-        FriendLeaderboardUserDTO,
-        FriendLeaderboardUserDTOList,
+        LeaderboardItemDisplayDTO,
+        LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>,
         ProcessableLeaderboardFriendsDTO>
 {
     @Inject Analytics analytics;
@@ -62,6 +61,8 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject SocialFriendHandlerFacebook socialFriendHandlerFacebook;
     @Inject SocialShareHelper socialShareHelper;
+    private ProcessableLeaderboardFriendsCache processableLeaderboardFriendsCache;
+    private LeaderboardItemDisplayDTO.Factory factory;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -72,13 +73,8 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.leaderboard_friends_listview, container, false);
+        View view = inflater.inflate(R.layout.leaderboard_mark_user_listview, container, false);
         ButterKnife.inject(this, view);
-
-        if (listView != null)
-        {
-            listView.setEmptyView(inflater.inflate(R.layout.friend_leaderboard_empty_view, container, false));
-        }
         return view;
     }
 
@@ -86,15 +82,15 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
     {
         super.onStart();
         fragmentUtil.onStart();
-        onStopSubscriptions.add(((LeaderboardFriendsSetAdapter) itemViewAdapter).getFollowRequestObservable()
+        onStopSubscriptions.add(((FriendsLeaderboardRecyclerAdapter) itemViewAdapter).getUserActionObservable()
                 .subscribe(
                         fragmentUtil,
                         new TimberOnErrorAction("Error on follow requested")));
 
-        onStopSubscriptions.add(((LeaderboardFriendsSetAdapter) itemViewAdapter).getInviteRequestedObservable()
-                .flatMap(new Func1<LeaderboardFriendsItemView.UserAction, Observable<Boolean>>()
+        onStopSubscriptions.add(((FriendsLeaderboardRecyclerAdapter) itemViewAdapter).getInviteRequestedObservable()
+                .flatMap(new Func1<LeaderboardFriendUserAction, Observable<Boolean>>()
                 {
-                    @Override public Observable<Boolean> call(LeaderboardFriendsItemView.UserAction userAction)
+                    @Override public Observable<Boolean> call(LeaderboardFriendUserAction userAction)
                     {
                         return invite(userAction.userFriendsDTO);
                     }
@@ -113,7 +109,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
                         },
                         new ToastAndLogOnErrorAction("Failed to invite friend")));
 
-        onStopSubscriptions.add(((LeaderboardFriendsSetAdapter) itemViewAdapter).getSocialNetworkEnumObservable()
+        onStopSubscriptions.add(((FriendsLeaderboardRecyclerAdapter) itemViewAdapter).getSocialNetworkEnumObservable()
                 .flatMap(new Func1<SocialNetworkEnum, Observable<UserProfileDTO>>()
                 {
                     @Override public Observable<UserProfileDTO> call(SocialNetworkEnum socialNetworkEnum)
@@ -165,7 +161,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
                             }
                         },
                         new ToastAndLogOnErrorAction("Failed to listen to social network")));
-        if ((itemViewAdapter != null) && (itemViewAdapter.getCount() == 0))
+        if ((itemViewAdapter != null) && (itemViewAdapter.getItemCount() == 0))
         {
             requestDtos();
         }
@@ -187,35 +183,41 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
     @Override public void onDestroy()
     {
         itemViewAdapter.clear();
+        factory = null;
+        processableLeaderboardFriendsCache = null;
         super.onDestroy();
     }
 
-    @NonNull @Override protected PagedDTOAdapter<FriendLeaderboardUserDTO> createItemViewAdapter()
+    @NonNull @Override protected PagedRecyclerAdapter<LeaderboardItemDisplayDTO> createItemViewAdapter()
     {
-        return new LeaderboardFriendsSetAdapter(
+        return new FriendsLeaderboardRecyclerAdapter(
                 getActivity(),
-                currentUserId,
                 R.layout.lbmu_item_roi_mode,
                 R.layout.leaderboard_friends_social_item_view,
-                R.layout.leaderboard_friends_call_action);
+                R.layout.leaderboard_friends_call_action,
+                new LeaderboardKey(leaderboardDefKey.key));
     }
 
     @NonNull @Override protected DTOCacheRx<LeaderboardFriendsKey, ProcessableLeaderboardFriendsDTO> getCache()
     {
-        return new ProcessableLeaderboardFriendsCache(
-                leaderboardFriendsCache,
-                userProfileCache,
-                currentUserId,
-                ((LeaderboardFriendsSetAdapter) itemViewAdapter).createItemFactory());
+        if (processableLeaderboardFriendsCache == null)
+        {
+            factory = new LeaderboardItemDisplayDTO.Factory(getResources(), currentUserId, this.currentUserProfileDTO);
+            processableLeaderboardFriendsCache = new ProcessableLeaderboardFriendsCache(
+                    leaderboardFriendsCache,
+                    userProfileCache,
+                    currentUserId,
+                    factory);
+        }
+        return processableLeaderboardFriendsCache;
     }
 
     @Override protected void setCurrentUserProfileDTO(@NonNull UserProfileDTO currentUserProfileDTO)
     {
         super.setCurrentUserProfileDTO(currentUserProfileDTO);
-        if (itemViewAdapter != null)
+        if (factory != null)
         {
-            ((LeaderboardFriendsSetAdapter) itemViewAdapter).setCurrentUserProfileDTO(currentUserProfileDTO);
-            ((LeaderboardFriendsSetAdapter) itemViewAdapter).notifyDataSetChanged();
+            factory.setCurrentUserProfileDTO(currentUserProfileDTO);
         }
     }
 
@@ -297,16 +299,17 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
 
     @Override protected void updateListViewRow(@NonNull UserProfileDTO currentUserProfile, @NonNull final UserBaseKey heroId)
     {
-        AdapterViewUtils.updateSingleRowWhere(
-                listView,
-                FriendLeaderboardMarkedUserDTO.class,
-                new Predicate<FriendLeaderboardMarkedUserDTO>()
-                {
-                    @Override public boolean apply(FriendLeaderboardMarkedUserDTO friendLeaderboardMarkedUserDTO)
-                    {
-                        return friendLeaderboardMarkedUserDTO.leaderboardUserDTO.getBaseKey().equals(heroId);
-                    }
-                });
+        //TODO
+        //AdapterViewUtils.updateSingleRowWhere(
+        //        listView,
+        //        FriendLeaderboardMarkedUserDTO.class,
+        //        new Predicate<FriendLeaderboardMarkedUserDTO>()
+        //        {
+        //            @Override public boolean apply(FriendLeaderboardMarkedUserDTO friendLeaderboardMarkedUserDTO)
+        //            {
+        //                return friendLeaderboardMarkedUserDTO.leaderboardUserDTO.getBaseKey().equals(heroId);
+        //            }
+        //        });
     }
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)

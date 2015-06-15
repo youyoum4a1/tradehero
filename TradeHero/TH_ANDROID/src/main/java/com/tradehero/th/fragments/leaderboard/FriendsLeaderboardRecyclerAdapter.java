@@ -1,0 +1,171 @@
+package com.tradehero.th.fragments.leaderboard;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import com.squareup.picasso.Picasso;
+import com.tradehero.metrics.Analytics;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
+import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
+import rx.Observable;
+import rx.subjects.PublishSubject;
+
+public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecyclerAdapter
+{
+    public static final int VIEW_TYPE_SOCIAL = 2;
+    public static final int VIEW_TYPE_CALL_TO_ACTION = 3;
+
+    private final int leaderboard_friends_social_item_view;
+    private final int leaderboard_friends_call_action;
+    private final PublishSubject<LeaderboardFriendUserAction> inviteRequestedSubject;
+    private final PublishSubject<SocialNetworkEnum> socialNetworkEnumSubject;
+
+    public FriendsLeaderboardRecyclerAdapter(Context context, int lbmu_item_roi_mode,
+            int leaderboard_friends_social_item_view, int leaderboard_friends_call_action, LeaderboardKey leaderboardKey)
+    {
+        super(context, new FriendLeaderboardItemComparator(), lbmu_item_roi_mode, lbmu_item_roi_mode, leaderboardKey);
+        this.leaderboard_friends_social_item_view = leaderboard_friends_social_item_view;
+        this.leaderboard_friends_call_action = leaderboard_friends_call_action;
+        this.inviteRequestedSubject = PublishSubject.create();
+        this.socialNetworkEnumSubject = PublishSubject.create();
+    }
+
+    @Override protected int getViewTypeForItem(LeaderboardItemDisplayDTO dto)
+    {
+        if (dto instanceof FriendLeaderboardItemDisplayDTO.Social) return VIEW_TYPE_SOCIAL;
+        if (dto instanceof FriendLeaderboardItemDisplayDTO.CallToAction) return VIEW_TYPE_CALL_TO_ACTION;
+        return super.getViewTypeForItem(dto);
+    }
+
+    @NonNull @Override public TypedViewHolder<LeaderboardItemDisplayDTO> onCreateTypedViewHolder(ViewGroup parent, int viewType)
+    {
+        switch (viewType)
+        {
+            case VIEW_TYPE_SOCIAL:
+                SocialFriendViewHolder lbmuItemViewHolder =
+                        new SocialFriendViewHolder(
+                                LayoutInflater.from(parent.getContext()).inflate(leaderboard_friends_social_item_view, parent, false), picasso,
+                                analytics);
+                lbmuItemViewHolder.getFriendUserActionObservable().subscribe(inviteRequestedSubject);
+                break;
+            case VIEW_TYPE_CALL_TO_ACTION:
+                CallToActionViewHolder callToActionItemViewHolder =
+                        new CallToActionViewHolder(LayoutInflater.from(parent.getContext()).inflate(leaderboard_friends_call_action, parent, false));
+                callToActionItemViewHolder.getSocialNetworkEnumObservable().subscribe(socialNetworkEnumSubject);
+                return callToActionItemViewHolder;
+        }
+        return super.onCreateTypedViewHolder(parent, viewType);
+    }
+
+    public Observable<LeaderboardFriendUserAction> getInviteRequestedObservable()
+    {
+        return inviteRequestedSubject.asObservable();
+    }
+
+    public Observable<SocialNetworkEnum> getSocialNetworkEnumObservable()
+    {
+        return socialNetworkEnumSubject.asObservable();
+    }
+
+    private static class FriendLeaderboardItemComparator extends TypedRecyclerComparator<LeaderboardItemDisplayDTO>
+    {
+        @Override protected int compare(LeaderboardItemDisplayDTO o1, LeaderboardItemDisplayDTO o2)
+        {
+            if (o1 instanceof LeaderboardMarkedUserItemDisplayDto &&
+                    o2 instanceof FriendLeaderboardItemDisplayDTO.Social)
+            {
+                return -1;
+            }
+
+            if (o1 instanceof FriendLeaderboardItemDisplayDTO.Social &&
+                    o2 instanceof LeaderboardMarkedUserItemDisplayDto)
+            {
+                return 1;
+            }
+
+            if (o1 instanceof FriendLeaderboardItemDisplayDTO.Social &&
+                    o2 instanceof FriendLeaderboardItemDisplayDTO.Social)
+            {
+                UserFriendsDTO lhu = ((FriendLeaderboardItemDisplayDTO.Social) o1).userFriendsDTO;
+                UserFriendsDTO rhu = ((FriendLeaderboardItemDisplayDTO.Social) o2).userFriendsDTO;
+                if (lhu.equals(rhu))
+                {
+                    return 0;
+                }
+
+                return lhu.compareTo(rhu);
+            }
+
+            if (o1 instanceof FriendLeaderboardItemDisplayDTO.CallToAction
+                    && o2 instanceof FriendLeaderboardItemDisplayDTO.CallToAction)
+            {
+                return 0;
+            }
+            if (o1 instanceof FriendLeaderboardItemDisplayDTO.CallToAction)
+            {
+                return 1;
+            }
+            if (o2 instanceof FriendLeaderboardItemDisplayDTO.CallToAction)
+            {
+                return -1;
+            }
+
+            if (o1 instanceof LeaderboardMarkedUserItemDisplayDto &&
+                    o2 instanceof LeaderboardMarkedUserItemDisplayDto)
+            {
+                return ((LeaderboardMarkedUserItemDisplayDto) o1).ranking
+                        - ((LeaderboardMarkedUserItemDisplayDto) o2).ranking;
+            }
+
+            throw new IllegalArgumentException("Unhandled " + o1.getClass() + " with " + o2.getClass());
+        }
+    }
+
+    private static class CallToActionViewHolder extends TypedViewHolder<LeaderboardItemDisplayDTO>
+    {
+        private final PublishSubject<SocialNetworkEnum> socialNetworkEnumPublishSubject;
+
+        public CallToActionViewHolder(View itemView)
+        {
+            super(itemView);
+            socialNetworkEnumPublishSubject = PublishSubject.create();
+        }
+
+        @Override public void display(LeaderboardItemDisplayDTO friendLeaderboardUserDTO)
+        {
+
+        }
+
+        public Observable<SocialNetworkEnum> getSocialNetworkEnumObservable()
+        {
+            return socialNetworkEnumPublishSubject.asObservable();
+        }
+    }
+
+    private static class SocialFriendViewHolder extends TypedViewHolder<LeaderboardItemDisplayDTO>
+    {
+        private final PublishSubject<LeaderboardFriendUserAction> friendUserActionPublishSubject;
+
+        public SocialFriendViewHolder(View itemView, Picasso picasso, Analytics analytics)
+        {
+            super(itemView);
+            friendUserActionPublishSubject = PublishSubject.create();
+        }
+
+        @Override public void display(LeaderboardItemDisplayDTO friendLeaderboardUserDTO)
+        {
+
+        }
+
+        public Observable<LeaderboardFriendUserAction> getFriendUserActionObservable()
+        {
+            return friendUserActionPublishSubject.asObservable();
+        }
+    }
+}

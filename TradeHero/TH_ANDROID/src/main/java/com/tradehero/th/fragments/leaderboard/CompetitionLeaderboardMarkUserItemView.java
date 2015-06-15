@@ -56,60 +56,60 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
     }
     //</editor-fold>
 
-    @Override public void display(@NonNull LeaderboardMarkUserItemView.DTO parentViewDTO)
+    public void display(@NonNull LeaderboardMarkedUserItemDisplayDto parentViewDTO)
     {
-        super.display(parentViewDTO);
-        if (parentViewDTO instanceof DTO)
-        {
-            DTO viewDTO = (DTO) parentViewDTO;
-            if (prizeIndicator != null)
-            {
-                prizeIndicator.setVisibility(viewDTO.prizeIndicatorVisibility);
-            }
-            if (lbmuPl != null)
-            {
-                lbmuPl.setText(viewDTO.lbmuPl);
-            }
-            if (lbmuCommentsCount != null)
-            {
-                lbmuCommentsCount.setText(viewDTO.lbmuCommentsCount);
-            }
-            if (lbmuBenchmarkRoi != null)
-            {
-                lbmuBenchmarkRoi.setText(viewDTO.lbmuBenchmarkRoi);
-            }
-            if (lbmuPositionsCount != null)
-            {
-                lbmuPositionsCount.setText(viewDTO.lbmuPositionsCount);
-            }
-            if (lbmuAvgDaysHeld != null)
-            {
-                lbmuAvgDaysHeld.setText(viewDTO.lbmuAvgDaysHeld);
-            }
-            if (lbmuFollowersCount != null)
-            {
-                lbmuFollowersCount.setText(viewDTO.lbmuFollowersCount);
-            }
-            if (lbmuWinRatio != null)
-            {
-                lbmuWinRatio.setText(viewDTO.lbmuWinRatio);
-            }
-            if (lbmuNumberOfTrades != null)
-            {
-                lbmuNumberOfTrades.setText(viewDTO.lbmuNumberOfTrades);
-            }
-            if (lbmuPeriod != null)
-            {
-                lbmuPeriod.setText(viewDTO.lbmuPeriod);
-            }
-            if (lbmuNumberTradesInPeriod != null)
-            {
-                lbmuNumberTradesInPeriod.setText(viewDTO.lbmuNumberTradesInPeriod);
-            }
-        }
+        //super.display(parentViewDTO);
+        //if (parentViewDTO instanceof DTO)
+        //{
+        //    DTO viewDTO = (DTO) parentViewDTO;
+        //    if (prizeIndicator != null)
+        //    {
+        //        prizeIndicator.setVisibility(viewDTO.prizeIndicatorVisibility);
+        //    }
+        //    if (lbmuPl != null)
+        //    {
+        //        lbmuPl.setText(viewDTO.lbmuPl);
+        //    }
+        //    if (lbmuCommentsCount != null)
+        //    {
+        //        lbmuCommentsCount.setText(viewDTO.lbmuCommentsCount);
+        //    }
+        //    if (lbmuBenchmarkRoi != null)
+        //    {
+        //        lbmuBenchmarkRoi.setText(viewDTO.lbmuBenchmarkRoi);
+        //    }
+        //    if (lbmuPositionsCount != null)
+        //    {
+        //        lbmuPositionsCount.setText(viewDTO.lbmuPositionsCount);
+        //    }
+        //    if (lbmuAvgDaysHeld != null)
+        //    {
+        //        lbmuAvgDaysHeld.setText(viewDTO.lbmuAvgDaysHeld);
+        //    }
+        //    if (lbmuFollowersCount != null)
+        //    {
+        //        lbmuFollowersCount.setText(viewDTO.lbmuFollowersCount);
+        //    }
+        //    if (lbmuWinRatio != null)
+        //    {
+        //        lbmuWinRatio.setText(viewDTO.lbmuWinRatio);
+        //    }
+        //    if (lbmuNumberOfTrades != null)
+        //    {
+        //        lbmuNumberOfTrades.setText(viewDTO.lbmuNumberOfTrades);
+        //    }
+        //    if (lbmuPeriod != null)
+        //    {
+        //        lbmuPeriod.setText(viewDTO.lbmuPeriod);
+        //    }
+        //    if (lbmuNumberTradesInPeriod != null)
+        //    {
+        //        lbmuNumberTradesInPeriod.setText(viewDTO.lbmuNumberTradesInPeriod);
+        //    }
+        //}
     }
 
-    public static class DTO extends LeaderboardMarkUserItemView.DTO
+    public static class CompetitionLeaderboardItemDisplayDto extends LeaderboardMarkedUserItemDisplayDto
     {
         final int prizeDTOSize;
         @NonNull final ProviderDTO providerDTO;
@@ -125,7 +125,7 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
         @NonNull final String lbmuPeriod;
         @NonNull final Spanned lbmuNumberTradesInPeriod;
 
-        public DTO(@NonNull Resources resources,
+        public CompetitionLeaderboardItemDisplayDto(@NonNull Resources resources,
                 @NonNull CurrentUserId currentUserId,
                 @NonNull LeaderboardUserDTO leaderboardItem,
                 @NonNull UserProfileDTO currentUserProfile,
@@ -207,7 +207,7 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
         }
     }
 
-    public static class DTOList extends LeaderboardMarkUserItemView.DTOList
+    public static class DTOList extends LeaderboardItemDisplayDTO.DTOList
     {
         @NonNull final CompetitionLeaderboardDTO competitionLeaderboardDTO;
 
@@ -222,7 +222,8 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
             int prizeDTOSize = competitionLeaderboardDTO.prizes == null? 0 : competitionLeaderboardDTO.prizes.size();
             for (LeaderboardUserDTO leaderboardItem : leaderboardDTO.getList())
             {
-                add(new DTO(resources, currentUserId, leaderboardItem, currentUserProfile, prizeDTOSize, providerDTO));
+                add(new CompetitionLeaderboardItemDisplayDto(resources, currentUserId, leaderboardItem, currentUserProfile, prizeDTOSize,
+                        providerDTO));
             }
         }
 
@@ -232,12 +233,12 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
         }
     }
 
-    public static class Requisite extends LeaderboardMarkUserItemView.Requisite
+    public static class Requisite extends LeaderboardMarkedUserItemDisplayDto.Requisite
     {
         @NonNull final ProviderDTO providerDTO;
         @NonNull final CompetitionLeaderboardDTO competitionLeaderboardDTO;
 
-        public Requisite(@NonNull LeaderboardMarkUserItemView.Requisite parent,
+        public Requisite(@NonNull LeaderboardMarkedUserItemDisplayDto.Requisite parent,
                 @NonNull Pair<ProviderId, ProviderDTO> providerPair,
                 @NonNull Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO> competitionLeaderboardPair)
         {

@@ -52,9 +52,9 @@ import timber.log.Timber;
 
 public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRecyclerRxFragment<
         PagedLeaderboardKey,
-        LeaderboardMarkUserItemView.DTO,
-        LeaderboardMarkUserItemView.DTOList,
-        LeaderboardMarkUserItemView.DTOList>
+        LeaderboardItemDisplayDTO,
+        LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>,
+        LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>>
 {
     public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserRecyclerFragment.class.getName();
     private static final String BUNDLE_KEY_LEADERBOARD_TYPE_ID = LeaderboardMarkUserRecyclerFragment.class.getName() + ".leaderboardTypeId";
@@ -70,7 +70,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
 
     protected PerPagedLeaderboardKey currentLeaderboardKey;
     protected LeaderboardType currentLeaderboardType = LeaderboardType.STOCKS;
-    private LeaderboardMarkUserItemView.Requisite ownRankRequisite;
+    private LeaderboardMarkedUserItemDisplayDto.Requisite ownRankRequisite;
 
     public static void putLeaderboardType(@NonNull Bundle args, @NonNull LeaderboardType leaderboardType)
     {
@@ -83,7 +83,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         //please make sure to get the type before get key
         currentLeaderboardType = getInitialLeaderboardType();
         currentLeaderboardKey = getInitialLeaderboardKey();
-        //fragmentUtil.linkWith(this, currentLeaderboardType); TODO
+        fragmentUtil.linkWith(this, currentLeaderboardType);
         setHasOptionsMenu(true);
     }
 
@@ -117,15 +117,6 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         View view = inflater.inflate(R.layout.leaderboard_mark_user_listview, container, false);
         ButterKnife.inject(this, view);
         return view;
-    }
-
-    protected View inflateEmptyView(LayoutInflater inflater, ViewGroup container)
-    {
-        /*
-         TODO I haven't seen a basic leaderboard empty view except the one from Friend leaderboard
-         on iOS app, therefore, I will use a dummy empty view here
-         */
-        return inflater.inflate(R.layout.leaderboard_empty_view, container, false);
     }
 
     @Override public void onStart()
@@ -200,6 +191,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         this.leaderboardFilterFragment = null;
         ownRankRequisite = null;
         saveCurrentFilterKey();
+        fragmentUtil.onDestroy();
         super.onDestroy();
     }
 
@@ -255,7 +247,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         return currentLeaderboardKey.cloneAtPage(page);
     }
 
-    @NonNull @Override public DTOCacheRx<PagedLeaderboardKey, LeaderboardMarkUserItemView.DTOList> getCache()
+    @NonNull @Override public DTOCacheRx<PagedLeaderboardKey, LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>> getCache()
     {
         return new LeaderboardMarkUserItemViewDTOCacheRx(
                 getResources(),
@@ -289,9 +281,9 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
                 .startWith(ownRankRequisite)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<LeaderboardMarkUserItemView.Requisite>()
+                        new Action1<LeaderboardMarkedUserItemDisplayDto.Requisite>()
                         {
-                            @Override public void call(@Nullable LeaderboardMarkUserItemView.Requisite requisite)
+                            @Override public void call(@Nullable LeaderboardMarkedUserItemDisplayDto.Requisite requisite)
                             {
                                 updateCurrentRankView(requisite);
                             }
@@ -305,7 +297,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
                         }));
     }
 
-    @NonNull protected Observable<LeaderboardMarkUserItemView.Requisite> fetchOwnRankingInfoObservables()
+    @NonNull protected Observable<LeaderboardMarkedUserItemDisplayDto.Requisite> fetchOwnRankingInfoObservables()
     {
         UserOnLeaderboardKey userOnLeaderboardKey =
                 new UserOnLeaderboardKey(
@@ -314,12 +306,12 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         return Observable.zip(
                 leaderboardCache.getOne(userOnLeaderboardKey),
                 userProfileCache.getOne(currentUserId.toUserBaseKey()),
-                new Func2<Pair<LeaderboardKey, LeaderboardDTO>, Pair<UserBaseKey, UserProfileDTO>, LeaderboardMarkUserItemView.Requisite>()
+                new Func2<Pair<LeaderboardKey, LeaderboardDTO>, Pair<UserBaseKey, UserProfileDTO>, LeaderboardMarkedUserItemDisplayDto.Requisite>()
                 {
-                    @Override public LeaderboardMarkUserItemView.Requisite call(Pair<LeaderboardKey, LeaderboardDTO> currentLeaderboardPair,
+                    @Override public LeaderboardMarkedUserItemDisplayDto.Requisite call(Pair<LeaderboardKey, LeaderboardDTO> currentLeaderboardPair,
                             Pair<UserBaseKey, UserProfileDTO> userProfilePair)
                     {
-                        return new LeaderboardMarkUserItemView.Requisite(currentLeaderboardPair, userProfilePair);
+                        return new LeaderboardMarkedUserItemDisplayDto.Requisite(currentLeaderboardPair, userProfilePair);
                     }
                 })
                 .subscribeOn(Schedulers.computation());
@@ -330,22 +322,23 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         return R.layout.lbmu_item_own_ranking_roi_mode;
     }
 
-    protected void updateCurrentRankView(@Nullable LeaderboardMarkUserItemView.Requisite requisite)
+    protected void updateCurrentRankView(@Nullable LeaderboardMarkedUserItemDisplayDto.Requisite requisite)
     {
-        LeaderboardMarkUserItemView.DTO ownRankingDto;
+        LeaderboardMarkedUserItemDisplayDto ownRankingDto;
         if (requisite == null)
         {
             //Is Loading
-            ownRankingDto = new LeaderboardMarkUserItemView.DTO(getResources(), currentUserId);
+            ownRankingDto = new LeaderboardMarkedUserItemDisplayDto(getResources(), currentUserId);
         }
         else if (requisite.currentLeaderboardUserDTO == null)
         {
             //Not Ranked
-            ownRankingDto = new LeaderboardMarkUserItemView.DTO(getResources(), currentUserId, requisite.currentUserProfileDTO);
+            ownRankingDto = new LeaderboardMarkedUserItemDisplayDto(getResources(), currentUserId,
+                    requisite.currentUserProfileDTO);
         }
         else
         {
-            ownRankingDto = new LeaderboardMarkUserOwnRankingView.DTO(
+            ownRankingDto = new LeaderboardMarkedUserItemDisplayDto(
                     getResources(),
                     currentUserId,
                     requisite.currentLeaderboardUserDTO,
@@ -360,10 +353,10 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         //TODO
         //AdapterViewUtils.updateSingleRowWhere(
         //        recyclerView,
-        //        LeaderboardMarkUserItemView.DTO.class,
-        //        new Predicate<LeaderboardMarkUserItemView.DTO>()
+        //        LeaderboardMarkedUserItemDisplayDto.DTO.class,
+        //        new Predicate<LeaderboardMarkedUserItemDisplayDto.DTO>()
         //        {
-        //            @Override public boolean apply(LeaderboardMarkUserItemView.DTO dto)
+        //            @Override public boolean apply(LeaderboardMarkedUserItemDisplayDto.DTO dto)
         //            {
         //                boolean isUpdatedRow = dto.leaderboardUserDTO.getBaseKey().equals(heroId);
         //                if (isUpdatedRow)
@@ -410,12 +403,12 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         super.onItemClick(parent, view, position, id);
     }
 
-    @Override protected Pair<PagedLeaderboardKey, LeaderboardMarkUserItemView.DTOList> onMap(
-            Pair<PagedLeaderboardKey, LeaderboardMarkUserItemView.DTOList> receivedPair)
+    @Override protected Pair<PagedLeaderboardKey, LeaderboardMarkedUserItemDisplayDto.DTOList<LeaderboardItemDisplayDTO>> onMap(
+            Pair<PagedLeaderboardKey, LeaderboardMarkedUserItemDisplayDto.DTOList<LeaderboardItemDisplayDTO>> receivedPair)
     {
         int page = receivedPair.first.page == null ? FIRST_PAGE : receivedPair.first.page;
         int rank = (page - FIRST_PAGE) * perPage;
-        for (LeaderboardMarkUserItemView.DTO dto : receivedPair.second)
+        for (LeaderboardItemDisplayDTO dto : receivedPair.second)
         {
             rank++;
             dto.setRanking(rank);
@@ -423,7 +416,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         return super.onMap(receivedPair);
     }
 
-    @Override protected void onNext(@NonNull PagedLeaderboardKey key, @NonNull LeaderboardMarkUserItemView.DTOList value)
+    @Override protected void onNext(@NonNull PagedLeaderboardKey key, @NonNull LeaderboardMarkedUserItemDisplayDto.DTOList value)
     {
         super.onNext(key, value);
         //swipeContainer.setRefreshing(false);

@@ -40,7 +40,7 @@ abstract public class BaseLeaderboardPagedRecyclerRxFragment<
 
     @NonNull protected LeaderboardDefKey leaderboardDefKey;
 
-    private UserProfileDTO currentUserProfileDTO;
+    protected UserProfileDTO currentUserProfileDTO;
 
     public static void putLeaderboardDefKey(@NonNull Bundle args, @NonNull LeaderboardDefKey leaderboardDefKey)
     {

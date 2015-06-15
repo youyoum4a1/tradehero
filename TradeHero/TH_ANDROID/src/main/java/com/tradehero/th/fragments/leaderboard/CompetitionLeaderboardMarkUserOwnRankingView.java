@@ -4,12 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.text.style.CharacterStyle;
-import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.view.View;
@@ -50,12 +45,12 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
     }
     //</editor-fold>
 
-    @Override public void display(@NonNull LeaderboardMarkUserItemView.DTO parentViewDTO)
+    public void display(@NonNull CompetitionLeaderboardMarkUserItemView.CompetitionLeaderboardItemDisplayDto parentViewDTO)
     {
         super.display(parentViewDTO);
-        if (parentViewDTO instanceof DTO)
+        if (parentViewDTO instanceof CompetitionLeaderboardItemDisplayDto)
         {
-            DTO viewDTO = (DTO) parentViewDTO;
+            CompetitionLeaderboardItemDisplayDto viewDTO = (CompetitionLeaderboardItemDisplayDto) parentViewDTO;
 
             if (infoButtonContainer != null)
             {
@@ -68,23 +63,23 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         }
     }
 
-    @Override public void displayUserIsNotRanked(@Nullable UserProfileDTO currentUserProfileDTO)
+    public void displayUserIsNotRanked(@Nullable UserProfileDTO currentUserProfileDTO)
     {
-        super.displayUserIsNotRanked(currentUserProfileDTO);
-
-        String rule = getContext().getString(R.string.leaderboard_see_competition_rules);
-
-        CharacterStyle textColorSpan = createTextColorSpan();
-        CharacterStyle clickableSpan = createClickableSpan();
-
-        Spannable span = new SpannableString(rule);
-        span.setSpan(clickableSpan, 0, rule.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        span.setSpan(textColorSpan, 0, rule.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        lbmuRoi.setMovementMethod(LinkMovementMethod.getInstance());
-        lbmuRoi.setText(span);
-        lbmuRoi.setBackgroundResource(R.drawable.basic_transparent_selector);
-
-        infoButtonContainer.setVisibility(View.GONE);
+        //super.displayUserIsNotRanked(currentUserProfileDTO);
+        //
+        //String rule = getContext().getString(R.string.leaderboard_see_competition_rules);
+        //
+        //CharacterStyle textColorSpan = createTextColorSpan();
+        //CharacterStyle clickableSpan = createClickableSpan();
+        //
+        //Spannable span = new SpannableString(rule);
+        //span.setSpan(clickableSpan, 0, rule.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        //span.setSpan(textColorSpan, 0, rule.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        //lbmuRoi.setMovementMethod(LinkMovementMethod.getInstance());
+        //lbmuRoi.setText(span);
+        //lbmuRoi.setBackgroundResource(R.drawable.basic_transparent_selector);
+        //
+        //infoButtonContainer.setVisibility(View.GONE);
     }
 
     private ForegroundColorSpan createTextColorSpan()
@@ -92,19 +87,19 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         return new ForegroundColorSpan(getResources().getColor(R.color.tradehero_blue));
     }
 
-    private ClickableSpan createClickableSpan()
-    {
-        return new ClickableSpan()
-        {
-            @Override public void onClick(View view)
-            {
-                if (viewDTO != null)
-                {
-                    //userActionSubject.onNext(new UserAction(viewDTO, UserActionType.RULES));
-                }
-            }
-        };
-    }
+    //private ClickableSpan createClickableSpan()
+    //{
+    //    return new ClickableSpan()
+    //    {
+    //        @Override public void onClick(View view)
+    //        {
+    //            if (viewDTO != null)
+    //            {
+    //                //userActionSubject.onNext(new UserAction(viewDTO, UserActionType.RULES));
+    //            }
+    //        }
+    //    };
+    //}
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.competition_own_ranking_info)
@@ -120,12 +115,12 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         }
     }
 
-    public static class DTO extends CompetitionLeaderboardMarkUserItemView.DTO
+    public static class CompetitionLeaderboardItemDisplayDto extends CompetitionLeaderboardMarkUserItemView.CompetitionLeaderboardItemDisplayDto
     {
         @ViewVisibilityValue final int infoButtonContainerVisibility;
         @NonNull final Spanned infoText;
 
-        public DTO(@NonNull Resources resources,
+        public CompetitionLeaderboardItemDisplayDto(@NonNull Resources resources,
                 @NonNull CurrentUserId currentUserId,
                 @NonNull LeaderboardUserDTO leaderboardItem,
                 @NonNull UserProfileDTO currentUserProfile,

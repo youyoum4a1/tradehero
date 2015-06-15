@@ -20,6 +20,7 @@ import com.tradehero.th.adapters.PagedRecyclerAdapter;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.fragments.leaderboard.LeaderboardItemUserAction.UserActionType;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.GraphicUtil;
@@ -31,12 +32,13 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
-        LeaderboardMarkUserItemView.DTO>
+        LeaderboardItemDisplayDTO>
 {
     private static final int VIEW_TYPE_MAIN = 0;
     private static final int VIEW_TYPE_OWN = 1;
 
     @LayoutRes protected final int ownRankingRes;
+    protected final Context context;
     private final int itemLayoutRes;
     @NonNull protected final LeaderboardKey leaderboardKey;
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
@@ -44,7 +46,7 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
     @Inject Picasso picasso;
     @Inject Analytics analytics;
 
-    @NonNull protected final PublishSubject<LbmuItemViewHolder.UserAction> userActionPublishSubject;
+    @NonNull protected final PublishSubject<LeaderboardItemUserAction> userActionPublishSubject;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserRecyclerAdapter(
@@ -53,27 +55,41 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
             @LayoutRes int ownRankingRes,
             @NonNull LeaderboardKey leaderboardKey)
     {
-        super(LeaderboardMarkUserItemView.DTO.class, new LeaderboardMarkUserItemComparator());
+        this(context, new LeaderboardMarkUserItemComparator(), itemLayoutRes, ownRankingRes, leaderboardKey);
+    }
+
+    public LeaderboardMarkUserRecyclerAdapter(
+            Context context,
+            @NonNull TypedRecyclerComparator<LeaderboardItemDisplayDTO> itemComparator,
+            @LayoutRes int itemLayoutRes,
+            @LayoutRes int ownRankingRes,
+            @NonNull LeaderboardKey leaderboardKey)
+    {
+        super(LeaderboardItemDisplayDTO.class, itemComparator);
+        this.context = context;
         this.itemLayoutRes = itemLayoutRes;
         this.leaderboardKey = leaderboardKey;
         this.ownRankingRes = ownRankingRes;
         this.userActionPublishSubject = PublishSubject.create();
-        setOnItemClickedListener(new OnItemClickedListener<LeaderboardMarkUserItemView.DTO>()
+        setOnItemClickedListener(new OnItemClickedListener<LeaderboardItemDisplayDTO>()
         {
-            @Override public void onItemClicked(int position, TypedViewHolder<LeaderboardMarkUserItemView.DTO> viewHolder,
-                    LeaderboardMarkUserItemView.DTO object)
+            @Override public void onItemClicked(int position, TypedViewHolder<LeaderboardItemDisplayDTO> viewHolder,
+                    LeaderboardItemDisplayDTO object)
             {
-                if (viewHolder instanceof LbmuItemViewHolder && object.userStatisticsDto != null)
+                if (viewHolder instanceof LbmuItemViewHolder
+                        && object instanceof LeaderboardMarkedUserItemDisplayDto
+                        && ((LeaderboardMarkedUserItemDisplayDto) object).userStatisticsDto != null)
                 {
                     LbmuItemViewHolder lbmuItemViewHolder = (LbmuItemViewHolder) viewHolder;
+                    LeaderboardMarkedUserItemDisplayDto dto = (LeaderboardMarkedUserItemDisplayDto) object;
                     if (lbmuItemViewHolder.userStatisticView != null)
                     {
-                        boolean expand = !object.isExpanded();
+                        boolean expand = !dto.isExpanded();
                         lbmuItemViewHolder.expandingLayout.expand(expand);
-                        object.setExpanded(expand);
+                        dto.setExpanded(expand);
                         if (expand)
                         {
-                            lbmuItemViewHolder.userStatisticView.display(object.userStatisticsDto);
+                            lbmuItemViewHolder.userStatisticView.display(dto.userStatisticsDto);
                         }
                         else
                         {
@@ -92,14 +108,21 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
         this.applicablePortfolioId = ownedPortfolioId;
     }
 
-    @NonNull public Observable<LbmuItemViewHolder.UserAction> getUserActionObservable()
+    @NonNull public Observable<LeaderboardItemUserAction> getUserActionObservable()
     {
         return userActionPublishSubject.asObservable();
     }
 
     @Override public int getItemViewType(int position)
     {
-        return getItem(position).isMyOwnRanking() ? VIEW_TYPE_OWN : VIEW_TYPE_MAIN;
+        LeaderboardItemDisplayDTO dto = getItem(position);
+        return getViewTypeForItem(dto);
+    }
+
+    protected int getViewTypeForItem(LeaderboardItemDisplayDTO dto)
+    {
+        return dto instanceof LeaderboardMarkedUserItemDisplayDto && ((LeaderboardMarkedUserItemDisplayDto) dto).isMyOwnRanking() ? VIEW_TYPE_OWN
+                : VIEW_TYPE_MAIN;
     }
 
     @Override public int getItemCount()
@@ -107,30 +130,29 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
         return super.getItemCount();
     }
 
-    @Override public LeaderboardMarkUserItemView.DTO getItem(int position)
+    @Override public LeaderboardItemDisplayDTO getItem(int position)
     {
-        LeaderboardMarkUserItemView.DTO item = super.getItem(position);
-        if (item.isMyOwnRanking())
+        LeaderboardItemDisplayDTO item = super.getItem(position);
+        if (item instanceof LeaderboardMarkedUserItemDisplayDto)
         {
-            return item;
-        }
-        else
-        {
-            item.setRanking(position);
-            if (item.leaderboardUserDTO != null)
+            LeaderboardMarkedUserItemDisplayDto markedUserDto = (LeaderboardMarkedUserItemDisplayDto) item;
+            if (!markedUserDto.isMyOwnRanking())
             {
-                item.leaderboardUserDTO.setLeaderboardId(leaderboardKey.id);
-                boolean includeFoF = leaderboardKey instanceof FriendsPerPagedLeaderboardKey &&
-                        ((FriendsPerPagedLeaderboardKey) leaderboardKey).includeFoF != null &&
-                        ((FriendsPerPagedLeaderboardKey) leaderboardKey).includeFoF;
-                item.leaderboardUserDTO.setIncludeFoF(includeFoF);
+                if (markedUserDto.leaderboardUserDTO != null)
+                {
+                    markedUserDto.leaderboardUserDTO.setLeaderboardId(leaderboardKey.id);
+                    boolean includeFoF = leaderboardKey instanceof FriendsPerPagedLeaderboardKey &&
+                            ((FriendsPerPagedLeaderboardKey) leaderboardKey).includeFoF != null &&
+                            ((FriendsPerPagedLeaderboardKey) leaderboardKey).includeFoF;
+                    markedUserDto.leaderboardUserDTO.setIncludeFoF(includeFoF);
+                }
             }
-            return item;
         }
+        return item;
     }
 
     @NonNull @Override
-    public TypedViewHolder<LeaderboardMarkUserItemView.DTO> onCreateTypedViewHolder(ViewGroup parent, int viewType)
+    public TypedViewHolder<LeaderboardItemDisplayDTO> onCreateTypedViewHolder(ViewGroup parent, int viewType)
     {
         LbmuItemViewHolder lbmuItemViewHolder;
         switch (viewType)
@@ -150,7 +172,7 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
         return lbmuItemViewHolder;
     }
 
-    @Override public void onBindViewHolder(TypedViewHolder<LeaderboardMarkUserItemView.DTO> holder, int position)
+    @Override public void onBindViewHolder(TypedViewHolder<LeaderboardItemDisplayDTO> holder, int position)
     {
         super.onBindViewHolder(holder, position);
         if (position > 0 && holder instanceof LbmuItemViewHolder)
@@ -161,44 +183,61 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
         }
     }
 
-    private static class LeaderboardMarkUserItemComparator extends TypedRecyclerComparator<LeaderboardMarkUserItemView.DTO>
+    private static class LeaderboardMarkUserItemComparator extends TypedRecyclerComparator<LeaderboardItemDisplayDTO>
     {
-        @Override protected int compare(LeaderboardMarkUserItemView.DTO o1, LeaderboardMarkUserItemView.DTO o2)
+        @Override protected int compare(LeaderboardItemDisplayDTO o1, LeaderboardItemDisplayDTO o2)
         {
-            if (o1.isMyOwnRanking() && !o2.isMyOwnRanking())
+            if (o1 instanceof LeaderboardMarkedUserItemDisplayDto && o2 instanceof LeaderboardMarkedUserItemDisplayDto)
             {
-                return -1;
-            }
-            else if (!o1.isMyOwnRanking() && o2.isMyOwnRanking())
-            {
-                return 1;
-            }
-            else if (o1.ranking > 0 && o2.ranking > 0)
-            {
-                return o1.ranking - o2.ranking;
+                LeaderboardMarkedUserItemDisplayDto dto1 = (LeaderboardMarkedUserItemDisplayDto) o1;
+                LeaderboardMarkedUserItemDisplayDto dto2 = (LeaderboardMarkedUserItemDisplayDto) o2;
+                if (dto1.isMyOwnRanking() && !dto2.isMyOwnRanking())
+                {
+                    return -1;
+                }
+                else if (!dto1.isMyOwnRanking() && dto2.isMyOwnRanking())
+                {
+                    return 1;
+                }
+                else if (dto1.ranking > 0 && dto2.ranking > 0)
+                {
+                    return dto1.ranking - dto2.ranking;
+                }
             }
             return super.compare(o1, o2);
         }
 
-        @Override protected boolean areContentsTheSame(LeaderboardMarkUserItemView.DTO oldItem, LeaderboardMarkUserItemView.DTO newItem)
+        @Override protected boolean areContentsTheSame(LeaderboardItemDisplayDTO oldItem, LeaderboardItemDisplayDTO newItem)
         {
-            if (!oldItem.lbmuDisplayName.equals(newItem.lbmuDisplayName)) return false;
-            if (!oldItem.lbmuRoi.equals(newItem.lbmuRoi)) return false;
-            return oldItem.lbmuRanking.equals(newItem.lbmuRanking) && !(oldItem.lbmuDisplayPicture != null ? !oldItem.lbmuDisplayPicture.equals(
-                    newItem.lbmuDisplayPicture) : newItem.lbmuDisplayPicture != null);
+            if (oldItem instanceof LeaderboardMarkedUserItemDisplayDto && newItem instanceof LeaderboardMarkedUserItemDisplayDto)
+            {
+                LeaderboardMarkedUserItemDisplayDto oldDto = (LeaderboardMarkedUserItemDisplayDto) oldItem;
+                LeaderboardMarkedUserItemDisplayDto newDto = (LeaderboardMarkedUserItemDisplayDto) newItem;
+                if (!oldDto.lbmuDisplayName.equals(newDto.lbmuDisplayName)) return false;
+                if (!oldDto.lbmuRoi.equals(newDto.lbmuRoi)) return false;
+                return oldDto.lbmuRanking.equals(newDto.lbmuRanking) && !(oldDto.lbmuDisplayPicture != null ? !oldDto.lbmuDisplayPicture.equals(
+                        newDto.lbmuDisplayPicture) : newDto.lbmuDisplayPicture != null);
+            }
+            return super.areContentsTheSame(oldItem, newItem);
         }
 
-        @Override protected boolean areItemsTheSame(LeaderboardMarkUserItemView.DTO item1, LeaderboardMarkUserItemView.DTO item2)
+        @Override protected boolean areItemsTheSame(LeaderboardItemDisplayDTO item1, LeaderboardItemDisplayDTO item2)
         {
-            if (item1.isMyOwnRanking() && item2.isMyOwnRanking())
+            if (item1 instanceof LeaderboardMarkedUserItemDisplayDto && item2 instanceof LeaderboardMarkedUserItemDisplayDto)
             {
-                return true; //There can only be 1 header.
+                LeaderboardMarkedUserItemDisplayDto dto1 = (LeaderboardMarkedUserItemDisplayDto) item1;
+                LeaderboardMarkedUserItemDisplayDto dto2 = (LeaderboardMarkedUserItemDisplayDto) item2;
+                if (dto1.isMyOwnRanking() && dto2.isMyOwnRanking())
+                {
+                    return true; //There can only be 1 header.
+                }
+                else
+                {
+                    return !(dto1.leaderboardUserDTO != null && dto2.leaderboardUserDTO != null)
+                            || dto1.leaderboardUserDTO.id == dto2.leaderboardUserDTO.id;
+                }
             }
-            else
-            {
-                return !(item1.leaderboardUserDTO != null && item2.leaderboardUserDTO != null)
-                        || item1.leaderboardUserDTO.id == item2.leaderboardUserDTO.id;
-            }
+            return super.areItemsTheSame(item1, item2);
         }
     }
 
@@ -211,12 +250,12 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
             super(itemView, picasso, analytics);
         }
 
-        @Override public void display(LeaderboardMarkUserItemView.DTO dto)
+        @Override public void display(LeaderboardItemDisplayDTO dto)
         {
             super.display(dto);
-            if (expandMark != null)
+            if (expandMark != null && this.currentDto != null)
             {
-                if (dto.userStatisticsDto == null)
+                if (this.currentDto.userStatisticsDto == null)
                 {
                     expandMark.setVisibility(View.GONE);
                 }
@@ -228,11 +267,11 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
         }
     }
 
-    public static class LbmuItemViewHolder extends TypedViewHolder<LeaderboardMarkUserItemView.DTO>
+    public static class LbmuItemViewHolder extends TypedViewHolder<LeaderboardItemDisplayDTO>
     {
         private final Analytics analytics;
         private final Picasso picasso;
-        private final PublishSubject<UserAction> userActionSubject;
+        private final PublishSubject<LeaderboardItemUserAction> userActionSubject;
 
         @InjectView(R.id.leaderboard_user_item_display_name) protected TextView lbmuDisplayName;
         @InjectView(R.id.lbmu_roi) protected TextView lbmuRoi;
@@ -244,7 +283,7 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
         @InjectView(R.id.leaderboard_user_item_fof) @Optional @Nullable MarkdownTextView lbmuFoF;
         @InjectView(R.id.leaderboard_user_item_follow) View lbmuFollowUser;
         @InjectView(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
-        @Nullable private LeaderboardMarkUserItemView.DTO currentDto;
+        @Nullable protected LeaderboardMarkedUserItemDisplayDto currentDto;
 
         public LbmuItemViewHolder(View itemView, Picasso picasso, Analytics analytics)
         {
@@ -254,55 +293,58 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
             this.analytics = analytics;
         }
 
-        @Override public void display(LeaderboardMarkUserItemView.DTO dto)
+        @Override public void display(LeaderboardItemDisplayDTO dto)
         {
-            this.currentDto = dto;
-            lbmuDisplayName.setText(dto.lbmuDisplayName);
-            lbmuRoi.setText(dto.lbmuRoi);
-            lbmuPosition.setText(dto.lbmuRanking);
-            lbmuPosition.setTextColor(dto.lbmuPositionColor);
-            if (dto.lbmuDisplayPicture != null)
+            if (dto instanceof LeaderboardMarkedUserItemDisplayDto)
             {
-                picasso.load(dto.lbmuDisplayPicture)
-                        .fit()
-                        .centerCrop()
-                        .placeholder(R.drawable.superman_facebook)
-                        .error(R.drawable.superman_facebook)
-                        .into(
-                                lbmuProfilePicture);
-            }
-            else
-            {
-                picasso.load(R.drawable.superman_facebook).into(lbmuProfilePicture);
-            }
-
-            expandingLayout.expandWithNoAnimation(dto.isExpanded());
-            if (userStatisticView != null)
-            {
-                if (dto.isExpanded())
+                this.currentDto = (LeaderboardMarkedUserItemDisplayDto) dto;
+                lbmuDisplayName.setText(this.currentDto.lbmuDisplayName);
+                lbmuRoi.setText(this.currentDto.lbmuRoi);
+                lbmuPosition.setText(this.currentDto.lbmuRanking);
+                lbmuPosition.setTextColor(this.currentDto.lbmuPositionColor);
+                if (this.currentDto.lbmuDisplayPicture != null)
                 {
-                    userStatisticView.display(dto.userStatisticsDto);
+                    picasso.load(this.currentDto.lbmuDisplayPicture)
+                            .fit()
+                            .centerCrop()
+                            .placeholder(R.drawable.superman_facebook)
+                            .error(R.drawable.superman_facebook)
+                            .into(
+                                    lbmuProfilePicture);
                 }
                 else
                 {
-                    userStatisticView.display(null);
+                    picasso.load(R.drawable.superman_facebook).into(lbmuProfilePicture);
                 }
-            }
 
-            if (lbmuFoF != null)
-            {
-                lbmuFoF.setText(dto.lbmuFoF);
-                lbmuFoF.setVisibility(dto.lbmuFoFVisibility);
-                lbmuFoF.setMovementMethod(LinkMovementMethod.getInstance());
-            }
+                expandingLayout.expandWithNoAnimation(this.currentDto.isExpanded());
+                if (userStatisticView != null)
+                {
+                    if (this.currentDto.isExpanded())
+                    {
+                        userStatisticView.display(this.currentDto.userStatisticsDto);
+                    }
+                    else
+                    {
+                        userStatisticView.display(null);
+                    }
+                }
 
-            if (lbmuFollowUser != null)
-            {
-                lbmuFollowUser.setVisibility(dto.lbmuFollowUserVisibility);
-            }
-            if (lbmuFollowingUser != null)
-            {
-                lbmuFollowingUser.setVisibility(dto.lbmuFollowingUserVisibility);
+                if (lbmuFoF != null)
+                {
+                    lbmuFoF.setText(this.currentDto.lbmuFoF);
+                    lbmuFoF.setVisibility(this.currentDto.lbmuFoFVisibility);
+                    lbmuFoF.setMovementMethod(LinkMovementMethod.getInstance());
+                }
+
+                if (lbmuFollowUser != null)
+                {
+                    lbmuFollowUser.setVisibility(this.currentDto.lbmuFollowUserVisibility);
+                }
+                if (lbmuFollowingUser != null)
+                {
+                    lbmuFollowingUser.setVisibility(this.currentDto.lbmuFollowingUserVisibility);
+                }
             }
         }
 
@@ -313,7 +355,7 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
             if (this.currentDto != null)
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Profile));
-                userActionSubject.onNext(new UserAction(this.currentDto, UserActionType.PROFILE));
+                userActionSubject.onNext(new LeaderboardItemUserAction(this.currentDto, UserActionType.PROFILE));
             }
         }
 
@@ -324,7 +366,7 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
             if (this.currentDto != null)
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Positions));
-                userActionSubject.onNext(new UserAction(this.currentDto, UserActionType.POSITIONS));
+                userActionSubject.onNext(new LeaderboardItemUserAction(this.currentDto, UserActionType.POSITIONS));
             }
         }
 
@@ -335,32 +377,13 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
             if (this.currentDto != null)
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
-                userActionSubject.onNext(new UserAction(this.currentDto, UserActionType.FOLLOW));
+                userActionSubject.onNext(new LeaderboardItemUserAction(this.currentDto, UserActionType.FOLLOW));
             }
         }
 
-        @NonNull public Observable<UserAction> getUserActionObservable()
+        @NonNull public Observable<LeaderboardItemUserAction> getUserActionObservable()
         {
             return userActionSubject.asObservable();
-        }
-
-        public enum UserActionType
-        {
-            PROFILE, POSITIONS, FOLLOW, RULES
-        }
-
-        public static class UserAction
-        {
-            @NonNull public final LeaderboardMarkUserItemView.DTO dto;
-            @NonNull public final UserActionType actionType;
-
-            public UserAction(
-                    @NonNull LeaderboardMarkUserItemView.DTO dto,
-                    @NonNull UserActionType actionType)
-            {
-                this.dto = dto;
-                this.actionType = actionType;
-            }
         }
     }
 }
