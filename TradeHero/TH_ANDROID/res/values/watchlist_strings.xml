@@ -4,8 +4,8 @@
   <string name="watchlist_not_enough_info">Not enough info yet</string>
 
   <string name="watchlist_title">Favourites</string>
-  <string name="watchlist_add_new_title">Add New Favorite</string>
-  <string name="watchlist_add_title">Add to Favorites</string>
+  <string name="watchlist_add_new_title">Add New Favourite</string>
+  <string name="watchlist_add_title">Add to Favourites</string>
   <string name="watchlist_edit_title">Edit in Favourites</string>
 
   <string name="watchlist_button_done">@string/done</string>
