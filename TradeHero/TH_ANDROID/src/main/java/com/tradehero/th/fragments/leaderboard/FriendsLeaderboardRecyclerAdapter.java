@@ -5,14 +5,17 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.metrics.Analytics;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.utils.GraphicUtil;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -53,7 +56,7 @@ public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecycl
                                 LayoutInflater.from(parent.getContext()).inflate(leaderboard_friends_social_item_view, parent, false), picasso,
                                 analytics);
                 lbmuItemViewHolder.getFriendUserActionObservable().subscribe(inviteRequestedSubject);
-                break;
+                return lbmuItemViewHolder;
             case VIEW_TYPE_CALL_TO_ACTION:
                 CallToActionViewHolder callToActionItemViewHolder =
                         new CallToActionViewHolder(LayoutInflater.from(parent.getContext()).inflate(leaderboard_friends_call_action, parent, false));
@@ -61,6 +64,12 @@ public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecycl
                 return callToActionItemViewHolder;
         }
         return super.onCreateTypedViewHolder(parent, viewType);
+    }
+
+    @Override public void onBindViewHolder(TypedViewHolder<LeaderboardItemDisplayDTO> holder, int position)
+    {
+        super.onBindViewHolder(holder, position);
+        GraphicUtil.setEvenOddBackground(position, holder.itemView);
     }
 
     public Observable<LeaderboardFriendUserAction> getInviteRequestedObservable()
@@ -148,19 +157,61 @@ public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecycl
         }
     }
 
-    private static class SocialFriendViewHolder extends TypedViewHolder<LeaderboardItemDisplayDTO>
+    public static class SocialFriendViewHolder extends TypedViewHolder<LeaderboardItemDisplayDTO>
     {
+        @InjectView(R.id.leaderboard_user_item_network_label) ImageView networkLabel;
+        @InjectView(R.id.leaderboard_user_item_profile_picture) ImageView avatar;
+        @InjectView(R.id.leaderboard_user_item_social_name) TextView socialName;
+
         private final PublishSubject<LeaderboardFriendUserAction> friendUserActionPublishSubject;
+        private final Picasso picasso;
+        private final Analytics analytics;
+        private UserFriendsDTO userFriendsDTO;
 
         public SocialFriendViewHolder(View itemView, Picasso picasso, Analytics analytics)
         {
             super(itemView);
+            this.picasso = picasso;
+            this.analytics = analytics;
             friendUserActionPublishSubject = PublishSubject.create();
         }
 
         @Override public void display(LeaderboardItemDisplayDTO friendLeaderboardUserDTO)
         {
+            if (friendLeaderboardUserDTO instanceof FriendLeaderboardItemDisplayDTO.Social)
+            {
+                userFriendsDTO = ((FriendLeaderboardItemDisplayDTO.Social) friendLeaderboardUserDTO).userFriendsDTO;
 
+                if (networkLabel != null)
+                {
+                    networkLabel.setBackgroundResource(userFriendsDTO.getNetworkLabelImage());
+                }
+
+                if (avatar != null)
+                {
+                    String url = userFriendsDTO.getProfilePictureURL();
+                    if (url != null)
+                    {
+                        picasso.load(url)
+                                .placeholder(R.drawable.superman_facebook)
+                                .into(avatar);
+                    }
+                }
+
+                if (socialName != null)
+                {
+                    socialName.setText(userFriendsDTO.name);
+                }
+            }
+        }
+
+        @SuppressWarnings("unused")
+        @OnClick(R.id.leaderboard_user_item_invite_btn) void invite(View view)
+        {
+            if (userFriendsDTO != null)
+            {
+                friendUserActionPublishSubject.onNext(new LeaderboardFriendUserAction(userFriendsDTO));
+            }
         }
 
         public Observable<LeaderboardFriendUserAction> getFriendUserActionObservable()

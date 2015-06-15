@@ -7,7 +7,6 @@ import dagger.Module;
 
 @Module(
         injects = {
-                LeaderboardFriendsItemView.class,
                 LeaderboardMarkUserRecyclerFragment.class,
                 LeaderboardMarkUserItemView.class,
                 CompetitionLeaderboardMarkUserItemView.class,
