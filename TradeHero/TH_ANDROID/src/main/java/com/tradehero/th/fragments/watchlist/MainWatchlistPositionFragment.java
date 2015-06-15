@@ -35,6 +35,7 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.SecuritySearchWatchlistFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
+import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -43,6 +44,7 @@ import javax.inject.Inject;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import timber.log.Timber;
 
 public class MainWatchlistPositionFragment extends DashboardFragment
 {
@@ -128,7 +130,18 @@ public class MainWatchlistPositionFragment extends DashboardFragment
             case R.id.position_watchlist_add:
             {
                 Bundle bundle = new Bundle();
-                SecuritySearchWatchlistFragment.putReturnFragment(bundle, getClass());
+                if (navigator.get().hasBackStackName(getClass().getName()))
+                {
+                    SecuritySearchWatchlistFragment.putReturnFragment(bundle, getClass());
+                }
+                else if (navigator.get().hasBackStackName(TrendingMainFragment.class.getName()))
+                {
+                    SecuritySearchWatchlistFragment.putReturnFragment(bundle, TrendingMainFragment.class);
+                }
+                else
+                {
+                    Timber.e(new RuntimeException(), "No return fragment found");
+                }
                 navigator.get().pushFragment(SecuritySearchWatchlistFragment.class, bundle);
                 return true;
             }

@@ -3,10 +3,10 @@
 
   <string name="watchlist_not_enough_info">Not enough info yet</string>
 
-  <string name="watchlist_title">Favorites</string>
+  <string name="watchlist_title">Favourites</string>
   <string name="watchlist_add_new_title">Add New Watchlist</string>
   <string name="watchlist_add_title">Add to Watchlist</string>
-  <string name="watchlist_edit_title">Edit in Watchlist</string>
+  <string name="watchlist_edit_title">Edit in Favourites</string>
 
   <string name="watchlist_button_done">@string/done</string>
   <string name="watchlist_button_delete">Delete</string>
@@ -29,7 +29,7 @@
   <string name="watchlist_item_deleted_failed">Fail to delete watchlist item for security %d</string>
   <string name="watchlist_more">More</string>
   <string name="watchlist_quantity_should_not_be_zero">Quantity should be at least 1</string>
-  <string name="watchlist_empty_view">Tap the search button above to search for securities to add to favorites.</string>
+  <string name="watchlist_empty_view">Tap the search button above to search for securities to add to favourites.</string>
   <string name="watchlist_new_discussion">New Discussion</string>
   <string name="watchlist_not_yet_implemented">Not yet implemented. Stay stuned.</string>
 
