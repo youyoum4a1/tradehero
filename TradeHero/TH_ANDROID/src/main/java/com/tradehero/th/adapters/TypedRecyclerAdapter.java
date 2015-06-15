@@ -243,7 +243,6 @@ public abstract class TypedRecyclerAdapter<T>
 
     public static class DividerItemDecoration extends RecyclerView.ItemDecoration
     {
-
         private Drawable mDivider;
         private boolean mShowFirstDivider = false;
         private boolean mShowLastDivider = false;

@@ -53,8 +53,7 @@ public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecycl
             case VIEW_TYPE_SOCIAL:
                 SocialFriendViewHolder lbmuItemViewHolder =
                         new SocialFriendViewHolder(
-                                LayoutInflater.from(parent.getContext()).inflate(leaderboard_friends_social_item_view, parent, false), picasso,
-                                analytics);
+                                LayoutInflater.from(parent.getContext()).inflate(leaderboard_friends_social_item_view, parent, false), picasso);
                 lbmuItemViewHolder.getFriendUserActionObservable().subscribe(inviteRequestedSubject);
                 return lbmuItemViewHolder;
             case VIEW_TYPE_CALL_TO_ACTION:
@@ -165,14 +164,12 @@ public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecycl
 
         private final PublishSubject<LeaderboardFriendUserAction> friendUserActionPublishSubject;
         private final Picasso picasso;
-        private final Analytics analytics;
         private UserFriendsDTO userFriendsDTO;
 
-        public SocialFriendViewHolder(View itemView, Picasso picasso, Analytics analytics)
+        public SocialFriendViewHolder(View itemView, Picasso picasso)
         {
             super(itemView);
             this.picasso = picasso;
-            this.analytics = analytics;
             friendUserActionPublishSubject = PublishSubject.create();
         }
 
