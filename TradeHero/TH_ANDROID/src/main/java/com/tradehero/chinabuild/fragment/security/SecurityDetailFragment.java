@@ -1,17 +1,14 @@
 package com.tradehero.chinabuild.fragment.security;
 
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -35,6 +32,7 @@ import com.tradehero.chinabuild.cache.PositionCompactNewCache;
 import com.tradehero.chinabuild.cache.PositionDTOKey;
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.QuoteTick;
+import com.tradehero.chinabuild.data.SecurityCommentList;
 import com.tradehero.chinabuild.data.SignedQuote;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.message.SecurityDiscussSendFragment;
@@ -50,6 +48,8 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.adapters.PositionTradeListAdapter;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
@@ -83,6 +83,7 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
@@ -167,6 +168,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public PositionDTOCompactList positionDTOCompactList;
     protected PortfolioCompactDTO portfolioCompactDTO;
     @Inject PortfolioCompactCache portfolioCompactCache;
+    @Inject DiscussionServiceWrapper discussionServiceWrapper;
 
     private boolean isInWatchList = false;//是否是自选股
     private String securityName = "";
@@ -308,9 +310,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private boolean isFirstLunch;
 
     private View view;
-
-    private LocalBroadcastManager broadcastManager;
-    private DiscussionCountReceiver discussionCountReceiver;
 
     private QuoteDetail quoteDetail;
     private int scrollY;
@@ -634,9 +633,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     {
         quoteServiceWrapper.stopQuoteDetailTask();
         quoteServiceWrapper.stopSecurityCompactTask();
-        if (discussionCountReceiver != null) {
-            broadcastManager.unregisterReceiver(discussionCountReceiver);
-        }
         detachUserProfileCache();
         detachSecurityCompactCache();
         detachSecurityPositionDetailCache();
@@ -664,14 +660,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
 
         getTradeTabDetail();
-        //register discussion count receiver.
-        if (broadcastManager == null) {
-            broadcastManager = LocalBroadcastManager.getInstance(getActivity());
-        }
-        if (discussionCountReceiver == null) {
-            discussionCountReceiver = new DiscussionCountReceiver();
-        }
-        broadcastManager.registerReceiver(discussionCountReceiver, new IntentFilter(ACTION_UPDATE_DISCUSSION_COUNT));
     }
 
     public void getTradeTabDetail()
@@ -945,6 +933,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             chartDTO.setSecurityCompactDTO(securityCompactDTO);
             setHeadViewMiddleMain(securityCompactDTO.name + "(" + securityCompactDTO.getSecurityId().getSecuritySymbol() + ")");
             updateSubHead();
+            retrieveDiscussionCount();
         }
         displayChartImage();
 
@@ -952,6 +941,30 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         getTradeTabDetail();
         initSubViewPager();
+    }
+
+    private void retrieveDiscussionCount() {
+        if (securityCompactDTO == null) {
+            return;
+        }
+
+        Callback<SecurityCommentList> callback = new Callback<SecurityCommentList>() {
+            @Override
+            public void success(SecurityCommentList securityCommentList, Response response) {
+                if (securityCommentList == null) {
+                    return;
+                }
+                updateDiscussionCount(securityCommentList.commentCount);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        };
+        discussionServiceWrapper.getSecurityComment(securityId, 1, 0, callback);
+
+
     }
 
     public void setChartView(int select) {
@@ -1982,15 +1995,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         @Override
         public int getCount() {
             return subFragments.size();
-        }
-    }
-
-    class DiscussionCountReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int count = intent.getIntExtra(BUNDLE_KEY_DISCUSSION_COUNT, 0);
-            updateDiscussionCount(count);
         }
     }
 

@@ -196,13 +196,10 @@ import retrofit.client.Response;
     }
 
     public void getSecurityComment(SecurityId securityId,
-                                   PaginatedDiscussionListKey discussionListKey,
+                                   Integer page, Integer perPage,
                                    Callback<SecurityCommentList> callback) {
         discussionService.getSecurityDiscussion(securityId.getExchange(),
-                securityId.getSecuritySymbol(),
-                discussionListKey.page,
-                discussionListKey.perPage,
-                callback);
+                securityId.getSecuritySymbol(), page, perPage, callback);
     }
 
 

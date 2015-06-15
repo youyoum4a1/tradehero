@@ -1,6 +1,6 @@
 package com.tradehero.chinabuild.fragment.security;
 
-import com.tradehero.chinabuild.data.TradeRecord;
+import com.tradehero.chinabuild.data.SecurityUserOptDTO;
 import com.tradehero.th.api.security.SecurityId;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public class SecurityDetailSubCache {
 
     private static SecurityDetailSubCache securityDetailSubCache;
 
-    private List<TradeRecord> tradeRecordList;
+    private List<SecurityUserOptDTO> tradeRecordList;
 
     private SecurityId securityId;
 
@@ -44,14 +44,14 @@ public class SecurityDetailSubCache {
         return false;
     }
 
-    public void setTradeRecordList(List<TradeRecord> tradeRecordList){
+    public void setTradeRecordList(List<SecurityUserOptDTO> tradeRecordList){
         if(tradeRecordList==null){
             return;
         }
         this.tradeRecordList = tradeRecordList;
     }
 
-    public List<TradeRecord> getTradeRecordList(){
+    public List<SecurityUserOptDTO> getTradeRecordList(){
         return tradeRecordList;
     }
 

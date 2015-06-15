@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
+import com.tradehero.chinabuild.data.SecurityUserPositionDTO;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.wechat.WeChatDTO;

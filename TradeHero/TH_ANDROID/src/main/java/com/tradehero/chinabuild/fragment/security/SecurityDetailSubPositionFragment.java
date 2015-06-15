@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.tradehero.chinabuild.data.SharePosition;
+import com.tradehero.chinabuild.data.SecurityUserPositionDTO;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -24,13 +24,10 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 
-import org.ocpsoft.prettytime.PrettyTime;
-
 import java.util.List;
 
 import javax.inject.Inject;
 
-import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -140,9 +137,9 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
     }
 
     private void retrieveSharePositions() {
-        Callback<List<SharePosition>> callback = new Callback<List<SharePosition>>() {
+        Callback<List<SecurityUserPositionDTO>> callback = new Callback<List<SecurityUserPositionDTO>>() {
             @Override
-            public void success(List<SharePosition> sharePositionList, Response response) {
+            public void success(List<SecurityUserPositionDTO> sharePositionList, Response response) {
                 for (int i = 0; i < sharePositionList.size(); i++) {
                     viewHolders[i].display(sharePositionList.get(i));
                 }
@@ -214,7 +211,7 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
             this.separate = separate;
         }
 
-        public void display(SharePosition position) {
+        public void display(SecurityUserPositionDTO position) {
             parent.setVisibility(View.VISIBLE);
             if (separate != null) {
                 separate.setVisibility(View.VISIBLE);

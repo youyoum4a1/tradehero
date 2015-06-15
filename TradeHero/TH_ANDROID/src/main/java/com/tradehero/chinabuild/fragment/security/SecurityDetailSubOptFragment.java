@@ -11,17 +11,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.tradehero.chinabuild.data.TradeRecord;
+import com.tradehero.chinabuild.data.SecurityUserOptDTO;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
-import com.tradehero.th.api.pagination.PaginationDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 
@@ -158,7 +156,7 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
 
 
     private void enterUserOptsPage() {
-        Bundle bundle = new Bundle();
+        Bundle bundle = getArguments();
         pushFragment(SecurityUserOptFragment.class, bundle);
     }
 
@@ -185,9 +183,9 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
     }
 
     private void retrieveTradeRecords() {
-        Callback<List<TradeRecord>> callback = new Callback<List<TradeRecord>>() {
+        Callback<List<SecurityUserOptDTO>> callback = new Callback<List<SecurityUserOptDTO>>() {
             @Override
-            public void success(List<TradeRecord> tradeRecordList, Response response) {
+            public void success(List<SecurityUserOptDTO> tradeRecordList, Response response) {
                 SecurityDetailSubCache.getInstance().setTradeRecordList(tradeRecordList);
                 displayTrades(tradeRecordList);
             }
@@ -200,7 +198,7 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
         quoteServiceWrapper.getTradeRecords(securityId, 1, 5, callback);
     }
 
-    private void displayTrades(List<TradeRecord> tradeRecordList){
+    private void displayTrades(List<SecurityUserOptDTO> tradeRecordList){
         if(emptyIV ==null || optsLL == null){
             return;
         }
@@ -250,26 +248,26 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
             this.separate = separate;
         }
 
-        public void display(TradeRecord tradeRecord, PrettyTime prettyTime) {
+        public void display(SecurityUserOptDTO securityUserOptDTO, PrettyTime prettyTime) {
             parent.setVisibility(View.VISIBLE);
             if (separate != null) {
                 separate.setVisibility(View.VISIBLE);
             }
 
-            ImageLoader.getInstance().displayImage(tradeRecord.userPicUrl,
+            ImageLoader.getInstance().displayImage(securityUserOptDTO.userPicUrl,
                     avatar,
                     UniversalImageLoader.getAvatarImageLoaderOptions());
-            username.setText(tradeRecord.userName);
+            username.setText(securityUserOptDTO.userName);
 
-            currency.setText(tradeRecord.currencyDisplay);
-            cost.setText(SecurityCompactDTO.getShortValue(tradeRecord.price));
-            THSignedNumber signedQuantity = THSignedNumber.builder(tradeRecord.quantity)
+            currency.setText(securityUserOptDTO.currencyDisplay);
+            cost.setText(SecurityCompactDTO.getShortValue(securityUserOptDTO.price));
+            THSignedNumber signedQuantity = THSignedNumber.builder(securityUserOptDTO.quantity)
                     .build();
             quantity.setText(signedQuantity.toString());
             quantity.setTextColor(signedQuantity.getColor());
-            date.setText(prettyTime.formatUnrounded(tradeRecord.datetimeUtc));
+            date.setText(prettyTime.formatUnrounded(securityUserOptDTO.datetimeUtc));
 
-            if (tradeRecord.quantity > 0) {
+            if (securityUserOptDTO.quantity > 0) {
                 tradeType.setText(TRADE_TYPES[0]);
             } else {
                 tradeType.setText(TRADE_TYPES[1]);

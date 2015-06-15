@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.tradehero.chinabuild.data.SecurityUserPositionDTO;
 import com.tradehero.th.R;
 
 import java.util.ArrayList;
