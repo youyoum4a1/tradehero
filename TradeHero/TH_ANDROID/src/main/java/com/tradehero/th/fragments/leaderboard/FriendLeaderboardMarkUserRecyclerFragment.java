@@ -73,7 +73,7 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.leaderboard_mark_user_listview, container, false);
+        View view = inflater.inflate(R.layout.leaderboard_mark_user_recyclerview, container, false);
         ButterKnife.inject(this, view);
         return view;
     }
