@@ -6,9 +6,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+
 import com.tradehero.chinabuild.data.QuoteTick;
+
 import java.text.DecimalFormat;
 import java.util.List;
+
 import timber.log.Timber;
 
 public class TimesView extends TimesBase
@@ -243,6 +246,10 @@ public class TimesView extends TimesBase
 			uperYellowY = endYelloY;
 
 			// 绘制下部表内数据线
+			if (fenshiData.volume == null
+					|| timesList.get(i - 1).volume == null) {
+				return;
+			}
 			Long buy = i == 0 ? fenshiData.volume : fenshiData.volume - timesList.get(i-1).volume;
             paint.setStrokeWidth(3);
 			if (i <= 0) {

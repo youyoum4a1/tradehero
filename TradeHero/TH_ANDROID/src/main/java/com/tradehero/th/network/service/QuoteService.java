@@ -33,11 +33,10 @@ interface QuoteService
      * @param securitySymbol
      * @return
      */
-    @GET("/cn/v2/quotes/{securitySymbol}/detail")
-    QuoteDetail getQuoteDetails(@Path("securitySymbol") String securitySymbol);
-
-    @GET("/cn/v2/quotes/{securitySymbol}/detail")
-    void getQuoteDetails(@Path("securitySymbol") String securitySymbol, Callback<QuoteDetail> callback);
+    @GET("/cn/v2/quotes/{exchange}/{securitySymbol}/detail")
+    void getQuoteDetails(@Path("exchange") String exchange,
+                         @Path("securitySymbol") String securitySymbol,
+                         Callback<QuoteDetail> callback);
 
     /**
      * Get quote
@@ -45,8 +44,10 @@ interface QuoteService
      * @param securitySymbol
      * @param callback
      */
-    @GET("/cn/v2/quotes/{securitySymbol}")
-    void getQuote(@Path("securitySymbol") String securitySymbol, Callback<SignedQuote> callback);
+    @GET("/cn/v2/quotes/{exchange}/{securitySymbol}")
+    void getQuote(@Path("exchange") String exchange,
+                  @Path("securitySymbol") String securitySymbol,
+                  Callback<SignedQuote> callback);
 
     /**
      * Get quote ticks
@@ -54,11 +55,10 @@ interface QuoteService
      * @param securitySymbol
      * @return
      */
-    @GET("/cn/v2/quotes/{securitySymbol}/ticks")
-    List<QuoteTick> getQuoteTicks(@Path("securitySymbol") String securitySymbol);
-
-    @GET("/cn/v2/quotes/{securitySymbol}/ticks")
-    void getQuoteTicks(@Path("securitySymbol") String securitySymbol, Callback<List<QuoteTick>> callback);
+    @GET("/cn/v2/quotes/{exchange}/{securitySymbol}/ticks")
+    void getQuoteTicks(@Path("exchange") String exchange,
+                       @Path("securitySymbol") String securitySymbol,
+                       Callback<List<QuoteTick>> callback);
 
     /**
      * Get data for K-line
@@ -66,8 +66,10 @@ interface QuoteService
      * @param type
      * @param callback
      */
-    @GET("/cn/v2/quotes/{securitySymbol}/klines/{type}")
-    void getKLines(@Path("securitySymbol") String securitySymbol, @Path("type") String type,
+    @GET("/cn/v2/quotes/{exchange}/{securitySymbol}/klines/{type}")
+    void getKLines(@Path("exchange") String exchange,
+                   @Path("securitySymbol") String securitySymbol,
+                   @Path("type") String type,
                    Callback<List<KLineItem>> callback);
 
     @GET("/securities/{exchange}/{securitySymbol}/quote")

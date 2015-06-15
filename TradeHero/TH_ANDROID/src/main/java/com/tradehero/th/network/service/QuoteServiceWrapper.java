@@ -84,7 +84,7 @@ public class QuoteServiceWrapper {
     }
     //</editor-fold>
 
-    public void getRepeatingQuoteDetails(final String securitySymbol, final Callback<QuoteDetail> callback) {
+    public void getRepeatingQuoteDetails(final SecurityId securityId, final Callback<QuoteDetail> callback) {
         final RepeatingTaskCallBack<QuoteDetail> myCallback = new RepeatingTaskCallBack<>(callback, handler, DEFAULT_REFRESH_QUOTE_DETAIL_DELAY);
         if (quoteDetailTask != null) {
             handler.removeCallbacks(quoteDetailTask);
@@ -92,7 +92,7 @@ public class QuoteServiceWrapper {
         quoteDetailTask = new Runnable() {
             @Override
             public void run() {
-                quoteService.getQuoteDetails(securitySymbol, myCallback);
+                quoteService.getQuoteDetails(securityId.getExchange(), securityId.getSecuritySymbol(), myCallback);
             }
         };
         myCallback.setTask(quoteDetailTask);
@@ -100,7 +100,7 @@ public class QuoteServiceWrapper {
 
     }
 
-    public void getQuoteTicks(final String securitySymbol, final int quoteTicksDelay, final Callback<List<QuoteTick>> callback) {
+    public void getQuoteTicks(final SecurityId securityId, final int quoteTicksDelay, final Callback<List<QuoteTick>> callback) {
         final RepeatingTaskCallBack<List<QuoteTick>> myCallback = new RepeatingTaskCallBack<>(callback, handler, quoteTicksDelay);
         if (quoteTicksTask != null) {
             handler.removeCallbacks(quoteTicksTask);
@@ -108,15 +108,15 @@ public class QuoteServiceWrapper {
         quoteTicksTask = new Runnable() {
             @Override
             public void run() {
-                quoteService.getQuoteTicks(securitySymbol, myCallback);
+                quoteService.getQuoteTicks(securityId.getExchange(), securityId.getSecuritySymbol(), myCallback);
             }
         };
         myCallback.setTask(quoteTicksTask);
         handler.post(quoteTicksTask);
     }
 
-    public void getQuoteTicks(final String securitySymbol, final Callback<List<QuoteTick>> callback) {
-        getQuoteTicks(securitySymbol, DEFAULT_REFRESH_QUOTE_TICKS_DELAY, callback);
+    public void getQuoteTicks(final SecurityId securityId, final Callback<List<QuoteTick>> callback) {
+        getQuoteTicks(securityId, DEFAULT_REFRESH_QUOTE_TICKS_DELAY, callback);
     }
 
     public void getRepeatingQuote(final SecurityId securityId, final Callback<SignedQuote> callback) {
@@ -132,7 +132,7 @@ public class QuoteServiceWrapper {
             quoteTask = new Runnable() {
                 @Override
                 public void run() {
-                    quoteService.getQuote(securityId.getSecuritySymbol(), myCallback);
+                    quoteService.getQuote(securityId.getExchange(), securityId.getSecuritySymbol(), myCallback);
                 }
             };
         } else {
@@ -159,15 +159,15 @@ public class QuoteServiceWrapper {
 
     public void getQuote(final SecurityId securityId, final Callback<SignedQuote> callback) {
         if (isChinaStock(securityId)) {
-            quoteService.getQuote(securityId.getSecuritySymbol(), callback);
+            quoteService.getQuote(securityId.getExchange(), securityId.getSecuritySymbol(), callback);
         } else {
             quoteService.getQuoteLegacy(securityId.getExchange(),
                     securityId.getSecuritySymbol(), callback);
         }
     }
 
-    public void getKline(final String securitySymbol, final String type, final Callback<List<KLineItem>> callback) {
-        quoteService.getKLines(securitySymbol, type, callback);
+    public void getKline(final SecurityId securityId, final String type, final Callback<List<KLineItem>> callback) {
+        quoteService.getKLines(securityId.getExchange(), securityId.getSecuritySymbol(), type, callback);
     }
 
     public void getRepeatingSecurityCompactDTO(final SecurityId securityId, final Callback<SecurityCompactDTO> callback) {
