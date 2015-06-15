@@ -9,12 +9,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.fragments.authentication.AuthenticationImageButton;
 import com.tradehero.th.utils.GraphicUtil;
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -148,6 +150,18 @@ public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecycl
         @Override public void display(LeaderboardItemDisplayDTO friendLeaderboardUserDTO)
         {
 
+        }
+
+        @SuppressWarnings({"unused"}) @OnClick({
+                R.id.btn_linkedin_signin,
+                R.id.btn_facebook_signin,
+                R.id.btn_twitter_signin,
+                R.id.btn_qq_signin,
+                R.id.btn_weibo_signin,
+        }) @Optional
+        protected void onSignInButtonClicked(View view)
+        {
+            socialNetworkEnumPublishSubject.onNext(((AuthenticationImageButton) view).getType());
         }
 
         public Observable<SocialNetworkEnum> getSocialNetworkEnumObservable()
