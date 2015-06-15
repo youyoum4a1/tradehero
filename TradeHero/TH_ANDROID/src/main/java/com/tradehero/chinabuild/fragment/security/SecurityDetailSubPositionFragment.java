@@ -163,7 +163,7 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
         if(emptyIV==null || positionsLL == null){
             return;
         }
-        if(sharePositionList == null){
+        if(sharePositionList == null || sharePositionList.size()<=0){
             emptyIV.setVisibility(View.VISIBLE);
             positionsLL.setVisibility(View.GONE);
             return;

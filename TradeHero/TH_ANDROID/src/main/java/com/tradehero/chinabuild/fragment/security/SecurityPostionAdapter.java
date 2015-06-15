@@ -32,7 +32,7 @@ public class SecurityPostionAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int i) {
+    public SecurityUserPositionDTO getItem(int i) {
         return opts.get(i);
     }
 

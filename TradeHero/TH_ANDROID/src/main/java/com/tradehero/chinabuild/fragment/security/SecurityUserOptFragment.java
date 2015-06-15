@@ -7,14 +7,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
 import com.tradehero.chinabuild.data.SecurityUserOptDTO;
+import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
@@ -49,10 +52,13 @@ public class SecurityUserOptFragment extends DashboardFragment{
     private ImageView emptyIV;
 
     private SecurityId securityId;
-
+    private String securityName;
 
     private SecurityOptAdapter adapter;
     private ArrayList<SecurityUserOptDTO> opts = new ArrayList();
+
+    private int currentPage = 0;
+    private final int perPage = 20;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,6 +69,7 @@ public class SecurityUserOptFragment extends DashboardFragment{
 
         Bundle args = getArguments();
         Bundle securityIdBundle = args.getBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE);
+        securityName = args.getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME);
         if (securityIdBundle != null) {
             securityId = new SecurityId(securityIdBundle);
         }
@@ -72,7 +79,9 @@ public class SecurityUserOptFragment extends DashboardFragment{
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain("一个股票(666666)");
+        if(securityId!=null) {
+            setHeadViewMiddleMain(securityName + "(" + securityId.getSecuritySymbol() + ")");
+        }
         setHeadViewMiddleSub("999 +10.10% +10.10");
         setHeadViewMiddleSubTextColor(upColor);
         setHeadViewRight0(R.drawable.search);
@@ -106,21 +115,27 @@ public class SecurityUserOptFragment extends DashboardFragment{
                 optsLV.onRefreshComplete();
             }
         });
-        setOpts();
-        return view;
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+        optsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (adapter != null) {
+                    SecurityUserOptDTO securityUserOptDTO = adapter.getItem(i);
+                    jumpToUserPage(securityUserOptDTO.userId);
+                }
+            }
+        });
+
         retrieveUserOpts();
+
+        return view;
     }
 
     private void retrieveUserOpts() {
         Callback<List<SecurityUserOptDTO>> callback = new Callback<List<SecurityUserOptDTO>>() {
             @Override
             public void success(List<SecurityUserOptDTO> optList, Response response) {
-                adapter.addMoreData(optList);
+                adapter.setData(optList);
                 adapter.notifyDataSetChanged();
 
             }
@@ -130,12 +145,7 @@ public class SecurityUserOptFragment extends DashboardFragment{
 
             }
         };
-        quoteServiceWrapper.getTradeRecords(securityId, 1, 20, callback);
-    }
-
-    private void setOpts(){
-        opts.clear();
-        adapter.setData(opts);
+        quoteServiceWrapper.getTradeRecords(securityId, 1, perPage, callback);
     }
 
     private void enterSearchPage(){
@@ -162,4 +172,9 @@ public class SecurityUserOptFragment extends DashboardFragment{
         Application.context().startActivity(gotoShareToWeChatIntent);
     }
 
+    private void jumpToUserPage(int userId){
+        Bundle bundle = new Bundle();
+        bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userId);
+        gotoDashboard(PortfolioFragment.class, bundle);
+    }
 }

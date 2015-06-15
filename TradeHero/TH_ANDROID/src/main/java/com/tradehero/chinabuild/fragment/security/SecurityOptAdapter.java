@@ -53,7 +53,7 @@ public class SecurityOptAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int i) {
+    public SecurityUserOptDTO getItem(int i) {
         return opts.get(i);
     }
 
@@ -87,7 +87,7 @@ public class SecurityOptAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void setData(ArrayList<SecurityUserOptDTO> opts){
+    public void setData(List<SecurityUserOptDTO> opts){
         if(opts!=null){
             this.opts.clear();
             this.opts.addAll(opts);

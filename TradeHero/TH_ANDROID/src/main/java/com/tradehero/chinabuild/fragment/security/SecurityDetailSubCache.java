@@ -2,6 +2,7 @@ package com.tradehero.chinabuild.fragment.security;
 
 import com.tradehero.chinabuild.data.SecurityUserOptDTO;
 import com.tradehero.chinabuild.data.SecurityUserPositionDTO;
+import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.security.SecurityId;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class SecurityDetailSubCache {
 
     private List<SecurityUserOptDTO> tradeRecordList;
     private List<SecurityUserPositionDTO> sharePositionList;
+    private DiscussionKeyList keyList;
 
     private SecurityId securityId;
 
@@ -54,6 +56,14 @@ public class SecurityDetailSubCache {
         this.sharePositionList = sharePositionList;
     }
 
+    public void setKeyList(DiscussionKeyList keyList){
+        this.keyList = keyList;
+    }
+
+    public DiscussionKeyList getKeyList(){
+        return keyList;
+    }
+
     public List<SecurityUserPositionDTO> getSharePositionList(){
         return sharePositionList;
     }
@@ -66,5 +76,6 @@ public class SecurityDetailSubCache {
         tradeRecordList = null;
         sharePositionList = null;
         securityId = null;
+        keyList = null;
     }
 }

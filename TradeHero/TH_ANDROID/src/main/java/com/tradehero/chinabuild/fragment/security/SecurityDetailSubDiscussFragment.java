@@ -118,14 +118,21 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         emptyLL = (LinearLayout) view.findViewById(R.id.linearlayout_empty);
         emptyLL.setOnClickListener(this);
         discussLL = (LinearLayout) view.findViewById(R.id.linearlayout_discusses);
-        initViews(view);
-        return view;
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        fetchSecurityDiscuss(true);
+        initViews(view);
+
+        if(SecurityDetailSubCache.getInstance().isSecuritySame(securityId)){
+            if(SecurityDetailSubCache.getInstance().getKeyList()!=null && SecurityDetailSubCache.getInstance().getKeyList().size()>0){
+                updateDiscussionList(SecurityDetailSubCache.getInstance().getKeyList());
+            } else {
+                fetchSecurityDiscuss(true);
+            }
+        } else {
+            SecurityDetailSubCache.getInstance().clearAll();
+            fetchSecurityDiscuss(true);
+        }
+
+        return view;
     }
 
     private void initArguments() {
@@ -136,6 +143,93 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
             securityId = new SecurityId(securityIdBundle);
         }
         securityDTOId = args.getInt(SecurityDetailFragment.BUNDLE_KEY_SECURITY_DTO_ID_BUNDLE, -1);
+    }
+
+
+
+    private void detachSecurityDiscuss() {
+        discussionListCache.unregister(this);
+    }
+
+    private void updateDiscussionList(DiscussionKeyList keyList) {
+        if (emptyLL == null || discussLL == null) {
+            return;
+        }
+        if (keyList == null || keyList.size() < 0) {
+            emptyLL.setVisibility(View.VISIBLE);
+            discussLL.setVisibility(View.GONE);
+        } else {
+            emptyLL.setVisibility(View.GONE);
+            discussLL.setVisibility(View.VISIBLE);
+            if (keyList.size() >= 5) {
+                moreTV.setVisibility(View.VISIBLE);
+            } else {
+                moreTV.setVisibility(View.GONE);
+            }
+        }
+        int maxLength = keyList.size() > 5 ? 5 : keyList.size();
+
+        for (int i = 0; i < maxLength; i++) {
+            DiscussionDTO dto = (DiscussionDTO) discussionCache.get(keyList.get(i));
+            viewHolders[i].displayContent(dto, prettyTime.get());
+        }
+        for (int i = maxLength; i < viewHolders.length; i++) {
+            viewHolders[i].gone();
+        }
+    }
+
+    @Override
+    public void onDTOReceived(@NotNull DiscussionListKey key, @NotNull DiscussionKeyList value) {
+        if (value == null) {
+            return;
+        }
+        SecurityDetailSubCache.getInstance().setKeyList(value);
+        updateDiscussionList(value);
+    }
+
+    @Override
+    public void onErrorThrown(@NotNull DiscussionListKey key, @NotNull Throwable error) { }
+
+    static class DiscussionViewHolder {
+        private View parent;
+        private ImageView avatar;
+        private TextView name;
+        private TextView content;
+        private TextView date;
+        private View separator;
+
+        public DiscussionViewHolder(View parent, ImageView avatar, TextView name, TextView content,
+                                    TextView date, View separator) {
+            this.parent = parent;
+            this.avatar = avatar;
+            this.name = name;
+            this.content = content;
+            this.date = date;
+            this.separator = separator;
+        }
+
+        public void gone() {
+            parent.setVisibility(View.GONE);
+            if (separator != null) {
+                separator.setVisibility(View.GONE);
+            }
+        }
+
+        public void displayContent(DiscussionDTO discussionDTO, PrettyTime prettyTime) {
+            if (discussionDTO == null) {
+                return;
+            }
+            parent.setVisibility(View.VISIBLE);
+            if (separator != null) {
+                separator.setVisibility(View.VISIBLE);
+            }
+            ImageLoader.getInstance().displayImage(discussionDTO.user.picture, avatar,
+                    UniversalImageLoader.getAvatarImageLoaderOptions());
+            name.setText(discussionDTO.user.displayName);
+            content.setText(discussionDTO.text);
+            date.setText(prettyTime.formatUnrounded(discussionDTO.createdAtUtc));
+
+        }
     }
 
     private void initViews(View view) {
@@ -235,93 +329,5 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         discussionListCache.register(discussionListKey, this);
         discussionListCache.getOrFetchAsync(discussionListKey, force);
 
-    }
-
-    private void detachSecurityDiscuss() {
-        discussionListCache.unregister(this);
-    }
-
-    private void updateDiscussionList(DiscussionKeyList keyList) {
-        if (getActivity() == null) {
-            return;
-        }
-
-        if (keyList.size() < 0) {
-            emptyLL.setVisibility(View.VISIBLE);
-            discussLL.setVisibility(View.GONE);
-        } else {
-            emptyLL.setVisibility(View.GONE);
-            discussLL.setVisibility(View.VISIBLE);
-            if (keyList.size() >= 5) {
-                moreTV.setVisibility(View.VISIBLE);
-            } else {
-                moreTV.setVisibility(View.GONE);
-            }
-        }
-        int maxLength = keyList.size() > 5 ? 5 : keyList.size();
-
-        for (int i = 0; i < maxLength; i++) {
-            DiscussionDTO dto = (DiscussionDTO) discussionCache.get(keyList.get(i));
-            viewHolders[i].displayContent(dto, prettyTime.get());
-        }
-        for (int i = maxLength; i < viewHolders.length; i++) {
-            viewHolders[i].gone();
-        }
-    }
-
-    @Override
-    public void onDTOReceived(@NotNull DiscussionListKey key, @NotNull DiscussionKeyList value) {
-        if (value == null) {
-            return;
-        }
-        updateDiscussionList(value);
-
-    }
-
-    @Override
-    public void onErrorThrown(@NotNull DiscussionListKey key, @NotNull Throwable error) {
-        //
-    }
-
-    static class DiscussionViewHolder {
-        private View parent;
-        private ImageView avatar;
-        private TextView name;
-        private TextView content;
-        private TextView date;
-        private View separator;
-
-        public DiscussionViewHolder(View parent, ImageView avatar, TextView name, TextView content,
-                                    TextView date, View separator) {
-            this.parent = parent;
-            this.avatar = avatar;
-            this.name = name;
-            this.content = content;
-            this.date = date;
-            this.separator = separator;
-        }
-
-        public void gone() {
-            parent.setVisibility(View.GONE);
-            if (separator != null) {
-                separator.setVisibility(View.GONE);
-            }
-        }
-
-        public void displayContent(DiscussionDTO discussionDTO, PrettyTime prettyTime) {
-            if (discussionDTO == null) {
-                return;
-            }
-            parent.setVisibility(View.VISIBLE);
-            if (separator != null) {
-                separator.setVisibility(View.VISIBLE);
-            }
-            ImageLoader.getInstance().displayImage(discussionDTO.user.picture, avatar,
-                    UniversalImageLoader.getAvatarImageLoaderOptions());
-            name.setText(discussionDTO.user.displayName);
-            content.setText(discussionDTO.text);
-            date.setText(prettyTime.formatUnrounded(discussionDTO.createdAtUtc));
-
-        }
     }
 }

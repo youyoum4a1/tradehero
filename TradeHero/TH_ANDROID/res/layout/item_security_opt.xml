@@ -19,7 +19,7 @@
             android:layout_gravity="center_horizontal"
             android:scaleType="fitCenter"
             android:layout_marginTop="5dp"
-            android:src="@drawable/avatar" />
+            android:src="@drawable/avatar_default" />
 
         <TextView
             android:id="@+id/textview_security_opt_name"
@@ -27,7 +27,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="2dp"
-            android:text="王大伟"
             android:layout_marginBottom="5dp"
             android:textColor="#1789d5"
             android:textSize="10sp" />
@@ -40,7 +39,6 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:gravity="center_horizontal"
-        android:text="买入"
         android:textColor="#fe0000"
         android:textSize="16sp" />
 
@@ -60,7 +58,6 @@
                 android:id="@+id/textview_security_opt_mark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$"
                 android:textColor="#999999"
                 android:textSize="17sp" />
 
@@ -68,7 +65,6 @@
                 android:id="@+id/textview_security_opt_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="16.34"
                 android:textColor="#000000"
                 android:textSize="17sp" />
         </LinearLayout>
@@ -93,7 +89,6 @@
                 android:layout_gravity="right"
                 android:textColor="#fe0000"
                 android:layout_marginRight="15dp"
-                android:text="10000"
                 android:textSize="16sp" />
             <TextView
                 android:id="@+id/textview_security_opt_date"
@@ -103,7 +98,6 @@
                 android:layout_marginTop="5dp"
                 android:textColor="#878787"
                 android:layout_marginRight="15dp"
-                android:text="2015-06-08 14:34:34"
                 android:textSize="8sp" />
         </LinearLayout>
     </RelativeLayout>

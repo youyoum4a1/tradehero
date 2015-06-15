@@ -202,7 +202,7 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
         if(emptyIV ==null || optsLL == null){
             return;
         }
-        if(tradeRecordList == null){
+        if(tradeRecordList == null || tradeRecordList.size()<=0){
             emptyIV.setVisibility(View.VISIBLE);
             optsLL.setVisibility(View.GONE);
             return;

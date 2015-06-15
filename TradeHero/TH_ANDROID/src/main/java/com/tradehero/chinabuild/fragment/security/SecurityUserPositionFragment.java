@@ -7,14 +7,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
+import com.tradehero.chinabuild.data.SecurityUserOptDTO;
 import com.tradehero.chinabuild.data.SecurityUserPositionDTO;
+import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.th.R;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.base.Application;
@@ -39,18 +43,30 @@ public class SecurityUserPositionFragment extends DashboardFragment {
     private SecurityPostionAdapter adapter;
     private ArrayList<SecurityUserPositionDTO> opts = new ArrayList();
 
+    private SecurityId securityId;
+    private String securityName;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         upColor = getResources().getColor(R.color.bar_up);
         normalColor = getResources().getColor(R.color.bar_normal);
         downColor = getResources().getColor(R.color.bar_down);
+
+        Bundle args = getArguments();
+        Bundle securityIdBundle = args.getBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE);
+        securityName = args.getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME);
+        if (securityIdBundle != null) {
+            securityId = new SecurityId(securityIdBundle);
+        }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain("一个股票(666666)");
+        if(securityId!=null) {
+            setHeadViewMiddleMain(securityName + "(" + securityId.getSecuritySymbol() + ")");
+        }
         setHeadViewMiddleSub("999 +10.10% +10.10");
         setHeadViewMiddleSubTextColor(upColor);
         setHeadViewRight0(R.drawable.search);
@@ -84,17 +100,16 @@ public class SecurityUserPositionFragment extends DashboardFragment {
                 positionsLV.onRefreshComplete();
             }
         });
-        setOpts();
+        positionsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (adapter != null) {
+                    SecurityUserPositionDTO securityUserPositionDTO = adapter.getItem(i);
+                    jumpToUserPage(securityUserPositionDTO.userId);
+                }
+            }
+        });
         return view;
-    }
-
-    private void setOpts(){
-        opts.clear();
-        for(int num=0;num<20;num++){
-            SecurityUserPositionDTO dto = new SecurityUserPositionDTO();
-            opts.add(dto);
-        }
-        adapter.setData(opts);
     }
 
     private void enterWechatSharePage(){
@@ -119,6 +134,12 @@ public class SecurityUserPositionFragment extends DashboardFragment {
     @Override
     public void onClickHeadRight1() {
         enterWechatSharePage();
+    }
+
+    private void jumpToUserPage(int userId){
+        Bundle bundle = new Bundle();
+        bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userId);
+        gotoDashboard(PortfolioFragment.class, bundle);
     }
 
 }
