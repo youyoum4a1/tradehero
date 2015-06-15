@@ -45,8 +45,6 @@ import retrofit.client.Response;
 public class SecurityDetailSubDiscussFragment extends Fragment implements View.OnClickListener {
 
     @Inject
-    Analytics analytics;
-    @Inject
     public Lazy<PrettyTime> prettyTime;
 
     private String securityName;

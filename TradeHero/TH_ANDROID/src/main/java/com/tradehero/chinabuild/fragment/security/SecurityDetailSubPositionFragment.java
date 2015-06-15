@@ -80,6 +80,9 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
         moreTV.setOnClickListener(this);
 
         initViews(view);
+
+        retrieveSharePositions();
+
         return view;
     }
 
@@ -134,12 +137,6 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
         separate = view.findViewById(R.id.line4);
         viewHolders[4] = new PositionViewHolder(parent, avatar, username, quantity, currency, price, tvRoi, separate);
         
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        retrieveSharePositions();
     }
 
     private void retrieveSharePositions() {

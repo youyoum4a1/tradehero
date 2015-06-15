@@ -41,7 +41,6 @@ import retrofit.client.Response;
  */
 public class SecurityDetailSubOptFragment extends Fragment implements View.OnClickListener{
 
-    @Inject Analytics analytics;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
     @Inject public Lazy<PrettyTime> prettyTime;
 
@@ -77,13 +76,18 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
         moreTV = (TextView)view.findViewById(R.id.textview_more);
         moreTV.setOnClickListener(this);
         initViews(view);
-        return view;
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        retrieveTradeRecords();
+
+        SecurityDetailSubCache securityDetailSubCache = SecurityDetailSubCache.getInstance();
+        if(securityDetailSubCache.isSecuritySame(securityId)){
+            if(securityDetailSubCache.getTradeRecordList()!=null && securityDetailSubCache.getTradeRecordList().size()>0){
+                displayTrades(securityDetailSubCache.getTradeRecordList());
+            } else {
+                retrieveTradeRecords();
+            }
+        }
+
+        return view;
     }
 
     private void initArguments() {
@@ -184,12 +188,8 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
         Callback<List<TradeRecord>> callback = new Callback<List<TradeRecord>>() {
             @Override
             public void success(List<TradeRecord> tradeRecordList, Response response) {
-                for (int i = 0; i < tradeRecordList.size(); i++) {
-                    viewHolders[i].display(tradeRecordList.get(i), prettyTime.get());
-                }
-                for (int i = tradeRecordList.size(); i < viewHolders.length; i++) {
-                    viewHolders[i].gone();
-                }
+                SecurityDetailSubCache.getInstance().setTradeRecordList(tradeRecordList);
+                displayTrades(tradeRecordList);
             }
 
             @Override
@@ -198,6 +198,30 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
             }
         };
         quoteServiceWrapper.getTradeRecords(securityId, 1, 5, callback);
+    }
+
+    private void displayTrades(List<TradeRecord> tradeRecordList){
+        if(emptyIV ==null || optsLL == null){
+            return;
+        }
+        if(tradeRecordList == null){
+            emptyIV.setVisibility(View.VISIBLE);
+            optsLL.setVisibility(View.GONE);
+        }else{
+            emptyIV.setVisibility(View.GONE);
+            optsLL.setVisibility(View.VISIBLE);
+        }
+        if(tradeRecordList.size()<5){
+            moreTV.setVisibility(View.GONE);
+        }else{
+            moreTV.setVisibility(View.VISIBLE);
+        }
+        for (int i = 0; i < tradeRecordList.size(); i++) {
+            viewHolders[i].display(tradeRecordList.get(i), prettyTime.get());
+        }
+        for (int i = tradeRecordList.size(); i < viewHolders.length; i++) {
+            viewHolders[i].gone();
+        }
     }
 
     static class TradeRecordViewHolder {

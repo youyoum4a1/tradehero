@@ -11,8 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tradehero.chinabuild.fragment.message.DiscussSendFragment;
+import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemListKey;
 import com.tradehero.th.api.news.key.NewsItemListSecurityKey;
@@ -83,6 +86,8 @@ public class SecurityDetailSubNewsFragment extends Fragment implements View.OnCl
 
     private NewsViewHolder[] newsViewHolders = new NewsViewHolder[5];
 
+    PaginatedDTO<NewsItemCompactDTO> news;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,26 +141,56 @@ public class SecurityDetailSubNewsFragment extends Fragment implements View.OnCl
         rl0 = (RelativeLayout) view.findViewById(R.id.rl_news0);
         newsTV0 = (TextView) view.findViewById(R.id.textview_news_content0);
         dateTV0 = (TextView) view.findViewById(R.id.textview_news_date0);
+        rl0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toEnterTimeLineDetail(0);
+            }
+        });
 
         rl1 = (RelativeLayout) view.findViewById(R.id.rl_news1);
         newsTV1 = (TextView) view.findViewById(R.id.textview_news_content1);
         dateTV1 = (TextView) view.findViewById(R.id.textview_news_date1);
         seperateLine1 = view.findViewById(R.id.line1);
+        rl1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toEnterTimeLineDetail(1);
+            }
+        });
 
         rl2 = (RelativeLayout) view.findViewById(R.id.rl_news2);
         newsTV2 = (TextView) view.findViewById(R.id.textview_news_content2);
         dateTV2 = (TextView) view.findViewById(R.id.textview_news_date2);
         seperateLine2 = view.findViewById(R.id.line2);
+        rl2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toEnterTimeLineDetail(2);
+            }
+        });
 
         rl3 = (RelativeLayout) view.findViewById(R.id.rl_news3);
         newsTV3 = (TextView) view.findViewById(R.id.textview_news_content3);
         dateTV3 = (TextView) view.findViewById(R.id.textview_news_date3);
         seperateLine3 = view.findViewById(R.id.line3);
+        rl3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toEnterTimeLineDetail(3);
+            }
+        });
 
         rl4 = (RelativeLayout) view.findViewById(R.id.rl_news4);
         newsTV4 = (TextView) view.findViewById(R.id.textview_news_content4);
         dateTV4 = (TextView) view.findViewById(R.id.textview_news_date4);
         seperateLine4 = view.findViewById(R.id.line4);
+        rl4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toEnterTimeLineDetail(4);
+            }
+        });
 
         newsViewHolders[0] = new NewsViewHolder(rl0, newsTV0, dateTV0, null);
         newsViewHolders[1] = new NewsViewHolder(rl1, newsTV1, dateTV1, seperateLine1);
@@ -204,6 +239,9 @@ public class SecurityDetailSubNewsFragment extends Fragment implements View.OnCl
     }
 
     void updateNewsContent(PaginatedDTO<NewsItemCompactDTO> newsList) {
+
+        news = newsList;
+
         if(newsList ==null || newsList.getData() == null || newsList.getData().size()<=0){
             emptyIV.setVisibility(View.VISIBLE);
             newsLL.setVisibility(View.GONE);
@@ -282,6 +320,32 @@ public class SecurityDetailSubNewsFragment extends Fragment implements View.OnCl
             if (separate != null) {
                 separate.setVisibility(View.GONE);
             }
+        }
+    }
+
+    private void toEnterTimeLineDetail(int index){
+        if(news == null){
+            return;
+        }
+        if(news.getData() == null ){
+            return;
+        }
+        if(news.getData().size() <= index){
+            return;
+        }
+        NewsItemCompactDTO dto = news.getData().get(index);
+        enterTimeLineDetail(dto);
+    }
+
+    public void enterTimeLineDetail(NewsItemCompactDTO dto)
+    {
+        if (dto != null)
+        {
+            Bundle bundle = new Bundle();
+            bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, dto.getDiscussionKey().getArgs());
+            bundle.putInt(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_TYPE, TimeLineItemDetailFragment.DISCUSSION_DISCUSSION_TYPE);
+            bundle.putBoolean(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_IS_NEWS, true);
+            pushFragment(TimeLineItemDetailFragment.class, bundle);
         }
     }
 }

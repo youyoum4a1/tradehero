@@ -9,12 +9,13 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:scaleType="fitCenter"
-        android:visibility="gone"
+        android:visibility="visible"
         android:src="@drawable/empty_news" />
 
     <LinearLayout
         android:id="@+id/linearlayout_news"
         android:orientation="vertical"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <RelativeLayout
@@ -32,7 +33,6 @@
                 android:layout_centerVertical="true"
                 android:textColor="#3b3b3b"
                 android:textSize="12sp"
-                android:text="1234567890,0987654321,1234567890,0987654321"
                 />
             <TextView
                 android:id="@+id/textview_news_date0"
@@ -45,7 +45,6 @@
                 android:layout_marginTop="33dp"
                 android:textColor="#7e7e7e"
                 android:textSize="12sp"
-                android:text="一个星期以前"
                 />
         </RelativeLayout>
         <include layout="@layout/separate_line" />
@@ -64,7 +63,6 @@
                 android:layout_centerVertical="true"
                 android:textColor="#3b3b3b"
                 android:textSize="12sp"
-                android:text="1234567890,0987654321,1234567890,0987654321"
                 />
             <TextView
                 android:id="@+id/textview_news_date1"
@@ -77,7 +75,6 @@
                 android:layout_marginTop="33dp"
                 android:textColor="#7e7e7e"
                 android:textSize="12sp"
-                android:text="一个星期以前"
                 />
         </RelativeLayout>
         <include
@@ -98,7 +95,6 @@
                 android:layout_centerVertical="true"
                 android:textColor="#3b3b3b"
                 android:textSize="12sp"
-                android:text="1234567890,0987654321,1234567890,0987654321"
                 />
             <TextView
                 android:id="@+id/textview_news_date2"
@@ -111,7 +107,6 @@
                 android:layout_marginTop="33dp"
                 android:textColor="#7e7e7e"
                 android:textSize="12sp"
-                android:text="一个星期以前"
                 />
         </RelativeLayout>
         <include
@@ -132,7 +127,6 @@
                 android:layout_centerVertical="true"
                 android:textColor="#3b3b3b"
                 android:textSize="12sp"
-                android:text="1234567890,0987654321,1234567890,0987654321"
                 />
             <TextView
                 android:id="@+id/textview_news_date3"
@@ -145,7 +139,6 @@
                 android:layout_marginTop="33dp"
                 android:textColor="#7e7e7e"
                 android:textSize="12sp"
-                android:text="一个星期以前"
                 />
         </RelativeLayout>
         <include
@@ -166,7 +159,6 @@
                 android:layout_centerVertical="true"
                 android:textColor="#3b3b3b"
                 android:textSize="12sp"
-                android:text="1234567890,0987654321,1234567890,0987654321"
                 />
             <TextView
                 android:id="@+id/textview_news_date4"
@@ -179,7 +171,6 @@
                 android:layout_marginTop="33dp"
                 android:textColor="#7e7e7e"
                 android:textSize="12sp"
-                android:text="一个星期以前"
                 />
         </RelativeLayout>
         <include

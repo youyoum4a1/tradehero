@@ -1,10 +1,8 @@
 package com.tradehero.chinabuild.fragment.security;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -171,8 +169,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     @Inject PortfolioCompactCache portfolioCompactCache;
 
     private boolean isInWatchList = false;//是否是自选股
-    private String securityName;
-    private Dialog dialog;
+    private String securityName = "";
     @Nullable private MiddleCallback<WatchlistPositionDTO> middleCallbackUpdate;
     @Nullable private MiddleCallback<WatchlistPositionDTO> middleCallbackDelete;
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
@@ -337,6 +334,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         fragmentManager = getChildFragmentManager();
 
+        Bundle args = getArguments();
+        if (args != null) {
+            Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
+            securityName = args.getString(BUNDLE_KEY_SECURITY_NAME);
+            if (securityIdBundle != null) {
+                securityId = new SecurityId(securityIdBundle);
+            }
+
+        }
         initResources();
     }
 
@@ -347,28 +353,17 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         setHeadViewRight0(R.drawable.search);
         setHeadViewRight1(R.drawable.share);
 
-        Bundle args = getArguments();
-        if (args != null)
-        {
-            Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
-            securityName = args.getString(BUNDLE_KEY_SECURITY_NAME);
-            if (securityIdBundle != null)
-            {
-                securityId = new SecurityId(securityIdBundle);
-            }
+        if(securityId!=null) {
             setHeadViewMiddleMain(securityName + "(" + securityId.getSecuritySymbol() + ")");
-
-            if (watchedList != null && securityId != null)
-            {
-                isInWatchList = watchedList.contains(securityId);
-                displayInWatchButton();
-            }
+        }
+        if (watchedList != null && securityId != null) {
+            isInWatchList = watchedList.contains(securityId);
+            displayInWatchButton();
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(view != null){
             ViewGroup parent = (ViewGroup) view.getParent();
             if (parent != null) {
@@ -377,11 +372,18 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             return view;
         }
         view = inflater.inflate(R.layout.security_detail_layout, container, false);
-        indexSubFragment = 0;
+
+        SecurityDetailSubCache.getInstance().clearAll();
+        if(securityId!=null) {
+            SecurityDetailSubCache.getInstance().setSecurityId(securityId);
+        }
+
         initBaseView(view);
         initView();
         updateHeadView(true);
         betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+
+
 
         return view;
     }
@@ -653,6 +655,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         requestUserProfile();
         fetchWatchlist();
         super.onResume();
+
+        indexSubFragment = 0;
+        setCategoryViews();
 
         if (THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_STOCK_BUY)) {
             showGuideView();
@@ -1208,6 +1213,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             quoteDetailCallback = new Callback<QuoteDetail>() {
                 @Override
                 public void success(QuoteDetail quoteDetail, Response response) {
+                    if(quoteDetail == null){
+                        return;
+                    }
                     SecurityDetailFragment.this.quoteDetail = quoteDetail;
                     updateSecurityInfoByQuoteDetails(quoteDetail);
                     if (quoteDTO != null) {

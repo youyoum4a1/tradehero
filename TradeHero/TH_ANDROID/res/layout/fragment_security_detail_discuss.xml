@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -32,6 +32,7 @@
         android:id="@+id/linearlayout_discusses"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -60,7 +61,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/avatar" />
+                        android:src="@drawable/avatar_default" />
 
                     <TextView
                         android:id="@+id/textview_name0"
@@ -86,7 +87,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
                 android:orientation="vertical">
                 <TextView
@@ -94,20 +96,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-                    android:layout_gravity="center_horizontal"
                     android:textColor="#979797"
                     android:textSize="12sp" />
-                <TextView
-                    android:id="@+id/textview_more0"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginTop="5dp"
-                    android:singleLine="true"
-                    android:visibility="invisible"
-                    android:text="● ● ●"
-                    android:textColor="#979797"
-                    android:textSize="9sp" />
             </LinearLayout>
         </RelativeLayout>
         <include layout="@layout/separate_line" />
@@ -137,7 +127,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/avatar" />
+                        android:src="@drawable/avatar_default" />
 
                     <TextView
                         android:id="@+id/textview_name1"
@@ -163,7 +153,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
                 android:orientation="vertical">
                 <TextView
@@ -171,20 +162,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-                    android:layout_gravity="center_horizontal"
                     android:textColor="#979797"
                     android:textSize="12sp" />
-                <TextView
-                    android:id="@+id/textview_more1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginTop="5dp"
-                    android:singleLine="true"
-                    android:visibility="invisible"
-                    android:text="● ● ●"
-                    android:textColor="#979797"
-                    android:textSize="9sp" />
             </LinearLayout>
         </RelativeLayout>
         <include
@@ -216,7 +195,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/avatar" />
+                        android:src="@drawable/avatar_default" />
 
                     <TextView
                         android:id="@+id/textview_name2"
@@ -242,7 +221,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
                 android:orientation="vertical">
                 <TextView
@@ -253,17 +233,7 @@
                     android:layout_gravity="center_horizontal"
                     android:textColor="#979797"
                     android:textSize="12sp" />
-                <TextView
-                    android:id="@+id/textview_more2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginTop="5dp"
-                    android:singleLine="true"
-                    android:visibility="invisible"
-                    android:text="● ● ●"
-                    android:textColor="#979797"
-                    android:textSize="9sp" />
+
             </LinearLayout>
         </RelativeLayout>
         <include
@@ -295,7 +265,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/avatar" />
+                        android:src="@drawable/avatar_default" />
 
                     <TextView
                         android:id="@+id/textview_name3"
@@ -321,7 +291,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
                 android:orientation="vertical">
                 <TextView
@@ -332,17 +303,6 @@
                     android:layout_gravity="right"
                     android:textColor="#979797"
                     android:textSize="12sp" />
-                <TextView
-                    android:id="@+id/textview_more3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:visibility="invisible"
-                    android:layout_marginTop="5dp"
-                    android:singleLine="true"
-                    android:text="● ● ●"
-                    android:textColor="#979797"
-                    android:textSize="9sp" />
             </LinearLayout>
         </RelativeLayout>
         <include
@@ -374,7 +334,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/avatar" />
+                        android:src="@drawable/avatar_default" />
 
                     <TextView
                         android:id="@+id/textview_name4"
@@ -400,7 +360,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
                 android:orientation="vertical">
                 <TextView
@@ -411,17 +372,6 @@
                     android:layout_gravity="center_horizontal"
                     android:textColor="#979797"
                     android:textSize="12sp" />
-                <TextView
-                    android:id="@+id/textview_more4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginTop="5dp"
-                    android:singleLine="true"
-                    android:visibility="invisible"
-                    android:text="● ● ●"
-                    android:textColor="#979797"
-                    android:textSize="9sp" />
             </LinearLayout>
         </RelativeLayout>
         <include

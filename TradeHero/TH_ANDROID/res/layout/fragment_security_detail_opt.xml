@@ -13,12 +13,13 @@
             android:scaleType="fitCenter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_centerInParent="true"/>
         <LinearLayout
             android:id="@+id/linearlayout_opts"
             android:layout_width="match_parent"
             android:orientation="vertical"
+            android:visibility="gone"
             android:layout_height="match_parent">
             <LinearLayout
                 android:id="@+id/linearlayout_opt0"
@@ -41,7 +42,7 @@
                         android:layout_gravity="center_horizontal"
                         android:scaleType="fitCenter"
                         android:layout_marginTop="5dp"
-                        android:src="@drawable/avatar" />
+                        android:src="@drawable/avatar_default" />
 
                     <TextView
                         android:id="@+id/textview_security_opt_name0"
@@ -49,7 +50,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="2dp"
-                        android:text="王大伟"
                         android:layout_marginBottom="5dp"
                         android:textColor="#1789d5"
                         android:textSize="10sp" />
@@ -62,7 +62,6 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
-                    android:text="买入"
                     android:textColor="#fe0000"
                     android:textSize="16sp" />
 
@@ -82,7 +81,6 @@
                             android:id="@+id/textview_security_opt_mark0"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="$"
                             android:textColor="#999999"
                             android:textSize="17sp" />
 
@@ -90,7 +88,6 @@
                             android:id="@+id/textview_security_opt_price0"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="16.34"
                             android:textColor="#000000"
                             android:textSize="17sp" />
                     </LinearLayout>
@@ -115,7 +112,6 @@
                             android:layout_gravity="right"
                             android:textColor="#fe0000"
                             android:layout_marginRight="15dp"
-                            android:text="10000"
                             android:textSize="16sp" />
                         <TextView
                             android:id="@+id/textview_security_opt_date0"
@@ -125,7 +121,6 @@
                             android:layout_marginTop="5dp"
                             android:textColor="#878787"
                             android:layout_marginRight="15dp"
-                            android:text="2015-06-08 14:34:34"
                             android:textSize="8sp" />
                     </LinearLayout>
                 </RelativeLayout>
@@ -153,7 +148,7 @@
                         android:layout_gravity="center_horizontal"
                         android:scaleType="fitCenter"
                         android:layout_marginTop="5dp"
-                        android:src="@drawable/avatar" />
+                        android:src="@drawable/avatar_default" />
 
                     <TextView
                         android:id="@+id/textview_security_opt_name1"
@@ -161,7 +156,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="2dp"
-                        android:text="王大伟"
                         android:layout_marginBottom="5dp"
                         android:textColor="#1789d5"
                         android:textSize="10sp" />
@@ -174,7 +168,6 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
-                    android:text="买入"
                     android:textColor="#fe0000"
                     android:textSize="16sp" />
 
@@ -194,7 +187,6 @@
                             android:id="@+id/textview_security_opt_mark1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="$"
                             android:textColor="#999999"
                             android:textSize="17sp" />
 
@@ -202,7 +194,6 @@
                             android:id="@+id/textview_security_opt_price1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="16.34"
                             android:textColor="#000000"
                             android:textSize="17sp" />
                     </LinearLayout>
@@ -227,7 +218,6 @@
                             android:layout_gravity="right"
                             android:textColor="#fe0000"
                             android:layout_marginRight="15dp"
-                            android:text="10000"
                             android:textSize="16sp" />
                         <TextView
                             android:id="@+id/textview_security_opt_date1"
@@ -237,7 +227,6 @@
                             android:layout_marginTop="5dp"
                             android:textColor="#878787"
                             android:layout_marginRight="15dp"
-                            android:text="2015-06-08 14:34:34"
                             android:textSize="8sp" />
                     </LinearLayout>
                 </RelativeLayout>
@@ -264,7 +253,7 @@
                         android:layout_gravity="center_horizontal"
                         android:scaleType="fitCenter"
                         android:layout_marginTop="5dp"
-                        android:src="@drawable/avatar" />
+                        android:src="@drawable/avatar_default" />
 
                     <TextView
                         android:id="@+id/textview_security_opt_name2"
@@ -272,7 +261,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="2dp"
-                        android:text="王大伟"
                         android:layout_marginBottom="5dp"
                         android:textColor="#1789d5"
                         android:textSize="10sp" />
@@ -285,7 +273,6 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
-                    android:text="买入"
                     android:textColor="#fe0000"
                     android:textSize="16sp" />
 
@@ -305,7 +292,6 @@
                             android:id="@+id/textview_security_opt_mark2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="$"
                             android:textColor="#999999"
                             android:textSize="17sp" />
 
@@ -313,7 +299,6 @@
                             android:id="@+id/textview_security_opt_price2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="16.34"
                             android:textColor="#000000"
                             android:textSize="17sp" />
                     </LinearLayout>
@@ -338,7 +323,6 @@
                             android:layout_gravity="right"
                             android:textColor="#fe0000"
                             android:layout_marginRight="15dp"
-                            android:text="10000"
                             android:textSize="16sp" />
                         <TextView
                             android:id="@+id/textview_security_opt_date2"
@@ -348,7 +332,6 @@
                             android:layout_marginTop="5dp"
                             android:textColor="#878787"
                             android:layout_marginRight="15dp"
-                            android:text="2015-06-08 14:34:34"
                             android:textSize="8sp" />
                     </LinearLayout>
                 </RelativeLayout>
@@ -375,7 +358,7 @@
                         android:layout_gravity="center_horizontal"
                         android:scaleType="fitCenter"
                         android:layout_marginTop="5dp"
-                        android:src="@drawable/avatar" />
+                        android:src="@drawable/avatar_default" />
 
                     <TextView
                         android:id="@+id/textview_security_opt_name3"
@@ -383,7 +366,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="2dp"
-                        android:text="王大伟"
                         android:layout_marginBottom="5dp"
                         android:textColor="#1789d5"
                         android:textSize="10sp" />
@@ -396,7 +378,6 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
-                    android:text="买入"
                     android:textColor="#fe0000"
                     android:textSize="16sp" />
 
@@ -416,7 +397,6 @@
                             android:id="@+id/textview_security_opt_mark3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="$"
                             android:textColor="#999999"
                             android:textSize="17sp" />
 
@@ -424,7 +404,6 @@
                             android:id="@+id/textview_security_opt_price3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="16.34"
                             android:textColor="#000000"
                             android:textSize="17sp" />
                     </LinearLayout>
@@ -449,7 +428,6 @@
                             android:layout_gravity="right"
                             android:textColor="#fe0000"
                             android:layout_marginRight="15dp"
-                            android:text="10000"
                             android:textSize="16sp" />
                         <TextView
                             android:id="@+id/textview_security_opt_date3"
@@ -459,7 +437,6 @@
                             android:layout_marginTop="5dp"
                             android:textColor="#878787"
                             android:layout_marginRight="15dp"
-                            android:text="2015-06-08 14:34:34"
                             android:textSize="8sp" />
                     </LinearLayout>
                 </RelativeLayout>
@@ -486,7 +463,7 @@
                         android:layout_gravity="center_horizontal"
                         android:scaleType="fitCenter"
                         android:layout_marginTop="5dp"
-                        android:src="@drawable/avatar" />
+                        android:src="@drawable/avatar_default" />
 
                     <TextView
                         android:id="@+id/textview_security_opt_name4"
@@ -494,7 +471,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="4dp"
-                        android:text="王大伟"
                         android:layout_marginBottom="5dp"
                         android:textColor="#1789d5"
                         android:textSize="10sp" />
@@ -507,7 +483,6 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
-                    android:text="买入"
                     android:textColor="#fe0000"
                     android:textSize="16sp" />
 
@@ -527,7 +502,6 @@
                             android:id="@+id/textview_security_opt_mark4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="$"
                             android:textColor="#999999"
                             android:textSize="17sp" />
 
@@ -535,7 +509,6 @@
                             android:id="@+id/textview_security_opt_price4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="16.34"
                             android:textColor="#000000"
                             android:textSize="17sp" />
                     </LinearLayout>
@@ -560,7 +533,6 @@
                             android:layout_gravity="right"
                             android:textColor="#fe0000"
                             android:layout_marginRight="15dp"
-                            android:text="10000"
                             android:textSize="16sp" />
                         <TextView
                             android:id="@+id/textview_security_opt_date4"
@@ -570,7 +542,6 @@
                             android:layout_marginTop="5dp"
                             android:textColor="#878787"
                             android:layout_marginRight="15dp"
-                            android:text="2015-06-08 14:34:34"
                             android:textSize="8sp" />
                     </LinearLayout>
                 </RelativeLayout>
