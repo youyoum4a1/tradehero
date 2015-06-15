@@ -171,7 +171,7 @@ public class SecurityUserPositionFragment extends DashboardFragment {
     private void jumpToUserPage(int userId){
         Bundle bundle = new Bundle();
         bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userId);
-        gotoDashboard(PortfolioFragment.class, bundle);
+        pushFragment(PortfolioFragment.class, bundle);
     }
 
 }

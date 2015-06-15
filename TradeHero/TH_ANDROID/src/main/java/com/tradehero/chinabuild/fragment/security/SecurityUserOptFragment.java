@@ -97,23 +97,20 @@ public class SecurityUserOptFragment extends DashboardFragment{
         if(adapter==null){
             adapter = new SecurityOptAdapter(getActivity(), opts);
         }
-        optsLV.setMode(PullToRefreshBase.Mode.BOTH);
+
         optsLV.setAdapter(adapter);
-        optsLV.getRefreshableView().setEmptyView(emptyIV);
+
         optsLV.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                onFinish();
+                retrieveUserOpts();
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-                onFinish();
+                retrieveUserOptsMore();
             }
 
-            private void onFinish() {
-                optsLV.onRefreshComplete();
-            }
         });
 
         optsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -125,8 +122,17 @@ public class SecurityUserOptFragment extends DashboardFragment{
                 }
             }
         });
-
-        retrieveUserOpts();
+        if(adapter.getCount() <= 0) {
+            retrieveUserOpts();
+            tradeHeroProgressBar.startLoading();
+            tradeHeroProgressBar.setVisibility(View.VISIBLE);
+            optsLV.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        }else{
+            optsLV.getRefreshableView().setEmptyView(emptyIV);
+            optsLV.setMode(PullToRefreshBase.Mode.BOTH);
+            tradeHeroProgressBar.stopLoading();
+            tradeHeroProgressBar.setVisibility(View.GONE);
+        }
 
         return view;
     }
@@ -137,15 +143,50 @@ public class SecurityUserOptFragment extends DashboardFragment{
             public void success(List<SecurityUserOptDTO> optList, Response response) {
                 adapter.setData(optList);
                 adapter.notifyDataSetChanged();
-
+                optsLV.setMode(PullToRefreshBase.Mode.BOTH);
+                onFinish();
             }
 
             @Override
             public void failure(RetrofitError error) {
+                optsLV.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+                onFinish();
+            }
 
+
+            private void onFinish() {
+                tradeHeroProgressBar.stopLoading();
+                tradeHeroProgressBar.setVisibility(View.GONE);
+                optsLV.getRefreshableView().setEmptyView(emptyIV);
+                optsLV.onRefreshComplete();
             }
         };
-        quoteServiceWrapper.getTradeRecords(securityId, 1, perPage, callback);
+        currentPage = 1;
+        quoteServiceWrapper.getTradeRecords(securityId, currentPage, perPage, callback);
+    }
+
+    private void retrieveUserOptsMore() {
+        Callback<List<SecurityUserOptDTO>> callback = new Callback<List<SecurityUserOptDTO>>() {
+            @Override
+            public void success(List<SecurityUserOptDTO> optList, Response response) {
+                adapter.addMoreData(optList);
+                adapter.notifyDataSetChanged();
+                onFinish();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                currentPage--;
+                onFinish();
+            }
+
+
+            private void onFinish() {
+                optsLV.onRefreshComplete();
+            }
+        };
+        currentPage++;
+        quoteServiceWrapper.getTradeRecords(securityId, currentPage, perPage, callback);
     }
 
     private void enterSearchPage(){
@@ -175,6 +216,6 @@ public class SecurityUserOptFragment extends DashboardFragment{
     private void jumpToUserPage(int userId){
         Bundle bundle = new Bundle();
         bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userId);
-        gotoDashboard(PortfolioFragment.class, bundle);
+        pushFragment(PortfolioFragment.class, bundle);
     }
 }
