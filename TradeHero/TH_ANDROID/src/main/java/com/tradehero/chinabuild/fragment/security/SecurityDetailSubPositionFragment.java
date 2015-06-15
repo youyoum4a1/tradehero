@@ -136,16 +136,36 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
         
     }
 
+    void displayUserPostions(List<SecurityUserPositionDTO> sharePositionList) {
+        if(emptyIV ==null || optsLL == null){
+            return;
+        }
+        if(sharePositionList == null){
+            emptyIV.setVisibility(View.VISIBLE);
+            optsLL.setVisibility(View.GONE);
+        }else{
+            emptyIV.setVisibility(View.GONE);
+            optsLL.setVisibility(View.VISIBLE);
+        }
+        if(sharePositionList.size()<5){
+            moreTV.setVisibility(View.GONE);
+        }else{
+            moreTV.setVisibility(View.VISIBLE);
+        }
+
+        for (int i = 0; i < sharePositionList.size(); i++) {
+            viewHolders[i].display(sharePositionList.get(i));
+        }
+        for (int i = sharePositionList.size(); i < viewHolders.length; i++) {
+            viewHolders[i].gone();
+        }
+    }
+
     private void retrieveSharePositions() {
         Callback<List<SecurityUserPositionDTO>> callback = new Callback<List<SecurityUserPositionDTO>>() {
             @Override
             public void success(List<SecurityUserPositionDTO> sharePositionList, Response response) {
-                for (int i = 0; i < sharePositionList.size(); i++) {
-                    viewHolders[i].display(sharePositionList.get(i));
-                }
-                for (int i = sharePositionList.size(); i < viewHolders.length; i++) {
-                    viewHolders[i].gone();
-                }
+                displayUserPostions(sharePositionList);
             }
 
             @Override
@@ -167,7 +187,7 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
     }
 
     private void enterUserPositionsPage(){
-        Bundle bundle = new Bundle();
+        Bundle bundle = getArguments();
         pushFragment(SecurityUserPositionFragment.class, bundle);
     }
 

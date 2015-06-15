@@ -12,22 +12,35 @@ import android.widget.ListView;
 
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
+import com.tradehero.chinabuild.data.SecurityUserOptDTO;
 import com.tradehero.chinabuild.data.SecurityUserPositionDTO;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.th.R;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.tradehero.th.wxapi.WXEntryActivity;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by palmer on 15/6/9.
  */
 public class SecurityUserPositionFragment extends DashboardFragment {
+
+    @Inject QuoteServiceWrapper quoteServiceWrapper;
+    private SecurityId securityId;
 
     private int upColor;
     private int normalColor;
@@ -45,6 +58,11 @@ public class SecurityUserPositionFragment extends DashboardFragment {
         upColor = getResources().getColor(R.color.bar_up);
         normalColor = getResources().getColor(R.color.bar_normal);
         downColor = getResources().getColor(R.color.bar_down);
+        Bundle args = getArguments();
+        Bundle securityIdBundle = args.getBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE);
+        if (securityIdBundle != null) {
+            securityId = new SecurityId(securityIdBundle);
+        }
     }
 
     @Override
@@ -88,12 +106,31 @@ public class SecurityUserPositionFragment extends DashboardFragment {
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        retrieveUserPositions();
+    }
+
+    private void retrieveUserPositions() {
+        Callback<List<SecurityUserPositionDTO>> callback = new Callback<List<SecurityUserPositionDTO>>() {
+            @Override
+            public void success(List<SecurityUserPositionDTO> optList, Response response) {
+                adapter.addMoreData(optList);
+                adapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        };
+        quoteServiceWrapper.getSharePosition(securityId, 1, 20, callback);
+    }
+
     private void setOpts(){
         opts.clear();
-        for(int num=0;num<20;num++){
-            SecurityUserPositionDTO dto = new SecurityUserPositionDTO();
-            opts.add(dto);
-        }
         adapter.setData(opts);
     }
 
