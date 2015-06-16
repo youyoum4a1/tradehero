@@ -1500,7 +1500,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     {
         @Override public void onDTOReceived(@NotNull final PositionDTOKey key, @NotNull final PositionDTO value)
         {
-            linkWith(value);
+            linkWith((PositionDTOCompact)value);
         }
 
         @Override public void onErrorThrown(@NotNull PositionDTOKey key, @NotNull Throwable error)
