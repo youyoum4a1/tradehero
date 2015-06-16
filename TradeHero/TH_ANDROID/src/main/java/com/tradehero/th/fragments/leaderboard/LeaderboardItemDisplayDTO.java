@@ -1,11 +1,11 @@
 package com.tradehero.th.fragments.leaderboard;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
@@ -37,9 +37,9 @@ public abstract class LeaderboardItemDisplayDTO implements DTO
             return new FriendLeaderboardItemDisplayDTO.Social(userFriendsDTO);
         }
 
-        public void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
+        @NonNull CompetitionLeaderboardItemDisplayDto create(@NonNull LeaderboardUserDTO leaderboardUserDTO, ProviderDTO providerDTO)
         {
-            this.currentUserProfileDTO = currentUserProfileDTO;
+            return new CompetitionLeaderboardItemDisplayDto(resources, currentUserId, leaderboardUserDTO, currentUserProfileDTO, providerDTO);
         }
     }
 

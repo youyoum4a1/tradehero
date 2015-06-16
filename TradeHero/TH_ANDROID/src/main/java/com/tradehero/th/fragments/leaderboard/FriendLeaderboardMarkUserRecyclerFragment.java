@@ -62,7 +62,6 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
     @Inject SocialFriendHandlerFacebook socialFriendHandlerFacebook;
     @Inject SocialShareHelper socialShareHelper;
     private ProcessableLeaderboardFriendsCache processableLeaderboardFriendsCache;
-    private LeaderboardItemDisplayDTO.Factory factory;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -183,7 +182,6 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
     @Override public void onDestroy()
     {
         itemViewAdapter.clear();
-        factory = null;
         processableLeaderboardFriendsCache = null;
         super.onDestroy();
     }
@@ -202,23 +200,13 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
     {
         if (processableLeaderboardFriendsCache == null)
         {
-            factory = new LeaderboardItemDisplayDTO.Factory(getResources(), currentUserId, this.currentUserProfileDTO);
             processableLeaderboardFriendsCache = new ProcessableLeaderboardFriendsCache(
+                    getResources(),
                     leaderboardFriendsCache,
                     userProfileCache,
-                    currentUserId,
-                    factory);
+                    currentUserId);
         }
         return processableLeaderboardFriendsCache;
-    }
-
-    @Override protected void setCurrentUserProfileDTO(@NonNull UserProfileDTO currentUserProfileDTO)
-    {
-        super.setCurrentUserProfileDTO(currentUserProfileDTO);
-        if (factory != null)
-        {
-            factory.setCurrentUserProfileDTO(currentUserProfileDTO);
-        }
     }
 
     @Override public boolean canMakePagedDtoKey()

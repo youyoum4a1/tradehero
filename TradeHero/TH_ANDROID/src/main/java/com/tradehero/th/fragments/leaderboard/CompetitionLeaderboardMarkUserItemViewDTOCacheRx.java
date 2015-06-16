@@ -6,6 +6,7 @@ import android.util.Pair;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
@@ -68,13 +69,17 @@ class CompetitionLeaderboardMarkUserItemViewDTOCacheRx
                                     @Override public Pair<PagedLeaderboardKey, LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>> call(
                                             Requisite requisite)
                                     {
-                                        return Pair.create((PagedLeaderboardKey) pair.first,
-                                                (LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>) new CompetitionLeaderboardMarkUserItemView.DTOList(
-                                                        resources,
-                                                        currentUserId,
-                                                        pair.second,
-                                                        requisite.currentUserProfile,
-                                                        requisite.provider));
+                                        LeaderboardItemDisplayDTO.Factory factory =
+                                                new LeaderboardItemDisplayDTO.Factory(resources, currentUserId, requisite.currentUserProfile);
+
+                                        //int prizeDTOSize = competitionLeaderboardDTO.prizes == null ? 0 : competitionLeaderboardDTO.prizes.size(); //TODO for what?
+                                        LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO> list =
+                                                new LeaderboardItemDisplayDTO.DTOList(pair.second.leaderboard);
+                                        for (LeaderboardUserDTO leaderboardItem : pair.second.leaderboard.getList())
+                                        {
+                                            list.add(factory.create(leaderboardItem, requisite.provider));
+                                        }
+                                        return Pair.create(((PagedLeaderboardKey) pair.first), list);
                                     }
                                 });
                     }

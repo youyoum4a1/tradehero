@@ -147,11 +147,6 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
         return new CompetitionLeaderboardId(providerId.key, competitionId.key, null, perPage);
     }
 
-    protected void setupCompetitionAdapter()
-    {
-        competitionAdapter.setupCompetition(this.providerDTO, this.competitionLeaderboardDTO);
-    }
-
     @NonNull @Override protected LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO> createItemViewAdapter()
     {
         return new CompetitionLeaderboardMarkUserAdapter(getActivity(), R.layout.lbmu_item_roi_mode, R.layout.lbmu_item_own_ranking_competition_mode,
@@ -160,7 +155,7 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
 
     @Override protected RecyclerView.Adapter onImplementAdapter(RecyclerView.Adapter adapter)
     {
-        competitionAdapter = new CompetitionLeaderboardWrapperRecyclerAdapter(adapter);
+        competitionAdapter = new CompetitionLeaderboardWrapperRecyclerAdapter(getActivity(), adapter);
         return competitionAdapter;
     }
 
@@ -190,7 +185,7 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
                 {
                     @Override public void call(CompetitionLeaderboardDTO competitionLeaderboardDTO)
                     {
-                        setupCompetitionAdapter();
+                        addExtraTiles();
                     }
                 }, new ToastOnErrorAction()));
     }
@@ -203,6 +198,26 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
     protected void linkWith(@NonNull CompetitionLeaderboardDTO competitionLeaderboardDTO)
     {
         this.competitionLeaderboardDTO = competitionLeaderboardDTO;
+    }
+
+    @Override protected void onNext(@NonNull PagedLeaderboardKey key, @NonNull LeaderboardMarkedUserItemDisplayDto.DTOList value)
+    {
+        super.onNext(key, value);
+        addExtraTiles();
+    }
+
+    private void addExtraTiles()
+    {
+        if (providerDTO != null && providerDTO.hasAdvertisement() && competitionLeaderboardDTO != null)
+        {
+            int realSize = itemViewAdapter.getItemCount();
+            for (int i = competitionLeaderboardDTO.adStartRow; i < realSize; i += competitionLeaderboardDTO.adFrequencyRows)
+            {
+                int randomAds = (int) (Math.random() * providerDTO.advertisements.size());
+                competitionAdapter.addExtraItem(i, new CompetitionAdsExtraItem(providerDTO.advertisements.get(randomAds)));
+                realSize++; //Add +1 because technically, the size of the list has grown by 1 when we add an extra tile.
+            }
+        }
     }
 
     @NonNull @Override public DTOCacheRx<PagedLeaderboardKey, LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>> getCache()

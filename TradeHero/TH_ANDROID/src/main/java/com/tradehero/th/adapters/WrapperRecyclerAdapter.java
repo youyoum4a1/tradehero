@@ -1,5 +1,6 @@
 package com.tradehero.th.adapters;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.ViewGroup;
@@ -156,6 +157,11 @@ public abstract class WrapperRecyclerAdapter<ExtraItemType extends WrapperRecycl
             extraItemViewTypes.add(extraItemType.getViewType());
             notifyItemInserted(position);
         }
+    }
+
+    @Nullable public ExtraItemType getExtraItem(int position)
+    {
+        return extraItems.get(position);
     }
 
     private int getRealPosition(int position)
