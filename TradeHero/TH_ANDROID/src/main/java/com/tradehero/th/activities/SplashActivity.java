@@ -143,7 +143,8 @@ public class SplashActivity extends BaseActivity
     @Override protected void onNewIntent(Intent intent)
     {
         super.onNewIntent(intent);
-        deepLink = intent.getData();
+        Uri newDeepLink = intent.getData();
+        deepLink = newDeepLink != null ? newDeepLink : deepLink;
     }
 
     @Override protected boolean requireLogin()
