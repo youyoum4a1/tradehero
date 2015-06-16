@@ -303,16 +303,17 @@ public class SecurityUserOptFragment extends DashboardFragment{
         DecimalFormat df = new DecimalFormat("######0.00");
         String price = df.format(getLatestPrice());
         String raisePercent = getRisePercentage();
-        String raise = df.format(getRise());
-        if (quoteDetail.getRiseRate() > 0) {
+        double r = getRise();
+        String raise = df.format(r);
+        if (r > 0) {
             setHeadViewMiddleSubTextColor(upColor);
             setHeadViewMiddleSub(price + " +" + raisePercent + " +" + raise);
         }
-        if (quoteDetail.getRiseRate() == 0) {
+        if (r == 0) {
             setHeadViewMiddleSubTextColor(normalColor);
             setHeadViewMiddleSub(price + " 0 0");
         }
-        if (quoteDetail.getRiseRate() < 0) {
+        if (r < 0) {
             setHeadViewMiddleSubTextColor(downColor);
             setHeadViewMiddleSub(price + " " + raisePercent + " " + raise);
         }
