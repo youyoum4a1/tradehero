@@ -99,7 +99,7 @@ public class TimesBase extends View {
 	/** 下表高度 */
 	private float mLowerChartHeight;
 
-    public static float mLeftMargin = 100;
+    public static float mLeftMargin = 150;
 
 	private float longitudeSpacing;
 	private float latitudeSpacing;

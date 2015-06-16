@@ -214,6 +214,26 @@ public class TimesView extends TimesBase
 		canvas.drawText("13:00", (viewWidth - mLeftMargin) / 2.0f - DEFAULT_AXIS_TITLE_SIZE * 1.3f + mLeftMargin, lowerBottom + DEFAULT_AXIS_TITLE_SIZE, paint);
 		canvas.drawText("14:00", (viewWidth - mLeftMargin) * 3 / 4.0f - DEFAULT_AXIS_TITLE_SIZE * 1.3f + mLeftMargin, lowerBottom + DEFAULT_AXIS_TITLE_SIZE, paint);
 		canvas.drawText("15:00", viewWidth - 2 - DEFAULT_AXIS_TITLE_SIZE * 2.5f, lowerBottom + DEFAULT_AXIS_TITLE_SIZE, paint);
+
+        //Y轴下Titles
+        paint.setTextSize(DEFAULT_AXIS_TITLE_SIZE);
+        paint.setColor(Color.BLACK);
+        float leftMargin = mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE;
+        if (lowerHigh > 100000000) {
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE, paint);
+        } else {
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 10000).concat("万"), 1 + leftMargin - 50, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE, paint);
+        }
+        if (lowerHigh * 2 / 3 > 100000000) {
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh * 2 / 3 / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() / 3, paint);
+        } else {
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh * 2 / 3 / 10000).concat("万"), 1 + leftMargin - 50, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() / 3, paint);
+        }
+        if (lowerHigh / 3 > 100000000) {
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 3 / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() * 2 / 3, paint);
+        } else {
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 3 / 10000).concat("万"), 1 + leftMargin - 50, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() * 2 / 3, paint);
+        }
 	}
 
 	private void drawLines(Canvas canvas) {

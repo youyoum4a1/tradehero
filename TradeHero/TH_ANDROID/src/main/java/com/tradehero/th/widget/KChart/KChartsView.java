@@ -260,7 +260,7 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
         textPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
 		// Y轴Titles
-        int leftMargin = 20;
+        float leftMargin = mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE;
 		textPaint.setColor(COLOR_GREEN);
 		canvas.drawText(new DecimalFormat("#.##").format(mMinPrice), 1 + leftMargin, UPER_CHART_BOTTOM - 1, textPaint);
 		canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / 4), 1 + leftMargin,
@@ -276,7 +276,23 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 				DEFAULT_AXIS_TITLE_SIZE * 2, textPaint);
 
         //Y轴下Titles
-
+        textPaint.setTextSize(DEFAULT_AXIS_TITLE_SIZE);
+        textPaint.setColor(Color.BLACK);
+        if (lowerHigh > 100000000) {
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE, textPaint);
+        } else {
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 10000).concat("万"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE, textPaint);
+        }
+        if (lowerHigh * 2 / 3 > 100000000) {
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh * 2 / 3 / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() / 3, textPaint);
+        } else {
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh * 2 / 3 / 10000).concat("万"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() / 3, textPaint);
+        }
+        if (lowerHigh / 3 > 100000000) {
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 3 / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() * 2 / 3, textPaint);
+        } else {
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 3 / 10000).concat("万"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() * 2 / 3, textPaint);
+        }
 
 		// X轴Titles
 		textPaint.setColor(Color.GRAY);
