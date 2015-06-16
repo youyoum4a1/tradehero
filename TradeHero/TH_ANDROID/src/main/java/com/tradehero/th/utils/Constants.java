@@ -27,7 +27,7 @@ public class Constants {
     // Response Header
     public static final String TH_ERROR_CODE = "TH-Error-Code";
 
-    public static final String WECHAT_SHARE_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th&g_f=991653";
+    public static final String WECHAT_SHARE_URL_INSTALL_APP = "http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th&g_f=991653";
 
     // Localytics
     public static final String LOCALYTICS_APP_KEY_RELEASE = "10a8a8e1d386d096bfe1641-8b2cc16e-5b52-11e4-a386-005cf8cbabd8";

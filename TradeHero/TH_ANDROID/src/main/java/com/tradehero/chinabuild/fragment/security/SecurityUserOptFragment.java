@@ -25,6 +25,7 @@ import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.tradehero.th.wxapi.WXEntryActivity;
 
@@ -209,7 +210,7 @@ public class SecurityUserOptFragment extends DashboardFragment{
 
     private void enterWechatSharePage(){
         WeChatDTO weChatDTO = new WeChatDTO();
-        weChatDTO.title = "一个股票涨涨涨";
+        weChatDTO.title = "一个股票涨涨涨" + Constants.WECHAT_SHARE_URL_INSTALL_APP;
         weChatDTO.type = WeChatMessageType.Trade;
         Intent gotoShareToWeChatIntent = new Intent(getActivity(), WXEntryActivity.class);
         gotoShareToWeChatIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

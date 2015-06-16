@@ -176,7 +176,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         }
 
         WXWebpageObject webPage = new WXWebpageObject();
-        webPage.webpageUrl = Constants.WECHAT_SHARE_URL;
+        webPage.webpageUrl = Constants.WECHAT_SHARE_URL_INSTALL_APP;
 
         WXMediaMessage weChatMsg = new WXMediaMessage(webPage);
         if (TextUtils.isEmpty(totalShare)) {

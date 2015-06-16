@@ -93,6 +93,7 @@ import com.tradehero.th.persistence.trade.TradeListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -2101,7 +2102,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     private void enterWechatSharePage(){
         WeChatDTO weChatDTO = new WeChatDTO();
-        weChatDTO.title = "一个股票涨涨涨";
+        weChatDTO.title = "一个股票涨涨涨" + Constants.WECHAT_SHARE_URL_INSTALL_APP;
         weChatDTO.type = WeChatMessageType.Trade;
         Intent gotoShareToWeChatIntent = new Intent(getActivity(), WXEntryActivity.class);
         gotoShareToWeChatIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
