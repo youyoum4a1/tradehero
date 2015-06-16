@@ -295,8 +295,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     protected void setExchangeByCode(@NonNull Integer exchangeById)
     {
-        THToast.show("setting " + exchangeById);
         this.routedExchangeById = exchangeById;
+        setUpFilterSelectorView();
     }
 
     private void fetchUserProfile()
