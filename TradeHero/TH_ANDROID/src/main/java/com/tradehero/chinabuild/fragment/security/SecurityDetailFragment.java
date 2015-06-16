@@ -206,6 +206,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private Button btnChart1;
     private Button btnChart2;
     private Button btnChart3;
+    private View chart0Line;
+    private View chart1Line;
+    private View chart2Line;
+    private View chart3Line;
 
     private Button btnDiscuss;
     private Button btnNews;
@@ -257,6 +261,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private int colorUp;
     private int colorNormal;
     private int colorDown;
+    private int colorText;
+    private int colorBlue;
 
     //Discuss, news, opts, postions
     private SecurityDetailSubViewPager subViewPager;
@@ -405,6 +411,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         colorUp = getResources().getColor(R.color.bar_up);
         colorNormal = getResources().getColor(R.color.bar_normal);
         colorDown = getResources().getColor(R.color.bar_down);
+        colorText = getResources().getColor(R.color.color_text_security_detail);
+        colorBlue = getResources().getColor(R.color.color_blue);
     }
 
     private void initNoticeLL(View parent){
@@ -580,6 +588,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         btnChart1 = (Button) tabView0.findViewById(R.id.btnTabChart1);
         btnChart2 = (Button) tabView0.findViewById(R.id.btnTabChart2);
         btnChart3 = (Button) tabView0.findViewById(R.id.btnTabChart3);
+        chart0Line = tabView0.findViewById(R.id.view_tab0_focus);
+        chart1Line = tabView0.findViewById(R.id.view_tab1_focus);
+        chart2Line = tabView0.findViewById(R.id.view_tab2_focus);
+        chart3Line = tabView0.findViewById(R.id.view_tab3_focus);
 
         btnDiscuss = (Button) tabView0.findViewById(R.id.btnTabDiscuss);
         btnNews = (Button) tabView0.findViewById(R.id.btnTabNews);
@@ -1014,7 +1026,31 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public void setChartView(int select) {
         indexChart = select;
         for (int i = 0; i < btnChart.length; i++) {
-            btnChart[i].setBackgroundResource((i == indexChart ? R.drawable.tab_blue_head_active : R.drawable.tab_blue_head_normal));
+            btnChart[i].setTextColor((i == indexChart ? colorBlue : colorText));
+        }
+        if(select == 0){
+            chart0Line.setVisibility(View.VISIBLE);
+            chart1Line.setVisibility(View.GONE);
+            chart2Line.setVisibility(View.GONE);
+            chart3Line.setVisibility(View.GONE);
+        }
+        if(select == 1){
+            chart0Line.setVisibility(View.GONE);
+            chart1Line.setVisibility(View.VISIBLE);
+            chart2Line.setVisibility(View.GONE);
+            chart3Line.setVisibility(View.GONE);
+        }
+        if(select == 2){
+            chart0Line.setVisibility(View.GONE);
+            chart1Line.setVisibility(View.GONE);
+            chart2Line.setVisibility(View.VISIBLE);
+            chart3Line.setVisibility(View.GONE);
+        }
+        if(select == 3){
+            chart0Line.setVisibility(View.GONE);
+            chart1Line.setVisibility(View.GONE);
+            chart2Line.setVisibility(View.GONE);
+            chart3Line.setVisibility(View.VISIBLE);
         }
         linkWith(new ChartTimeSpan(getChartTimeSpanDuration(indexChart)));
     }

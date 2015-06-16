@@ -58,7 +58,7 @@
                             android:layout_height="fill_parent"
                             android:background="@color/transparent"
                             android:text="讨论"
-                            android:textColor="#3b3b3b"
+                            android:textColor="@color/color_text_security_detail"
                             android:textSize="15sp" />
 
                         <View
@@ -103,7 +103,7 @@
                             android:layout_marginRight="1px"
                             android:background="@color/transparent"
                             android:text="资讯"
-                            android:textColor="#3b3b3b"
+                            android:textColor="@color/color_text_security_detail"
                             android:textSize="15sp" />
 
                         <View
@@ -135,7 +135,7 @@
                             android:layout_marginRight="1px"
                             android:background="@color/transparent"
                             android:text="用户操作"
-                            android:textColor="#3b3b3b"
+                            android:textColor="@color/color_text_security_detail"
                             android:textSize="15sp" />
 
                         <View
@@ -167,7 +167,7 @@
                             android:layout_marginRight="1px"
                             android:background="@color/transparent"
                             android:text="用户持仓"
-                            android:textColor="#3b3b3b"
+                            android:textColor="@color/color_text_security_detail"
                             android:textSize="15sp" />
 
                         <View

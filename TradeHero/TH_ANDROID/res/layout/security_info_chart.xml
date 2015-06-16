@@ -7,51 +7,129 @@
         android:orientation="vertical"
         android:layout_height="wrap_content">
     <LinearLayout
-            android:layout_width="fill_parent"
-            android:orientation="horizontal"
-            android:layout_height="32dp">
-        <View android:layout_width="1px" android:layout_height="match_parent" android:background="#cecece"/>
-        <Button
+        android:layout_width="fill_parent"
+        android:layout_height="38dp"
+        android:background="#f1f4f5"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <Button
                 android:id="@+id/btnTabChart0"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:text="1天"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:background="@drawable/tab_blue_head_active"
-                android:layout_weight="1"/>
-        <View android:layout_width="1px" android:layout_height="match_parent" android:background="#cecece"/>
-        <Button
+                android:background="@color/transparent"
+                android:text="分时"
+                android:textColor="@color/color_blue"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_alignParentRight="true"
+                android:background="#e6e6e6" />
+
+            <View
+                android:id="@+id/view_tab0_focus"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/color_blue"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <Button
                 android:id="@+id/btnTabChart1"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:text="5天"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:background="@drawable/tab_blue_head_normal"
-                android:layout_weight="1"/>
-        <View android:layout_width="1px" android:layout_height="match_parent" android:background="#cecece"/>
-        <Button
+                android:layout_marginRight="1px"
+                android:background="@color/transparent"
+                android:text="日K"
+                android:textColor="#3b3b3b"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="#e6e6e6" />
+
+            <View
+                android:id="@+id/view_tab1_focus"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/color_blue"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <Button
                 android:id="@+id/btnTabChart2"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:text="3个月"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:background="@drawable/tab_blue_head_normal"
-                android:layout_weight="1"/>
-        <View android:layout_width="1px" android:layout_height="match_parent" android:background="#cecece"/>
-        <Button
+                android:layout_marginRight="1px"
+                android:background="@color/transparent"
+                android:text="周K"
+                android:textColor="#3b3b3b"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="#e6e6e6" />
+
+            <View
+                android:id="@+id/view_tab2_focus"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/color_blue"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <Button
                 android:id="@+id/btnTabChart3"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:text="1年"
-                android:textColor="@color/black"
-                android:textSize="15sp"
                 android:layout_marginRight="1px"
-                android:background="@drawable/tab_blue_head_normal"
-                android:layout_weight="1"/>
-        <View android:layout_width="1px" android:layout_height="match_parent" android:background="#cecece"/>
+                android:background="@color/transparent"
+                android:text="月K"
+                android:textColor="#3b3b3b"
+                android:textSize="15sp" />
+
+            <View
+                android:id="@+id/view_tab3_focus"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/color_blue"
+                android:visibility="gone" />
+        </RelativeLayout>
     </LinearLayout>
 
     <com.tradehero.common.widget.BetterViewAnimator

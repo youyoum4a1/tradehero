@@ -61,6 +61,7 @@
     <color name="bg_fragment">#FFFFFF</color>
     <color name="color_gray">#bfbfbf</color>
     <color name="color_blue">#1789d5</color>
+    <color name="color_text_security_detail">#3b3b3b</color>
     <color name="color_gray_plus">#333333</color>
     <!-- china build end -->
 
