@@ -171,6 +171,12 @@
             android:layout_width="match_parent"
             android:layout_height="170dp"
             android:layout_margin="@dimen/margin_small"/>
+
+        <com.tradehero.th.widget.KChart.KChartsView
+            android:id="@+id/my_charts_view"
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:layout_margin="@dimen/margin_small"/>
       </LinearLayout>
 
     </com.tradehero.common.widget.BetterViewAnimator>
