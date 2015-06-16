@@ -309,7 +309,7 @@ public class TimesView extends TimesBase
 		for (int i = 0; i < timesList.size(); i++) {
 			fenshiData = this.timesList.get(i);
             if (fenshiData.price == null || fenshiData.avgPrice == null || fenshiData.volume == null) {
-                Timber.d("lyl null i="+i);
+                //Timber.d("lyl null i="+i);
                 //fix null point
                 if (i == 0 || i == timesList.size() - 1 || timesList.get(i+1).price == null || timesList.get(i+1).avgPrice == null || timesList.get(i+1).volume == null) {
                     continue;
