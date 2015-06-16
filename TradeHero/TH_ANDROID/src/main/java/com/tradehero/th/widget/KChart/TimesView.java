@@ -86,7 +86,7 @@ public class TimesView extends TimesBase
 			uperRate = uperHeight / uperHalfHigh / 2.0f;
 		}
 		if (lowerHigh > 0) {
-        lowerRate = lowerHeight / lowerHigh;
+            lowerRate = lowerHeight / lowerHigh;
         //Timber.d("lyl lowerRate="+lowerRate+" lowerHeight="+lowerHeight+" lowerHigh="+lowerHigh);
 		}
 
@@ -228,16 +228,16 @@ public class TimesView extends TimesBase
             }
 
 			// 绘制上部表中曲线
-            paint.setStrokeWidth(2);
+        paint.setStrokeWidth(2);
 			float endWhiteY = (float) (uperBottom - (fenshiData.avgPrice
 					+ uperHalfHigh - initialWeightedIndex)
 					* uperRate);
 			float endYelloY = (float) (uperBottom - (fenshiData.price + uperHalfHigh - initialWeightedIndex)
 					* uperRate);
 			if (i != 0) {
-				paint.setColor(COLOR_BLUE);
-				canvas.drawLine(x, uperWhiteY, 3 + mLeftMargin + dataSpacing * i, endWhiteY, paint);
 				paint.setColor(COLOR_YEllOW);
+				canvas.drawLine(x, uperWhiteY, 3 + mLeftMargin + dataSpacing * i, endWhiteY, paint);
+				paint.setColor(COLOR_BLUE);
 				canvas.drawLine(x, uperYellowY, 3 + mLeftMargin + dataSpacing * i, endYelloY, paint);
 			}
 
@@ -246,9 +246,8 @@ public class TimesView extends TimesBase
 			uperYellowY = endYelloY;
 
 			// 绘制下部表内数据线
-			if (fenshiData.volume == null
-					|| timesList.get(i - 1).volume == null) {
-				return;
+			if (fenshiData.volume == null || (i != 0 && timesList.get(i - 1).volume == null)) {
+				continue;
 			}
 			Long buy = i == 0 ? fenshiData.volume : fenshiData.volume - timesList.get(i-1).volume;
             paint.setStrokeWidth(3);
@@ -295,53 +294,57 @@ public class TimesView extends TimesBase
 			return;
 		}
 		this.timesList = timesList;
+        Timber.d("lyl size="+this.timesList.size());
 
         QuoteTick fenshiData = timesList.get(0);
-
-        if (fenshiData.price == null || fenshiData.avgPrice == null || fenshiData.volume == null)
-        {
-            return;
-        }
 		Double price = fenshiData.price;
         Double avgPrice = fenshiData.avgPrice;
 		Long volume = fenshiData.volume;
-		initialWeightedIndex = price;
-		lowerHigh = volume;
+        if (price != null) {
+    		initialWeightedIndex = price;
+        }
+        if (volume != null) {
+    		lowerHigh = volume;
+        }
 		for (int i = 0; i < timesList.size(); i++) {
-            Timber.d("lyl i="+i+" "+timesList.get(i).toString());
-            if (i != timesList.size() - 1)
-            {
-                Timber.d("lyl i="+(i+1)+" "+timesList.get(i+1).toString());
-            }
-			fenshiData = timesList.get(i);
-            if (fenshiData.price == null || fenshiData.avgPrice == null || fenshiData.volume == null)
-            {
-                Timber.d("lyl null");
+			fenshiData = this.timesList.get(i);
+            if (fenshiData.price == null || fenshiData.avgPrice == null || fenshiData.volume == null) {
+                Timber.d("lyl null i="+i);
                 //fix null point
                 if (i == 0 || i == timesList.size() - 1 || timesList.get(i+1).price == null || timesList.get(i+1).avgPrice == null || timesList.get(i+1).volume == null) {
                     continue;
-                } else {
+                } else if (timesList.get(i-1).price != null && timesList.get(i+1).price != null) {
                     this.timesList.get(i).price = (timesList.get(i-1).price + timesList.get(i+1).price) / 2;
                     this.timesList.get(i).avgPrice = (timesList.get(i-1).avgPrice + timesList.get(i+1).avgPrice) / 2;
                     this.timesList.get(i).volume = (timesList.get(i-1).volume + timesList.get(i+1).volume) / 2;
                 }
             }
 
+            if (initialWeightedIndex == 0 && fenshiData.price != null) {
+                initialWeightedIndex = fenshiData.price;
+            }
+            if (lowerHigh == 0 && fenshiData.volume != null) {
+                lowerHigh = fenshiData.volume;
+            }
 			price = fenshiData.price;
 			avgPrice = fenshiData.avgPrice;
             if (i == 0) {
                 volume = fenshiData.volume;
-            } else {
+            } else if (timesList.get(i - 1).volume != null) {
 			    volume = fenshiData.volume - timesList.get(i - 1).volume;
+            } else {
+                volume = fenshiData.volume;
             }
 
+            if (initialWeightedIndex == 0 || volume == null) {
+                continue;
+            }
 			uperHalfHigh = (float) (uperHalfHigh > Math
 					.abs(avgPrice - initialWeightedIndex) ? uperHalfHigh : Math
 					.abs(avgPrice - initialWeightedIndex));
 			uperHalfHigh = (float) (uperHalfHigh > Math.abs(price - initialWeightedIndex) ? uperHalfHigh
 					: Math.abs(price - initialWeightedIndex));
 			lowerHigh = lowerHigh > volume ? lowerHigh : volume;
-            Timber.d("lyl lowerHigh="+lowerHigh);
 		}
 		postInvalidate();
 
