@@ -42,7 +42,6 @@
       <intent-filter android:priority="-999">
         <action android:name="com.urbanairship.push.OPENED" />
         <category android:name="${applicationId}" />
-        <category android:name="com.tradehero.th" />
       </intent-filter>
     </receiver>
 
@@ -101,7 +100,6 @@
 
         <!-- MODIFICATION REQUIRED - Use your package name as the category -->
         <category android:name="${applicationId}" />
-        <category android:name="com.tradehero.th" />
       </intent-filter>
     </receiver>
 

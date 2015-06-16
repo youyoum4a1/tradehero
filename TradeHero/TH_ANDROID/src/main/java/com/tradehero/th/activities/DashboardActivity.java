@@ -532,7 +532,7 @@ public class DashboardActivity extends BaseActivity
     @Override protected void onStop()
     {
         detachNotificationFetchTask();
-
+        drawerLayout.closeDrawers();
         super.onStop();
     }
 
@@ -614,6 +614,7 @@ public class DashboardActivity extends BaseActivity
         {
             thRouter.open(data, null, this);
             intent.setData(null);
+            drawerLayout.closeDrawers();
             return true;
         }
         return false;

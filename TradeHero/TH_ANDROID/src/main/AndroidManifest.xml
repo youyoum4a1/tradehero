@@ -40,7 +40,7 @@
             android:name=".activities.SplashActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/TradeHero.Splash" >
+            android:theme="@style/TradeHero.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -65,7 +65,8 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/TradeHero.Dashboard">
+            android:theme="@style/TradeHero.Dashboard"
+            android:launchMode="singleTask">
         </activity>
         <activity
             android:name="com.facebook.LoginActivity"

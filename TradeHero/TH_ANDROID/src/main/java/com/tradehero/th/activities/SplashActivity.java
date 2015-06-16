@@ -1,5 +1,6 @@
 package com.tradehero.th.activities;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -137,6 +138,12 @@ public class SplashActivity extends BaseActivity
             userProfileSubscription.unsubscribe();
         }
         super.onPause();
+    }
+
+    @Override protected void onNewIntent(Intent intent)
+    {
+        super.onNewIntent(intent);
+        deepLink = intent.getData();
     }
 
     @Override protected boolean requireLogin()
