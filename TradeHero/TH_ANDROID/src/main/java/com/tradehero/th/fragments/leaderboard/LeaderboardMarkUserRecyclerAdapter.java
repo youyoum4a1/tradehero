@@ -39,7 +39,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
 
     @LayoutRes protected final int ownRankingRes;
     protected final Context context;
-    private final int itemLayoutRes;
+    protected final int itemLayoutRes;
     @NonNull protected final LeaderboardKey leaderboardKey;
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
 

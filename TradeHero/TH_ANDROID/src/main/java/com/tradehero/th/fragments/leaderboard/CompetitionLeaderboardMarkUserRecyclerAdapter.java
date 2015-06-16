@@ -10,9 +10,9 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 
-public class CompetitionLeaderboardMarkUserAdapter extends LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO>
+public class CompetitionLeaderboardMarkUserRecyclerAdapter extends LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO>
 {
-    public CompetitionLeaderboardMarkUserAdapter(Context context, @LayoutRes int itemLayoutRes, @LayoutRes int ownRankingRes,
+    public CompetitionLeaderboardMarkUserRecyclerAdapter(Context context, @LayoutRes int itemLayoutRes, @LayoutRes int ownRankingRes,
             @NonNull LeaderboardKey leaderboardKey)
     {
         super(LeaderboardItemDisplayDTO.class, context, itemLayoutRes, ownRankingRes, leaderboardKey);
@@ -28,7 +28,7 @@ public class CompetitionLeaderboardMarkUserAdapter extends LeaderboardMarkUserRe
     @NonNull @Override
     protected LbmuItemViewHolder<LeaderboardItemDisplayDTO> createLbmuItemViewholder(ViewGroup parent)
     {
-        return new CompetitionLbmuItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(ownRankingRes, parent, false), picasso, analytics);
+        return new CompetitionLbmuItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(itemLayoutRes, parent, false), picasso, analytics);
     }
 
     public static class CompetitionLbmuItemViewHolder extends LbmuItemViewHolder<LeaderboardItemDisplayDTO>

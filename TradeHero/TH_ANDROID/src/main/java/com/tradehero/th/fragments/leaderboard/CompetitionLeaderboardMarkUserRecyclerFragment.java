@@ -149,7 +149,8 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
 
     @NonNull @Override protected LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO> createItemViewAdapter()
     {
-        return new CompetitionLeaderboardMarkUserAdapter(getActivity(), R.layout.lbmu_item_roi_mode, R.layout.lbmu_item_own_ranking_competition_mode,
+        return new CompetitionLeaderboardMarkUserRecyclerAdapter(getActivity(), R.layout.lbmu_item_roi_mode,
+                R.layout.lbmu_item_own_ranking_competition_mode,
                 new LeaderboardKey(leaderboardDefKey.key));
     }
 
@@ -261,7 +262,7 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
             CompetitionLeaderboardMarkUserItemView.Requisite thisRequisite = (CompetitionLeaderboardMarkUserItemView.Requisite) requisite;
             if (requisite.currentLeaderboardUserDTO == null)
             {
-                //TODO
+                //TODO clicked event
                 return new CompetitionLeaderboardItemDisplayDto(getResources(), currentUserId,
                         requisite.currentUserProfileDTO, thisRequisite.providerDTO);
             }
