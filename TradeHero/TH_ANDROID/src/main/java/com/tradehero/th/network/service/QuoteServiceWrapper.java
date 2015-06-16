@@ -1,19 +1,21 @@
 package com.tradehero.th.network.service;
 
 import android.os.Handler;
-import android.util.Log;
 
 import com.tradehero.chinabuild.data.KLineItem;
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.QuoteTick;
+import com.tradehero.chinabuild.data.SecurityUserOptDTO;
 import com.tradehero.chinabuild.data.SecurityUserPositionDTO;
 import com.tradehero.chinabuild.data.SignedQuote;
-import com.tradehero.chinabuild.data.SecurityUserOptDTO;
+import com.tradehero.common.utils.IOUtils;
 import com.tradehero.th.api.market.Exchange;
+import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.UrlEncoderHelper;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.utils.DaggerUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +27,9 @@ import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.converter.Converter;
+import retrofit.mime.TypedByteArray;
+import timber.log.Timber;
 
 @Singleton
 public class QuoteServiceWrapper {
@@ -123,12 +128,12 @@ public class QuoteServiceWrapper {
         getQuoteTicks(securityId, DEFAULT_REFRESH_QUOTE_TICKS_DELAY, callback);
     }
 
-    public void getRepeatingQuote(final SecurityId securityId, final Callback<SignedQuote> callback) {
+    public void getRepeatingQuote(final SecurityId securityId, final Callback<QuoteDTO> callback) {
         int delay = DEFAULT_REFRESH_QUOTE_DELAY;
         if (!isChinaStock(securityId)) {
             delay = DEFAULT_REFRESH_SECURITY_DELAY;
         }
-        final RepeatingTaskCallBack<SignedQuote> myCallback = new RepeatingTaskCallBack<>(callback, handler, delay);
+        final QuoteDTORepeatingTaskCallBack myCallback = new QuoteDTORepeatingTaskCallBack(callback, handler, delay);
         if (quoteTask != null) {
             handler.removeCallbacks(quoteTask);
         }
@@ -161,12 +166,13 @@ public class QuoteServiceWrapper {
 
     }
 
-    public void getQuote(final SecurityId securityId, final Callback<SignedQuote> callback) {
+    public void getQuote(final SecurityId securityId, final Callback<QuoteDTO> callback) {
+        QuoteDTOCallBack myCallback = new QuoteDTOCallBack(callback);
         if (isChinaStock(securityId)) {
-            quoteService.getQuote(securityId.getExchange(), securityId.getSecuritySymbol(), callback);
+            quoteService.getQuote(securityId.getExchange(), securityId.getSecuritySymbol(), myCallback);
         } else {
             quoteService.getQuoteLegacy(securityId.getExchange(),
-                    securityId.getSecuritySymbol(), callback);
+                    securityId.getSecuritySymbol(), myCallback);
         }
     }
 
@@ -210,28 +216,28 @@ public class QuoteServiceWrapper {
     public void stopSecurityCompactTask() {
         if (securityCompactTask != null) {
             handler.removeCallbacks(securityCompactTask);
-            Log.e("test", "Stop SecurityCompactTask................");
+            Timber.e("Stop SecurityCompactTask................");
         }
     }
 
     public void stopQuoteDetailTask() {
         if (quoteDetailTask != null) {
             handler.removeCallbacks(quoteDetailTask);
-            Log.e("test", "Stop quoteDetailTask................");
+            Timber.e("Stop quoteDetailTask................");
         }
     }
 
     public void stopQuoteTicksTask() {
         if (quoteTicksTask != null) {
             handler.removeCallbacks(quoteTicksTask);
-            Log.e("test", "Stop quoteTicksTask................");
+            Timber.e("Stop quoteTicksTask................");
         }
     }
 
     public void stopQuoteTask() {
         if (quoteTask != null) {
             handler.removeCallbacks(quoteTask);
-            Log.e("test", "Stop quoteTask................");
+            Timber.e("Stop quoteTask................");
         }
     }
 
@@ -264,11 +270,93 @@ public class QuoteServiceWrapper {
         @Override
         public void failure(RetrofitError error) {
             if (failureCount < MAX_API_RETRIES) {
-                Log.e("test", "failureCount: " + failureCount);
+                Timber.e("failureCount: " + failureCount);
                 handler.postDelayed(task, delay);
                 failureCount++;
             }
 
+            if (callback != null) {
+                callback.failure(error);
+            }
+        }
+    }
+
+    public static class QuoteDTORepeatingTaskCallBack implements Callback<Response> {
+        @Inject Converter converter;
+
+        private Runnable task;
+        private Callback<QuoteDTO> callback;
+        private Handler handler;
+        private int delay;
+        private int failureCount;
+
+        public QuoteDTORepeatingTaskCallBack(Callback<QuoteDTO> callback, Handler handler, int delay) {
+            this.callback = callback;
+            this.handler = handler;
+            this.delay = delay;
+            DaggerUtils.inject(this);
+        }
+
+        public void setTask(Runnable task) {
+            this.task = task;
+        }
+
+        @Override
+        public void success(Response rawResponse, Response response) {
+            try {
+                byte[] bytes = IOUtils.streamToBytes(rawResponse.getBody().in());
+                SignedQuote signedQuote = (SignedQuote) converter.fromBody(new TypedByteArray(rawResponse.getBody().mimeType(), bytes), SignedQuote.class);
+                QuoteDTO quoteDTO = signedQuote.signedObject;
+                quoteDTO.rawResponse = new String(bytes);
+                if (callback != null) {
+                    callback.success(quoteDTO, response);
+                }
+            } catch (Exception e) {
+                Timber.e(e, "Error in parsing retrofit response.");
+            }
+
+            handler.postDelayed(task, delay);
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            if (failureCount < MAX_API_RETRIES) {
+                Timber.e("failureCount: " + failureCount);
+                handler.postDelayed(task, delay);
+                failureCount++;
+            }
+
+            if (callback != null) {
+                callback.failure(error);
+            }
+        }
+    }
+
+    public static class QuoteDTOCallBack implements Callback<Response> {
+        @Inject Converter converter;
+        private Callback<QuoteDTO> callback;
+        public QuoteDTOCallBack(Callback<QuoteDTO> callback) {
+            this.callback = callback;
+            DaggerUtils.inject(this);
+        }
+
+        @Override
+        public void success(Response rawResponse, Response response) {
+            try {
+                byte[] bytes = IOUtils.streamToBytes(rawResponse.getBody().in());
+                SignedQuote signedQuote = (SignedQuote) converter.fromBody(new TypedByteArray(rawResponse.getBody().mimeType(), bytes), SignedQuote.class);
+                QuoteDTO quoteDTO = signedQuote.signedObject;
+                quoteDTO.rawResponse = new String(bytes);
+                if (callback != null) {
+                    callback.success(quoteDTO, response);
+                }
+            } catch (Exception e) {
+                Timber.e(e, "Error in parsing retrofit response.");
+            }
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
             if (callback != null) {
                 callback.failure(error);
             }

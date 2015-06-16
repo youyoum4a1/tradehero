@@ -39,6 +39,7 @@ import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /**
  * Created by palmer on 15/6/9.
@@ -120,7 +121,7 @@ public class SecurityUserOptFragment extends DashboardFragment{
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (adapter != null) {
                     int index = --i;
-                    if(i < 0){
+                    if (i < 0) {
                         i = 0;
                     }
                     SecurityUserOptDTO securityUserOptDTO = adapter.getItem(index);
@@ -155,6 +156,7 @@ public class SecurityUserOptFragment extends DashboardFragment{
 
             @Override
             public void failure(RetrofitError error) {
+                Timber.e(error, "Failed to get user operations.");
                 optsLV.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
                 onFinish();
             }

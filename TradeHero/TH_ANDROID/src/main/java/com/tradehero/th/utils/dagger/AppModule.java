@@ -122,6 +122,7 @@ import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.models.user.SimplePremiumFollowUserAssistant;
 import com.tradehero.th.network.NetworkModule;
+import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
 import com.tradehero.th.persistence.timeline.TimelineManager;
@@ -167,6 +168,8 @@ import dagger.Provides;
                         MacquarieSecurityListPagedLoader.class,
                         FreshQuoteHolder.class,
                         MarkdownTextView.class,
+                        QuoteServiceWrapper.QuoteDTORepeatingTaskCallBack.class,
+                        QuoteServiceWrapper.QuoteDTOCallBack.class,
 
                         DisplayablePortfolioFetchAssistant.class,
 

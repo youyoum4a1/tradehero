@@ -34,6 +34,7 @@ import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /**
  * Created by palmer on 15/6/10.
@@ -248,7 +249,7 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
 
             @Override
             public void failure(RetrofitError error) {
-
+                Timber.e(error, "Failed to get user operations.");
             }
         };
         quoteServiceWrapper.getTradeRecords(securityId, 1, 5, callback);

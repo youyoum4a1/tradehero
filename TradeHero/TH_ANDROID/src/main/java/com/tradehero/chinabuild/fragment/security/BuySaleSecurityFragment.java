@@ -166,7 +166,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
     @Inject Analytics analytics;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
-    private Callback<SignedQuote> quoteCallback;
+    private Callback<QuoteDTO> quoteCallback;
 
     private Double preClose;
 
@@ -1189,20 +1189,14 @@ public class BuySaleSecurityFragment extends DashboardFragment
         }
 
         if (quoteCallback == null) {
-            quoteCallback = new Callback<SignedQuote>() {
+            quoteCallback = new Callback<QuoteDTO>() {
                 @Override
-                public void success(SignedQuote signedQuote, Response response) {
-                    if (signedQuote == null) {
+                public void success(QuoteDTO dto, Response response) {
+                    if (dto == null) {
                         return;
                     }
-                    Log.e("test", "Refresh - " + signedQuote);
-                    QuoteDTO quoteDTO = signedQuote.signedObject;
-                    try {
-                        quoteDTO.rawResponse = new String(IOUtils.streamToBytes(response.getBody().in()));
-                    } catch (IOException e) {
-                        Timber.e(e, "Get raw response");
-                    }
-                    updateQuoteInfo(quoteDTO);
+                    Log.e("test", "Refresh - " + dto);
+                    updateQuoteInfo(dto);
                 }
 
                 @Override
