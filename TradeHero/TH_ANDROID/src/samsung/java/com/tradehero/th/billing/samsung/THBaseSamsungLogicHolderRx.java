@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.samsung;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
@@ -68,7 +69,7 @@ public class THBaseSamsungLogicHolderRx
         return resources.getString(R.string.th_samsung_logic_holder_name);
     }
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
         // Nothing to do
     }

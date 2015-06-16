@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.samsung.tester;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -23,7 +24,7 @@ abstract public class BaseSamsungBillingAvailableTesterHolderRx
 
     @NonNull @Override abstract protected SamsungBillingAvailableTesterRx createTester(int requestCode);
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
         // Nothing to do
     }
