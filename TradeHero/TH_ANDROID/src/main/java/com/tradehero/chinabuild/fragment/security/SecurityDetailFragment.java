@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,7 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
+
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -105,14 +104,19 @@ import com.tradehero.th.widget.ScrollViewListener;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.tradehero.th.wxapi.WXEntryActivity;
 import com.viewpagerindicator.SquarePageIndicator;
-import dagger.Lazy;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import butterknife.ButterKnife;
+import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -231,7 +235,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private TextView tvTotalAmount; //成交额
 
     private Callback<QuoteDetail> quoteDetailCallback;
-    private Callback<SignedQuote> quoteCallback;
+    private Callback<QuoteDTO> quoteCallback;
     private Callback<List<QuoteTick>> timeListCallback;
     private int quoteErrors;
 
@@ -1144,7 +1148,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 if (securityDTO == null) {
                     return;
                 }
-                Log.e("test", "Refresh - " + securityCompactDTO);
+                Timber.e("Refresh - " + securityCompactDTO);
                 securityCompactDTO = securityDTO;
                 updateSecurityInfoByCompactDTO();
                 if (quoteDTO != null) {
@@ -1157,7 +1161,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
             @Override
             public void failure(RetrofitError error) {
-
+                Timber.e(error, "Failed to refreshROWQuoteInfo.");
             }
         };
 
@@ -1232,18 +1236,13 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private void getQuote(final SecurityId securityId) {
         quoteErrors = 0;
         if (quoteCallback == null) {
-            quoteCallback = new Callback<SignedQuote>() {
+            quoteCallback = new Callback<QuoteDTO>() {
                 @Override
-                public void success(SignedQuote signedQuote, Response response) {
-                    if (signedQuote == null) {
+                public void success(QuoteDTO dto, Response response) {
+                    if (dto == null) {
                         return;
                     }
-                    quoteDTO = signedQuote.signedObject;
-                    try {
-                        quoteDTO.rawResponse = new String(IOUtils.streamToBytes(response.getBody().in()));
-                    } catch (IOException e) {
-                        Timber.e(e, "Get raw response");
-                    }
+                    quoteDTO = dto;
                 }
 
                 @Override
@@ -1313,7 +1312,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
                 @Override public void failure(RetrofitError error)
                 {
-
+                    Timber.e(error, "Error to get getQuoteTicks.");
                 }
             };
         }

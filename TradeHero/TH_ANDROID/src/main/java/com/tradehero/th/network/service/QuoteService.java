@@ -47,7 +47,7 @@ interface QuoteService
     @GET("/cn/v2/quotes/{exchange}/{securitySymbol}")
     void getQuote(@Path("exchange") String exchange,
                   @Path("securitySymbol") String securitySymbol,
-                  Callback<SignedQuote> callback);
+                  Callback<Response> callback);
 
     /**
      * Get quote ticks
@@ -76,7 +76,7 @@ interface QuoteService
     void getQuoteLegacy(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
-            Callback<SignedQuote> callback);
+            Callback<Response> callback);
 
     @GET("/securities/compact")
     void getSecurityCompactDTO(@Query("exch") String exchange,

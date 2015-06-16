@@ -37,6 +37,7 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /**
  * Created by palmer on 15/6/9.
@@ -159,6 +160,7 @@ public class SecurityUserPositionFragment extends DashboardFragment {
 
             @Override
             public void failure(RetrofitError error) {
+                Timber.e(error, "Failed to get user positions.");
                 positionsLV.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
                 onFinish();
             }

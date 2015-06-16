@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /**
  * Created by palmer on 15/6/10.
@@ -196,7 +197,7 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
 
             @Override
             public void failure(RetrofitError error) {
-
+                Timber.e(error, "Failed to get user positions.");
             }
         };
         quoteServiceWrapper.getSharePosition(securityId, 1, 5, callback);
