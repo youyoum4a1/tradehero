@@ -123,7 +123,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
     {
         super.onStart();
         fragmentUtil.onStart();
-        onStopSubscriptions.add(((LeaderboardMarkUserRecyclerAdapter) itemViewAdapter).getUserActionObservable()
+        onStopSubscriptions.add(((LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO>) itemViewAdapter).getUserActionObservable()
                 .subscribe(
                         fragmentUtil,
                         new TimberOnErrorAction("Error when receiving user follow requested")));
@@ -195,12 +195,13 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         super.onDestroy();
     }
 
-    @NonNull protected LeaderboardMarkUserRecyclerAdapter createItemViewAdapter()
+    @NonNull protected LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO> createItemViewAdapter()
     {
-        LeaderboardMarkUserRecyclerAdapter adapter = new LeaderboardMarkUserRecyclerAdapter(
+        LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO> adapter = new LeaderboardMarkUserRecyclerAdapter<>(
+                LeaderboardItemDisplayDTO.class,
                 getActivity(),
                 R.layout.lbmu_item_roi_mode,
-                getCurrentRankLayoutResId(),
+                R.layout.lbmu_item_own_ranking_roi_mode,
                 new LeaderboardKey(leaderboardDefKey.key));
         adapter.setApplicablePortfolioId(getApplicablePortfolioId());
         return adapter;
@@ -317,11 +318,6 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
                 .subscribeOn(Schedulers.computation());
     }
 
-    @LayoutRes protected int getCurrentRankLayoutResId()
-    {
-        return R.layout.lbmu_item_own_ranking_roi_mode;
-    }
-
     protected void updateCurrentRankView(@Nullable LeaderboardMarkedUserItemDisplayDto.Requisite requisite)
     {
         LeaderboardMarkedUserItemDisplayDto ownRankingDto;
@@ -333,19 +329,30 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         else if (requisite.currentLeaderboardUserDTO == null)
         {
             //Not Ranked
-            ownRankingDto = new LeaderboardMarkedUserItemDisplayDto(getResources(), currentUserId,
-                    requisite.currentUserProfileDTO);
+            ownRankingDto = createNotRankedOwnRankingDTO(requisite);
         }
         else
         {
-            ownRankingDto = new LeaderboardMarkedUserItemDisplayDto(
-                    getResources(),
-                    currentUserId,
-                    requisite.currentLeaderboardUserDTO,
-                    requisite.currentUserProfileDTO);
-            ownRankingDto.setIsMyOwnRanking(true);
+            ownRankingDto = createRankedOwnRankingDTO(requisite);
         }
         itemViewAdapter.add(ownRankingDto);
+    }
+
+    protected LeaderboardMarkedUserItemDisplayDto createNotRankedOwnRankingDTO(LeaderboardMarkedUserItemDisplayDto.Requisite requisite)
+    {
+        return new LeaderboardMarkedUserItemDisplayDto(getResources(), currentUserId,
+                requisite.currentUserProfileDTO);
+    }
+
+    protected LeaderboardMarkedUserItemDisplayDto createRankedOwnRankingDTO(LeaderboardMarkedUserItemDisplayDto.Requisite requisite)
+    {
+        LeaderboardMarkedUserItemDisplayDto dto = new LeaderboardMarkedUserItemDisplayDto(
+                getResources(),
+                currentUserId,
+                requisite.currentLeaderboardUserDTO,
+                requisite.currentUserProfileDTO);
+        dto.setIsMyOwnRanking(true);
+        return dto;
     }
 
     @Override protected void updateListViewRow(@NonNull final UserProfileDTO currentUserProfile, @NonNull final UserBaseKey heroId)

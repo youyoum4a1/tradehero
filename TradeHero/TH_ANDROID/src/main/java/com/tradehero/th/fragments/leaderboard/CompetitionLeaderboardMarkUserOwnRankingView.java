@@ -45,12 +45,12 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
     }
     //</editor-fold>
 
-    public void display(@NonNull CompetitionLeaderboardMarkUserItemView.CompetitionLeaderboardItemDisplayDto parentViewDTO)
+    public void display(@NonNull CompetitionLeaderboardItemDisplayDto parentViewDTO)
     {
         super.display(parentViewDTO);
-        if (parentViewDTO instanceof CompetitionLeaderboardItemDisplayDto)
+        if (parentViewDTO instanceof CompetitionLeaderboardOwnRankingItemDisplayDto)
         {
-            CompetitionLeaderboardItemDisplayDto viewDTO = (CompetitionLeaderboardItemDisplayDto) parentViewDTO;
+            CompetitionLeaderboardOwnRankingItemDisplayDto viewDTO = (CompetitionLeaderboardOwnRankingItemDisplayDto) parentViewDTO;
 
             if (infoButtonContainer != null)
             {
@@ -115,19 +115,19 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         }
     }
 
-    public static class CompetitionLeaderboardItemDisplayDto extends CompetitionLeaderboardMarkUserItemView.CompetitionLeaderboardItemDisplayDto
+    public static class CompetitionLeaderboardOwnRankingItemDisplayDto extends CompetitionLeaderboardItemDisplayDto
     {
         @ViewVisibilityValue final int infoButtonContainerVisibility;
         @NonNull final Spanned infoText;
 
-        public CompetitionLeaderboardItemDisplayDto(@NonNull Resources resources,
+        public CompetitionLeaderboardOwnRankingItemDisplayDto(@NonNull Resources resources,
                 @NonNull CurrentUserId currentUserId,
                 @NonNull LeaderboardUserDTO leaderboardItem,
                 @NonNull UserProfileDTO currentUserProfile,
                 int prizeDTOSize,
                 @NonNull ProviderDTO providerDTO)
         {
-            super(resources, currentUserId, leaderboardItem, currentUserProfile, prizeDTOSize, providerDTO);
+            super(resources, currentUserId, leaderboardItem, currentUserProfile, providerDTO);
             int currentRank = leaderboardItem.ordinalPosition + 1;
             this.infoButtonContainerVisibility = prizeDTOSize != 0 && currentRank > prizeDTOSize ? View.VISIBLE : View.GONE;
             int needed = currentRank - prizeDTOSize;

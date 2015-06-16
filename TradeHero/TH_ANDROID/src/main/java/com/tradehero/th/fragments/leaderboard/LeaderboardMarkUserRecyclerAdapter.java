@@ -31,8 +31,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
-        LeaderboardItemDisplayDTO>
+public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplayDTO> extends PagedRecyclerAdapter<
+        T>
 {
     private static final int VIEW_TYPE_MAIN = 0;
     private static final int VIEW_TYPE_OWN = 1;
@@ -50,31 +50,33 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserRecyclerAdapter(
+            Class<T> klass,
             Context context,
             @LayoutRes int itemLayoutRes,
             @LayoutRes int ownRankingRes,
             @NonNull LeaderboardKey leaderboardKey)
     {
-        this(context, new LeaderboardMarkUserItemComparator(), itemLayoutRes, ownRankingRes, leaderboardKey);
+        this(klass, context, new LeaderboardMarkUserItemComparator<T>(), itemLayoutRes, ownRankingRes, leaderboardKey);
     }
 
     public LeaderboardMarkUserRecyclerAdapter(
+            Class<T> klass,
             Context context,
-            @NonNull TypedRecyclerComparator<LeaderboardItemDisplayDTO> itemComparator,
+            @NonNull TypedRecyclerComparator<T> itemComparator,
             @LayoutRes int itemLayoutRes,
             @LayoutRes int ownRankingRes,
             @NonNull LeaderboardKey leaderboardKey)
     {
-        super(LeaderboardItemDisplayDTO.class, itemComparator);
+        super(klass, itemComparator);
         this.context = context;
         this.itemLayoutRes = itemLayoutRes;
         this.leaderboardKey = leaderboardKey;
         this.ownRankingRes = ownRankingRes;
         this.userActionPublishSubject = PublishSubject.create();
-        setOnItemClickedListener(new OnItemClickedListener<LeaderboardItemDisplayDTO>()
+        setOnItemClickedListener(new OnItemClickedListener<T>()
         {
-            @Override public void onItemClicked(int position, TypedViewHolder<LeaderboardItemDisplayDTO> viewHolder,
-                    LeaderboardItemDisplayDTO object)
+            @Override public void onItemClicked(int position, TypedViewHolder<T> viewHolder,
+                    T object)
             {
                 if (viewHolder instanceof LbmuItemViewHolder
                         && object instanceof LeaderboardMarkedUserItemDisplayDto
@@ -130,9 +132,9 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
         return super.getItemCount();
     }
 
-    @Override public LeaderboardItemDisplayDTO getItem(int position)
+    @Override public T getItem(int position)
     {
-        LeaderboardItemDisplayDTO item = super.getItem(position);
+        T item = super.getItem(position);
         if (item instanceof LeaderboardMarkedUserItemDisplayDto)
         {
             LeaderboardMarkedUserItemDisplayDto markedUserDto = (LeaderboardMarkedUserItemDisplayDto) item;
@@ -152,18 +154,18 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
     }
 
     @NonNull @Override
-    public TypedViewHolder<LeaderboardItemDisplayDTO> onCreateTypedViewHolder(ViewGroup parent, int viewType)
+    public TypedViewHolder<T> onCreateTypedViewHolder(ViewGroup parent, int viewType)
     {
-        LbmuItemViewHolder lbmuItemViewHolder;
+        LbmuItemViewHolder<T> lbmuItemViewHolder;
         switch (viewType)
         {
             case VIEW_TYPE_OWN:
                 lbmuItemViewHolder =
-                        new LbmuHeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(ownRankingRes, parent, false), picasso, analytics);
+                        createOwnRankingLbmuViewHolder(parent);
                 break;
             case VIEW_TYPE_MAIN:
                 lbmuItemViewHolder =
-                        new LbmuItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(itemLayoutRes, parent, false), picasso, analytics);
+                        createLbmuItemViewholder(parent);
                 break;
             default:
                 throw new IllegalArgumentException("Unhandled viewType " + viewType);
@@ -172,7 +174,17 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
         return lbmuItemViewHolder;
     }
 
-    @Override public void onBindViewHolder(TypedViewHolder<LeaderboardItemDisplayDTO> holder, int position)
+    @NonNull protected LbmuHeaderViewHolder<T> createOwnRankingLbmuViewHolder(ViewGroup parent)
+    {
+        return new LbmuHeaderViewHolder<>(LayoutInflater.from(parent.getContext()).inflate(ownRankingRes, parent, false), picasso, analytics);
+    }
+
+    @NonNull protected LbmuItemViewHolder<T> createLbmuItemViewholder(ViewGroup parent)
+    {
+        return new LbmuItemViewHolder<>(LayoutInflater.from(parent.getContext()).inflate(itemLayoutRes, parent, false), picasso, analytics);
+    }
+
+    @Override public void onBindViewHolder(TypedViewHolder<T> holder, int position)
     {
         super.onBindViewHolder(holder, position);
         if (position > 0 && holder instanceof LbmuItemViewHolder)
@@ -183,9 +195,9 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
         }
     }
 
-    private static class LeaderboardMarkUserItemComparator extends TypedRecyclerComparator<LeaderboardItemDisplayDTO>
+    private static class LeaderboardMarkUserItemComparator<T extends LeaderboardItemDisplayDTO> extends TypedRecyclerComparator<T>
     {
-        @Override protected int compare(LeaderboardItemDisplayDTO o1, LeaderboardItemDisplayDTO o2)
+        @Override protected int compare(T o1, T o2)
         {
             if (o1 instanceof LeaderboardMarkedUserItemDisplayDto && o2 instanceof LeaderboardMarkedUserItemDisplayDto)
             {
@@ -207,7 +219,7 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
             return super.compare(o1, o2);
         }
 
-        @Override protected boolean areContentsTheSame(LeaderboardItemDisplayDTO oldItem, LeaderboardItemDisplayDTO newItem)
+        @Override protected boolean areContentsTheSame(T oldItem, T newItem)
         {
             if (oldItem instanceof LeaderboardMarkedUserItemDisplayDto && newItem instanceof LeaderboardMarkedUserItemDisplayDto)
             {
@@ -221,7 +233,7 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
             return super.areContentsTheSame(oldItem, newItem);
         }
 
-        @Override protected boolean areItemsTheSame(LeaderboardItemDisplayDTO item1, LeaderboardItemDisplayDTO item2)
+        @Override protected boolean areItemsTheSame(T item1, T item2)
         {
             if (item1 instanceof LeaderboardMarkedUserItemDisplayDto && item2 instanceof LeaderboardMarkedUserItemDisplayDto)
             {
@@ -241,7 +253,7 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
         }
     }
 
-    public static class LbmuHeaderViewHolder extends LbmuItemViewHolder
+    public static class LbmuHeaderViewHolder<T extends LeaderboardItemDisplayDTO> extends LbmuItemViewHolder<T>
     {
         @InjectView(R.id.mark_expand_down) @Optional @Nullable ImageView expandMark;
 
@@ -250,7 +262,7 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
             super(itemView, picasso, analytics);
         }
 
-        @Override public void display(LeaderboardItemDisplayDTO dto)
+        @Override public void display(T dto)
         {
             super.display(dto);
             if (expandMark != null && this.currentDto != null)
@@ -267,7 +279,7 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
         }
     }
 
-    public static class LbmuItemViewHolder extends TypedViewHolder<LeaderboardItemDisplayDTO>
+    public static class LbmuItemViewHolder<T extends LeaderboardItemDisplayDTO> extends TypedViewHolder<T>
     {
         private final Analytics analytics;
         private final Picasso picasso;
@@ -293,7 +305,7 @@ public class LeaderboardMarkUserRecyclerAdapter extends PagedRecyclerAdapter<
             this.analytics = analytics;
         }
 
-        @Override public void display(LeaderboardItemDisplayDTO dto)
+        @Override public void display(T dto)
         {
             if (dto instanceof LeaderboardMarkedUserItemDisplayDto)
             {

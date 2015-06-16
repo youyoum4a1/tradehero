@@ -91,9 +91,13 @@ abstract public class BasePagedRecyclerRxFragment<
         ButterKnife.inject(this, view);
         nearEndScrollListener = createFlagNearEdgeScrollListener();
         recyclerView.addOnScrollListener(createRecyclerViewScrollListener());
-        //recyclerView.setEmptyView(emptyContainer);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(itemViewAdapter);
+        recyclerView.setAdapter(onImplementAdapter(itemViewAdapter));
+    }
+
+    protected RecyclerView.Adapter onImplementAdapter(RecyclerView.Adapter adapter)
+    {
+        return adapter;
     }
 
     @NonNull protected RecyclerView.OnScrollListener createRecyclerViewScrollListener()

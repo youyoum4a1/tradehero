@@ -21,7 +21,7 @@ import com.tradehero.th.utils.GraphicUtil;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecyclerAdapter
+public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO>
 {
     public static final int VIEW_TYPE_SOCIAL = 2;
     public static final int VIEW_TYPE_CALL_TO_ACTION = 3;
@@ -34,7 +34,8 @@ public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecycl
     public FriendsLeaderboardRecyclerAdapter(Context context, int lbmu_item_roi_mode,
             int leaderboard_friends_social_item_view, int leaderboard_friends_call_action, LeaderboardKey leaderboardKey)
     {
-        super(context, new FriendLeaderboardItemComparator(), lbmu_item_roi_mode, lbmu_item_roi_mode, leaderboardKey);
+        super(LeaderboardItemDisplayDTO.class, context, new FriendLeaderboardItemComparator(), lbmu_item_roi_mode, lbmu_item_roi_mode,
+                leaderboardKey);
         this.leaderboard_friends_social_item_view = leaderboard_friends_social_item_view;
         this.leaderboard_friends_call_action = leaderboard_friends_call_action;
         this.inviteRequestedSubject = PublishSubject.create();
@@ -137,7 +138,7 @@ public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecycl
         }
     }
 
-    private static class CallToActionViewHolder extends TypedViewHolder<LeaderboardItemDisplayDTO>
+    public static class CallToActionViewHolder extends TypedViewHolder<LeaderboardItemDisplayDTO>
     {
         private final PublishSubject<SocialNetworkEnum> socialNetworkEnumPublishSubject;
 

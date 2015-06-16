@@ -109,105 +109,7 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
         //}
     }
 
-    public static class CompetitionLeaderboardItemDisplayDto extends LeaderboardMarkedUserItemDisplayDto
-    {
-        final int prizeDTOSize;
-        @NonNull final ProviderDTO providerDTO;
-        @ViewVisibilityValue final int prizeIndicatorVisibility;
-        @NonNull final Spanned lbmuPl;
-        @NonNull final Spanned lbmuCommentsCount;
-        @NonNull final Spanned lbmuBenchmarkRoi;
-        @NonNull final String lbmuPositionsCount;
-        @NonNull final Spanned lbmuAvgDaysHeld;
-        @NonNull final Spanned lbmuFollowersCount;
-        @NonNull final Spanned lbmuWinRatio;
-        @NonNull final Spanned lbmuNumberOfTrades;
-        @NonNull final String lbmuPeriod;
-        @NonNull final Spanned lbmuNumberTradesInPeriod;
-
-        public CompetitionLeaderboardItemDisplayDto(@NonNull Resources resources,
-                @NonNull CurrentUserId currentUserId,
-                @NonNull LeaderboardUserDTO leaderboardItem,
-                @NonNull UserProfileDTO currentUserProfile,
-                int prizeDTOSize,
-                @NonNull ProviderDTO providerDTO)
-        {
-            super(resources, currentUserId, leaderboardItem, currentUserProfile);
-            this.prizeDTOSize = prizeDTOSize;
-            this.providerDTO = providerDTO;
-            int currentRank = leaderboardItem.ordinalPosition + 1;
-            if (prizeDTOSize != 0 && currentRank <= prizeDTOSize)
-            {
-                prizeIndicatorVisibility = View.VISIBLE;
-            }
-            else
-            {
-                prizeIndicatorVisibility = View.GONE;
-            }
-            String currencyDisplay;
-            if (leaderboardItem.hasValidCurrencyDisplay())
-            {
-                currencyDisplay = leaderboardItem.getNiceCurrency();
-            }
-            else if (providerDTO.hasValidCurrencyDisplay())
-            {
-                currencyDisplay = providerDTO.getNiceCurrency();
-            }
-            else
-            {
-                currencyDisplay = leaderboardItem.getNiceCurrency();
-            }
-            this.lbmuPl = THSignedMoney
-                .builder(leaderboardItem.PLinPeriodRefCcy)
-                .withOutSign()
-                .currency(currencyDisplay)
-                .build().createSpanned();
-            this.lbmuCommentsCount = THSignedNumber
-                    .builder(leaderboardItem.getCommentsCount())
-                    .build().createSpanned();
-            String benchmarkRoiInPeriodFormat =
-                    resources.getString(R.string.leaderboard_benchmark_roi_format);
-            this.lbmuBenchmarkRoi = THSignedPercentage
-                    .builder(leaderboardItem.getBenchmarkRoiInPeriod() * 100)
-                    .withSign()
-                    .signTypeArrow()
-                    .relevantDigitCount(3)
-                    .format(benchmarkRoiInPeriodFormat)
-                    .boldValue()
-                    .build().createSpanned();
-            this.lbmuPositionsCount = "" + leaderboardItem.numberOfPositionsInPeriod;
-            this.lbmuAvgDaysHeld = THSignedNumber
-                    .builder(leaderboardItem.avgHoldingPeriodMins / (60 * 24))
-                    .relevantDigitCount(3)
-                    .build().createSpanned();
-            this.lbmuFollowersCount = THSignedNumber
-                    .builder(leaderboardItem.getTotalFollowersCount())
-                    .build().createSpanned();
-            this.lbmuWinRatio = THSignedPercentage
-                    .builder(leaderboardItem.getWinRatio() * 100)
-                    .relevantDigitCount(3)
-                    .build().createSpanned();
-            String numberOfTradeFormat =
-                    resources.getQuantityString(R.plurals.leaderboard_number_of_trade, leaderboardItem.getNumberOfTrades());
-            this.lbmuNumberOfTrades = THSignedNumber.builder(leaderboardItem.getNumberOfTrades())
-                    .relevantDigitCount(1)
-                    .withOutSign()
-                    .format(numberOfTradeFormat)
-                    .boldValue()
-                    .build().createSpanned();
-            String periodFormat = resources.getString(R.string.leaderboard_ranking_period);
-            SimpleDateFormat sdf =
-                    new SimpleDateFormat(resources.getString(R.string.leaderboard_datetime_format));
-            String formattedStartPeriodUtc = sdf.format(leaderboardItem.periodStartUtc);
-            String formattedEndPeriodUtc = sdf.format(leaderboardItem.periodEndUtc);
-            this.lbmuPeriod = String.format(periodFormat, formattedStartPeriodUtc, formattedEndPeriodUtc);
-            this.lbmuNumberTradesInPeriod = THSignedNumber
-                    .builder(leaderboardItem.numberOfTradesInPeriod)
-                    .build().createSpanned();
-        }
-    }
-
-    public static class DTOList extends LeaderboardItemDisplayDTO.DTOList
+    public static class DTOList extends LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>
     {
         @NonNull final CompetitionLeaderboardDTO competitionLeaderboardDTO;
 
@@ -219,11 +121,10 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
         {
             super(competitionLeaderboardDTO.leaderboard);
             this.competitionLeaderboardDTO = competitionLeaderboardDTO;
-            int prizeDTOSize = competitionLeaderboardDTO.prizes == null? 0 : competitionLeaderboardDTO.prizes.size();
+            int prizeDTOSize = competitionLeaderboardDTO.prizes == null ? 0 : competitionLeaderboardDTO.prizes.size(); //TODO for what?
             for (LeaderboardUserDTO leaderboardItem : leaderboardDTO.getList())
             {
-                add(new CompetitionLeaderboardItemDisplayDto(resources, currentUserId, leaderboardItem, currentUserProfile, prizeDTOSize,
-                        providerDTO));
+                add(new CompetitionLeaderboardItemDisplayDto(resources, currentUserId, leaderboardItem, currentUserProfile, providerDTO));
             }
         }
 

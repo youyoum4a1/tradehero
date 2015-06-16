@@ -3,13 +3,15 @@ package com.tradehero.th.adapters;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.ViewGroup;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-public abstract class WrapperRecyclerAdapter<ExtraItemType>
-        extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+public abstract class WrapperRecyclerAdapter<ExtraItemType extends WrapperRecyclerAdapter.ExtraItem>
+        extends RecyclerView.Adapter
 {
-    private static final int VIEW_TYPE_WRAPPED = 999;
     private final RecyclerView.Adapter realItemAdapter;
     private final SparseArray<ExtraItemType> extraItems;
+    private final Set<Integer> extraItemViewTypes = new LinkedHashSet<>();
 
     public WrapperRecyclerAdapter(final RecyclerView.Adapter realItemAdapter)
     {
@@ -89,15 +91,27 @@ public abstract class WrapperRecyclerAdapter<ExtraItemType>
     {
         if (extraItems.get(position) != null)
         {
-            return VIEW_TYPE_WRAPPED;
+            return extraItems.get(position).getViewType();
         }
         position = getRealPosition(position);
         return super.getItemViewType(position);
     }
 
+    @Override public long getItemId(int position)
+    {
+        if (extraItems.get(position) != null)
+        {
+            return super.getItemId(position);
+        }
+        else
+        {
+            return realItemAdapter.getItemId(getRealPosition(position));
+        }
+    }
+
     @Override public final RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        if (viewType == VIEW_TYPE_WRAPPED)
+        if (extraItemViewTypes.contains(viewType))
         {
             return onCreateExtraItemViewHolder(parent, viewType);
         }
@@ -114,6 +128,33 @@ public abstract class WrapperRecyclerAdapter<ExtraItemType>
         {
             position = getRealPosition(position);
             realItemAdapter.onBindViewHolder(holder, position);
+        }
+    }
+
+    public void addExtraItem(int position, ExtraItemType extraItemType)
+    {
+        ExtraItemType existing = extraItems.get(position);
+        if (existing != null && !existing.equals(extraItemType))
+        {
+            //There is an existing extra item at position.
+            //Remove any existing viewType and replace the item in array.
+            extraItemViewTypes.remove(extraItemType.getViewType());
+            extraItems.put(position, extraItemType);
+            extraItemViewTypes.add(extraItemType.getViewType());
+            notifyItemChanged(position);
+        }
+        else if (existing != null && existing.equals(extraItemType))
+        {
+            //There is an existing extra item which equals to one being added.
+            //Replace without notify.
+            extraItems.put(position, extraItemType);
+        }
+        else
+        {
+            //Add the item to array and notify.
+            extraItems.put(position, extraItemType);
+            extraItemViewTypes.add(extraItemType.getViewType());
+            notifyItemInserted(position);
         }
     }
 
@@ -138,5 +179,10 @@ public abstract class WrapperRecyclerAdapter<ExtraItemType>
     @Override public int getItemCount()
     {
         return realItemAdapter.getItemCount() + extraItems.size();
+    }
+
+    public interface ExtraItem
+    {
+        int getViewType();
     }
 }
