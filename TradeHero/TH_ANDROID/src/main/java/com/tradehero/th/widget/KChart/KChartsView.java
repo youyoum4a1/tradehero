@@ -275,6 +275,9 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 		canvas.drawText(new DecimalFormat("#.##").format(mMaxPrice), 1 + leftMargin,
 				DEFAULT_AXIS_TITLE_SIZE * 2, textPaint);
 
+        //Y轴下Titles
+
+
 		// X轴Titles
 		textPaint.setColor(Color.GRAY);
 		//textPaint.setColor(DEFAULT_AXIS_X_TITLE_COLOR);
