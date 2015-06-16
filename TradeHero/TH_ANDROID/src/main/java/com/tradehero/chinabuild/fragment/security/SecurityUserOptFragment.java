@@ -28,6 +28,7 @@ import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.tradehero.th.wxapi.WXEntryActivity;
+import com.tradehero.th.wxapi.WXMessage;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -65,6 +66,8 @@ public class SecurityUserOptFragment extends DashboardFragment{
     SecurityCompactDTO securityCompactDTO;
     QuoteDetail quoteDetail;
 
+    private String subHead = "";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +80,8 @@ public class SecurityUserOptFragment extends DashboardFragment{
         securityName = args.getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME);
         if (securityIdBundle != null) {
             securityId = new SecurityId(securityIdBundle);
+        } else {
+            popCurrentFragment();
         }
 
     }
@@ -85,7 +90,8 @@ public class SecurityUserOptFragment extends DashboardFragment{
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         if(securityId!=null) {
-            setHeadViewMiddleMain(securityName + "(" + securityId.getSecuritySymbol() + ")");
+            subHead = securityName + "(" + securityId.getSecuritySymbol() + ")";
+            setHeadViewMiddleMain(subHead);
         }
         setHeadViewRight0(R.drawable.search);
         setHeadViewRight1(R.drawable.share);
@@ -212,7 +218,8 @@ public class SecurityUserOptFragment extends DashboardFragment{
 
     private void enterWechatSharePage(){
         WeChatDTO weChatDTO = new WeChatDTO();
-        weChatDTO.title = "一个股票涨涨涨" + Constants.WECHAT_SHARE_URL_INSTALL_APP;
+        String message = WXMessage.getSecurityShareMessage(getRisePercent(), subHead);
+        weChatDTO.title = message + Constants.WECHAT_SHARE_URL_INSTALL_APP;
         weChatDTO.type = WeChatMessageType.Trade;
         Intent gotoShareToWeChatIntent = new Intent(getActivity(), WXEntryActivity.class);
         gotoShareToWeChatIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -261,6 +268,22 @@ public class SecurityUserOptFragment extends DashboardFragment{
         DecimalFormat df = new DecimalFormat("######0.00");
         String percentage = df.format(roi * 100)  + "%";
         return percentage;
+    }
+
+    private int getRisePercent(){
+        double roi;
+        if (QuoteServiceWrapper.isChinaStock(securityId)) {
+            if(quoteDetail == null){
+                return 0;
+            }
+            roi = (quoteDetail.last - quoteDetail.prec)/quoteDetail.prec;
+        } else {
+            if(securityCompactDTO == null){
+                return 0;
+            }
+            roi = (securityCompactDTO.lastPrice - securityCompactDTO.previousClose)/securityCompactDTO.previousClose;
+        }
+        return (int)(roi * 100);
     }
 
     private void retriveLatestPriceInfo() {

@@ -104,6 +104,7 @@ import com.tradehero.th.widget.ScrollViewExtend;
 import com.tradehero.th.widget.ScrollViewListener;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.tradehero.th.wxapi.WXEntryActivity;
+import com.tradehero.th.wxapi.WXMessage;
 import com.viewpagerindicator.SquarePageIndicator;
 
 import org.jetbrains.annotations.NotNull;
@@ -280,6 +281,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private TextView benefitTV;
     private TextView benefitPercentTV;
 
+    //Share to WeChat
+    private int percent;
+    private String securityHead;
 
     public static final int ERROR_NO_ASK_BID = 0;
     public static final int ERROR_NO_ASK = 1;
@@ -371,7 +375,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         setHeadViewRight1(R.drawable.share);
 
         if(securityId!=null) {
-            setHeadViewMiddleMain(securityName + "(" + securityId.getSecuritySymbol() + ")");
+            securityHead = securityName + "(" + securityId.getSecuritySymbol() + ")";
+            setHeadViewMiddleMain(securityHead);
         }
         if (watchedList != null && securityId != null) {
             isInWatchList = watchedList.contains(securityId);
@@ -1224,6 +1229,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         Double rate = securityCompactDTO.risePercent;
         if (rate != null) {
+            percent = (int)(rate * 100);
             THSignedNumber roi = THSignedPercentage.builder(rate * 100)
                     .withSign()
                     .signTypePlusMinusAlways()
@@ -1374,6 +1380,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         Double rate = quoteDetail.getRiseRate();
         if (rate != null) {
+            percent = (int)(rate * 100);
             THSignedNumber roi = THSignedPercentage.builder(rate * 100)
                     .withSign()
                     .signTypePlusMinusAlways()
@@ -2137,7 +2144,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     private void enterWechatSharePage(){
         WeChatDTO weChatDTO = new WeChatDTO();
-        weChatDTO.title = "一个股票涨涨涨" + Constants.WECHAT_SHARE_URL_INSTALL_APP;
+        String message = WXMessage.getSecurityShareMessage(percent, securityHead);
+        weChatDTO.title = message + Constants.WECHAT_SHARE_URL_INSTALL_APP;
         weChatDTO.type = WeChatMessageType.Trade;
         Intent gotoShareToWeChatIntent = new Intent(getActivity(), WXEntryActivity.class);
         gotoShareToWeChatIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
