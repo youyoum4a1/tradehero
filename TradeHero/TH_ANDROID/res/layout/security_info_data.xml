@@ -197,7 +197,8 @@
         android:orientation="horizontal"
         android:background="#e1e5e6"
         android:layout_marginBottom="5dp"
-        android:layout_height="20dp">
+        android:layout_height="20dp"
+        android:visibility="gone">
         <ImageView
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
@@ -218,7 +219,8 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:textColor="#e2494b"
-            android:text="$100"/>
+            android:layout_marginLeft="2dp"
+            android:text="--"/>
 
         <TextView
             android:layout_marginLeft="15dp"
@@ -232,8 +234,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
+            android:layout_marginLeft="2dp"
             android:textColor="#e2494b"
-            android:text="10000"/>
+            android:text="--"/>
         <TextView
             android:layout_marginLeft="15dp"
             android:layout_width="wrap_content"
@@ -245,9 +248,10 @@
             android:id="@+id/textview_security_detail_benefit_percentage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
             android:textSize="12sp"
             android:textColor="#e2494b"
-            android:text="66%"/>
+            android:text="--"/>
     </LinearLayout>
 
 </LinearLayout>

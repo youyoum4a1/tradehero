@@ -40,6 +40,7 @@ import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.IOUtils;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -48,8 +49,6 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.adapters.PositionTradeListAdapter;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
@@ -108,6 +107,7 @@ import com.tradehero.th.wxapi.WXEntryActivity;
 import com.viewpagerindicator.SquarePageIndicator;
 import dagger.Lazy;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -263,6 +263,13 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private LinearLayout watchlistShareLL;
     private LinearLayout watchlistRemoveLL;
 
+    //Notice Layout
+    private LinearLayout noticeLL;
+    private TextView costPriceTV;
+    private TextView benefitTV;
+    private TextView benefitPercentTV;
+
+
     public static final int ERROR_NO_ASK_BID = 0;
     public static final int ERROR_NO_ASK = 1;
     public static final int ERROR_NO_BID = 2;
@@ -378,11 +385,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
 
         initBaseView(view);
+
         initView();
+
         updateHeadView(true);
+
         betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
-
-
 
         return view;
     }
@@ -392,6 +400,35 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         colorUp = getResources().getColor(R.color.bar_up);
         colorNormal = getResources().getColor(R.color.bar_normal);
         colorDown = getResources().getColor(R.color.bar_down);
+    }
+
+    private void initNoticeLL(View parent){
+        noticeLL = (LinearLayout)parent.findViewById(R.id.linearlayout_security_detail_notice);
+        costPriceTV = (TextView)parent.findViewById(R.id.textview_security_detail_price);
+        benefitTV = (TextView)parent.findViewById(R.id.textview_security_detail_benefit);
+        benefitPercentTV = (TextView)parent.findViewById(R.id.textview_security_detail_benefit_percentage);
+    }
+
+    private void displayNotice(String cost, double benefit, String benefitPercent, String currencyDisplay){
+        noticeLL.setVisibility(View.VISIBLE);
+        costPriceTV.setText(cost);
+        benefitTV.setText(currencyDisplay + String.valueOf(benefit));
+        benefitPercentTV.setText(benefitPercent);
+        if(benefit > 0){
+            benefitTV.setTextColor(colorUp);
+            benefitPercentTV.setTextColor(colorUp);
+            costPriceTV.setTextColor(colorUp);
+        }
+        if(benefit == 0){
+            benefitTV.setTextColor(colorNormal);
+            benefitPercentTV.setTextColor(colorNormal);
+            costPriceTV.setTextColor(colorNormal);
+        }
+        if(benefit < 0){
+            benefitTV.setTextColor(colorDown);
+            benefitPercentTV.setTextColor(colorDown);
+            costPriceTV.setTextColor(colorDown);
+        }
     }
 
     private void setBuySaleButtonVisable(boolean isCanSale) {
@@ -531,6 +568,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 updateSubHead();
             }
         });
+
+        initNoticeLL(tabView0);
 
         btnChart0 = (Button) tabView0.findViewById(R.id.btnTabChart0);
         btnChart1 = (Button) tabView0.findViewById(R.id.btnTabChart1);
@@ -1826,7 +1865,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         displayPosition(positionDTO);
     }
 
-    public void displayPosition(PositionDTO positionDTO)
+    private void displayPosition(PositionDTO positionDTO)
     {
         try {
             THSignedNumber roi = THSignedPercentage.builder(positionDTO.getROISinceInception() * 100)
@@ -1840,6 +1879,19 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             tvPositionLastTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.latestTradeUtc));
             tvPositionHoldTime.setText(getResources().getString(R.string.position_hold_days,
                     DateUtils.getNumberOfDaysBetweenDates(positionDTO.earliestTradeUtc, positionDTO.getLatestHoldDate())));
+
+            THSignedNumber roiNew = THSignedPercentage.builder(positionDTO.getROISinceInception() * 100)
+                    .withSign()
+                    .signTypeMinusOnly()
+                    .build();
+            String cost = "--";
+            double benefit = positionDTO.getTotalScoreOfTrade();
+            if(positionDTO.averagePriceRefCcy!=null) {
+                double costPrice = positionDTO.averagePriceRefCcy;
+                DecimalFormat df = new DecimalFormat("######0.00");
+                cost = df.format(costPrice);
+            }
+            displayNotice(cost, benefit, roiNew.toString(), "$");
         } catch (Exception e) {
             e.printStackTrace();
         }
