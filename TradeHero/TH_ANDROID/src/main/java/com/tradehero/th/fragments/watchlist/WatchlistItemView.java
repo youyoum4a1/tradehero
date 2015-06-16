@@ -18,6 +18,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.metrics.Analytics;
@@ -51,7 +52,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     @Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
 
-    @InjectView(R.id.gain_indicator) protected ImageView gainIndicator;
+    @InjectView(R.id.gain_indicator) @Optional protected ImageView gainIndicator;
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
     @InjectView(R.id.stock_symbol) protected TextView stockSymbol;
     @InjectView(R.id.company_name) protected TextView companyName;
@@ -91,14 +92,20 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        if (!isInEditMode())
+        {
+            ButterKnife.inject(this);
+        }
         subscriptions = new SubscriptionList();
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        if (!isInEditMode())
+        {
+            ButterKnife.inject(this);
+        }
     }
 
     @Override protected void onDetachedFromWindow()
@@ -177,21 +184,30 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         {
             gainLossLabel.setBackgroundResource(R.drawable.round_label_up);
             gainLossLabel.setTextColor(getResources().getColor(R.color.text_primary_inverse));
-            gainIndicator.setVisibility(View.VISIBLE);
-            gainIndicator.setImageResource(R.drawable.indicator_up);
+            if (gainIndicator != null)
+            {
+                gainIndicator.setVisibility(View.VISIBLE);
+                gainIndicator.setImageResource(R.drawable.indicator_up);
+            }
         }
         else if (roi < 0)
         {
             gainLossLabel.setBackgroundResource(R.drawable.round_label_down);
             gainLossLabel.setTextColor(getResources().getColor(R.color.text_primary_inverse));
-            gainIndicator.setVisibility(View.VISIBLE);
-            gainIndicator.setImageResource(R.drawable.indicator_down);
+            if (gainIndicator != null)
+            {
+                gainIndicator.setVisibility(View.VISIBLE);
+                gainIndicator.setImageResource(R.drawable.indicator_down);
+            }
         }
         else
         {
             gainLossLabel.setTextColor(getResources().getColor(R.color.text_primary));
-            gainLossLabel.setBackgroundColor(Color.WHITE);
-            gainIndicator.setVisibility(View.INVISIBLE);
+            gainLossLabel.setBackgroundColor(getResources().getColor(R.color.transparent));
+            if (gainIndicator != null)
+            {
+                gainIndicator.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
