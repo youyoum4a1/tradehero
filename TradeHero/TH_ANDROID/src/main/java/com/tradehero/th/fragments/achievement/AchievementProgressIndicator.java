@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
+import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
@@ -246,7 +247,7 @@ public class AchievementProgressIndicator extends LinearLayout
             colorText(mCurrentColor);
         }
 
-        private void colorText(int currentColor)
+        private void colorText(@ColorInt int currentColor)
         {
             indicatorTextView.setTextColor(currentColor);
         }
