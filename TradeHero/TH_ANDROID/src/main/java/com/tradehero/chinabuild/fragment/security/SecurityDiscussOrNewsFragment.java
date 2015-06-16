@@ -170,24 +170,23 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
             }
         });
 
-        adapter.setTimeLineOperater(new UserTimeLineAdapter.TimeLineOperater()
-        {
-            @Override public void OnTimeLineItemClicked(int position)
-            {
+        adapter.setTimeLineOperater(new UserTimeLineAdapter.TimeLineOperater() {
+            @Override
+            public void OnTimeLineItemClicked(int position) {
                 AbstractDiscussionCompactDTO dto = adapter.getItem(position);
                 enterTimeLineDetail(dto);
             }
 
-            @Override public void OnTimeLinePraiseClicked(int position)
-            {
+            @Override
+            public void OnTimeLinePraiseClicked(int position) {
             }
 
-            @Override public void OnTimeLinePraiseDownClicked(int position)
-            {
+            @Override
+            public void OnTimeLinePraiseDownClicked(int position) {
             }
 
-            @Override public void OnTimeLineCommentsClicked(int position)
-            {
+            @Override
+            public void OnTimeLineCommentsClicked(int position) {
                 AbstractDiscussionCompactDTO dto = adapter.getItem(position);
                 DiscussionKey discussionKey = dto.getDiscussionKey();
                 Bundle bundle = new Bundle();
@@ -196,26 +195,25 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
                 pushFragment(DiscussSendFragment.class, bundle);
             }
 
-            @Override public void OnTimeLineShareClicked(int position)
-            {
+            @Override
+            public void OnTimeLineShareClicked(int position) {
                 shareToWechatMoment(adapter.getItemString(position));
             }
 
-            @Override public void OnTimeLineBuyClicked(int position)
-            {
+            @Override
+            public void OnTimeLineBuyClicked(int position) {
 
             }
         });
 
-        listTimeLine.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
-        {
-            @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
+        listTimeLine.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 refreshData(true);
             }
 
-            @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
                 refreshDataMore(false);
             }
         });
@@ -226,6 +224,7 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
         Bundle bundle = new Bundle();
         bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, dto.getDiscussionKey().getArgs());
         bundle.putInt(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_TYPE, TimeLineItemDetailFragment.DISCUSSION_DISCUSSION_TYPE);
+        bundle.putBoolean(SecurityDiscussOrNewsFragment.BUNDLE_ARGUMENT_IS_NEWS, isNews);
         pushFragment(TimeLineItemDetailFragment.class, bundle);
     }
 

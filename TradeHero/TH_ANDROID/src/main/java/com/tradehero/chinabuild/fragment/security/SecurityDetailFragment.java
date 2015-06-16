@@ -418,7 +418,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     private void displayNotice(String cost, double benefit, String benefitPercent, String currencyDisplay){
         noticeLL.setVisibility(View.VISIBLE);
-        costPriceTV.setText(cost);
+        costPriceTV.setText(currencyDisplay + cost);
         benefitTV.setText(currencyDisplay + String.valueOf(benefit));
         benefitPercentTV.setText(benefitPercent);
         if(benefit > 0){
