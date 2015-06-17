@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
@@ -25,15 +26,16 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.CompetitionWebFragmentTHIntentPassedListener;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentPassedListener;
+import com.tradehero.th.persistence.competition.CompetitionCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import java.util.Date;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func2;
 import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 
@@ -45,6 +47,7 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
     @Inject ProviderCacheRx providerCache;
     @Inject ProviderUtil providerUtil;
     @Inject CompetitionLeaderboardCacheRx competitionLeaderboardCache;
+    @Inject CompetitionCacheRx competitionCacheRx;
 
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
@@ -55,6 +58,9 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
     protected WebViewFragment webViewFragment;
     protected CompetitionLeaderboardWrapperRecyclerAdapter competitionAdapter;
     protected CompetitionLeaderboardDTO competitionLeaderboardDTO;
+    protected CompetitionDTO competitionDTO;
+    private CompetitionTimeExtraItem competitionTimeExtraItem;
+    private CountDownTimer countDownTimer;
 
     public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {
@@ -138,6 +144,15 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
     {
         this.competitionAdapter = null;
         this.webViewTHIntentPassedListener = null;
+        this.competitionDTO = null;
+        this.providerDTO = null;
+        this.competitionLeaderboardDTO = null;
+        this.competitionTimeExtraItem = null;
+        if (this.countDownTimer != null)
+        {
+            this.countDownTimer.cancel();
+            this.countDownTimer = null;
+        }
         super.onDestroy();
     }
 
@@ -166,16 +181,22 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
                 this,
                 Observable.combineLatest(
                         providerCache.get(providerId)
-                                .map(new PairGetSecond<ProviderId, ProviderDTO>()),
+                                .map(new PairGetSecond<ProviderId, ProviderDTO>())
+                                .startWith(providerDTO != null ? Observable.just(providerDTO) : Observable.<ProviderDTO>empty()),
+                        competitionCacheRx.get(competitionId)
+                                .map(new PairGetSecond<CompetitionId, CompetitionDTO>())
+                                .startWith(competitionDTO != null ? Observable.just(competitionDTO) : Observable.<CompetitionDTO>empty()),
                         competitionLeaderboardCache.get(competitionLeaderboardId)
-                                .map(new PairGetSecond<CompetitionLeaderboardId, CompetitionLeaderboardDTO>()),
-                        new Func2<ProviderDTO, CompetitionLeaderboardDTO, CompetitionLeaderboardDTO>()
+                                .map(new PairGetSecond<CompetitionLeaderboardId, CompetitionLeaderboardDTO>())
+                                .startWith(competitionLeaderboardDTO != null ? Observable.just(competitionLeaderboardDTO)
+                                        : Observable.<CompetitionLeaderboardDTO>empty()),
+                        new Func3<ProviderDTO, CompetitionDTO, CompetitionLeaderboardDTO, CompetitionLeaderboardDTO>()
                         {
                             @Override public CompetitionLeaderboardDTO call(ProviderDTO providerDTO,
+                                    CompetitionDTO competitionDTO,
                                     CompetitionLeaderboardDTO competitionLeaderboardDTO)
                             {
-                                linkWith(providerDTO);
-                                linkWith(competitionLeaderboardDTO);
+                                linkWith(providerDTO, competitionDTO, competitionLeaderboardDTO);
                                 return competitionLeaderboardDTO;
                             }
                         }))
@@ -190,13 +211,10 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
                 }, new ToastOnErrorAction()));
     }
 
-    protected void linkWith(ProviderDTO providerDTO)
+    protected void linkWith(ProviderDTO providerDTO, CompetitionDTO competitionDTO, @NonNull CompetitionLeaderboardDTO competitionLeaderboardDTO)
     {
         this.providerDTO = providerDTO;
-    }
-
-    protected void linkWith(@NonNull CompetitionLeaderboardDTO competitionLeaderboardDTO)
-    {
+        this.competitionDTO = competitionDTO;
         this.competitionLeaderboardDTO = competitionLeaderboardDTO;
     }
 
@@ -208,6 +226,32 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
 
     private void addExtraTiles()
     {
+        if (competitionDTO != null && competitionDTO.leaderboard != null && competitionDTO.leaderboard.isWithinUtcRestricted())
+        {
+            //Add timer to the top of the recycler fragment.
+            if (competitionTimeExtraItem == null)
+            {
+                competitionTimeExtraItem = new CompetitionTimeExtraItem(competitionDTO.leaderboard.toUtcRestricted);
+                competitionAdapter.addExtraItem(0, competitionTimeExtraItem);
+                long diffInMillies = competitionTimeExtraItem.until.getTime() - new Date().getTime();
+                countDownTimer = new CountDownTimer(diffInMillies, 1000)
+                {
+                    @Override public void onTick(long millisUntilFinished)
+                    {
+                        if (competitionTimeExtraItem != null)
+                        {
+                            competitionTimeExtraItem.updateDate(new Date());
+                            competitionAdapter.notifyItemChanged(0);
+                        }
+                    }
+
+                    @Override public void onFinish()
+                    {
+
+                    }
+                }.start();
+            }
+        }
         if (competitionLeaderboardDTO != null && competitionLeaderboardDTO.ads != null)
         {
             int realSize = itemViewAdapter.getItemCount();

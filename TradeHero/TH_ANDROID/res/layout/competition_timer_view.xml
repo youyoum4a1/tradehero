@@ -2,10 +2,10 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@drawable/timed_header_right_bg"
+    android:background="@color/transparent"
     android:gravity="center"
     >
 
@@ -45,62 +45,72 @@
 
   </LinearLayout>
 
-  <TextView
-      android:id="@+id/value_day_count"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginLeft="@dimen/leaderboard_timed_header_horizontal_padding"
-      android:text="@string/na"
-      style="@style/TH.Time_Text.Header"
-      />
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@drawable/timed_header_right_bg"
+        >
 
-  <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/competition_leaderboard_timer_days"
-      android:paddingLeft="@dimen/leaderboard_timed_header_horizontal_padding"
-      android:paddingRight="@dimen/leaderboard_timed_header_horizontal_padding"
-      style="@style/TH.Time_Text.Header"
-      android:textSize="@dimen/text_body"
-      />
+        <TextView
+            android:id="@+id/value_day_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/leaderboard_timed_header_horizontal_padding"
+            android:text="@string/na"
+            style="@style/TH.Time_Text.Header"
+            />
 
-  <TextView
-      android:id="@+id/value_hour_count"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/na"
-      style="@style/TH.Time_Text.Header"
-      />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/competition_leaderboard_timer_days"
+            android:paddingLeft="@dimen/leaderboard_timed_header_horizontal_padding"
+            android:paddingRight="@dimen/leaderboard_timed_header_horizontal_padding"
+            style="@style/TH.Time_Text.Header"
+            android:textSize="@dimen/text_body"
+            />
 
-  <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/competition_leaderboard_timer_time_separator"
-      style="@style/TH.Time_Text.Header"
-      />
+        <TextView
+            android:id="@+id/value_hour_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/na"
+            style="@style/TH.Time_Text.Header"
+            />
 
-  <TextView
-      android:id="@+id/value_minute_count"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/na"
-      style="@style/TH.Time_Text.Header"
-      />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/competition_leaderboard_timer_time_separator"
+            style="@style/TH.Time_Text.Header"
+            />
 
-  <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/competition_leaderboard_timer_time_separator"
-      style="@style/TH.Time_Text.Header"
-      />
+        <TextView
+            android:id="@+id/value_minute_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/na"
+            style="@style/TH.Time_Text.Header"
+            />
 
-  <TextView
-      android:id="@+id/value_second_count"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/na"
-      style="@style/TH.Time_Text.Header"
-      android:layout_marginRight="@dimen/leaderboard_timed_header_horizontal_padding"
-      />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/competition_leaderboard_timer_time_separator"
+            style="@style/TH.Time_Text.Header"
+            />
+
+        <TextView
+            android:id="@+id/value_second_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/na"
+            style="@style/TH.Time_Text.Header"
+            android:layout_marginRight="@dimen/leaderboard_timed_header_horizontal_padding"
+            />
+    </LinearLayout>
+
 
 </LinearLayout>
