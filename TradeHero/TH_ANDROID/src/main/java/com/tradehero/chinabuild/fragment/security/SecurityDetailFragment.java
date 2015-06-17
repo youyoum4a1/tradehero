@@ -1219,9 +1219,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             tvSecurityDetailRate.setTextColor(getResources().getColor(colorResId));
         }
 
-
-        tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(securityCompactDTO.lastPrice));
-        tvSecurityPrice.setTextColor(getResources().getColor(colorResId));
+        if(securityCompactDTO.lastPrice == null){
+            tvSecurityPrice.setText("- -");
+        } else {
+            tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(securityCompactDTO.lastPrice));
+            tvSecurityPrice.setTextColor(getResources().getColor(colorResId));
+        }
 
         tvSecurityDetailNum.setText(securityCompactDTO.getPriceDifferent());
         tvSecurityDetailNum.setTextColor(getResources().getColor(colorResId));
@@ -1558,13 +1561,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void linkWith(SecurityPositionDetailDTO detailDTO)
-    {
+    private void linkWith(SecurityPositionDetailDTO detailDTO) {
         this.securityPositionDetailDTO = detailDTO;
-        if (securityPositionDetailDTO != null)
-        {
-            linkWith(securityPositionDetailDTO.security);
-            linkWith(securityPositionDetailDTO.positions);
+        if (securityPositionDetailDTO != null) {
+            if(securityPositionDetailDTO.security != null) {
+                linkWith(securityPositionDetailDTO.security);
+            }
+            if(securityPositionDetailDTO.positions != null) {
+                linkWith(securityPositionDetailDTO.positions);
+            }
         }
         else
         {
@@ -2207,6 +2212,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 @Override
                 public void onClick(View view) {
                     enterWechatSharePage();
+                    popWin.dismiss();
                 }
             });
         }
