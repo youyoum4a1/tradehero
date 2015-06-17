@@ -246,7 +246,7 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
                             Pair<ProviderId, ProviderDTO> providerPair,
                             Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO> competitionLeaderboardPair)
                     {
-                        return new CompetitionLeaderboardMarkUserItemView.Requisite(
+                        return new CompetitionLeaderboardItemDisplayDTO.Requisite(
                                 requisite,
                                 providerPair,
                                 competitionLeaderboardPair);
@@ -254,14 +254,18 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
                 });
     }
 
+    @Override protected LeaderboardMarkedUserItemDisplayDto createLoadingOwnRankingDTO()
+    {
+        return new CompetitionLeaderboardOwnRankingDisplayDTO(getResources(), currentUserId);
+    }
+
     @Override protected LeaderboardMarkedUserItemDisplayDto createNotRankedOwnRankingDTO(LeaderboardMarkedUserItemDisplayDto.Requisite requisite)
     {
-        if (requisite instanceof CompetitionLeaderboardMarkUserItemView.Requisite)
+        if (requisite instanceof CompetitionLeaderboardItemDisplayDTO.Requisite)
         {
-            CompetitionLeaderboardMarkUserItemView.Requisite thisRequisite = (CompetitionLeaderboardMarkUserItemView.Requisite) requisite;
+            CompetitionLeaderboardItemDisplayDTO.Requisite thisRequisite = (CompetitionLeaderboardItemDisplayDTO.Requisite) requisite;
             if (requisite.currentLeaderboardUserDTO == null)
             {
-                //TODO clicked event and rules
                 return new CompetitionLeaderboardOwnRankingDisplayDTO(getResources(), currentUserId,
                         requisite.currentUserProfileDTO, thisRequisite.providerDTO);
             }
@@ -271,9 +275,9 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
 
     @Override protected LeaderboardMarkedUserItemDisplayDto createRankedOwnRankingDTO(LeaderboardMarkedUserItemDisplayDto.Requisite requisite)
     {
-        if (requisite instanceof CompetitionLeaderboardMarkUserItemView.Requisite)
+        if (requisite instanceof CompetitionLeaderboardItemDisplayDTO.Requisite)
         {
-            CompetitionLeaderboardMarkUserItemView.Requisite thisRequisite = (CompetitionLeaderboardMarkUserItemView.Requisite) requisite;
+            CompetitionLeaderboardItemDisplayDTO.Requisite thisRequisite = (CompetitionLeaderboardItemDisplayDTO.Requisite) requisite;
             if (requisite.currentLeaderboardUserDTO != null)
             {
                 CompetitionLeaderboardDTO competitionLeaderboardDTO = thisRequisite.competitionLeaderboardDTO;

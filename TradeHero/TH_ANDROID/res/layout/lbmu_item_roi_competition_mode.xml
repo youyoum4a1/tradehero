@@ -16,14 +16,9 @@
       android:id="@+id/lbmu_item_prize"
       android:layout_width="@dimen/leaderboard_user_view_profile_width"
       android:layout_height="@dimen/leaderboard_user_view_profile_width"
-      android:paddingRight="@dimen/margin_medium"
-      android:paddingEnd="@dimen/margin_medium"
-      android:src="@drawable/icn_competition_prize"
-      android:scaleType="fitCenter"
       android:layout_alignParentRight="true"
       android:layout_alignParentEnd="true"
-      android:contentDescription="@null"
-      android:visibility="visible"
+      style="@style/TH.CompetitionPrize"
       />
 
 </RelativeLayout>

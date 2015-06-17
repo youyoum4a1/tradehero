@@ -283,7 +283,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
     {
         private final Analytics analytics;
         private final Picasso picasso;
-        private final PublishSubject<LeaderboardItemUserAction> userActionSubject;
+        protected final PublishSubject<LeaderboardItemUserAction> userActionSubject;
 
         @InjectView(R.id.leaderboard_user_item_display_name) protected TextView lbmuDisplayName;
         @InjectView(R.id.lbmu_roi) protected TextView lbmuRoi;

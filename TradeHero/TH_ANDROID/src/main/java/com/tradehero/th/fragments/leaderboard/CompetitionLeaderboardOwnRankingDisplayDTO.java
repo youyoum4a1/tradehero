@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.th.R;
@@ -17,6 +19,8 @@ public class CompetitionLeaderboardOwnRankingDisplayDTO extends CompetitionLeade
     private String infoTextFormat;
     @ViewVisibilityValue int infoButtonContainerVisibility;
     @NonNull CharSequence infoText;
+    @Nullable public String rule;
+    @Nullable public ForegroundColorSpan textColorSpan;
 
     public CompetitionLeaderboardOwnRankingDisplayDTO(@NonNull Resources resources,
             @NonNull CurrentUserId currentUserId)
@@ -34,6 +38,8 @@ public class CompetitionLeaderboardOwnRankingDisplayDTO extends CompetitionLeade
         infoButtonContainerVisibility = View.GONE;
         infoText = "";
         infoTextFormat = "";
+        rule = resources.getString(R.string.leaderboard_see_competition_rules);
+        textColorSpan = createTextColorSpan(resources);
     }
 
     public CompetitionLeaderboardOwnRankingDisplayDTO(@NonNull Resources resources, @NonNull CurrentUserId currentUserId,
@@ -43,6 +49,11 @@ public class CompetitionLeaderboardOwnRankingDisplayDTO extends CompetitionLeade
         super(resources, currentUserId, leaderboardItem, currentUserProfileDTO, providerDTO, competitionLeaderboardDTO);
         this.infoButtonContainerVisibility = (this.prizeSize > 0 && this.ranking <= this.prizeSize) ? View.VISIBLE : View.GONE;
         infoTextFormat = resources.getString(R.string.leaderboard_ranks_needed);
+    }
+
+    private ForegroundColorSpan createTextColorSpan(Resources resources)
+    {
+        return new ForegroundColorSpan(resources.getColor(R.color.tradehero_blue));
     }
 
     @Override protected void isQualifiedForPrize(boolean qualified)
@@ -56,6 +67,10 @@ public class CompetitionLeaderboardOwnRankingDisplayDTO extends CompetitionLeade
             this.infoText = THSignedNumber.builder(needed)
                     .format(infoTextFormat)
                     .build().createSpanned();
+        }
+        else
+        {
+            this.infoText = "";
         }
     }
 }

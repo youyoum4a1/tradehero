@@ -324,7 +324,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         if (requisite == null)
         {
             //Is Loading
-            ownRankingDto = new LeaderboardMarkedUserItemDisplayDto(getResources(), currentUserId);
+            ownRankingDto = createLoadingOwnRankingDTO();
         }
         else if (requisite.currentLeaderboardUserDTO == null)
         {
@@ -336,6 +336,11 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
             ownRankingDto = createRankedOwnRankingDTO(requisite);
         }
         itemViewAdapter.add(ownRankingDto);
+    }
+
+    protected LeaderboardMarkedUserItemDisplayDto createLoadingOwnRankingDTO()
+    {
+        return new LeaderboardMarkedUserItemDisplayDto(getResources(), currentUserId);
     }
 
     protected LeaderboardMarkedUserItemDisplayDto createNotRankedOwnRankingDTO(LeaderboardMarkedUserItemDisplayDto.Requisite requisite)

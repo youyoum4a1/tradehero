@@ -2,11 +2,15 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.View;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
+import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 
@@ -51,5 +55,32 @@ class CompetitionLeaderboardItemDisplayDTO extends LeaderboardMarkedUserItemDisp
     protected void isQualifiedForPrize(boolean qualified)
     {
         prizeIconVisibility = qualified ? View.VISIBLE : View.GONE;
+    }
+
+    public static class Requisite extends LeaderboardMarkedUserItemDisplayDto.Requisite
+    {
+        @NonNull final ProviderDTO providerDTO;
+        @NonNull final CompetitionLeaderboardDTO competitionLeaderboardDTO;
+
+        public Requisite(@NonNull LeaderboardMarkedUserItemDisplayDto.Requisite parent,
+                @NonNull Pair<ProviderId, ProviderDTO> providerPair,
+                @NonNull Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO> competitionLeaderboardPair)
+        {
+            this(parent.currentLeaderboardUserDTO,
+                    parent.currentUserProfileDTO,
+                    providerPair.second,
+                    competitionLeaderboardPair.second);
+        }
+
+        public Requisite(
+                @Nullable LeaderboardUserDTO currentLeaderboardUserDTO,
+                @NonNull UserProfileDTO currentUserProfileDTO,
+                @NonNull ProviderDTO providerDTO,
+                @NonNull CompetitionLeaderboardDTO competitionLeaderboardDTO)
+        {
+            super(currentLeaderboardUserDTO, currentUserProfileDTO);
+            this.providerDTO = providerDTO;
+            this.competitionLeaderboardDTO = competitionLeaderboardDTO;
+        }
     }
 }
