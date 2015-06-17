@@ -46,9 +46,9 @@ public class CompetitionLeaderboardMarkUserRecyclerAdapter extends LeaderboardMa
         @Override public void display(LeaderboardItemDisplayDTO dto)
         {
             super.display(dto);
-            if (dto instanceof CompetitionLeaderboardItemDisplayDT)
+            if (dto instanceof CompetitionLeaderboardItemDisplayDTO)
             {
-                prizeIcon.setVisibility(((CompetitionLeaderboardItemDisplayDT) dto).prizeIconVisibility);
+                prizeIcon.setVisibility(((CompetitionLeaderboardItemDisplayDTO) dto).prizeIconVisibility);
             }
             else
             {

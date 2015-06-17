@@ -12,13 +12,13 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.number.THSignedNumber;
 
-public class CompetitionLeaderboardOwnRankingDisplayDT extends CompetitionLeaderboardItemDisplayDT
+public class CompetitionLeaderboardOwnRankingDisplayDTO extends CompetitionLeaderboardItemDisplayDTO
 {
     private String infoTextFormat;
     @ViewVisibilityValue int infoButtonContainerVisibility;
     @NonNull CharSequence infoText;
 
-    public CompetitionLeaderboardOwnRankingDisplayDT(@NonNull Resources resources,
+    public CompetitionLeaderboardOwnRankingDisplayDTO(@NonNull Resources resources,
             @NonNull CurrentUserId currentUserId)
     {
         super(resources, currentUserId);
@@ -27,7 +27,7 @@ public class CompetitionLeaderboardOwnRankingDisplayDT extends CompetitionLeader
         infoTextFormat = "";
     }
 
-    public CompetitionLeaderboardOwnRankingDisplayDT(@NonNull Resources resources, @NonNull CurrentUserId currentUserId,
+    public CompetitionLeaderboardOwnRankingDisplayDTO(@NonNull Resources resources, @NonNull CurrentUserId currentUserId,
             @NonNull UserProfileDTO currentUserProfileDTO, ProviderDTO providerDTO)
     {
         super(resources, currentUserId, currentUserProfileDTO, providerDTO);
@@ -36,7 +36,7 @@ public class CompetitionLeaderboardOwnRankingDisplayDT extends CompetitionLeader
         infoTextFormat = "";
     }
 
-    public CompetitionLeaderboardOwnRankingDisplayDT(@NonNull Resources resources, @NonNull CurrentUserId currentUserId,
+    public CompetitionLeaderboardOwnRankingDisplayDTO(@NonNull Resources resources, @NonNull CurrentUserId currentUserId,
             @NonNull LeaderboardUserDTO leaderboardItem,
             @NonNull UserProfileDTO currentUserProfileDTO, @NonNull ProviderDTO providerDTO, CompetitionLeaderboardDTO competitionLeaderboardDTO)
     {

@@ -38,10 +38,10 @@ public abstract class LeaderboardItemDisplayDTO implements DTO
             return new FriendLeaderboardItemDisplayDTO.Social(userFriendsDTO);
         }
 
-        @NonNull CompetitionLeaderboardItemDisplayDT create(@NonNull LeaderboardUserDTO leaderboardUserDTO, ProviderDTO providerDTO,
+        @NonNull CompetitionLeaderboardItemDisplayDTO create(@NonNull LeaderboardUserDTO leaderboardUserDTO, ProviderDTO providerDTO,
                 CompetitionLeaderboardDTO competitionLeaderboardDTO)
         {
-            return new CompetitionLeaderboardItemDisplayDT(resources, currentUserId, leaderboardUserDTO, currentUserProfileDTO, providerDTO,
+            return new CompetitionLeaderboardItemDisplayDTO(resources, currentUserId, leaderboardUserDTO, currentUserProfileDTO, providerDTO,
                     competitionLeaderboardDTO);
         }
     }

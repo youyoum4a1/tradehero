@@ -108,7 +108,7 @@ public class LeaderboardMarkUserListFragmentUtil
                     break;
 
                 case RULES:
-                    handleRulesRequested((CompetitionLeaderboardItemDisplayDT) userAction.dto);
+                    handleRulesRequested((CompetitionLeaderboardItemDisplayDTO) userAction.dto);
                     break;
             }
         }
@@ -205,16 +205,16 @@ public class LeaderboardMarkUserListFragmentUtil
             TabbedPositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
         }
 
-        if (dto instanceof CompetitionLeaderboardItemDisplayDT)
+        if (dto instanceof CompetitionLeaderboardItemDisplayDTO)
         {
             TabbedPositionListFragment.putProviderId(bundle,
-                    ((CompetitionLeaderboardItemDisplayDT) dto).providerDTO.getProviderId());
+                    ((CompetitionLeaderboardItemDisplayDTO) dto).providerDTO.getProviderId());
         }
 
         navigator.pushFragment(TabbedPositionListFragment.class, bundle);
     }
 
-    protected void handleRulesRequested(@NonNull CompetitionLeaderboardItemDisplayDT dto)
+    protected void handleRulesRequested(@NonNull CompetitionLeaderboardItemDisplayDTO dto)
     {
         Bundle args = new Bundle();
         CompetitionWebViewFragment.putUrl(args, providerUtil.getRulesPage(dto.providerDTO.getProviderId()));

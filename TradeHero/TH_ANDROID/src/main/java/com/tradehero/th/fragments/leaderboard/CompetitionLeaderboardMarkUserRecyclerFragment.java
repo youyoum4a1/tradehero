@@ -262,7 +262,7 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
             if (requisite.currentLeaderboardUserDTO == null)
             {
                 //TODO clicked event and rules
-                return new CompetitionLeaderboardOwnRankingDisplayDT(getResources(), currentUserId,
+                return new CompetitionLeaderboardOwnRankingDisplayDTO(getResources(), currentUserId,
                         requisite.currentUserProfileDTO, thisRequisite.providerDTO);
             }
         }
@@ -277,7 +277,7 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
             if (requisite.currentLeaderboardUserDTO != null)
             {
                 CompetitionLeaderboardDTO competitionLeaderboardDTO = thisRequisite.competitionLeaderboardDTO;
-                CompetitionLeaderboardItemDisplayDT dto = new CompetitionLeaderboardOwnRankingDisplayDT(
+                CompetitionLeaderboardItemDisplayDTO dto = new CompetitionLeaderboardOwnRankingDisplayDTO(
                         getResources(),
                         currentUserId,
                         requisite.currentLeaderboardUserDTO,

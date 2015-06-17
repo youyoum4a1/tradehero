@@ -10,20 +10,20 @@ import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 
-class CompetitionLeaderboardItemDisplayDT extends LeaderboardMarkedUserItemDisplayDto
+class CompetitionLeaderboardItemDisplayDTO extends LeaderboardMarkedUserItemDisplayDto
 {
     public ProviderDTO providerDTO;
     protected final int prizeSize;
     @ViewVisibilityValue public int prizeIconVisibility = View.GONE;
 
-    public CompetitionLeaderboardItemDisplayDT(@NonNull Resources resources,
+    public CompetitionLeaderboardItemDisplayDTO(@NonNull Resources resources,
             @NonNull CurrentUserId currentUserId)
     {
         super(resources, currentUserId);
         this.prizeSize = 0;
     }
 
-    public CompetitionLeaderboardItemDisplayDT(@NonNull Resources resources, @NonNull CurrentUserId currentUserId,
+    public CompetitionLeaderboardItemDisplayDTO(@NonNull Resources resources, @NonNull CurrentUserId currentUserId,
             @NonNull UserProfileDTO currentUserProfileDTO, ProviderDTO providerDTO)
     {
         super(resources, currentUserId, currentUserProfileDTO);
@@ -31,7 +31,7 @@ class CompetitionLeaderboardItemDisplayDT extends LeaderboardMarkedUserItemDispl
         this.prizeSize = 0;
     }
 
-    public CompetitionLeaderboardItemDisplayDT(@NonNull Resources resources, @NonNull CurrentUserId currentUserId,
+    public CompetitionLeaderboardItemDisplayDTO(@NonNull Resources resources, @NonNull CurrentUserId currentUserId,
             @NonNull LeaderboardUserDTO leaderboardItem,
             @NonNull UserProfileDTO currentUserProfileDTO,
             @NonNull ProviderDTO providerDTO,
