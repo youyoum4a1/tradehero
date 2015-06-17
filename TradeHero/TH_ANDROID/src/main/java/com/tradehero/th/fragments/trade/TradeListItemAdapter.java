@@ -16,6 +16,7 @@ import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.position.view.PositionView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.widget.list.BaseListHeaderView;
@@ -47,6 +48,7 @@ public class TradeListItemAdapter
 
     @NonNull public static List<Object> createObjects(
             @NonNull Resources resources,
+            @NonNull CurrentUserId currentUserId,
             @NonNull PositionDTO positionDTO,
             @NonNull SecurityCompactDTO securityCompactDTO,
             @Nullable Integer expandedTradeId,
@@ -65,7 +67,11 @@ public class TradeListItemAdapter
             objects.add(R.string.trade_list_header_open_summary);
         }
 
-        objects.add(new PositionView.DTO(resources, new ExpandableListItem<>(true, positionDTO), securityCompactDTO));
+        objects.add(new PositionView.DTO(
+                resources,
+                currentUserId,
+                new ExpandableListItem<>(true, positionDTO),
+                securityCompactDTO));
 
         objects.add(R.string.trade_list_header_position_summary);
         if (tradeDTOs != null)

@@ -160,7 +160,7 @@ public class PositionListFragment
     private View inflatedHeader;
     private PortfolioHeaderView portfolioHeaderView;
 
-    @Nullable protected UserProfileDTO userProfileDTO;
+    @Nullable protected UserProfileDTO shownUserProfileDTO;
     @Nullable protected PortfolioDTO portfolioDTO;
     protected List<Object> viewDTOs;
 
@@ -190,7 +190,12 @@ public class PositionListFragment
 
     @NonNull private static UserBaseKey getUserBaseKey(@NonNull Bundle args)
     {
-        return new UserBaseKey(args.getBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE));
+        Bundle userBundle = args.getBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE);
+        if (userBundle == null)
+        {
+            throw new NullPointerException("ShownUser needs to be passed on");
+        }
+        return new UserBaseKey(userBundle);
     }
 
     public static void putPositionType(@NonNull Bundle args, TabbedPositionListFragment.TabType positionType)
@@ -463,9 +468,9 @@ public class PositionListFragment
         {
             pushSecuritiesFragment();
         }
-        else if (view instanceof PositionLockedView && userProfileDTO != null)
+        else if (view instanceof PositionLockedView && shownUserProfileDTO != null)
         {
-            onStopSubscriptions.add(showFollowDialog(userProfileDTO)
+            onStopSubscriptions.add(showFollowDialog(shownUserProfileDTO)
                     .subscribe(
                             Actions.empty(), // TODO ?
                             new Action1<Throwable>()
@@ -533,11 +538,12 @@ public class PositionListFragment
     {
         //noinspection unchecked
         return userInteractorRx.purchaseAndPremiumFollowAndClear(heroId)
-                .map(new Func1<PurchaseResult, UserProfileDTO>()
+                .flatMap(new Func1<PurchaseResult, Observable<UserProfileDTO>>()
                 {
-                    @Override public UserProfileDTO call(PurchaseResult result)
+                    @Override public Observable<UserProfileDTO> call(PurchaseResult result)
                     {
-                        return userProfileDTO;
+                        return userProfileCache.getOne(currentUserId.toUserBaseKey())
+                                .map(new PairGetSecond<UserBaseKey, UserProfileDTO>());
                     }
                 });
     }
@@ -626,7 +632,7 @@ public class PositionListFragment
                                             .setCancelable(true)
                                             .setCanceledOnTouchOutside(true)
                                             .setPositiveButton(
-                                                    isClosed != null && isClosed
+                                                    (isClosed != null && isClosed) || !currentUserId.toUserBaseKey().equals(shownUser)
                                                             ? null
                                                             : getString(R.string.position_close_position_action))
                                             .setNegativeButton(R.string.timeline_trade)
@@ -760,7 +766,7 @@ public class PositionListFragment
                     @Override public UserProfileDTO call(Pair<UserBaseKey, UserProfileDTO> pair)
                     {
                         UserProfileDTO shownProfile = pair.second;
-                        userProfileDTO = shownProfile;
+                        shownUserProfileDTO = shownProfile;
                         positionItemAdapter.linkWith(shownProfile);
                         return shownProfile;
                     }
@@ -907,7 +913,11 @@ public class PositionListFragment
                             }
                             else
                             {
-                                adapterObjects.add(new PositionPartialTopView.DTO(getResources(), pair.first, pair.second));
+                                adapterObjects.add(new PositionPartialTopView.DTO(
+                                        getResources(),
+                                        currentUserId,
+                                        pair.first,
+                                        pair.second));
                             }
                         }
                         return Observable.just(adapterObjects)

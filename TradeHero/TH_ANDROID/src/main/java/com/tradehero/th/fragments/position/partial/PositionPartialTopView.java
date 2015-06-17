@@ -27,6 +27,7 @@ import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.security.FxFlagContainer;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
@@ -331,7 +332,7 @@ public class PositionPartialTopView extends LinearLayout
         @ViewVisibilityValue public final int lastAmountHeaderVisibility;
         @NonNull public final CharSequence lastAmount;
 
-        public DTO(@NonNull Resources resources, @NonNull PositionDTO positionDTO, @NonNull SecurityCompactDTO securityCompactDTO)
+        public DTO(@NonNull Resources resources, @NonNull CurrentUserId currentUserId, @NonNull PositionDTO positionDTO, @NonNull SecurityCompactDTO securityCompactDTO)
         {
             this.positionDTO = positionDTO;
             this.securityCompactDTO = securityCompactDTO;
@@ -445,7 +446,8 @@ public class PositionPartialTopView extends LinearLayout
             {
                 shareCountHeader = resources.getString(R.string.position_share_count_header_fx);
                 if (positionDTO.positionStatus == PositionStatus.CLOSED
-                        || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED)
+                        || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED
+                        || currentUserId.get() != positionDTO.userId)
                 {
                     btnCloseVisibility = GONE;
                 }

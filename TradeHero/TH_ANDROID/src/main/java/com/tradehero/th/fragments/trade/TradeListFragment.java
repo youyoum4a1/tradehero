@@ -332,6 +332,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                                                 securityCompactDTO = scDTO;
                                                 List<Object> objects = TradeListItemAdapter.createObjects(
                                                         getResources(),
+                                                        currentUserId,
                                                         pDTO,
                                                         scDTO,
                                                         tradeId,
