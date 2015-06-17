@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.amazon.tester;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.amazon.tester.BaseAmazonBillingAvailableTesterHolderRx;
@@ -21,7 +22,7 @@ public class THBaseAmazonBillingAvailableTesterHolderRx
         return new THBaseAmazonBillingAvailableTesterRx(requestCode);
     }
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
         // Nothing to do
     }
