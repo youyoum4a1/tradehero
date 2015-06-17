@@ -108,31 +108,31 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
         //    }
         //}
     }
-
-    public static class DTOList extends LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>
-    {
-        @NonNull final CompetitionLeaderboardDTO competitionLeaderboardDTO;
-
-        public DTOList(@NonNull Resources resources,
-                @NonNull CurrentUserId currentUserId,
-                @NonNull CompetitionLeaderboardDTO competitionLeaderboardDTO,
-                @NonNull UserProfileDTO currentUserProfile,
-                @NonNull ProviderDTO providerDTO)
-        {
-            super(competitionLeaderboardDTO.leaderboard);
-            this.competitionLeaderboardDTO = competitionLeaderboardDTO;
-            int prizeDTOSize = competitionLeaderboardDTO.prizes == null ? 0 : competitionLeaderboardDTO.prizes.size(); //TODO for what?
-            for (LeaderboardUserDTO leaderboardItem : leaderboardDTO.getList())
-            {
-                add(new CompetitionLeaderboardItemDisplayDto(resources, currentUserId, leaderboardItem, currentUserProfile, providerDTO));
-            }
-        }
-
-        @Override public DTOList getList()
-        {
-            return this;
-        }
-    }
+    //
+    //public static class DTOList extends LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>
+    //{
+    //    @NonNull final CompetitionLeaderboardDTO competitionLeaderboardDTO;
+    //
+    //    public DTOList(@NonNull Resources resources,
+    //            @NonNull CurrentUserId currentUserId,
+    //            @NonNull CompetitionLeaderboardDTO competitionLeaderboardDTO,
+    //            @NonNull UserProfileDTO currentUserProfile,
+    //            @NonNull ProviderDTO providerDTO)
+    //    {
+    //        super(competitionLeaderboardDTO.leaderboard);
+    //        this.competitionLeaderboardDTO = competitionLeaderboardDTO;
+    //        int prizeDTOSize = competitionLeaderboardDTO.prizes == null ? 0 : competitionLeaderboardDTO.prizes.size(); //TODO for what?
+    //        for (LeaderboardUserDTO leaderboardItem : leaderboardDTO.getList())
+    //        {
+    //            add(new CompetitionLeaderboardItemDisplayDto(resources, currentUserId, leaderboardItem, currentUserProfile, providerDTO));
+    //        }
+    //    }
+    //
+    //    @Override public DTOList getList()
+    //    {
+    //        return this;
+    //    }
+    //}
 
     public static class Requisite extends LeaderboardMarkedUserItemDisplayDto.Requisite
     {

@@ -136,7 +136,6 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
 
     @Override public void onDestroy()
     {
-        //itemViewAdapter.unregisterDataSetObserver(innerAdapterObserver);
         this.competitionAdapter = null;
         this.webViewTHIntentPassedListener = null;
         super.onDestroy();
@@ -149,7 +148,7 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
 
     @NonNull @Override protected LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO> createItemViewAdapter()
     {
-        return new CompetitionLeaderboardMarkUserRecyclerAdapter(getActivity(), R.layout.lbmu_item_roi_mode,
+        return new CompetitionLeaderboardMarkUserRecyclerAdapter(getActivity(), R.layout.lbmu_item_roi_competition_mode,
                 R.layout.lbmu_item_own_ranking_competition_mode,
                 new LeaderboardKey(leaderboardDefKey.key));
     }
@@ -209,13 +208,13 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
 
     private void addExtraTiles()
     {
-        if (providerDTO != null && providerDTO.hasAdvertisement() && competitionLeaderboardDTO != null)
+        if (competitionLeaderboardDTO != null && competitionLeaderboardDTO.ads != null)
         {
             int realSize = itemViewAdapter.getItemCount();
             for (int i = competitionLeaderboardDTO.adStartRow; i < realSize; i += competitionLeaderboardDTO.adFrequencyRows)
             {
-                int randomAds = (int) (Math.random() * providerDTO.advertisements.size());
-                competitionAdapter.addExtraItem(i, new CompetitionAdsExtraItem(providerDTO.advertisements.get(randomAds)));
+                int randomAds = (int) (Math.random() * competitionLeaderboardDTO.ads.size());
+                competitionAdapter.addExtraItem(i, new CompetitionAdsExtraItem(competitionLeaderboardDTO.ads.get(randomAds)));
                 realSize++; //Add +1 because technically, the size of the list has grown by 1 when we add an extra tile.
             }
         }
@@ -262,8 +261,8 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
             CompetitionLeaderboardMarkUserItemView.Requisite thisRequisite = (CompetitionLeaderboardMarkUserItemView.Requisite) requisite;
             if (requisite.currentLeaderboardUserDTO == null)
             {
-                //TODO clicked event
-                return new CompetitionLeaderboardItemDisplayDto(getResources(), currentUserId,
+                //TODO clicked event and rules
+                return new CompetitionLeaderboardOwnRankingDisplayDT(getResources(), currentUserId,
                         requisite.currentUserProfileDTO, thisRequisite.providerDTO);
             }
         }
@@ -278,12 +277,13 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
             if (requisite.currentLeaderboardUserDTO != null)
             {
                 CompetitionLeaderboardDTO competitionLeaderboardDTO = thisRequisite.competitionLeaderboardDTO;
-                CompetitionLeaderboardItemDisplayDto dto = new CompetitionLeaderboardItemDisplayDto(
+                CompetitionLeaderboardItemDisplayDT dto = new CompetitionLeaderboardOwnRankingDisplayDT(
                         getResources(),
                         currentUserId,
                         requisite.currentLeaderboardUserDTO,
                         requisite.currentUserProfileDTO,
-                        thisRequisite.providerDTO);
+                        thisRequisite.providerDTO,
+                        competitionLeaderboardDTO);
                 dto.setIsMyOwnRanking(true);
                 return dto;
             }

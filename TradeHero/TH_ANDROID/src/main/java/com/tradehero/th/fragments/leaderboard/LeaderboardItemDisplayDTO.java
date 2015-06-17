@@ -8,6 +8,7 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -37,9 +38,11 @@ public abstract class LeaderboardItemDisplayDTO implements DTO
             return new FriendLeaderboardItemDisplayDTO.Social(userFriendsDTO);
         }
 
-        @NonNull CompetitionLeaderboardItemDisplayDto create(@NonNull LeaderboardUserDTO leaderboardUserDTO, ProviderDTO providerDTO)
+        @NonNull CompetitionLeaderboardItemDisplayDT create(@NonNull LeaderboardUserDTO leaderboardUserDTO, ProviderDTO providerDTO,
+                CompetitionLeaderboardDTO competitionLeaderboardDTO)
         {
-            return new CompetitionLeaderboardItemDisplayDto(resources, currentUserId, leaderboardUserDTO, currentUserProfileDTO, providerDTO);
+            return new CompetitionLeaderboardItemDisplayDT(resources, currentUserId, leaderboardUserDTO, currentUserProfileDTO, providerDTO,
+                    competitionLeaderboardDTO);
         }
     }
 

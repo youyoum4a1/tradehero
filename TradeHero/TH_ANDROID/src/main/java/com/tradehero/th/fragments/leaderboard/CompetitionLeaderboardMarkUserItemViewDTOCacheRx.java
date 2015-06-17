@@ -72,12 +72,11 @@ class CompetitionLeaderboardMarkUserItemViewDTOCacheRx
                                         LeaderboardItemDisplayDTO.Factory factory =
                                                 new LeaderboardItemDisplayDTO.Factory(resources, currentUserId, requisite.currentUserProfile);
 
-                                        //int prizeDTOSize = competitionLeaderboardDTO.prizes == null ? 0 : competitionLeaderboardDTO.prizes.size(); //TODO for what?
                                         LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO> list =
-                                                new LeaderboardItemDisplayDTO.DTOList(pair.second.leaderboard);
+                                                new LeaderboardItemDisplayDTO.DTOList<>(pair.second.leaderboard);
                                         for (LeaderboardUserDTO leaderboardItem : pair.second.leaderboard.getList())
                                         {
-                                            list.add(factory.create(leaderboardItem, requisite.provider));
+                                            list.add(factory.create(leaderboardItem, requisite.provider, pair.second));
                                         }
                                         return Pair.create(((PagedLeaderboardKey) pair.first), list);
                                     }

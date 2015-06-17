@@ -6,8 +6,11 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.metrics.Analytics;
+import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 
 public class CompetitionLeaderboardMarkUserRecyclerAdapter extends LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO>
@@ -33,9 +36,24 @@ public class CompetitionLeaderboardMarkUserRecyclerAdapter extends LeaderboardMa
 
     public static class CompetitionLbmuItemViewHolder extends LbmuItemViewHolder<LeaderboardItemDisplayDTO>
     {
+        @InjectView(R.id.lbmu_item_prize) ImageView prizeIcon;
+
         public CompetitionLbmuItemViewHolder(View itemView, Picasso picasso, Analytics analytics)
         {
             super(itemView, picasso, analytics);
+        }
+
+        @Override public void display(LeaderboardItemDisplayDTO dto)
+        {
+            super.display(dto);
+            if (dto instanceof CompetitionLeaderboardItemDisplayDT)
+            {
+                prizeIcon.setVisibility(((CompetitionLeaderboardItemDisplayDT) dto).prizeIconVisibility);
+            }
+            else
+            {
+                prizeIcon.setVisibility(View.GONE);
+            }
         }
     }
 

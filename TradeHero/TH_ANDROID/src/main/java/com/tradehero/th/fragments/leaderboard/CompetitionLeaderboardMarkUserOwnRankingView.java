@@ -45,23 +45,23 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
     }
     //</editor-fold>
 
-    public void display(@NonNull CompetitionLeaderboardItemDisplayDto parentViewDTO)
-    {
-        super.display(parentViewDTO);
-        if (parentViewDTO instanceof CompetitionLeaderboardOwnRankingItemDisplayDto)
-        {
-            CompetitionLeaderboardOwnRankingItemDisplayDto viewDTO = (CompetitionLeaderboardOwnRankingItemDisplayDto) parentViewDTO;
-
-            if (infoButtonContainer != null)
-            {
-                infoButtonContainer.setVisibility(viewDTO.infoButtonContainerVisibility);
-            }
-            if (infoText != null)
-            {
-                infoText.setText(viewDTO.infoText);
-            }
-        }
-    }
+    //public void display(@NonNull CompetitionLeaderboardItemDisplayDto parentViewDTO)
+    //{
+    //    super.display(parentViewDTO);
+    //    if (parentViewDTO instanceof CompetitionLeaderboardOwnRankingItemDisplayDto)
+    //    {
+    //        CompetitionLeaderboardOwnRankingItemDisplayDto viewDTO = (CompetitionLeaderboardOwnRankingItemDisplayDto) parentViewDTO;
+    //
+    //        if (infoButtonContainer != null)
+    //        {
+    //            infoButtonContainer.setVisibility(viewDTO.infoButtonContainerVisibility);
+    //        }
+    //        if (infoText != null)
+    //        {
+    //            infoText.setText(viewDTO.infoText);
+    //        }
+    //    }
+    //}
 
     public void displayUserIsNotRanked(@Nullable UserProfileDTO currentUserProfileDTO)
     {
@@ -115,25 +115,25 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         }
     }
 
-    public static class CompetitionLeaderboardOwnRankingItemDisplayDto extends CompetitionLeaderboardItemDisplayDto
-    {
-        @ViewVisibilityValue final int infoButtonContainerVisibility;
-        @NonNull final Spanned infoText;
-
-        public CompetitionLeaderboardOwnRankingItemDisplayDto(@NonNull Resources resources,
-                @NonNull CurrentUserId currentUserId,
-                @NonNull LeaderboardUserDTO leaderboardItem,
-                @NonNull UserProfileDTO currentUserProfile,
-                int prizeDTOSize,
-                @NonNull ProviderDTO providerDTO)
-        {
-            super(resources, currentUserId, leaderboardItem, currentUserProfile, providerDTO);
-            int currentRank = leaderboardItem.ordinalPosition + 1;
-            this.infoButtonContainerVisibility = prizeDTOSize != 0 && currentRank > prizeDTOSize ? View.VISIBLE : View.GONE;
-            int needed = currentRank - prizeDTOSize;
-            this.infoText = THSignedNumber.builder(needed)
-                    .format(resources.getString(R.string.leaderboard_ranks_needed))
-                    .build().createSpanned();
-        }
-    }
+    //public static class CompetitionLeaderboardOwnRankingItemDisplayDto extends CompetitionLeaderboardItemDisplayDto
+    //{
+    //    @ViewVisibilityValue final int infoButtonContainerVisibility;
+    //    @NonNull final Spanned infoText;
+    //
+    //    public CompetitionLeaderboardOwnRankingItemDisplayDto(@NonNull Resources resources,
+    //            @NonNull CurrentUserId currentUserId,
+    //            @NonNull LeaderboardUserDTO leaderboardItem,
+    //            @NonNull UserProfileDTO currentUserProfile,
+    //            int prizeDTOSize,
+    //            @NonNull ProviderDTO providerDTO)
+    //    {
+    //        super(resources, currentUserId, leaderboardItem, currentUserProfile, providerDTO);
+    //        int currentRank = leaderboardItem.ordinalPosition + 1;
+    //        this.infoButtonContainerVisibility = prizeDTOSize != 0 && currentRank > prizeDTOSize ? View.VISIBLE : View.GONE;
+    //        int needed = currentRank - prizeDTOSize;
+    //        this.infoText = THSignedNumber.builder(needed)
+    //                .format(resources.getString(R.string.leaderboard_ranks_needed))
+    //                .build().createSpanned();
+    //    }
+    //}
 }

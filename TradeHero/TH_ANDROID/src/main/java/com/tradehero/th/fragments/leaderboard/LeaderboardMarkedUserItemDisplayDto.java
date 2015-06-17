@@ -82,8 +82,10 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
             @NonNull LeaderboardUserDTO leaderboardItem,
             @NonNull UserProfileDTO currentUserProfileDTO)
     {
-        this.ranking = leaderboardItem.ordinalPosition + 1;
-        this.lbmuRanking = String.valueOf(leaderboardItem.ordinalPosition + 1);
+        /**
+         * This might not be the correct ranking position; e.g. When the leaderboard is filtered, ordinalPosition is always 0,
+         */
+        setRanking(leaderboardItem.ordinalPosition + 1);
 
         this.currentUserId = currentUserId;
         this.leaderboardUserDTO = leaderboardItem;
