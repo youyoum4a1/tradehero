@@ -95,7 +95,7 @@ public abstract class WrapperRecyclerAdapter<ExtraItemType extends WrapperRecycl
             return extraItems.get(position).getViewType();
         }
         position = getRealPosition(position);
-        return super.getItemViewType(position);
+        return realItemAdapter.getItemViewType(position);
     }
 
     @Override public long getItemId(int position)
