@@ -160,7 +160,7 @@ public class SecurityDetailSubDiscussFragment extends Fragment implements View.O
         if (emptyLL == null || discussLL == null) {
             return;
         }
-        if (keyList == null || keyList.size() < 0) {
+        if (keyList == null || keyList.size() <= 0) {
             emptyLL.setVisibility(View.VISIBLE);
             discussLL.setVisibility(View.GONE);
         } else {
