@@ -27,6 +27,7 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.fragments.OnMovableBottomTranslateListener;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.FragmentOuterElements;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
@@ -43,6 +44,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 abstract public class AbstractDiscussionFragment extends BaseFragment
 {
@@ -126,6 +128,11 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     @Override public void onResume()
     {
         super.onResume();
+        if (fragmentElements == null)
+        {
+            Timber.e(new NullPointerException(), "Re-injecting");
+            HierarchyInjector.inject(this);
+        }
         mentionTaggedStockHandler.collectSelection();
         fragmentElements.getMovableBottom().setOnMovableBottomTranslateListener(new OnMovableBottomTranslateListener()
         {
