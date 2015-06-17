@@ -85,6 +85,10 @@ public class BaseFragment extends Fragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        if (navigator == null)
+        {
+            HierarchyInjector.inject(this);
+        }
         actionBarOwnerMixin = ActionBarOwnerMixin.of(this);
 
         isOptionMenuVisible = getIsOptionMenuVisible(getArguments());
@@ -321,12 +325,16 @@ public class BaseFragment extends Fragment
 
         @Override public View getDropDownView(int position, View convertView, ViewGroup parent)
         {
-            if (convertView == null)
+            Activity activity = getActivity();
+            if (convertView == null && activity != null)
             {
-                convertView = getActivity().getLayoutInflater().inflate(R.layout.action_bar_spinner_dropdown, parent, false);
+                convertView = activity.getLayoutInflater().inflate(R.layout.action_bar_spinner_dropdown, parent, false);
             }
-            TextView textView = (TextView) convertView.findViewById(textViewResourceId);
-            textView.setText(getItem(position));
+            if (convertView != null)
+            {
+                TextView textView = (TextView) convertView.findViewById(textViewResourceId);
+                textView.setText(getItem(position));
+            }
             return convertView;
         }
     }

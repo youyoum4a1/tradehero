@@ -878,6 +878,7 @@ public class PositionListFragment
                         return pairObservable.toList();
                     }
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(new Action1<Throwable>()
                 {
                     @Override public void call(Throwable throwable)
@@ -891,6 +892,7 @@ public class PositionListFragment
                         }
                     }
                 })
+                .observeOn(Schedulers.computation())
                 .flatMap(new Func1<List<Pair<PositionDTO, SecurityCompactDTO>>, Observable<List<Pair<PositionDTO, SecurityCompactDTO>>>>()
                 {
                     @Override public Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> call(

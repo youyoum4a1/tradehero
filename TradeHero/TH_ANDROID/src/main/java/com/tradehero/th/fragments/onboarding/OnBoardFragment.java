@@ -77,7 +77,6 @@ public class OnBoardFragment extends BaseFragment
     private SectorDTOList selectedSectors;
     private LeaderboardUserDTOList selectedHeroes;
     private SecurityCompactDTOList selectedStocks;
-    private Subscription[] fragmentSubscriptions;
     @NonNull private final BehaviorSubject<ExchangeCompactDTOList> selectedExchangesSubject;
     @NonNull private final BehaviorSubject<SectorDTOList> selectedSectorsSubject;
     @NonNull private BehaviorSubject<SecurityCompactDTOList> selectedSecuritiesBehavior;
@@ -87,12 +86,6 @@ public class OnBoardFragment extends BaseFragment
         selectedExchangesSubject = BehaviorSubject.create();
         selectedSectorsSubject = BehaviorSubject.create();
         selectedSecuritiesBehavior = BehaviorSubject.create();
-    }
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        fragmentSubscriptions = new Subscription[getTabCount()];
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -226,9 +219,12 @@ public class OnBoardFragment extends BaseFragment
 
     private class PagerAdapter extends FragmentStatePagerAdapter
     {
+        @NonNull private final Subscription[] fragmentSubscriptions;
+
         PagerAdapter(FragmentManager fm)
         {
             super(fm);
+            fragmentSubscriptions = new Subscription[getTabCount()];
         }
 
         @Override public int getCount()
@@ -243,19 +239,19 @@ public class OnBoardFragment extends BaseFragment
             switch (position)
             {
                 case INDEX_SELECTION_EXCHANGES:
-                    return getExchangeSelectionFragment(args);
+                    return getExchangeSelectionFragment(fragmentSubscriptions, args);
 
                 case INDEX_SELECTION_SECTORS:
-                    return getSectorSelectionFragment(args);
+                    return getSectorSelectionFragment(fragmentSubscriptions, args);
 
                 case INDEX_SELECTION_HEROES:
-                    return getHeroSelectionFragment(args);
+                    return getHeroSelectionFragment(fragmentSubscriptions, args);
 
                 case INDEX_SELECTION_WATCHLIST:
-                    return getStockSelectionFragment(args);
+                    return getStockSelectionFragment(fragmentSubscriptions, args);
 
                 case INDEX_SELECTION_LAST:
-                    return getLastFragment(args);
+                    return getLastFragment(fragmentSubscriptions, args);
             }
             throw new IllegalArgumentException("Unknown position " + position);
         }
@@ -267,7 +263,7 @@ public class OnBoardFragment extends BaseFragment
         }
     }
 
-    @NonNull private Fragment getExchangeSelectionFragment(@NonNull Bundle args)
+    @NonNull private Fragment getExchangeSelectionFragment(@NonNull Subscription[] fragmentSubscriptions, @NonNull Bundle args)
     {
         final ExchangeSelectionScreenFragment fragment = new ExchangeSelectionScreenFragment();
         ExchangeSelectionScreenFragment.putRequisites(args,
@@ -320,7 +316,7 @@ public class OnBoardFragment extends BaseFragment
         return fragment;
     }
 
-    @NonNull private Fragment getSectorSelectionFragment(@NonNull Bundle args)
+    @NonNull private Fragment getSectorSelectionFragment(@NonNull Subscription[] fragmentSubscriptions, @NonNull Bundle args)
     {
         final SectorSelectionScreenFragment fragment = new SectorSelectionScreenFragment();
         SectorSelectionScreenFragment.putRequisites(args,
@@ -364,7 +360,7 @@ public class OnBoardFragment extends BaseFragment
         return fragment;
     }
 
-    @NonNull private Fragment getHeroSelectionFragment(@NonNull Bundle args)
+    @NonNull private Fragment getHeroSelectionFragment(@NonNull Subscription[] fragmentSubscriptions, @NonNull Bundle args)
     {
         final UserSelectionScreenFragment fragment = new UserSelectionScreenFragment();
         fragment.setSelectedExchangesSectorsObservable(getExchangeCompactSectorObservable());
@@ -405,7 +401,7 @@ public class OnBoardFragment extends BaseFragment
         return fragment;
     }
 
-    @NonNull private Fragment getStockSelectionFragment(@NonNull Bundle args)
+    @NonNull private Fragment getStockSelectionFragment(@NonNull Subscription[] fragmentSubscriptions, @NonNull Bundle args)
     {
         final StockSelectionScreenFragment fragment = new StockSelectionScreenFragment();
         fragment.setSelectedExchangesSectorsObservable(getExchangeCompactSectorObservable());
@@ -462,7 +458,7 @@ public class OnBoardFragment extends BaseFragment
                 });
     }
 
-    @NonNull private Fragment getLastFragment(@NonNull Bundle args)
+    @NonNull private Fragment getLastFragment(@NonNull Subscription[] fragmentSubscriptions, @NonNull Bundle args)
     {
         OnBoardLastFragment fragment = new OnBoardLastFragment();
         fragment.setSelectedSecuritiesObservable(selectedSecuritiesBehavior.asObservable());
