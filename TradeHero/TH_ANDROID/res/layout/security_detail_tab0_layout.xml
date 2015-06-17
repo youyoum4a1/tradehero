@@ -102,7 +102,7 @@
                             android:layout_height="fill_parent"
                             android:layout_marginRight="1px"
                             android:background="@color/transparent"
-                            android:text="资讯"
+                            android:text="新闻"
                             android:textColor="@color/color_text_security_detail"
                             android:textSize="15sp" />
 
