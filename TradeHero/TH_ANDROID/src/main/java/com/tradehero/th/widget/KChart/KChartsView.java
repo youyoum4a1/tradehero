@@ -263,15 +263,18 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
         float leftMargin = mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE;
 		textPaint.setColor(COLOR_GREEN);
 		canvas.drawText(new DecimalFormat("#.##").format(mMinPrice), 1 + leftMargin, UPER_CHART_BOTTOM - 1, textPaint);
-		canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / 4), 1 + leftMargin,
-                UPER_CHART_BOTTOM - getLatitudeSpacing() - 1 + 10,
-                textPaint);
-		textPaint.setColor(Color.BLACK);
-		canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / 4 * 2), 1 + leftMargin,
+		canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / 6), 1 + leftMargin,
+                UPER_CHART_BOTTOM - getLatitudeSpacing() - 1 + 10, textPaint);
+		canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / 6 * 2), 1 + leftMargin,
 				UPER_CHART_BOTTOM - getLatitudeSpacing() * 2 - 1 + 10, textPaint);
+		textPaint.setColor(Color.BLACK);
+        canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / 6 * 3), 1 + leftMargin,
+                UPER_CHART_BOTTOM - getLatitudeSpacing() * 3 - 1 + 10, textPaint);
 		textPaint.setColor(COLOR_RED);
-		canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / 4 * 3), 1 + leftMargin,
-				UPER_CHART_BOTTOM - getLatitudeSpacing() * 3 - 1 + 10, textPaint);
+		canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / 6 * 4), 1 + leftMargin,
+				UPER_CHART_BOTTOM - getLatitudeSpacing() * 4 - 1 + 10, textPaint);
+        canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / 6 * 5), 1 + leftMargin,
+                UPER_CHART_BOTTOM - getLatitudeSpacing() * 5 - 1 + 10, textPaint);
 		canvas.drawText(new DecimalFormat("#.##").format(mMaxPrice), 1 + leftMargin,
 				DEFAULT_AXIS_TITLE_SIZE * 2, textPaint);
 
@@ -721,45 +724,22 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 	 * @return
 	 */
 	private List<Double> initMA(List<KLineItem> entityList, int days) {
-	//private List<Float> initMA(List<KLineItem> entityList, int days) {
-	//private List<Float> initMA(List<OHLCEntity> entityList, int days) {
 		if (days < 2 || entityList == null || entityList.size() <= 0) {
 			return null;
 		}
+
 		List<Double> MAValues = new ArrayList<>();
-		//List<Float> MAValues = new ArrayList<Float>();
-
-		double sum = 0;
-		//float sum = 0;
-		double avg = 0;
-		//float avg = 0;
-		for (int i = entityList.size() - 1; i >= 0; i--) {
-			double close = entityList.get(i).getClose();
-			//float close = (float) entityList.get(i).getClose();
-			if (i > entityList.size() - days) {
-				sum = sum + close;
-				avg = sum / (entityList.size() - i);
-			} else {
-				sum = close + avg * (days - 1);
-				avg = sum / days;
-			}
-			MAValues.add(avg);
-		}
-
-		List<Double> result = new ArrayList<>();
-		//List<Float> result = new ArrayList<Float>();
-		for (int j = MAValues.size() - 1; j >= 0; j--) {
-			result.add(MAValues.get(j));
-		}
-		return result;
+        for (int i = 0; i < entityList.size() - days; i++) {
+            double sum = 0;
+            for (int j = 0; j < days; j++) {
+                sum += entityList.get(i + j).getClose();
+            }
+            MAValues.add(sum / (double)days);
+        }
+        return MAValues;
 	}
 
-	//public List<OHLCEntity> getOHLCData() {
-	//	return mOHLCData;
-	//}
-
 	public void setOHLCData(List<KLineItem> OHLCData) {
-	//public void setOHLCData(List<OHLCEntity> OHLCData) {
 		if (OHLCData == null || OHLCData.size() <= 0) {
 			return;
 		}
@@ -775,15 +755,9 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
         Long volume = fenshiData.getVol();
         lowerHigh = volume;
         for (int i = 0; i < mOHLCData.size(); i++) {
-            //Timber.d("lyl i="+i+" "+mOHLCData.get(i).toString());
-            //if (i != timesList.size() - 1)
-            //{
-            //    Timber.d("lyl i="+(i+1)+" "+timesList.get(i+1).toString());
-            //}
             fenshiData = mOHLCData.get(i);
             if (fenshiData.getOpen() == null || fenshiData.getVol() == null)
             {
-                //Timber.d("lyl null i=" + i);
                 //fix null point
                 if (i == 0 || i == mOHLCData.size() - 1 || mOHLCData.get(i+1).getOpen() == null
                         || mOHLCData.get(i+1).getVol() == null) {
@@ -795,21 +769,13 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
                 }
             }
 
-            //price = fenshiData.price;
-            //avgPrice = fenshiData.avgPrice;
-            //if (i == 0) {
-                volume = fenshiData.getVol();
-            //} else {
-            //    volume = fenshiData.getVol() - mOHLCData.get(i - 1).getVol();
-            //}
-
+            volume = fenshiData.getVol();
             //uperHalfHigh = (float) (uperHalfHigh > Math
             //        .abs(avgPrice - initialWeightedIndex) ? uperHalfHigh : Math
             //        .abs(avgPrice - initialWeightedIndex));
             //uperHalfHigh = (float) (uperHalfHigh > Math.abs(price - initialWeightedIndex) ? uperHalfHigh
             //        : Math.abs(price - initialWeightedIndex));
             lowerHigh = lowerHigh > volume ? lowerHigh : volume;
-            //Timber.d("lyl lowerHigh="+lowerHigh);
         }
 
 		postInvalidate();
@@ -819,19 +785,16 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 		MALineEntity MA5 = new MALineEntity();
 		MA5.setTitle("MA5");
 		MA5.setLineColor(COLOR_BLUE);
-		//MA5.setLineColor(Color.WHITE);
 		MA5.setLineData(initMA(mOHLCData, 5));
 
 		MALineEntity MA10 = new MALineEntity();
 		MA10.setTitle("MA10");
 		MA10.setLineColor(COLOR_RED);
-		//MA10.setLineColor(Color.CYAN);
 		MA10.setLineData(initMA(mOHLCData, 10));
 
 		MALineEntity MA20 = new MALineEntity();
 		MA20.setTitle("MA20");
 		MA20.setLineColor(COLOR_YEllOW);
-		//MA20.setLineColor(Color.BLUE);
 		MA20.setLineData(initMA(mOHLCData, 20));
 
 		MALineData = new ArrayList<MALineEntity>();
