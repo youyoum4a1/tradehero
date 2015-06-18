@@ -169,13 +169,13 @@
         <com.tradehero.th.widget.KChart.TimesView
             android:id="@+id/time_list_view"
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_height="200dp"
             android:layout_margin="@dimen/margin_small"/>
 
         <com.tradehero.th.widget.KChart.KChartsView
             android:id="@+id/my_charts_view"
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_height="200dp"
             android:layout_margin="@dimen/margin_small"/>
       </LinearLayout>
 

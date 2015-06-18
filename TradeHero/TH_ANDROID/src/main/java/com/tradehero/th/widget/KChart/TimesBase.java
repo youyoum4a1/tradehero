@@ -35,10 +35,10 @@ public class TimesBase extends View {
     public static int COLOR_BLUE = 0xFF1789d5;
     public static int COLOR_YEllOW = 0xFFffcc00;
 	/** 默认上表纬线数 */
-	public static final int DEFAULT_UPER_LATITUDE_NUM = 3;
+	public static final int DEFAULT_UPER_LATITUDE_NUM = 5;
 
 	/** 默认下表纬线数 */
-	private static final int DEFAULT_LOWER_LATITUDE_NUM = 2;
+	private static final int DEFAULT_LOWER_LATITUDE_NUM = 1;
 
 	/** 默认经线数 */
 	public static final int DEFAULT_LOGITUDE_NUM = 3;
