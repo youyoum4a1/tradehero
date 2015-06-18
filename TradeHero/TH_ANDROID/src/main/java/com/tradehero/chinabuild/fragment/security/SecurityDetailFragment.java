@@ -1154,6 +1154,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     }
 
     private void refreshQuoteInfo(final SecurityId securityId) {
+        getQuote(securityId);
+        //if the stock is suspended, don't refresh quote info.
+        if (securityCompactDTO == null
+                || securityCompactDTO.isSuspended()) {
+            return;
+        }
         if (QuoteServiceWrapper.isChinaStock(securityId)) {
             refreshCNQuoteInfo(securityId);
         } else {
@@ -1193,8 +1199,20 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     private void updateSecurityInfoByCompactDTO() {
         if (getActivity() == null
-                || securityCompactDTO == null
-                || quoteDTO == null) {
+                || securityCompactDTO == null) {
+            return;
+        }
+
+        //涨跌幅
+        int colorResId = R.color.black;
+
+        if (securityCompactDTO.isSuspended()) {
+            if (securityCompactDTO.previousClose == null) {
+                tvSecurityPrice.setText("- -");
+            } else {
+                tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(securityCompactDTO.previousClose));
+                tvSecurityPrice.setTextColor(getResources().getColor(colorResId));
+            }
             return;
         }
 
@@ -1202,10 +1220,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         if (securityCompactDTO != null) {
             currency = securityCompactDTO.getCurrencyDisplay();
         }
-
-
-        //涨跌幅
-        int colorResId = R.color.black;
 
         Double rate = securityCompactDTO.risePercent;
         if (rate != null) {
@@ -1285,7 +1299,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     }
 
     private void refreshCNQuoteInfo(final SecurityId securityId) {
-        getQuote(securityId);
         if (quoteDetailCallback == null) {
             quoteDetailCallback = new Callback<QuoteDetail>() {
                 @Override
