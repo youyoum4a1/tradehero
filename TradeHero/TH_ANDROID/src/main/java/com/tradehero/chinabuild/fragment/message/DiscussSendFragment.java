@@ -20,6 +20,7 @@ import com.tradehero.chinabuild.data.DiscoveryDiscussFormDTO;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.chinabuild.fragment.competition.CompetitionDiscussFragment;
 import com.tradehero.chinabuild.fragment.search.SearchFragment;
+import com.tradehero.chinabuild.fragment.security.SecurityDetailSubCache;
 import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.text.RichTextCreator;
@@ -126,6 +127,9 @@ public class DiscussSendFragment extends DashboardFragment
         }else {
             postDiscussion();
         }
+
+        //Clear cache about security detail sub discuss
+        SecurityDetailSubCache.getInstance().onlyClearDiscuss();
     }
 
     public void initArgument()

@@ -78,4 +78,8 @@ public class SecurityDetailSubCache {
         securityId = null;
         keyList = null;
     }
+
+    public void onlyClearDiscuss(){
+        keyList = null;
+    }
 }
