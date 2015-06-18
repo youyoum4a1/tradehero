@@ -423,7 +423,6 @@
     </string>
     <string name="download_tradehero_android_app_on_weibo">http://cn.tradehero.mobi/shr/assets.html?userId=313529
     </string>
-    <!--  <string name="download_tradehero_android_app_on_weibo">http://tradehero.b0.upaiyun.com/th_android.apk</string> -->
     <string name="target_user_millionaire_page">http://%1$s/shr/assets.html?userId=313529</string>
 
     <!-- Recommend Items (Stock & Hero)-->
@@ -568,6 +567,12 @@
     <string name="question_summary">答题小结</string>
 
     <!-- Stock Learning -->
+
+    <!--Security Detail -->
+    <string name="security_yesterday_price">&#160;&#160;&#160;&#160;昨收：</string>
+    <string name="security_today_low">&#160;&#160;&#160;&#160;最低：</string>
+    <!--Security Detail -->
+
 
     <string name="error_fetch_message_thread_header">Failed to fetch the message thread info</string>
 

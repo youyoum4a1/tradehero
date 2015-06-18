@@ -313,7 +313,7 @@ public class SecurityDetailSubNewsFragment extends Fragment implements View.OnCl
             if (separate != null) {
                 separate.setVisibility(View.VISIBLE);
             }
-            news.setText(newsDTO.description);
+            news.setText(newsDTO.description.trim());
             date.setText(prettyTime.formatUnrounded(newsDTO.createdAtUtc));
         }
 

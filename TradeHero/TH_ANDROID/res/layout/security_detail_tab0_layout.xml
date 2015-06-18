@@ -34,11 +34,12 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/ic_info_data" />
 
+            <include layout="@layout/separate_line" />
+
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/ic_info_buy_sale_btns"
-                android:layout_below="@id/ic_info_chart"
                 android:orientation="vertical">
 
                 <LinearLayout

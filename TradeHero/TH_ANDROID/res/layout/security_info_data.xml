@@ -141,7 +141,7 @@
                             android:textSize="@dimen/sucurity_detail_info"
                             android:textColor="@color/text_gray_normal"
                             android:singleLine="true"
-                            android:text="昨收："/>
+                            android:text="@string/security_yesterday_price"/>
                         <TextView
                             android:id="@+id/tvYesterdayPriceEnd"
                             style="@style/security_data_info"
@@ -160,7 +160,7 @@
                             android:textColor="@color/text_gray_normal"
                             android:textSize="@dimen/sucurity_detail_info"
                             android:singleLine="true"
-                            android:text="最低："/>
+                            android:text="@string/security_today_low"/>
                         <TextView
                             android:id="@+id/tvInfo1Value"
                             style="@style/security_data_info"
