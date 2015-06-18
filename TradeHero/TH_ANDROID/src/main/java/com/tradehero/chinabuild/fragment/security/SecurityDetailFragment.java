@@ -1283,6 +1283,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                         return;
                     }
                     quoteDTO = dto;
+                    setInitialBuySaleQuantityIfCan();
                 }
 
                 @Override

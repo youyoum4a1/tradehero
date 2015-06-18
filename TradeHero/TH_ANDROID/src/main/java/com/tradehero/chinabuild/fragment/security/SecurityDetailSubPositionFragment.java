@@ -1,6 +1,7 @@
 package com.tradehero.chinabuild.fragment.security;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -299,12 +300,17 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
             quantity.setText(signedQuantity.toString());
             currency.setText(position.currencyDisplay);
             price.setText(SecurityCompactDTO.getShortValue(position.price));
-            THSignedNumber roi = THSignedPercentage.builder(position.roi * 100)
-                    .withSign()
-                    .signTypeArrow()
-                    .build();
-            tvRoi.setText(roi.toString());
-            tvRoi.setTextColor(roi.getColor());
+            if (position.roi == null) {
+                tvRoi.setText("- -");
+                tvRoi.setTextColor(Color.BLACK);
+            } else {
+                THSignedNumber roi = THSignedPercentage.builder(position.roi * 100)
+                        .withSign()
+                        .signTypeArrow()
+                        .build();
+                tvRoi.setText(roi.toString());
+                tvRoi.setTextColor(roi.getColor());
+            }
         }
 
         public void gone() {
