@@ -125,133 +125,133 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 		//drawLowerRegion(canvas);
 		drawLowerRegion2(canvas);
 		drawTitles(canvas);
-		drawCandleDetails(canvas);
+		//drawCandleDetails(canvas);
 	}
 
-	private void drawCandleDetails(Canvas canvas) {
-		if (showDetails) {
-			float width = getWidth();
-			float left = 3.0f;
-			float top = (float) (5.0 + DEFAULT_AXIS_TITLE_SIZE);
-			float right = 3.0f + 7 * DEFAULT_AXIS_TITLE_SIZE;
-			float bottom = 8.0f + 7 * DEFAULT_AXIS_TITLE_SIZE;
-			if (mStartX < width / 2.0f) {
-				right = width - 4.0f;
-				left = width - 4.0f - 7 * DEFAULT_AXIS_TITLE_SIZE;
-			}
-			int selectIndext = (int) ((width - 2.0f - mStartX) / mCandleWidth + mDataStartIndext);
-
-			// 绘制点击线条及详情区域
-			Paint paint = new Paint();
-			paint.setColor(Color.LTGRAY);
-			paint.setAlpha(150);
-			canvas.drawLine(mStartX, 2.0f + DEFAULT_AXIS_TITLE_SIZE, mStartX, UPER_CHART_BOTTOM,
-					paint);
-			canvas.drawLine(mStartX, getHeight() - 2.0f, mStartX, LOWER_CHART_TOP, paint);
-			canvas.drawRect(left, top, right, bottom, paint);
-
-			Paint borderPaint = new Paint();
-			borderPaint.setColor(Color.WHITE);
-			borderPaint.setStrokeWidth(2);
-			canvas.drawLine(left, top, left, bottom, borderPaint);
-			canvas.drawLine(left, top, right, top, borderPaint);
-			canvas.drawLine(right, bottom, right, top, borderPaint);
-			canvas.drawLine(right, bottom, left, bottom, borderPaint);
-
-			// 绘制详情文字
-			Paint textPaint = new Paint();
-			textPaint.setTextSize(DEFAULT_AXIS_TITLE_SIZE);
-			textPaint.setColor(Color.WHITE);
-			textPaint.setFakeBoldText(true);
-			canvas.drawText("日期: " + mOHLCData.get(selectIndext).getDate(), left + 1, top
-					+ DEFAULT_AXIS_TITLE_SIZE, textPaint);
-
-			canvas.drawText("开盘:", left + 1, top + DEFAULT_AXIS_TITLE_SIZE * 2.0f, textPaint);
-			double open = mOHLCData.get(selectIndext).getOpen();
-			try {
-				double ysdclose = mOHLCData.get(selectIndext + 1).getClose();
-				if (open >= ysdclose) {
-					textPaint.setColor(Color.RED);
-				} else {
-					textPaint.setColor(Color.GREEN);
-				}
-				canvas.drawText(new DecimalFormat("#.##").format(open), left + 1
-						+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + DEFAULT_AXIS_TITLE_SIZE * 2.0f,
-						textPaint);
-			} catch (Exception e) {
-				canvas.drawText(new DecimalFormat("#.##").format(open), left + 1
-						+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + DEFAULT_AXIS_TITLE_SIZE * 2.0f,
-						textPaint);
-			}
-
-			textPaint.setColor(Color.WHITE);
-			canvas.drawText("最高:", left + 1, top + DEFAULT_AXIS_TITLE_SIZE * 3.0f, textPaint);
-			double high = mOHLCData.get(selectIndext).getHigh();
-			if (open < high) {
-				textPaint.setColor(Color.RED);
-			} else {
-				textPaint.setColor(Color.GREEN);
-			}
-			canvas.drawText(new DecimalFormat("#.##").format(high), left + 1
-					+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + DEFAULT_AXIS_TITLE_SIZE * 3.0f,
-					textPaint);
-
-			textPaint.setColor(Color.WHITE);
-			canvas.drawText("最低:", left + 1, top + DEFAULT_AXIS_TITLE_SIZE * 4.0f, textPaint);
-			double low = mOHLCData.get(selectIndext).getLow();
-			try {
-				double yesterday = (mOHLCData.get(selectIndext + 1).getLow() + mOHLCData.get(
-						selectIndext + 1).getHigh()) / 2.0f;
-				if (yesterday <= low) {
-					textPaint.setColor(Color.RED);
-				} else {
-					textPaint.setColor(Color.GREEN);
-				}
-			} catch (Exception e) {
-
-			}
-			canvas.drawText(new DecimalFormat("#.##").format(low), left + 1
-					+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + DEFAULT_AXIS_TITLE_SIZE * 4.0f,
-					textPaint);
-
-			textPaint.setColor(Color.WHITE);
-			canvas.drawText("收盘:", left + 1, top + DEFAULT_AXIS_TITLE_SIZE * 5.0f, textPaint);
-			double close = mOHLCData.get(selectIndext).getClose();
-			try {
-				double yesdopen = (mOHLCData.get(selectIndext + 1).getLow() + mOHLCData.get(
-						selectIndext + 1).getHigh()) / 2.0f;
-				if (yesdopen <= close) {
-					textPaint.setColor(Color.RED);
-				} else {
-					textPaint.setColor(Color.GREEN);
-				}
-			} catch (Exception e) {
-
-			}
-			canvas.drawText(new DecimalFormat("#.##").format(close), left + 1
-					+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + DEFAULT_AXIS_TITLE_SIZE * 5.0f,
-					textPaint);
-
-			textPaint.setColor(Color.WHITE);
-			canvas.drawText("涨跌幅:", left + 1, top + DEFAULT_AXIS_TITLE_SIZE * 6.0f, textPaint);
-			try {
-				double yesdclose = mOHLCData.get(selectIndext + 1).getClose();
-				double priceRate = (close - yesdclose) / yesdclose;
-				if (priceRate >= 0) {
-					textPaint.setColor(Color.RED);
-				} else {
-					textPaint.setColor(Color.GREEN);
-				}
-				canvas.drawText(new DecimalFormat("#.##%").format(priceRate), left + 1
-						+ DEFAULT_AXIS_TITLE_SIZE * 3.5f, top + DEFAULT_AXIS_TITLE_SIZE * 6.0f,
-						textPaint);
-			} catch (Exception e) {
-				canvas.drawText("--", left + 1 + DEFAULT_AXIS_TITLE_SIZE * 3.5f, top
-						+ DEFAULT_AXIS_TITLE_SIZE * 6.0f, textPaint);
-			}
-		}
-
-	}
+	//private void drawCandleDetails(Canvas canvas) {
+	//	if (showDetails) {
+	//		float width = getWidth();
+	//		float left = 3.0f;
+	//		float top = (float) (5.0 + DEFAULT_AXIS_TITLE_SIZE);
+	//		float right = 3.0f + 7 * DEFAULT_AXIS_TITLE_SIZE;
+	//		float bottom = 8.0f + 7 * DEFAULT_AXIS_TITLE_SIZE;
+	//		if (mStartX < width / 2.0f) {
+	//			right = width - 4.0f;
+	//			left = width - 4.0f - 7 * DEFAULT_AXIS_TITLE_SIZE;
+	//		}
+	//		int selectIndext = (int) ((width - 2.0f - mStartX) / mCandleWidth + mDataStartIndext);
+    //
+	//		// 绘制点击线条及详情区域
+	//		Paint paint = new Paint();
+	//		paint.setColor(Color.LTGRAY);
+	//		paint.setAlpha(150);
+	//		canvas.drawLine(mStartX, 2.0f + DEFAULT_AXIS_TITLE_SIZE, mStartX, UPER_CHART_BOTTOM,
+	//				paint);
+	//		canvas.drawLine(mStartX, getHeight() - 2.0f, mStartX, LOWER_CHART_TOP, paint);
+	//		canvas.drawRect(left, top, right, bottom, paint);
+    //
+	//		Paint borderPaint = new Paint();
+	//		borderPaint.setColor(Color.WHITE);
+	//		borderPaint.setStrokeWidth(2);
+	//		canvas.drawLine(left, top, left, bottom, borderPaint);
+	//		canvas.drawLine(left, top, right, top, borderPaint);
+	//		canvas.drawLine(right, bottom, right, top, borderPaint);
+	//		canvas.drawLine(right, bottom, left, bottom, borderPaint);
+    //
+	//		// 绘制详情文字
+	//		Paint textPaint = new Paint();
+	//		textPaint.setTextSize(DEFAULT_AXIS_TITLE_SIZE);
+	//		textPaint.setColor(Color.WHITE);
+	//		textPaint.setFakeBoldText(true);
+	//		canvas.drawText("日期: " + mOHLCData.get(selectIndext).getDate(), left + 1, top
+	//				+ DEFAULT_AXIS_TITLE_SIZE, textPaint);
+    //
+	//		canvas.drawText("开盘:", left + 1, top + DEFAULT_AXIS_TITLE_SIZE * 2.0f, textPaint);
+	//		double open = mOHLCData.get(selectIndext).getOpen();
+	//		try {
+	//			double ysdclose = mOHLCData.get(selectIndext + 1).getClose();
+	//			if (open >= ysdclose) {
+	//				textPaint.setColor(Color.RED);
+	//			} else {
+	//				textPaint.setColor(Color.GREEN);
+	//			}
+	//			canvas.drawText(new DecimalFormat("#.##").format(open), left + 1
+	//					+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + DEFAULT_AXIS_TITLE_SIZE * 2.0f,
+	//					textPaint);
+	//		} catch (Exception e) {
+	//			canvas.drawText(new DecimalFormat("#.##").format(open), left + 1
+	//					+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + DEFAULT_AXIS_TITLE_SIZE * 2.0f,
+	//					textPaint);
+	//		}
+    //
+	//		textPaint.setColor(Color.WHITE);
+	//		canvas.drawText("最高:", left + 1, top + DEFAULT_AXIS_TITLE_SIZE * 3.0f, textPaint);
+	//		double high = mOHLCData.get(selectIndext).getHigh();
+	//		if (open < high) {
+	//			textPaint.setColor(Color.RED);
+	//		} else {
+	//			textPaint.setColor(Color.GREEN);
+	//		}
+	//		canvas.drawText(new DecimalFormat("#.##").format(high), left + 1
+	//				+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + DEFAULT_AXIS_TITLE_SIZE * 3.0f,
+	//				textPaint);
+    //
+	//		textPaint.setColor(Color.WHITE);
+	//		canvas.drawText("最低:", left + 1, top + DEFAULT_AXIS_TITLE_SIZE * 4.0f, textPaint);
+	//		double low = mOHLCData.get(selectIndext).getLow();
+	//		try {
+	//			double yesterday = (mOHLCData.get(selectIndext + 1).getLow() + mOHLCData.get(
+	//					selectIndext + 1).getHigh()) / 2.0f;
+	//			if (yesterday <= low) {
+	//				textPaint.setColor(Color.RED);
+	//			} else {
+	//				textPaint.setColor(Color.GREEN);
+	//			}
+	//		} catch (Exception e) {
+    //
+	//		}
+	//		canvas.drawText(new DecimalFormat("#.##").format(low), left + 1
+	//				+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + DEFAULT_AXIS_TITLE_SIZE * 4.0f,
+	//				textPaint);
+    //
+	//		textPaint.setColor(Color.WHITE);
+	//		canvas.drawText("收盘:", left + 1, top + DEFAULT_AXIS_TITLE_SIZE * 5.0f, textPaint);
+	//		double close = mOHLCData.get(selectIndext).getClose();
+	//		try {
+	//			double yesdopen = (mOHLCData.get(selectIndext + 1).getLow() + mOHLCData.get(
+	//					selectIndext + 1).getHigh()) / 2.0f;
+	//			if (yesdopen <= close) {
+	//				textPaint.setColor(Color.RED);
+	//			} else {
+	//				textPaint.setColor(Color.GREEN);
+	//			}
+	//		} catch (Exception e) {
+    //
+	//		}
+	//		canvas.drawText(new DecimalFormat("#.##").format(close), left + 1
+	//				+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + DEFAULT_AXIS_TITLE_SIZE * 5.0f,
+	//				textPaint);
+    //
+	//		textPaint.setColor(Color.WHITE);
+	//		canvas.drawText("涨跌幅:", left + 1, top + DEFAULT_AXIS_TITLE_SIZE * 6.0f, textPaint);
+	//		try {
+	//			double yesdclose = mOHLCData.get(selectIndext + 1).getClose();
+	//			double priceRate = (close - yesdclose) / yesdclose;
+	//			if (priceRate >= 0) {
+	//				textPaint.setColor(Color.RED);
+	//			} else {
+	//				textPaint.setColor(Color.GREEN);
+	//			}
+	//			canvas.drawText(new DecimalFormat("#.##%").format(priceRate), left + 1
+	//					+ DEFAULT_AXIS_TITLE_SIZE * 3.5f, top + DEFAULT_AXIS_TITLE_SIZE * 6.0f,
+	//					textPaint);
+	//		} catch (Exception e) {
+	//			canvas.drawText("--", left + 1 + DEFAULT_AXIS_TITLE_SIZE * 3.5f, top
+	//					+ DEFAULT_AXIS_TITLE_SIZE * 6.0f, textPaint);
+	//		}
+	//	}
+    //
+	//}
 
 	private void drawTitles(Canvas canvas) {
 		Paint textPaint = new Paint();
@@ -338,20 +338,14 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 			float right = (float) (width - 3 - mCandleWidth * i - lineWidth*2);
 			float startX = (float) (width - 3 - mCandleWidth * i - (mCandleWidth - 1) / 2);
 			if (open < close) {
-				//canvas.drawRect(left, close, right, open, greenPaint);
-				//canvas.drawLine(startX, high, startX, low, greenPaint);
-				canvas.drawRect(left, open, right, close, redPaint);
-				canvas.drawRect(startX - lineWidth, high, startX + lineWidth, low, redPaint);
+				canvas.drawRect(left, open, right, close, greenPaint);
+				canvas.drawRect(startX - lineWidth, high, startX + lineWidth, low, greenPaint);
 			} else if (open == close) {
-				//canvas.drawLine(left, open, right, open, redPaint);
-				//canvas.drawLine(startX, high, startX, low, redPaint);
 				canvas.drawRect(left, open, right, open + lineWidth * 2, redPaint);
 				canvas.drawRect(startX - lineWidth, high, startX + lineWidth, low, redPaint);
 			} else {
-				canvas.drawRect(left, close, right, open, greenPaint);
-				canvas.drawRect(startX - lineWidth, high, startX + lineWidth, low, greenPaint);
-				//canvas.drawRect(left, open, right, close, redPaint);
-				//canvas.drawLine(startX, high, startX, low, redPaint);
+				canvas.drawRect(left, close, right, open, redPaint);
+				canvas.drawRect(startX - lineWidth, high, startX + lineWidth, low, redPaint);
 			}
 
 		}
