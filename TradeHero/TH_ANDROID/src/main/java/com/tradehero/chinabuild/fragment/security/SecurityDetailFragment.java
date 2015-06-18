@@ -1257,7 +1257,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
 
         if (securityCompactDTO.volume != null) {
-            tvInfo2Value.setText(NumberDisplayUtils.getString(securityCompactDTO.volume));
+            tvInfo2Value.setText(NumberDisplayUtils.getString(securityCompactDTO.volume)
+                    + getString(R.string.stock_unit));
         }
 
         if (securityCompactDTO.open != null) {
@@ -1418,7 +1419,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
 
         if (quoteDetail.vol != null) {
-            tvInfo2Value.setText(NumberDisplayUtils.getString(quoteDetail.vol));
+            tvInfo2Value.setText(NumberDisplayUtils.getString(quoteDetail.vol)
+                    + getString(R.string.stock_unit));
         }
 
         if (quoteDetail.open != null) {

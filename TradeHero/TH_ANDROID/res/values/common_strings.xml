@@ -80,4 +80,6 @@
   <string name="dashboard_message_center_key" translatable="false">key_message</string>
   <string name="dashboard_referral_key" translatable="false">key_refer_friends</string>
 
+  <string name="stock_unit">股</string>
+
 </resources>
