@@ -158,7 +158,7 @@ public class THSignedNumber
         DecimalFormat df = new DecimalFormat(getStringFormat(precision).toString());
         String formatted = df.format(Math.abs(value));
 
-        return removeTrailingZeros(formatted);
+        return formatted;
     }
 
     public static String removeTrailingZeros(String formattedNumber)
@@ -191,7 +191,7 @@ public class THSignedNumber
             sb.append('.');
             for (int i = 0; i < precision; ++i)
             {
-                sb.append('#');
+                sb.append('0');
             }
         }
         //sb.append("#,###");
