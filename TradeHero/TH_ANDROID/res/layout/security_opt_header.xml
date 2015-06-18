@@ -6,7 +6,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="38dp"
-        android:background="#f1f4f5"
+        android:background="#ffffff"
         android:orientation="horizontal">
 
         <TextView
@@ -16,7 +16,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="用户"
-            android:textColor="#3b3b3b" />
+            android:textSize="14sp"
+            android:textColor="#7f7f7f" />
 
         <TextView
             android:layout_width="0dp"
@@ -25,7 +26,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="买/卖"
-            android:textColor="#3b3b3b" />
+            android:textSize="14sp"
+            android:textColor="#7f7f7f" />
 
         <TextView
             android:layout_width="0dp"
@@ -33,8 +35,9 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="成本"
-            android:textColor="#3b3b3b" />
+            android:text="买入成本"
+            android:textSize="14sp"
+            android:textColor="#7f7f7f" />
 
         <TextView
             android:layout_width="0dp"
@@ -43,7 +46,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="股数"
-            android:textColor="#3b3b3b" />
+            android:textSize="14sp"
+            android:textColor="#7f7f7f" />
     </LinearLayout>
 
 </LinearLayout>

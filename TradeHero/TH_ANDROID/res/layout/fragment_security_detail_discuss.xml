@@ -71,7 +71,7 @@
                         android:layout_marginLeft="5dp"
                         android:singleLine="true"
                         android:textColor="#1789d5"
-                        android:maxEms="5"
+                        android:maxEms="3"
                         android:textSize="12sp" />
                 </LinearLayout>
 
@@ -80,7 +80,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-                    android:textColor="#1789d5"
+                    android:textColor="#7e7e7e"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -101,7 +101,14 @@
                     android:textSize="12sp" />
             </LinearLayout>
         </RelativeLayout>
-        <include layout="@layout/separate_line" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp">
+
+            <include layout="@layout/separate_line" />
+        </LinearLayout>
         <RelativeLayout
             android:id="@+id/relativelayout_user1"
             android:layout_width="match_parent"
@@ -147,7 +154,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-                    android:textColor="#1789d5"
+                    android:textColor="#7e7e7e"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -168,9 +175,13 @@
                     android:textSize="12sp" />
             </LinearLayout>
         </RelativeLayout>
-        <include
-            android:id="@+id/line1"
-            layout="@layout/separate_line" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp">
+
+            <include android:id="@+id/line1" layout="@layout/separate_line" />
+        </LinearLayout>
         <RelativeLayout
             android:id="@+id/relativelayout_user2"
             android:layout_width="match_parent"
@@ -216,7 +227,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-                    android:textColor="#1789d5"
+                    android:textColor="#7e7e7e"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -239,9 +250,13 @@
 
             </LinearLayout>
         </RelativeLayout>
-        <include
-            android:id="@+id/line2"
-            layout="@layout/separate_line" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp">
+
+            <include android:id="@+id/line2" layout="@layout/separate_line" />
+        </LinearLayout>
         <RelativeLayout
             android:id="@+id/relativelayout_user3"
             android:layout_width="match_parent"
@@ -287,7 +302,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-                    android:textColor="#1789d5"
+                    android:textColor="#7e7e7e"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -309,9 +324,13 @@
                     android:textSize="12sp" />
             </LinearLayout>
         </RelativeLayout>
-        <include
-            android:id="@+id/line3"
-            layout="@layout/separate_line" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp">
+
+            <include android:id="@+id/line3" layout="@layout/separate_line" />
+        </LinearLayout>
         <RelativeLayout
             android:id="@+id/relativelayout_user4"
             android:layout_width="match_parent"
@@ -357,7 +376,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-                    android:textColor="#1789d5"
+                    android:textColor="#7e7e7e"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -379,9 +398,13 @@
                     android:textSize="12sp" />
             </LinearLayout>
         </RelativeLayout>
-        <include
-            android:id="@+id/line4"
-            layout="@layout/separate_line" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp">
+
+            <include android:id="@+id/line1" layout="@layout/separate_line" />
+        </LinearLayout>
         <TextView
             android:id="@+id/textview_more"
             android:layout_width="match_parent"

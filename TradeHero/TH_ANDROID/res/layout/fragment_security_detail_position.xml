@@ -5,6 +5,7 @@
     android:orientation="vertical">
 
     <include layout="@layout/security_position_header" />
+    <include layout="@layout/separate_line"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -58,7 +59,7 @@
                         android:layout_marginTop="2dp"
                         android:textColor="#1789d5"
                         android:singleLine="true"
-                        android:maxEms="5"
+                        android:maxEms="3"
                         android:textSize="10sp" />
                 </LinearLayout>
 
@@ -70,7 +71,7 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:textColor="#000000"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <RelativeLayout
                     android:layout_width="0dp"
@@ -89,14 +90,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="#999999"
-                            android:textSize="17sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/textview_security_position_price0"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="#000000"
-                            android:textSize="17sp" />
+                            android:textSize="14sp" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -108,11 +109,16 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:textColor="#fe0000"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
-            <include layout="@layout/separate_line"
-                     android:id="@+id/line0"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp">
+
+                <include android:id="@+id/line0" layout="@layout/separate_line" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/linearlayout_position1"
@@ -146,7 +152,7 @@
                         android:layout_marginTop="2dp"
                         android:textColor="#1789d5"
                         android:singleLine="true"
-                        android:maxEms="5"
+                        android:maxEms="3"
                         android:textSize="10sp" />
                 </LinearLayout>
 
@@ -158,7 +164,7 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:textColor="#000000"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <RelativeLayout
                     android:layout_width="0dp"
@@ -177,14 +183,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="#999999"
-                            android:textSize="17sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/textview_security_position_price1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="#000000"
-                            android:textSize="17sp" />
+                            android:textSize="14sp" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -196,12 +202,16 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:textColor="#fe0000"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
-            <include
-                android:id="@+id/line1"
-                layout="@layout/separate_line" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp">
+
+                <include android:id="@+id/line1" layout="@layout/separate_line" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/linearlayout_position2"
@@ -235,7 +245,7 @@
                         android:layout_marginTop="2dp"
                         android:textColor="#1789d5"
                         android:singleLine="true"
-                        android:maxEms="5"
+                        android:maxEms="3"
                         android:textSize="10sp" />
                 </LinearLayout>
 
@@ -247,7 +257,7 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:textColor="#000000"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <RelativeLayout
                     android:layout_width="0dp"
@@ -266,14 +276,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="#999999"
-                            android:textSize="17sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/textview_security_position_price2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="#000000"
-                            android:textSize="17sp" />
+                            android:textSize="14sp" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -285,12 +295,16 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:textColor="#fe0000"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
-            <include
-                android:id="@+id/line2"
-                layout="@layout/separate_line" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp">
+
+                <include android:id="@+id/line2" layout="@layout/separate_line" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/linearlayout_position3"
@@ -324,7 +338,7 @@
                         android:layout_marginTop="2dp"
                         android:textColor="#1789d5"
                         android:singleLine="true"
-                        android:maxEms="5"
+                        android:maxEms="3"
                         android:textSize="10sp" />
                 </LinearLayout>
 
@@ -336,7 +350,7 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:textColor="#000000"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <RelativeLayout
                     android:layout_width="0dp"
@@ -355,14 +369,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="#999999"
-                            android:textSize="17sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/textview_security_position_price3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="#000000"
-                            android:textSize="17sp" />
+                            android:textSize="14sp" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -374,12 +388,16 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:textColor="#fe0000"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
-            <include
-                android:id="@+id/line3"
-                layout="@layout/separate_line" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp">
+
+                <include android:id="@+id/line3" layout="@layout/separate_line" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/linearlayout_position4"
@@ -413,7 +431,7 @@
                         android:layout_marginTop="2dp"
                         android:textColor="#1789d5"
                         android:singleLine="true"
-                        android:maxEms="5"
+                        android:maxEms="3"
                         android:textSize="10sp" />
                 </LinearLayout>
 
@@ -425,7 +443,7 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:textColor="#000000"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <RelativeLayout
                     android:layout_width="0dp"
@@ -444,14 +462,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="#999999"
-                            android:textSize="17sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/textview_security_position_price4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="#000000"
-                            android:textSize="17sp" />
+                            android:textSize="14sp" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -463,12 +481,16 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:textColor="#fe0000"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
-            <include
-                android:id="@+id/line4"
-                layout="@layout/separate_line" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp">
+
+                <include android:id="@+id/line4" layout="@layout/separate_line" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/textview_more"

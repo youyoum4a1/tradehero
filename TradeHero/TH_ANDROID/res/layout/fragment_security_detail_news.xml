@@ -47,7 +47,13 @@
                 android:textSize="12sp"
                 />
         </RelativeLayout>
-        <include layout="@layout/separate_line" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp">
+
+            <include layout="@layout/separate_line" />
+        </LinearLayout>
         <RelativeLayout
             android:id="@+id/rl_news1"
             android:layout_width="match_parent"
@@ -77,9 +83,13 @@
                 android:textSize="12sp"
                 />
         </RelativeLayout>
-        <include
-            android:id="@+id/line1"
-            layout="@layout/separate_line" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp">
+
+            <include android:id="@+id/line1" layout="@layout/separate_line" />
+        </LinearLayout>
         <RelativeLayout
             android:id="@+id/rl_news2"
             android:layout_width="match_parent"
@@ -109,9 +119,13 @@
                 android:textSize="12sp"
                 />
         </RelativeLayout>
-        <include
-            android:id="@+id/line2"
-            layout="@layout/separate_line" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp">
+
+            <include android:id="@+id/line2" layout="@layout/separate_line" />
+        </LinearLayout>
         <RelativeLayout
             android:id="@+id/rl_news3"
             android:layout_width="match_parent"
@@ -141,9 +155,13 @@
                 android:textSize="12sp"
                 />
         </RelativeLayout>
-        <include
-            android:id="@+id/line3"
-            layout="@layout/separate_line" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp">
+
+            <include android:id="@+id/line3" layout="@layout/separate_line" />
+        </LinearLayout>
         <RelativeLayout
             android:id="@+id/rl_news4"
             android:layout_width="match_parent"
@@ -173,9 +191,13 @@
                 android:textSize="12sp"
                 />
         </RelativeLayout>
-        <include
-            android:id="@+id/line4"
-            layout="@layout/separate_line" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp">
+
+            <include android:id="@+id/line4" layout="@layout/separate_line" />
+        </LinearLayout>
         <TextView
             android:id="@+id/textview_more"
             android:layout_width="match_parent"

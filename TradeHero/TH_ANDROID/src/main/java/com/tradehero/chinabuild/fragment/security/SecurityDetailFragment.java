@@ -686,8 +686,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         super.onDestroyView();
     }
 
-    @Override public void onResume()
-    {
+    @Override public void onResume() {
         initArgment();
         requestUserProfile();
         fetchWatchlist();
@@ -1074,24 +1073,40 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 newsFocusView.setVisibility(View.GONE);
                 operationFocusView.setVisibility(View.GONE);
                 positionFocusView.setVisibility(View.GONE);
+                btnDiscuss.setTextColor(colorBlue);
+                btnNews.setTextColor(colorText);
+                btnUserOperation.setTextColor(colorText);
+                btnUserPosition.setTextColor(colorText);
                 break;
             case 1:
                 discussFocusView.setVisibility(View.GONE);
                 newsFocusView.setVisibility(View.VISIBLE);
                 operationFocusView.setVisibility(View.GONE);
                 positionFocusView.setVisibility(View.GONE);
+                btnDiscuss.setTextColor(colorText);
+                btnNews.setTextColor(colorBlue);
+                btnUserOperation.setTextColor(colorText);
+                btnUserPosition.setTextColor(colorText);
                 break;
             case 2:
                 discussFocusView.setVisibility(View.GONE);
                 newsFocusView.setVisibility(View.GONE);
                 operationFocusView.setVisibility(View.VISIBLE);
                 positionFocusView.setVisibility(View.GONE);
+                btnDiscuss.setTextColor(colorText);
+                btnNews.setTextColor(colorText);
+                btnUserOperation.setTextColor(colorBlue);
+                btnUserPosition.setTextColor(colorText);
                 break;
             case 3:
                 discussFocusView.setVisibility(View.GONE);
                 newsFocusView.setVisibility(View.GONE);
                 operationFocusView.setVisibility(View.GONE);
                 positionFocusView.setVisibility(View.VISIBLE);
+                btnDiscuss.setTextColor(colorText);
+                btnNews.setTextColor(colorText);
+                btnUserOperation.setTextColor(colorText);
+                btnUserPosition.setTextColor(colorBlue);
                 break;
         }
     }
@@ -2140,10 +2155,13 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 setHeadViewMiddleSub("交易结束");
             }
         } else {
-            String raisePercent = quoteDetail.getRiseRate() * 100 + "%";
+            double raisePercent = quoteDetail.getRiseRate() * 100.0;
+            DecimalFormat df = new DecimalFormat("######0.00");
+            String raisePercentStr = df.format(raisePercent) + "%";
             if(quoteDetail.getRiseRate() > 0){
                 setHeadViewMiddleSubTextColor(colorUp);
-                setHeadViewMiddleSub(quoteDetail.last + " +" + raisePercent + " +" + quoteDetail.getRise());
+
+                setHeadViewMiddleSub(quoteDetail.last + " +" + raisePercentStr + " +" + quoteDetail.getRise());
             }
             if(quoteDetail.getRiseRate() == 0){
                 setHeadViewMiddleSubTextColor(colorNormal);
@@ -2151,7 +2169,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             }
             if(quoteDetail.getRiseRate() < 0){
                 setHeadViewMiddleSubTextColor(colorDown);
-                setHeadViewMiddleSub(quoteDetail.last + " " + raisePercent + " " + quoteDetail.getRise());
+                setHeadViewMiddleSub(quoteDetail.last + " " + raisePercentStr + " " + quoteDetail.getRise());
             }
         }
 

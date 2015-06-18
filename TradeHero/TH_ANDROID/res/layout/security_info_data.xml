@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/security_detail_stock_detail_height"
         android:background="#ffffff"
+        android:layout_marginBottom="2dp"
         android:orientation="horizontal">
 
         <RelativeLayout
@@ -196,7 +197,6 @@
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:background="#e1e5e6"
-        android:layout_marginBottom="5dp"
         android:layout_height="20dp"
         android:visibility="gone">
         <ImageView
@@ -209,6 +209,7 @@
         <TextView
             android:layout_marginLeft="15dp"
             android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:textColor="#6c6c6c"
@@ -219,14 +220,16 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:textColor="#e2494b"
+            android:layout_gravity="center_vertical"
             android:layout_marginLeft="2dp"
-            android:text="--"/>
+            android:text="- -"/>
 
         <TextView
             android:layout_marginLeft="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
+            android:layout_gravity="center_vertical"
             android:textColor="#6c6c6c"
             android:text="盈亏"/>
         <TextView
@@ -235,13 +238,15 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:layout_marginLeft="2dp"
+            android:layout_gravity="center_vertical"
             android:textColor="#e2494b"
-            android:text="--"/>
+            android:text="- -"/>
         <TextView
             android:layout_marginLeft="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
+            android:layout_gravity="center_vertical"
             android:textColor="#6c6c6c"
             android:text="盈亏比"/>
         <TextView
@@ -250,9 +255,11 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:textSize="12sp"
+            android:layout_gravity="center_vertical"
             android:textColor="#e2494b"
-            android:text="--"/>
+            android:text="- -"/>
     </LinearLayout>
 
+    <include layout="@layout/separate_line" />
 </LinearLayout>
 

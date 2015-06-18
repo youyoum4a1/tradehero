@@ -46,8 +46,7 @@ public class QuoteDetail {
         if ((last == null) || (prec == null) || (prec == 0)) {
             return 0;
         }
-        DecimalFormat df = new DecimalFormat("######0.00");
-        return Double.valueOf(df.format((last - prec) / prec));
+        return (last - prec) / prec;
     }
 
 

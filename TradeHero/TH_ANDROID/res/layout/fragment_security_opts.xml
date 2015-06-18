@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <include layout="@layout/security_opt_header"/>
+    <include layout="@layout/separate_line" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -31,8 +32,7 @@
             android:id="@+id/listOpts"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:divider="#e6e6e6"
-            android:dividerHeight="1px"
+            android:divider="@null"
             android:fadingEdge="none"
             android:listSelector="@android:color/transparent"
             android:scrollingCache="false"
