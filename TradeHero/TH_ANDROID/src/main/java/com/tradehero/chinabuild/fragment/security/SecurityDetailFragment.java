@@ -766,6 +766,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             btnChart[0].performClick();
         } else {
             setChartView(indexChart);
+            linkWith(new ChartTimeSpan(getChartTimeSpanDuration(indexChart)));
         }
     }
 
@@ -1037,7 +1038,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             chart2Line.setVisibility(View.GONE);
             chart3Line.setVisibility(View.VISIBLE);
         }
-        linkWith(new ChartTimeSpan(getChartTimeSpanDuration(indexChart)));
     }
 
     public void setDiscussOrNewsView(int select) {
@@ -1155,6 +1155,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     private void refreshQuoteInfo(final SecurityId securityId) {
         getQuote(securityId);
+        askKLines(securityId);
         //if the stock is suspended, don't refresh quote info.
         if (securityCompactDTO == null
                 || securityCompactDTO.isSuspended()) {
@@ -1346,7 +1347,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             };
         }
         quoteServiceWrapper.getQuoteTicks(securityId, timeListCallback);
+    }
 
+    private void askKLines(SecurityId securityId)
+    {
         //k-lines
         if (kLinesListCallback == null) {
             kLinesListCallback = new Callback<List<KLineItem>>()
@@ -1804,27 +1808,40 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         if (viewId == R.id.btnTabChart0) {
             setChartView(0);
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_ONEDAY));
+            linkWith(new ChartTimeSpan(getChartTimeSpanDuration(0)));
             showTimeList();
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_ONEDAY));
             return;
         }
         if (viewId == R.id.btnTabChart1) {
             setChartView(1);
-            quoteServiceWrapper.getKline(securityId, QuoteServiceWrapper.K_LINE_DAY, kLinesListCallback);
+            if (QuoteServiceWrapper.isChinaStock(securityId)) {
+                quoteServiceWrapper.getKline(securityId, QuoteServiceWrapper.K_LINE_DAY, kLinesListCallback);
+            } else {
+                linkWith(new ChartTimeSpan(getChartTimeSpanDuration(1)));
+            }
             showKChartList();
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_FIVEDAY));
             return;
         }
         if (viewId == R.id.btnTabChart2) {
             setChartView(2);
-            quoteServiceWrapper.getKline(securityId, QuoteServiceWrapper.K_LINE_WEEK, kLinesListCallback);
+            if (QuoteServiceWrapper.isChinaStock(securityId)) {
+                quoteServiceWrapper.getKline(securityId, QuoteServiceWrapper.K_LINE_WEEK, kLinesListCallback);
+            } else {
+                linkWith(new ChartTimeSpan(getChartTimeSpanDuration(2)));
+            }
             showKChartList();
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_90DAY));
             return;
         }
         if (viewId == R.id.btnTabChart3) {
             setChartView(3);
-            quoteServiceWrapper.getKline(securityId, QuoteServiceWrapper.K_LINE_MONTH, kLinesListCallback);
+            if (QuoteServiceWrapper.isChinaStock(securityId)) {
+                quoteServiceWrapper.getKline(securityId, QuoteServiceWrapper.K_LINE_MONTH, kLinesListCallback);
+            } else {
+                linkWith(new ChartTimeSpan(getChartTimeSpanDuration(3)));
+            }
             showKChartList();
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_YEAR));
             return;
