@@ -2,16 +2,17 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.time.TimeFormatFloor;
-import com.tradehero.common.time.TimeUnitDayUnlimited;
-import com.tradehero.common.time.TimeUnitHourInDay;
-import com.tradehero.common.time.TimeUnitMilliSecondInSecond;
-import com.tradehero.common.time.TimeUnitMinuteInHour;
-import com.tradehero.common.time.TimeUnitSecondInMinute;
 import com.tradehero.th.adapters.WrapperRecyclerAdapter;
 import java.util.Date;
+import java.util.List;
 import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.ocpsoft.prettytime.TimeUnit;
+import org.ocpsoft.prettytime.units.Day;
+import org.ocpsoft.prettytime.units.Hour;
+import org.ocpsoft.prettytime.units.Minute;
+import org.ocpsoft.prettytime.units.Second;
+import timber.log.Timber;
 
 public class CompetitionTimeExtraItem implements WrapperRecyclerAdapter.ExtraItem
 {
@@ -21,10 +22,10 @@ public class CompetitionTimeExtraItem implements WrapperRecyclerAdapter.ExtraIte
     private final PrettyTime prettyTime;
     public final Date until;
 
-    private long days;
-    private long hours;
-    private long minutes;
-    private long seconds;
+    private long days = -1;
+    private long hours = -1;
+    private long minutes = -1;
+    private long seconds = -1;
 
     public String dayString;
     public String hoursString;
@@ -36,12 +37,10 @@ public class CompetitionTimeExtraItem implements WrapperRecyclerAdapter.ExtraIte
         this.until = until;
         prettyTime = new PrettyTime();
         prettyTime.clearUnits();
-        prettyTime.registerUnit(new TimeUnitDayUnlimited(), new TimeFormatFloor());
-        prettyTime.registerUnit(new TimeUnitHourInDay(), new TimeFormatFloor());
-        prettyTime.registerUnit(new TimeUnitMinuteInHour(), new TimeFormatFloor());
-        prettyTime.registerUnit(new TimeUnitSecondInMinute(), new TimeFormatFloor());
-        // The milliseconds have to be added to avoid infinite loop https://github.com/ocpsoft/prettytime/issues/56
-        prettyTime.registerUnit(new TimeUnitMilliSecondInSecond(), new TimeFormatFloor());
+        prettyTime.registerUnit(new Day(), new TimeFormatFloor());
+        prettyTime.registerUnit(new Hour(), new TimeFormatFloor());
+        prettyTime.registerUnit(new Minute(), new TimeFormatFloor());
+        prettyTime.registerUnit(new Second(), new TimeFormatFloor());
         updateDate(new Date());
     }
 
@@ -53,53 +52,71 @@ public class CompetitionTimeExtraItem implements WrapperRecyclerAdapter.ExtraIte
     public void updateDate(@NonNull Date now)
     {
         prettyTime.setReference(now);
-        for (Duration duration : prettyTime.calculatePreciseDuration(until))
+        List<Duration> durations = prettyTime.calculatePreciseDuration(until);
+        for (Duration duration : durations)
         {
             TimeUnit durationUnit = duration.getUnit();
-            if (durationUnit instanceof TimeUnitDayUnlimited)
+            if (durationUnit instanceof Day)
             {
                 long d = duration.getQuantity();
-                if (d > MAX_DAY_COUNT)
-                {
-                    d = MAX_DAY_COUNT;
-                }
-                if (d != days)
-                {
-                    days = d;
-                    dayString = String.format(DIGIT_FORMAT, days);
-                }
+                updateDayString(d);
             }
-            else if (durationUnit instanceof TimeUnitHourInDay)
+            else if (durationUnit instanceof Hour)
             {
                 long h = duration.getQuantity();
-                if (h != hours)
-                {
-                    hours = h;
-                    hoursString = String.format(DIGIT_FORMAT, hours);
-                }
+                updateHourString(h);
             }
-            else if (durationUnit instanceof TimeUnitMinuteInHour)
+            else if (durationUnit instanceof Minute)
             {
                 long m = duration.getQuantity();
-                if (m != minutes)
-                {
-                    minutes = m;
-                    minutesString = String.format(DIGIT_FORMAT, minutes);
-                }
+                updateMinuteString(m);
             }
-            else if (durationUnit instanceof TimeUnitSecondInMinute)
+            else if (durationUnit instanceof Second)
             {
                 long s = duration.getQuantity();
-                if (s != seconds)
-                {
-                    seconds = s;
-                    secondsString = String.format(DIGIT_FORMAT, seconds);
-                }
+                updateSecondString(s);
+                Timber.d("Second %d", s);
             }
-            else
-            {
-                // Not caring
-            }
+        }
+    }
+
+    protected void updateSecondString(long s)
+    {
+        if (s != seconds)
+        {
+            seconds = s;
+            secondsString = String.format(DIGIT_FORMAT, seconds);
+        }
+    }
+
+    protected void updateMinuteString(long m)
+    {
+        if (m != minutes)
+        {
+            minutes = m;
+            minutesString = String.format(DIGIT_FORMAT, minutes);
+        }
+    }
+
+    protected void updateHourString(long h)
+    {
+        if (h != hours)
+        {
+            hours = h;
+            hoursString = String.format(DIGIT_FORMAT, hours);
+        }
+    }
+
+    protected void updateDayString(long d)
+    {
+        if (d > MAX_DAY_COUNT)
+        {
+            d = MAX_DAY_COUNT;
+        }
+        if (d != days)
+        {
+            days = d;
+            dayString = String.format(DIGIT_FORMAT, days);
         }
     }
 }
