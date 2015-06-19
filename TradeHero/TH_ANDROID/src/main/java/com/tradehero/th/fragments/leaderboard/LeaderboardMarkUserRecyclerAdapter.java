@@ -154,7 +154,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
     }
 
     @NonNull @Override
-    public TypedViewHolder<T> onCreateTypedViewHolder(ViewGroup parent, int viewType)
+    public TypedViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType)
     {
         LbmuItemViewHolder<T> lbmuItemViewHolder;
         switch (viewType)

@@ -164,42 +164,35 @@ public abstract class TypedRecyclerAdapter<T>
         return mSortedList.size();
     }
 
-    @NonNull public abstract TypedViewHolder<T> onCreateTypedViewHolder(ViewGroup parent, int viewType);
 
     @Override
-    final public TypedViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType)
+    public abstract TypedViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType);
+
+    @Override
+    public void onBindViewHolder(final TypedViewHolder<T> holder, final int position)
     {
-        final TypedViewHolder<T> vh = onCreateTypedViewHolder(parent, viewType);
+        holder.display(getItem(position));
         if (mOnItemClickedListener != null)
         {
-            vh.itemView.setOnClickListener(new View.OnClickListener()
+            holder.itemView.setOnClickListener(new View.OnClickListener()
             {
 
                 @Override public void onClick(View v)
                 {
-                    int position = vh.getAdapterPosition();
-                    mOnItemClickedListener.onItemClicked(position, vh, getItem(position));
+                    mOnItemClickedListener.onItemClicked(position, holder, getItem(position));
                 }
             });
         }
         if (mOnItemLongClickedListener != null)
         {
-            vh.itemView.setOnLongClickListener(new View.OnLongClickListener()
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener()
             {
                 @Override public boolean onLongClick(View v)
                 {
-                    int position = vh.getAdapterPosition();
-                    return mOnItemLongClickedListener.onItemLongClicked(position, vh, getItem(position));
+                    return mOnItemLongClickedListener.onItemLongClicked(position, holder, getItem(position));
                 }
             });
         }
-        return vh;
-    }
-
-    @Override
-    public void onBindViewHolder(TypedViewHolder<T> holder, int position)
-    {
-        holder.display(getItem(position));
     }
 
     public interface OnItemClickedListener<T>

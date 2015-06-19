@@ -49,7 +49,7 @@ public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecycl
         return super.getViewTypeForItem(dto);
     }
 
-    @NonNull @Override public TypedViewHolder<LeaderboardItemDisplayDTO> onCreateTypedViewHolder(ViewGroup parent, int viewType)
+    @NonNull @Override public TypedViewHolder<LeaderboardItemDisplayDTO> onCreateViewHolder(ViewGroup parent, int viewType)
     {
         switch (viewType)
         {
@@ -65,7 +65,7 @@ public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecycl
                 callToActionItemViewHolder.getSocialNetworkEnumObservable().subscribe(socialNetworkEnumSubject);
                 return callToActionItemViewHolder;
         }
-        return super.onCreateTypedViewHolder(parent, viewType);
+        return super.onCreateViewHolder(parent, viewType);
     }
 
     @Override public void onBindViewHolder(TypedViewHolder<LeaderboardItemDisplayDTO> holder, int position)
