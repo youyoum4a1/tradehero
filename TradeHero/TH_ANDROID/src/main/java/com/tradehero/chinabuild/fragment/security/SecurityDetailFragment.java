@@ -1184,8 +1184,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     }
 
     private void refreshROWQuoteInfo(final SecurityId securityId) {
-        getQuote(securityId);
-
         Callback<SecurityCompactDTO>  securityCallback = new Callback<SecurityCompactDTO>() {
             @Override
             public void success(SecurityCompactDTO securityDTO, Response response) {
@@ -1216,6 +1214,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private void updateSecurityInfoByCompactDTO() {
         if (getActivity() == null
                 || securityCompactDTO == null) {
+            return;
+        }
+
+        //For SHE/SHA, don't update stock detail using SecurityCompactDTO
+        if (QuoteServiceWrapper.isChinaStock(securityId)) {
             return;
         }
 

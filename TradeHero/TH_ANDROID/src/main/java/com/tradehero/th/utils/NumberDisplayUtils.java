@@ -6,6 +6,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
+
 import javax.inject.Inject;
 
 public class NumberDisplayUtils
@@ -22,6 +24,8 @@ public class NumberDisplayUtils
 
     // These suffixes are used in tests...
     protected final static String[] FALLBACK_SUFFIXES = {"", "k", "M", "B", "Tr"};
+
+    static DecimalFormat df;
 
     //<editor-fold desc="Constructors">
     @Inject public NumberDisplayUtils(@NotNull Context context)
@@ -86,6 +90,9 @@ public class NumberDisplayUtils
 
     public static String getString(double money)
     {
+        if (df == null) {
+            df = new DecimalFormat("@@@#");
+        }
         if (money < 10000)
         {
             return "" + money;
@@ -94,11 +101,11 @@ public class NumberDisplayUtils
 
         if (money / 100000000 > 1)
         {
-            sb.append(Math.round(money / 100000000) + "亿");
+            sb.append(df.format(money / 100000000)).append("亿");
         }
         else if (money / 10000 > 1)
         {
-            sb.append(Math.round(money / 10000) + "万");
+            sb.append(df.format(money / 10000)).append("万");
         }
         return sb.toString();
     }
