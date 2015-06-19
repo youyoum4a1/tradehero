@@ -2,7 +2,6 @@ package com.tradehero.th.api.portfolio;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
@@ -28,7 +27,7 @@ public class DisplayablePortfolioUtil
         return resources.getString(R.string.portfolio_title_unnamed);
     }
 
-    @ColorInt public static int getLongTitleTextColor(
+    public static int getLongTitleTextColor(
             @NonNull Context context,
             @Nullable DisplayablePortfolioDTO displayablePortfolioDTO)
     {
