@@ -41,7 +41,7 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
 
     @Inject QuoteServiceWrapper quoteServiceWrapper;
 
-    private ImageView emptyIV;
+    private LinearLayout emptyLL;
     private LinearLayout positionsLL;
     private TextView moreTV;
 
@@ -74,7 +74,7 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_security_detail_position, container, false);
-        emptyIV = (ImageView)view.findViewById(R.id.imageview_sub_position_empty);
+        emptyLL = (LinearLayout)view.findViewById(R.id.linearlayout_empty);
         positionsLL = (LinearLayout)view.findViewById(R.id.linearlayout_positions);
         moreTV = (TextView)view.findViewById(R.id.textview_more);
         moreTV.setOnClickListener(this);
@@ -205,16 +205,16 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
     }
 
     private void displayPositions(List<SecurityUserPositionDTO> sharePositionList){
-        if(emptyIV==null || positionsLL == null){
+        if(emptyLL==null || positionsLL == null){
             return;
         }
         this.sharePositionList = sharePositionList;
         if(sharePositionList == null || sharePositionList.size()<=0){
-            emptyIV.setVisibility(View.VISIBLE);
+            emptyLL.setVisibility(View.VISIBLE);
             positionsLL.setVisibility(View.GONE);
             return;
         }else{
-            emptyIV.setVisibility(View.GONE);
+            emptyLL.setVisibility(View.GONE);
             positionsLL.setVisibility(View.VISIBLE);
         }
         if(sharePositionList.size() < 5){

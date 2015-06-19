@@ -46,7 +46,7 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
 
     private SecurityId securityId;
 
-    private ImageView emptyIV;
+    private LinearLayout emptyLL;
     private LinearLayout optsLL;
     private TextView moreTV;
 
@@ -73,7 +73,7 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_security_detail_opt, container, false);
-        emptyIV = (ImageView)view.findViewById(R.id.imageview_sub_opt_empty);
+        emptyLL = (LinearLayout)view.findViewById(R.id.linearlayout_empty);
         optsLL = (LinearLayout)view.findViewById(R.id.linearlayout_opts);
         moreTV = (TextView)view.findViewById(R.id.textview_more);
         moreTV.setOnClickListener(this);
@@ -256,16 +256,16 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
     }
 
     private void displayTrades(List<SecurityUserOptDTO> tradeRecordList){
-        if(emptyIV ==null || optsLL == null){
+        if(emptyLL ==null || optsLL == null){
             return;
         }
         this.tradeRecordList = tradeRecordList;
         if(tradeRecordList == null || tradeRecordList.size()<=0){
-            emptyIV.setVisibility(View.VISIBLE);
+            emptyLL.setVisibility(View.VISIBLE);
             optsLL.setVisibility(View.GONE);
             return;
         }else{
-            emptyIV.setVisibility(View.GONE);
+            emptyLL.setVisibility(View.GONE);
             optsLL.setVisibility(View.VISIBLE);
         }
         if(tradeRecordList.size()<5){

@@ -45,7 +45,7 @@ public class SecurityDetailSubNewsFragment extends Fragment implements View.OnCl
     private SecurityId securityId;
 
     private LinearLayout newsLL;
-    private ImageView emptyIV;
+    private LinearLayout emptyll;
     private TextView moreTV;
 
     //Layout 0
@@ -135,8 +135,8 @@ public class SecurityDetailSubNewsFragment extends Fragment implements View.OnCl
         moreTV.setOnClickListener(this);
         newsLL = (LinearLayout) view.findViewById(R.id.linearlayout_news);
         newsLL.setVisibility(View.GONE);
-        emptyIV = (ImageView) view.findViewById(R.id.imageview_empty);
-        emptyIV.setVisibility(View.VISIBLE);
+        emptyll = (LinearLayout) view.findViewById(R.id.linearlayout_empty);
+        emptyll.setVisibility(View.VISIBLE);
 
         rl0 = (RelativeLayout) view.findViewById(R.id.rl_news0);
         newsTV0 = (TextView) view.findViewById(R.id.textview_news_content0);
@@ -243,10 +243,10 @@ public class SecurityDetailSubNewsFragment extends Fragment implements View.OnCl
         news = newsList;
 
         if(newsList ==null || newsList.getData() == null || newsList.getData().size()<=0){
-            emptyIV.setVisibility(View.VISIBLE);
+            emptyll.setVisibility(View.VISIBLE);
             newsLL.setVisibility(View.GONE);
         }else{
-            emptyIV.setVisibility(View.GONE);
+            emptyll.setVisibility(View.GONE);
             newsLL.setVisibility(View.VISIBLE);
         }
         if(newsList.getData().size()<5){
