@@ -249,9 +249,9 @@ public class SecurityCompactDTO extends ExtendedDTO implements Serializable
         return null;
     }
 
-    public boolean isSuspended() {
-        return askPrice == null && bidPrice == null;
-    }
+    //public boolean isSuspended() {
+    //    return askPrice == null && bidPrice == null;
+    //}
 
     @Override public String toString()
     {
