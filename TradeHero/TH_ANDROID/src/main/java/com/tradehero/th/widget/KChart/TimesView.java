@@ -188,22 +188,21 @@ public class TimesView extends TimesBase
         paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
 		paint.setColor(COLOR_GREEN);
-		canvas.drawText(new DecimalFormat("#.##").format(initialWeightedIndex - uperHalfHigh), mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE,
-				uperBottom, paint);
-
-		canvas.drawText(
-				new DecimalFormat("#.##").format(initialWeightedIndex - uperHalfHigh * 0.5f), mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE,
-				uperBottom - getLatitudeSpacing() + 10, paint);
-
-		paint.setColor(Color.BLACK);
+		canvas.drawText(new DecimalFormat("#.##").format(initialWeightedIndex - uperHalfHigh),
+                mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE, uperBottom, paint);
+		canvas.drawText(new DecimalFormat("#.##").format(initialWeightedIndex - uperHalfHigh * 0.5f),
+                mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE, uperBottom - getLatitudeSpacing() + 10, paint);
 		canvas.drawText(new DecimalFormat("#.##").format(initialWeightedIndex), mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE, uperBottom
 				- getLatitudeSpacing() * 2 + 10, paint);
 
-		paint.setColor(COLOR_RED);
-		canvas.drawText(
-                new DecimalFormat("#.##").format(uperHalfHigh * 0.5f + initialWeightedIndex), mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE,
+		paint.setColor(Color.BLACK);
+		canvas.drawText(new DecimalFormat("#.##").format(uperHalfHigh * 0.5f + initialWeightedIndex), mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE,
                 uperBottom - getLatitudeSpacing() * 3 + 10, paint);
-
+		paint.setColor(COLOR_RED);
+        canvas.drawText(new DecimalFormat("#.##").format(uperHalfHigh * 1f + initialWeightedIndex), mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE,
+                uperBottom - getLatitudeSpacing() * 4 + 10, paint);
+        canvas.drawText(new DecimalFormat("#.##").format(uperHalfHigh * 1.5f + initialWeightedIndex), mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE,
+                uperBottom - getLatitudeSpacing() * 5 + 10, paint);
 		canvas.drawText(new DecimalFormat("#.##").format(uperHalfHigh + initialWeightedIndex), mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE,
 				DEFAULT_AXIS_TITLE_SIZE, paint);
 

@@ -9,6 +9,7 @@ import android.graphics.PathEffect;
 import android.util.AttributeSet;
 import android.view.View;
 import com.tradehero.th.R;
+import timber.log.Timber;
 
 /**
  * 坐标轴使用的View
@@ -239,7 +240,8 @@ public class TimesBase extends View {
 		}
 		canvas.drawLine(1, UPER_CHART_BOTTOM, viewWidth - 1, UPER_CHART_BOTTOM, paint);
 		canvas.drawLine(1, LOWER_CHART_TOP, viewWidth - 1, LOWER_CHART_TOP, paint);
-		if (showLowerChartTabs) {
+        Timber.d("lyl ");
+        if (showLowerChartTabs) {
 			canvas.drawLine(1, UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE + 2, viewWidth - 1,
 					UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE + 2, paint);
 			if (mLowerChartTabTitles == null || mLowerChartTabTitles.length <= 0) {

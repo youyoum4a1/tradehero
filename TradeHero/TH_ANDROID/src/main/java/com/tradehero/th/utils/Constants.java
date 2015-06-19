@@ -17,7 +17,6 @@ public class Constants {
 
     public static final String PRIVACY_TERMS_OF_SERVICE = "http://cn.tradehero.mobi/privacy";
 
-
     // Request Header
     public static final String TH_CLIENT_VERSION = "TH-Client-Version";
     public static final String AUTHORIZATION = "Authorization";
