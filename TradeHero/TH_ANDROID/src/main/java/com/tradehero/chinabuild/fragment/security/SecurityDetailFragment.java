@@ -1172,10 +1172,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         getQuote(securityId);
         askKLines(securityId);
         //if the stock is suspended, don't refresh quote info.
-        if (securityCompactDTO == null
-                || securityCompactDTO.isSuspended()) {
-            return;
-        }
+        //if (securityCompactDTO == null
+        //        || securityCompactDTO.isSuspended()) {
+        //    return;
+        //}
         if (QuoteServiceWrapper.isChinaStock(securityId)) {
             refreshCNQuoteInfo(securityId);
         } else {
@@ -1212,8 +1212,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     }
 
     private void updateSecurityInfoByCompactDTO() {
-        if (getActivity() == null
-                || securityCompactDTO == null) {
+        if (getActivity() == null || securityCompactDTO == null || quoteDTO == null) {
             return;
         }
 
@@ -1225,15 +1224,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         //涨跌幅
         int colorResId = R.color.black;
 
-        if (securityCompactDTO.isSuspended()) {
-            if (securityCompactDTO.previousClose == null) {
-                tvSecurityPrice.setText("- -");
-            } else {
-                tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(securityCompactDTO.previousClose));
-                tvSecurityPrice.setTextColor(getResources().getColor(colorResId));
-            }
-            return;
-        }
+        //if (securityCompactDTO.isSuspended()) {
+        //    if (securityCompactDTO.previousClose == null) {
+        //        tvSecurityPrice.setText("- -");
+        //    } else {
+        //        tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(securityCompactDTO.previousClose));
+        //        tvSecurityPrice.setTextColor(getResources().getColor(colorResId));
+        //    }
+        //    return;
+        //}
 
         String currency = "";
         if (securityCompactDTO != null) {

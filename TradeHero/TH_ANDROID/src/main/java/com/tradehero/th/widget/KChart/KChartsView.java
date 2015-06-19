@@ -115,7 +115,6 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 		}
         lowerBottom = getHeight() - 3 - DEFAULT_AXIS_TITLE_SIZE;
         lowerHeight = getLowerChartHeight() - 2;
-        dataSpacing = (getWidth() - 4 - mLeftMargin) * 10.0f / 10.0f / mOHLCData.size();
         if (lowerHigh > 0) {
             lowerRate = lowerHeight / lowerHigh;
             //Timber.d("lyl lowerRate="+lowerRate+" lowerHeight="+lowerHeight+" lowerHigh="+lowerHigh);
@@ -318,7 +317,7 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 		Paint greenPaint = new Paint();
 		greenPaint.setColor(COLOR_GREEN);
 		int width = getWidth();
-		mCandleWidth = (width - 4 - mLeftMargin) / 10.0 * 10.0 / mShowDataNum;
+		mCandleWidth = (width - 4 - mLeftMargin) / mShowDataNum;
 		double rate = (getUperChartHeight() - 2) / (mMaxPrice - mMinPrice);
 		for (int i = 0; i < mShowDataNum && mDataStartIndext + i < mOHLCData.size(); i++) {
 			KLineItem entity = mOHLCData.get(mDataStartIndext + i);
@@ -379,15 +378,17 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
         float x = mLeftMargin;
         //float uperWhiteY = 0;
         //float uperYellowY = 0;
+        dataSpacing = (getWidth() - 4 - mLeftMargin) / mShowDataNum;
         Paint paint = new Paint();
-        for (int i = 0; i < mOHLCData.size(); i++)
+        float margin = 2.5f;
+        for (int i = 0; i < mOHLCData.size() && i < mShowDataNum; i++)
         {
             KLineItem fenshiData = mOHLCData.get(i);
             if (fenshiData.getOpen() == null)
             {
                 continue;
             }
-            x = 3 + mLeftMargin + dataSpacing * i - 2;
+            x = 3 + mLeftMargin + dataSpacing * i;
             // 绘制下部表内数据线
             Long buy = fenshiData.getVol();
             //Long buy = i == 0 ? fenshiData.getVol() : fenshiData.getVol() - mOHLCData.get(i - 1).getVol();
@@ -405,8 +406,8 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
             {
                 paint.setColor(COLOR_GREEN);
             }
-            canvas.drawLine(x, lowerBottom, x, lowerBottom - buy * lowerRate, paint);
-            //Timber.d("lyl ");
+            //canvas.drawLine(x, lowerBottom, x, lowerBottom - buy * lowerRate, paint);
+            canvas.drawRect(x, lowerBottom - buy * lowerRate, x + dataSpacing - 2*margin, lowerBottom, paint);
         }
     }
 

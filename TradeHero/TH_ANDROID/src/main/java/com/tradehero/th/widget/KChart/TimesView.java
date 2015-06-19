@@ -241,52 +241,52 @@ public class TimesView extends TimesBase
 		float uperYellowY = 0;
 		Paint paint = new Paint();
 		for (int i = 0; i < timesList.size() && i < DATA_MAX_COUNT; i++) {
-			QuoteTick fenshiData = timesList.get(i);
-            if (fenshiData.price == null) {
-                continue;
-            }
+        QuoteTick fenshiData = timesList.get(i);
+        if (fenshiData.price == null) {
+            continue;
+        }
 
-			// 绘制上部表中曲线
+        // 绘制上部表中曲线
         paint.setStrokeWidth(2);
-			float endWhiteY = (float) (uperBottom - (fenshiData.avgPrice
-					+ uperHalfHigh - initialWeightedIndex)
-					* uperRate);
-			float endYelloY = (float) (uperBottom - (fenshiData.price + uperHalfHigh - initialWeightedIndex)
-					* uperRate);
-            if (i != 0 && timesList.get(i - 1).price == null) {
-                x = 3 + mLeftMargin + dataSpacing * i - 2;
-                uperWhiteY = endWhiteY;
-                uperYellowY = endYelloY;
-                continue;
-            }
-			if (i != 0) {
-				paint.setColor(COLOR_YEllOW);
-				canvas.drawLine(x, uperWhiteY, 3 + mLeftMargin + dataSpacing * i, endWhiteY, paint);
-				paint.setColor(COLOR_BLUE);
-				canvas.drawLine(x, uperYellowY, 3 + mLeftMargin + dataSpacing * i, endYelloY, paint);
-			}
+        paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        float endWhiteY = (float) (uperBottom - (fenshiData.avgPrice
+                + uperHalfHigh - initialWeightedIndex)
+                * uperRate);
+        float endYelloY = (float) (uperBottom - (fenshiData.price + uperHalfHigh - initialWeightedIndex)
+                * uperRate);
+        if (i != 0 && timesList.get(i - 1).price == null) {
+            x = 3 + mLeftMargin + dataSpacing * i;
+            uperWhiteY = endWhiteY;
+            uperYellowY = endYelloY;
+            continue;
+        }
+        if (i != 0) {
+            paint.setColor(COLOR_YEllOW);
+            canvas.drawLine(x, uperWhiteY, 3 + mLeftMargin + dataSpacing * i, endWhiteY, paint);
+            paint.setColor(COLOR_BLUE);
+            canvas.drawLine(x, uperYellowY, 3 + mLeftMargin + dataSpacing * i, endYelloY, paint);
+        }
 
-			x = 3 + mLeftMargin + dataSpacing * i - 2;
-			uperWhiteY = endWhiteY;
-			uperYellowY = endYelloY;
+        x = 3 + mLeftMargin + dataSpacing * i;
+        uperWhiteY = endWhiteY;
+        uperYellowY = endYelloY;
 
-			// 绘制下部表内数据线
-			if (fenshiData.volume == null || (i != 0 && timesList.get(i - 1).volume == null)) {
-				continue;
-			}
-			Long buy = i == 0 ? fenshiData.volume : fenshiData.volume - timesList.get(i-1).volume;
-            paint.setStrokeWidth(3);
-			if (i <= 0) {
-				paint.setColor(COLOR_RED);
-			} else if (fenshiData.price >= timesList.get(i - 1).price) {
-				paint.setColor(COLOR_RED);
-			} else {
-				paint.setColor(COLOR_GREEN);
-			}
-			canvas.drawLine(x, lowerBottom, x, lowerBottom - buy * lowerRate, paint);
+        // 绘制下部表内数据线
+        if (fenshiData.volume == null || (i != 0 && timesList.get(i - 1).volume == null)) {
+            continue;
+        }
+        Long buy = i == 0 ? fenshiData.volume : fenshiData.volume - timesList.get(i-1).volume;
+        paint.setStrokeWidth(3);
+        if (i <= 0) {
+            paint.setColor(COLOR_RED);
+        } else if (fenshiData.price >= timesList.get(i - 1).price) {
+            paint.setColor(COLOR_RED);
+        } else {
+            paint.setColor(COLOR_GREEN);
+        }
+        canvas.drawLine(x, lowerBottom, x, lowerBottom - buy * lowerRate, paint);
 		}
-
-	}
+  }
 
 	//@Override
 	//public boolean onTouchEvent(MotionEvent event) {
