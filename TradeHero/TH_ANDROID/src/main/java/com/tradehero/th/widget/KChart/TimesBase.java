@@ -9,7 +9,6 @@ import android.graphics.PathEffect;
 import android.util.AttributeSet;
 import android.view.View;
 import com.tradehero.th.R;
-import timber.log.Timber;
 
 /**
  * 坐标轴使用的View
@@ -240,36 +239,35 @@ public class TimesBase extends View {
 		}
 		canvas.drawLine(1, UPER_CHART_BOTTOM, viewWidth - 1, UPER_CHART_BOTTOM, paint);
 		canvas.drawLine(1, LOWER_CHART_TOP, viewWidth - 1, LOWER_CHART_TOP, paint);
-        Timber.d("lyl ");
-        if (showLowerChartTabs) {
-			canvas.drawLine(1, UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE + 2, viewWidth - 1,
-					UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE + 2, paint);
-			if (mLowerChartTabTitles == null || mLowerChartTabTitles.length <= 0) {
-				return;
-			}
-			mTabWidth = (viewWidth - 2) / 10.0f * 10.0f / mLowerChartTabTitles.length;
-			if (mTabWidth < DEFAULT_AXIS_TITLE_SIZE * 2.5f + 2) {
-				mTabWidth = DEFAULT_AXIS_TITLE_SIZE * 2.5f + 2;
-			}
-
-			Paint textPaint = new Paint();
-			textPaint.setColor(Color.WHITE);
-			textPaint.setTextSize(DEFAULT_AXIS_TITLE_SIZE);
-			for (int i = 0; i < mLowerChartTabTitles.length && mTabWidth * (i + 1) <= viewWidth - 2; i++) {
-				if (i == mTabIndex) {
-					Paint bgPaint = new Paint();
-					bgPaint.setColor(Color.MAGENTA);
-					canvas.drawRect(mTabWidth * i + 1, LOWER_CHART_TOP, mTabWidth * (i + 1) + 1,
-							UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE + 2, bgPaint);
-				}
-				canvas.drawLine(mTabWidth * i + 1, LOWER_CHART_TOP, mTabWidth * i + 1,
-						UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE + 2, paint);
-				canvas.drawText(mLowerChartTabTitles[i], mTabWidth * i + mTabWidth / 2.0f
-						- mLowerChartTabTitles[i].length() / 3.0f * DEFAULT_AXIS_TITLE_SIZE,
-						LOWER_CHART_TOP - mTabHight / 2.0f + DEFAULT_AXIS_TITLE_SIZE / 2.0f,
-						textPaint);
-			}
-		}
+        //if (showLowerChartTabs) {
+		//	canvas.drawLine(1, UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE + 2, viewWidth - 1,
+		//			UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE + 2, paint);
+		//	if (mLowerChartTabTitles == null || mLowerChartTabTitles.length <= 0) {
+		//		return;
+		//	}
+		//	mTabWidth = (viewWidth - 2) / 10.0f * 10.0f / mLowerChartTabTitles.length;
+		//	if (mTabWidth < DEFAULT_AXIS_TITLE_SIZE * 2.5f + 2) {
+		//		mTabWidth = DEFAULT_AXIS_TITLE_SIZE * 2.5f + 2;
+		//	}
+        //
+		//	Paint textPaint = new Paint();
+		//	textPaint.setColor(Color.WHITE);
+		//	textPaint.setTextSize(DEFAULT_AXIS_TITLE_SIZE);
+		//	for (int i = 0; i < mLowerChartTabTitles.length && mTabWidth * (i + 1) <= viewWidth - 2; i++) {
+		//		if (i == mTabIndex) {
+		//			Paint bgPaint = new Paint();
+		//			bgPaint.setColor(Color.MAGENTA);
+		//			canvas.drawRect(mTabWidth * i + 1, LOWER_CHART_TOP, mTabWidth * (i + 1) + 1,
+		//					UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE + 2, bgPaint);
+		//		}
+		//		canvas.drawLine(mTabWidth * i + 1, LOWER_CHART_TOP, mTabWidth * i + 1,
+		//				UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE + 2, paint);
+		//		canvas.drawText(mLowerChartTabTitles[i], mTabWidth * i + mTabWidth / 2.0f
+		//				- mLowerChartTabTitles[i].length() / 3.0f * DEFAULT_AXIS_TITLE_SIZE,
+		//				LOWER_CHART_TOP - mTabHight / 2.0f + DEFAULT_AXIS_TITLE_SIZE / 2.0f,
+		//				textPaint);
+		//	}
+		//}
 	}
 
 	//public int getBackGround() {

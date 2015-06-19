@@ -299,20 +299,12 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 
 		// X轴Titles
 		textPaint.setColor(Color.GRAY);
-		//textPaint.setColor(DEFAULT_AXIS_X_TITLE_COLOR);
 		canvas.drawText(mOHLCData.get(mDataStartIndext).getDate().substring(0, 10), getWidth() - 4 - 5.5f
-		//canvas.drawText(mOHLCData.get(mDataStartIndext).getDate(), getWidth() - 4 - 4.5f
 				* DEFAULT_AXIS_TITLE_SIZE, UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE, textPaint);
 		try {
-			canvas.drawText(
-					String.valueOf(mOHLCData.get(mDataStartIndext + mShowDataNum / 2).getDate()).substring(0, 10),
-					//String.valueOf(mOHLCData.get(mDataStartIndext + mShowDataNum / 2).getDate()),
-					getWidth() / 2 - 1.5f * DEFAULT_AXIS_TITLE_SIZE, UPER_CHART_BOTTOM
-					//getWidth() / 2 - 2.25f * DEFAULT_AXIS_TITLE_SIZE, UPER_CHART_BOTTOM
-							+ DEFAULT_AXIS_TITLE_SIZE, textPaint);
-			canvas.drawText(
-					String.valueOf(mOHLCData.get(mDataStartIndext + mShowDataNum - 1).getDate()).substring(0, 10),
-					//String.valueOf(mOHLCData.get(mDataStartIndext + mShowDataNum - 1).getDate()),
+			canvas.drawText(String.valueOf(mOHLCData.get(mDataStartIndext + mShowDataNum / 2).getDate()).substring(0, 10),
+					getWidth() / 2 - 1.5f * DEFAULT_AXIS_TITLE_SIZE, UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE, textPaint);
+			canvas.drawText(String.valueOf(mOHLCData.get(mDataStartIndext + mShowDataNum - 1).getDate()).substring(0, 10),
 					2 + mLeftMargin, UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE, textPaint);
 		} catch (Exception e) {
 
@@ -363,6 +355,7 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 			Paint paint = new Paint();
 			paint.setColor(lineEntity.getLineColor());
 			paint.setTextSize(DEFAULT_AXIS_TITLE_SIZE);
+            paint.setStrokeWidth(2);
             paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 			canvas.drawText(lineEntity.getTitle() + "=" + new DecimalFormat("#.##").format(lineEntity.getLineData().get(
 									mDataStartIndext)), 2 + MATitleWidth * j, DEFAULT_AXIS_TITLE_SIZE, paint);
