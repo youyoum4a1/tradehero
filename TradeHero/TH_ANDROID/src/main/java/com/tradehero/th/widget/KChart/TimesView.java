@@ -242,7 +242,7 @@ public class TimesView extends TimesBase
 		Paint paint = new Paint();
 		for (int i = 0; i < timesList.size() && i < DATA_MAX_COUNT; i++) {
         QuoteTick fenshiData = timesList.get(i);
-        if (fenshiData.price == null) {
+        if (fenshiData.price == null || fenshiData.avgPrice == null) {
             continue;
         }
 
@@ -333,6 +333,7 @@ public class TimesView extends TimesBase
         }
     for (int i = 0; i < timesList.size(); i++) {
         fenshiData = this.timesList.get(i);
+        //Timber.d("lyl i="+i+" "+fenshiData.toString());
         if (fenshiData.price == null || fenshiData.avgPrice == null || fenshiData.volume == null) {
             //Timber.d("lyl null i="+i);
             //fix null point
