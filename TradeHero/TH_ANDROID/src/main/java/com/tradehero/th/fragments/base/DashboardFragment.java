@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.base;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -212,8 +213,8 @@ abstract public class DashboardFragment extends BaseFragment {
         tvHeadMiddleSub.setTextColor(subMainTextColor);
         tvHeadRight1.setVisibility(View.GONE);
         tvHeadRight1.setText("");
-        tvHeadRight0.setBackgroundResource(R.drawable.basic_transparent_selector);
-        tvHeadRight1.setBackgroundResource(R.drawable.basic_transparent_selector);
+        tvHeadRight0.setBackgroundColor(Color.TRANSPARENT);
+        tvHeadRight1.setBackgroundColor(Color.TRANSPARENT);
         tvHeadRight0.setCompoundDrawables(null, null, null, null);
     }
 

@@ -32,6 +32,7 @@ import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.chinabuild.dialog.TimeLineCommentDialogLayout;
 import com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout;
 import com.tradehero.chinabuild.dialog.TimeLineReportDialogLayout;
+import com.tradehero.chinabuild.fragment.security.SecurityDetailSubCache;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
@@ -1299,6 +1300,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             deleteOrApplyTLConfirmDlgOKTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    //Security Detail sub discuss cache clear
+                    SecurityDetailSubCache.getInstance().onlyClearDiscuss();
+
                     if(discussion_type == DISCUSSION_TIME_LINE_TYPE) {
                         deleteTimeLineItem(itemId);
                     }
