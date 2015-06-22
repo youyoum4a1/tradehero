@@ -52,6 +52,7 @@ public class PreferenceModule
     private static final String PREF_IS_FX_SHOWN_FLAG = "PREF_IS_FX_SHOWN_FLAG";
 
     public static final String PREF_ON_BOARDING_EXCHANGE = "PREF_ON_BOARDING_EXCHANGE";
+    public static final String PREF_IS_LIVE_TRADING = "PREF_IS_LIVE_TRADING";
 
     @Provides @Singleton @ForUser SharedPreferences provideUserSharePreferences(Context context)
     {
@@ -151,6 +152,11 @@ public class PreferenceModule
     @Provides @Singleton @IsFxShown BooleanPreference provideIsFxShown(@ForApp SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_IS_FX_SHOWN_FLAG, false);
+    }
+
+    @Provides @Singleton @IsLiveTrading BooleanPreference provideIsLiveTrading(@ForApp SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_IS_LIVE_TRADING, false);
     }
 
     @Provides @AuthHeader String provideAuthenticationHeader(final Context context)

@@ -170,6 +170,15 @@ public class BaseFragment extends Fragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    public boolean shouldShowLiveTradingToggle()
+    {
+        return false;
+    }
+
+    public void onLiveTradingChanged(boolean isLive)
+    {
+    }
+
     private int getMenuHelpID()
     {
         return (getClass().getName() + ".help").hashCode();

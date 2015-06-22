@@ -32,6 +32,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.LiveFragmentUtil;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.position.FXMainPositionListFragment;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -188,7 +189,7 @@ public class TrendingMainFragment extends DashboardFragment
 
             @Override public void onPageSelected(int i)
             {
-                switch(lastType)
+                switch (lastType)
                 {
                     case STOCK:
                         lastStockTab = TrendingStockTabType.values()[i];
@@ -353,6 +354,17 @@ public class TrendingMainFragment extends DashboardFragment
                         getString(R.string.fx)},
                 listener, lastType.ordinal());
         handleRouting();
+    }
+
+    @Override public boolean shouldShowLiveTradingToggle()
+    {
+        return true;
+    }
+
+    @Override public void onLiveTradingChanged(boolean isLive)
+    {
+        super.onLiveTradingChanged(isLive);
+        LiveFragmentUtil.setBackgroundColor(isLive, pagerSlidingTabStrip);
     }
 
     @Override public void onPause()

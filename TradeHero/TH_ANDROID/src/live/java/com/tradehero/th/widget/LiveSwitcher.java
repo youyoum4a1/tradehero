@@ -55,24 +55,32 @@ public class LiveSwitcher extends TextSwitcher implements View.OnClickListener
     @Override public void onClick(View v)
     {
         mIsLive = !mIsLive;
-        updateComponents();
+        updateComponents(true);
     }
 
     public void setIsLive(boolean isLive)
     {
+        boolean withAnim = this.mIsLive != isLive;
         this.mIsLive = isLive;
-        updateComponents();
+        updateComponents(withAnim);
     }
 
-    private void updateComponents()
+    private void updateComponents(boolean withAnim)
     {
-        setText(mIsLive ? mLiveText : mVirtualText);
+        if (withAnim)
+        {
+            setText(mIsLive ? mLiveText : mVirtualText);
+        }
+        else
+        {
+            setCurrentText(mIsLive ? mLiveText : mVirtualText);
+        }
         mSwitchSubject.onNext(mIsLive);
         getCurrentView().setBackgroundColor(getResources().getColor(mIsLive ? LIVE_BG_COLOR_RES_ID : VIRTUAL_BG_COLOR_RES_ID));
     }
 
     public Observable<Boolean> getSwitchObservable()
     {
-        return mSwitchSubject.asObservable();
+        return mSwitchSubject.distinctUntilChanged().asObservable();
     }
 }

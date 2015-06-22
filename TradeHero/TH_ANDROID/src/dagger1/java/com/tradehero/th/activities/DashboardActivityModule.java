@@ -60,12 +60,11 @@ import javax.inject.Singleton;
         },
         library = true,
         complete = false,
-        overrides = true)
-class DashboardActivityModule
+        overrides = true) class DashboardActivityModule
 {
     DashboardNavigator navigator;
     DrawerLayout drawerLayout;
-    ActionBarDrawerToggle mDrawerToggle;
+    ActionBarDrawerToggle drawerToggle;
     DashboardTabHost dashboardTabHost;
     int tabHostHeight;
     Analytics analytics;
@@ -122,7 +121,7 @@ class DashboardActivityModule
 
     @Provides ActionBarDrawerToggle provideActionBarDrawerToggle()
     {
-        return mDrawerToggle;
+        return drawerToggle;
     }
 
     @Provides FragmentOuterElements provideFragmentElements(DashboardFragmentOuterElements dashboardFragmentElements)

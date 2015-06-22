@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,7 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.util.TypedValue;
-import android.view.Display;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -133,6 +132,7 @@ public class DashboardActivity extends BaseActivity
     @InjectView(R.id.dashboard_drawer_layout) DrawerLayout drawerLayout;
     @InjectView(R.id.drawer_content_container) ViewGroup drawerContents;
     @InjectView(R.id.left_drawer) ViewGroup leftDrawerContainer;
+    @InjectView(android.R.id.tabhost) DashboardTabHost dashboardTabHost;
 
     private Subscription notificationFetchSubscription;
 
@@ -141,6 +141,8 @@ public class DashboardActivity extends BaseActivity
     private MenuItem networkIndicator;
     private CompositeSubscription onDestroySubscriptions;
     private CompositeSubscription onPauseSubscriptions;
+
+    private LiveActivityUtil lifeActivityUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -190,6 +192,13 @@ public class DashboardActivity extends BaseActivity
         initBroadcastReceivers();
 
         localBroadcastManager.registerReceiver(onlineStateReceiver, new IntentFilter(OnlineStateReceiver.ONLINE_STATE_CHANGED));
+        lifeActivityUtil = new LiveActivityUtil(this);
+    }
+
+    @Override public boolean onCreateOptionsMenu(Menu menu)
+    {
+        lifeActivityUtil.onCreateOptionsMenu(menu);
+        return true;
     }
 
     private void setupNavigator()
@@ -206,7 +215,7 @@ public class DashboardActivity extends BaseActivity
 
     private void setupDashboardTabHost()
     {
-        activityModule.dashboardTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
+        activityModule.dashboardTabHost = dashboardTabHost;
         activityModule.dashboardTabHost.setup();
         activityModule.dashboardTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
         {
@@ -239,8 +248,8 @@ public class DashboardActivity extends BaseActivity
         }
 
         //Setup Drawer Layout.
-        activityModule.mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
-        drawerLayout.setDrawerListener(activityModule.mDrawerToggle);
+        activityModule.drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+        drawerLayout.setDrawerListener(activityModule.drawerToggle);
 
         if (getSupportActionBar() != null)
         {
@@ -361,13 +370,13 @@ public class DashboardActivity extends BaseActivity
     @Override protected void onPostCreate(@Nullable Bundle savedInstanceState)
     {
         super.onPostCreate(savedInstanceState);
-        activityModule.mDrawerToggle.syncState();
+        activityModule.drawerToggle.syncState();
     }
 
     @Override public void onConfigurationChanged(Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
-        activityModule.mDrawerToggle.onConfigurationChanged(newConfig);
+        activityModule.drawerToggle.onConfigurationChanged(newConfig);
     }
 
     private void pushFragmentIfNecessary(Class<? extends Fragment> fragmentClass)
@@ -552,6 +561,8 @@ public class DashboardActivity extends BaseActivity
         localBroadcastManager.unregisterReceiver(onlineStateReceiver);
 
         ButterKnife.reset(this);
+
+        lifeActivityUtil.onDestroy();
         super.onDestroy();
     }
 

@@ -9,6 +9,8 @@
       android:title="@string/switch_to_live"
       app:showAsAction="always"
       app:actionLayout="@layout/live_switch_menu"
+      android:visible="false"
+      android:orderInCategory="90"
       />
 
 </menu>
