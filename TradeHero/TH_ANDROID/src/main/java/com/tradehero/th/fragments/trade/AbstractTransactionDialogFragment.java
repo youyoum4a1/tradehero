@@ -819,7 +819,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         getDialog().hide();
     }
 
-    public void setBuySellTransactionListener(BuySellTransactionListener buySellTransactionListener)
+    @Deprecated public void setBuySellTransactionListener(BuySellTransactionListener buySellTransactionListener)
     {
         this.buySellTransactionListener = buySellTransactionListener;
     }
@@ -1151,7 +1151,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         getActivity().startActivity(shareIntent);
     }
 
-    public interface BuySellTransactionListener
+    @Deprecated public interface BuySellTransactionListener
     {
         void onTransactionSuccessful(boolean isBuy, @NonNull SecurityPositionTransactionDTO securityPositionTransactionDTO, String commentString);
 

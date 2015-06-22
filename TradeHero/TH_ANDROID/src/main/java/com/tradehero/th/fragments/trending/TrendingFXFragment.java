@@ -14,7 +14,6 @@ import android.widget.AdapterView;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.AssetClass;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -26,6 +25,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.security.FXSecurityPagedViewDTOAdapter;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
+import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
@@ -194,14 +194,12 @@ public class TrendingFXFragment extends TrendingBaseFragment
     private void handleSecurityItemOnClick(@NonNull SecurityCompactDTO securityCompactDTO)
     {
         Bundle args = new Bundle();
-        FXMainFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-
-        if (ownedPortfolioId != null)
-        {
-            FXMainFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        }
+        FXMainFragment.putRequisite(
+                args,
+                new AbstractBuySellFragment.Requisite(
+                        securityCompactDTO.getSecurityId(),
+                        getApplicablePortfolioId(),
+                        0)); // TODO better
 
         navigator.get().pushFragment(FXMainFragment.class, args);
     }

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
@@ -38,14 +40,16 @@ import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.THColorUtils;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Observer;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 @Routable({
         "fx-security/:exchange/:symbol"
 })
 //TODO need refactor by alex
-public class FXMainFragment extends BuySellFragment
+public class FXMainFragment extends AbstractBuySellFragment
 {
     private final static long MILLISECOND_FX_QUOTE_REFRESH = 5000;
     @ColorRes private static final int DEFAULT_BUTTON_TEXT_COLOR = R.color.text_primary_inverse;
@@ -62,15 +66,6 @@ public class FXMainFragment extends BuySellFragment
     @RouteProperty("exchange") String exchange;
     @RouteProperty("symbol") String symbol;
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        if (securityId == null)
-        {
-            securityId = new SecurityId(exchange, symbol);
-        }
-    }
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
@@ -86,11 +81,6 @@ public class FXMainFragment extends BuySellFragment
         pagerSlidingTabStrip.setDistributeEvenly(true);
     }
 
-    @Nullable @Override protected PortfolioCompactDTO getPreferredApplicablePortfolio(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
-    {
-        return portfolioCompactDTOs.getDefaultFxPortfolio();
-    }
-
     @Override public void onDestroyView()
     {
         super.onDestroyView();
@@ -98,16 +88,39 @@ public class FXMainFragment extends BuySellFragment
         buySellBottomFXPagerAdapter = null;
     }
 
-    @Override protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
+    @NonNull @Override protected Observable<PortfolioCompactDTO> getDefaultPortfolio()
     {
-        super.linkWithApplicable(purchaseApplicablePortfolioId, andDisplay);
+        return portfolioCompactListCache.get(currentUserId.toUserBaseKey())
+                .map(new Func1<Pair<UserBaseKey, PortfolioCompactDTOList>, PortfolioCompactDTO>()
+                {
+                    @Override public PortfolioCompactDTO call(Pair<UserBaseKey, PortfolioCompactDTOList> userBaseKeyPortfolioCompactDTOListPair)
+                    {
+                        PortfolioCompactDTO found = userBaseKeyPortfolioCompactDTOListPair.second.getDefaultFxPortfolio();
+                        defaultPortfolio = found;
+                        return found;
+                    }
+                })
+                .share();
+    }
+
+    @NonNull @Override protected Requisite createRequisite()
+    {
+        if (exchange != null && symbol != null)
+        {
+            return new Requisite(new SecurityId(exchange, symbol), getArguments());
+        }
+        return super.createRequisite();
+    }
+
+    @Override protected void linkWith(@NonNull OwnedPortfolioId purchaseApplicablePortfolioId)
+    {
         if (buySellBottomFXPagerAdapter == null)
         {
             buySellBottomFXPagerAdapter = new BuySellBottomFXPagerAdapter(
                     this.getChildFragmentManager(),
                     getActivity(),
                     purchaseApplicablePortfolioId,
-                    securityId,
+                    requisite.securityId,
                     currentUserId.toUserBaseKey());
             tabViewPager.setAdapter(buySellBottomFXPagerAdapter);
             if (!Constants.RELEASE)
@@ -119,12 +132,11 @@ public class FXMainFragment extends BuySellFragment
             {
                 @Override public void onPageScrolled(int i, float v, int i2)
                 {
-
                 }
 
                 @Override public void onPageSelected(int i)
                 {
-                    mSelectedPortfolioContainer.setVisibility(i == 0 ? View.VISIBLE : View.GONE);
+                    selectedPortfolioContainer.setVisibility(i == 0 ? View.VISIBLE : View.GONE);
                 }
 
                 @Override public void onPageScrollStateChanged(int i)
@@ -137,7 +149,7 @@ public class FXMainFragment extends BuySellFragment
 
     @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
     {
-        MenuOwnedPortfolioId currentMenu = mSelectedPortfolioContainer.getCurrentMenu();
+        MenuOwnedPortfolioId currentMenu = selectedPortfolioContainer.getCurrentMenu();
         if (currentMenu != null && portfolioCompactDTO.id == currentMenu.portfolioId)
         {
             this.portfolioCompactDTO = portfolioCompactDTO;
@@ -155,9 +167,9 @@ public class FXMainFragment extends BuySellFragment
     }
 
     //<editor-fold desc="Display Methods"> //hide switch portfolios for temp
-    @Override public void displayStockName()
+    @Override public void displayStockName(@NonNull SecurityCompactDTO securityCompactDTO)
     {
-        super.displayStockName();
+        super.displayStockName(securityCompactDTO);
         if (securityCompactDTO instanceof FxSecurityCompactDTO)
         {
             FxPairSecurityId fxPairSecurityId = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
@@ -166,9 +178,9 @@ public class FXMainFragment extends BuySellFragment
         }
     }
 
-    @Override public void displayBuySellPrice()
+    @Override public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull QuoteDTO quoteDTO)
     {
-        if (mBuyBtn != null && mSellBtn != null && quoteDTO != null)
+        if (buyBtn != null && sellBtn != null)
         {
             int precision = 0;
             if (quoteDTO.ask != null && quoteDTO.bid != null)
@@ -178,22 +190,22 @@ public class FXMainFragment extends BuySellFragment
 
             if (quoteDTO.ask == null)
             {
-                mBuyBtn.setText(R.string.buy_sell_ask_price_not_available);
+                buyBtn.setText(R.string.buy_sell_ask_price_not_available);
             }
             else
             {
                 double diff = (oldQuoteDTO != null && oldQuoteDTO.ask != null) ? quoteDTO.ask - oldQuoteDTO.ask : 0.0;
-                formatButtonText(quoteDTO.ask, diff, precision, mBuyBtn, getString(R.string.fx_buy));
+                formatButtonText(quoteDTO.ask, diff, precision, buyBtn, getString(R.string.fx_buy));
             }
 
             if (quoteDTO.bid == null)
             {
-                mSellBtn.setText(R.string.buy_sell_bid_price_not_available);
+                sellBtn.setText(R.string.buy_sell_bid_price_not_available);
             }
             else
             {
                 double diff = (oldQuoteDTO != null && oldQuoteDTO.bid != null) ? quoteDTO.bid - oldQuoteDTO.bid : 0.0;
-                formatButtonText(quoteDTO.bid, diff, precision, mSellBtn, getString(R.string.fx_sell));
+                formatButtonText(quoteDTO.bid, diff, precision, sellBtn, getString(R.string.fx_sell));
             }
         }
     }
@@ -215,21 +227,22 @@ public class FXMainFragment extends BuySellFragment
                 .into(btn);
     }
 
-    @Override public void displayBuySellContainer()
+    @Override protected void handleBuySellReady()
     {
-        if (isBuySellReady() && mBuySellBtnContainer.getVisibility() == View.GONE && tabViewPager.getCurrentItem() == 0)
+        if (buySellBtnContainer.getVisibility() == View.GONE && tabViewPager.getCurrentItem() == BuySellBottomFXPagerAdapter.FRAGMENT_ID_INFO)
         {
             Animation slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_from_bottom);
             slideIn.setFillAfter(true);
-            mBuySellBtnContainer.setVisibility(View.VISIBLE);
-            mBuySellBtnContainer.startAnimation(slideIn);
+            buySellBtnContainer.setVisibility(View.VISIBLE);
+            buySellBtnContainer.startAnimation(slideIn);
         }
-        mSelectedPortfolioContainer.setVisibility(tabViewPager.getCurrentItem() == 0 ? View.VISIBLE : View.GONE);
+        selectedPortfolioContainer.setVisibility(
+                tabViewPager.getCurrentItem() == BuySellBottomFXPagerAdapter.FRAGMENT_ID_INFO ? View.VISIBLE : View.GONE);
     }
 
-    @Override protected boolean getSupportSell()
+    @Override @NonNull protected Observable<Boolean> getSupportSell()
     {
-        return true;
+        return Observable.just(true);
     }
     //</editor-fold>
 
@@ -238,16 +251,9 @@ public class FXMainFragment extends BuySellFragment
         PortfolioCompactDTO defaultFxPortfolio = portfolioCompactDTOs.getDefaultFxPortfolio();
         if (defaultFxPortfolio != null)
         {
-            mSelectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(), defaultFxPortfolio));
-            mSelectedPortfolioContainer.setVisibility(tabViewPager.getCurrentItem() == 0 ? View.VISIBLE : View.GONE);
+            selectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(), defaultFxPortfolio));
+            selectedPortfolioContainer.setVisibility(tabViewPager.getCurrentItem() == 0 ? View.VISIBLE : View.GONE);
         }
-        setInitialSellQuantityIfCan();
-        showCloseDialog();
-    }
-
-    @Override
-    protected void conditionalDisplayPortfolioChanged(boolean isPortfolioChanged)
-    {
     }
 
     @Override protected void linkWith(QuoteDTO quoteDTO)

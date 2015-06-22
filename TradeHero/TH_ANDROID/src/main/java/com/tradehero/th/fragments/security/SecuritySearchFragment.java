@@ -11,7 +11,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.AssetClass;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTOUtil;
@@ -19,8 +18,7 @@ import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.fragments.BaseSearchRxFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -160,12 +158,11 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
     protected void pushTradeFragmentIn(SecurityCompactDTO securityCompactDTO)
     {
         Bundle args = new Bundle();
-        OwnedPortfolioId applicablePortfolioId = BasePurchaseManagerFragment.getApplicablePortfolioId(getArguments());
-        if (applicablePortfolioId != null)
-        {
-            BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-        }
-        BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+        AbstractBuySellFragment.putRequisite(
+                args,
+                new AbstractBuySellFragment.Requisite(securityCompactDTO.getSecurityId(),
+                        getApplicablePortfolioId(),
+                        0));
         navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
     }
 

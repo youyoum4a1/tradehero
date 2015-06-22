@@ -29,7 +29,6 @@ import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.portfolio.AssetClass;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.key.SecurityListType;
@@ -44,6 +43,7 @@ import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
+import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerIconAdapter;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
@@ -620,14 +620,12 @@ public class TrendingStockFragment extends TrendingBaseFragment
         analytics.fireEvent(new TrendingStockEvent(securityCompactDTO.getSecurityId()));
 
         Bundle args = new Bundle();
-        BuySellStockFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-
-        if (ownedPortfolioId != null)
-        {
-            BuySellStockFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        }
+        BuySellStockFragment.putRequisite(
+                args,
+                new AbstractBuySellFragment.Requisite(
+                        securityCompactDTO.getSecurityId(),
+                        getApplicablePortfolioId(),
+                        0)); // TODO better
 
         navigator.get().pushFragment(BuySellStockFragment.class, args);
     }

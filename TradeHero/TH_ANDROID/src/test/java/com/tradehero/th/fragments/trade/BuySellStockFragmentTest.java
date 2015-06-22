@@ -70,7 +70,9 @@ public class BuySellStockFragmentTest
     {
         SecurityId googleId = new SecurityId("NYSE", "GOOG");
         Bundle args = new Bundle();
-        BuySellStockFragment.putSecurityId(args, googleId);
+        BuySellStockFragment.putRequisite(
+                args,
+                new AbstractBuySellFragment.Requisite(googleId));
         return args;
     }
 

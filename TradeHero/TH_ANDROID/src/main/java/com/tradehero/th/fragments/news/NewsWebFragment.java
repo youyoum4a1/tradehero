@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.DisplayMetrics;
@@ -17,24 +18,32 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Gallery;
 import android.widget.TextView;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIntegerId;
+import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.FragmentOuterElements;
+import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
+import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.NewsServiceWrapper;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityMultiFetchAssistant;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.AnalyticsDuration;
 import com.tradehero.th.utils.metrics.events.AttributesEvent;
@@ -49,8 +58,11 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.widget.OnItemClickEvent;
+import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -69,6 +81,8 @@ public class NewsWebFragment extends WebViewFragment
     @Inject Analytics analytics;
     @Inject FragmentOuterElements fragmentElements;
     @Inject THRouter thRouter;
+    @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
+    @Inject CurrentUserId currentUserId;
 
     @RouteProperty("newsId") Integer routedNewsId;
 
@@ -134,16 +148,51 @@ public class NewsWebFragment extends WebViewFragment
         adjustFirstItemOfGallery();
         stockGallery.setVisibility(View.INVISIBLE);
 
-        stockGallery.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                SecurityCompactDTO dto = securityArrayAdapter.getItem(position);
-                Bundle args = new Bundle();
-                BuySellStockFragment.putSecurityId(args, dto.getSecurityId());
-                navigator.get().pushFragment(BuySellStockFragment.class, args);
-            }
-        });
+        onDestroyViewSubscriptions.add(
+                Observable.combineLatest(
+                        WidgetObservable.itemClicks(stockGallery),
+                        portfolioCompactListCache.getOne(currentUserId.toUserBaseKey())
+                                .map(new PairGetSecond<UserBaseKey, PortfolioCompactDTOList>()),
+                        new Func2<OnItemClickEvent, PortfolioCompactDTOList, Fragment>()
+                        {
+                            @Override public Fragment call(OnItemClickEvent onItemClickEvent, PortfolioCompactDTOList portfolioCompactDTOs)
+                            {
+                                SecurityCompactDTO dto =
+                                        (SecurityCompactDTO) onItemClickEvent.parent().getItemAtPosition(onItemClickEvent.position());
+                                Bundle args = new Bundle();
+                                if (dto instanceof FxSecurityCompactDTO)
+                                {
+                                    FXMainFragment.putRequisite(
+                                            args,
+                                            new AbstractBuySellFragment.Requisite(
+                                                    dto.getSecurityId(),
+                                                    portfolioCompactDTOs.getDefaultFxPortfolio().getOwnedPortfolioId(),
+                                                    0));
+                                    return navigator.get().pushFragment(FXMainFragment.class, args);
+                                }
+                                else
+                                {
+                                    BuySellStockFragment.putRequisite(
+                                            args,
+                                            new AbstractBuySellFragment.Requisite(
+                                                    dto.getSecurityId(),
+                                                    portfolioCompactDTOs.getDefaultPortfolio().getOwnedPortfolioId(),
+                                                    0));
+                                    return navigator.get().pushFragment(BuySellStockFragment.class, args);
+                                }
+                            }
+                        })
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                new Action1<Fragment>()
+                                {
+                                    @Override public void call(Fragment o)
+                                    {
+                                        // Nothing to do
+                                    }
+                                },
+                                new ToastAndLogOnErrorAction("Failed to listen to clicks"))
+        );
 
         webView.getSettings().setBuiltInZoomControls(false);
         final GestureDetector gestureDetector = new GestureDetector(getActivity(), new GestureDetector.SimpleOnGestureListener()

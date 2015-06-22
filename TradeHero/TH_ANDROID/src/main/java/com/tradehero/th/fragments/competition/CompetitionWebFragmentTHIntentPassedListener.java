@@ -4,6 +4,7 @@ import android.os.Bundle;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
@@ -20,9 +21,13 @@ abstract public class CompetitionWebFragmentTHIntentPassedListener implements TH
     }
 
     abstract protected BaseWebViewFragment getApplicableWebViewFragment();
+
     abstract protected OwnedPortfolioId getApplicablePortfolioId();
+
     abstract protected ProviderId getProviderId();
+
     abstract protected DashboardNavigator getNavigator();
+
     abstract protected Class<?> getClassToPop();
 
     @Override public void onIntentPassed(THIntent thIntent)
@@ -62,8 +67,12 @@ abstract public class CompetitionWebFragmentTHIntentPassedListener implements TH
         Bundle argsBundle = thIntent.getBundle();
         if (thIntent.getActionFragment().equals(BuySellStockFragment.class))
         {
-            BuySellStockFragment.putApplicablePortfolioId(argsBundle, getApplicablePortfolioId());
-            BuySellStockFragment.putProviderId(argsBundle, getProviderId());
+            BuySellStockFragment.putRequisite(
+                    argsBundle,
+                    new AbstractBuySellFragment.Requisite(
+                            thIntent.getSecurityId(),
+                            getApplicablePortfolioId(),
+                            0));
         }
         getNavigator().pushFragment(thIntent.getActionFragment(), argsBundle, null);
         Timber.d("onIntentPassed %s", thIntent);

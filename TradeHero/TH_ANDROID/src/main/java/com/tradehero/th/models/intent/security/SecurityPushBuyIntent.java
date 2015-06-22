@@ -113,6 +113,11 @@ public class SecurityPushBuyIntent extends THIntent
     @Override public void populate(Bundle bundle)
     {
         super.populate(bundle);
-        AbstractBuySellFragment.putSecurityId(bundle, getSecurityId());
+        AbstractBuySellFragment.putRequisite(
+                bundle,
+                new AbstractBuySellFragment.Requisite(
+                        getSecurityId(),
+                        null, // TODO do better
+                        0));
     }
 }

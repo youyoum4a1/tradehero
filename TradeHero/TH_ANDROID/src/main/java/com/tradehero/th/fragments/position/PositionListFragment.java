@@ -64,7 +64,6 @@ import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogRxUtil;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.trade.StockActionBarRelativeLayout;
@@ -723,12 +722,24 @@ public class PositionListFragment
             @NonNull PositionDTO positionDTO)
     {
         Bundle args = new Bundle();
-        if (andClose && positionDTO.shares != null)
+        if (securityCompactDTO instanceof FxSecurityCompactDTO)
         {
-            BuySellFragment.putCloseAttribute(args, positionDTO.shares);
+            FXMainFragment.putRequisite(
+                    args,
+                    new FXMainFragment.Requisite(
+                            securityCompactDTO.getSecurityId(),
+                            positionDTO.getOwnedPortfolioId(),
+                            andClose && positionDTO.shares != null ? positionDTO.shares : 0));
         }
-        BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-        BuySellFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
+        else
+        {
+            BuySellStockFragment.putRequisite(
+                    args,
+                    new BuySellStockFragment.Requisite(
+                            securityCompactDTO.getSecurityId(),
+                            positionDTO.getOwnedPortfolioId(),
+                            andClose && positionDTO.shares != null ? positionDTO.shares : 0));
+        }
         navigator.get().pushFragment(
                 securityCompactDTO instanceof FxSecurityCompactDTO
                         ? FXMainFragment.class
