@@ -48,7 +48,6 @@ import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
 import com.tradehero.th.utils.route.THRouter;
-import com.tradehero.th.widget.LiveSwitcher;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Provider;
@@ -69,7 +68,6 @@ import javax.inject.Singleton;
     DashboardTabHost dashboardTabHost;
     int tabHostHeight;
     Analytics analytics;
-    LiveSwitcher liveSwitcher;
 
     @Provides DashboardNavigator provideDashboardNavigator()
     {
@@ -157,10 +155,5 @@ import javax.inject.Singleton;
     @Provides @ForAnalytics DashboardNavigator.DashboardFragmentWatcher provideAnalyticsReporter()
     {
         return new NavigationAnalyticsReporter(analytics, dashboardTabHost);
-    }
-
-    @Provides @Singleton LiveSwitcher provideLiveSwitcher()
-    {
-        return liveSwitcher;
     }
 }

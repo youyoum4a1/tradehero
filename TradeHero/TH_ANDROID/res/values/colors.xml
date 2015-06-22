@@ -15,12 +15,6 @@
   <color name="tradehero_blue_status_bar">@color/tradehero_blue</color>
   <color name="tradehero_dark_blue">#03237D</color>
 
-  <color name="tradehero_red">#E0483E</color>
-  <color name="tradehero_red_pressed">#a9362f</color>
-  <color name="tradehero_red_focused">#fa5145</color>
-  <color name="tradehero_red_status_bar">@color/tradehero_red</color>
-  <color name="tradehero_dark_red">#A8342A</color>
-
   <color name="tradehero_tab_bg_color">@color/tradehero_dark_blue</color>
   <color name="tradehero_tab_indicator_color">#F7F7F7</color>
   <color name="tradehero_bottom_tab_bg_color">#3E454C</color>
