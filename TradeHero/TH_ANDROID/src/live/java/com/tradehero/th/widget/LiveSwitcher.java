@@ -40,8 +40,6 @@ public class LiveSwitcher extends ViewSwitcher implements View.OnClickListener
         addView(LayoutInflater.from(getContext()).inflate(R.layout.live_switch_live_imageview, this, false));
 
         setOnClickListener(this);
-        setInAnimation(getContext(), R.anim.push_up_in);
-        setOutAnimation(getContext(), R.anim.push_up_out);
         setIsLive(mIsLive);
     }
 
@@ -53,13 +51,14 @@ public class LiveSwitcher extends ViewSwitcher implements View.OnClickListener
 
     public void setIsLive(boolean isLive)
     {
-        if (this.mIsLive == isLive) return;
         this.mIsLive = isLive;
         updateComponents();
     }
 
     private void updateComponents()
     {
+        setInAnimation(getContext(), mIsLive ? R.anim.push_up_in : R.anim.push_down_in);
+        setOutAnimation(getContext(), mIsLive ? R.anim.push_up_out : R.anim.push_down_out);
         setDisplayedChild(mIsLive ? FLIPPER_LIVE_INDEX : FLIPPER_VIRTUAL_INDEX);
         mSwitchSubject.onNext(mIsLive);
     }
