@@ -6,17 +6,17 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextSwitcher;
+import android.widget.ViewSwitcher;
 import com.tradehero.th.R;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public class LiveSwitcher extends TextSwitcher implements View.OnClickListener
+public class LiveSwitcher extends ViewSwitcher implements View.OnClickListener
 {
-    private String mLiveText;
-    private String mVirtualText;
+    private static final int FLIPPER_VIRTUAL_INDEX = 0;
+    private static final int FLIPPER_LIVE_INDEX = 1;
+
     private boolean mIsLive;
-    @ColorRes private static int LIVE_BG_COLOR_RES_ID = R.color.light_green_normal;
-    @ColorRes private static int VIRTUAL_BG_COLOR_RES_ID = R.color.grey_transparent;
 
     private PublishSubject<Boolean> mSwitchSubject;
 
@@ -34,17 +34,10 @@ public class LiveSwitcher extends TextSwitcher implements View.OnClickListener
 
     private void init()
     {
+        setAnimateFirstView(false);
         mSwitchSubject = PublishSubject.create();
-        mLiveText = getContext().getString(R.string.live);
-        mVirtualText = getContext().getString(R.string.virtual);
-
-        setFactory(new ViewFactory()
-        {
-            @Override public View makeView()
-            {
-                return LayoutInflater.from(getContext()).inflate(R.layout.live_switch_textview, LiveSwitcher.this, false);
-            }
-        });
+        addView(LayoutInflater.from(getContext()).inflate(R.layout.live_switch_virtual_textview, this, false));
+        addView(LayoutInflater.from(getContext()).inflate(R.layout.live_switch_live_imageview, this, false));
 
         setOnClickListener(this);
         setInAnimation(getContext(), R.anim.push_up_in);
@@ -55,28 +48,20 @@ public class LiveSwitcher extends TextSwitcher implements View.OnClickListener
     @Override public void onClick(View v)
     {
         mIsLive = !mIsLive;
-        updateComponents(true);
+        updateComponents();
     }
 
     public void setIsLive(boolean isLive)
     {
-        boolean withAnim = this.mIsLive != isLive;
+        if (this.mIsLive == isLive) return;
         this.mIsLive = isLive;
-        updateComponents(withAnim);
+        updateComponents();
     }
 
-    private void updateComponents(boolean withAnim)
+    private void updateComponents()
     {
-        if (withAnim)
-        {
-            setText(mIsLive ? mLiveText : mVirtualText);
-        }
-        else
-        {
-            setCurrentText(mIsLive ? mLiveText : mVirtualText);
-        }
+        setDisplayedChild(mIsLive ? FLIPPER_LIVE_INDEX : FLIPPER_VIRTUAL_INDEX);
         mSwitchSubject.onNext(mIsLive);
-        getCurrentView().setBackgroundColor(getResources().getColor(mIsLive ? LIVE_BG_COLOR_RES_ID : VIRTUAL_BG_COLOR_RES_ID));
     }
 
     public Observable<Boolean> getSwitchObservable()
