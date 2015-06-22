@@ -9,6 +9,7 @@
       android:title="@string/action_exchange"
       app:showAsAction="always"
       app:actionLayout="@layout/exchange_popup_menu"
+      android:orderInCategory="1"
       />
 
 </menu>

@@ -188,7 +188,7 @@ public class TrendingMainFragment extends DashboardFragment
 
             @Override public void onPageSelected(int i)
             {
-                switch(lastType)
+                switch (lastType)
                 {
                     case STOCK:
                         lastStockTab = TrendingStockTabType.values()[i];
@@ -353,6 +353,18 @@ public class TrendingMainFragment extends DashboardFragment
                         getString(R.string.fx)},
                 listener, lastType.ordinal());
         handleRouting();
+    }
+
+    @Override public boolean shouldShowLiveTradingToggle()
+    {
+        return true;
+    }
+
+    @Override public void onLiveTradingChanged(boolean isLive)
+    {
+        super.onLiveTradingChanged(isLive);
+        //Specific for this fragment.
+        pagerSlidingTabStrip.setBackgroundColor(getResources().getColor(isLive ? R.color.tradehero_dark_red : R.color.tradehero_dark_blue));
     }
 
     @Override public void onPause()

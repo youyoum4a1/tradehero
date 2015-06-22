@@ -22,6 +22,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.widget.LiveSwitcher;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
@@ -47,6 +48,7 @@ public class BaseFragment extends Fragment
     protected SubscriptionList onDestroySubscriptions;
 
     @Inject protected Lazy<DashboardNavigator> navigator;
+    @Inject protected LiveSwitcher liveSwitcher;
 
     public static void setHasOptionMenu(@NonNull Bundle args, boolean hasOptionMenu)
     {
@@ -168,6 +170,15 @@ public class BaseFragment extends Fragment
         actionBarOwnerMixin.onCreateOptionsMenu(menu, inflater);
 
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    public boolean shouldShowLiveTradingToggle()
+    {
+        return false;
+    }
+
+    public void onLiveTradingChanged(boolean isLive)
+    {
     }
 
     private int getMenuHelpID()

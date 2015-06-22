@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,7 +17,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.util.TypedValue;
-import android.view.Display;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +48,7 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentBroadcastSignal;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.dashboard.DrawerLayoutUtil;
@@ -60,6 +61,7 @@ import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.notification.NotificationCacheRx;
 import com.tradehero.th.persistence.prefs.IsFxShown;
+import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -75,6 +77,7 @@ import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.metrics.ForAnalytics;
 import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
 import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.widget.LiveSwitcher;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -91,6 +94,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
@@ -133,6 +137,7 @@ public class DashboardActivity extends BaseActivity
     @InjectView(R.id.dashboard_drawer_layout) DrawerLayout drawerLayout;
     @InjectView(R.id.drawer_content_container) ViewGroup drawerContents;
     @InjectView(R.id.left_drawer) ViewGroup leftDrawerContainer;
+    @InjectView(android.R.id.tabhost) DashboardTabHost dashboardTabHost;
 
     private Subscription notificationFetchSubscription;
 
@@ -140,7 +145,12 @@ public class DashboardActivity extends BaseActivity
     private BroadcastReceiver onlineStateReceiver;
     private MenuItem networkIndicator;
     private CompositeSubscription onDestroySubscriptions;
+    private CompositeSubscription onDestroyOptionsMenuSubscriptions;
     private CompositeSubscription onPauseSubscriptions;
+
+    @Inject @IsLiveTrading BooleanPreference isLiveTrading;
+    private LiveSwitcher liveSwitcher;
+    private PublishSubject<Boolean> isTradingLivePublishSubject;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -190,6 +200,77 @@ public class DashboardActivity extends BaseActivity
         initBroadcastReceivers();
 
         localBroadcastManager.registerReceiver(onlineStateReceiver, new IntentFilter(OnlineStateReceiver.ONLINE_STATE_CHANGED));
+
+        isTradingLivePublishSubject = PublishSubject.create();
+    }
+
+    @Override public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.live_switch_menu, menu);
+        if (onDestroyOptionsMenuSubscriptions != null)
+        {
+            onDestroyOptionsMenuSubscriptions.unsubscribe();
+            onDestroyOptionsMenuSubscriptions.clear();
+            onDestroyOptionsMenuSubscriptions = null;
+        }
+        onDestroyOptionsMenuSubscriptions = new CompositeSubscription();
+
+        MenuItem item = menu.findItem(R.id.switch_live);
+        liveSwitcher = (LiveSwitcher) item.getActionView();
+        activityModule.liveSwitcher = liveSwitcher;
+
+        onDestroyOptionsMenuSubscriptions.add(liveSwitcher.getSwitchObservable().subscribe(isTradingLivePublishSubject));
+        isTradingLivePublishSubject
+                .doOnNext(new Action1<Boolean>()
+                {
+                    @Override public void call(Boolean isLive)
+                    {
+                        //Every-time a change happened.
+                        isLiveTrading.set(isLive);
+                    }
+                })
+                .subscribe(new Action1<Boolean>()
+                {
+                    @Override public void call(Boolean isLive)
+                    {
+                        liveSwitcher.setIsLive(isLive);
+                        onLiveTradingChanged(isLive);
+                    }
+                });
+        liveSwitcher.setIsLive(isLiveTrading.get());
+        for (Fragment f : getSupportFragmentManager().getFragments())
+        {
+            if (f instanceof BaseFragment && f.isVisible() && ((BaseFragment) f).shouldShowLiveTradingToggle())
+            {
+                item.setVisible(true);
+                break;
+            }
+        }
+        return true;
+    }
+
+    private void onLiveTradingChanged(Boolean isLive)
+    {
+        getSupportActionBar().setBackgroundDrawable(
+                new ColorDrawable(getResources().getColor(isLive ? R.color.tradehero_red : R.color.tradehero_blue)));
+
+        //Specific to this activity?
+        drawerLayout.setStatusBarBackgroundColor(
+                getResources().getColor(isLive ? R.color.tradehero_red_status_bar : R.color.tradehero_blue_status_bar));
+
+        for (int i = 0; i < dashboardTabHost.getTabWidget().getChildCount(); i++)
+        {
+            dashboardTabHost.getTabWidget().getChildAt(i)
+                    .setBackgroundResource(
+                            isLive ? R.drawable.tradehero_bottom_tab_indicator_red : R.drawable.tradehero_bottom_tab_indicator);
+        }
+        for (Fragment f : getSupportFragmentManager().getFragments())
+        {
+            if (f instanceof BaseFragment && f.isVisible())
+            {
+                ((BaseFragment) f).onLiveTradingChanged(isLive);
+            }
+        }
     }
 
     private void setupNavigator()
@@ -206,7 +287,7 @@ public class DashboardActivity extends BaseActivity
 
     private void setupDashboardTabHost()
     {
-        activityModule.dashboardTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
+        activityModule.dashboardTabHost = dashboardTabHost;
         activityModule.dashboardTabHost.setup();
         activityModule.dashboardTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
         {
@@ -239,8 +320,8 @@ public class DashboardActivity extends BaseActivity
         }
 
         //Setup Drawer Layout.
-        activityModule.mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
-        drawerLayout.setDrawerListener(activityModule.mDrawerToggle);
+        activityModule.drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+        drawerLayout.setDrawerListener(activityModule.drawerToggle);
 
         if (getSupportActionBar() != null)
         {
@@ -361,13 +442,13 @@ public class DashboardActivity extends BaseActivity
     @Override protected void onPostCreate(@Nullable Bundle savedInstanceState)
     {
         super.onPostCreate(savedInstanceState);
-        activityModule.mDrawerToggle.syncState();
+        activityModule.drawerToggle.syncState();
     }
 
     @Override public void onConfigurationChanged(Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
-        activityModule.mDrawerToggle.onConfigurationChanged(newConfig);
+        activityModule.drawerToggle.onConfigurationChanged(newConfig);
     }
 
     private void pushFragmentIfNecessary(Class<? extends Fragment> fragmentClass)
@@ -538,6 +619,7 @@ public class DashboardActivity extends BaseActivity
 
     @Override protected void onDestroy()
     {
+        onDestroyOptionsMenuSubscriptions.unsubscribe();
         onDestroySubscriptions.unsubscribe();
         notificationFetchSubscription = null;
 
@@ -552,6 +634,9 @@ public class DashboardActivity extends BaseActivity
         localBroadcastManager.unregisterReceiver(onlineStateReceiver);
 
         ButterKnife.reset(this);
+
+        isTradingLivePublishSubject = null;
+
         super.onDestroy();
     }
 

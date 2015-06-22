@@ -48,6 +48,7 @@ import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
 import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.widget.LiveSwitcher;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Provider;
@@ -60,15 +61,15 @@ import javax.inject.Singleton;
         },
         library = true,
         complete = false,
-        overrides = true)
-class DashboardActivityModule
+        overrides = true) class DashboardActivityModule
 {
     DashboardNavigator navigator;
     DrawerLayout drawerLayout;
-    ActionBarDrawerToggle mDrawerToggle;
+    ActionBarDrawerToggle drawerToggle;
     DashboardTabHost dashboardTabHost;
     int tabHostHeight;
     Analytics analytics;
+    LiveSwitcher liveSwitcher;
 
     @Provides DashboardNavigator provideDashboardNavigator()
     {
@@ -122,7 +123,7 @@ class DashboardActivityModule
 
     @Provides ActionBarDrawerToggle provideActionBarDrawerToggle()
     {
-        return mDrawerToggle;
+        return drawerToggle;
     }
 
     @Provides FragmentOuterElements provideFragmentElements(DashboardFragmentOuterElements dashboardFragmentElements)
@@ -156,5 +157,10 @@ class DashboardActivityModule
     @Provides @ForAnalytics DashboardNavigator.DashboardFragmentWatcher provideAnalyticsReporter()
     {
         return new NavigationAnalyticsReporter(analytics, dashboardTabHost);
+    }
+
+    @Provides @Singleton LiveSwitcher provideLiveSwitcher()
+    {
+        return liveSwitcher;
     }
 }
