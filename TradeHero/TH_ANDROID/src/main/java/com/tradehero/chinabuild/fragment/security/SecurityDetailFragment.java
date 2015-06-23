@@ -1668,9 +1668,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     public void displayInWatchButton() {
         if(isInWatchList){
-            addWatchListTV.setText("-自选");
+            addWatchListTV.setText("－自选");
         }else{
-            addWatchListTV.setText("+自选");
+            addWatchListTV.setText("＋自选");
         }
     }
 
