@@ -391,14 +391,12 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
             x = 3 + mLeftMargin + dataSpacing * i;
             // 绘制下部表内数据线
             Long buy = fenshiData.getVol();
-            //Long buy = i == 0 ? fenshiData.getVol() : fenshiData.getVol() - mOHLCData.get(i - 1).getVol();
             paint.setStrokeWidth(3);
             if (i <= 0)
             {
                 paint.setColor(COLOR_RED);
             }
-            else if (fenshiData.getOpen() >= fenshiData.getPreclose())
-            //else if (fenshiData.price >= mOHLCData.get(i - 1).price)
+            else if (fenshiData.getOpen() == null || fenshiData.getPreclose() == null || fenshiData.getOpen() >= fenshiData.getPreclose())
             {
                 paint.setColor(COLOR_RED);
             }
