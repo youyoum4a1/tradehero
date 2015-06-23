@@ -224,16 +224,16 @@ public class TimesView extends TimesBase
         } else {
             canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 10000).concat("万"), 1 + leftMargin - 50, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE, paint);
         }
-        if (lowerHigh * 2 / 3 > 100000000) {
-            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh * 2 / 3 / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() / 3, paint);
+        if (lowerHigh / 2 > 100000000) {
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 2 / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + (DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight()) / 2, paint);
         } else {
-            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh * 2 / 3 / 10000).concat("万"), 1 + leftMargin - 50, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() / 3, paint);
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 2 / 10000).concat("万"), 1 + leftMargin - 50, LOWER_CHART_TOP + 1 + (DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight()) / 2, paint);
         }
-        if (lowerHigh / 3 > 100000000) {
-            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 3 / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() * 2 / 3, paint);
-        } else {
-            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 3 / 10000).concat("万"), 1 + leftMargin - 50, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() * 2 / 3, paint);
-        }
+        //if (lowerHigh / 3 > 100000000) {
+        //    canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 3 / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() * 2 / 3, paint);
+        //} else {
+        //    canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 3 / 10000).concat("万"), 1 + leftMargin - 50, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() * 2 / 3, paint);
+        //}
 	}
 
 	private void drawLines(Canvas canvas) {
