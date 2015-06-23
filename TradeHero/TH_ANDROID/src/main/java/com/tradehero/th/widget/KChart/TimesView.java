@@ -190,18 +190,19 @@ public class TimesView extends TimesBase
 		paint.setColor(COLOR_GREEN);
 		canvas.drawText(new DecimalFormat("#.##").format(initialWeightedIndex - uperHalfHigh),
                 mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE, uperBottom, paint);
-		canvas.drawText(new DecimalFormat("#.##").format(initialWeightedIndex - uperHalfHigh * 0.5f),
+		canvas.drawText(new DecimalFormat("#.##").format(initialWeightedIndex - uperHalfHigh * 2 / 3),
                 mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE, uperBottom - getLatitudeSpacing() + 10, paint);
-		canvas.drawText(new DecimalFormat("#.##").format(initialWeightedIndex), mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE, uperBottom
-				- getLatitudeSpacing() * 2 + 10, paint);
+		canvas.drawText(new DecimalFormat("#.##").format(initialWeightedIndex - uperHalfHigh / 3),
+                mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE, uperBottom - getLatitudeSpacing() * 2 + 10, paint);
 
 		paint.setColor(Color.BLACK);
-		canvas.drawText(new DecimalFormat("#.##").format(uperHalfHigh * 0.5f + initialWeightedIndex), mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE,
+		canvas.drawText(new DecimalFormat("#.##").format(initialWeightedIndex), mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE,
                 uperBottom - getLatitudeSpacing() * 3 + 10, paint);
+
 		paint.setColor(COLOR_RED);
-        canvas.drawText(new DecimalFormat("#.##").format(uperHalfHigh * 1f + initialWeightedIndex), mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE,
+        canvas.drawText(new DecimalFormat("#.##").format(uperHalfHigh / 3 + initialWeightedIndex), mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE,
                 uperBottom - getLatitudeSpacing() * 4 + 10, paint);
-        canvas.drawText(new DecimalFormat("#.##").format(uperHalfHigh * 1.5f + initialWeightedIndex), mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE,
+        canvas.drawText(new DecimalFormat("#.##").format(uperHalfHigh * 2 / 3 + initialWeightedIndex), mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE,
                 uperBottom - getLatitudeSpacing() * 5 + 10, paint);
 		canvas.drawText(new DecimalFormat("#.##").format(uperHalfHigh + initialWeightedIndex), mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE,
 				DEFAULT_AXIS_TITLE_SIZE, paint);
@@ -223,16 +224,16 @@ public class TimesView extends TimesBase
         } else {
             canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 10000).concat("万"), 1 + leftMargin - 50, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE, paint);
         }
-        if (lowerHigh * 2 / 3 > 100000000) {
-            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh * 2 / 3 / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() / 3, paint);
+        if (lowerHigh / 2 > 100000000) {
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 2 / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + (DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight()) / 2, paint);
         } else {
-            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh * 2 / 3 / 10000).concat("万"), 1 + leftMargin - 50, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() / 3, paint);
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 2 / 10000).concat("万"), 1 + leftMargin - 50, LOWER_CHART_TOP + 1 + (DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight()) / 2, paint);
         }
-        if (lowerHigh / 3 > 100000000) {
-            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 3 / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() * 2 / 3, paint);
-        } else {
-            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 3 / 10000).concat("万"), 1 + leftMargin - 50, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() * 2 / 3, paint);
-        }
+        //if (lowerHigh / 3 > 100000000) {
+        //    canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 3 / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() * 2 / 3, paint);
+        //} else {
+        //    canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 3 / 10000).concat("万"), 1 + leftMargin - 50, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() * 2 / 3, paint);
+        //}
 	}
 
 	private void drawLines(Canvas canvas) {

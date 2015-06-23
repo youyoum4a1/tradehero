@@ -54,7 +54,7 @@
     <string name="buy_sell_loading_bid_price">加载卖出价格…</string>
     <string name="sell">卖</string>
     <string name="buy">买</string>
-    <string name="chart_loading_image">加载图表…</string>
+    <string name="chart_loading_image">努力加载中…</string>
     <string name="currency">美元$</string>
     <string name="search_social_friend_hint">搜索你的好友</string>
     <string name="invite_social_friend">邀请%s好友</string>

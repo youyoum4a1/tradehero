@@ -278,6 +278,7 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 				DEFAULT_AXIS_TITLE_SIZE * 2, textPaint);
 
         //Y轴下Titles
+        leftMargin -= 20;
         textPaint.setTextSize(DEFAULT_AXIS_TITLE_SIZE);
         textPaint.setColor(Color.BLACK);
         if (lowerHigh > 100000000) {
@@ -285,16 +286,16 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
         } else {
             canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 10000).concat("万"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE, textPaint);
         }
-        if (lowerHigh * 2 / 3 > 100000000) {
-            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh * 2 / 3 / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() / 3, textPaint);
+        if (lowerHigh / 2 > 100000000) {
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 2 / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() / 2, textPaint);
         } else {
-            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh * 2 / 3 / 10000).concat("万"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() / 3, textPaint);
+            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 2 / 10000).concat("万"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + (DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight()) / 2, textPaint);
         }
-        if (lowerHigh / 3 > 100000000) {
-            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 3 / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() * 2 / 3, textPaint);
-        } else {
-            canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 3 / 10000).concat("万"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() * 2 / 3, textPaint);
-        }
+        //if (lowerHigh / 3 > 100000000) {
+        //    canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 3 / 100000000).concat("亿"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() * 2 / 3, textPaint);
+        //} else {
+        //    canvas.drawText(new DecimalFormat("####.#").format(lowerHigh / 3 / 10000).concat("万"), 1 + leftMargin - 30, LOWER_CHART_TOP + 1 + DEFAULT_AXIS_TITLE_SIZE + getLowerChartHeight() * 2 / 3, textPaint);
+        //}
 
 		// X轴Titles
 		textPaint.setColor(Color.GRAY);
