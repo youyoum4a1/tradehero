@@ -15,13 +15,11 @@ import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 public class ReplyPrivateMessageFragment extends AbstractPrivateMessageFragment
 {
@@ -35,7 +33,7 @@ public class ReplyPrivateMessageFragment extends AbstractPrivateMessageFragment
         refresh();
     }
 
-    @Nullable @Override protected View inflateTopicView()
+    @Nullable @Override protected View inflateTopicView(@NonNull AbstractDiscussionCompactDTO topicDiscussion)
     {
         if (topicDiscussion instanceof DiscussionDTO)
         {
@@ -53,22 +51,29 @@ public class ReplyPrivateMessageFragment extends AbstractPrivateMessageFragment
         return null;
     }
 
-    @Override protected void displayTopic(@NonNull final AbstractDiscussionCompactDTO discussionDTO)
+    @NonNull @Override protected Observable<View> getTopicViewObservable()
     {
-        super.displayTopic(discussionDTO);
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
-                createViewDTO(discussionDTO))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<AbstractDiscussionCompactItemViewLinear.DTO>()
+        return Observable.combineLatest(
+                super.getTopicViewObservable()
+                        .observeOn(AndroidSchedulers.mainThread()),
+                getTopicObservable()
+                        .flatMap(new Func1<AbstractDiscussionCompactDTO, Observable<AbstractDiscussionCompactItemViewLinear.DTO>>()
                         {
-                            @Override public void call(AbstractDiscussionCompactItemViewLinear.DTO dto)
+                            @Override
+                            public Observable<AbstractDiscussionCompactItemViewLinear.DTO> call(@NonNull AbstractDiscussionCompactDTO topicDiscussion)
                             {
-                                ((AbstractDiscussionCompactItemViewLinear) topicView).display(dto);
+                                return createViewDTO(topicDiscussion);
                             }
-                        },
-                        new ToastOnErrorAction()));
+                        })
+                        .observeOn(AndroidSchedulers.mainThread()),
+                new Func2<View, AbstractDiscussionCompactItemViewLinear.DTO, View>()
+                {
+                    @Override public View call(@NonNull View topicView, @NonNull AbstractDiscussionCompactItemViewLinear.DTO dto)
+                    {
+                        ((AbstractDiscussionCompactItemViewLinear) topicView).display(dto);
+                        return topicView;
+                    }
+                });
     }
 
     @NonNull @Override protected Observable<DiscussionListKey> createTopicDiscussionListKey()
@@ -78,7 +83,7 @@ public class ReplyPrivateMessageFragment extends AbstractPrivateMessageFragment
                 {
                     @Override public DiscussionListKey call(Pair<MessageHeaderId, MessageHeaderDTO> pair)
                     {
-                        linkWith(discussionKey,true);
+                        linkWith(discussionKey, true);
                         return DiscussionListKeyFactory.create(pair.second);
                     }
                 });

@@ -45,20 +45,14 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         super.onDestroyView();
     }
 
-    @Override protected void fetchTopic()
+    @NonNull @Override protected Observable<AbstractDiscussionCompactDTO> getTopicObservable()
     {
-        // Nothing to do
+        return Observable.empty();
     }
 
-    @Nullable @Override protected View inflateTopicView()
+    @Nullable @Override protected View inflateTopicView(@NonNull AbstractDiscussionCompactDTO topicDiscussion)
     {
         return null; // TODO better?
-    }
-
-    @Override protected void displayTopic(@NonNull AbstractDiscussionCompactDTO discussionDTO)
-    {
-        super.displayTopic(discussionDTO);
-        // TODO Nothing else to do?
     }
 
     protected void fetchMessageThreadHeader()

@@ -17,11 +17,12 @@ import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.fragments.news.NewsViewLinear;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
 import javax.inject.Inject;
-import rx.android.app.AppObservable;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -88,7 +89,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         return new SingleViewDiscussionSetAdapter(getActivity(), R.layout.timeline_discussion_comment_item);
     }
 
-    @Nullable @Override protected NewsViewLinear inflateTopicView()
+    @Nullable @Override protected NewsViewLinear inflateTopicView(@NonNull AbstractDiscussionCompactDTO topicDiscussion)
     {
         NewsViewLinear topicView = (NewsViewLinear) LayoutInflater.from(getActivity()).inflate(R.layout.news_detail_view_header, null, false);
         onDestroyViewSubscriptions.add(topicView.getUserActionObservable()
@@ -104,27 +105,39 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         return topicView;
     }
 
-    @Override protected void displayTopic(@NonNull final AbstractDiscussionCompactDTO discussionDTO)
+    @NonNull @Override protected Observable<View> getTopicViewObservable()
     {
-        super.displayTopic(discussionDTO);
-        // Because the cache saves both NewsItemDTO and NewsItemCompactDTO with a NewsItemDTOKey
-        if (discussionDTO instanceof NewsItemDTO)
-        {
-            onStopSubscriptions.add(AppObservable.bindFragment(
-                    this,
-                    viewDTOFactory.createNewsViewLinearDTO((NewsItemDTO) discussionDTO))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            new Action1<AbstractDiscussionCompactItemViewLinear.DTO>()
+        return Observable.combineLatest(
+                super.getTopicViewObservable()
+                        .observeOn(AndroidSchedulers.mainThread()),
+                super.getTopicObservable()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .flatMap(new Func1<AbstractDiscussionCompactDTO, Observable<AbstractDiscussionCompactItemViewLinear.DTO>>()
+                        {
+                            @Override public Observable<AbstractDiscussionCompactItemViewLinear.DTO> call(
+                                    @NonNull AbstractDiscussionCompactDTO topicDiscussion)
                             {
-                                @Override public void call(AbstractDiscussionCompactItemViewLinear.DTO viewDTO)
+                                setActionBarTitle(((NewsItemCompactDTO) topicDiscussion).title);
+                                if (topicDiscussion instanceof NewsItemDTO)
                                 {
-                                    ((NewsViewLinear) topicView).display(viewDTO);
+                                    return viewDTOFactory.createNewsViewLinearDTO((NewsItemDTO) topicDiscussion);
                                 }
-                            },
-                            new ToastOnErrorAction()));
-        }
-        setActionBarTitle(((NewsItemCompactDTO) discussionDTO).title);
+                                return null;
+                            }
+                        })
+                        .observeOn(AndroidSchedulers.mainThread()),
+                new Func2<View, AbstractDiscussionCompactItemViewLinear.DTO, View>()
+                {
+                    @Override public View call(View topicView, @Nullable AbstractDiscussionCompactItemViewLinear.DTO viewDTO)
+                    {
+                        if (viewDTO != null)
+                        {
+                            ((NewsViewLinear) topicView).display(viewDTO);
+                        }
+                        return topicView;
+                    }
+                })
+                .share();
     }
 
     @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)

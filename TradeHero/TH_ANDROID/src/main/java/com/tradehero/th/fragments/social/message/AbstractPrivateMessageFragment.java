@@ -189,24 +189,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         return viewDTOFactory.createDiscussionItemViewLinearDTO((DiscussionDTO) discussion);
     }
 
-    @Override protected void displayTopic(@NonNull AbstractDiscussionCompactDTO discussionDTO)
-    {
-        super.displayTopic(discussionDTO);
-        if (topicView == null)
-        {
-            topicView = inflateTopicView();
-            try
-            {
-                discussionList.addHeaderView(topicView, null, false);
-            }
-            catch (Exception e)
-            {
-                // Can happen on older APIs.
-                Timber.e(e, "Failed adding topic view");
-            }
-        }
-    }
-
     @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
         super.linkWith(discussionKey, andDisplay);

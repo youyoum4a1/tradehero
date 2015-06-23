@@ -111,12 +111,12 @@ public class SecurityDiscussionFragment extends AbstractDiscussionFragment
                         -getResources().getDimensionPixelSize(R.dimen.clickable_element_min_dimen), null, 0));
     }
 
-    @Override protected void fetchTopic()
+    @NonNull @Override protected Observable<AbstractDiscussionCompactDTO> getTopicObservable()
     {
-        // Do nothing
+        return Observable.empty();
     }
 
-    @Nullable @Override protected View inflateTopicView()
+    @Nullable @Override protected View inflateTopicView(@NonNull AbstractDiscussionCompactDTO topicDiscussion)
     {
         return null;
     }

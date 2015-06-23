@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 import com.tradehero.common.fragment.HasSelectedItem;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -31,6 +32,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.widget.MultiScrollListener;
@@ -54,7 +56,6 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     @InjectView(R.id.post_comment_text) @Optional protected EditText postCommentText;
     @InjectView(R.id.mention_widget) @Optional protected MentionActionButtonsView mentionActionButtonsView;
     @InjectView(R.id.discussion_comment_widget) @Optional protected PostCommentView postCommentView;
-    protected View topicView;
     protected TextView discussionStatus;
 
     @Inject protected DiscussionCacheRx discussionCache;
@@ -66,7 +67,6 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
 
     protected DiscussionSetAdapter discussionListAdapter;
     protected DiscussionKey discussionKey;
-    protected AbstractDiscussionCompactDTO topicDiscussion;
     private Subscription hasSelectedSubscription;
     private PublishSubject<Boolean> nearEdgeSubject; // True means start reached, False means end reached
 
@@ -99,12 +99,23 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         discussionList.setOnScrollListener(new MultiScrollListener(fragmentElements.getListViewScrollListener(), createListScrollListener()));
-        topicView = inflateTopicView();
-        if (topicView != null)
-        {
-            discussionList.addHeaderView(topicView, null, false);
-        }
-        discussionList.setAdapter(discussionListAdapter);
+
+        onDestroyViewSubscriptions.add(getTopicViewObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<View>()
+                        {
+                            @Override public void call(@Nullable View topicView)
+                            {
+                                if (topicView != null)
+                                {
+                                    discussionList.addHeaderView(topicView, null, false);
+                                }
+                                discussionList.setAdapter(discussionListAdapter);
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to get topic view")));
+
         mentionTaggedStockHandler.setDiscussionPostContent(postCommentText);
         subscribeHasSelected();
         if (postCommentView != null)
@@ -120,7 +131,6 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     @Override public void onStart()
     {
         super.onStart();
-        fetchTopic();
         fetchDiscussionList();
         registerUserActions();
     }
@@ -189,7 +199,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
                 });
     }
 
-    @Nullable abstract protected View inflateTopicView();
+    @Nullable abstract protected View inflateTopicView(@NonNull AbstractDiscussionCompactDTO topicDiscussion);
 
     public DiscussionKey getDiscussionKey()
     {
@@ -202,28 +212,25 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     }
 
     //<editor-fold desc="Topic">
-    protected void fetchTopic()
+    @NonNull protected Observable<AbstractDiscussionCompactDTO> getTopicObservable()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
-                discussionCache.get(discussionKey))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<Pair<DiscussionKey, AbstractDiscussionCompactDTO>>()
-                        {
-                            @Override
-                            public void call(Pair<DiscussionKey, AbstractDiscussionCompactDTO> pair)
-                            {
-                                displayTopic(pair.second);
-                            }
-                        },
-                        new ToastAndLogOnErrorAction(getString(R.string.error_fetch_private_message_initiating_discussion), "Initial message")
-                ));
+        return discussionCache.getOne(discussionKey)
+                .map(new PairGetSecond<DiscussionKey, AbstractDiscussionCompactDTO>())
+                .share();
     }
 
-    protected void displayTopic(@NonNull AbstractDiscussionCompactDTO discussionDTO)
+    @NonNull protected Observable<View> getTopicViewObservable() // It can pass null values
     {
-        this.topicDiscussion = discussionDTO;
+        return getTopicObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<AbstractDiscussionCompactDTO, View>()
+                {
+                    @Override public View call(AbstractDiscussionCompactDTO topicDiscussion)
+                    {
+                        return inflateTopicView(topicDiscussion);
+                    }
+                })
+                .share();
     }
     //</editor-fold>
 
@@ -443,16 +450,28 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
         }
     }
 
+    @NonNull protected Observable<UserDiscussionAction> getUserActionObservable()
+    {
+        return Observable.merge(
+                discussionListAdapter.getUserActionObservable(),
+                getTopicViewObservable()
+                        .flatMap(new Func1<View, Observable<UserDiscussionAction>>()
+                        {
+                            @Override public Observable<UserDiscussionAction> call(@Nullable View topicView)
+                            {
+                                if (topicView instanceof AbstractDiscussionCompactItemViewLinear)
+                                {
+                                    return ((AbstractDiscussionCompactItemViewLinear) topicView).getUserActionObservable();
+                                }
+                                return Observable.empty();
+                            }
+                        }))
+                .share();
+    }
+
     protected void registerUserActions()
     {
-        Observable<UserDiscussionAction> userActionObservable = discussionListAdapter.getUserActionObservable();
-        if (topicView instanceof AbstractDiscussionCompactItemViewLinear)
-        {
-            userActionObservable.mergeWith(((AbstractDiscussionCompactItemViewLinear) topicView).getUserActionObservable());
-        }
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                this,
-                userActionObservable)
+        onStopSubscriptions.add(getUserActionObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<UserDiscussionAction>()
