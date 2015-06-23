@@ -148,6 +148,14 @@ public class NewsWebFragment extends WebViewFragment
         adjustFirstItemOfGallery();
         stockGallery.setVisibility(View.INVISIBLE);
 
+        webView.getSettings().setBuiltInZoomControls(false);
+        return view;
+    }
+
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+
         onDestroyViewSubscriptions.add(
                 Observable.combineLatest(
                         WidgetObservable.itemClicks(stockGallery),
@@ -194,7 +202,6 @@ public class NewsWebFragment extends WebViewFragment
                                 new ToastAndLogOnErrorAction("Failed to listen to clicks"))
         );
 
-        webView.getSettings().setBuiltInZoomControls(false);
         final GestureDetector gestureDetector = new GestureDetector(getActivity(), new GestureDetector.SimpleOnGestureListener()
         {
             @Override public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
@@ -275,7 +282,6 @@ public class NewsWebFragment extends WebViewFragment
                         Timber.e("Error", throwable);
                     }
                 });
-        return view;
     }
 
     private void adjustFirstItemOfGallery()
