@@ -326,4 +326,5 @@
   <string name="switch_to_live">Switch to Live</string>
   <string name="virtual">Virtual</string>
   <string name="live">Live</string>
+  <string name="go_live_span">Go %1$s!</string>
 </resources>
