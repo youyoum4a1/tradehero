@@ -23,7 +23,8 @@ public class TimesBase extends View {
 	public static final int DEFAULT_BACKGROUD = R.color.white;
 
 	/** 默认XY轴字体大小 **/
-	public static final int DEFAULT_AXIS_TITLE_SIZE = 30;
+	public static final int DEFAULT_AXIS_TITLE_SIZE = 25;
+	//public static final int DEFAULT_AXIS_TITLE_SIZE = 30;
 
 	/** 默认XY坐标轴颜色 */
 	private static final int DEFAULT_AXIS_COLOR = Color.GRAY;

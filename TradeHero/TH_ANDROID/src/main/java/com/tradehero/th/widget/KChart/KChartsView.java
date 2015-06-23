@@ -12,6 +12,7 @@ import com.tradehero.chinabuild.data.KLineItem;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import timber.log.Timber;
 
 public class KChartsView extends TimesBase implements TimesBase.OnTabClickListener {
 
@@ -299,12 +300,12 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 
 		// X轴Titles
 		textPaint.setColor(Color.GRAY);
-		canvas.drawText(mOHLCData.get(mDataStartIndext).getDate().substring(0, 10), getWidth() - 4 - 5.5f
+		canvas.drawText(mOHLCData.get(mDataStartIndext).getDate().substring(2, 10), getWidth() - 4 - 5.5f
 				* DEFAULT_AXIS_TITLE_SIZE, UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE, textPaint);
 		try {
-			canvas.drawText(String.valueOf(mOHLCData.get(mDataStartIndext + mShowDataNum / 2).getDate()).substring(0, 10),
+			canvas.drawText(String.valueOf(mOHLCData.get(mDataStartIndext + mShowDataNum / 2).getDate()).substring(2, 10),
 					getWidth() / 2 - 1.5f * DEFAULT_AXIS_TITLE_SIZE, UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE, textPaint);
-			canvas.drawText(String.valueOf(mOHLCData.get(mDataStartIndext + mShowDataNum - 1).getDate()).substring(0, 10),
+			canvas.drawText(String.valueOf(mOHLCData.get(mDataStartIndext + mShowDataNum - 1).getDate()).substring(2, 10),
 					2 + mLeftMargin, UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE, textPaint);
 		} catch (Exception e) {
 
@@ -322,7 +323,10 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 		double rate = (getUperChartHeight() - 2) / (mMaxPrice - mMinPrice);
 		for (int i = 0; i < mShowDataNum && mDataStartIndext + i < mOHLCData.size(); i++) {
 			KLineItem entity = mOHLCData.get(mDataStartIndext + i);
-			//OHLCEntity entity = mOHLCData.get(mDataStartIndext + i);
+            if (entity.getOpen() == null || entity.getClose() == null || entity.getHigh() == null || entity.getLow() == null
+                    || entity.getVol() == 0) {
+                continue;
+            }
 			float open = (float) ((mMaxPrice - entity.getOpen()) * rate + DEFAULT_AXIS_TITLE_SIZE + 4);
 			float close = (float) ((mMaxPrice - entity.getClose()) * rate + DEFAULT_AXIS_TITLE_SIZE + 4);
 			float high = (float) ((mMaxPrice - entity.getHigh()) * rate + DEFAULT_AXIS_TITLE_SIZE + 4);
@@ -657,8 +661,8 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 		} else if (mShowDataNum + mDataStartIndext > mOHLCData.size()) {
 			mDataStartIndext = mOHLCData.size() - mShowDataNum;
 		}
-		mMinPrice = mOHLCData.get(mDataStartIndext).getLow();
-		mMaxPrice = mOHLCData.get(mDataStartIndext).getHigh();
+        mMinPrice = mOHLCData.get(mDataStartIndext).getLow() == null ? 0 : mOHLCData.get(mDataStartIndext).getLow();
+		mMaxPrice = mOHLCData.get(mDataStartIndext).getHigh() == null ? 0 : mOHLCData.get(mDataStartIndext).getHigh();
 		for (int i = mDataStartIndext + 1; i < mOHLCData.size()
 				&& i < mShowDataNum + mDataStartIndext; i++) {
 			KLineItem entity = mOHLCData.get(i);
@@ -745,7 +749,7 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 		setCurrentData();
 
         KLineItem fenshiData = OHLCData.get(0);
-        Long volume = fenshiData.getVol();
+        Long volume = fenshiData.getVol() == null ? 0 : fenshiData.getVol();
         lowerHigh = volume;
         for (int i = 0; i < mOHLCData.size(); i++) {
             fenshiData = mOHLCData.get(i);
