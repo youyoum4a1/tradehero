@@ -470,7 +470,7 @@ public class THSignedNumber
 
     public static String getArrowPrefix(double value)
     {
-        return THApp.getResourceString(getArrowPrefixResId(value));
+        return THApp.context().getString(getArrowPrefixResId(value));
     }
 
     public static int getArrowPrefixResId(double value)
@@ -482,7 +482,7 @@ public class THSignedNumber
 
     public static String getMinusOnlyPrefix(double value)
     {
-        return THApp.getResourceString(getMinusOnlyPrefixResId(value));
+        return THApp.context().getString(getMinusOnlyPrefixResId(value));
     }
 
     public static int getMinusOnlyPrefixResId(double value)
@@ -492,7 +492,7 @@ public class THSignedNumber
 
     public static String getPlusMinusPrefix(double value)
     {
-        return THApp.getResourceString(getPlusMinusPrefixResId(value));
+        return THApp.context().getString(getPlusMinusPrefixResId(value));
     }
 
     public static int getPlusMinusPrefixResId(double value)

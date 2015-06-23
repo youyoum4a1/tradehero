@@ -30,6 +30,6 @@ public class THToastTest
                         .getView()
                         .findViewById(android.R.id.message)) // FIXME apparently it is not found
                         .getText())
-                .isEqualTo(THApp.getResourceString(R.string.error_unknown));
+                .isEqualTo(THApp.context().getString(R.string.error_unknown));
     }
 }
