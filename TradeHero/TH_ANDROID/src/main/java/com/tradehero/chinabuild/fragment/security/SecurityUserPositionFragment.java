@@ -327,6 +327,9 @@ public class SecurityUserPositionFragment extends DashboardFragment {
         String price = df.format(getLatestPrice());
         String raisePercent = getRisePercentage();
         String raise = df.format(getRise());
+        if(quoteDetail==null){
+            return;
+        }
         if (quoteDetail.getRiseRate() > 0) {
             setHeadViewMiddleSubTextColor(upColor);
             setHeadViewMiddleSub(price + " +" + raisePercent + " +" + raise);
