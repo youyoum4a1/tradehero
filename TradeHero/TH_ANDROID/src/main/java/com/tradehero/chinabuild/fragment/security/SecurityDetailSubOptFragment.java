@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.SecurityUserOptDTO;
-import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
+import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -117,7 +117,7 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
             public void onClick(View view) {
                 if(tradeRecordList!=null && tradeRecordList.size() > 0){
                     SecurityUserOptDTO dto = tradeRecordList.get(0);
-                    enterUserMainPage(dto.userId);
+                    enterUserPortfolioPage(dto.userId);
                 }
             }
         });
@@ -137,7 +137,7 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
             public void onClick(View view) {
                 if(tradeRecordList!=null && tradeRecordList.size() > 1){
                     SecurityUserOptDTO dto = tradeRecordList.get(1);
-                    enterUserMainPage(dto.userId);
+                    enterUserPortfolioPage(dto.userId);
                 }
             }
         });
@@ -157,7 +157,7 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
             public void onClick(View view) {
                 if(tradeRecordList!=null && tradeRecordList.size() > 2){
                     SecurityUserOptDTO dto = tradeRecordList.get(2);
-                    enterUserMainPage(dto.userId);
+                    enterUserPortfolioPage(dto.userId);
                 }
             }
         });
@@ -177,7 +177,7 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
             public void onClick(View view) {
                 if(tradeRecordList!=null && tradeRecordList.size() > 3){
                     SecurityUserOptDTO dto = tradeRecordList.get(3);
-                    enterUserMainPage(dto.userId);
+                    enterUserPortfolioPage(dto.userId);
                 }
             }
         });
@@ -197,18 +197,17 @@ public class SecurityDetailSubOptFragment extends Fragment implements View.OnCli
             public void onClick(View view) {
                 if(tradeRecordList!=null && tradeRecordList.size() > 4){
                     SecurityUserOptDTO dto = tradeRecordList.get(4);
-                    enterUserMainPage(dto.userId);
+                    enterUserPortfolioPage(dto.userId);
                 }
             }
         });
         
     }
 
-    private void enterUserMainPage(int userId) {
+    private void enterUserPortfolioPage(int userId){
         Bundle bundle = new Bundle();
-        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
-        bundle.putBoolean(UserMainPage.BUNDLE_NEED_SHOW_PROFILE, false);
-        pushFragment(UserMainPage.class, bundle);
+        bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userId);
+        pushFragment(PortfolioFragment.class, bundle);
     }
 
 

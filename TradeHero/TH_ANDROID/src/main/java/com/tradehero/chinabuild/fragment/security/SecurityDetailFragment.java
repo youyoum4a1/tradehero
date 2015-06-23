@@ -1668,7 +1668,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     public void displayInWatchButton() {
         if(isInWatchList){
-            addWatchListTV.setText("完成自选");
+            addWatchListTV.setText("-自选");
         }else{
             addWatchListTV.setText("+自选");
         }
@@ -2271,6 +2271,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
         popWin.setFocusable(true);
         popWin.update();
-        popWin.showAsDropDown(parent, -50, 0);
+        popWin.showAsDropDown(parent, -30, 0);
     }
 }

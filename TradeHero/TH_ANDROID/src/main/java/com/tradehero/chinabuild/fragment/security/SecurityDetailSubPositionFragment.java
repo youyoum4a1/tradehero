@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.SecurityUserPositionDTO;
-import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
+import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -109,7 +109,7 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
             @Override
             public void onClick(View view) {
                 if(sharePositionList!=null && sharePositionList.size()>0){
-                    enterUserMainPage(sharePositionList.get(0).userId);
+                    enterUserPortfolioPage(sharePositionList.get(0).userId);
                 }
             }
         });
@@ -127,7 +127,7 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
             @Override
             public void onClick(View view) {
                 if(sharePositionList!=null && sharePositionList.size()>1){
-                    enterUserMainPage(sharePositionList.get(1).userId);
+                    enterUserPortfolioPage(sharePositionList.get(1).userId);
                 }
             }
         });
@@ -145,7 +145,7 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
             @Override
             public void onClick(View view) {
                 if(sharePositionList!=null && sharePositionList.size()>2){
-                    enterUserMainPage(sharePositionList.get(2).userId);
+                    enterUserPortfolioPage(sharePositionList.get(2).userId);
                 }
             }
         });
@@ -163,7 +163,7 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
             @Override
             public void onClick(View view) {
                 if(sharePositionList!=null && sharePositionList.size()>3){
-                    enterUserMainPage(sharePositionList.get(3).userId);
+                    enterUserPortfolioPage(sharePositionList.get(3).userId);
                 }
             }
         });
@@ -181,7 +181,7 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
             @Override
             public void onClick(View view) {
                 if(sharePositionList!=null && sharePositionList.size()>4){
-                    enterUserMainPage(sharePositionList.get(4).userId);
+                    enterUserPortfolioPage(sharePositionList.get(4).userId);
                 }
             }
         });
@@ -321,10 +321,9 @@ public class SecurityDetailSubPositionFragment extends Fragment implements View.
         }
     }
 
-    private void enterUserMainPage(int userId) {
+    private void enterUserPortfolioPage(int userId){
         Bundle bundle = new Bundle();
-        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
-        bundle.putBoolean(UserMainPage.BUNDLE_NEED_SHOW_PROFILE, false);
-        pushFragment(UserMainPage.class, bundle);
+        bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userId);
+        pushFragment(PortfolioFragment.class, bundle);
     }
 }

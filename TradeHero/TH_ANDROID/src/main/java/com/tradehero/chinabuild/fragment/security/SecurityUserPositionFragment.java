@@ -15,8 +15,8 @@ import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.SecurityUserPositionDTO;
+import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
-import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -39,7 +39,6 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 /**
  * Created by palmer on 15/6/9.
@@ -130,7 +129,7 @@ public class SecurityUserPositionFragment extends DashboardFragment {
                         i = 0;
                     }
                     SecurityUserPositionDTO securityUserPositionDTO = adapter.getItem(index);
-                    enterUserMainPage(securityUserPositionDTO.userId);
+                    enterUserPortfolioPage(securityUserPositionDTO.userId);
                 }
             }
         });
@@ -167,7 +166,6 @@ public class SecurityUserPositionFragment extends DashboardFragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Timber.e(error, "Failed to get user positions.");
                 positionsLV.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
                 onFinish();
             }
@@ -230,11 +228,10 @@ public class SecurityUserPositionFragment extends DashboardFragment {
         enterWechatSharePage();
     }
 
-    private void enterUserMainPage(int userId) {
+    private void enterUserPortfolioPage(int userId){
         Bundle bundle = new Bundle();
-        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
-        bundle.putBoolean(UserMainPage.BUNDLE_NEED_SHOW_PROFILE, false);
-        pushFragment(UserMainPage.class, bundle);
+        bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userId);
+        pushFragment(PortfolioFragment.class, bundle);
     }
 
     private double getLatestPrice() {
