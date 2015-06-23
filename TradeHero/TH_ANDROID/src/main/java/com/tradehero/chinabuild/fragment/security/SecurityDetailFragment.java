@@ -506,6 +506,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 } else {
                     throw new IllegalArgumentException("Unhandled dominant measurement " + dominantMeasurement);
                 }
+                chartImageWrapper.setDisplayedChildByLayoutId(R.id.chart_view);
             }
 
             @Override
@@ -692,6 +693,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         fetchWatchlist();
         super.onResume();
 
+        chartImageWrapper.setDisplayedChildByLayoutId(R.id.chart_loading);
         indexSubFragment = 0;
         setCategoryViews();
 
@@ -1377,6 +1379,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 {
                     kChartsListView.setOHLCData(kLineItemList);
                     kChartsListView.postInvalidate();
+                    chartImageWrapper.setDisplayedChildByLayoutId(R.id.chart_view);
                 }
 
                 @Override public void failure(RetrofitError error)
@@ -1385,7 +1388,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 }
             };
         }
-        quoteServiceWrapper.getKline(securityId, QuoteServiceWrapper.K_LINE_DAY, kLinesListCallback);
+        //quoteServiceWrapper.getKline(securityId, QuoteServiceWrapper.K_LINE_DAY, kLinesListCallback);
     }
 
     public void updateSecurityInfoByQuoteDetails(QuoteDetail quoteDetail) {
@@ -1827,41 +1830,41 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         if (viewId == R.id.btnTabChart0) {
             setChartView(0);
-            linkWith(new ChartTimeSpan(getChartTimeSpanDuration(0)));
             showTimeList();
+            linkWith(new ChartTimeSpan(getChartTimeSpanDuration(0)));
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_ONEDAY));
             return;
         }
         if (viewId == R.id.btnTabChart1) {
             setChartView(1);
+            showKChartList();
             if (QuoteServiceWrapper.isChinaStock(securityId)) {
                 quoteServiceWrapper.getKline(securityId, QuoteServiceWrapper.K_LINE_DAY, kLinesListCallback);
             } else {
                 linkWith(new ChartTimeSpan(getChartTimeSpanDuration(1)));
             }
-            showKChartList();
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_FIVEDAY));
             return;
         }
         if (viewId == R.id.btnTabChart2) {
             setChartView(2);
+            showKChartList();
             if (QuoteServiceWrapper.isChinaStock(securityId)) {
                 quoteServiceWrapper.getKline(securityId, QuoteServiceWrapper.K_LINE_WEEK, kLinesListCallback);
             } else {
                 linkWith(new ChartTimeSpan(getChartTimeSpanDuration(2)));
             }
-            showKChartList();
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_90DAY));
             return;
         }
         if (viewId == R.id.btnTabChart3) {
             setChartView(3);
+            showKChartList();
             if (QuoteServiceWrapper.isChinaStock(securityId)) {
                 quoteServiceWrapper.getKline(securityId, QuoteServiceWrapper.K_LINE_MONTH, kLinesListCallback);
             } else {
                 linkWith(new ChartTimeSpan(getChartTimeSpanDuration(3)));
             }
-            showKChartList();
             analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_YEAR));
             return;
         }
@@ -1912,7 +1915,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private void showKChartList()
     {
         if (chartImageWrapper != null) {
-            chartImageWrapper.setDisplayedChildByLayoutId(R.id.chart_view);
+            chartImageWrapper.setDisplayedChildByLayoutId(R.id.chart_loading);
             if (quoteServiceWrapper.isChinaStock(securityId)) {
                 chartImage.setVisibility(View.GONE);
                 timeListView.setVisibility(View.GONE);
@@ -1928,7 +1931,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private void showTimeList()
     {
         if (chartImageWrapper != null && timeListView != null && chartImage != null && kChartsListView != null) {
-            chartImageWrapper.setDisplayedChildByLayoutId(R.id.chart_view);
+            chartImageWrapper.setDisplayedChildByLayoutId(R.id.chart_loading);
             if (quoteServiceWrapper.isChinaStock(securityId)) {
                 chartImage.setVisibility(View.GONE);
                 timeListView.setVisibility(View.VISIBLE);
