@@ -168,10 +168,10 @@ public class TrendingStockFragment extends TrendingBaseFragment
         inflater.inflate(R.menu.search_menu, menu);
 
         exchangeMenu = menu.findItem(R.id.btn_exchange);
-        View updateCenterIcon = exchangeMenu.getActionView();
-        if (updateCenterIcon != null)
+        View actionView = exchangeMenu.getActionView();
+        if (actionView != null)
         {
-            mExchangeSelection = (ExchangeSpinner) updateCenterIcon.findViewById(R.id.exchange_selection_menu);
+            mExchangeSelection = (ExchangeSpinner) actionView.findViewById(R.id.exchange_selection_menu);
             mExchangeSelection.setAdapter(exchangeAdapter);
             mExchangeSelection.setSelectionById(preferredExchangeMarket.get());
             mExchangeSelection.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
