@@ -1,7 +1,6 @@
 package com.tradehero.th.base;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -26,7 +25,7 @@ import javax.inject.Inject;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-public class THApp extends Application
+public class THApp extends DexOrNotApp
         implements ExInjector
 {
     private static final int MEMORY_CACHE_SIZE = 2 * 1024 * 1024;
