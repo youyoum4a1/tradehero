@@ -364,7 +364,7 @@ public class TrendingMainFragment extends DashboardFragment
     @Override public void onLiveTradingChanged(boolean isLive)
     {
         super.onLiveTradingChanged(isLive);
-        LiveFragmentUtil.setBackgroundColor(isLive, pagerSlidingTabStrip);
+        LiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);
     }
 
     @Override public void onPause()

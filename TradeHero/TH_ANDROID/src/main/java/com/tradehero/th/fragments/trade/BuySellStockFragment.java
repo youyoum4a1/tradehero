@@ -33,8 +33,10 @@ import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
 import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
+import com.tradehero.th.fragments.base.LiveFragmentUtil;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
+import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
@@ -64,6 +66,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
     @InjectView(R.id.sell_price) protected TextView mSellPrice;
     @InjectView(R.id.vprice_as_of) protected TextView mVPriceAsOf;
     @InjectView(R.id.tabs) protected SlidingTabLayout mSlidingTabLayout;
+    @InjectView(R.id.stock_details_header) ViewGroup stockDetailHeader;
 
     @InjectView(R.id.chart_frame) protected RelativeLayout mInfoFrame;
     @InjectView(R.id.trade_bottom_pager) protected ViewPager mBottomViewPager;
@@ -211,6 +214,13 @@ public class BuySellStockFragment extends AbstractBuySellFragment
                         new TimberOnErrorAction("Failed to fetch list of watch list items")));
 
         actionBar.setCustomView(actionBarLayout);
+    }
+
+    @Override public void onLiveTradingChanged(boolean isLive)
+    {
+        super.onLiveTradingChanged(isLive);
+        LiveFragmentUtil.setDarkBackgroundColor(isLive, mSlidingTabLayout);
+        LiveFragmentUtil.setBackgroundColor(isLive, stockDetailHeader);
     }
 
     @Override public void onDestroyOptionsMenu()
