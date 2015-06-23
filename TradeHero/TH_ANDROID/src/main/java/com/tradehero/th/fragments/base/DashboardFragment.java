@@ -97,7 +97,12 @@ abstract public class DashboardFragment extends BaseFragment {
     }
 
     public void setHeadViewMiddleSub(String middleSubText) {
-        if (tvHeadMiddleSub != null) {
+        if(tvHeadMiddleSub==null){
+            return;
+        }
+        if(middleSubText==null || middleSubText.equals("")){
+            tvHeadMiddleSub.setVisibility(View.GONE);
+        }else{
             tvHeadMiddleSub.setVisibility(View.VISIBLE);
             tvHeadMiddleSub.setText(middleSubText);
         }
