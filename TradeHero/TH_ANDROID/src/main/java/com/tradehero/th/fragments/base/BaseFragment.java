@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.base;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -76,12 +77,14 @@ public class BaseFragment extends Fragment
         return args.getBoolean(BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, DEFAULT_IS_OPTION_MENU_VISIBLE);
     }
 
+    @CallSuper
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
         HierarchyInjector.inject(this);
     }
 
+    @CallSuper
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -97,18 +100,21 @@ public class BaseFragment extends Fragment
         onDestroySubscriptions = new SubscriptionList();
     }
 
+    @CallSuper
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
         onDestroyViewSubscriptions = new SubscriptionList();
     }
 
+    @CallSuper
     @Override public void onStart()
     {
         super.onStart();
         this.onStopSubscriptions = new SubscriptionList();
     }
 
+    @CallSuper
     @Override public void onStop()
     {
         this.onStopSubscriptions.unsubscribe();
@@ -124,12 +130,14 @@ public class BaseFragment extends Fragment
         }
     }
 
+    @CallSuper
     @Override public void onDestroyView()
     {
         onDestroyViewSubscriptions.unsubscribe();
         super.onDestroyView();
     }
 
+    @CallSuper
     @Override public void onDestroy()
     {
         actionBarOwnerMixin.onDestroy();
@@ -137,6 +145,7 @@ public class BaseFragment extends Fragment
         super.onDestroy();
     }
 
+    @CallSuper
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         onDestroyOptionsMenuSubscriptions = new SubscriptionList();
@@ -203,6 +212,7 @@ public class BaseFragment extends Fragment
         return super.onOptionsItemSelected(item);
     }
 
+    @CallSuper
     @Override public void onDestroyOptionsMenu()
     {
         if (onDestroyOptionsMenuSubscriptions != null)
