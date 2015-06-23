@@ -12,7 +12,6 @@ import com.tradehero.chinabuild.data.KLineItem;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import timber.log.Timber;
 
 public class KChartsView extends TimesBase implements TimesBase.OnTabClickListener {
 
@@ -661,12 +660,11 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 		} else if (mShowDataNum + mDataStartIndext > mOHLCData.size()) {
 			mDataStartIndext = mOHLCData.size() - mShowDataNum;
 		}
-        mMinPrice = mOHLCData.get(mDataStartIndext).getLow() == null ? 0 : mOHLCData.get(mDataStartIndext).getLow();
+        mMinPrice = mOHLCData.get(mDataStartIndext).getLow() == null ? 1000 : mOHLCData.get(mDataStartIndext).getLow();
 		mMaxPrice = mOHLCData.get(mDataStartIndext).getHigh() == null ? 0 : mOHLCData.get(mDataStartIndext).getHigh();
 		for (int i = mDataStartIndext + 1; i < mOHLCData.size()
 				&& i < mShowDataNum + mDataStartIndext; i++) {
 			KLineItem entity = mOHLCData.get(i);
-			//OHLCEntity entity = mOHLCData.get(i);
 			mMinPrice = mMinPrice < entity.getLow() ? mMinPrice : entity.getLow();
 			mMaxPrice = mMaxPrice > entity.getHigh() ? mMaxPrice : entity.getHigh();
 		}
