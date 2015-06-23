@@ -9,5 +9,5 @@
     android:textAllCaps="true"
     android:text="@string/virtual"
     style="@style/TH.Body2"
-    android:background="@color/grey_transparent"
+    android:background="@color/light_green_normal"
     />

@@ -38,7 +38,7 @@ public class GoLiveWidget extends Button
 
     private void init()
     {
-        setMinimumWidth(getResources().getDimensionPixelSize(R.dimen.size_12));
+        setMinimumWidth(getResources().getDimensionPixelSize(R.dimen.size_15));
         String imageTag = "[img]";
         String finalString = getResources().getString(R.string.go_live_span, imageTag);
         int start = finalString.indexOf(imageTag);

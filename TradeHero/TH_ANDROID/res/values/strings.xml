@@ -326,5 +326,6 @@
   <string name="switch_to_live">Switch to Live</string>
   <string name="virtual">Virtual</string>
   <string name="live">Live</string>
-  <string name="go_live_span">Go %1$s!</string>
+  <string name="go_live_span">Go %1$s !</string>
+  <string name="live_call_to_action_string">You are only 5 steps away from your own TradeHero LIVE account!\nGo LIVE now and get US$ 100.00 to start.</string>
 </resources>

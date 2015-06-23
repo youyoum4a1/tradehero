@@ -5,6 +5,7 @@ import android.support.annotation.ColorRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.TextSwitcher;
 import android.widget.ViewSwitcher;
 import com.tradehero.th.R;
@@ -18,7 +19,7 @@ public class LiveSwitcher extends ViewSwitcher implements View.OnClickListener
 
     private boolean mIsLive;
 
-    private PublishSubject<Boolean> mSwitchSubject;
+    private PublishSubject<Event> mSwitchSubject;
 
     public LiveSwitcher(Context context)
     {
@@ -40,31 +41,58 @@ public class LiveSwitcher extends ViewSwitcher implements View.OnClickListener
         addView(LayoutInflater.from(getContext()).inflate(R.layout.live_switch_live_imageview, this, false));
 
         setOnClickListener(this);
-        setIsLive(mIsLive);
     }
 
     @Override public void onClick(View v)
     {
+        boolean isUser = true;
         mIsLive = !mIsLive;
-        updateComponents();
+        updateComponents(isUser);
+        mSwitchSubject.onNext(new Event(isUser, mIsLive));
     }
 
-    public void setIsLive(boolean isLive)
+    public void setIsLive(boolean isLive, boolean animate)
     {
+        boolean changed = this.mIsLive ^ isLive;
         this.mIsLive = isLive;
-        updateComponents();
+        updateComponents(animate);
+        if (changed)
+        {
+            mSwitchSubject.onNext(new Event(false, mIsLive));
+        }
     }
 
-    private void updateComponents()
+    private void updateComponents(boolean animate)
     {
-        setInAnimation(getContext(), mIsLive ? R.anim.push_up_in : R.anim.push_down_in);
-        setOutAnimation(getContext(), mIsLive ? R.anim.push_up_out : R.anim.push_down_out);
+        setInAnimation(animate ? AnimationUtils.loadAnimation(getContext(), mIsLive ? R.anim.push_up_in : R.anim.push_down_in) : null);
+        setOutAnimation(animate ? AnimationUtils.loadAnimation(getContext(), mIsLive ? R.anim.push_up_out : R.anim.push_down_out) : null);
         setDisplayedChild(mIsLive ? FLIPPER_LIVE_INDEX : FLIPPER_VIRTUAL_INDEX);
-        mSwitchSubject.onNext(mIsLive);
     }
 
-    public Observable<Boolean> getSwitchObservable()
+    public Observable<Event> getSwitchObservable()
     {
-        return mSwitchSubject.distinctUntilChanged().asObservable();
+        return mSwitchSubject.distinctUntilChanged();
+    }
+
+    public static class Event
+    {
+        public boolean isFromUser;
+        public boolean isLive;
+
+        public Event(boolean isFromUser, boolean isLive)
+        {
+            this.isFromUser = isFromUser;
+            this.isLive = isLive;
+        }
+
+        @Override public boolean equals(Object o)
+        {
+            if (this == o) return true;
+            if (!(o instanceof Event)) return false;
+
+            Event event = (Event) o;
+
+            return isLive == event.isLive;
+        }
     }
 }

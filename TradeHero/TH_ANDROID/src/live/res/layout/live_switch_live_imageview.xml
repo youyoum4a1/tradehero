@@ -11,5 +11,5 @@
     android:paddingTop="4dp"
     android:paddingBottom="4dp"
     android:layout_margin="@dimen/margin_xsmall"
-    android:background="@color/light_green_normal"
+    android:background="@color/grey_transparent"
     />
