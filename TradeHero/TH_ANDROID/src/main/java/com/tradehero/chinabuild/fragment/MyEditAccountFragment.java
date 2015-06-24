@@ -34,7 +34,7 @@ import javax.inject.Inject;
 
 public class MyEditAccountFragment extends DashboardFragment implements View.OnClickListener
 {
-    @InjectView(R.id.authentication_sign_in_email) EditText mEmail;
+    @InjectView(R.id.authentication_sign_in_email) EditText mAccount;
     @InjectView(R.id.et_pwd_login) EditText mPassWord;
     @InjectView(R.id.btn_login) Button mUpdateButton;
     @Inject MainCredentialsPreference mainCredentialsPreference;
@@ -68,14 +68,14 @@ public class MyEditAccountFragment extends DashboardFragment implements View.OnC
                 {
                     if (jsonObject.has("email"))
                     {
-                        mEmail.setText(jsonObject.getString("email"));
+                        mAccount.setText(jsonObject.getString("email"));
                     }
                     else
                     {
                         UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
                         if (userProfileDTO != null)
                         {
-                            mEmail.setText(userProfileDTO.email);
+                            mAccount.setText(userProfileDTO.email);
                         }
                     }
                     if (jsonObject.has("password"))
@@ -97,14 +97,14 @@ public class MyEditAccountFragment extends DashboardFragment implements View.OnC
         switch (view.getId())
         {
             case R.id.btn_login:
-                if (!checkEmailAndPassword())
+                if (!checkAccountAndPassword())
                 {
                     return ;
                 }
                 UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
                 if (userProfileDTO != null)
                 {
-                    if (!userProfileDTO.email.contentEquals(mEmail.getText())
+                    if (!userProfileDTO.email.contentEquals(mAccount.getText())
                             || !mSavedPassword.contentEquals(mPassWord.getText()))
                     {
                         progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.updating);
@@ -127,15 +127,12 @@ public class MyEditAccountFragment extends DashboardFragment implements View.OnC
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-    }
     public UserFormDTO createForm()
     {
         UserFormDTO created = new UserFormDTO();
-        created.email = mEmail.getText().toString();
         created.password = mPassWord.getText().toString();
+        //Not enter email, because phone number can also be an account name;
+        created.email = "";
         created.passwordConfirmation = mPassWord.getText().toString();
         return created;
     }
@@ -159,7 +156,7 @@ public class MyEditAccountFragment extends DashboardFragment implements View.OnC
                 userProfileCache.put(currentUserId.toUserBaseKey(), userProfileDTO);
                 THToast.show(R.string.settings_update_profile_successful);
                 mainCredentialsPreference.setCredentials(
-                        new EmailCredentialsDTO(mEmail.getText().toString(), mPassWord.getText().toString()));
+                        new EmailCredentialsDTO(mAccount.getText().toString(), mPassWord.getText().toString()));
                 popCurrentFragment();
             }
 
@@ -172,9 +169,9 @@ public class MyEditAccountFragment extends DashboardFragment implements View.OnC
         };
     }
 
-    private boolean checkEmailAndPassword()
+    private boolean checkAccountAndPassword()
     {
-        if (mEmail.getText().toString().isEmpty())
+        if (mAccount.getText().toString().isEmpty())
         {
             THToast.show(R.string.register_error_account);
             return false;
