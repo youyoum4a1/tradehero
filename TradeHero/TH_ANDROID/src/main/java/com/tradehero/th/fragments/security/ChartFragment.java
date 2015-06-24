@@ -22,12 +22,12 @@ import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
-import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.StockChartActivity;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.WarrantDTO;
+import com.tradehero.th.fragments.base.FragmentOuterElements;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.chart.ChartDTO;
 import com.tradehero.th.models.chart.ChartDTOFactory;
@@ -94,8 +94,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     @Inject Picasso picasso;
     @Inject ChartDTOFactory chartDTOFactory;
     @Inject Analytics analytics;
-    @Inject @BottomTabsQuickReturnScrollViewListener protected NotifyingScrollView.OnScrollChangedListener
-            dashboardBottomTabScrollViewScrollListener;
+    @Inject FragmentOuterElements fragmentElements;
     private Runnable chooseChartImageSizeTask;
     private Callback chartImageCallback;
 
@@ -200,7 +199,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
 
         if(scrollView != null)
         {
-            scrollView.setOnScrollChangedListener(dashboardBottomTabScrollViewScrollListener);
+            scrollView.setOnScrollChangedListener(fragmentElements.getScrollViewListener());
         }
 
         return view;

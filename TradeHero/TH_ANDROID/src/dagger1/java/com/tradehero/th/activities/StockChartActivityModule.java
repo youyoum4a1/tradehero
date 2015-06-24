@@ -1,8 +1,8 @@
 package com.tradehero.th.activities;
 
-import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
-import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
 import com.tradehero.th.UIModule;
+import com.tradehero.th.fragments.base.BaseFragmentOuterElements;
+import com.tradehero.th.fragments.base.FragmentOuterElements;
 import dagger.Module;
 import dagger.Provides;
 
@@ -14,8 +14,8 @@ import dagger.Provides;
         complete = false
 ) class StockChartActivityModule
 {
-    @Provides @BottomTabsQuickReturnScrollViewListener NotifyingScrollView.OnScrollChangedListener provideQuickReturnListViewOnScrollListener()
+    @Provides FragmentOuterElements provideFragmentElements()
     {
-        return null;
+        return new BaseFragmentOuterElements();
     }
 }
