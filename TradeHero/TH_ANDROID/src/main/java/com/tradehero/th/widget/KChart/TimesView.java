@@ -6,13 +6,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-
 import com.tradehero.chinabuild.data.QuoteTick;
-
 import java.text.DecimalFormat;
 import java.util.List;
-
-import timber.log.Timber;
 
 public class TimesView extends TimesBase
 {
@@ -320,7 +316,7 @@ public class TimesView extends TimesBase
 			return;
 		}
 		this.timesList = timesList;
-        Timber.d("lyl size="+this.timesList.size());
+        //Timber.d("lyl size="+this.timesList.size());
 
         QuoteTick fenshiData = timesList.get(0);
 		Double price = fenshiData.price;
