@@ -21,6 +21,7 @@ import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemViewLinear;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.discussion.NewNewsDiscussionAction;
 import com.tradehero.th.models.discussion.OpenNewStockAlertUserAction;
@@ -147,7 +148,7 @@ public class DiscussionFragmentUtil
             }
             else
             {
-                thRouter.open("user/" + userClicked.key, activity);
+                thRouter.open(PushableTimelineFragment.getUserPath(userClicked), activity);
             }
             return Observable.empty();
         }
