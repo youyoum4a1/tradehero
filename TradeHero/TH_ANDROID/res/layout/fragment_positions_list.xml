@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -11,7 +10,8 @@
       android:id="@+id/list_flipper"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_alignParentTop="true">
+      android:layout_alignParentTop="true"
+      >
 
     <ProgressBar
         android:id="@android:id/progress"
@@ -20,26 +20,20 @@
         android:layout_gravity="center"
         />
 
-    <com.tradehero.common.widget.DragFrameLayout
-        android:id="@+id/drag_view_container"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_to_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
 
-      <android.support.v4.widget.SwipeRefreshLayout
-          android:id="@+id/swipe_to_refresh_layout"
+      <android.support.v7.widget.RecyclerView
+          android:id="@+id/position_recycler_view"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          >
-
-        <ListView
-            android:id="@+id/position_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fadingEdge="none"
-            android:paddingBottom="@dimen/dashboard_tabhost_height"
-            android:clipToPadding="false"
-            />
+          android:clipToPadding="false"
+          android:fadingEdge="none"
+          android:paddingBottom="@dimen/dashboard_tabhost_height"
+          />
 
       </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -48,25 +42,30 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="bottom|end"
-          android:layout_marginRight="@dimen/size_2"
-          android:layout_marginEnd="@dimen/size_2"
           android:layout_marginBottom="@dimen/size_7"
+          android:layout_marginEnd="@dimen/size_2"
+          android:layout_marginRight="@dimen/size_2"
           android:background="@drawable/ic_help_bg"
           android:visibility="invisible"
           />
-
-    </com.tradehero.common.widget.DragFrameLayout>
 
     <TextView
         android:id="@+id/error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:background="@drawable/basic_transparent_selector"
         android:gravity="center"
         android:text="@string/message_fetch_error"
-        android:background="@drawable/basic_transparent_selector"
         />
 
   </ViewAnimator>
 
+  <ViewStub
+      android:id="@+id/position_list_header_stub"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:inflatedId="@+id/position_list_header_stub"
+      />
 </RelativeLayout>

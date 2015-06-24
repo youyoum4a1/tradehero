@@ -2,11 +2,13 @@ package com.tradehero.th.fragments.base;
 
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.AbsListView;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
+import com.tradehero.th.BottomTabsQuickReturnRecyclerViewListener;
 import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.MovableBottom;
@@ -18,17 +20,20 @@ public class DashboardFragmentOuterElements implements FragmentOuterElements
     @NonNull public final AbsListView.OnScrollListener dashboardBottomTabsListViewScrollListener;
     @NonNull public final NotifyingScrollView.OnScrollChangedListener
             dashboardBottomTabScrollViewScrollListener;
+    @NonNull private final RecyclerView.OnScrollListener dashboardBottomTabRecyclerViewScrollListener;
     @NonNull public final DashboardTabHost dashboardTabHost;
 
     @Inject public DashboardFragmentOuterElements(
             @NonNull ActionBarDrawerToggle mDrawerToggle,
             @NonNull @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsListViewScrollListener,
             @NonNull @BottomTabsQuickReturnScrollViewListener NotifyingScrollView.OnScrollChangedListener dashboardBottomTabScrollViewScrollListener,
+            @NonNull @BottomTabsQuickReturnRecyclerViewListener RecyclerView.OnScrollListener dashboardBottomTabRecyclerViewScrollListener,
             @NonNull @BottomTabs DashboardTabHost dashboardTabHost)
     {
         this.mDrawerToggle = mDrawerToggle;
         this.dashboardBottomTabsListViewScrollListener = dashboardBottomTabsListViewScrollListener;
         this.dashboardBottomTabScrollViewScrollListener = dashboardBottomTabScrollViewScrollListener;
+        this.dashboardBottomTabRecyclerViewScrollListener = dashboardBottomTabRecyclerViewScrollListener;
         this.dashboardTabHost = dashboardTabHost;
     }
 
@@ -40,6 +45,11 @@ public class DashboardFragmentOuterElements implements FragmentOuterElements
     @NonNull @Override public NotifyingScrollView.OnScrollChangedListener getScrollViewListener()
     {
         return dashboardBottomTabScrollViewScrollListener;
+    }
+
+    @NonNull @Override public RecyclerView.OnScrollListener getRecyclerViewScrollListener()
+    {
+        return dashboardBottomTabRecyclerViewScrollListener;
     }
 
     @NonNull @Override public MovableBottom getMovableBottom()

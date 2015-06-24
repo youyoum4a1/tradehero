@@ -577,6 +577,7 @@ dependencies {
 
   compile('com.android.support:support-v13:22.1.1')
   compile "com.android.support:appcompat-v7:22.1.1"
+  compile 'com.android.support:recyclerview-v7:22.1.1'
   releaseCompile "com.android.support:cardview-v7:22.1.1" // For UrbanAirship proguarding
   liveCompile 'com.android.support:multidex:1.0.0'
 
@@ -588,7 +589,7 @@ dependencies {
     exclude group: 'com.nineoldandroids', module: 'library'
     // exclude group: 'com.android.support', module: 'appcompat-v7'
   }
-  compile('com.etiennelawlor.quickreturn:library:1.0-aar@aar') {
+  compile('com.etiennelawlor.quickreturn:library:1.0.2-aar@aar') {
     exclude group: 'com.android.support', module: 'support-v13'
     exclude group: 'com.jakewharton', module: 'butterknife'
     exclude group: 'com.squareup.picasso', module: 'picasso'
@@ -629,7 +630,7 @@ dependencies {
 
   compile 'com.fasterxml.jackson.core:jackson-databind:2.4.0' // 2.5.0 ?
   compile 'com.tradehero.route:route:0.2-SNAPSHOT'
-  compile 'com.android.support:support-annotations:22.+'
+  compile 'com.android.support:support-annotations:22.2.0'
   releaseCompile 'com.crashlytics.android:crashlytics:1.+'
   compile('oauth.signpost:signpost-core:1.2.1.2') {
     exclude group: 'commons-codec', module: 'commons-codec'

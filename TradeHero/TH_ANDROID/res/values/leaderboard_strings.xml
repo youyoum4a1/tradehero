@@ -22,7 +22,6 @@
   <string name="leaderboard_avg_days_held">Avg. Days Held</string>
   <string name="leaderboard_followers_count"># Followers</string>
   <string name="leaderboard_comments_count"># Comments</string>
-  <string name="leaderboard_roi_annualized">(annualized: %1$s)</string>
   <string name="leaderboard_datetime_format">@string/data_format_d_mmm_yyyy</string>
   <string name="leaderboard_ranking_period" formatted="false">%s - %s</string>
   <string name="leaderboard_action_bar_help">Help</string>

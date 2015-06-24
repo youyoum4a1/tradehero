@@ -1,32 +1,37 @@
 package com.tradehero.th.fragments.position;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.view.ViewStub;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnItemClick;
-import butterknife.OnItemLongClick;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
 import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.rx.PairGetSecond;
+import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.HelpActivity;
+import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.AssetClass;
@@ -97,6 +102,7 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.widget.MultiRecyclerScrollListener;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,8 +152,9 @@ public class PositionListFragment
 
     @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
-    @InjectView(R.id.position_list) ListView positionListView;
+    @InjectView(R.id.position_recycler_view) RecyclerView positionRecyclerView;
     @InjectView(R.id.btn_help) ImageView btnHelp;
+    @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
 
     @InjectRoute UserBaseKey injectedUserBaseKey;
     @InjectRoute PortfolioId injectedPortfolioId;
@@ -156,7 +163,6 @@ public class PositionListFragment
     protected UserBaseKey shownUser;
     private TabbedPositionListFragment.TabType positionType;
 
-    private View inflatedHeader;
     private PortfolioHeaderView portfolioHeaderView;
 
     @Nullable protected UserProfileDTO shownUserProfileDTO;
@@ -268,6 +274,9 @@ public class PositionListFragment
                 HelpActivity.slideInFromRight(getActivity());
             }
         });
+        positionRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        positionRecyclerView.setHasFixedSize(true);
+        positionRecyclerView.setAdapter(positionItemAdapter);
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
             @Override public void onRefresh()
@@ -326,8 +335,8 @@ public class PositionListFragment
                             @NonNull Pair<UserProfileDTO, PortfolioHeaderView> profileAndHeaderPair,
                             @NonNull List<Pair<PositionDTO, SecurityCompactDTO>> pairs)
                     {
-                        //Translate to 0 to restore position
-                        inflatedHeader.animate().translationY(0f).start();
+                        //TODO Translate to 0 to restore position
+                        //inflatedHeader.animate().translationY(0f).start();
                         return profileAndHeaderPair.second;
                     }
                 })
@@ -382,7 +391,7 @@ public class PositionListFragment
 
     @Override public void onPause()
     {
-        firstPositionVisible = positionListView.getFirstVisiblePosition();
+        //firstPositionVisible = positionRecyclerView.getFirstVisiblePosition();
         super.onPause();
     }
 
@@ -400,8 +409,8 @@ public class PositionListFragment
 
     @Override public void onDestroyView()
     {
-        positionListView.setOnScrollListener(null);
-        positionListView.setOnTouchListener(null);
+        positionRecyclerView.clearOnScrollListeners();
+        positionRecyclerView.setOnTouchListener(null);
         swipeToRefreshLayout.setOnRefreshListener(null);
         portfolioHeaderView = null;
         ButterKnife.reset(this);
@@ -416,11 +425,29 @@ public class PositionListFragment
 
     protected PositionItemAdapter createPositionItemAdapter()
     {
-        return new PositionItemAdapter(
+        PositionItemAdapter adapter = new PositionItemAdapter(
                 getActivity(),
                 getLayoutResIds(),
                 currentUserId
         );
+        adapter.setOnItemClickedListener(
+                new TypedRecyclerAdapter.OnItemClickedListener<Object>()
+                {
+                    @Override public void onItemClicked(int position, TypedRecyclerAdapter.TypedViewHolder<Object> viewHolder, Object object)
+                    {
+                        handlePositionItemClicked(viewHolder.itemView, position, object);
+                    }
+                });
+        adapter.setOnItemLongClickedListener(
+                new TypedRecyclerAdapter.OnItemLongClickedListener<Object>()
+                {
+                    @Override public boolean onItemLongClicked(int position, TypedRecyclerAdapter.TypedViewHolder<Object> viewHolder, Object object)
+                    {
+                        return handlePositionItemLongClicked(viewHolder.itemView, position, object);
+                    }
+                }
+        );
+        return adapter;
     }
 
     @NonNull private Map<Integer, Integer> getLayoutResIds()
@@ -429,9 +456,7 @@ public class PositionListFragment
         layouts.put(PositionItemAdapter.VIEW_TYPE_HEADER, R.layout.position_item_header);
         layouts.put(PositionItemAdapter.VIEW_TYPE_PLACEHOLDER, R.layout.position_quick_nothing);
         layouts.put(PositionItemAdapter.VIEW_TYPE_LOCKED, R.layout.position_locked_item);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_LONG, R.layout.position_top_view_in_my);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_SHORT, R.layout.position_top_view_in_my);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED, R.layout.position_top_view_in_my);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_POSITION, R.layout.position_top_view_in_my);
         return layouts;
     }
 
@@ -460,12 +485,15 @@ public class PositionListFragment
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnItemClick(R.id.position_list)
-    protected void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
+    //@OnItemClick(R.id.position_list)
+    protected void handlePositionItemClicked(View view, int position, Object object)
     {
         if (view instanceof PositionNothingView)
         {
-            pushSecuritiesFragment();
+            if (object instanceof PositionNothingView.DTO && ((PositionNothingView.DTO) object).isCurrentUser)
+            {
+                pushSecuritiesFragment();
+            }
         }
         else if (view instanceof PositionLockedView && shownUserProfileDTO != null)
         {
@@ -489,7 +517,7 @@ public class PositionListFragment
             Bundle args = new Bundle();
             // By default tries
             TradeListFragment.putPositionDTOKey(args,
-                    ((PositionPartialTopView.DTO) parent.getItemAtPosition(position)).positionDTO.getPositionDTOKey());
+                    ((PositionPartialTopView.DTO) object).positionDTO.getPositionDTOKey());
             OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
             if (ownedPortfolioId != null)
             {
@@ -567,10 +595,9 @@ public class PositionListFragment
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnItemLongClick(R.id.position_list)
-    protected boolean handlePositionItemLongClicked(AdapterView<?> parent, View view, int position, long id)
+    //@OnItemLongClick(R.id.position_list)
+    protected boolean handlePositionItemLongClicked(View view, int position, Object item)
     {
-        Object item = parent.getItemAtPosition(position);
         if (item instanceof PositionPartialTopView.DTO)
         {
             final PositionPartialTopView.DTO dto = (PositionPartialTopView.DTO) item;
@@ -858,11 +885,42 @@ public class PositionListFragment
         {
             // portfolio header
             int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);
-            inflatedHeader = LayoutInflater.from(getActivity()).inflate(headerLayoutId, null);
-            portfolioHeaderView = (PortfolioHeaderView) inflatedHeader;
+            headerStub.setLayoutResource(headerLayoutId);
+            final View inflatedView = headerStub.inflate();
+            portfolioHeaderView = (PortfolioHeaderView) inflatedView;
+            portfolioHeaderView.linkWith(shownUserProfileDTO);
             portfolioHeaderView.linkWith(portfolioCompactDTO);
-            positionListView.addHeaderView(inflatedHeader, null, false);
-            positionListView.setAdapter(positionItemAdapter);
+
+            ViewTreeObserver observer = inflatedView.getViewTreeObserver();
+            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
+            {
+                @SuppressLint("NewApi")
+                @Override public void onGlobalLayout()
+                {
+                    if (SDKUtils.isJellyBeanOrHigher())
+                    {
+                        inflatedView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                    else
+                    {
+                        inflatedView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                    int headerHeight = inflatedView.getMeasuredHeight();
+                    positionRecyclerView.setPadding(
+                            positionRecyclerView.getPaddingLeft(),
+                            headerHeight,
+                            positionRecyclerView.getPaddingRight(),
+                            positionRecyclerView.getPaddingBottom());
+
+                    positionRecyclerView.addOnScrollListener(new MultiRecyclerScrollListener(
+                            fragmentElements.get().getRecyclerViewScrollListener(),
+                            new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.HEADER)
+                                    .header(inflatedView)
+                                    .minHeaderTranslation(-headerHeight - 50)
+                                    .build()
+                    ));
+                }
+            });
         }
         else
         {
@@ -910,6 +968,7 @@ public class PositionListFragment
                     }
                 })
                 .observeOn(Schedulers.computation())
+                .distinctUntilChanged()
                 .flatMap(new Func1<List<Pair<PositionDTO, SecurityCompactDTO>>, Observable<List<Pair<PositionDTO, SecurityCompactDTO>>>>()
                 {
                     @Override public Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> call(
@@ -948,16 +1007,18 @@ public class PositionListFragment
     public void linkWith(@NonNull List<Object> dtoList)
     {
         this.viewDTOs = dtoList;
-        positionItemAdapter.setNotifyOnChange(false);
-        positionItemAdapter.clear();
-        positionItemAdapter.addAll(filterViewDTOs(dtoList));
-        positionItemAdapter.notifyDataSetChanged();
-        positionItemAdapter.setNotifyOnChange(true);
+        Object nothingDTO = new PositionNothingView.DTO(getResources(), shownUser.equals(currentUserId.toUserBaseKey()));
+        List<Object> filterViewDTOs = filterViewDTOs(dtoList, nothingDTO);
+        if (!filterViewDTOs.contains(nothingDTO) && positionItemAdapter.indexOf(nothingDTO) != RecyclerView.NO_POSITION)
+        {
+            positionItemAdapter.remove(nothingDTO);
+        }
+        positionItemAdapter.addAll(filterViewDTOs);
         swipeToRefreshLayout.setRefreshing(false);
         listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
     }
 
-    @NonNull protected List<Object> filterViewDTOs(@NonNull List<Object> dtoList)
+    @NonNull protected List<Object> filterViewDTOs(@NonNull List<Object> dtoList, Object nothingDTO)
     {
         List<Object> filtered = new ArrayList<>();
         for (Object dto : dtoList)
@@ -999,7 +1060,7 @@ public class PositionListFragment
 
         if (filtered.size() == 0)
         {
-            filtered.add(new PositionNothingView.DTO(getResources(), shownUser.equals(currentUserId.toUserBaseKey())));
+            filtered.add(nothingDTO);
         }
 
         return filtered;

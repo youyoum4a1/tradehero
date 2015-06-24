@@ -82,6 +82,11 @@ public class PushableTimelineFragment extends TimelineFragment
     protected boolean mIsHero = false;//whether the showUser follow the user
     protected MessageHeaderDTO messageThreadHeaderDTO;
 
+    public static String getUserPath(@NonNull UserBaseKey userId)
+    {
+        return "user/id/" + userId.key;
+    }
+
     @Nullable @Override protected UserBaseKey getShownUserBaseKey()
     {
         if (userId != null)

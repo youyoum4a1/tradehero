@@ -19,7 +19,7 @@ import org.robolectric.annotation.Config;
 public class LeaderboardMarkUserListFragmentTest
 {
     @Inject DashboardNavigator dashboardNavigator;
-    private LeaderboardMarkUserListFragment leaderboardMarkUserListFragment;
+    private LeaderboardMarkUserRecyclerFragment leaderboardMarkUserRecyclerFragment;
 
     @Before public void setUp()
     {
@@ -33,14 +33,14 @@ public class LeaderboardMarkUserListFragmentTest
             dashboardNavigator.popFragment();
         }
         dashboardNavigator = null;
-        leaderboardMarkUserListFragment = null;
+        leaderboardMarkUserRecyclerFragment = null;
     }
 
     @Test public void handleFollowRequestedCallsAlertDialog()
     {
         Robolectric.getBackgroundThreadScheduler().pause();
         Bundle args = new Bundle();
-        LeaderboardMarkUserListFragment.putLeaderboardDefKey(args, new LeaderboardDefKey(123));
-        leaderboardMarkUserListFragment = dashboardNavigator.pushFragment(LeaderboardMarkUserListFragment.class, args);
+        LeaderboardMarkUserRecyclerFragment.putLeaderboardDefKey(args, new LeaderboardDefKey(123));
+        leaderboardMarkUserRecyclerFragment = dashboardNavigator.pushFragment(LeaderboardMarkUserRecyclerFragment.class, args);
     }
 }

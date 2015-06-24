@@ -60,12 +60,6 @@
 
   <string name="plus">+</string>
 
-  <!-- TimeDisplayViewHolder -->
-  <string name="time_display_view_holder_format_day">%02d</string>
-  <string name="time_display_view_holder_format_hour">%02d</string>
-  <string name="time_display_view_holder_format_minute">%02d</string>
-  <string name="time_display_view_holder_format_second">%02d</string>
-
   <string name="help">ช่วยเหลือ</string>
   <string name="tab_to_dismiss">แตะเพื่อยกเลิก</string>
   <string name="sharing">กำลังแชร์</string>

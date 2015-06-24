@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -20,7 +19,7 @@ import com.squareup.picasso.RequestCreator;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
+import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.position.PositionStatus;
@@ -29,266 +28,35 @@ import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.security.FxFlagContainer;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.subjects.PublishSubject;
 
 public class PositionPartialTopView extends LinearLayout
-        implements DTOView<PositionPartialTopView.DTO>
 {
-    @Inject protected Picasso picasso;
-
-    @InjectView(R.id.gain_indicator) @Optional ImageView gainIndicator;
-    @InjectView(R.id.stock_logo) ImageView stockLogo;
-    @InjectView(R.id.flags_container) FxFlagContainer flagsContainer;
-    @InjectView(R.id.stock_symbol) @Optional TextView stockSymbol;
-    @InjectView(R.id.company_name) @Optional TextView companyName;
-    @InjectView(R.id.last_price_and_rise) @Optional TextView lastPriceAndRise;
-    @InjectView(R.id.share_count_row) @Optional View shareCountRow;
-    @InjectView(R.id.share_count_header) @Optional TextView shareCountHeader;
-    @InjectView(R.id.share_count_text) @Optional TextView shareCountText;
-    @InjectView(R.id.share_count) @Optional TextView shareCount;
-    @InjectView(R.id.hint_forward) @Optional View forwardCaret;
-
-    @InjectView(R.id.gain_loss_header) @Optional TextView gainLossHeader;
-    @InjectView(R.id.gain_loss) @Optional TextView gainLoss;
-    @InjectView(R.id.gain_loss_percent) @Optional TextView gainLossPercent;
-    @InjectView(R.id.total_invested_value) @Optional TextView totalInvested;
-    @InjectView(R.id.position_percentage) @Optional TextView positionPercent;
-    @InjectView(R.id.position_unrealised_pl) @Optional TextView positionUnrealisedPL;
-    @InjectView(R.id.last_amount_container) @Optional View lastAmountContainer;
-    @InjectView(R.id.position_last_amount_header) @Optional TextView positionLastAmountHeader;
-    @InjectView(R.id.position_last_amount) @Optional TextView positionLastAmount;
-    @InjectView(R.id.btn_position_close) @Optional TextView btnClose;
-
-    @Nullable protected DTO viewDTO;
-    @NonNull private final PublishSubject<CloseUserAction> userActionSubject;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
     public PositionPartialTopView(Context context)
     {
         super(context);
-        userActionSubject = PublishSubject.create();
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public PositionPartialTopView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        userActionSubject = PublishSubject.create();
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public PositionPartialTopView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        userActionSubject = PublishSubject.create();
     }
     //</editor-fold>
-
-    @Override protected void onFinishInflate()
-    {
-        super.onFinishInflate();
-        HierarchyInjector.inject(this);
-        if (!isInEditMode())
-        {
-            ButterKnife.inject(this);
-        }
-        if (stockLogo != null)
-        {
-            stockLogo.setLayerType(LAYER_TYPE_SOFTWARE, null);
-        }
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-        if (!isInEditMode())
-        {
-            ButterKnife.inject(this);
-        }
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        if (stockLogo != null)
-        {
-            picasso.cancelRequest(stockLogo);
-        }
-        ButterKnife.reset(this);
-        super.onDetachedFromWindow();
-    }
-
-    @NonNull public Observable<CloseUserAction> getUserActionObservable()
-    {
-        return userActionSubject.asObservable();
-    }
-
-    public void hideCaret()
-    {
-        if (forwardCaret != null)
-        {
-            forwardCaret.setVisibility(View.GONE);
-        }
-    }
-
-    public void showCaret()
-    {
-        if (forwardCaret != null)
-        {
-            forwardCaret.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @OnClick(R.id.btn_position_close) @Optional
-    protected void handleBtnCloseClicked(View view)
-    {
-        if (viewDTO != null)
-        {
-            userActionSubject.onNext(new CloseUserAction(viewDTO.positionDTO, viewDTO.securityCompactDTO));
-        }
-    }
-
-    @Override public void display(@NonNull final DTO dto)
-    {
-        this.viewDTO = dto;
-
-        if (gainIndicator != null)
-        {
-            gainIndicator.setImageResource(dto.gainIndicator);
-        }
-
-        if (stockLogo != null)
-        {
-            stockLogo.setVisibility(dto.stockLogoVisibility);
-            RequestCreator request;
-            if (dto.stockLogoUrl != null)
-            {
-                request = picasso.load(dto.stockLogoUrl);
-            }
-            else
-            {
-                request = picasso.load(dto.stockLogoRes);
-            }
-            request.placeholder(R.drawable.default_image)
-                    .transform(new WhiteToTransparentTransformation())
-                    .into(stockLogo, new Callback()
-                    {
-                        @Override public void onSuccess()
-                        {
-                        }
-
-                        @Override public void onError()
-                        {
-                            stockLogo.setImageResource(dto.stockLogoRes);
-                        }
-                    });
-        }
-
-        if (flagsContainer != null)
-        {
-            flagsContainer.setVisibility(dto.flagsContainerVisibility);
-            flagsContainer.display(dto.fxPair);
-        }
-
-        if (btnClose != null)
-        {
-            btnClose.setVisibility(dto.btnCloseVisibility);
-        }
-
-        if (stockSymbol != null)
-        {
-            stockSymbol.setText(dto.stockSymbol);
-        }
-
-        if (companyName != null)
-        {
-            companyName.setVisibility(dto.companyNameVisibility);
-            companyName.setText(dto.companyName);
-        }
-
-        if (lastPriceAndRise != null)
-        {
-            lastPriceAndRise.setText(dto.lastPriceAndRise);
-        }
-
-        if (shareCountRow != null)
-        {
-            shareCountRow.setVisibility(dto.shareCountRowVisibility);
-        }
-
-        if (shareCountHeader != null)
-        {
-            shareCountHeader.setText(dto.shareCountHeader);
-        }
-
-        if (shareCountText != null)
-        {
-            shareCountText.setVisibility(dto.shareCountVisibility);
-            shareCountText.setText(dto.shareCountText);
-        }
-
-        if (shareCount != null)
-        {
-            shareCount.setText(dto.shareCount);
-        }
-
-        if (gainLossHeader != null)
-        {
-            gainLossHeader.setText(dto.gainLossHeader);
-        }
-
-        if (gainLoss != null)
-        {
-            gainLoss.setText(dto.gainLoss);
-            gainLoss.setTextColor(dto.gainLossColor);
-        }
-
-        if (gainLossPercent != null)
-        {
-            gainLossPercent.setText(dto.gainLossPercent);
-            gainLossPercent.setTextColor(dto.gainLossColor);
-        }
-
-        if (totalInvested != null)
-        {
-            totalInvested.setText(dto.totalInvested);
-        }
-
-        if (positionPercent != null)
-        {
-            positionPercent.setVisibility(dto.positionPercentVisibility);
-            positionPercent.setText(dto.positionPercent);
-        }
-
-        if (positionUnrealisedPL != null)
-        {
-            positionUnrealisedPL.setVisibility(dto.unrealisedPLVisibility);
-            positionUnrealisedPL.setText(dto.unrealisedPL);
-        }
-
-        if (lastAmountContainer != null)
-        {
-            lastAmountContainer.setVisibility(dto.lastAmountContainerVisibility);
-        }
-
-        if (positionLastAmountHeader != null)
-        {
-            positionLastAmountHeader.setVisibility(dto.lastAmountHeaderVisibility);
-        }
-
-        if (positionLastAmount != null)
-        {
-            positionLastAmount.setText(dto.lastAmount);
-        }
-    }
 
     protected void unsubscribe(@Nullable Subscription subscription)
     {
@@ -336,6 +104,7 @@ public class PositionPartialTopView extends LinearLayout
         {
             this.positionDTO = positionDTO;
             this.securityCompactDTO = securityCompactDTO;
+
             String na = resources.getString(R.string.na);
 
             //<editor-fold desc="Stock Logo">
@@ -632,6 +401,211 @@ public class PositionPartialTopView extends LinearLayout
         {
             this.positionDTO = positionDTO;
             this.securityCompactDTO = securityCompactDTO;
+        }
+    }
+
+    public static class ViewHolder extends TypedRecyclerAdapter.TypedViewHolder<Object>
+    {
+        @InjectView(R.id.gain_indicator) @Optional ImageView gainIndicator;
+        @InjectView(R.id.stock_logo) ImageView stockLogo;
+        @InjectView(R.id.flags_container) FxFlagContainer flagsContainer;
+        @InjectView(R.id.stock_symbol) @Optional TextView stockSymbol;
+        @InjectView(R.id.company_name) @Optional TextView companyName;
+        @InjectView(R.id.last_price_and_rise) @Optional TextView lastPriceAndRise;
+        @InjectView(R.id.share_count_row) @Optional View shareCountRow;
+        @InjectView(R.id.share_count_header) @Optional TextView shareCountHeader;
+        @InjectView(R.id.share_count_text) @Optional TextView shareCountText;
+        @InjectView(R.id.share_count) @Optional TextView shareCount;
+        @InjectView(R.id.hint_forward) @Optional View forwardCaret;
+        @InjectView(R.id.gain_loss_header) @Optional TextView gainLossHeader;
+
+        @InjectView(R.id.gain_loss) @Optional TextView gainLoss;
+        @InjectView(R.id.gain_loss_percent) @Optional TextView gainLossPercent;
+        @InjectView(R.id.total_invested_value) @Optional TextView totalInvested;
+        @InjectView(R.id.position_percentage) @Optional TextView positionPercent;
+        @InjectView(R.id.position_unrealised_pl) @Optional TextView positionUnrealisedPL;
+        @InjectView(R.id.last_amount_container) @Optional View lastAmountContainer;
+        @InjectView(R.id.position_last_amount_header) @Optional TextView positionLastAmountHeader;
+        @InjectView(R.id.position_last_amount) @Optional TextView positionLastAmount;
+        @InjectView(R.id.btn_position_close) @Optional TextView btnClose;
+        @NonNull private final PublishSubject<CloseUserAction> userActionSubject;
+
+        private DTO dto;
+        private final Picasso picasso;
+
+        public ViewHolder(PositionPartialTopView view, Picasso picasso)
+        {
+            super(view);
+            this.picasso = picasso;
+            this.userActionSubject = PublishSubject.create();
+        }
+
+        public void hideCaret()
+        {
+            if (forwardCaret != null)
+            {
+                forwardCaret.setVisibility(View.GONE);
+            }
+        }
+
+        public void showCaret()
+        {
+            if (forwardCaret != null)
+            {
+                forwardCaret.setVisibility(View.VISIBLE);
+            }
+        }
+
+        @SuppressWarnings("unused")
+        @OnClick(R.id.btn_position_close) @Optional
+        protected void handleBtnCloseClicked(View view)
+        {
+            if (dto != null)
+            {
+                userActionSubject.onNext(new CloseUserAction(dto.positionDTO, dto.securityCompactDTO));
+            }
+        }
+
+        public Observable<CloseUserAction> getUserActionObservable()
+        {
+            return userActionSubject.asObservable();
+        }
+
+        @Override public void display(Object o)
+        {
+            if (o instanceof DTO)
+            {
+                this.dto = (DTO) o;
+
+                if (gainIndicator != null)
+                {
+                    gainIndicator.setImageResource(dto.gainIndicator);
+                }
+
+                if (stockLogo != null)
+                {
+                    stockLogo.setVisibility(dto.stockLogoVisibility);
+                    RequestCreator request;
+                    if (dto.stockLogoUrl != null)
+                    {
+                        request = picasso.load(dto.stockLogoUrl);
+                    }
+                    else
+                    {
+                        request = picasso.load(dto.stockLogoRes);
+                    }
+                    request.placeholder(R.drawable.default_image)
+                            .transform(new WhiteToTransparentTransformation())
+                            .into(stockLogo, new Callback()
+                            {
+                                @Override public void onSuccess()
+                                {
+                                }
+
+                                @Override public void onError()
+                                {
+                                    stockLogo.setImageResource(dto.stockLogoRes);
+                                }
+                            });
+                }
+
+                if (flagsContainer != null)
+                {
+                    flagsContainer.setVisibility(dto.flagsContainerVisibility);
+                    flagsContainer.display(dto.fxPair);
+                }
+
+                if (btnClose != null)
+                {
+                    btnClose.setVisibility(dto.btnCloseVisibility);
+                }
+
+                if (stockSymbol != null)
+                {
+                    stockSymbol.setText(dto.stockSymbol);
+                }
+
+                if (companyName != null)
+                {
+                    companyName.setVisibility(dto.companyNameVisibility);
+                    companyName.setText(dto.companyName);
+                }
+
+                if (lastPriceAndRise != null)
+                {
+                    lastPriceAndRise.setText(dto.lastPriceAndRise);
+                }
+
+                if (shareCountRow != null)
+                {
+                    shareCountRow.setVisibility(dto.shareCountRowVisibility);
+                }
+
+                if (shareCountHeader != null)
+                {
+                    shareCountHeader.setText(dto.shareCountHeader);
+                }
+
+                if (shareCountText != null)
+                {
+                    shareCountText.setVisibility(dto.shareCountVisibility);
+                    shareCountText.setText(dto.shareCountText);
+                }
+
+                if (shareCount != null)
+                {
+                    shareCount.setText(dto.shareCount);
+                }
+
+                if (gainLossHeader != null)
+                {
+                    gainLossHeader.setText(dto.gainLossHeader);
+                }
+
+                if (gainLoss != null)
+                {
+                    gainLoss.setText(dto.gainLoss);
+                    gainLoss.setTextColor(dto.gainLossColor);
+                }
+
+                if (gainLossPercent != null)
+                {
+                    gainLossPercent.setText(dto.gainLossPercent);
+                    gainLossPercent.setTextColor(dto.gainLossColor);
+                }
+
+                if (totalInvested != null)
+                {
+                    totalInvested.setText(dto.totalInvested);
+                }
+
+                if (positionPercent != null)
+                {
+                    positionPercent.setVisibility(dto.positionPercentVisibility);
+                    positionPercent.setText(dto.positionPercent);
+                }
+
+                if (positionUnrealisedPL != null)
+                {
+                    positionUnrealisedPL.setVisibility(dto.unrealisedPLVisibility);
+                    positionUnrealisedPL.setText(dto.unrealisedPL);
+                }
+
+                if (lastAmountContainer != null)
+                {
+                    lastAmountContainer.setVisibility(dto.lastAmountContainerVisibility);
+                }
+
+                if (positionLastAmountHeader != null)
+                {
+                    positionLastAmountHeader.setVisibility(dto.lastAmountHeaderVisibility);
+                }
+
+                if (positionLastAmount != null)
+                {
+                    positionLastAmount.setText(dto.lastAmount);
+                }
+            }
         }
     }
 }

@@ -8,15 +8,16 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 
-public class ProcessableLeaderboardFriendsDTO implements DTO, ContainerDTO<FriendLeaderboardUserDTO, FriendLeaderboardUserDTOList>
+public class ProcessableLeaderboardFriendsDTO
+        implements DTO, ContainerDTO<LeaderboardItemDisplayDTO, LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>>
 {
-    @NonNull private final FriendLeaderboardUserDTOFactory factory;
+    @NonNull private final LeaderboardItemDisplayDTO.Factory factory;
     @NonNull public final LeaderboardFriendsDTO leaderboardFriendsDTO;
     @NonNull private final UserProfileDTO currentUserProfile;
 
     //<editor-fold desc="Constructors">
     public ProcessableLeaderboardFriendsDTO(
-            @NonNull FriendLeaderboardUserDTOFactory factory,
+            @NonNull LeaderboardItemDisplayDTO.Factory factory,
             @NonNull LeaderboardFriendsDTO leaderboardFriendsDTO,
             @NonNull UserProfileDTO currentUserProfile)
     {
@@ -32,14 +33,15 @@ public class ProcessableLeaderboardFriendsDTO implements DTO, ContainerDTO<Frien
             + (leaderboardFriendsDTO.socialFriends == null ? 0 : leaderboardFriendsDTO.socialFriends.size());
     }
 
-    @Override public FriendLeaderboardUserDTOList getList()
+    @Override public LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO> getList()
     {
         boolean containsCurrentUser = false;
-        FriendLeaderboardUserDTOList list = new FriendLeaderboardUserDTOList();
+        LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO> list =
+                new LeaderboardItemDisplayDTO.DTOList<>(leaderboardFriendsDTO.leaderboard);
         if (leaderboardFriendsDTO.leaderboard != null)
         {
             int position = 1;
-            FriendLeaderboardUserDTO created;
+            LeaderboardItemDisplayDTO created;
             for (LeaderboardUserDTO userDTO : leaderboardFriendsDTO.leaderboard.getList())
             {
                 if (userDTO.id == currentUserProfile.id)
@@ -47,7 +49,7 @@ public class ProcessableLeaderboardFriendsDTO implements DTO, ContainerDTO<Frien
                     containsCurrentUser = true;
                 }
                 created = factory.create(userDTO);
-                created.setPosition(position);
+                created.setRanking(position);
                 list.add(created);
                 position++;
             }
@@ -62,7 +64,7 @@ public class ProcessableLeaderboardFriendsDTO implements DTO, ContainerDTO<Frien
 
         if (list.size() <= (containsCurrentUser ? 1 : 0))
         {
-            list.add(new FriendLeaderboardCallToActionUserDTO(false));
+            list.add(new FriendLeaderboardItemDisplayDTO.CallToAction());
         }
 
         return list;

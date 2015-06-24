@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.common.persistence.DTOCacheRx;
@@ -16,22 +17,22 @@ import rx.functions.Func2;
 
 class ProcessableLeaderboardFriendsCache implements DTOCacheRx<LeaderboardFriendsKey, ProcessableLeaderboardFriendsDTO>
 {
+    @NonNull private final Resources resources;
     @NonNull private final LeaderboardFriendsCacheRx leaderboardFriendsCache;
     @NonNull private final UserProfileCacheRx userProfileCache;
     @NonNull private final CurrentUserId currentUserId;
-    @NonNull private final FriendLeaderboardUserDTOFactory factory;
 
     //<editor-fold desc="Constructors">
     public ProcessableLeaderboardFriendsCache(
+            @NonNull Resources resources,
             @NonNull LeaderboardFriendsCacheRx leaderboardFriendsCache,
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull CurrentUserId currentUserId,
-            @NonNull FriendLeaderboardUserDTOFactory factory)
+            @NonNull CurrentUserId currentUserId)
     {
+        this.resources = resources;
         this.leaderboardFriendsCache = leaderboardFriendsCache;
         this.userProfileCache = userProfileCache;
         this.currentUserId = currentUserId;
-        this.factory = factory;
     }
     //</editor-fold>
 
@@ -51,7 +52,7 @@ class ProcessableLeaderboardFriendsCache implements DTOCacheRx<LeaderboardFriend
                     {
                         return Pair.create(
                                 pair.first,
-                                new ProcessableLeaderboardFriendsDTO(factory, pair.second, userProfile));
+                                new ProcessableLeaderboardFriendsDTO(new LeaderboardItemDisplayDTO.Factory(resources, currentUserId, userProfile), pair.second, userProfile));
                     }
                 });
     }

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,12 +14,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import butterknife.ButterKnife;
-import com.android.internal.util.Predicate;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
@@ -38,10 +36,9 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.widget.MultiScrollListener;
+import com.tradehero.th.widget.MultiRecyclerScrollListener;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
@@ -53,14 +50,14 @@ import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxFragment<
+public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRecyclerRxFragment<
         PagedLeaderboardKey,
-        LeaderboardMarkUserItemView.DTO,
-        LeaderboardMarkUserItemView.DTOList,
-        LeaderboardMarkUserItemView.DTOList>
+        LeaderboardItemDisplayDTO,
+        LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>,
+        LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>>
 {
-    public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserListFragment.class.getName();
-    private static final String BUNDLE_KEY_LEADERBOARD_TYPE_ID = LeaderboardMarkUserListFragment.class.getName() + ".leaderboardTypeId";
+    public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserRecyclerFragment.class.getName();
+    private static final String BUNDLE_KEY_LEADERBOARD_TYPE_ID = LeaderboardMarkUserRecyclerFragment.class.getName() + ".leaderboardTypeId";
 
     @Inject Analytics analytics;
     @Inject @ForUser SharedPreferences preferences;
@@ -73,7 +70,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
 
     protected PerPagedLeaderboardKey currentLeaderboardKey;
     protected LeaderboardType currentLeaderboardType = LeaderboardType.STOCKS;
-    private LeaderboardMarkUserItemView.Requisite ownRankRequisite;
+    private LeaderboardMarkedUserItemDisplayDto.Requisite ownRankRequisite;
 
     public static void putLeaderboardType(@NonNull Bundle args, @NonNull LeaderboardType leaderboardType)
     {
@@ -100,7 +97,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         PerPagedFilteredLeaderboardKey initialKey = ((PerPagedFilteredLeaderboardKeyPreference) savedPreference)
                 .getPerPagedFilteredLeaderboardKey();
 
-        PerPagedFilteredLeaderboardKey filterKey = new PerPagedFilteredLeaderboardKey(initialKey, leaderboardDefKey.key, null, null);
+        PerPagedFilteredLeaderboardKey filterKey = new PerPagedFilteredLeaderboardKey(initialKey, leaderboardDefKey.key, null, perPage);
         filterKey.setAssetClass(currentLeaderboardType.assetClass);
         return filterKey;
     }
@@ -117,41 +114,24 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.leaderboard_mark_user_listview, container, false);
+        View view = inflater.inflate(R.layout.leaderboard_mark_user_recyclerview, container, false);
         ButterKnife.inject(this, view);
-        listView.setEmptyView(inflateEmptyView(inflater, container));
         return view;
-    }
-
-    protected View inflateEmptyView(LayoutInflater inflater, ViewGroup container)
-    {
-        /*
-         TODO I haven't seen a basic leaderboard empty view except the one from Friend leaderboard
-         on iOS app, therefore, I will use a dummy empty view here
-         */
-        return inflater.inflate(R.layout.leaderboard_empty_view, container, false);
     }
 
     @Override public void onStart()
     {
         super.onStart();
         fragmentUtil.onStart();
-        onStopSubscriptions.add(((LeaderboardMarkUserListAdapter) itemViewAdapter).getFollowRequestedObservable()
+        onStopSubscriptions.add(((LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO>) itemViewAdapter).getUserActionObservable()
                 .subscribe(
                         fragmentUtil,
                         new TimberOnErrorAction("Error when receiving user follow requested")));
-        if ((itemViewAdapter != null) && (itemViewAdapter.getCount() == 1))
+        if ((itemViewAdapter != null) && (itemViewAdapter.getItemCount() == 0))
         {
             requestDtos();
         }
-        if (ownRankRequisite == null)
-        {
-            fetchOwnRanking();
-        }
-        else
-        {
-            updateCurrentRankView(ownRankRequisite);
-        }
+        fetchOwnRanking();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -211,48 +191,49 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         this.leaderboardFilterFragment = null;
         ownRankRequisite = null;
         saveCurrentFilterKey();
+        fragmentUtil.onDestroy();
         super.onDestroy();
     }
 
-    @NonNull protected LeaderboardMarkUserListAdapter createItemViewAdapter()
+    @NonNull protected LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO> createItemViewAdapter()
     {
-        LeaderboardMarkUserListAdapter adapter = new LeaderboardMarkUserListAdapter(
+        LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO> adapter = new LeaderboardMarkUserRecyclerAdapter<>(
+                LeaderboardItemDisplayDTO.class,
                 getActivity(),
                 R.layout.lbmu_item_roi_mode,
-                getCurrentRankLayoutResId(),
+                R.layout.lbmu_item_own_ranking_roi_mode,
                 new LeaderboardKey(leaderboardDefKey.key));
         adapter.setApplicablePortfolioId(getApplicablePortfolioId());
         return adapter;
     }
 
-    @NonNull @Override protected AbsListView.OnScrollListener createListViewScrollListener()
+    @NonNull @Override protected RecyclerView.OnScrollListener createRecyclerViewScrollListener()
     {
-        return new MultiScrollListener(
-                super.createListViewScrollListener(),
-                new AbsListView.OnScrollListener()
+        return new MultiRecyclerScrollListener(
+                super.createRecyclerViewScrollListener(),
+                new RecyclerView.OnScrollListener()
                 {
                     private boolean scrollStateChanged;
 
-                    @Override
-                    public void onScrollStateChanged(AbsListView view, int scrollState)
+                    @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy)
                     {
-                        scrollStateChanged = true;
-                    }
-
-                    @Override
-                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-                    {
-                        if (view instanceof ListView && scrollStateChanged)
+                        if (scrollStateChanged)
                         {
-                            ListView listView = (ListView) view;
-                            int mTotalHeadersAndFooters = listView.getHeaderViewsCount() + listView.getFooterViewsCount();
-
-                            if (totalItemCount > mTotalHeadersAndFooters && (totalItemCount - visibleItemCount) < (firstVisibleItem + 1))
+                            LinearLayoutManager mLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                            int visibleItemCount = mLayoutManager.getChildCount();
+                            int totalItemCount = mLayoutManager.getItemCount();
+                            int firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
+                            if ((totalItemCount - visibleItemCount) < (firstVisibleItem + 1))
                             {
                                 scrollStateChanged = false;
                                 requestDtos();
                             }
                         }
+                    }
+
+                    @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState)
+                    {
+                        scrollStateChanged = true;
                     }
                 });
     }
@@ -267,7 +248,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         return currentLeaderboardKey.cloneAtPage(page);
     }
 
-    @NonNull @Override public DTOCacheRx<PagedLeaderboardKey, LeaderboardMarkUserItemView.DTOList> getCache()
+    @NonNull @Override public DTOCacheRx<PagedLeaderboardKey, LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>> getCache()
     {
         return new LeaderboardMarkUserItemViewDTOCacheRx(
                 getResources(),
@@ -289,7 +270,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         super.linkWithApplicable(purchaseApplicablePortfolioId, andDisplay);
         if (purchaseApplicablePortfolioId != null)
         {
-            ((LeaderboardMarkUserListAdapter) itemViewAdapter).setApplicablePortfolioId(purchaseApplicablePortfolioId);
+            ((LeaderboardMarkUserRecyclerAdapter) itemViewAdapter).setApplicablePortfolioId(purchaseApplicablePortfolioId);
         }
     }
 
@@ -298,11 +279,12 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 fetchOwnRankingInfoObservables())
+                .startWith(ownRankRequisite)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<LeaderboardMarkUserItemView.Requisite>()
+                        new Action1<LeaderboardMarkedUserItemDisplayDto.Requisite>()
                         {
-                            @Override public void call(LeaderboardMarkUserItemView.Requisite requisite)
+                            @Override public void call(@Nullable LeaderboardMarkedUserItemDisplayDto.Requisite requisite)
                             {
                                 updateCurrentRankView(requisite);
                             }
@@ -316,7 +298,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
                         }));
     }
 
-    @NonNull protected Observable<LeaderboardMarkUserItemView.Requisite> fetchOwnRankingInfoObservables()
+    @NonNull protected Observable<LeaderboardMarkedUserItemDisplayDto.Requisite> fetchOwnRankingInfoObservables()
     {
         UserOnLeaderboardKey userOnLeaderboardKey =
                 new UserOnLeaderboardKey(
@@ -325,56 +307,77 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         return Observable.zip(
                 leaderboardCache.getOne(userOnLeaderboardKey),
                 userProfileCache.getOne(currentUserId.toUserBaseKey()),
-                new Func2<Pair<LeaderboardKey, LeaderboardDTO>, Pair<UserBaseKey, UserProfileDTO>, LeaderboardMarkUserItemView.Requisite>()
+                new Func2<Pair<LeaderboardKey, LeaderboardDTO>, Pair<UserBaseKey, UserProfileDTO>, LeaderboardMarkedUserItemDisplayDto.Requisite>()
                 {
-                    @Override public LeaderboardMarkUserItemView.Requisite call(Pair<LeaderboardKey, LeaderboardDTO> currentLeaderboardPair,
+                    @Override public LeaderboardMarkedUserItemDisplayDto.Requisite call(Pair<LeaderboardKey, LeaderboardDTO> currentLeaderboardPair,
                             Pair<UserBaseKey, UserProfileDTO> userProfilePair)
                     {
-                        return new LeaderboardMarkUserItemView.Requisite(currentLeaderboardPair, userProfilePair);
+                        return new LeaderboardMarkedUserItemDisplayDto.Requisite(currentLeaderboardPair, userProfilePair);
                     }
                 })
                 .subscribeOn(Schedulers.computation());
     }
 
-    @LayoutRes protected int getCurrentRankLayoutResId()
+    protected void updateCurrentRankView(@Nullable LeaderboardMarkedUserItemDisplayDto.Requisite requisite)
     {
-        return R.layout.lbmu_item_own_ranking_roi_mode;
-    }
-
-    protected void updateCurrentRankView(@Nullable LeaderboardMarkUserItemView.Requisite requisite)
-    {
-        if (requisite == null || requisite.currentLeaderboardUserDTO == null)
+        LeaderboardMarkedUserItemDisplayDto ownRankingDto;
+        if (requisite == null)
         {
-            ((LeaderboardMarkUserListAdapter) itemViewAdapter).isNotRanked(requisite.currentUserProfileDTO);
+            //Is Loading
+            ownRankingDto = createLoadingOwnRankingDTO();
+        }
+        else if (requisite.currentLeaderboardUserDTO == null)
+        {
+            //Not Ranked
+            ownRankingDto = createNotRankedOwnRankingDTO(requisite);
         }
         else
         {
-            ((LeaderboardMarkUserListAdapter) itemViewAdapter).isRanked(new LeaderboardMarkUserOwnRankingView.DTO(
-                    getResources(),
-                    currentUserId,
-                    requisite.currentLeaderboardUserDTO,
-                    requisite.currentUserProfileDTO));
+            ownRankingDto = createRankedOwnRankingDTO(requisite);
         }
-        ((ArrayAdapter) itemViewAdapter).notifyDataSetChanged();
+        itemViewAdapter.add(ownRankingDto);
+    }
+
+    protected LeaderboardMarkedUserItemDisplayDto createLoadingOwnRankingDTO()
+    {
+        return new LeaderboardMarkedUserItemDisplayDto(getResources(), currentUserId);
+    }
+
+    protected LeaderboardMarkedUserItemDisplayDto createNotRankedOwnRankingDTO(LeaderboardMarkedUserItemDisplayDto.Requisite requisite)
+    {
+        return new LeaderboardMarkedUserItemDisplayDto(getResources(), currentUserId,
+                requisite.currentUserProfileDTO);
+    }
+
+    protected LeaderboardMarkedUserItemDisplayDto createRankedOwnRankingDTO(LeaderboardMarkedUserItemDisplayDto.Requisite requisite)
+    {
+        LeaderboardMarkedUserItemDisplayDto dto = new LeaderboardMarkedUserItemDisplayDto(
+                getResources(),
+                currentUserId,
+                requisite.currentLeaderboardUserDTO,
+                requisite.currentUserProfileDTO);
+        dto.setIsMyOwnRanking(true);
+        return dto;
     }
 
     @Override protected void updateListViewRow(@NonNull final UserProfileDTO currentUserProfile, @NonNull final UserBaseKey heroId)
     {
-        AdapterViewUtils.updateSingleRowWhere(
-                listView,
-                LeaderboardMarkUserItemView.DTO.class,
-                new Predicate<LeaderboardMarkUserItemView.DTO>()
-                {
-                    @Override public boolean apply(LeaderboardMarkUserItemView.DTO dto)
-                    {
-                        boolean isUpdatedRow = dto.leaderboardUserDTO.getBaseKey().equals(heroId);
-                        if (isUpdatedRow)
-                        {
-                            dto.followChanged(currentUserProfile, heroId);
-                        }
-                        return isUpdatedRow;
-                    }
-                });
+        //TODO
+        //AdapterViewUtils.updateSingleRowWhere(
+        //        recyclerView,
+        //        LeaderboardMarkedUserItemDisplayDto.DTO.class,
+        //        new Predicate<LeaderboardMarkedUserItemDisplayDto.DTO>()
+        //        {
+        //            @Override public boolean apply(LeaderboardMarkedUserItemDisplayDto.DTO dto)
+        //            {
+        //                boolean isUpdatedRow = dto.leaderboardUserDTO.getBaseKey().equals(heroId);
+        //                if (isUpdatedRow)
+        //                {
+        //                    dto.followChanged(currentUserProfile, heroId);
+        //                }
+        //                return isUpdatedRow;
+        //            }
+        //        });
     }
 
     protected void pushFilterFragmentIn()
@@ -412,7 +415,20 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         super.onItemClick(parent, view, position, id);
     }
 
-    @Override protected void onNext(@NonNull PagedLeaderboardKey key, @NonNull LeaderboardMarkUserItemView.DTOList value)
+    @Override protected Pair<PagedLeaderboardKey, LeaderboardMarkedUserItemDisplayDto.DTOList<LeaderboardItemDisplayDTO>> onMap(
+            Pair<PagedLeaderboardKey, LeaderboardMarkedUserItemDisplayDto.DTOList<LeaderboardItemDisplayDTO>> receivedPair)
+    {
+        int page = receivedPair.first.page == null ? FIRST_PAGE : receivedPair.first.page;
+        int rank = (page - FIRST_PAGE) * perPage;
+        for (LeaderboardItemDisplayDTO dto : receivedPair.second)
+        {
+            rank++;
+            dto.setRanking(rank);
+        }
+        return super.onMap(receivedPair);
+    }
+
+    @Override protected void onNext(@NonNull PagedLeaderboardKey key, @NonNull LeaderboardMarkedUserItemDisplayDto.DTOList value)
     {
         super.onNext(key, value);
         //swipeContainer.setRefreshing(false);

@@ -7,17 +7,20 @@ import dagger.Module;
 
 @Module(
         injects = {
-                LeaderboardFriendsItemView.class,
-                LeaderboardMarkUserListFragment.class,
+                LeaderboardMarkUserRecyclerFragment.class,
                 LeaderboardMarkUserItemView.class,
                 CompetitionLeaderboardMarkUserItemView.class,
                 CompetitionLeaderboardMarkUserOwnRankingView.class,
                 LeaderboardMarkUserOwnRankingView.class,
-                FriendLeaderboardMarkUserListFragment.class,
-                CompetitionLeaderboardMarkUserListFragment.class,
+                FriendLeaderboardMarkUserRecyclerFragment.class,
+                CompetitionLeaderboardMarkUserRecyclerFragment.class,
+                CompetitionLeaderboardMarkUserRecyclerAdapter.class,
+                CompetitionLeaderboardWrapperRecyclerAdapter.class,
                 LeaderboardCommunityFragment.class,
                 LeaderboardFilterFragment.class,
                 LeaderboardFilterSliderContainer.class,
+                LeaderboardMarkUserRecyclerAdapter.class,
+                FriendsLeaderboardRecyclerAdapter.class,
         },
         library = true,
         complete = false

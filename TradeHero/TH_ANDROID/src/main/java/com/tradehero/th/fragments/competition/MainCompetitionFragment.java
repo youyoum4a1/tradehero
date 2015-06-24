@@ -54,7 +54,7 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLegalDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePortfolioDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePreSeasonDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserRecyclerFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
@@ -528,19 +528,20 @@ public class MainCompetitionFragment extends DashboardFragment
         }
         else if (competitionZoneDTO instanceof CompetitionZoneLeaderboardDTO)
         {
-            CompetitionLeaderboardMarkUserListFragment.putProviderId(args, providerId);
-            CompetitionLeaderboardMarkUserListFragment.putCompetition(args, ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO);
-            CompetitionLeaderboardMarkUserListFragment.putLeaderboardType(args, ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).leaderboardType);
+            CompetitionLeaderboardMarkUserRecyclerFragment.putProviderId(args, providerId);
+            CompetitionLeaderboardMarkUserRecyclerFragment.putCompetition(args, ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO);
+            CompetitionLeaderboardMarkUserRecyclerFragment.putLeaderboardType(args,
+                    ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).leaderboardType);
 
             OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
             if (ownedPortfolioId != null)
             {
-                CompetitionLeaderboardMarkUserListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+                CompetitionLeaderboardMarkUserRecyclerFragment.putApplicablePortfolioId(args, ownedPortfolioId);
             }
 
             if (navigator != null)
             {
-                navigator.get().pushFragment(CompetitionLeaderboardMarkUserListFragment.class, args);
+                navigator.get().pushFragment(CompetitionLeaderboardMarkUserRecyclerFragment.class, args);
             }
         }
         else if (competitionZoneDTO instanceof CompetitionZoneLegalDTO)

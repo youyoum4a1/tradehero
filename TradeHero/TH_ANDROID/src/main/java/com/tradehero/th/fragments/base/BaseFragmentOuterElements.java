@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.base;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.AbsListView;
 import android.widget.ScrollView;
@@ -34,6 +35,22 @@ public class BaseFragmentOuterElements implements FragmentOuterElements
             @Override public void onScrollChanged(ScrollView scrollView, int i, int i1, int i2, int i3)
             {
                 // Do nothing
+            }
+        };
+    }
+
+    @NonNull @Override public RecyclerView.OnScrollListener getRecyclerViewScrollListener()
+    {
+        return new RecyclerView.OnScrollListener()
+        {
+            @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState)
+            {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+                super.onScrolled(recyclerView, dx, dy);
             }
         };
     }

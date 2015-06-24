@@ -10,14 +10,11 @@
     android:orientation="vertical"
     >
 
-  <ListView
-      android:id="@+id/listview"
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/recycler_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:paddingBottom="@dimen/dashboard_tabhost_height"
-      android:cacheColorHint="#00000000"
-      android:divider="#00000000"
-      android:dividerHeight="1dip"
       android:fadingEdge="none"
       android:fastScrollEnabled="false"
       android:footerDividersEnabled="false"

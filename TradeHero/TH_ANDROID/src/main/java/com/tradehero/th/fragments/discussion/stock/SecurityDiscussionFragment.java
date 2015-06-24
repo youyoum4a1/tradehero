@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
@@ -107,8 +107,9 @@ public class SecurityDiscussionFragment extends AbstractDiscussionFragment
     @NonNull @Override protected AbsListView.OnScrollListener createListScrollListener()
     {
         return new MultiScrollListener(super.createListScrollListener(), dashboardBottomTabsListViewScrollListener.get(),
-                    new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER, buttonAdd,
-                        -getResources().getDimensionPixelSize(R.dimen.clickable_element_min_dimen), null, 0));
+                new QuickReturnListViewOnScrollListener.Builder(QuickReturnViewType.HEADER).header(buttonAdd)
+                        .minHeaderTranslation(-getResources().getDimensionPixelSize(R.dimen.clickable_element_min_dimen))
+                        .build());
     }
 
     @NonNull @Override protected Observable<AbstractDiscussionCompactDTO> getTopicObservable()

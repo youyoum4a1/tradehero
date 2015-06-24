@@ -135,7 +135,7 @@ public class PagedDTOAdapterImpl<DTOType> extends ArrayAdapter<DTOType>
 
     @NonNull protected List<Integer> getPages()
     {
-        // Get the pages ordered
+        // Get the shownPages ordered
         //noinspection Convert2Diamond
         Set<Integer> pages = new TreeSet<Integer>(new Comparator<Integer>()
         {

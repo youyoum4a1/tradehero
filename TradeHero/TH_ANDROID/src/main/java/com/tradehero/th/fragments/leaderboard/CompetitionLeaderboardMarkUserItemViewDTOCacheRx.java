@@ -6,6 +6,7 @@ import android.util.Pair;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
@@ -20,7 +21,8 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
-class CompetitionLeaderboardMarkUserItemViewDTOCacheRx implements DTOCacheRx<PagedLeaderboardKey, LeaderboardMarkUserItemView.DTOList>
+class CompetitionLeaderboardMarkUserItemViewDTOCacheRx
+        implements DTOCacheRx<PagedLeaderboardKey, LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>>
 {
     @NonNull private final Resources resources;
     @NonNull private final CurrentUserId currentUserId;
@@ -47,39 +49,43 @@ class CompetitionLeaderboardMarkUserItemViewDTOCacheRx implements DTOCacheRx<Pag
     }
     //</editor-fold>
 
-    @NonNull @Override public Observable<Pair<PagedLeaderboardKey, LeaderboardMarkUserItemView.DTOList>> get(@NonNull PagedLeaderboardKey key)
+    @NonNull @Override
+    public Observable<Pair<PagedLeaderboardKey, LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>>> get(@NonNull PagedLeaderboardKey key)
     {
         return this.competitionLeaderboardCache.get((CompetitionLeaderboardId) key)
                 .observeOn(Schedulers.computation())
                 .flatMap(new Func1<
                         Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO>,
-                        Observable<Pair<PagedLeaderboardKey, LeaderboardMarkUserItemView.DTOList>>>()
+                        Observable<Pair<PagedLeaderboardKey, LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>>>>()
                 {
-                    @Override public Observable<Pair<PagedLeaderboardKey, LeaderboardMarkUserItemView.DTOList>> call(
+                    @Override public Observable<Pair<PagedLeaderboardKey, LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>>> call(
                             final Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO> pair)
                     {
                         return getRequisite()
                                 .observeOn(Schedulers.computation())
                                 .map(new Func1<Requisite,
-                                        Pair<PagedLeaderboardKey, LeaderboardMarkUserItemView.DTOList>>()
+                                        Pair<PagedLeaderboardKey, LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>>>()
                                 {
-                                    @Override public Pair<PagedLeaderboardKey, LeaderboardMarkUserItemView.DTOList> call(
+                                    @Override public Pair<PagedLeaderboardKey, LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>> call(
                                             Requisite requisite)
                                     {
-                                        return Pair.create((PagedLeaderboardKey) pair.first,
-                                                (LeaderboardMarkUserItemView.DTOList) new CompetitionLeaderboardMarkUserItemView.DTOList(
-                                                        resources,
-                                                        currentUserId,
-                                                        pair.second,
-                                                        requisite.currentUserProfile,
-                                                        requisite.provider));
+                                        LeaderboardItemDisplayDTO.Factory factory =
+                                                new LeaderboardItemDisplayDTO.Factory(resources, currentUserId, requisite.currentUserProfile);
+
+                                        LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO> list =
+                                                new LeaderboardItemDisplayDTO.DTOList<>(pair.second.leaderboard);
+                                        for (LeaderboardUserDTO leaderboardItem : pair.second.leaderboard.getList())
+                                        {
+                                            list.add(factory.create(leaderboardItem, requisite.provider, pair.second));
+                                        }
+                                        return Pair.create(((PagedLeaderboardKey) pair.first), list);
                                     }
                                 });
                     }
                 });
     }
 
-    @Override public void onNext(PagedLeaderboardKey key, LeaderboardMarkUserItemView.DTOList value)
+    @Override public void onNext(PagedLeaderboardKey key, LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO> value)
     {
     }
 

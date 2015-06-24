@@ -3,16 +3,19 @@ package com.tradehero.th.activities;
 import android.content.Context;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.RecyclerView;
 import android.widget.AbsListView;
-import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnScrollViewOnScrollChangedListener;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnWebViewOnScrollChangedListener;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
-import com.tradehero.common.widget.NotifyingWebView;
-import com.tradehero.common.widget.QuickReturnWebViewOnScrollChangedListener;
+import com.etiennelawlor.quickreturn.library.views.NotifyingWebView;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
+import com.tradehero.th.BottomTabsQuickReturnRecyclerViewListener;
 import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
 import com.tradehero.th.BottomTabsQuickReturnWebViewListener;
 import com.tradehero.th.UIModule;
@@ -136,20 +139,35 @@ import javax.inject.Singleton;
 
     @Provides @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener provideDashboardBottomTabScrollListener()
     {
-        QuickReturnListViewOnScrollListener listener =
-                new QuickReturnListViewOnScrollListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
-        listener.setCanSlideInIdleScrollState(true);
-        return listener;
+        return new QuickReturnListViewOnScrollListener.Builder(QuickReturnViewType.FOOTER)
+                .footer(dashboardTabHost)
+                .minFooterTranslation(tabHostHeight)
+                .isSnappable(true)
+                .build();
     }
 
     @Provides @BottomTabsQuickReturnScrollViewListener NotifyingScrollView.OnScrollChangedListener provideQuickReturnListViewOnScrollListener()
     {
-        return new QuickReturnScrollViewOnScrollChangedListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
+        return new QuickReturnScrollViewOnScrollChangedListener.Builder(QuickReturnViewType.FOOTER)
+                .footer(dashboardTabHost)
+                .minFooterTranslation(tabHostHeight)
+                .build();
     }
 
     @Provides @BottomTabsQuickReturnWebViewListener NotifyingWebView.OnScrollChangedListener provideQuickReturnWebViewOnScrollListener()
     {
-        return new QuickReturnWebViewOnScrollChangedListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
+        return new QuickReturnWebViewOnScrollChangedListener.Builder(QuickReturnViewType.FOOTER)
+                .footer(dashboardTabHost)
+                .minFooterTranslation(tabHostHeight)
+                .build();
+    }
+
+    @Provides @BottomTabsQuickReturnRecyclerViewListener RecyclerView.OnScrollListener provideQuickReturnRecyclerViewOnScrollListener()
+    {
+        return new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.FOOTER)
+                .footer(dashboardTabHost)
+                .minFooterTranslation(tabHostHeight)
+                .build();
     }
 
     @Provides @ForAnalytics DashboardNavigator.DashboardFragmentWatcher provideAnalyticsReporter()

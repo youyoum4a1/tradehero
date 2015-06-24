@@ -21,7 +21,6 @@
   <string name="leaderboard_avg_days_held">เฉลี่ย วันที่ถือครอง</string>
   <string name="leaderboard_followers_count"># ผู้ติดตาม</string>
   <string name="leaderboard_comments_count"># ความเห็น</string>
-  <string name="leaderboard_roi_annualized">(รายปี: %1$s)</string>
   <string name="leaderboard_datetime_format">@string/data_format_d_mmm_yyyy</string>
   <string name="leaderboard_ranking_period" formatted="false">%s - %s</string>
   <string name="leaderboard_action_bar_help">ช่วยเหลือ</string>

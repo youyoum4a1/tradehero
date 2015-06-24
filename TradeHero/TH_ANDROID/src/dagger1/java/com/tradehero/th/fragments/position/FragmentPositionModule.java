@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.position;
 
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
+import com.tradehero.th.fragments.position.view.PositionView;
 import dagger.Module;
 
 @Module(
@@ -14,6 +15,8 @@ import dagger.Module;
                 TabbedPositionListFragment.class,
                 StocksMainPositionListFragment.class,
                 FXMainPositionListFragment.class,
+                PositionItemAdapter.class,
+                PositionView.class,
         },
         library = true,
         complete = false

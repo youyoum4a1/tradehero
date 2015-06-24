@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.DTOView;
@@ -17,6 +18,8 @@ import com.tradehero.th.fragments.position.partial.AbstractPartialBottomView;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
+import com.tradehero.th.inject.HierarchyInjector;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 public class PositionView extends LinearLayout
@@ -24,6 +27,9 @@ public class PositionView extends LinearLayout
 {
     @InjectView(R.id.position_partial_top) protected PositionPartialTopView topView;
     @InjectView(R.id.expanding_layout) protected AbstractPartialBottomView/*<PositionDTO, ExpandableListItem<PositionDTO>>*/ bottomView;
+
+    @Inject Picasso picasso;
+    private PositionPartialTopView.ViewHolder topViewHolder;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -49,14 +55,13 @@ public class PositionView extends LinearLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
+        HierarchyInjector.inject(this);
+        topViewHolder = new PositionPartialTopView.ViewHolder(topView, picasso);
     }
 
     @Override public void display(DTO dto)
     {
-        if (topView != null)
-        {
-            topView.display(dto.topViewDTO);
-        }
+        topViewHolder.display(dto.topViewDTO);
         if (bottomView != null)
         {
             bottomView.display(dto.bottomViewDTO);
@@ -65,16 +70,13 @@ public class PositionView extends LinearLayout
 
     public void showCaret(boolean show)
     {
-        if (topView != null)
+        if (show)
         {
-            if (show)
-            {
-                topView.showCaret();
-            }
-            else
-            {
-                topView.hideCaret();
-            }
+            topViewHolder.showCaret();
+        }
+        else
+        {
+            topViewHolder.hideCaret();
         }
     }
 

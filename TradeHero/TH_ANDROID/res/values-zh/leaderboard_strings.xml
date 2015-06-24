@@ -21,7 +21,6 @@
   <string name="leaderboard_avg_days_held">平均日持有数</string>
   <string name="leaderboard_followers_count"># 粉丝</string>
   <string name="leaderboard_comments_count"># 评论</string>
-  <string name="leaderboard_roi_annualized">(年化率: %1$s)</string>
   <string name="leaderboard_datetime_format">@string/data_format_d_mmm_yyyy</string>
   <string name="leaderboard_ranking_period" formatted="false">%s - %s</string>
   <string name="leaderboard_action_bar_help">帮助</string>

@@ -1,6 +1,7 @@
 package com.tradehero.th.api.leaderboard.competition;
 
 import android.support.annotation.Nullable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.PrizeDTO;
@@ -14,4 +15,9 @@ public class CompetitionLeaderboardDTO implements DTO
     public int adFrequencyRows;
     public int adStartRow;
     public List<PrizeDTO> prizes;
+
+    @JsonIgnore public int getPrizeSize()
+    {
+        return prizes == null ? 0 : prizes.size();
+    }
 }

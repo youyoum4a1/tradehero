@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/leaderboard_user_item_basic_info"
     style="@style/TH.ListItem.LB"
+    tools:context="com.tradehero.th.activities.DashboardActivity"
     >
 
   <TextView
@@ -77,15 +78,6 @@
         android:layout_height="wrap_content"
         style="@style/TH.UserROI"
         tools:text="+87%"
-        />
-
-    <TextView
-        android:id="@+id/lbmu_roi_annualized"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="5dp"
-        android:visibility="gone"
-        tools:text="(annualised: +1200%)"
         />
 
   </LinearLayout>

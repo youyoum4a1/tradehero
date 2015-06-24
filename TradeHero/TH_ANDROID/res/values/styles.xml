@@ -608,5 +608,13 @@
   <style name="TradeHero.ActionBar.Spinner" parent="TradeHero.ActionBar">
     <item name="android:background">@color/tradehero_blue</item>
   </style>
-  
+
+  <style name="TH.CompetitionPrize">
+    <item name="android:paddingRight">@dimen/margin_medium</item>
+    <item name="android:scaleType">fitCenter</item>
+    <item name="android:contentDescription">@null</item>
+    <item name="android:visibility">gone</item>
+    <item name="android:src">@drawable/icn_competition_prize</item>
+  </style>
+
 </resources>
