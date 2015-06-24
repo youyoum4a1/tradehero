@@ -576,13 +576,7 @@ abstract public class TimelineFragment extends DashboardFragment
                                 Timber.e(new Exception("Not handled " + userDiscussionAction), "");
                             }
                         },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable throwable)
-                            {
-                                Timber.e(throwable, "When registering user actions");
-                            }
-                        }));
+                        new TimberOnErrorAction("When registering user actions")));
     }
 
     //<editor-fold desc="UserProfileCompactViewHolder">
