@@ -5,6 +5,7 @@ import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -16,6 +17,7 @@ import android.media.ExifInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import com.tradehero.common.graphics.RotateTransformation;
@@ -339,6 +341,16 @@ public class GraphicUtil
         {
             view.setBackgroundDrawable(drawable);
         }
+    }
+
+    public static void setBackgroundColorFromAttribute(View view, int attribute)
+    {
+        TypedValue typedValue = new TypedValue();
+        int[] attrs = new int[] {attribute};
+        TypedArray array = view.getContext().obtainStyledAttributes(typedValue.data, attrs);
+        int color = array.getColor(0, Color.TRANSPARENT);
+        view.setBackgroundColor(color);
+        array.recycle();
     }
 
     public static void setEvenOddBackground(int position, View toSet)

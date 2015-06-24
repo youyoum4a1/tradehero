@@ -131,7 +131,7 @@ public class HeroManagerFragment extends DashboardFragment
         {
             addTab(resourceDTO);
         }
-        GraphicUtil.setBackground(mTabHost.getTabWidget(), getResources().getDrawable(R.drawable.bar_background));
+        GraphicUtil.setBackgroundColorFromAttribute(mTabHost.getTabWidget(), R.attr.slidingTabBackground);
         if (routedTabIndex != null)
         {
             mTabHost.setCurrentTab(routedTabIndex);

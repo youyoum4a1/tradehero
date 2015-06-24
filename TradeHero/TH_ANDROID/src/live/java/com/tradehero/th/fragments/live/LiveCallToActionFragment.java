@@ -5,7 +5,11 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.SignUpLiveActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import javax.inject.Inject;
@@ -22,6 +26,7 @@ public class LiveCallToActionFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
     }
 
     @Override public boolean shouldShowLiveTradingToggle()
@@ -36,5 +41,23 @@ public class LiveCallToActionFragment extends DashboardFragment
         {
             navigator.popFragment();
         }
+    }
+
+    @Override public void onDestroyView()
+    {
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
+    @OnClick(R.id.live_button_go_live)
+    public void onGoLiveButtonClicked(View v)
+    {
+        navigator.launchActivity(SignUpLiveActivity.class);
+    }
+
+    @OnClick(R.id.live_button_later)
+    public void onLaterButtonClicked(View v)
+    {
+        navigator.popFragment();
     }
 }

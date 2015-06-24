@@ -16,6 +16,13 @@
         android:name="com.jumio.netverify.sdk.activity.NetverifyActivity"
         android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
 
+    <activity
+        android:name="com.tradehero.th.activities.SignUpLiveActivity"
+        android:theme="@style/TradeHero.Live"
+        android:label="@string/live"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"/>
+
   </application>
 
 </manifest>

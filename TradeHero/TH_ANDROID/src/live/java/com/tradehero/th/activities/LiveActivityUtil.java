@@ -103,7 +103,7 @@ public class LiveActivityUtil
         }
         if (event.isFromUser && event.isLive && !(navigator.getCurrentFragment() instanceof LiveCallToActionFragment))
         {
-            //navigator.pushFragment(LiveCallToActionFragment.class);
+            navigator.pushFragment(LiveCallToActionFragment.class);
         }
     }
 

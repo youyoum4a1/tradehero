@@ -266,7 +266,7 @@ public class FollowerManagerFragment extends DashboardFragment
         {
             addTab(resourceDTO);
         }
-        GraphicUtil.setBackground(mTabHost.getTabWidget(), getResources().getDrawable(R.drawable.bar_background));
+        GraphicUtil.setBackgroundColorFromAttribute(mTabHost.getTabWidget(), R.attr.slidingTabBackground);
         mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
         {
             @Override public void onTabChanged(String tabId)

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <style name="TradeHero.Live"
+      parent="Base.TradeHero">
+    <item name="colorAccent">@color/tradehero_red_focused</item>
+    <item name="colorPrimary">@color/tradehero_red</item>
+    <item name="colorPrimaryDark">#D32F2F</item>
+    <item name="android:textColorHighlight">@color/tradehero_red</item>
+    <item name="android:textColorHighlightInverse">@color/tradehero_dark_red</item>
+    <item name="slidingTabBackground">@color/tradehero_dark_red</item>
+  </style>
+</resources>

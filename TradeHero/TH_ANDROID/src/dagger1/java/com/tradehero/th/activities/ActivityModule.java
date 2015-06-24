@@ -14,6 +14,9 @@ import java.util.Set;
 import javax.inject.Singleton;
 
 @Module(
+        includes = {
+                ActivityGameLiveModule.class,
+        },
         injects = {
                 AdminSettingsActivity.class,
                 AlertManagerActivity.class,
@@ -29,7 +32,6 @@ import javax.inject.Singleton;
                 StoreScreenActivity.class,
                 UpdateCenterActivity.class,
                 WXEntryActivity.class,
-                LiveActivityUtil.class,
         },
         staticInjections = {
         },

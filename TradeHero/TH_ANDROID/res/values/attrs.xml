@@ -189,4 +189,7 @@
     </attr>
   </declare-styleable>
 
+  <attr name="slidingTabBackground"
+      format="color" />
+
 </resources>
