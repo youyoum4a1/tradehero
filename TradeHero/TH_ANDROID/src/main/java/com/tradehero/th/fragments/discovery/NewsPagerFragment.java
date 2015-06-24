@@ -1,13 +1,8 @@
 package com.tradehero.th.fragments.discovery;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,12 +23,10 @@ public final class NewsPagerFragment extends Fragment
         return inflater.inflate(R.layout.discovery_news_pager, container, false);
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-
         newsSpinner.setAdapter(new NewsSpinnerAdapter(getActivity(), NewsType.values()));
     }
 
@@ -48,7 +41,7 @@ public final class NewsPagerFragment extends Fragment
     public void onNewsItemSelected(AdapterView<?> parent, View view, int position, long id)
     {
         Fragment f = NewsHeadlineFragment.newInstance(NewsType.values()[position]);
-        getChildFragmentManager().beginTransaction().replace(R.id.news_container, f).addToBackStack(null).commit();
+        getChildFragmentManager().beginTransaction().replace(R.id.news_container, f).addToBackStack(null).commitAllowingStateLoss();
     }
 
     class NewsSpinnerAdapter extends ArrayAdapter<NewsType>

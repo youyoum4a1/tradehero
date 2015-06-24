@@ -47,7 +47,7 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
             FragmentTransaction transaction = manager.beginTransaction();
             transaction
                     .replace(fragmentContentId, fragment)
-                    .commit();
+                    .commitAllowingStateLoss();
         }
     }
     //</editor-fold>

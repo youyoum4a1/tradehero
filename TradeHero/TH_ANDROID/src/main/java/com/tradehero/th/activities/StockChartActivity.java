@@ -28,7 +28,7 @@ public class StockChartActivity extends FragmentActivity
         ChartFragment fragment = new ChartFragment();
         fragment.setArguments(getIntent().getExtras().getBundle(ChartFragment.BUNDLE_KEY_ARGUMENTS));
         fragmentTransaction.add(R.id.stock_chart, fragment);
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     @Override public void inject(Object o)
