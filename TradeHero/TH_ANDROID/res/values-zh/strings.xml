@@ -103,7 +103,7 @@
     <string name="authentication_next">下一步</string>
     <string name="register_diaplay_name_hint">用户名（必填）</string>
     <string name="register_finish">完成注册</string>
-    <string name="register_error_account">亲，邮箱是不是写错啦？</string>
+    <string name="register_error_account">亲，账户是不是写错啦？</string>
     <string name="register_error_password">密码须为6-20位字母或数字</string>
     <string name="register_error_displayname">请输入您的用户名</string>
     <string name="take_photo">拍照</string>

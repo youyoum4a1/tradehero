@@ -1420,7 +1420,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
 
 
-        tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(quoteDetail.last));
+        if(quoteDetail.last !=null ) {
+            tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(quoteDetail.last));
+        }
         tvSecurityPrice.setTextColor(getResources().getColor(colorResId));
 
         tvSecurityDetailNum.setText(quoteDetail.getPriceDifferent());
