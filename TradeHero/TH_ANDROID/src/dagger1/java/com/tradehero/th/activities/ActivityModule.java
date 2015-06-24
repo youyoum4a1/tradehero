@@ -33,8 +33,6 @@ import javax.inject.Singleton;
                 UpdateCenterActivity.class,
                 WXEntryActivity.class,
         },
-        staticInjections = {
-        },
         complete = false,
         library = true
 )
@@ -51,6 +49,7 @@ public class ActivityModule
         requests.add(thBillingInteractor);
         return Collections.unmodifiableSet(requests);
     }
+
     @Provides(type = Provides.Type.SET_VALUES) @Singleton @SocialAuth
     Set<ActivityResultRequester> provideSocialAuthActivityResultRequesters(
             FacebookAuthenticationProvider facebookAuthenticationProvider,

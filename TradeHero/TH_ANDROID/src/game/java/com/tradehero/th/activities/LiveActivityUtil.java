@@ -4,7 +4,6 @@ import android.view.Menu;
 
 public class LiveActivityUtil
 {
-
     public LiveActivityUtil(DashboardActivity dashboardActivity)
     {
     }
