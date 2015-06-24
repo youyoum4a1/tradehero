@@ -49,15 +49,10 @@
       style="@style/TH.ListItem.Clickable"
       >
 
-    <ImageView android:id="@+id/gain_indicator"
-        android:layout_width="@dimen/size_1"
-        android:layout_height="@dimen/size_1"
-        android:src="@drawable/indicator_down"/>
     <ImageView
         android:id="@+id/stock_logo"
         android:layout_width="@dimen/medium_image_w_h"
         android:layout_height="@dimen/medium_image_w_h"
-        android:layout_marginLeft="@dimen/margin_small"
         android:scaleType="fitCenter"
         android:contentDescription="@null"
         tools:src="@drawable/square_sg"
@@ -103,9 +98,10 @@
           android:id="@+id/company_name"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:maxLines="1"
           android:layout_below="@id/stock_symbol"
           android:layout_marginTop="0dp"
+          android:maxLines="1"
+          android:ellipsize="end"
           style="@style/TH.Caption"
           tools:text="Zijin Mining Group Co., Ltd"
           />
@@ -117,6 +113,7 @@
           android:maxLines="1"
           android:layout_alignBaseline="@id/company_name"
           android:layout_alignRight="@id/position_last_amount"
+          android:layout_alignEnd="@id/position_last_amount"
           android:layout_alignParentEnd="false"
           android:layout_alignParentRight="false"
           android:layout_below="@id/position_last_amount"

@@ -26,6 +26,7 @@ import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.security.FxFlagContainer;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -99,7 +100,7 @@ public class PositionPartialTopView extends LinearLayout
         @ViewVisibilityValue public final int lastAmountHeaderVisibility;
         @NonNull public final CharSequence lastAmount;
 
-        public DTO(@NonNull Resources resources, @NonNull PositionDTO positionDTO, @NonNull SecurityCompactDTO securityCompactDTO)
+        public DTO(@NonNull Resources resources, @NonNull CurrentUserId currentUserId, @NonNull PositionDTO positionDTO, @NonNull SecurityCompactDTO securityCompactDTO)
         {
             this.positionDTO = positionDTO;
             this.securityCompactDTO = securityCompactDTO;
@@ -214,7 +215,8 @@ public class PositionPartialTopView extends LinearLayout
             {
                 shareCountHeader = resources.getString(R.string.position_share_count_header_fx);
                 if (positionDTO.positionStatus == PositionStatus.CLOSED
-                        || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED)
+                        || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED
+                        || currentUserId.get() != positionDTO.userId)
                 {
                     btnCloseVisibility = GONE;
                 }
@@ -250,33 +252,16 @@ public class PositionPartialTopView extends LinearLayout
             final Double unrealisedPLRefCcy = positionDTO.unrealizedPLRefCcy;
 
             //<editor-fold desc="Percent and Gain">
-            final Double gainPercent;
+            final Double gainPercent = positionDTO instanceof PositionInPeriodDTO && ((PositionInPeriodDTO) positionDTO).isProperInPeriod()
+                    ? ((PositionInPeriodDTO) positionDTO).getROIInPeriod()
+                    : positionDTO.getROISinceInception();
             if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
                 positionPercentVisibility = GONE;
                 positionPercent = "";
-                if (unrealisedPLRefCcy != null)
-                {
-                    if (positionDTO.positionStatus == PositionStatus.CLOSED
-                            || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED)
-                    {
-                        gainPercent = positionDTO.realizedPLRefCcy;
-                    }
-                    else
-                    {
-                        gainPercent = unrealisedPLRefCcy;
-                    }
-                }
-                else
-                {
-                    gainPercent = null;
-                }
             }
             else
             {
-                gainPercent = positionDTO instanceof PositionInPeriodDTO && ((PositionInPeriodDTO) positionDTO).isProperInPeriod()
-                        ? ((PositionInPeriodDTO) positionDTO).getROIInPeriod()
-                        : positionDTO.getROISinceInception();
                 positionPercentVisibility = VISIBLE;
                 positionPercent = gainPercent == null
                         ? na

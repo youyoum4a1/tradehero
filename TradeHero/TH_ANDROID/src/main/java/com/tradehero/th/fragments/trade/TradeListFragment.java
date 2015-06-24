@@ -25,7 +25,6 @@ import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOKey;
@@ -332,6 +331,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                                                 securityCompactDTO = scDTO;
                                                 List<Object> objects = TradeListItemAdapter.createObjects(
                                                         getResources(),
+                                                        currentUserId,
                                                         pDTO,
                                                         scDTO,
                                                         tradeId,
@@ -427,16 +427,12 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         else
         {
             Bundle args = new Bundle();
-            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-            if (applicablePortfolioId != null)
-            {
-                BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-            }
-            if (positionDTO != null && positionDTO.getOwnedPortfolioId() != null)
-            {
-                BuySellFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
-            }
-            BuySellFragment.putSecurityId(args, securityId);
+            AbstractBuySellFragment.putRequisite(
+                    args,
+                    new AbstractBuySellFragment.Requisite(
+                            securityId,
+                            positionDTO.getOwnedPortfolioId(),
+                            0)); // TODO better
             navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
         }
     }

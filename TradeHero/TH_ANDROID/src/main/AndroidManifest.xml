@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tradehero.th"
     android:installLocation="auto" >
 
@@ -30,6 +32,7 @@
     <application
         android:name=".base.THApp"
         android:allowBackup="true"
+        tools:replace="android:allowBackup"
         android:allowClearUserData="true"
         android:enabled="true"
         android:icon="@drawable/launcher"
@@ -40,7 +43,7 @@
             android:name=".activities.SplashActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/TradeHero.Splash" >
+            android:theme="@style/TradeHero.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

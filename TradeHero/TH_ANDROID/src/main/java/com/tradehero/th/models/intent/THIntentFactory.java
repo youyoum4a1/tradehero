@@ -12,12 +12,12 @@ abstract public class THIntentFactory<THIntentType extends THIntent>
 
     public static String getString(int resId)
     {
-        return THApp.getResourceString(resId);
+        return THApp.context().getString(resId);
     }
 
     public static int getInteger(int resId)
     {
-        return THApp.getResourceInteger(resId);
+        return THApp.context().getResources().getInteger(resId);
     }
 
     public boolean isHandlableIntent(Intent intent)

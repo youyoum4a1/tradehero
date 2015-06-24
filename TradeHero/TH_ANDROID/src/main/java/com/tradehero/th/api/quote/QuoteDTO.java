@@ -162,7 +162,7 @@ public class QuoteDTO implements RawResponseKeeper, Cloneable
         return askUSD / refCcyToUsdRate;
     }
 
-    @JsonIgnore public Double getBidRefCcy(PortfolioCompactDTO portfolioCompactDTO)
+    @JsonIgnore @Nullable public Double getBidRefCcy(@Nullable PortfolioCompactDTO portfolioCompactDTO)
     {
         if (portfolioCompactDTO == null)
         {
@@ -171,7 +171,7 @@ public class QuoteDTO implements RawResponseKeeper, Cloneable
         return getBidRefCcy(portfolioCompactDTO.getProperRefCcyToUsdRate());
     }
 
-    @JsonIgnore public Double getAskRefCcy(PortfolioCompactDTO portfolioCompactDTO)
+    @JsonIgnore @Nullable public Double getAskRefCcy(@Nullable PortfolioCompactDTO portfolioCompactDTO)
     {
         if (portfolioCompactDTO == null)
         {
@@ -180,7 +180,7 @@ public class QuoteDTO implements RawResponseKeeper, Cloneable
         return getAskRefCcy(portfolioCompactDTO.getProperRefCcyToUsdRate());
     }
 
-    @JsonIgnore public Double getPriceRefCcy(PortfolioCompactDTO portfolioCompactDTO, boolean isBuy)
+    @JsonIgnore @Nullable public Double getPriceRefCcy(@Nullable PortfolioCompactDTO portfolioCompactDTO, boolean isBuy)
     {
         return isBuy ? getAskRefCcy(portfolioCompactDTO) : getBidRefCcy(portfolioCompactDTO);
     }

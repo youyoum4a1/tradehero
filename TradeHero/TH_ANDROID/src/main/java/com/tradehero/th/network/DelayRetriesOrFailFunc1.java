@@ -32,7 +32,7 @@ public class DelayRetriesOrFailFunc1 implements Func1<Observable<? extends Throw
                     return Observable.error(error);
                 }
                 THToast.show(String.format(
-                        THApp.getResourceString(R.string.service_retry),
+                        THApp.context().getString(R.string.service_retry),
                         countDown,
                         new THException(error).getMessage()));
                 countDown--;

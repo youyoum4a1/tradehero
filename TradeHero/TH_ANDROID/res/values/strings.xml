@@ -287,7 +287,7 @@
   <string name="trending_tab_price">Price Action</string>
   <string name="trending_tab_volume">Unusual Volumes</string>
   <string name="trending_tab_all">All</string>
-  <string name="trending_tab_favorites">Favorites</string>
+  <string name="trending_tab_favorites">Favourites</string>
   <string name="my_fx">My FX</string>
   <string name="fx">FX</string>
   <string name="trade_fx">Trade FX</string>
@@ -326,4 +326,6 @@
   <string name="switch_to_live">Switch to Live</string>
   <string name="virtual">Virtual</string>
   <string name="live">Live</string>
+  <string name="go_live_span">Go %1$s !</string>
+  <string name="live_call_to_action_string">You are only 5 steps away from your own TradeHero LIVE account!\nGo LIVE now and get US$ 100.00 to start.</string>
 </resources>

@@ -94,7 +94,12 @@ public class SecurityPositionListFragment
 
     @NonNull private static UserBaseKey getUserBaseKey(@NonNull Bundle args)
     {
-        return new UserBaseKey(args.getBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE));
+        Bundle userBundle = args.getBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE);
+        if (userBundle == null)
+        {
+            throw new NullPointerException("ShownUser needs to be passed on");
+        }
+        return new UserBaseKey(userBundle);
     }
 
     public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
@@ -104,7 +109,12 @@ public class SecurityPositionListFragment
 
     @NonNull private static SecurityId getSecurityId(@NonNull Bundle args)
     {
-        return new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID));
+        Bundle securityBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID);
+        if (securityBundle == null)
+        {
+            throw new NullPointerException("SecurityId needs to be passed on");
+        }
+        return new SecurityId(securityBundle);
     }
     //</editor-fold>
 
@@ -262,7 +272,11 @@ public class SecurityPositionListFragment
                                 {
                                     for (PositionDTO positionDTO : positionDTOs)
                                     {
-                                        viewDtos.add(new PositionPartialTopView.DTO(getResources(), positionDTO, securityCompactDTO));
+                                        viewDtos.add(new PositionPartialTopView.DTO(
+                                                getResources(),
+                                                currentUserId,
+                                                positionDTO,
+                                                securityCompactDTO));
                                     }
                                 }
                                 return filterViewDTOs(viewDtos);

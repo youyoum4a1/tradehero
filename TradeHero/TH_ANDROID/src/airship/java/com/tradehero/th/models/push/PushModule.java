@@ -14,7 +14,6 @@ import javax.inject.Singleton;
                 UrbanAirshipPushModule.class,
         },
         injects = {
-                DefaultIntentReceiver.class,
         },
         complete = false,
         library = true
@@ -26,11 +25,6 @@ public class PushModule
     @Provides @Singleton PushNotificationManager providePushNotificationManager(UrbanAirshipPushNotificationManager urbanAirshipPushNotificationManager)
     {
         return urbanAirshipPushNotificationManager;
-    }
-
-    @Provides @Singleton THNotificationBuilder provideTHNotificationBuilder(CommonNotificationBuilder commonNotificationBuilder)
-    {
-        return commonNotificationBuilder;
     }
 
     @Provides @Singleton @MaxGroupNotifications IntPreference provideMaxGroupNotifications(@ForUser SharedPreferences sharedPreferences)

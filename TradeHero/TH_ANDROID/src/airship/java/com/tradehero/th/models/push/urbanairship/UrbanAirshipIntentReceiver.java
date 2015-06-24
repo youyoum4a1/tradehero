@@ -2,6 +2,7 @@ package com.tradehero.th.models.push.urbanairship;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 import com.urbanairship.push.BaseIntentReceiver;
 import com.urbanairship.push.PushMessage;
@@ -12,8 +13,7 @@ import timber.log.Timber;
 public class UrbanAirshipIntentReceiver extends BaseIntentReceiver
 {
     /**
-     * Key passed in the intent when a channel id has been assigned.
-     * The value is the channel id string, like "2dea130a-c5b8-46ad-b065-be6603050d28"
+     * Key passed in the intent when a channel id has been assigned. The value is the channel id string, like "2dea130a-c5b8-46ad-b065-be6603050d28"
      */
     private static final String KEY_CHANNEL_ID = "com.urbanairship.push.EXTRA_CHANNEL_ID";
 
@@ -21,9 +21,13 @@ public class UrbanAirshipIntentReceiver extends BaseIntentReceiver
     {
         super.onReceive(context, intent);
         List<String> extras = new ArrayList<>();
-        for (String key : intent.getExtras().keySet())
+        Bundle extrasBundle = intent.getExtras();
+        if (extrasBundle != null)
         {
-            extras.add(String.format("%s: %s", key, intent.getExtras().get(key)));
+            for (String key : extrasBundle.keySet())
+            {
+                extras.add(String.format("%s: %s", key, extrasBundle.get(key)));
+            }
         }
         Timber.e(new Exception("Just reporting"),
                 "UrbanAirshipIntentReceiver.onReceive intent %s, category: %s, keys: %s",

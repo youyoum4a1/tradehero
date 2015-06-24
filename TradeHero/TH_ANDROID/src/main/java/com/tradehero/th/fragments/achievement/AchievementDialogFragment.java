@@ -56,7 +56,10 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
     @Override protected void init()
     {
         super.init();
-        reportAnalytics(userAchievementDTO);
+        if (userAchievementDTO != null)
+        {
+            reportAnalytics(userAchievementDTO);
+        }
     }
 
     @Override protected void initView()
@@ -140,7 +143,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
                 .into(dollarEarned);
     }
 
-    private void reportAnalytics(UserAchievementDTO userAchievementDTOCopy)
+    private void reportAnalytics(@NonNull UserAchievementDTO userAchievementDTOCopy)
     {
         Map<String, String> collections = new HashMap<>();
         collections.put(AnalyticsConstants.Trigger, AnalyticsConstants.Clicked);

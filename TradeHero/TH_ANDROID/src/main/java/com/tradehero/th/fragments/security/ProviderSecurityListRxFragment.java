@@ -24,7 +24,7 @@ import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.CompetitionWebFragmentTHIntentPassedListener;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
@@ -198,13 +198,13 @@ public class ProviderSecurityListRxFragment
     {
         super.handleDtoClicked(clicked);
         Bundle args = new Bundle();
-        BuySellFragment.putSecurityId(args, clicked.getSecurityId());
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-        if (applicablePortfolioId != null)
-        {
-            BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-        }
-        BuySellFragment.putProviderId(args, providerId);
+        AbstractBuySellFragment.putRequisite(
+                args,
+                new AbstractBuySellFragment.Requisite(
+                        clicked.getSecurityId(),
+                        applicablePortfolioId,
+                        0)); // TODO proper
         navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(clicked), args);
     }
 

@@ -15,7 +15,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -24,21 +23,22 @@ import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
 import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
+import com.tradehero.th.fragments.base.LiveFragmentUtil;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
+import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
@@ -50,21 +50,23 @@ import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import java.util.Map;
 import javax.inject.Inject;
-import rx.Observer;
-import rx.android.app.AppObservable;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import timber.log.Timber;
+import rx.functions.Func1;
+import rx.functions.Func2;
+import rx.functions.Func3;
 
 @Routable({
         "stock-security/:exchange/:symbol"
 })
-public class BuySellStockFragment extends BuySellFragment
+public class BuySellStockFragment extends AbstractBuySellFragment
 {
     @InjectView(R.id.buy_price) protected TextView mBuyPrice;
     @InjectView(R.id.sell_price) protected TextView mSellPrice;
     @InjectView(R.id.vprice_as_of) protected TextView mVPriceAsOf;
     @InjectView(R.id.tabs) protected SlidingTabLayout mSlidingTabLayout;
+    @InjectView(R.id.stock_details_header) ViewGroup stockDetailHeader;
 
     @InjectView(R.id.chart_frame) protected RelativeLayout mInfoFrame;
     @InjectView(R.id.trade_bottom_pager) protected ViewPager mBottomViewPager;
@@ -78,23 +80,12 @@ public class BuySellStockFragment extends BuySellFragment
     @RouteProperty("exchange") String exchange;
     @RouteProperty("symbol") String symbol;
 
-    private PortfolioCompactDTO defaultPortfolio;
-
     @Nullable protected WatchlistPositionDTOList watchedList;
 
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
     @Nullable private Map<SecurityId, AlertCompactDTO> mappedAlerts;
 
     protected StockDetailActionBarRelativeLayout actionBarLayout;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        if (securityId == null)
-        {
-            securityId = new SecurityId(exchange, symbol);
-        }
-    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -112,9 +103,28 @@ public class BuySellStockFragment extends BuySellFragment
     @Override public void onStart()
     {
         super.onStart();
-        analytics.fireEvent(new ChartTimeEvent(securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
-        fetchAlertCompactList();
-        fetchWatchlist();
+        analytics.fireEvent(new ChartTimeEvent(requisite.securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
+
+        onStopSubscriptions.add(Observable.combineLatest(
+                getSecurityObservable().observeOn(AndroidSchedulers.mainThread()),
+                getQuoteObservable().observeOn(AndroidSchedulers.mainThread()),
+                new Func2<SecurityCompactDTO, QuoteDTO, Boolean>()
+                {
+                    @Override public Boolean call(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull QuoteDTO quoteDTO)
+                    {
+                        displayAsOf(securityCompactDTO, quoteDTO);
+                        return true;
+                    }
+                })
+                .subscribe(
+                        new Action1<Boolean>()
+                        {
+                            @Override public void call(Boolean aBoolean)
+                            {
+                                // Nothing to do
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to update AsOf")));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -125,8 +135,28 @@ public class BuySellStockFragment extends BuySellFragment
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
 
-        actionBarLayout = (StockDetailActionBarRelativeLayout) LayoutInflater.from(actionBar.getThemedContext())
-                .inflate(R.layout.stock_detail_custom_actionbar, null);
+        final StockDetailActionBarRelativeLayout actionBarLayout =
+                (StockDetailActionBarRelativeLayout) LayoutInflater.from(actionBar.getThemedContext())
+                        .inflate(R.layout.stock_detail_custom_actionbar, null);
+        this.actionBarLayout = actionBarLayout;
+        onDestroyOptionsMenuSubscriptions.add(getQuoteObservable().observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<QuoteDTO, Observable<Boolean>>()
+                {
+                    @Override public Observable<Boolean> call(@NonNull QuoteDTO quoteDTO)
+                    {
+                        return actionBarLayout.circleProgressBar.start(getMillisecondQuoteRefresh());
+                    }
+                })
+                .subscribe(
+                        new Action1<Boolean>()
+                        {
+                            @Override public void call(Boolean aBoolean)
+                            {
+                                // Nothing to do
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to listen to end of animation")));
+
         onDestroyOptionsMenuSubscriptions.add(actionBarLayout.getUserActionObservable()
                 .subscribe(
                         new Action1<StockActionBarRelativeLayout.UserAction>()
@@ -152,8 +182,45 @@ public class BuySellStockFragment extends BuySellFragment
                             }
                         },
                         new ToastAndLogOnErrorAction("Failed to handle action bar")));
+
+        onDestroyOptionsMenuSubscriptions.add(Observable.combineLatest(
+                getSecurityObservable().startWith(securityCompactDTO).observeOn(AndroidSchedulers.mainThread()),
+                getWatchlistObservable().startWith(watchedList).observeOn(AndroidSchedulers.mainThread()),
+                getAlertsObservable().startWith(mappedAlerts).observeOn(AndroidSchedulers.mainThread()),
+                new Func3<SecurityCompactDTO, WatchlistPositionDTOList, Map<SecurityId, AlertCompactDTO>, Boolean>()
+                {
+                    @Override public Boolean call(
+                            @Nullable SecurityCompactDTO securityCompactDTO,
+                            @Nullable WatchlistPositionDTOList watchlistPositionDTOs,
+                            @Nullable Map<SecurityId, AlertCompactDTO> alertMap)
+                    {
+                        actionBarLayout.display(new StockDetailActionBarRelativeLayout.Requisite(
+                                requisite.securityId,
+                                securityCompactDTO,
+                                watchlistPositionDTOs,
+                                alertMap));
+                        return true;
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<Boolean>()
+                        {
+                            @Override public void call(Boolean displayedActionBar)
+                            {
+                                // Nothing to do
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to fetch list of watch list items")));
+
         actionBar.setCustomView(actionBarLayout);
-        displayActionBar();
+    }
+
+    @Override public void onLiveTradingChanged(boolean isLive)
+    {
+        super.onLiveTradingChanged(isLive);
+        LiveFragmentUtil.setDarkBackgroundColor(isLive, mSlidingTabLayout);
+        LiveFragmentUtil.setBackgroundColor(isLive, stockDetailHeader);
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -169,178 +236,110 @@ public class BuySellStockFragment extends BuySellFragment
         super.onDestroyView();
     }
 
-    public void fetchAlertCompactList()
+    @NonNull @Override protected Observable<PortfolioCompactDTO> getDefaultPortfolio()
     {
-        unsubscribe(alertCompactListCacheSubscription);
-        alertCompactListCacheSubscription = AppObservable.bindFragment(
-                this,
-                alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Map<SecurityId, AlertCompactDTO>>()
+        return portfolioCompactListCache.get(currentUserId.toUserBaseKey())
+                .map(new Func1<Pair<UserBaseKey, PortfolioCompactDTOList>, PortfolioCompactDTO>()
                 {
-                    @Override public void onCompleted()
+                    @Override public PortfolioCompactDTO call(Pair<UserBaseKey, PortfolioCompactDTOList> userBaseKeyPortfolioCompactDTOListPair)
                     {
+                        PortfolioCompactDTO found = userBaseKeyPortfolioCompactDTOListPair.second.getDefaultPortfolio();
+                        defaultPortfolio = found;
+                        return found;
                     }
-
-                    @Override public void onError(Throwable e)
-                    {
-                        Timber.e(e, "There was an error getting the alert ids");
-                        displayActionBar();
-                    }
-
-                    @Override public void onNext(Map<SecurityId, AlertCompactDTO> securityIdAlertIdMap)
-                    {
-                        mappedAlerts = securityIdAlertIdMap;
-                        displayActionBar();
-                    }
-                });
+                })
+                .share();
     }
 
-    public void fetchWatchlist()
+    @Override protected void linkWith(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
-                        this,
-                        userWatchlistPositionCache.get(currentUserId.toUserBaseKey()))
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .take(1)
-                        .subscribe(new Observer<Pair<UserBaseKey, WatchlistPositionDTOList>>()
-                        {
-                            @Override public void onCompleted()
-                            {
-                            }
-
-                            @Override public void onError(Throwable e)
-                            {
-                                Timber.e(e, "Failed to fetch list of watch list items");
-                                THToast.show(R.string.error_fetch_portfolio_list_info);
-                            }
-
-                            @Override public void onNext(Pair<UserBaseKey, WatchlistPositionDTOList> pair)
-                            {
-                                linkWith(pair.second);
-                            }
-                        })
-        );
+        // Nothing to do
     }
 
-    protected void linkWith(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
+    @NonNull @Override protected Requisite createRequisite()
     {
-        defaultPortfolio = portfolioCompactDTOs.getDefaultPortfolio();
-        addDefaultMainPortfolioIfShould();
-        setInitialSellQuantityIfCan();
-        showCloseDialog();
-    }
-
-    protected void addDefaultMainPortfolioIfShould()
-    {
-        if (defaultPortfolio != null && securityCompactDTO != null && !(securityCompactDTO instanceof WarrantDTO))
+        if (exchange != null && symbol != null)
         {
-            mSelectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(), defaultPortfolio));
+            return new Requisite(new SecurityId(exchange, symbol), getArguments());
         }
+        return super.createRequisite();
     }
 
-    @Override protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
+    @NonNull protected Observable<Map<SecurityId, AlertCompactDTO>> getAlertsObservable()
     {
-        super.linkWithApplicable(purchaseApplicablePortfolioId, andDisplay);
+        return alertCompactListCache.getOneSecurityMappedAlerts(currentUserId.toUserBaseKey())
+                .map(new Func1<Map<SecurityId, AlertCompactDTO>, Map<SecurityId, AlertCompactDTO>>()
+                {
+                    @Override public Map<SecurityId, AlertCompactDTO> call(Map<SecurityId, AlertCompactDTO> map)
+                    {
+                        mappedAlerts = map;
+                        return map;
+                    }
+                })
+                .share();
+    }
+
+    @NonNull protected Observable<WatchlistPositionDTOList> getWatchlistObservable()
+    {
+        return userWatchlistPositionCache.getOne(currentUserId.toUserBaseKey())
+                .map(new Func1<Pair<UserBaseKey, WatchlistPositionDTOList>, WatchlistPositionDTOList>()
+                {
+                    @Override
+                    public WatchlistPositionDTOList call(@NonNull Pair<UserBaseKey, WatchlistPositionDTOList> pair)
+                    {
+                        watchedList = pair.second;
+                        return pair.second;
+                    }
+                })
+                .share();
+    }
+
+    @Override protected void linkWith(@NonNull OwnedPortfolioId purchaseApplicablePortfolioId)
+    {
         if (bottomViewPagerAdapter == null)
         {
             bottomViewPagerAdapter = new BuySellBottomStockPagerAdapter(
                     getActivity(),
                     this.getChildFragmentManager(),
                     purchaseApplicablePortfolioId,
-                    securityId,
+                    requisite.securityId,
                     currentUserId.toUserBaseKey());
             mBottomViewPager.setAdapter(bottomViewPagerAdapter);
             mSlidingTabLayout.setViewPager(mBottomViewPager);
         }
     }
 
-    protected void linkWith(WatchlistPositionDTOList watchedList)
-    {
-        this.watchedList = watchedList;
-        displayActionBar();
-    }
-
-    @Override public void linkWith(@NonNull SecurityCompactDTO securityCompactDTO, boolean andDisplay)
-    {
-        super.linkWith(securityCompactDTO, andDisplay);
-        addDefaultMainPortfolioIfShould();
-        if (andDisplay)
-        {
-            //loadStockLogo();
-            displayAsOf();
-        }
-
-        displayActionBar();
-    }
-
-    protected void displayActionBar()
-    {
-        if (actionBarLayout != null)
-        {
-            actionBarLayout.display(new StockDetailActionBarRelativeLayout.Requisite(
-                    securityId,
-                    securityCompactDTO,
-                    watchedList,
-                    mappedAlerts));
-        }
-    }
-
-    @Override protected void linkWith(QuoteDTO quoteDTO)
-    {
-        super.linkWith(quoteDTO);
-        onStopSubscriptions.add(
-                actionBarLayout.circleProgressBar.start(getMillisecondQuoteRefresh())
-                        .subscribe(
-                                new Action1<Boolean>()
-                                {
-                                    @Override public void call(Boolean aBoolean)
-                                    {
-                                        // Nothing to do, but we want to then request a new quote
-                                    }
-                                },
-                                new TimberOnErrorAction("Failed to listen to end of animation")));
-        displayAsOf();
-    }
-
-    @Override public void displayBuySellPrice()
+    @Override public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull QuoteDTO quoteDTO)
     {
         if (mBuyPrice != null)
         {
-            String display = securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay;
+            String display = securityCompactDTO.currencyDisplay;
             String bPrice;
             String sPrice;
             THSignedNumber bthSignedNumber;
             THSignedNumber sthSignedNumber;
-            if (quoteDTO == null)
+            if (quoteDTO.ask == null)
             {
-                return;
+                bPrice = getString(R.string.buy_sell_ask_price_not_available);
             }
             else
             {
-                if (quoteDTO.ask == null)
-                {
-                    bPrice = getString(R.string.buy_sell_ask_price_not_available);
-                }
-                else
-                {
-                    bthSignedNumber = THSignedNumber.builder(quoteDTO.ask)
-                            .withOutSign()
-                            .build();
-                    bPrice = bthSignedNumber.toString();
-                }
+                bthSignedNumber = THSignedNumber.builder(quoteDTO.ask)
+                        .withOutSign()
+                        .build();
+                bPrice = bthSignedNumber.toString();
+            }
 
-                if (quoteDTO.bid == null)
-                {
-                    sPrice = getString(R.string.buy_sell_bid_price_not_available);
-                }
-                else
-                {
-                    sthSignedNumber = THSignedNumber.builder(quoteDTO.bid)
-                            .withOutSign()
-                            .build();
-                    sPrice = sthSignedNumber.toString();
-                }
+            if (quoteDTO.bid == null)
+            {
+                sPrice = getString(R.string.buy_sell_bid_price_not_available);
+            }
+            else
+            {
+                sthSignedNumber = THSignedNumber.builder(quoteDTO.bid)
+                        .withOutSign()
+                        .build();
+                sPrice = sthSignedNumber.toString();
             }
             String buyPriceText = getString(R.string.buy_sell_button_buy, display, bPrice);
             String sellPriceText = getString(R.string.buy_sell_button_sell, display, sPrice);
@@ -351,17 +350,16 @@ public class BuySellStockFragment extends BuySellFragment
         displayStockRoi();
     }
 
-    public void displayAsOf()
+    public void displayAsOf(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull QuoteDTO quoteDTO)
     {
         if (mVPriceAsOf != null)
         {
             String text;
-            if (quoteDTO != null && quoteDTO.asOfUtc != null)
+            if (quoteDTO.asOfUtc != null)
             {
                 text = DateUtils.getFormattedDate(getResources(), quoteDTO.asOfUtc);
             }
-            else if (securityCompactDTO != null
-                    && securityCompactDTO.lastPriceDateAndTimeUtc != null)
+            else if (securityCompactDTO.lastPriceDateAndTimeUtc != null)
             {
                 text = DateUtils.getFormattedDate(getResources(), securityCompactDTO.lastPriceDateAndTimeUtc);
             }
@@ -374,21 +372,23 @@ public class BuySellStockFragment extends BuySellFragment
         }
     }
 
-    @Override protected boolean getSupportSell()
+    @NonNull @Override protected Observable<Boolean> getSupportSell()
     {
-        boolean supportSell;
-        if (positionDTOList == null
-                || positionDTOList.size() == 0
-                || purchaseApplicableOwnedPortfolioId == null)
-        {
-            supportSell = false;
-        }
-        else
-        {
-            Integer maxSellableShares = getMaxSellableShares();
-            supportSell = maxSellableShares != null && maxSellableShares > 0;
-        }
-        return supportSell;
+        return Observable.combineLatest(
+                getPortfolioCompactObservable(),
+                getQuoteObservable(),
+                getCloseablePositionObservable(),
+                new Func3<PortfolioCompactDTO, QuoteDTO, PositionDTO, Boolean>()
+                {
+                    @Override public Boolean call(@NonNull PortfolioCompactDTO portfolioCompactDTO,
+                            @NonNull QuoteDTO quoteDTO,
+                            @Nullable PositionDTO closeablePositionDTO)
+                    {
+                        Integer max = getMaxSellableShares(portfolioCompactDTO, quoteDTO, closeablePositionDTO);
+                        return max != null && max > 0;
+                    }
+                }
+        );
     }
 
     protected void handleAddToWatchlistRequested(@NonNull StockActionBarRelativeLayout.WatchlistUserAction userAction)
@@ -425,13 +425,20 @@ public class BuySellStockFragment extends BuySellFragment
 
     @Override protected void handleBuySellButtonsClicked(View view)
     {
-        trackBuyClickEvent();
+        boolean isTransactionTypeBuy;
+        switch (view.getId())
+        {
+            case R.id.btn_buy:
+                isTransactionTypeBuy = true;
+                break;
+            case R.id.btn_sell:
+                isTransactionTypeBuy = false;
+                break;
+            default:
+                throw new IllegalArgumentException("Unhandled button " + view.getId());
+        }
+        analytics.fireEvent(new BuySellEvent(isTransactionTypeBuy, requisite.securityId));
         super.handleBuySellButtonsClicked(view);
-    }
-
-    private void trackBuyClickEvent()
-    {
-        analytics.fireEvent(new BuySellEvent(isTransactionTypeBuy, securityId));
     }
 
     private void displayStockRoi()

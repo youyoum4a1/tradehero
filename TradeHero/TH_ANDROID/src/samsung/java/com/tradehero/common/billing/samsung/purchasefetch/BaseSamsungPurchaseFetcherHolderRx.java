@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.samsung.purchasefetch;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.purchasefetch.BaseBillingPurchaseFetcherHolderRx;
@@ -30,7 +31,7 @@ abstract public class BaseSamsungPurchaseFetcherHolderRx<
     @NonNull @Override abstract protected SamsungPurchaseFetcherRx<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType> createFetcher(
             int requestCode);
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
         // Nothing to do
     }

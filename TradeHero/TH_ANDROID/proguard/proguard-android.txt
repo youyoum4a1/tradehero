@@ -224,3 +224,7 @@
 # For Google Play Service <--
 
 -keep class com.google.android.gms.tagmanager.**  { *; }
+
+# Required by Jumio
+-keep class com.jumio.** { *; }
+-keep class jumiomobile.** { *; }

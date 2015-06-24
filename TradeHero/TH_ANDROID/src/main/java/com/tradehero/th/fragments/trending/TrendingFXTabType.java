@@ -25,4 +25,8 @@ enum TrendingFXTabType
     }
     //</editor-fold>
 
+    @NonNull public static TrendingFXTabType getDefault()
+    {
+        return TrendingFXTabType.FX;
+    }
 }

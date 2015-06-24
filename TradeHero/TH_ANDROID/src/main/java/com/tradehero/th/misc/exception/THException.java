@@ -83,8 +83,8 @@ public class THException extends Exception
                     }
                     this.code = ExceptionCode.UnknownError;
                     String errorMessage = dto != null
-                            ? THApp.getResourceString(R.string.server_response) + dto.message
-                            : THApp.getResourceString(R.string.error_unknown);
+                            ? THApp.context().getString(R.string.server_response) + dto.message
+                            : THApp.context().getString(R.string.error_unknown);
                     return super.initCause(new Exception(errorMessage));
                 }
             }

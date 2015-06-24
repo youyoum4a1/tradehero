@@ -51,7 +51,7 @@ public class THToast
 
     public static void show(int resourceId)
     {
-        show(THApp.getResourceString(resourceId));
+        show(THApp.context().getString(resourceId));
     }
 
     public static void show(THException ex)
@@ -86,7 +86,7 @@ public class THToast
 
     public static void post(View view, final int resourceId)
     {
-        post(view, THApp.getResourceString(resourceId));
+        post(view, THApp.context().getString(resourceId));
     }
 
     public static void post(View view, final THException ex)

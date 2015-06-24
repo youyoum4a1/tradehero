@@ -1,8 +1,8 @@
 package com.tradehero.th.utils;
 
 import android.support.annotation.ColorRes;
-import com.tradehero.common.application.PApplication;
 import com.tradehero.th.R;
+import com.tradehero.th.base.THApp;
 
 public class THColorUtils
 {
@@ -11,7 +11,7 @@ public class THColorUtils
 
     public static int getProperColorForNumber(float percentage)
     {
-        return PApplication.context().getResources().getColor(getColorResourceIdForNumber(percentage));
+        return THApp.context().getResources().getColor(getColorResourceIdForNumber(percentage));
     }
 
     @ColorRes public static int getColorResourceIdForNumber(double n)

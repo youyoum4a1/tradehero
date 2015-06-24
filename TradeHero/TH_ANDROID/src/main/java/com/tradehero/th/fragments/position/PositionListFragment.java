@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.position;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,12 +15,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
 import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.rx.PairGetSecond;
+import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
@@ -63,7 +69,6 @@ import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogRxUtil;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.trade.StockActionBarRelativeLayout;
@@ -148,6 +153,7 @@ public class PositionListFragment
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
     @InjectView(R.id.position_recycler_view) RecyclerView positionListView;
     @InjectView(R.id.btn_help) ImageView btnHelp;
+    @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
 
     @InjectRoute UserBaseKey injectedUserBaseKey;
     @InjectRoute PortfolioId injectedPortfolioId;
@@ -156,10 +162,9 @@ public class PositionListFragment
     protected UserBaseKey shownUser;
     private TabbedPositionListFragment.TabType positionType;
 
-    private View inflatedHeader;
     private PortfolioHeaderView portfolioHeaderView;
 
-    @Nullable protected UserProfileDTO userProfileDTO;
+    @Nullable protected UserProfileDTO shownUserProfileDTO;
     @Nullable protected PortfolioDTO portfolioDTO;
     protected List<Object> viewDTOs;
 
@@ -189,7 +194,12 @@ public class PositionListFragment
 
     @NonNull private static UserBaseKey getUserBaseKey(@NonNull Bundle args)
     {
-        return new UserBaseKey(args.getBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE));
+        Bundle userBundle = args.getBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE);
+        if (userBundle == null)
+        {
+            throw new NullPointerException("ShownUser needs to be passed on");
+        }
+        return new UserBaseKey(userBundle);
     }
 
     public static void putPositionType(@NonNull Bundle args, TabbedPositionListFragment.TabType positionType)
@@ -291,11 +301,7 @@ public class PositionListFragment
             if (portfolioDTO != null && portfolioDTO.assetClass != null)
             {
                 TrendingMainFragment.putAssetClass(args, portfolioDTO.assetClass);
-                if (portfolioDTO.assetClass != null)
-                {
-                    TrendingMainFragment.setLastType(portfolioDTO.assetClass);
-                }
-                TrendingMainFragment.setLastPosition(1);
+                TrendingMainFragment.setLastType(portfolioDTO.assetClass);
             }
             navigator.get().pushFragment(TrendingMainFragment.class, args);
         }
@@ -328,8 +334,8 @@ public class PositionListFragment
                             @NonNull Pair<UserProfileDTO, PortfolioHeaderView> profileAndHeaderPair,
                             @NonNull List<Pair<PositionDTO, SecurityCompactDTO>> pairs)
                     {
-                        //Translate to 0 to restore position
-                        inflatedHeader.animate().translationY(0f).start();
+                        //TODO Translate to 0 to restore position
+                        //inflatedHeader.animate().translationY(0f).start();
                         return profileAndHeaderPair.second;
                     }
                 })
@@ -485,9 +491,9 @@ public class PositionListFragment
         {
             pushSecuritiesFragment();
         }
-        else if (view instanceof PositionLockedView && userProfileDTO != null)
+        else if (view instanceof PositionLockedView && shownUserProfileDTO != null)
         {
-            onStopSubscriptions.add(showFollowDialog(userProfileDTO)
+            onStopSubscriptions.add(showFollowDialog(shownUserProfileDTO)
                     .subscribe(
                             Actions.empty(), // TODO ?
                             new Action1<Throwable>()
@@ -555,11 +561,12 @@ public class PositionListFragment
     {
         //noinspection unchecked
         return userInteractorRx.purchaseAndPremiumFollowAndClear(heroId)
-                .map(new Func1<PurchaseResult, UserProfileDTO>()
+                .flatMap(new Func1<PurchaseResult, Observable<UserProfileDTO>>()
                 {
-                    @Override public UserProfileDTO call(PurchaseResult result)
+                    @Override public Observable<UserProfileDTO> call(PurchaseResult result)
                     {
-                        return userProfileDTO;
+                        return userProfileCache.getOne(currentUserId.toUserBaseKey())
+                                .map(new PairGetSecond<UserBaseKey, UserProfileDTO>());
                     }
                 });
     }
@@ -647,7 +654,7 @@ public class PositionListFragment
                                             .setCancelable(true)
                                             .setCanceledOnTouchOutside(true)
                                             .setPositiveButton(
-                                                    isClosed != null && isClosed
+                                                    (isClosed != null && isClosed) || !currentUserId.toUserBaseKey().equals(shownUser)
                                                             ? null
                                                             : getString(R.string.position_close_position_action))
                                             .setNegativeButton(R.string.timeline_trade)
@@ -738,12 +745,24 @@ public class PositionListFragment
             @NonNull PositionDTO positionDTO)
     {
         Bundle args = new Bundle();
-        if (andClose && positionDTO.shares != null)
+        if (securityCompactDTO instanceof FxSecurityCompactDTO)
         {
-            BuySellFragment.putCloseAttribute(args, positionDTO.shares);
+            FXMainFragment.putRequisite(
+                    args,
+                    new FXMainFragment.Requisite(
+                            securityCompactDTO.getSecurityId(),
+                            positionDTO.getOwnedPortfolioId(),
+                            andClose && positionDTO.shares != null ? positionDTO.shares : 0));
         }
-        BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-        BuySellFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
+        else
+        {
+            BuySellStockFragment.putRequisite(
+                    args,
+                    new BuySellStockFragment.Requisite(
+                            securityCompactDTO.getSecurityId(),
+                            positionDTO.getOwnedPortfolioId(),
+                            andClose && positionDTO.shares != null ? positionDTO.shares : 0));
+        }
         navigator.get().pushFragment(
                 securityCompactDTO instanceof FxSecurityCompactDTO
                         ? FXMainFragment.class
@@ -781,7 +800,7 @@ public class PositionListFragment
                     @Override public UserProfileDTO call(Pair<UserBaseKey, UserProfileDTO> pair)
                     {
                         UserProfileDTO shownProfile = pair.second;
-                        userProfileDTO = shownProfile;
+                        shownUserProfileDTO = shownProfile;
                         positionItemAdapter.linkWith(shownProfile);
                         return shownProfile;
                     }
@@ -823,8 +842,6 @@ public class PositionListFragment
         this.portfolioDTO = portfolioDTO;
         displayActionBarTitle(portfolioDTO);
         showPrettyReviewAndInvite(portfolioDTO);
-        getPortfolioHeaderView(portfolioDTO);
-        portfolioHeaderView.linkWith(portfolioDTO);
         if (portfolioDTO.assetClass == AssetClass.FX)
         {
             btnHelp.setVisibility(View.VISIBLE);
@@ -864,9 +881,41 @@ public class PositionListFragment
         {
             // portfolio header
             int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);
-            inflatedHeader = LayoutInflater.from(getActivity()).inflate(headerLayoutId, null);
-            portfolioHeaderView = (PortfolioHeaderView) inflatedHeader;
-            //positionListView.addHeaderView(inflatedHeader, null, false);
+            headerStub.setLayoutResource(headerLayoutId);
+            final View inflatedView = headerStub.inflate();
+            portfolioHeaderView = (PortfolioHeaderView) inflatedView;
+            portfolioHeaderView.linkWith(shownUserProfileDTO);
+            portfolioHeaderView.linkWith(portfolioCompactDTO);
+
+            ViewTreeObserver observer = inflatedView.getViewTreeObserver();
+            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
+            {
+                @SuppressLint("NewApi")
+                @Override public void onGlobalLayout()
+                {
+                    if (SDKUtils.isJellyBeanOrHigher())
+                    {
+                        inflatedView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                    else
+                    {
+                        inflatedView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                    int headerHeight = inflatedView.getMeasuredHeight();
+                    positionListView.setPadding(
+                            positionListView.getPaddingLeft(),
+                            headerHeight,
+                            positionListView.getPaddingRight(),
+                            positionListView.getPaddingBottom());
+
+                    positionListView.addOnScrollListener(fragmentElements.get().getRecyclerViewScrollListener());
+                    positionListView.addOnScrollListener(new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.HEADER)
+                                    .header(inflatedView)
+                                    .minHeaderTranslation(-headerHeight)
+                                    .build()
+                    );
+                }
+            });
         }
         else
         {
@@ -899,6 +948,7 @@ public class PositionListFragment
                         return pairObservable.toList();
                     }
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(new Action1<Throwable>()
                 {
                     @Override public void call(Throwable throwable)
@@ -912,6 +962,7 @@ public class PositionListFragment
                         }
                     }
                 })
+                .observeOn(Schedulers.computation())
                 .flatMap(new Func1<List<Pair<PositionDTO, SecurityCompactDTO>>, Observable<List<Pair<PositionDTO, SecurityCompactDTO>>>>()
                 {
                     @Override public Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> call(
@@ -926,7 +977,11 @@ public class PositionListFragment
                             }
                             else
                             {
-                                adapterObjects.add(new PositionPartialTopView.DTO(getResources(), pair.first, pair.second));
+                                adapterObjects.add(new PositionPartialTopView.DTO(
+                                        getResources(),
+                                        currentUserId,
+                                        pair.first,
+                                        pair.second));
                             }
                         }
                         return Observable.just(adapterObjects)

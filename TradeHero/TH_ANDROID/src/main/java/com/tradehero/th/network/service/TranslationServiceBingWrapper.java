@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 @Singleton public class TranslationServiceBingWrapper
 {
@@ -31,6 +32,11 @@ import rx.functions.Func1;
                 {
                     @Override public BingTranslationResult call(String translated)
                     {
+                        if (translated.startsWith("TranslateApiException"))
+                        {
+                            Timber.e(new RuntimeException(), translated);
+                            throw new RuntimeException(translated);
+                        }
                         return new BingTranslationResult(from, to, translated);
                     }
                 });

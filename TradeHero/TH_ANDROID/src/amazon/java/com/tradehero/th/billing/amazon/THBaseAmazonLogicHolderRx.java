@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.amazon;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
@@ -139,7 +140,7 @@ public class THBaseAmazonLogicHolderRx
         return purchaseConsumerHolder.get(requestCode, purchase);
     }
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
         // Nothing to do
     }

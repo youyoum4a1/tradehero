@@ -29,7 +29,6 @@ import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.portfolio.AssetClass;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.key.SecurityListType;
@@ -44,6 +43,7 @@ import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
+import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerIconAdapter;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
@@ -168,10 +168,10 @@ public class TrendingStockFragment extends TrendingBaseFragment
         inflater.inflate(R.menu.search_menu, menu);
 
         exchangeMenu = menu.findItem(R.id.btn_exchange);
-        View updateCenterIcon = exchangeMenu.getActionView();
-        if (updateCenterIcon != null)
+        View actionView = exchangeMenu.getActionView();
+        if (actionView != null)
         {
-            mExchangeSelection = (ExchangeSpinner) updateCenterIcon.findViewById(R.id.exchange_selection_menu);
+            mExchangeSelection = (ExchangeSpinner) actionView.findViewById(R.id.exchange_selection_menu);
             mExchangeSelection.setAdapter(exchangeAdapter);
             mExchangeSelection.setSelectionById(preferredExchangeMarket.get());
             mExchangeSelection.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -295,8 +295,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     protected void setExchangeByCode(@NonNull Integer exchangeById)
     {
-        THToast.show("setting " + exchangeById);
         this.routedExchangeById = exchangeById;
+        setUpFilterSelectorView();
     }
 
     private void fetchUserProfile()
@@ -620,14 +620,12 @@ public class TrendingStockFragment extends TrendingBaseFragment
         analytics.fireEvent(new TrendingStockEvent(securityCompactDTO.getSecurityId()));
 
         Bundle args = new Bundle();
-        BuySellStockFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-
-        if (ownedPortfolioId != null)
-        {
-            BuySellStockFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        }
+        BuySellStockFragment.putRequisite(
+                args,
+                new AbstractBuySellFragment.Requisite(
+                        securityCompactDTO.getSecurityId(),
+                        getApplicablePortfolioId(),
+                        0)); // TODO better
 
         navigator.get().pushFragment(BuySellStockFragment.class, args);
     }

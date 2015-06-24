@@ -93,6 +93,10 @@ public class GuideAuthenticationFragment extends Fragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        if (navigator == null)
+        {
+            ((Injector) getActivity()).inject(this);
+        }
         deepLink = getDeepLink(getArguments());
     }
 

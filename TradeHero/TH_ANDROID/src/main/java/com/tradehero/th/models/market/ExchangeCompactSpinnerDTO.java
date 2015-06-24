@@ -14,7 +14,7 @@ import timber.log.Timber;
 
 public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements CharSequence
 {
-    public static final String ALL_EXCHANGES = "allExchanges";
+    public String allExchanges = "All";
 
     @NonNull private final Resources resources;
     @Nullable private Drawable flagDrawable;
@@ -28,13 +28,14 @@ public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements Cha
     public ExchangeCompactSpinnerDTO(@NonNull Resources resources)
     {
         super(-1,
-                ALL_EXCHANGES,
+                resources.getString(R.string.trending_filter_exchange_all),
                 Country.NONE.name(),
                 0,
                 null,
                 false,
                 true,
                 false);
+        this.allExchanges = resources.getString(R.string.trending_filter_exchange_all);
         this.resources = resources;
     }
 
@@ -54,17 +55,17 @@ public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements Cha
 
     @Nullable @JsonIgnore public String getApiName()
     {
-        return name.equals(ALL_EXCHANGES) ? null : name;
+        return name.equals(allExchanges) ? null : name;
     }
 
     @NonNull @JsonIgnore public String getUsableDisplayName()
     {
-        return name.equals(ALL_EXCHANGES) ? resources.getString(R.string.trending_filter_exchange_all) : name;
+        return name.equals(allExchanges) ? resources.getString(R.string.trending_filter_exchange_all) : name;
     }
 
     @Nullable @Override public Exchange getExchangeByName()
     {
-        if (name.equals(ALL_EXCHANGES))
+        if (name.equals(allExchanges))
         {
             return null;
         }

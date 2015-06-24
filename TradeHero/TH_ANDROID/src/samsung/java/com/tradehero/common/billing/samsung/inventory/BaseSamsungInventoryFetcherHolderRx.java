@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.samsung.inventory;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.inventory.BaseBillingInventoryFetcherHolderRx;
@@ -27,7 +28,7 @@ abstract public class BaseSamsungInventoryFetcherHolderRx<
     @NonNull @Override abstract protected SamsungInventoryFetcherRx<SamsungSKUType, SamsungProductDetailType> createFetcher(int requestCode,
             @NonNull List<SamsungSKUType> productIdentifiers);
 
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
         // Nothing to do
     }

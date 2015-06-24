@@ -3,6 +3,7 @@ package com.tradehero.th.auth.tencent_qq;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tencent.tauth.Tencent;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.AuthData;
@@ -20,15 +21,18 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
     private static final String SCOPE = "all";
     @NonNull private final Context context;
     @NonNull private final Tencent tencent;
+    @NonNull private final ObjectMapper objectMapper;
 
     //<editor-fold desc="Constructors">
     @Inject public QQAuthenticationProvider(
             @NonNull SocialLinker socialLinker,
-            @NonNull Context context)
+            @NonNull Context context,
+            @NonNull ObjectMapper objectMapper)
     {
         super(socialLinker);
         this.context = context;
         this.tencent = Tencent.createInstance(TENCENT_APP_ID, context);
+        this.objectMapper = objectMapper;
     }
     //</editor-fold>
 
@@ -36,7 +40,7 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
     {
         tencent.logout(activity);
 
-        return Observable.create(new OperatorTencent(tencent, activity, SCOPE))
+        return Observable.create(new OperatorTencent(tencent, activity, objectMapper, SCOPE))
             .map(new Func1<QQAppAuthData, AuthData>()
             {
                 @Override public AuthData call(@NonNull QQAppAuthData qqAppAuthData)

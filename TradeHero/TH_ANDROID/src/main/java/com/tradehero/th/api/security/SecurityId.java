@@ -26,7 +26,7 @@ public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
         this.securitySymbol = securitySymbol;
     }
 
-    public SecurityId(Bundle args)
+    public SecurityId(@NonNull Bundle args)
     {
         this.exchange = args.getString(BUNDLE_KEY_EXCHANGE);
         this.securitySymbol = args.getString(BUNDLE_KEY_SYMBOL);

@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.base;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -76,15 +77,21 @@ public class BaseFragment extends Fragment
         return args.getBoolean(BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, DEFAULT_IS_OPTION_MENU_VISIBLE);
     }
 
+    @CallSuper
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
         HierarchyInjector.inject(this);
     }
 
+    @CallSuper
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        if (navigator == null)
+        {
+            HierarchyInjector.inject(this);
+        }
         actionBarOwnerMixin = ActionBarOwnerMixin.of(this);
 
         isOptionMenuVisible = getIsOptionMenuVisible(getArguments());
@@ -93,18 +100,21 @@ public class BaseFragment extends Fragment
         onDestroySubscriptions = new SubscriptionList();
     }
 
+    @CallSuper
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
         onDestroyViewSubscriptions = new SubscriptionList();
     }
 
+    @CallSuper
     @Override public void onStart()
     {
         super.onStart();
         this.onStopSubscriptions = new SubscriptionList();
     }
 
+    @CallSuper
     @Override public void onStop()
     {
         this.onStopSubscriptions.unsubscribe();
@@ -120,12 +130,14 @@ public class BaseFragment extends Fragment
         }
     }
 
+    @CallSuper
     @Override public void onDestroyView()
     {
         onDestroyViewSubscriptions.unsubscribe();
         super.onDestroyView();
     }
 
+    @CallSuper
     @Override public void onDestroy()
     {
         actionBarOwnerMixin.onDestroy();
@@ -133,6 +145,7 @@ public class BaseFragment extends Fragment
         super.onDestroy();
     }
 
+    @CallSuper
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         onDestroyOptionsMenuSubscriptions = new SubscriptionList();
@@ -166,6 +179,15 @@ public class BaseFragment extends Fragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    public boolean shouldShowLiveTradingToggle()
+    {
+        return false;
+    }
+
+    public void onLiveTradingChanged(boolean isLive)
+    {
+    }
+
     private int getMenuHelpID()
     {
         return (getClass().getName() + ".help").hashCode();
@@ -190,6 +212,7 @@ public class BaseFragment extends Fragment
         return super.onOptionsItemSelected(item);
     }
 
+    @CallSuper
     @Override public void onDestroyOptionsMenu()
     {
         if (onDestroyOptionsMenuSubscriptions != null)
@@ -321,12 +344,16 @@ public class BaseFragment extends Fragment
 
         @Override public View getDropDownView(int position, View convertView, ViewGroup parent)
         {
-            if (convertView == null)
+            Activity activity = getActivity();
+            if (convertView == null && activity != null)
             {
-                convertView = getActivity().getLayoutInflater().inflate(R.layout.action_bar_spinner_dropdown, parent, false);
+                convertView = activity.getLayoutInflater().inflate(R.layout.action_bar_spinner_dropdown, parent, false);
             }
-            TextView textView = (TextView) convertView.findViewById(textViewResourceId);
-            textView.setText(getItem(position));
+            if (convertView != null)
+            {
+                TextView textView = (TextView) convertView.findViewById(textViewResourceId);
+                textView.setText(getItem(position));
+            }
             return convertView;
         }
     }

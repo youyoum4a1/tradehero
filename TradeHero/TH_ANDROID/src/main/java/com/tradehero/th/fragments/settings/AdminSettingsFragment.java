@@ -26,7 +26,6 @@ import com.tradehero.th.fragments.competition.CompetitionPreseasonDialogFragment
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.push.PushConstants;
-import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
@@ -53,7 +52,6 @@ public class AdminSettingsFragment extends BasePreferenceFragment
 
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;
     @Inject THApp app;
-    @Inject Provider<NotificationOpenedHandler> notificationOpenedHandler;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject Provider<Activity> currentActivity;
@@ -306,7 +304,7 @@ public class AdminSettingsFragment extends BasePreferenceFragment
     {
         Intent fakeIntent = new Intent();
         fakeIntent.putExtra(PushConstants.KEY_PUSH_ID, String.valueOf(notificationId));
-        notificationOpenedHandler.get().handle(fakeIntent);
+        THToast.show("TODO");
     }
 
     private boolean sendFakeAction()

@@ -140,6 +140,20 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         Timber.d("BackStack count %d", manager.getBackStackEntryCount());
     }
 
+    public boolean hasBackStackName(String backStackName)
+    {
+        int index = 0;
+        while (index < manager.getBackStackEntryCount())
+        {
+            if (manager.getBackStackEntryAt(index).getName().equals(backStackName))
+            {
+                return true;
+            }
+            index++;
+        }
+        return false;
+    }
+
     //<editor-fold desc="DashboardFragmentWatcher">
     private <T extends Fragment> void onFragmentChanged(FragmentActivity activity, Class<T> fragmentClass, Bundle args)
     {

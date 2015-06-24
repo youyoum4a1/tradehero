@@ -12,6 +12,7 @@ import com.tradehero.th.fragments.discussion.FragmentDiscussionModule;
 import com.tradehero.th.fragments.education.FragmentEducationModule;
 import com.tradehero.th.fragments.fxonboard.FragmentFxOnBoardModule;
 import com.tradehero.th.fragments.leaderboard.FragmentLeaderboardModule;
+import com.tradehero.th.fragments.live.FragmentGameLiveModule;
 import com.tradehero.th.fragments.location.FragmentLocationModule;
 import com.tradehero.th.fragments.news.FragmentNewsModule;
 import com.tradehero.th.fragments.onboarding.FragmentOnBoardModule;
@@ -56,7 +57,8 @@ import dagger.Module;
                 FragmentUpdateCenterModule.class,
                 FragmentWatchlistModule.class,
                 FragmentWebModule.class,
-                FragmentFxOnBoardModule.class
+                FragmentFxOnBoardModule.class,
+                FragmentGameLiveModule.class,
         },
         injects = {
                 DashboardFragment.class,

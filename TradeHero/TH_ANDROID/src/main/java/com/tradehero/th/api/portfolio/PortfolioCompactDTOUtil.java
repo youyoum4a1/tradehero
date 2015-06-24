@@ -37,24 +37,24 @@ public class PortfolioCompactDTOUtil
     @Nullable public static Integer getMaxPurchasableShares(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
             @Nullable QuoteDTO quoteDTO,
-            @Nullable PositionDTOCompact positionDTOCompact)
+            @Nullable PositionDTOCompact closeablePosition)
     {
         if (portfolioCompactDTO == null)
         {
             return null;
         }
 
-        if (positionDTOCompact != null && portfolioCompactDTO.id != positionDTOCompact.portfolioId)
+        if (closeablePosition != null && portfolioCompactDTO.id != closeablePosition.portfolioId)
         {
-            throw new IllegalArgumentException("Portfolio ids do not match " + portfolioCompactDTO.id + " and " + positionDTOCompact.portfolioId);
+            throw new IllegalArgumentException("Portfolio ids do not match " + portfolioCompactDTO.id + " and " + closeablePosition.portfolioId);
         }
 
-        if (positionDTOCompact != null
-                && positionDTOCompact.positionStatus != null
-                && positionDTOCompact.positionStatus.equals(PositionStatus.SHORT))
+        if (closeablePosition != null
+                && closeablePosition.positionStatus != null
+                && closeablePosition.positionStatus.equals(PositionStatus.SHORT))
         {
             // TODO return null if transaction cost cannot be covered
-            return positionDTOCompact.shares == null ? null : Math.abs(positionDTOCompact.shares);
+            return closeablePosition.shares == null ? null : Math.abs(closeablePosition.shares);
         }
         return getMaxPurchasableShares(portfolioCompactDTO, quoteDTO);
     }
@@ -62,9 +62,28 @@ public class PortfolioCompactDTOUtil
 
     @Nullable public static Integer getMaxSellableShares(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
-            @Nullable QuoteDTO quoteDTO)
+            @Nullable QuoteDTO quoteDTO,
+            @Nullable PositionDTOCompact closeablePosition)
     {
-        if (quoteDTO == null || portfolioCompactDTO == null)
+        if (portfolioCompactDTO == null)
+        {
+            return null;
+        }
+
+        if (closeablePosition != null && portfolioCompactDTO.id != closeablePosition.portfolioId)
+        {
+            throw new IllegalArgumentException("Portfolio ids do not match " + portfolioCompactDTO.id + " and " + closeablePosition.portfolioId);
+        }
+
+        if (closeablePosition != null
+                && closeablePosition.positionStatus != null
+                && closeablePosition.positionStatus.equals(PositionStatus.LONG))
+        {
+            // TODO return null if transaction cost cannot be covered
+            return closeablePosition.shares == null ? null : Math.abs(closeablePosition.shares);
+        }
+
+        if (quoteDTO == null)
         {
             return null;
         }
@@ -80,31 +99,6 @@ public class PortfolioCompactDTOUtil
         double availableUsd = portfolioCompactDTO.getUsableForTransactionUsd();
         double txnCostUsd = portfolioCompactDTO.getProperTxnCostUsd();
         return (int) Math.floor((availableUsd - txnCostUsd) / quotePriceUsd);
-    }
-
-    @Nullable public static Integer getMaxSellableShares(
-            @Nullable PortfolioCompactDTO portfolioCompactDTO,
-            @Nullable QuoteDTO quoteDTO,
-            @Nullable PositionDTOCompact positionDTOCompact)
-    {
-        if (portfolioCompactDTO == null)
-        {
-            return null;
-        }
-
-        if (positionDTOCompact != null && portfolioCompactDTO.id != positionDTOCompact.portfolioId)
-        {
-            throw new IllegalArgumentException("Portfolio ids do not match " + portfolioCompactDTO.id + " and " + positionDTOCompact.portfolioId);
-        }
-
-        if (positionDTOCompact != null
-                && positionDTOCompact.positionStatus != null
-                && positionDTOCompact.positionStatus.equals(PositionStatus.LONG))
-        {
-            // TODO return null if transaction cost cannot be covered
-            return positionDTOCompact.shares == null ? null : Math.abs(positionDTOCompact.shares);
-        }
-        return getMaxSellableShares(portfolioCompactDTO, quoteDTO);
     }
 
     @Nullable public static String getPortfolioSubtitle(

@@ -11,7 +11,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.tradehero.common.application.PApplication;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.activities.ActivityBuildTypeUtil;
 import com.tradehero.th.inject.BaseInjector;
@@ -26,20 +25,23 @@ import javax.inject.Inject;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-public class THApp extends PApplication
+public class THApp extends DexOrNotApp
         implements ExInjector
 {
     private static final int MEMORY_CACHE_SIZE = 2 * 1024 * 1024;
     private static final int DISK_CACHE_SIZE = 50 * 1024 * 1024;
+
+    public static Context context;
 
     @Inject protected PushNotificationManager pushNotificationManager;
     @Inject UserXPAchievementHandler userXPAchievementHandler;
 
     private ObjectGraph objectGraph;
 
-    @Override protected void init()
+    @Override public void onCreate()
     {
-        super.init();
+        super.onCreate();
+        context = getApplicationContext();
 
         ActivityBuildTypeUtil.startCrashReports(this);
         Timber.plant(TimberUtil.createTree());
@@ -130,5 +132,10 @@ public class THApp extends PApplication
     public static THApp get(Context context)
     {
         return (THApp) context.getApplicationContext();
+    }
+
+    public static THApp context()
+    {
+        return (THApp) context;
     }
 }

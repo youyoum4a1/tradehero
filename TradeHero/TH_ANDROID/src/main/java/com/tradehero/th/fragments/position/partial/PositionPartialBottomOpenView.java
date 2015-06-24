@@ -135,7 +135,7 @@ public class PositionPartialBottomOpenView extends AbstractPartialBottomView
                     : positionDTO.getROISinceInception();
             unrealisedPLPercent = gainPercent == null
                     ? na
-                    : THSignedPercentage.builder(gainPercent)
+                    : THSignedPercentage.builder(gainPercent * 100)
                             .signTypePlusMinusAlways()
                             .relevantDigitCount(3)
                             .format("(%s)")

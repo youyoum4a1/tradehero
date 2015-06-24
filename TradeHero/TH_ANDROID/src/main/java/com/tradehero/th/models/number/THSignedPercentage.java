@@ -51,6 +51,6 @@ public class THSignedPercentage extends THSignedNumber
 
     @Override protected String createPlainNumber()
     {
-        return super.createPlainNumber() + THApp.getResourceString(R.string.percentage_suffix);
+        return super.createPlainNumber() + THApp.context().getString(R.string.percentage_suffix);
     }
 }

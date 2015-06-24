@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.watchlist;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -18,26 +18,37 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.text.DecimalFormat;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.view.OnClickEvent;
+import rx.android.view.ViewObservable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -46,12 +57,14 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     public static final String WATCHLIST_ITEM_DELETED = "watchlistItemDeleted";
     private static final String INTENT_KEY_DELETED_SECURITY_ID = WatchlistItemView.class.getName() + ".deletedSecurityId";
 
+    @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
+    @Inject CurrentUserId currentUserId;
 
-    @InjectView(R.id.gain_indicator) protected ImageView gainIndicator;
+    @InjectView(R.id.gain_indicator) @Optional protected ImageView gainIndicator;
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
     @InjectView(R.id.stock_symbol) protected TextView stockSymbol;
     @InjectView(R.id.company_name) protected TextView companyName;
@@ -91,14 +104,53 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        if (!isInEditMode())
+        {
+            ButterKnife.inject(this);
+        }
         subscriptions = new SubscriptionList();
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        if (!isInEditMode())
+        {
+            ButterKnife.inject(this);
+        }
+        subscriptions.add(ViewObservable.clicks(moreButton)
+                .flatMap(new Func1<OnClickEvent, Observable<AbstractBuySellFragment.Requisite>>()
+                {
+                    @Override public Observable<AbstractBuySellFragment.Requisite> call(OnClickEvent onClickEvent)
+                    {
+                        return portfolioCompactListCache.getOne(currentUserId.toUserBaseKey())
+                                .map(new Func1<Pair<UserBaseKey, PortfolioCompactDTOList>, AbstractBuySellFragment.Requisite>()
+                                {
+                                    @Override
+                                    public AbstractBuySellFragment.Requisite call(@NonNull Pair<UserBaseKey, PortfolioCompactDTOList> pair)
+                                    {
+                                        return new AbstractBuySellFragment.Requisite(
+                                                watchlistPositionDTO.securityDTO.getSecurityId(), // TODO better
+                                                pair.second.getDefaultPortfolio().getOwnedPortfolioId(),
+                                                0);
+                                    }
+                                });
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<AbstractBuySellFragment.Requisite>()
+                        {
+                            @Override public void call(AbstractBuySellFragment.Requisite requisite)
+                            {
+                                // TODO use Rx
+                                Bundle args = new Bundle();
+                                BuySellStockFragment.putRequisite(args, requisite);
+                                navigator.get().pushFragment(BuySellStockFragment.class, args);
+                                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_More_Tap));
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to listen to clicks")));
     }
 
     @Override protected void onDetachedFromWindow()
@@ -115,16 +167,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     {
         setEnabledSwipeButtons(false);
         deleteSelf();
-    }
-
-    @SuppressWarnings("unused")
-    @OnClick(R.id.position_watchlist_more)
-    public void onMoreButtonClicked(View v)
-    {
-        Bundle args = new Bundle();
-        BuySellStockFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
-        navigator.get().pushFragment(BuySellStockFragment.class, args);
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_More_Tap));
     }
 
     @Override public void display(@NonNull WatchlistPositionDTO watchlistPosition)
@@ -177,21 +219,30 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         {
             gainLossLabel.setBackgroundResource(R.drawable.round_label_up);
             gainLossLabel.setTextColor(getResources().getColor(R.color.text_primary_inverse));
-            gainIndicator.setVisibility(View.VISIBLE);
-            gainIndicator.setImageResource(R.drawable.indicator_up);
+            if (gainIndicator != null)
+            {
+                gainIndicator.setVisibility(View.VISIBLE);
+                gainIndicator.setImageResource(R.drawable.indicator_up);
+            }
         }
         else if (roi < 0)
         {
             gainLossLabel.setBackgroundResource(R.drawable.round_label_down);
             gainLossLabel.setTextColor(getResources().getColor(R.color.text_primary_inverse));
-            gainIndicator.setVisibility(View.VISIBLE);
-            gainIndicator.setImageResource(R.drawable.indicator_down);
+            if (gainIndicator != null)
+            {
+                gainIndicator.setVisibility(View.VISIBLE);
+                gainIndicator.setImageResource(R.drawable.indicator_down);
+            }
         }
         else
         {
             gainLossLabel.setTextColor(getResources().getColor(R.color.text_primary));
-            gainLossLabel.setBackgroundColor(Color.WHITE);
-            gainIndicator.setVisibility(View.INVISIBLE);
+            gainLossLabel.setBackgroundColor(getResources().getColor(R.color.transparent));
+            if (gainIndicator != null)
+            {
+                gainIndicator.setVisibility(View.INVISIBLE);
+            }
         }
     }
 

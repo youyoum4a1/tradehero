@@ -14,7 +14,7 @@ public class PortfolioId extends AbstractIntegerDTOKey
     {
     }
 
-    public PortfolioId(Bundle args)
+    public PortfolioId(@NonNull Bundle args)
     {
         super(args);
     }

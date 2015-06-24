@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="tradehero_red">#E0483E</color>
+  <color name="tradehero_red_pressed">#a9362f</color>
+  <color name="tradehero_red_focused">#fa5145</color>
+  <color name="tradehero_red_status_bar">@color/tradehero_red</color>
+  <color name="tradehero_dark_red">#A8342A</color>
+</resources>

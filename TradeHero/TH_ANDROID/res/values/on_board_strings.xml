@@ -11,7 +11,7 @@
   <string name="on_board_exchange_selected_max">You cannot select more than %d markets\nUnselect some to select others</string>
   <string name="on_board_exchange_need_to_select">You need to select at least one exchange</string>
 
-  <string name="on_board_sector_title">What are your favorite sectors?</string>
+  <string name="on_board_sector_title">What are your favourite sectors?</string>
   <string name="on_board_sector_selected_max">You cannot select more than %d sectors\nUnselect some to select others</string>
   <string name="on_board_sector_need_to_select">You need to select at least one sector</string>
 
@@ -19,14 +19,14 @@
   <string name="on_board_user_selected_max">You cannot select more than %d heroes\nUnselect some to select others</string>
   <string name="on_board_user_need_to_select">You need to select at least one hero</string>
 
-  <string name="on_board_stock_title">Trending Stocks. Favorite them!</string>
+  <string name="on_board_stock_title">Trending Stocks. Favourite them!</string>
   <string name="on_board_stock_selected_max">You cannot select more than %d stocks\nUnselect some to select others</string>
   <string name="on_board_stock_need_to_select">You need to select at least one stock</string>
 
   <string name="on_board_last_title_1">Ka-ching!</string>
   <string name="on_board_last_title_2">You now have a budget of</string>
   <string name="on_board_last_title_3">100,000 virtual dollars</string>
-  <string name="on_board_last_hint">Some of your favorites are trending.\nWould you like to buy shares?</string>
+  <string name="on_board_last_hint">Some of your favourites are trending.\nWould you like to buy shares?</string>
   <string name="on_board_last_button_buy">Yes, buy shares!</string>
   <string name="on_board_last_button_later">Later, I will look around first</string>
 

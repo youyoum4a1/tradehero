@@ -140,29 +140,32 @@ public class MarketRegionSwitcherView extends OnBoardHeaderLinearView
 
     protected void displayHint()
     {
-        if (!regionsLoaded)
+        if (hint != null)
         {
-            hint.setText(R.string.on_board_exchange_loading_regions);
-        }
-        else if (selectedRegion == null)
-        {
-            hint.setText(R.string.on_board_exchange_tap_map_select_exchanges);
-        }
-        else if (selectedExchanges == null || selectedExchanges.size() == 0)
-        {
-            hint.setText(R.string.on_board_exchange_tap_list_select_exchanges);
-        }
-        else if (selectedExchanges.size() >= maxSelectableExchanges)
-        {
-            hint.setText(String.format(
-                    getResources().getString(R.string.on_board_exchange_tap_list_full),
-                    maxSelectableExchanges));
-        }
-        else
-        {
-            hint.setText(String.format(
-                    getResources().getString(R.string.on_board_exchange_tap_list_select_exchanges_have),
-                    maxSelectableExchanges));
+            if (!regionsLoaded)
+            {
+                hint.setText(R.string.on_board_exchange_loading_regions);
+            }
+            else if (selectedRegion == null)
+            {
+                hint.setText(R.string.on_board_exchange_tap_map_select_exchanges);
+            }
+            else if (selectedExchanges == null || selectedExchanges.size() == 0)
+            {
+                hint.setText(R.string.on_board_exchange_tap_list_select_exchanges);
+            }
+            else if (selectedExchanges.size() >= maxSelectableExchanges)
+            {
+                hint.setText(String.format(
+                        getResources().getString(R.string.on_board_exchange_tap_list_full),
+                        maxSelectableExchanges));
+            }
+            else
+            {
+                hint.setText(String.format(
+                        getResources().getString(R.string.on_board_exchange_tap_list_select_exchanges_have),
+                        maxSelectableExchanges));
+            }
         }
     }
 

@@ -345,11 +345,11 @@ public class GraphicUtil
     {
         if (position % 2 == 0)
         {
-            toSet.setBackgroundResource(R.drawable.basic_lb_even_selector);
+            toSet.setBackgroundResource(R.drawable.basic_white_selector);
         }
         else
         {
-            toSet.setBackgroundResource(R.drawable.basic_lb_odd_selector);
+            toSet.setBackgroundResource(R.drawable.basic_light_grey_selector);
         }
     }
 
