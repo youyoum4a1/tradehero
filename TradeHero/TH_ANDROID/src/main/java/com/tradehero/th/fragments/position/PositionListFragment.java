@@ -490,7 +490,10 @@ public class PositionListFragment
     {
         if (view instanceof PositionNothingView)
         {
-            pushSecuritiesFragment();
+            if (object instanceof PositionNothingView.DTO && ((PositionNothingView.DTO) object).isCurrentUser)
+            {
+                pushSecuritiesFragment();
+            }
         }
         else if (view instanceof PositionLockedView && shownUserProfileDTO != null)
         {
@@ -965,6 +968,7 @@ public class PositionListFragment
                     }
                 })
                 .observeOn(Schedulers.computation())
+                .distinctUntilChanged()
                 .flatMap(new Func1<List<Pair<PositionDTO, SecurityCompactDTO>>, Observable<List<Pair<PositionDTO, SecurityCompactDTO>>>>()
                 {
                     @Override public Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> call(

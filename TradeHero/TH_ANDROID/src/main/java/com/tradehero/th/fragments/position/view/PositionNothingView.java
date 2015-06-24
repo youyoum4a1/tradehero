@@ -33,9 +33,11 @@ public class PositionNothingView extends RelativeLayout
     public static class DTO
     {
         @StringRes @NonNull public final String description;
+        public final boolean isCurrentUser;
 
         public DTO(@NonNull Resources resources, boolean isCurrentUser)
         {
+            this.isCurrentUser = isCurrentUser;
             description = resources.getString(isCurrentUser
                     ? R.string.position_nothing_description
                     : R.string.position_nothing_description_other_user);
