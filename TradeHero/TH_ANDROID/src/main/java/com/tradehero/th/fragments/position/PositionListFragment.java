@@ -102,6 +102,7 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.widget.MultiRecyclerScrollListener;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -151,7 +152,7 @@ public class PositionListFragment
 
     @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
-    @InjectView(R.id.position_recycler_view) RecyclerView positionListView;
+    @InjectView(R.id.position_recycler_view) RecyclerView positionRecyclerView;
     @InjectView(R.id.btn_help) ImageView btnHelp;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
 
@@ -273,9 +274,9 @@ public class PositionListFragment
                 HelpActivity.slideInFromRight(getActivity());
             }
         });
-        positionListView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        positionListView.setHasFixedSize(true);
-        positionListView.setAdapter(positionItemAdapter);
+        positionRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        positionRecyclerView.setHasFixedSize(true);
+        positionRecyclerView.setAdapter(positionItemAdapter);
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
             @Override public void onRefresh()
@@ -390,7 +391,7 @@ public class PositionListFragment
 
     @Override public void onPause()
     {
-        //firstPositionVisible = positionListView.getFirstVisiblePosition();
+        //firstPositionVisible = positionRecyclerView.getFirstVisiblePosition();
         super.onPause();
     }
 
@@ -408,8 +409,8 @@ public class PositionListFragment
 
     @Override public void onDestroyView()
     {
-        positionListView.setOnScrollListener(null);
-        positionListView.setOnTouchListener(null);
+        positionRecyclerView.clearOnScrollListeners();
+        positionRecyclerView.setOnTouchListener(null);
         swipeToRefreshLayout.setOnRefreshListener(null);
         portfolioHeaderView = null;
         ButterKnife.reset(this);
@@ -902,18 +903,19 @@ public class PositionListFragment
                         inflatedView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     }
                     int headerHeight = inflatedView.getMeasuredHeight();
-                    positionListView.setPadding(
-                            positionListView.getPaddingLeft(),
+                    positionRecyclerView.setPadding(
+                            positionRecyclerView.getPaddingLeft(),
                             headerHeight,
-                            positionListView.getPaddingRight(),
-                            positionListView.getPaddingBottom());
+                            positionRecyclerView.getPaddingRight(),
+                            positionRecyclerView.getPaddingBottom());
 
-                    positionListView.addOnScrollListener(fragmentElements.get().getRecyclerViewScrollListener());
-                    positionListView.addOnScrollListener(new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.HEADER)
+                    positionRecyclerView.addOnScrollListener(new MultiRecyclerScrollListener(
+                            fragmentElements.get().getRecyclerViewScrollListener(),
+                            new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.HEADER)
                                     .header(inflatedView)
-                                    .minHeaderTranslation(-headerHeight)
+                                    .minHeaderTranslation(-headerHeight - 50)
                                     .build()
-                    );
+                    ));
                 }
             });
         }
@@ -1001,12 +1003,18 @@ public class PositionListFragment
     public void linkWith(@NonNull List<Object> dtoList)
     {
         this.viewDTOs = dtoList;
-        positionItemAdapter.addAll(filterViewDTOs(dtoList));
+        Object nothingDTO = new PositionNothingView.DTO(getResources(), shownUser.equals(currentUserId.toUserBaseKey()));
+        List<Object> filterViewDTOs = filterViewDTOs(dtoList, nothingDTO);
+        if (!filterViewDTOs.contains(nothingDTO) && positionItemAdapter.indexOf(nothingDTO) != RecyclerView.NO_POSITION)
+        {
+            positionItemAdapter.remove(nothingDTO);
+        }
+        positionItemAdapter.addAll(filterViewDTOs);
         swipeToRefreshLayout.setRefreshing(false);
         listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
     }
 
-    @NonNull protected List<Object> filterViewDTOs(@NonNull List<Object> dtoList)
+    @NonNull protected List<Object> filterViewDTOs(@NonNull List<Object> dtoList, Object nothingDTO)
     {
         List<Object> filtered = new ArrayList<>();
         for (Object dto : dtoList)
@@ -1048,7 +1056,7 @@ public class PositionListFragment
 
         if (filtered.size() == 0)
         {
-            filtered.add(new PositionNothingView.DTO(getResources(), shownUser.equals(currentUserId.toUserBaseKey())));
+            filtered.add(nothingDTO);
         }
 
         return filtered;

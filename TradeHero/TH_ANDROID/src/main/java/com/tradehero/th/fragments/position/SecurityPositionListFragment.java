@@ -162,12 +162,6 @@ public class SecurityPositionListFragment
         ButterKnife.inject(this, view);
         positionListView.setLayoutManager(new LinearLayoutManager(getActivity()));
         positionListView.setAdapter(positionItemAdapter);
-        positionListView.setPadding(
-                positionListView.getPaddingLeft(),
-                0,
-                positionListView.getPaddingRight(),
-                positionListView.getPaddingBottom());
-        //positionListView.setOnScrollListener(fragmentElements.getListViewScrollListener());
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
             @Override public void onRefresh()
@@ -186,7 +180,6 @@ public class SecurityPositionListFragment
 
     @Override public void onPause()
     {
-        //firstPositionVisible = positionListView.getFirstVisiblePosition();
         super.onPause();
     }
 
@@ -204,7 +197,7 @@ public class SecurityPositionListFragment
 
     @Override public void onDestroyView()
     {
-        positionListView.setOnScrollListener(null);
+        positionListView.clearOnScrollListeners();
         swipeToRefreshLayout.setOnRefreshListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -388,7 +381,6 @@ public class SecurityPositionListFragment
         positionItemAdapter.addAll(dtoList);
         listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
         swipeToRefreshLayout.setRefreshing(false);
-        //positionListView.smoothScrollToPosition(0);
     }
 
     protected void handlePositionItemClicked(View view, int position, Object object)
