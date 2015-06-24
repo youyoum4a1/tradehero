@@ -329,4 +329,9 @@
   <string name="go_live_span">Go %1$s !</string>
   <string name="live_call_to_action_string">You are only 5 steps away from your own TradeHero LIVE account!\nGo LIVE now and get US$ 100.00 to start.</string>
   <string name="tradehero_live">TradeHero LIVE</string>
+  <string name="live_5_steps_away">You are 5 steps away to open an account!</string>
+  <string name="live_identity_prompt">Do you have your Proof of Identity with you?</string>
+  <string name="live_identity_prompt_hint">This will help you to auto-fill some information</string>
+  <string name="yes">Yes</string>
+  <string name="no">No</string>
 </resources>
