@@ -159,7 +159,7 @@ public class AlertSecurityProfile extends RelativeLayout
             //</editor-fold>
 
             //<editor-fold desc="Current Price">
-            double price;
+            final double price;
             if (quoteDTO.ask != null && quoteDTO.bid != null)
             {
                 price = (quoteDTO.ask + quoteDTO.bid) / 2;
@@ -172,9 +172,13 @@ public class AlertSecurityProfile extends RelativeLayout
             {
                 price = quoteDTO.bid;
             }
-            else
+            else if (securityCompactDTO.lastPrice != null)
             {
                 price = securityCompactDTO.lastPrice;
+            }
+            else
+            {
+                price = 0;
             }
             String currency;
             if (quoteDTO.currencyDisplay != null)

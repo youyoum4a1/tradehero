@@ -33,7 +33,6 @@ public class UrbanAirshipIntentReceiver extends BaseIntentReceiver
                 "UrbanAirshipIntentReceiver.onReceive intent %s, category: %s, keys: %s",
                 intent.getAction(),
                 intent.getCategories().iterator().next(),
-                //TextUtils.join(", ", intent.getExtras().keySet())
                 TextUtils.join(", ", extras)
         );
     }

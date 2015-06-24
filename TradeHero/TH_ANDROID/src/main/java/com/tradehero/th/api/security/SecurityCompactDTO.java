@@ -62,7 +62,7 @@ public class SecurityCompactDTO implements DTO
     public String currencyDisplay;
     public String currencyISO;
     @Nullable public Double marketCap;
-    public Double lastPrice;
+    @Nullable public Double lastPrice;
     public String imageBlobUrl;
 
     private Date lastPriceDateEST;
