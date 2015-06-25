@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.th.models.fastfill.ScannedDocument;
-import com.tradehero.th.models.kyc.sgp.KYCSingaporeForm;
+import com.tradehero.th.models.kyc.ayondo.KYCAyondoForm;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -12,7 +12,7 @@ import com.tradehero.th.models.kyc.sgp.KYCSingaporeForm;
         property = "formType")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = EmptyKYCForm.class, name = EmptyKYCForm.KEY_EMPTY_TYPE),
-        @JsonSubTypes.Type(value = KYCSingaporeForm.class, name = KYCSingaporeForm.KEY_SINGAPORE_TYPE),
+        @JsonSubTypes.Type(value = KYCAyondoForm.class, name = KYCAyondoForm.KEY_AYONDO_TYPE),
 }) public interface KYCForm
 {
     void pickFrom(@NonNull ScannedDocument scannedDocument);

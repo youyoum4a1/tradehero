@@ -1,4 +1,4 @@
-package com.tradehero.th.models.kyc.sgp;
+package com.tradehero.th.models.kyc.ayondo;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,9 +7,9 @@ import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.models.kyc.KYCForm;
 
-public class KYCSingaporeForm implements KYCForm
+public class KYCAyondoForm implements KYCForm
 {
-    public static final String KEY_SINGAPORE_TYPE = "SGP";
+    public static final String KEY_AYONDO_TYPE = "Ayondo";
 
     @Nullable public String firstName;
     @Nullable public String lastName;
