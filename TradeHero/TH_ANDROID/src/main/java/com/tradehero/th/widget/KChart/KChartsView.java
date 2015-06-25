@@ -382,7 +382,8 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
         float x = mLeftMargin;
         //float uperWhiteY = 0;
         //float uperYellowY = 0;
-        dataSpacing = (getWidth() - 4 - mLeftMargin) / mShowDataNum;
+        float width = getWidth() - 4;
+        dataSpacing = (width - mLeftMargin) / mShowDataNum;
         Paint paint = new Paint();
         float margin = 2.5f;
         for (int i = 0; i < mOHLCData.size() && i < mShowDataNum; i++)
@@ -392,15 +393,11 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
             {
                 continue;
             }
-            x = 3 + mLeftMargin + dataSpacing * i;
+            x = dataSpacing * i;
             // 绘制下部表内数据线
             Long buy = fenshiData.getVol();
             paint.setStrokeWidth(3);
-            if (i <= 0)
-            {
-                paint.setColor(COLOR_RED);
-            }
-            else if (fenshiData.getOpen() == null || fenshiData.getPreclose() == null || fenshiData.getOpen() >= fenshiData.getPreclose())
+            if (fenshiData.getOpen() == null || fenshiData.getOpen() == null || fenshiData.getClose() >= fenshiData.getOpen())
             {
                 paint.setColor(COLOR_RED);
             }
@@ -409,7 +406,7 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
                 paint.setColor(COLOR_GREEN);
             }
             //canvas.drawLine(x, lowerBottom, x, lowerBottom - buy * lowerRate, paint);
-            canvas.drawRect(x, lowerBottom - buy * lowerRate, x + dataSpacing - 2*margin, lowerBottom, paint);
+            canvas.drawRect(width - (x + dataSpacing - 2*margin), lowerBottom - buy * lowerRate, width - x, lowerBottom, paint);
         }
     }
 
