@@ -44,6 +44,7 @@ public class LiveCallToActionFragment extends DashboardFragment
         super.onDestroyView();
     }
 
+    @SuppressWarnings("unused")
     @OnClick(R.id.live_button_go_live)
     public void onGoLiveButtonClicked(View v)
     {
@@ -51,6 +52,7 @@ public class LiveCallToActionFragment extends DashboardFragment
         navigator.popFragment();
     }
 
+    @SuppressWarnings("unused")
     @OnClick(R.id.live_button_later)
     public void onLaterButtonClicked(View v)
     {

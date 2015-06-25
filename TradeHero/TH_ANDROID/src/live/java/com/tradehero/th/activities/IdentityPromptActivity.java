@@ -15,12 +15,14 @@ public class IdentityPromptActivity extends BaseActivity
         ButterKnife.inject(this);
     }
 
+    @SuppressWarnings("unused")
     @OnClick(R.id.identity_prompt_no)
     public void onNoClicked()
     {
         startActivity(new Intent(this, SignUpLiveActivity.class));
     }
 
+    @SuppressWarnings("unused")
     @OnClick(R.id.identity_prompt_yes)
     public void onYesClicked()
     {
