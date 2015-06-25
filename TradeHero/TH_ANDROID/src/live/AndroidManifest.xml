@@ -17,6 +17,13 @@
         android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
 
     <activity
+        android:name="com.tradehero.th.activities.IdentityPromptActivity"
+        android:theme="@style/TradeHero.Live"
+        android:label="@string/tradehero_live"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
+        />
+    <activity
         android:name="com.tradehero.th.activities.SignUpLiveActivity"
         android:theme="@style/TradeHero.Live"
         android:label="@string/tradehero_live"

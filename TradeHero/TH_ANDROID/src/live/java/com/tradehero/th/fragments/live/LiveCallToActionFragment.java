@@ -6,10 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.SignUpLiveActivity;
+import com.tradehero.th.activities.IdentityPromptActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import javax.inject.Inject;
@@ -52,7 +51,7 @@ public class LiveCallToActionFragment extends DashboardFragment
     @OnClick(R.id.live_button_go_live)
     public void onGoLiveButtonClicked(View v)
     {
-        navigator.launchActivity(SignUpLiveActivity.class);
+        navigator.launchActivity(IdentityPromptActivity.class);
     }
 
     @OnClick(R.id.live_button_later)

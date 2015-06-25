@@ -34,8 +34,10 @@
         android:layout_width="@dimen/size_25"
         android:layout_height="@dimen/size_20"
         android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_small"
         android:scaleType="fitCenter"
-        android:src="@drawable/live_image_call_to_action"
+        android:src="@drawable/image_identity_proof"
         />
 
     <TextView
@@ -66,21 +68,28 @@
         >
 
       <Button
+          android:id="@+id/identity_prompt_no"
           style="@style/TH.Button.Inverse"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:background="?selectableItemBackgroundBorderless"
+          android:background="?selectableItemBackground"
           android:minHeight="@dimen/clickable_element_min_dimen"
-          android:text="@string/yes"
+          android:text="@string/no"
+          />
+
+      <Space
+          android:layout_width="@dimen/margin_small"
+          android:layout_height="wrap_content"
           />
 
       <Button
+          android:id="@+id/identity_prompt_yes"
           style="@style/TH.Button.Inverse"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:background="?selectableItemBackgroundBorderless"
+          android:background="?selectableItemBackground"
           android:minHeight="@dimen/clickable_element_min_dimen"
-          android:text="@string/no"
+          android:text="@string/yes"
           />
 
     </LinearLayout>

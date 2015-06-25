@@ -5,7 +5,8 @@ import dagger.Module;
 @Module(
         injects = {
                 LiveActivityUtil.class,
-                SignUpLiveActivity.class
+                SignUpLiveActivity.class,
+                IdentityPromptActivity.class
         },
         complete = false,
         library = true
