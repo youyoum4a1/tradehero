@@ -20,4 +20,12 @@ public class LiveFragmentUtil
             v.setBackgroundColor(v.getContext().getResources().getColor(isLive ? R.color.tradehero_red : R.color.tradehero_blue));
         }
     }
+
+    public static void setSelectableBackground(boolean isLive, View... views)
+    {
+        for (View v : views)
+        {
+            v.setBackgroundResource(isLive ? R.drawable.basic_red_selector : R.drawable.basic_blue_selector);
+        }
+    }
 }

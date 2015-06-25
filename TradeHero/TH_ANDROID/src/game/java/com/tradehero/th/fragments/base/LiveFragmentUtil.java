@@ -11,4 +11,8 @@ public class LiveFragmentUtil
     public static void setBackgroundColor(boolean isLive, View... views)
     {
     }
+
+    public static void setSelectableBackground(boolean isLive, View... views)
+    {
+    }
 }

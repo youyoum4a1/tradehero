@@ -22,7 +22,9 @@
         android:label="@string/tradehero_live"
         android:windowSoftInputMode="adjustResize"
         android:screenOrientation="portrait"
+        android:noHistory="true"
         />
+
     <activity
         android:name="com.tradehero.th.activities.SignUpLiveActivity"
         android:theme="@style/TradeHero.Live"

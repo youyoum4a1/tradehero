@@ -36,11 +36,6 @@ public class LiveCallToActionFragment extends DashboardFragment
         setActionBarTitle(R.string.tradehero_live);
     }
 
-    @Override public boolean shouldShowLiveTradingToggle()
-    {
-        return true;
-    }
-
     @Override public void onLiveTradingChanged(boolean isLive)
     {
         super.onLiveTradingChanged(isLive);
@@ -60,6 +55,7 @@ public class LiveCallToActionFragment extends DashboardFragment
     public void onGoLiveButtonClicked(View v)
     {
         navigator.launchActivity(IdentityPromptActivity.class);
+        navigator.popFragment();
     }
 
     @OnClick(R.id.live_button_later)
