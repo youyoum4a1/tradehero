@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.live;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
@@ -26,6 +28,12 @@ public class LiveCallToActionFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        setActionBarTitle(R.string.tradehero_live);
     }
 
     @Override public boolean shouldShowLiveTradingToggle()
