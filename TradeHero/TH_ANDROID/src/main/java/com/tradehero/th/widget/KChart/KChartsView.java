@@ -260,16 +260,17 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 
 		// Y轴Titles
         float leftMargin = mLeftMargin - 50 - DEFAULT_AXIS_TITLE_SIZE;
-		textPaint.setColor(COLOR_GREEN);
+		textPaint.setColor(Color.BLACK);
+		//textPaint.setColor(COLOR_GREEN);
 		canvas.drawText(new DecimalFormat("#.##").format(mMinPrice), 1 + leftMargin, UPER_CHART_BOTTOM - 1, textPaint);
 		canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / 6), 1 + leftMargin,
                 UPER_CHART_BOTTOM - getLatitudeSpacing() - 1 + 10, textPaint);
 		canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / 6 * 2), 1 + leftMargin,
 				UPER_CHART_BOTTOM - getLatitudeSpacing() * 2 - 1 + 10, textPaint);
-		textPaint.setColor(Color.BLACK);
+		//textPaint.setColor(Color.BLACK);
         canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / 6 * 3), 1 + leftMargin,
                 UPER_CHART_BOTTOM - getLatitudeSpacing() * 3 - 1 + 10, textPaint);
-		textPaint.setColor(COLOR_RED);
+		//textPaint.setColor(COLOR_RED);
 		canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / 6 * 4), 1 + leftMargin,
 				UPER_CHART_BOTTOM - getLatitudeSpacing() * 4 - 1 + 10, textPaint);
         canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / 6 * 5), 1 + leftMargin,
@@ -332,8 +333,8 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 			float low = (float) ((mMaxPrice - entity.getLow()) * rate + DEFAULT_AXIS_TITLE_SIZE + 4);
 
             float lineWidth = (float)1.25;
-			float left = (float) (width - 2 - mCandleWidth * (i + 1) + lineWidth*2);
-			float right = (float) (width - 3 - mCandleWidth * i - lineWidth*2);
+			float left = (float) (width - 2 - mCandleWidth * (i + 1) + lineWidth * 2);
+			float right = (float) (width - 3 - mCandleWidth * i - lineWidth * 2);
 			float startX = (float) (width - 3 - mCandleWidth * i - (mCandleWidth - 1) / 2);
 			if (open < close) {
 				canvas.drawRect(left, open, right, close, greenPaint);
@@ -345,7 +346,6 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 				canvas.drawRect(left, close, right, open, redPaint);
 				canvas.drawRect(startX - lineWidth, high, startX + lineWidth, low, redPaint);
 			}
-
 		}
 
 		// 绘制上部曲线图及上部分MA值
@@ -406,7 +406,7 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
                 paint.setColor(COLOR_GREEN);
             }
             //canvas.drawLine(x, lowerBottom, x, lowerBottom - buy * lowerRate, paint);
-            canvas.drawRect(width - (x + dataSpacing - 2*margin), lowerBottom - buy * lowerRate, width - x, lowerBottom, paint);
+            canvas.drawRect(width - (x + dataSpacing - 2 * margin), lowerBottom - buy * lowerRate, width - x, lowerBottom, paint);
         }
     }
 
