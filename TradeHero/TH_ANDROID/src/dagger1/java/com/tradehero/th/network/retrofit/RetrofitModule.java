@@ -51,6 +51,7 @@ import retrofit.converter.JacksonConverter;
         includes = {
                 FlavorRetrofitModule.class,
                 RetrofitProtectedModule.class,
+                RetrofitGameLiveModule.class,
         },
         injects = {
                 ProviderPageIntent.class

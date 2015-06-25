@@ -3,26 +3,23 @@ package com.tradehero.th.network;
 import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.th.network.retrofit.RetrofitModule;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 
 @Module(
         includes = {
-                RetrofitModule.class,
-                NetworkGameLiveModule.class,
         },
         complete = false,
         library = true
 )
-public class NetworkModule
+public class NetworkGameLiveModule
 {
-    public static final String SERVER_ENDPOINT_KEY = "SERVER_ENDPOINT_KEY";
+    public static final String SERVER_LIVE_ENDPOINT_KEY = "SERVER_LIVE_ENDPOINT_KEY";
 
-    @Provides @Singleton @ServerEndpoint
+    @Provides @Singleton @ServerEndpointLive
     StringPreference provideEndpointPreference(@ForApp SharedPreferences sharedPreferences)
     {
-        return new StringPreference(sharedPreferences, SERVER_ENDPOINT_KEY, NetworkConstants.getApiEndPointInUse());
+        return new StringPreference(sharedPreferences, SERVER_LIVE_ENDPOINT_KEY, LiveNetworkConstants.TRADEHERO_LIVE_API_ENDPOINT);
     }
 }
