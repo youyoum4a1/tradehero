@@ -13,7 +13,7 @@ import com.tradehero.th.models.fastfill.FastFillException;
 import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.models.kyc.KYCForm;
-import com.tradehero.th.models.kyc.KYCFormFactory;
+import com.tradehero.th.network.service.LiveServiceWrapper;
 import com.tradehero.th.persistence.prefs.KYCFormPreference;
 import javax.inject.Inject;
 import rx.Observable;
@@ -30,6 +30,7 @@ public class IdentityPromptActivity extends BaseActivity
 {
     @Inject FastFillUtil fastFillUtil;
     @Inject KYCFormPreference kycFormPreference;
+    @Inject LiveServiceWrapper liveServiceWrapper;
 
     @InjectView(R.id.identity_prompt_yes) View yesButton;
 
@@ -108,7 +109,7 @@ public class IdentityPromptActivity extends BaseActivity
 
     @NonNull protected Observable<KYCForm> getFormToUse()
     {
-        return KYCFormFactory.createDefaultForm()
+        return liveServiceWrapper.getDefaultKYCForm()
                 .map(new Func1<KYCForm, KYCForm>()
                 {
                     @Override public KYCForm call(@NonNull KYCForm defaultForm)
