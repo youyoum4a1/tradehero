@@ -9,9 +9,9 @@ import com.jumio.mobile.sdk.ResourceNotFoundException;
 import com.jumio.mobile.sdk.enums.JumioDataCenter;
 import com.jumio.netverify.sdk.NetverifyDocumentData;
 import com.jumio.netverify.sdk.NetverifySDK;
-import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import javax.inject.Inject;
 import rx.Observable;
@@ -21,7 +21,7 @@ import timber.log.Timber;
 /**
  * https://www.jumio.com/downloads/pdf/fastfill_netverify_mobile_implementation_guide_for_android_v1_5_0_jumio_sdk.pdf
  */
-public class JumioFastFillUtil implements ActivityResultRequester
+public class JumioFastFillUtil implements FastFillUtil
 {
     public static final JumioDataCenter DATA_CENTER = JumioDataCenter.US;
     public static final String NET_VERIFY_MERCHANT_API_TOKEN = "c4ed0584-b618-4311-b8c8-11ec5f36d47b";
@@ -70,7 +70,7 @@ public class JumioFastFillUtil implements ActivityResultRequester
         return supported;
     }
 
-    public void fastFill(@NonNull Activity activity)
+    @Override public void fastFill(@NonNull Activity activity)
     {
         fastFill(activity, getNetverifySDK(activity));
     }
@@ -81,7 +81,7 @@ public class JumioFastFillUtil implements ActivityResultRequester
         activity.startActivityForResult(netverifySDK.getIntent(), NET_VERIFY_REQUEST_CODE);
     }
 
-    public void fastFill(@NonNull Fragment fragment)
+    @Override public void fastFill(@NonNull Fragment fragment)
     {
         fastFill(fragment, getNetverifySDK(fragment.getActivity()));
     }
@@ -115,7 +115,7 @@ public class JumioFastFillUtil implements ActivityResultRequester
         }
     }
 
-    @NonNull public Observable<ScannedDocument> getScannedDocumentObservable()
+    @NonNull @Override public Observable<ScannedDocument> getScannedDocumentObservable()
     {
         return scannedDocumentSubject.asObservable();
     }
