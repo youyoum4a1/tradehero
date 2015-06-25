@@ -6,7 +6,12 @@ import dagger.Module;
         injects = {
                 LiveCallToActionFragment.class,
                 LiveSignUpMainFragment.class,
-                LiveSignUpStepBaseFragment.class
+                LiveSignUpStepBaseFragment.class,
+                LiveSignUpStep1Fragment.class,
+                LiveSignUpStep2Fragment.class,
+                LiveSignUpStep3Fragment.class,
+                LiveSignUpStep4Fragment.class,
+                LiveSignUpStep5Fragment.class,
         },
         library = true,
         complete = false

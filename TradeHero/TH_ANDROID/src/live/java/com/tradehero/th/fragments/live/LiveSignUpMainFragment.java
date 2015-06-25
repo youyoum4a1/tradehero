@@ -49,11 +49,11 @@ public class LiveSignUpMainFragment extends BaseFragment
     private class SignUpLivePagerAdapter extends FragmentPagerAdapter
     {
         Fragment[] fragments = new Fragment[] {
-                new LiveSignUpStepBaseFragment(),
-                new LiveSignUpStepBaseFragment(),
-                new LiveSignUpStepBaseFragment(),
-                new LiveSignUpStepBaseFragment(),
-                new LiveSignUpStepBaseFragment()};
+                new LiveSignUpStep1Fragment(),
+                new LiveSignUpStep2Fragment(),
+                new LiveSignUpStep3Fragment(),
+                new LiveSignUpStep4Fragment(),
+                new LiveSignUpStep5Fragment()};
 
         public SignUpLivePagerAdapter(FragmentManager fm)
         {

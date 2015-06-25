@@ -10,4 +10,12 @@
     <item name="android:textColorHighlightInverse">@color/tradehero_dark_red</item>
     <item name="slidingTabBackground">@color/tradehero_dark_red</item>
   </style>
+
+  <style name="TradeHero.Live.RewardWidget">
+    <item name="android:layout_margin">4dp</item>
+    <item name="android:contentDescription">@null</item>
+    <item name="android:scaleType">fitCenter</item>
+    <item name="android:alpha">0.3</item>
+  </style>
+
 </resources>
