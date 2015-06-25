@@ -23,7 +23,7 @@ public class KYCFormPreference extends AbstractPreference<KYCForm>
         this.objectMapper = objectMapper;
     }
 
-    @NonNull @Override public KYCForm get()
+    @NonNull @Override public synchronized KYCForm get()
     {
         String saved;
         try
@@ -44,7 +44,7 @@ public class KYCFormPreference extends AbstractPreference<KYCForm>
         }
     }
 
-    @Override public void set(@NonNull KYCForm value)
+    @Override public synchronized void set(@NonNull KYCForm value)
     {
         try
         {
