@@ -25,6 +25,9 @@ import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
 import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
 
 @Module(
+        includes = {
+                PreferenceGameLiveModule.class,
+        },
         complete = false,
         library = true
 )
