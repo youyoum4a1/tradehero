@@ -1,8 +1,10 @@
 package com.tradehero.th.models.jumio;
 
 import android.support.annotation.NonNull;
+import com.tradehero.th.models.fastfill.FastFillException;
 
 public class FastFillNetverifyError extends RuntimeException
+    implements FastFillException
 {
     @NonNull public final String scanReference;
     @NonNull public final NetverifyErrorCode errorCode;
@@ -17,5 +19,10 @@ public class FastFillNetverifyError extends RuntimeException
         super(errorMessage);
         this.scanReference = scanReference;
         this.errorCode = errorCode;
+    }
+
+    @Override public boolean canRetry()
+    {
+        return errorCode.retryPossible;
     }
 }
