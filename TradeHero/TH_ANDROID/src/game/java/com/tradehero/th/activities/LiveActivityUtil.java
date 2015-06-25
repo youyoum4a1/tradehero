@@ -1,6 +1,7 @@
 package com.tradehero.th.activities;
 
 import android.view.Menu;
+import com.tradehero.th.widget.LiveSwitcherEvent;
 
 public class LiveActivityUtil
 {
@@ -12,7 +13,7 @@ public class LiveActivityUtil
     {
     }
 
-    private void onLiveTradingChanged(LiveSwitcher.Event event)
+    private void onLiveTradingChanged(LiveSwitcherEvent event)
     {
     }
 

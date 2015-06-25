@@ -11,6 +11,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.live.LiveCallToActionFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.prefs.IsLiveTrading;
+import com.tradehero.th.widget.LiveSwitcherEvent;
 import com.tradehero.th.widget.LiveSwitcher;
 import javax.inject.Inject;
 import rx.functions.Action1;
@@ -25,7 +26,7 @@ public class LiveActivityUtil
 
     @Inject @IsLiveTrading BooleanPreference isLiveTrading;
     @Inject DashboardNavigator navigator;
-    private PublishSubject<LiveSwitcher.Event> isTradingLivePublishSubject;
+    private PublishSubject<LiveSwitcherEvent> isTradingLivePublishSubject;
 
     public LiveActivityUtil(DashboardActivity dashboardActivity)
     {
@@ -51,25 +52,25 @@ public class LiveActivityUtil
         onDestroyOptionsMenuSubscriptions.add(liveSwitcher.getSwitchObservable().subscribe(isTradingLivePublishSubject));
         onDestroyOptionsMenuSubscriptions.add(isTradingLivePublishSubject
                 .distinctUntilChanged(
-                        new Func1<LiveSwitcher.Event, Boolean>()
+                        new Func1<LiveSwitcherEvent, Boolean>()
                         {
-                            @Override public Boolean call(LiveSwitcher.Event event)
+                            @Override public Boolean call(LiveSwitcherEvent event)
                             {
                                 return event.isLive;
                             }
                         })
-                .startWith(new LiveSwitcher.Event(false, isLiveTrading.get()))
-                .doOnNext(new Action1<LiveSwitcher.Event>()
+                .startWith(new LiveSwitcherEvent(false, isLiveTrading.get()))
+                .doOnNext(new Action1<LiveSwitcherEvent>()
                 {
-                    @Override public void call(LiveSwitcher.Event event)
+                    @Override public void call(LiveSwitcherEvent event)
                     {
                         //Every-time a change happened.
                         isLiveTrading.set(event.isLive);
                     }
                 })
-                .subscribe(new Action1<LiveSwitcher.Event>()
+                .subscribe(new Action1<LiveSwitcherEvent>()
                 {
-                    @Override public void call(LiveSwitcher.Event event)
+                    @Override public void call(LiveSwitcherEvent event)
                     {
                         liveSwitcher.setIsLive(event.isLive, event.isFromUser);
                         onLiveTradingChanged(event);
@@ -86,7 +87,7 @@ public class LiveActivityUtil
         }
     }
 
-    private void onLiveTradingChanged(LiveSwitcher.Event event)
+    private void onLiveTradingChanged(LiveSwitcherEvent event)
     {
         for (Fragment f : dashboardActivity.getSupportFragmentManager().getFragments())
         {
@@ -128,6 +129,6 @@ public class LiveActivityUtil
 
     public void switchLive(boolean isLive)
     {
-        isTradingLivePublishSubject.onNext(new LiveSwitcher.Event(false, isLive));
+        isTradingLivePublishSubject.onNext(new LiveSwitcherEvent(false, isLive));
     }
 }

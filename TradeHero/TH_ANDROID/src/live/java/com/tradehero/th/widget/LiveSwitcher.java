@@ -1,12 +1,10 @@
 package com.tradehero.th.widget;
 
 import android.content.Context;
-import android.support.annotation.ColorRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AnimationUtils;
-import android.widget.TextSwitcher;
 import android.widget.ViewSwitcher;
 import com.tradehero.th.R;
 import rx.Observable;
@@ -19,7 +17,7 @@ public class LiveSwitcher extends ViewSwitcher implements View.OnClickListener
 
     private boolean mIsLive;
 
-    private PublishSubject<Event> mSwitchSubject;
+    private PublishSubject<LiveSwitcherEvent> mSwitchSubject;
 
     public LiveSwitcher(Context context)
     {
@@ -48,7 +46,7 @@ public class LiveSwitcher extends ViewSwitcher implements View.OnClickListener
         boolean isUser = true;
         mIsLive = !mIsLive;
         updateComponents(isUser);
-        mSwitchSubject.onNext(new Event(isUser, mIsLive));
+        mSwitchSubject.onNext(new LiveSwitcherEvent(isUser, mIsLive));
     }
 
     public void setIsLive(boolean isLive, boolean animate)
@@ -58,7 +56,7 @@ public class LiveSwitcher extends ViewSwitcher implements View.OnClickListener
         updateComponents(animate);
         if (changed)
         {
-            mSwitchSubject.onNext(new Event(false, mIsLive));
+            mSwitchSubject.onNext(new LiveSwitcherEvent(false, mIsLive));
         }
     }
 
@@ -69,30 +67,8 @@ public class LiveSwitcher extends ViewSwitcher implements View.OnClickListener
         setDisplayedChild(mIsLive ? FLIPPER_LIVE_INDEX : FLIPPER_VIRTUAL_INDEX);
     }
 
-    public Observable<Event> getSwitchObservable()
+    public Observable<LiveSwitcherEvent> getSwitchObservable()
     {
         return mSwitchSubject.distinctUntilChanged();
-    }
-
-    public static class Event
-    {
-        public boolean isFromUser;
-        public boolean isLive;
-
-        public Event(boolean isFromUser, boolean isLive)
-        {
-            this.isFromUser = isFromUser;
-            this.isLive = isLive;
-        }
-
-        @Override public boolean equals(Object o)
-        {
-            if (this == o) return true;
-            if (!(o instanceof Event)) return false;
-
-            Event event = (Event) o;
-
-            return isFromUser == event.isFromUser && isLive == event.isLive;
-        }
     }
 }
