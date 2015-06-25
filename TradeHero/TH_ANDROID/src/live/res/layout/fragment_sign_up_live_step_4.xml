@@ -6,17 +6,10 @@
     >
 
   <LinearLayout
+      style="@style/TradeHero.Live.SignUpInnerContainer"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:padding="@dimen/margin_small"
       >
-
-    <com.tradehero.th.widget.LiveRewardWidget
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:rewardStep="4"
-        />
 
   </LinearLayout>
 </ScrollView>

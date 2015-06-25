@@ -6,8 +6,8 @@
     <item name="colorAccent">@color/tradehero_red_focused</item>
     <item name="colorPrimary">@color/tradehero_red</item>
     <item name="colorPrimaryDark">#922820</item>
-    <item name="android:textColorHighlight">@color/tradehero_red</item>
-    <item name="android:textColorHighlightInverse">@color/tradehero_dark_red</item>
+    <item name="android:textColorHighlight">@color/accented_primary_red_text</item>
+    <item name="android:textColorHighlightInverse">@color/accented_secondary_red_text</item>
     <item name="slidingTabBackground">@color/tradehero_dark_red</item>
   </style>
 
@@ -16,6 +16,17 @@
     <item name="android:contentDescription">@null</item>
     <item name="android:scaleType">fitCenter</item>
     <item name="android:alpha">0.3</item>
+  </style>
+
+  <style name="TradeHero.Live.SignUpInnerContainer">
+    <item name="android:orientation">vertical</item>
+    <item name="android:gravity">center_horizontal</item>
+    <item name="android:clipToPadding">false</item>
+    <item name="android:paddingTop">80dp</item>
+    <item name="android:paddingLeft">@dimen/margin_small</item>
+    <item name="android:paddingRight">@dimen/margin_small</item>
+    <item name="android:paddingBottom">@dimen/margin_small</item>
+    <item name="android:maxWidth">480dp</item>
   </style>
 
 </resources>

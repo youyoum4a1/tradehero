@@ -334,4 +334,8 @@
   <string name="live_identity_prompt_hint">This will help you to auto-fill some information</string>
   <string name="yes">Yes</string>
   <string name="no">No</string>
+  <string name="basic_information">Basic Information</string>
+  <string name="verify">Verify</string>
+  <string name="mobile_number">Mobile Number</string>
+  <string name="date_of_birth">Date of Birth</string>
 </resources>
