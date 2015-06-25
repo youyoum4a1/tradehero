@@ -193,6 +193,8 @@ public class DashboardActivity extends BaseActivity
 
         localBroadcastManager.registerReceiver(onlineStateReceiver, new IntentFilter(OnlineStateReceiver.ONLINE_STATE_CHANGED));
         lifeActivityUtil = new LiveActivityUtil(this);
+
+        activityModule.liveActivityUtil = lifeActivityUtil;
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu)

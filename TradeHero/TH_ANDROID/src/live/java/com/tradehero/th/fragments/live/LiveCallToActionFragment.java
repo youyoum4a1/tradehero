@@ -11,6 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.IdentityPromptActivity;
+import com.tradehero.th.activities.LiveActivityUtil;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import javax.inject.Inject;
@@ -18,6 +19,7 @@ import javax.inject.Inject;
 public class LiveCallToActionFragment extends DashboardFragment
 {
     @Inject DashboardNavigator navigator;
+    @Inject LiveActivityUtil liveActivityUtil;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -36,15 +38,6 @@ public class LiveCallToActionFragment extends DashboardFragment
         setActionBarTitle(R.string.tradehero_live);
     }
 
-    @Override public void onLiveTradingChanged(boolean isLive)
-    {
-        super.onLiveTradingChanged(isLive);
-        if (!isLive)
-        {
-            navigator.popFragment();
-        }
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
@@ -61,6 +54,7 @@ public class LiveCallToActionFragment extends DashboardFragment
     @OnClick(R.id.live_button_later)
     public void onLaterButtonClicked(View v)
     {
+        liveActivityUtil.switchLive(false);
         navigator.popFragment();
     }
 }

@@ -92,7 +92,7 @@ public class LiveSwitcher extends ViewSwitcher implements View.OnClickListener
 
             Event event = (Event) o;
 
-            return isLive == event.isLive;
+            return isFromUser == event.isFromUser && isLive == event.isLive;
         }
     }
 }

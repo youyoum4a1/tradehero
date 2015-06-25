@@ -7,13 +7,14 @@ import android.view.MenuItem;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.live.LiveCallToActionFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.widget.LiveSwitcher;
 import javax.inject.Inject;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
@@ -49,7 +50,14 @@ public class LiveActivityUtil
 
         onDestroyOptionsMenuSubscriptions.add(liveSwitcher.getSwitchObservable().subscribe(isTradingLivePublishSubject));
         onDestroyOptionsMenuSubscriptions.add(isTradingLivePublishSubject
-                .distinctUntilChanged()
+                .distinctUntilChanged(
+                        new Func1<LiveSwitcher.Event, Boolean>()
+                        {
+                            @Override public Boolean call(LiveSwitcher.Event event)
+                            {
+                                return event.isLive;
+                            }
+                        })
                 .startWith(new LiveSwitcher.Event(false, isLiveTrading.get()))
                 .doOnNext(new Action1<LiveSwitcher.Event>()
                 {
@@ -70,7 +78,7 @@ public class LiveActivityUtil
 
         for (Fragment f : dashboardActivity.getSupportFragmentManager().getFragments())
         {
-            if (f instanceof BaseFragment && f.isVisible() && ((BaseFragment) f).shouldShowLiveTradingToggle())
+            if (f instanceof DashboardFragment && f.isVisible() && ((DashboardFragment) f).shouldShowLiveTradingToggle())
             {
                 item.setVisible(true);
                 break;
@@ -82,9 +90,9 @@ public class LiveActivityUtil
     {
         for (Fragment f : dashboardActivity.getSupportFragmentManager().getFragments())
         {
-            if (f instanceof BaseFragment && f.isVisible())
+            if (f instanceof DashboardFragment && f.isVisible())
             {
-                ((BaseFragment) f).onLiveTradingChanged(event.isLive);
+                ((DashboardFragment) f).onLiveTradingChanged(event.isLive);
             }
         }
 
@@ -116,5 +124,10 @@ public class LiveActivityUtil
         }
         this.isTradingLivePublishSubject = null;
         this.dashboardActivity = null;
+    }
+
+    public void switchLive(boolean isLive)
+    {
+        isTradingLivePublishSubject.onNext(new LiveSwitcher.Event(false, isLive));
     }
 }

@@ -127,7 +127,7 @@ public class AchievementListTestingFragment extends BaseFragment
 
         userAchievementDTO.isReset = true;
         userAchievementDTO.xpEarned = 400;
-        userAchievementDTO.xpTotal = 1030;
+        userAchievementDTO.xpTotal = 530;
 
         userAchievementCache.onNextAndBroadcast(userAchievementDTO);
     }

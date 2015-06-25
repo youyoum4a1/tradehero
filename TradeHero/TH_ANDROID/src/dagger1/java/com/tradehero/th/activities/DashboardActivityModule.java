@@ -71,6 +71,7 @@ import javax.inject.Singleton;
     DashboardTabHost dashboardTabHost;
     int tabHostHeight;
     Analytics analytics;
+    LiveActivityUtil liveActivityUtil;
 
     @Provides DashboardNavigator provideDashboardNavigator()
     {
@@ -173,5 +174,10 @@ import javax.inject.Singleton;
     @Provides @ForAnalytics DashboardNavigator.DashboardFragmentWatcher provideAnalyticsReporter()
     {
         return new NavigationAnalyticsReporter(analytics, dashboardTabHost);
+    }
+
+    @Provides LiveActivityUtil provideLiveActivityUtil()
+    {
+        return liveActivityUtil;
     }
 }

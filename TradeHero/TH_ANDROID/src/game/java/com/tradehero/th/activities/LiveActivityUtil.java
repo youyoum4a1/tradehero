@@ -12,7 +12,15 @@ public class LiveActivityUtil
     {
     }
 
+    private void onLiveTradingChanged(LiveSwitcher.Event event)
+    {
+    }
+
     public void onDestroy()
+    {
+    }
+
+    public void switchLive(boolean isLive)
     {
     }
 }
