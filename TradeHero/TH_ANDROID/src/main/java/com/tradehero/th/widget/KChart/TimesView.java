@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import com.tradehero.chinabuild.data.QuoteTick;
+import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -322,54 +323,53 @@ public class TimesView extends TimesBase
 		Double price = fenshiData.price;
         Double avgPrice = fenshiData.avgPrice;
 		Long volume = fenshiData.volume;
-        if (price != null) {
-    		initialWeightedIndex = price;
+        if (SecurityDetailFragment.mPreClose != null) {
+    		    initialWeightedIndex = SecurityDetailFragment.mPreClose;
         }
         if (volume != null) {
     		lowerHigh = volume;
         }
-    for (int i = 0; i < timesList.size(); i++) {
-        fenshiData = this.timesList.get(i);
-        //Timber.d("lyl i="+i+" "+fenshiData.toString());
-        if (fenshiData.price == null || fenshiData.avgPrice == null || fenshiData.volume == null) {
-            //Timber.d("lyl null i="+i);
-            //fix null point
-            if (i == 0 || i == timesList.size() - 1 || timesList.get(i+1).price == null || timesList.get(i+1).avgPrice == null || timesList.get(i+1).volume == null) {
-                continue;
-            } else if (timesList.get(i-1).price != null && timesList.get(i+1).price != null) {
-                this.timesList.get(i).price = (timesList.get(i-1).price + timesList.get(i+1).price) / 2;
-                this.timesList.get(i).avgPrice = (timesList.get(i-1).avgPrice + timesList.get(i+1).avgPrice) / 2;
-                this.timesList.get(i).volume = (timesList.get(i-1).volume + timesList.get(i+1).volume) / 2;
+        for (int i = 0; i < timesList.size(); i++) {
+            fenshiData = this.timesList.get(i);
+            //Timber.d("lyl i="+i+" "+fenshiData.toString());
+            if (fenshiData.price == null || fenshiData.avgPrice == null || fenshiData.volume == null) {
+                //Timber.d("lyl null i="+i);
+                //fix null point
+                if (i == 0 || i == timesList.size() - 1 || timesList.get(i+1).price == null || timesList.get(i+1).avgPrice == null || timesList.get(i+1).volume == null) {
+                    continue;
+                } else if (timesList.get(i-1).price != null && timesList.get(i+1).price != null) {
+                    this.timesList.get(i).price = (timesList.get(i-1).price + timesList.get(i+1).price) / 2;
+                    this.timesList.get(i).avgPrice = (timesList.get(i-1).avgPrice + timesList.get(i+1).avgPrice) / 2;
+                    this.timesList.get(i).volume = (timesList.get(i-1).volume + timesList.get(i+1).volume) / 2;
+                }
             }
-        }
 
-        if (initialWeightedIndex == 0 && fenshiData.price != null) {
-            initialWeightedIndex = fenshiData.price;
-        }
-        if (lowerHigh == 0 && fenshiData.volume != null) {
-            lowerHigh = fenshiData.volume;
-        }
-        price = fenshiData.price;
-        avgPrice = fenshiData.avgPrice;
-        if (i == 0) {
-            volume = fenshiData.volume;
-        } else if (timesList.get(i - 1).volume != null) {
-            volume = fenshiData.volume - timesList.get(i - 1).volume;
-        } else {
-            continue;
-        }
+            if (initialWeightedIndex == 0 && fenshiData.price != null) {
+                initialWeightedIndex = fenshiData.price;
+            }
+            if (lowerHigh == 0 && fenshiData.volume != null) {
+                lowerHigh = fenshiData.volume;
+            }
+            price = fenshiData.price;
+            avgPrice = fenshiData.avgPrice;
+            if (i == 0) {
+                volume = fenshiData.volume;
+            } else if (timesList.get(i - 1).volume != null) {
+                volume = fenshiData.volume - timesList.get(i - 1).volume;
+            } else {
+                continue;
+            }
 
-        if (initialWeightedIndex == 0 || volume == null) {
-            continue;
+            if (initialWeightedIndex == 0 || volume == null) {
+                continue;
+            }
+            uperHalfHigh = (float) (uperHalfHigh > Math
+                    .abs(avgPrice - initialWeightedIndex) ? uperHalfHigh : Math
+                    .abs(avgPrice - initialWeightedIndex));
+            uperHalfHigh = (float) (uperHalfHigh > Math.abs(price - initialWeightedIndex) ? uperHalfHigh
+                    : Math.abs(price - initialWeightedIndex));
+            lowerHigh = lowerHigh > volume ? lowerHigh : volume;
         }
-        uperHalfHigh = (float) (uperHalfHigh > Math
-                .abs(avgPrice - initialWeightedIndex) ? uperHalfHigh : Math
-                .abs(avgPrice - initialWeightedIndex));
-        uperHalfHigh = (float) (uperHalfHigh > Math.abs(price - initialWeightedIndex) ? uperHalfHigh
-                : Math.abs(price - initialWeightedIndex));
-        lowerHigh = lowerHigh > volume ? lowerHigh : volume;
-		}
-		postInvalidate();
-
-	}
+        postInvalidate();
+    }
 }

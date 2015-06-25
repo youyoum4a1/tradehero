@@ -290,6 +290,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             SecurityDetailFragment.class.getName() + ".purchaseApplicablePortfolioId";
     public static final String BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE = SecurityDetailFragment.class.getName() + ".positionDTOKey";
 
+    public static Double mPreClose;
+
     public static void putApplicablePortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
     {
         args.putBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
@@ -1455,6 +1457,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             tvYesterdayPriceEnd.setText(THSignedMoney.builder(quoteDetail.prec)
                     .currency(currency)
                     .build().toString());
+            mPreClose = quoteDetail.prec;
         }
 
         if (quoteDetail.amou != null) {
