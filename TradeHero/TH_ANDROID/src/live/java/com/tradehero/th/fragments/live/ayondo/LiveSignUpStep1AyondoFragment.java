@@ -1,6 +1,7 @@
-package com.tradehero.th.fragments.live;
+package com.tradehero.th.fragments.live.ayondo;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +13,11 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.live.LiveSignUpStepBaseFragment;
+import com.tradehero.th.models.kyc.KYCForm;
 import com.tradehero.th.utils.GraphicUtil;
 
-public class LiveSignUpStep1Fragment extends LiveSignUpStepBaseFragment
+public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseFragment
 {
     @InjectView(R.id.info_title) Spinner title;
 
@@ -28,15 +31,19 @@ public class LiveSignUpStep1Fragment extends LiveSignUpStepBaseFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         ArrayAdapter stringArrayAdapter =
-                new ArrayAdapter<String>(getActivity(), R.layout.sign_up_dropdown_item_selected, getResources().getStringArray(R.array.live_title_array)){
+                new ArrayAdapter<String>(getActivity(),
+                        R.layout.sign_up_dropdown_item_selected,
+                        getResources().getStringArray(R.array.live_title_array))
+                {
                     @Override public View getView(int position, View convertView, ViewGroup parent)
                     {
                         View v = super.getView(position, convertView, parent);
-                        if(!SDKUtils.isLollipopOrHigher())
+                        if (!SDKUtils.isLollipopOrHigher())
                         {
-                            if(v instanceof TextView)
+                            if (v instanceof TextView)
                             {
-                                ((TextView) v).setCompoundDrawablesWithIntrinsicBounds(null, null, GraphicUtil.createStateListDrawableRes(getActivity(), R.drawable.abc_spinner_mtrl_am_alpha), null);
+                                ((TextView) v).setCompoundDrawablesWithIntrinsicBounds(null, null,
+                                        GraphicUtil.createStateListDrawableRes(getActivity(), R.drawable.abc_spinner_mtrl_am_alpha), null);
                             }
                         }
                         return v;
@@ -44,5 +51,10 @@ public class LiveSignUpStep1Fragment extends LiveSignUpStepBaseFragment
                 };
         stringArrayAdapter.setDropDownViewResource(R.layout.sign_up_dropdown_item);
         title.setAdapter(stringArrayAdapter);
+    }
+
+    @Override public void onNext(@NonNull KYCForm kycForm)
+    {
+        // TODO
     }
 }
