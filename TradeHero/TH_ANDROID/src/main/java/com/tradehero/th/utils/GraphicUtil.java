@@ -4,6 +4,7 @@ import android.animation.Keyframe;
 import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -14,8 +15,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.media.ExifInterface;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
@@ -328,6 +332,31 @@ public class GraphicUtil
         states.addState(new int[] {android.R.attr.state_focused}, new ColorDrawable(focused)); //Focused
         states.addState(new int[] {}, new ColorDrawable(normal)); //normal
         return states;
+    }
+
+    public static Drawable createStateListDrawableRes(@NonNull Context context, @DrawableRes int drawableResId)
+    {
+        int[] attrs = new int[] {
+                R.attr.colorControlNormal,
+                R.attr.colorPrimary
+        };
+
+        TypedArray array = context.getTheme().obtainStyledAttributes(attrs);
+
+        ColorStateList list = new ColorStateList(new int[][] {
+                new int[] {android.R.attr.state_pressed},
+                new int[] {}
+        }, new int[] {
+                array.getColor(1, Color.BLACK),
+                array.getColor(0, Color.BLACK)}
+        );
+
+        Drawable drawable = ContextCompat.getDrawable(context, drawableResId);
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN);
+        DrawableCompat.setTintList(drawable, list);
+        array.recycle();
+        return drawable;
     }
 
     @SuppressLint("NewApi")

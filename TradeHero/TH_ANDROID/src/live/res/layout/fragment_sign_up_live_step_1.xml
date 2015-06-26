@@ -28,9 +28,12 @@
           >
 
           <Spinner
+              android:id="@+id/info_title"
+              style="@style/TH.Spinner"
               android:layout_width="0dp"
               android:layout_height="wrap_content"
               android:layout_weight="0.15"
+              android:background="?attr/selectableItemBackground"
               android:minHeight="@dimen/clickable_element_min_dimen"
               />
 
@@ -64,7 +67,7 @@
           <EditText
               style="@style/TH.Body"
               android:layout_width="0dp"
-              android:layout_height="wrap_content"
+          android:layout_height="wrap_content"
               android:layout_weight="0.8"
               android:hint="@string/email"
               android:inputType="textEmailAddress"
@@ -90,8 +93,9 @@
           >
 
           <Spinner
+              style="@style/TH.Spinner"
               android:layout_width="0dp"
-              android:layout_height="wrap_content"
+          android:layout_height="wrap_content"
               android:layout_weight="0.15"
               android:minHeight="@dimen/clickable_element_min_dimen"
               />
@@ -119,9 +123,10 @@
       </LinearLayout>
 
       <Spinner
+          style="@style/TH.Spinner"
           android:layout_width="match_parent"
           android:layout_height="@dimen/clickable_element_min_dimen"
-        />
+          />
 
       <EditText
           android:layout_width="match_parent"
@@ -130,7 +135,7 @@
           android:focusable="false"
           android:focusableInTouchMode="false"
           android:hint="@string/date_of_birth"
-          />
+        />
 
   </LinearLayout>
 </ScrollView>
