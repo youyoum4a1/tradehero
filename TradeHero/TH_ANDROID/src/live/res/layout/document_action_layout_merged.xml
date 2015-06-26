@@ -24,7 +24,6 @@
       android:layout_alignParentRight="true"
       android:background="?attr/selectableItemBackgroundBorderless"
       android:src="@drawable/icn_popup_close"
-      android:tint="@color/primary_text"
       android:visibility="gone"
       tools:visibility="visible"
       />

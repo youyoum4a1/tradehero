@@ -45,7 +45,6 @@
               android:layout_alignParentEnd="true"
               android:layout_alignParentRight="true"
               android:src="@drawable/icn_popup_close"
-              android:tint="@color/primary_text"
               android:background="?attr/selectableItemBackgroundBorderless"
               />
 
@@ -86,6 +85,7 @@
               android:hint="@string/city"
               android:minHeight="@dimen/clickable_element_min_dimen"
               />
+
       </LinearLayout>
 
       <EditText
@@ -102,5 +102,7 @@
           android:minHeight="@dimen/clickable_element_min_dimen"
           android:text="@string/address_less_than_1_year"
           />
+
   </LinearLayout>
+
 </ScrollView>
