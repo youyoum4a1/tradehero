@@ -131,6 +131,7 @@
       <EditText
           android:layout_width="match_parent"
           android:layout_height="@dimen/clickable_element_min_dimen"
+          style="@style/TH.Body"
           android:clickable="true"
           android:focusable="false"
           android:focusableInTouchMode="false"
