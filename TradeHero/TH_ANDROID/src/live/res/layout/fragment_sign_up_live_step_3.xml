@@ -6,10 +6,73 @@
     >
 
   <LinearLayout
+      style="@style/TradeHero.Live.SignUpInnerContainer"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      style="@style/TradeHero.Live.SignUpInnerContainer"
       >
 
+      <TextView
+          style="@style/TH.Subhead"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/margin_small"
+          android:layout_marginTop="@dimen/margin_small"
+          android:gravity="center_horizontal"
+          android:text="@string/trading_experience"
+          />
+
+      <CheckBox
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/clickable_element_min_dimen"
+          android:text="@string/experience_financial_sector"
+          />
+
+      <CheckBox
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/clickable_element_min_dimen"
+          android:text="@string/experience_financial_seminars"
+          />
+
+      <CheckBox
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/clickable_element_min_dimen"
+          android:text="@string/experience_financial_qualifications"
+          />
+
+      <Spinner
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/clickable_element_min_dimen"
+          />
+
+      <TextView
+          style="@style/TH.Caption"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/experience_product_traded"
+          />
+
+      <CheckBox
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/clickable_element_min_dimen"
+          android:text="@string/experience_bonds"
+          />
+
+      <CheckBox
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/clickable_element_min_dimen"
+          android:text="@string/experience_otc_derivatives"
+          />
+
+      <CheckBox
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/clickable_element_min_dimen"
+          android:text="@string/experience_exchange_traded_derivatives"
+          />
   </LinearLayout>
 </ScrollView>

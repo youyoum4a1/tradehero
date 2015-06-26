@@ -1,15 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
 
   <LinearLayout
+      style="@style/TradeHero.Live.SignUpInnerContainer"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      style="@style/TradeHero.Live.SignUpInnerContainer"
       >
+
+      <TextView
+          style="@style/TH.Subhead"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/margin_small"
+          android:layout_marginTop="@dimen/margin_small"
+          android:gravity="center_horizontal"
+          android:text="@string/required_document"
+          />
+
+      <Spinner
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/clickable_element_min_dimen"
+          />
+
+      <com.tradehero.th.widget.DocumentActionWidget
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:drawableLeft="@drawable/ic_file_file_upload"
+          android:text="@string/tap_to_upload"
+          />
+
+      <Spinner
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/clickable_element_min_dimen"
+          android:layout_marginTop="@dimen/margin_xsmall"
+          />
+
+      <com.tradehero.th.widget.DocumentActionWidget
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:drawableLeft="@drawable/ic_file_file_upload"
+          android:text="@string/tap_to_upload"
+          />
+
+      <com.tradehero.th.widget.DocumentActionWidget
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:drawableLeft="@drawable/ic_content_gesture"
+          android:text="@string/tap_to_sign"
+          android:layout_marginTop="@dimen/margin_xsmall"
+          />
+
 
   </LinearLayout>
 </ScrollView>

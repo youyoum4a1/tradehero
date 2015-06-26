@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+  <Button
+      android:id="@+id/document_action"
+      style="@style/TH.Button.Small"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="?attr/selectableItemBackground"
+      android:minHeight="@dimen/clickable_element_min_dimen"
+      android:paddingEnd="@dimen/margin_xsmall"
+      android:paddingRight="@dimen/margin_xsmall"
+      tools:drawableLeft="@drawable/ic_file_file_upload"
+      tools:text="@string/tap_to_upload"
+      />
+
+  <ImageButton
+      android:id="@+id/document_clear"
+      android:layout_width="@dimen/clickable_element_min_dimen"
+      android:layout_height="@dimen/clickable_element_min_dimen"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:background="?attr/selectableItemBackgroundBorderless"
+      android:src="@drawable/icn_popup_close"
+      android:tint="@color/primary_text"
+      android:visibility="gone"
+      tools:visibility="visible"
+      />
+
+  <ImageView
+      android:id="@+id/document_preview"
+      android:layout_width="@dimen/size_10"
+      android:layout_height="@dimen/clickable_element_min_dimen"
+      android:layout_toLeftOf="@id/document_clear"
+      android:layout_toStartOf="@id/document_clear"
+      android:scaleType="centerCrop"
+      android:visibility="gone"
+      tools:src="@drawable/invite_friends_banner"
+      tools:visibility="visible"
+      />
+
+
+</merge>

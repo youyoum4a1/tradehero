@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="switch_to_live">Switch to Live</string>
+  <string name="virtual">Virtual</string>
+  <string name="live">Live</string>
+  <string name="go_live_span">Go %1$s !</string>
+  <string name="live_call_to_action_string">You are only 5 steps away from your own TradeHero LIVE account!\nGo LIVE now and get US$ 100.00 to start.</string>
+  <string name="tradehero_live">TradeHero LIVE</string>
+  <string name="live_5_steps_away">You are 5 steps away to open an account!</string>
+  <string name="live_identity_prompt">Do you have your Proof of Identity with you?</string>
+  <string name="live_identity_prompt_hint">This will help you to auto-fill some information</string>
+  <string name="yes">Yes</string>
+  <string name="no">No</string>
+  <string name="basic_information">Basic Information</string>
+  <string name="verify">Verify</string>
+  <string name="mobile_number">Mobile Number</string>
+  <string name="date_of_birth">Date of Birth</string>
+  <string name="income_and_employment">Income &amp; Employment</string>
+  <string name="trading_experience">Trading Experience</string>
+  <string name="postal_address">Postal Address</string>
+  <string name="required_document">Required Documents</string>
+  <string name="employment_regulated_by_authority">Employer is regulated by a financial authority.</string>
+  <string name="experience_financial_sector">Worked in the finance sector for at least one year in a professional position that requires trading knowledge.</string>
+  <string name="experience_financial_seminars">Previously attended training seminars or gained knowledge of Ayondo\'s products.</string>
+  <string name="experience_financial_qualifications">Have other relevant qualifications that you consider would assist your understanding of our services.</string>
+  <string name="experience_bonds">Shares and Bonds</string>
+  <string name="experience_otc_derivatives">OTC Derivatives</string>
+  <string name="experience_exchange_traded_derivatives">Exchange Traded Derivatives</string>
+  <string name="experience_product_traded">Products Traded</string>
+  <string name="use_current_location">Use Current Location</string>
+  <string name="address_line_1">Address Line 1</string>
+  <string name="address_line_2">Address Line 2</string>
+  <string name="city">City</string>
+  <string name="postal_code">Postal Code</string>
+  <string name="address_less_than_1_year">Less than 1 year at this address?</string>
+  <string name="tap_to_upload">Tap to upload</string>
+  <string name="tap_to_sign">Tap to sign</string>
+</resources>

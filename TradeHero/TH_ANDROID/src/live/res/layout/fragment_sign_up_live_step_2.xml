@@ -11,5 +11,42 @@
       android:layout_height="wrap_content"
       >
 
+      <TextView
+          style="@style/TH.Subhead"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/margin_small"
+          android:layout_marginTop="@dimen/margin_small"
+          android:gravity="center_horizontal"
+          android:text="@string/income_and_employment"
+          />
+
+      <Spinner
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/clickable_element_min_dimen"
+          />
+
+      <Spinner
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/clickable_element_min_dimen"
+          />
+
+      <Spinner
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/clickable_element_min_dimen"
+          />
+
+      <Spinner
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/clickable_element_min_dimen"
+          />
+
+      <CheckBox
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/clickable_element_min_dimen"
+          android:text="@string/employment_regulated_by_authority"
+          />
+
   </LinearLayout>
 </ScrollView>

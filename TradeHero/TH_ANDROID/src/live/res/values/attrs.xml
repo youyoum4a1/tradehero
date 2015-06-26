@@ -4,4 +4,9 @@
     <attr name="rewardStep"
         format="integer" />
   </declare-styleable>
+
+  <declare-styleable name="DocumentActionWidget">
+    <attr name="android:text" />
+    <attr name="android:drawableLeft" />
+  </declare-styleable>
 </resources>
