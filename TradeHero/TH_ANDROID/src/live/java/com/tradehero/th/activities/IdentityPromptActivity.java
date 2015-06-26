@@ -9,6 +9,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.live.LiveBrokerSituationDTO;
+import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.models.fastfill.FastFillException;
 import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.models.fastfill.ScannedDocument;
@@ -109,7 +111,21 @@ public class IdentityPromptActivity extends BaseActivity
 
     @NonNull protected Observable<KYCForm> getFormToUse()
     {
-        return liveServiceWrapper.getDefaultKYCForm()
+        return liveServiceWrapper.getLiveTradingSituation()
+                .map(new Func1<LiveTradingSituationDTO, KYCForm>()
+                {
+                    @Override public KYCForm call(LiveTradingSituationDTO liveTradingSituation)
+                    {
+                        for (LiveBrokerSituationDTO situation : liveTradingSituation.brokerSituations)
+                        {
+                            if (situation.kycForm != null)
+                            {
+                                return situation.kycForm;
+                            }
+                        }
+                        throw new IllegalArgumentException("There is no available kycForm");
+                    }
+                })
                 .map(new Func1<KYCForm, KYCForm>()
                 {
                     @Override public KYCForm call(@NonNull KYCForm defaultForm)

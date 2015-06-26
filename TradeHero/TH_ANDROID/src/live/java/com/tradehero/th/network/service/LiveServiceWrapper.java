@@ -1,14 +1,12 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.live.LiveBrokerConstants;
-import com.tradehero.th.api.live.TradingAvailableDTO;
+import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.live.LiveBrokerId;
+import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.models.kyc.KYCForm;
-import com.tradehero.th.models.kyc.KYCFormFactory;
-import com.tradehero.th.models.kyc.ayondo.KYCAyondoForm;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.functions.Func1;
 
 public class LiveServiceWrapper
 {
@@ -19,36 +17,15 @@ public class LiveServiceWrapper
         this.liveServiceRx = liveServiceRx;
     }
 
-    @NonNull public Observable<TradingAvailableDTO> isAvailable()
+    @NonNull public Observable<LiveTradingSituationDTO> getLiveTradingSituation()
     {
-        return liveServiceRx.isAvailable();
+        return liveServiceRx.getLiveTradingSituation();
     }
 
-    @NonNull public Observable<KYCForm> getDefaultKYCForm() // Passes null values
+    @NonNull public Observable<BaseResponseDTO> applyToLiveBroker(
+            @NonNull LiveBrokerId brokerId,
+            @NonNull KYCForm kycForm)
     {
-        return isAvailable()
-                .map(new Func1<TradingAvailableDTO, KYCForm>()
-                {
-                    @Override public KYCForm call(TradingAvailableDTO tradingAvailableDTO)
-                    {
-                        // TODO Make this better when the server returns a partially formed form
-                        if (tradingAvailableDTO.broker == null)
-                        {
-                            return null;
-                        }
-                        else
-                        {
-                            switch (tradingAvailableDTO.broker.id.key)
-                            {
-                                case LiveBrokerConstants.AYONDO_ID:
-                                    return new KYCAyondoForm();
-
-                                default:
-                                    throw new IllegalArgumentException("Unknown id: " + tradingAvailableDTO.broker.id.key);
-                            }
-                        }
-                    }
-                })
-                .onErrorResumeNext(KYCFormFactory.createDefaultForm());
+        return liveServiceRx.applyLiveBroker(brokerId.key, kycForm);
     }
 }
