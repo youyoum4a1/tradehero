@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.models.kyc.ayondo.KYCAyondoForm;
+import java.util.List;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -16,4 +17,6 @@ import com.tradehero.th.models.kyc.ayondo.KYCAyondoForm;
 }) public interface KYCForm
 {
     void pickFrom(@NonNull ScannedDocument scannedDocument);
+
+    void setStepStatuses(@NonNull List<StepStatus> stepStatuses);
 }
