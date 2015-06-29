@@ -231,15 +231,16 @@ public class PortfolioListItemView extends RelativeLayout
                     displayablePortfolioDTO.portfolioDTO != null &&
                     displayablePortfolioDTO.portfolioDTO.roiSinceInception != null)
             {
+                String format = displayablePortfolioDTO.portfolioDTO.isDefault() ? null : getContext().getString(R.string.roi_since_format, "%1$s",
+                        DateUtils.getDisplayableDate(getContext().getResources(), displayablePortfolioDTO.portfolioDTO.creationDate,
+                                R.string.data_format_d_mmm_yyyy));
                 THSignedPercentage.builder(displayablePortfolioDTO.portfolioDTO.roiSinceInception * 100)
                         .withSign()
                         .signTypePlusMinusAlways()
                         .withDefaultColor()
                         .boldSign()
                         .boldValue()
-                        .format(getContext().getString(R.string.roi_since_format, "%1$s",
-                                DateUtils.getDisplayableDate(getContext().getResources(), displayablePortfolioDTO.portfolioDTO.creationDate,
-                                        R.string.data_format_d_mmm_yyyy)))
+                        .format(format)
                         .build()
                         .into(roiValue);
                 roiValue.setVisibility(VISIBLE);
