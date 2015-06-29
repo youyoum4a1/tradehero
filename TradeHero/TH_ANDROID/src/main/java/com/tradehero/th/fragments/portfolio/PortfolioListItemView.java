@@ -123,10 +123,7 @@ public class PortfolioListItemView extends RelativeLayout
         displayUserIcon();
         displayTitle();
         displayDescription();
-        if (!displayablePortfolioDTO.portfolioDTO.isWatchlist)
-        {
-            displayRoiValue();
-        }
+        displayRoiValue();
         displayImage();
     }
 
@@ -149,7 +146,8 @@ public class PortfolioListItemView extends RelativeLayout
                                 {
                                     GraphicUtil.applyColorFilter(portfolioImage,
                                             getResources().getColor(colorResId));
-                                }}
+                                }
+                            }
 
                             @Override public void onBitmapFailed(Drawable errorDrawable)
                             {
@@ -169,12 +167,7 @@ public class PortfolioListItemView extends RelativeLayout
         displayUserIcon();
         displayTitle();
         displayDescription();
-        if ((displayablePortfolioDTO != null)
-                && (displayablePortfolioDTO.portfolioDTO != null)
-                && !displayablePortfolioDTO.portfolioDTO.isWatchlist)
-        {
-            displayRoiValue();
-        }
+        displayRoiValue();
     }
 
     public void displayUserIcon()
@@ -241,6 +234,9 @@ public class PortfolioListItemView extends RelativeLayout
                         .withSign()
                         .signTypePlusMinusAlways()
                         .withDefaultColor()
+                        .boldSign()
+                        .boldValue()
+                        .format(getContext().getString(R.string.roi_since_inception_format))
                         .build()
                         .into(roiValue);
                 roiValue.setVisibility(VISIBLE);
@@ -249,9 +245,9 @@ public class PortfolioListItemView extends RelativeLayout
             {
                 roiValue.setVisibility(GONE);
             }
-            else if (displayablePortfolioDTO != null &&
-                    displayablePortfolioDTO.portfolioDTO != null &&
-                    displayablePortfolioDTO.portfolioDTO.isWatchlist)
+            else if (displayablePortfolioDTO != null
+                    && displayablePortfolioDTO.portfolioDTO != null
+                    && displayablePortfolioDTO.portfolioDTO.isWatchlist)
             {
                 roiValue.setVisibility(GONE);
             }
