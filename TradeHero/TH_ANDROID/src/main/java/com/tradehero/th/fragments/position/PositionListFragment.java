@@ -1013,6 +1013,10 @@ public class PositionListFragment
         {
             positionItemAdapter.remove(nothingDTO);
         }
+        else if (filterViewDTOs.contains(nothingDTO))
+        {
+            positionItemAdapter.removeAll();
+        }
         positionItemAdapter.addAll(filterViewDTOs);
         swipeToRefreshLayout.setRefreshing(false);
         listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
