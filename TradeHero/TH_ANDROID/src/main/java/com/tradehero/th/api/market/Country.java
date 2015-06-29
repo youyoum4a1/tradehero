@@ -57,6 +57,7 @@ public enum Country
     CN(R.drawable.square_cn, R.string.location_name_cn),
     CO(R.drawable.square_co, R.string.location_name_co),
     CR(R.drawable.square_cr, R.string.location_name_cr),
+    CS(R.drawable.square_rs, R.string.location_name_cs), // Added to avoid reporting on Crashlytics.
     CU(R.drawable.square_cu, R.string.location_name_cu),
     CV(R.drawable.square_cv, R.string.location_name_cv),
     CX(R.drawable.square_cx, R.string.location_name_cx),
@@ -188,6 +189,7 @@ public enum Country
     PW(R.drawable.square_pw, R.string.location_name_pw),
     PY(R.drawable.square_py, R.string.location_name_py),
     QA(R.drawable.square_qa, R.string.location_name_qa),
+    RE(R.drawable.square_fr, R.string.location_name_re), // Added to avoid reporting on Crashlytics.
     RO(R.drawable.square_ro, R.string.location_name_ro),
     RS(R.drawable.square_rs, R.string.location_name_rs),
     RU(R.drawable.square_ru, R.string.location_name_ru),

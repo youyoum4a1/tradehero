@@ -20,6 +20,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.utils.DeviceUtil;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 abstract public class BaseSearchRxFragment<
         PagedDTOKeyType extends PagedDTOKey,
@@ -82,6 +83,10 @@ abstract public class BaseSearchRxFragment<
         MenuItem peopleSearchElements = menu.findItem(R.id.security_search_menu_elements);
 
         mSearchTextWatcher = new SearchTextWatcher();
+        if (peopleSearchElements.getActionView() == null)
+        {
+            Timber.e(new NullPointerException(), "Gotcha, actionView was null");
+        }
         mSearchTextField =
                 (EditText) peopleSearchElements.getActionView().findViewById(R.id.search_field);
         if (mSearchTextField != null)

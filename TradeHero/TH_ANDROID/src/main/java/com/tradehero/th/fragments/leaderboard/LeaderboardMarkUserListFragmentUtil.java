@@ -8,6 +8,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderUtil;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -100,7 +101,15 @@ public class LeaderboardMarkUserListFragmentUtil
                     break;
 
                 case FOLLOW:
-                    handleFollowRequested(((LeaderboardMarkedUserItemDisplayDto) userAction.dto).leaderboardUserDTO);
+                    UserBaseDTO toFollow = ((LeaderboardMarkedUserItemDisplayDto) userAction.dto).leaderboardUserDTO;
+                    if (toFollow != null)
+                    {
+                        handleFollowRequested(toFollow);
+                    }
+                    else
+                    {
+                        Timber.e(new NullPointerException(), "ToFollow was null");
+                    }
                     break;
 
                 case POSITIONS:
@@ -168,7 +177,14 @@ public class LeaderboardMarkUserListFragmentUtil
 
     protected void handlePositionsRequested(@NonNull LeaderboardMarkedUserItemDisplayDto dto)
     {
-        GetPositionsDTOKey getPositionsDTOKey = dto.leaderboardUserDTO.getGetPositionsDTOKey();
+        LeaderboardUserDTO userDTO = dto.leaderboardUserDTO;
+        if (userDTO == null)
+        {
+            Timber.e(new NullPointerException(), "LeaderboardUserDTO was null %s", dto);
+            THToast.show(R.string.leaderboard_friends_position_failed);
+            return;
+        }
+        GetPositionsDTOKey getPositionsDTOKey = userDTO.getGetPositionsDTOKey();
         if (getPositionsDTOKey == null)
         {
             Timber.e(new NullPointerException(), "Unable to get positions %s", dto);

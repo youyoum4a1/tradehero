@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.BaseActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -289,22 +290,26 @@ public class BaseFragment extends Fragment
         }
     }
 
-    protected void configureDefaultSpinner(String[] data, AdapterView.OnItemSelectedListener listener, int selectedPosition)
+    protected void configureDefaultSpinner(
+            @NonNull BaseActivity activity,
+            String[] data,
+            AdapterView.OnItemSelectedListener listener,
+            int selectedPosition)
     {
         ArrayAdapter adapter = new ToolbarSpinnerAdapter(
-                getActivity(),
+                activity,
                 R.layout.action_bar_spinner,
                 R.id.spinner_text,
                 data);
-        configureSpinner(R.id.action_bar_spinner, adapter, listener, selectedPosition);
+        configureSpinner(activity, R.id.action_bar_spinner, adapter, listener, selectedPosition);
     }
 
     /**
      * Configure Spinner in the ActionBar, nothing happens if the action bar does not have a spinner.
      */
-    protected void configureSpinner(int toolbarSpinnerResId, ArrayAdapter adapter, AdapterView.OnItemSelectedListener listener, int selectedPosition)
+    protected void configureSpinner(@NonNull BaseActivity activity, int toolbarSpinnerResId, ArrayAdapter adapter, AdapterView.OnItemSelectedListener listener, int selectedPosition)
     {
-        actionBarOwnerMixin.configureSpinner(toolbarSpinnerResId, adapter, listener, selectedPosition);
+        actionBarOwnerMixin.configureSpinner(activity, toolbarSpinnerResId, adapter, listener, selectedPosition);
     }
 
     /**

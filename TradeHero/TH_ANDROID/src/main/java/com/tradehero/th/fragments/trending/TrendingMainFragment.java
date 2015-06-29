@@ -24,6 +24,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.BaseActivity;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -83,6 +84,7 @@ public class TrendingMainFragment extends DashboardFragment
     private Observable<UserProfileDTO> userProfileObservable;
     @Nullable private OwnedPortfolioId fxPortfolioId;
     public static boolean fxDialogShowed = false;
+    private boolean needsConfigureSpinner = false;
 
     public static void registerAliases(@NonNull THRouter router)
     {
@@ -128,6 +130,7 @@ public class TrendingMainFragment extends DashboardFragment
     {
         super.onAttach(activity);
         initUserProfileObservable();
+        configureDefaultSpinner();
     }
 
     private void initUserProfileObservable()
@@ -252,107 +255,8 @@ public class TrendingMainFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setActionBarTitle("");
-        AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener()
-        {
-            @Override public void onItemSelected(AdapterView<?> parent, View view, final int position, long id)
-            {
-                final TrendingTabType oldType = lastType;
-
-                final ProgressDialog progressDialog;
-                if (!fetchedFXPortfolio && userProfileCache.getCachedValue(currentUserId.toUserBaseKey()) == null)
-                {
-                    progressDialog =
-                            ProgressDialog.show(getActivity(), getString(R.string.loading_loading), getString(R.string.alert_dialog_please_wait));
-                    progressDialog.setCanceledOnTouchOutside(true);
-                }
-                else
-                {
-                    progressDialog = null;
-                }
-                Action0 dismissProgress = new DismissDialogAction0(progressDialog);
-                // We want to identify whether to:
-                // - wait for enough info
-                // - pop for FX enroll
-                // - just change the tab
-
-                if (userProfileObservable == null)
-                {
-                    initUserProfileObservable();
-                }
-                onDestroyOptionsMenuSubscriptions.add(AppObservable.bindFragment(
-                        TrendingMainFragment.this,
-                        userProfileObservable)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnUnsubscribe(dismissProgress)
-                        .finallyDo(dismissProgress)
-                        .subscribe(new Subscriber<UserProfileDTO>()
-                        {
-                            @Override public void onCompleted()
-                            {
-
-                            }
-
-                            @Override public void onError(Throwable e)
-                            {
-                                THToast.show(getString(R.string.error_fetch_your_user_profile));
-                            }
-
-                            @Override public void onNext(UserProfileDTO userProfileDTO)
-                            {
-                                if (position == 1 && userProfileDTO.fxPortfolio == null && fxPortfolioId == null)
-                                {
-                                    if (fxDialogShowed)
-                                    {
-                                        return;
-                                    }
-                                    else
-                                    {
-                                        fxDialogShowed = true;
-                                    }
-                                    final FxOnBoardDialogFragment onBoardDialogFragment =
-                                            FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
-                                    onBoardDialogFragment.getUserActionTypeObservable()
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .subscribe(
-                                                    new Action1<FxOnBoardDialogFragment.UserAction>()
-                                                    {
-                                                        @Override public void call(FxOnBoardDialogFragment.UserAction action)
-                                                        {
-                                                            handleUserEnrolledFX(action);
-                                                        }
-                                                    },
-                                                    new TimberOnErrorAction("")
-                                            );
-                                }
-                                else
-                                {
-                                    if (position == 0)
-                                    {
-                                        lastType = TrendingTabType.STOCK;
-                                    }
-                                    else
-                                    {
-                                        lastType = TrendingTabType.FX;
-                                    }
-                                    if (!oldType.equals(lastType))
-                                    {
-                                        clearChildFragmentManager();
-                                        initViews();
-                                    }
-                                }
-                            }
-                        }));
-            }
-
-            @Override public void onNothingSelected(AdapterView<?> parent)
-            {
-                //do nothing
-            }
-        };
-        configureDefaultSpinner(new String[] {
-                        getString(R.string.stocks),
-                        getString(R.string.fx)},
-                listener, lastType.ordinal());
+        needsConfigureSpinner = true;
+        configureDefaultSpinner();
         handleRouting();
     }
 
@@ -365,6 +269,12 @@ public class TrendingMainFragment extends DashboardFragment
     {
         super.onLiveTradingChanged(isLive);
         LiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        needsConfigureSpinner = false;
+        super.onDestroyOptionsMenu();
     }
 
     @Override public void onPause()
@@ -390,6 +300,118 @@ public class TrendingMainFragment extends DashboardFragment
     {
         userProfileObservable = null;
         super.onDetach();
+    }
+
+    private void configureDefaultSpinner()
+    {
+        BaseActivity activity = (BaseActivity) getActivity();
+        if (activity != null && needsConfigureSpinner)
+        {
+            AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener()
+            {
+                @Override public void onItemSelected(AdapterView<?> parent, View view, final int position, long id)
+                {
+                    final TrendingTabType oldType = lastType;
+
+                    final ProgressDialog progressDialog;
+                    if (!fetchedFXPortfolio && userProfileCache.getCachedValue(currentUserId.toUserBaseKey()) == null)
+                    {
+                        progressDialog =
+                                ProgressDialog.show(getActivity(), getString(R.string.loading_loading), getString(R.string.alert_dialog_please_wait));
+                        progressDialog.setCanceledOnTouchOutside(true);
+                    }
+                    else
+                    {
+                        progressDialog = null;
+                    }
+                    Action0 dismissProgress = new DismissDialogAction0(progressDialog);
+                    // We want to identify whether to:
+                    // - wait for enough info
+                    // - pop for FX enroll
+                    // - just change the tab
+
+                    if (userProfileObservable == null)
+                    {
+                        initUserProfileObservable();
+                    }
+                    onDestroyOptionsMenuSubscriptions.add(AppObservable.bindFragment(
+                            TrendingMainFragment.this,
+                            userProfileObservable)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnUnsubscribe(dismissProgress)
+                            .finallyDo(dismissProgress)
+                            .subscribe(new Subscriber<UserProfileDTO>()
+                            {
+                                @Override public void onCompleted()
+                                {
+
+                                }
+
+                                @Override public void onError(Throwable e)
+                                {
+                                    THToast.show(getString(R.string.error_fetch_your_user_profile));
+                                }
+
+                                @Override public void onNext(UserProfileDTO userProfileDTO)
+                                {
+                                    if (position == 1 && userProfileDTO.fxPortfolio == null && fxPortfolioId == null)
+                                    {
+                                        if (fxDialogShowed)
+                                        {
+                                            return;
+                                        }
+                                        else
+                                        {
+                                            fxDialogShowed = true;
+                                        }
+                                        final FxOnBoardDialogFragment onBoardDialogFragment =
+                                                FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
+                                        onBoardDialogFragment.getUserActionTypeObservable()
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribe(
+                                                        new Action1<FxOnBoardDialogFragment.UserAction>()
+                                                        {
+                                                            @Override public void call(FxOnBoardDialogFragment.UserAction action)
+                                                            {
+                                                                handleUserEnrolledFX(action);
+                                                            }
+                                                        },
+                                                        new TimberOnErrorAction("")
+                                                );
+                                    }
+                                    else
+                                    {
+                                        if (position == 0)
+                                        {
+                                            lastType = TrendingTabType.STOCK;
+                                        }
+                                        else
+                                        {
+                                            lastType = TrendingTabType.FX;
+                                        }
+                                        if (!oldType.equals(lastType))
+                                        {
+                                            clearChildFragmentManager();
+                                            initViews();
+                                        }
+                                    }
+                                }
+                            }));
+                }
+
+                @Override public void onNothingSelected(AdapterView<?> parent)
+                {
+                    //do nothing
+                }
+            };
+            configureDefaultSpinner(
+                    activity,
+                    new String[] {
+                            getString(R.string.stocks),
+                            getString(R.string.fx)},
+                    listener, lastType.ordinal());
+            needsConfigureSpinner = false;
+        }
     }
 
     private class TradingStockPagerAdapter extends FragmentPagerAdapter

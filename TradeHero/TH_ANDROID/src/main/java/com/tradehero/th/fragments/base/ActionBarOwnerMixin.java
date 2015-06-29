@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -192,9 +191,14 @@ public class ActionBarOwnerMixin
      * @param toolbarSpinnerResId resource id of the spinner.
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void configureSpinner(@IdRes int toolbarSpinnerResId, ArrayAdapter adapter, AdapterView.OnItemSelectedListener listener, int selectedPosition)
+    public void configureSpinner(
+            @NonNull BaseActivity activity,
+            @IdRes int toolbarSpinnerResId,
+            ArrayAdapter adapter,
+            AdapterView.OnItemSelectedListener listener,
+            int selectedPosition)
     {
-        Toolbar toolbar = ((BaseActivity) fragment.getActivity()).getToolbar();
+        Toolbar toolbar = activity.getToolbar();
         if (toolbar == null)
         {
             return;

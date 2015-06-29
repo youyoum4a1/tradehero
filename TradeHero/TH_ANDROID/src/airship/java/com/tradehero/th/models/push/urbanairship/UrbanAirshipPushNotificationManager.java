@@ -66,7 +66,7 @@ import timber.log.Timber;
             // We have to use the direct takeOff and do this to avoid a silly NPE in com.urbanairship.analytics.EventService
             try
             {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } catch (InterruptedException e)
             {
                 e.printStackTrace();

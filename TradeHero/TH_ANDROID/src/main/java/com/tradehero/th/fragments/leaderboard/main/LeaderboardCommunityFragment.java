@@ -24,6 +24,7 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.BaseActivity;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
@@ -72,6 +73,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     private BaseWebViewFragment webFragment;
     private int currentDisplayedChildLayoutId;
     private LeaderboardDefDTOList leaderboardDefDTOs;
+    private boolean needsConfigureSpinner = false;
 
     /* The following 2 static fields are used to save the status of ActionBar and Tabs, so that users can still
     * return to the same page from other fragments.
@@ -202,41 +204,49 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.social_search_menu, menu);
         setActionBarTitle("");
+        needsConfigureSpinner = true;
         setUpToolbarSpinner();
     }
 
     private void setUpToolbarSpinner()
     {
-        AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener()
+        BaseActivity activity = (BaseActivity) getActivity();
+        if (activity != null && needsConfigureSpinner)
         {
-            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener()
             {
-                LeaderboardType type;
-                if (position == 0)
+                @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
                 {
-                    type = LeaderboardType.STOCKS;
+                    LeaderboardType type;
+                    if (position == 0)
+                    {
+                        type = LeaderboardType.STOCKS;
+                    }
+                    else
+                    {
+                        type = LeaderboardType.FX;
+                    }
+                    Timber.e("onItemSelected: " + parent.getItemAtPosition(position));
+                    if (type != leaderboardType)
+                    {
+                        leaderboardType = type;
+                        setUpViewPager();
+                    }
                 }
-                else
-                {
-                    type = LeaderboardType.FX;
-                }
-                Timber.e("onItemSelected: " + parent.getItemAtPosition(position));
-                if (type != leaderboardType)
-                {
-                    leaderboardType = type;
-                    setUpViewPager();
-                }
-            }
 
-            @Override public void onNothingSelected(AdapterView<?> parent)
-            {
-                //do nothing
-            }
-        };
-        configureDefaultSpinner(new String[] {
-                        getString(R.string.leaderboard_type_stocks),
-                        getString(R.string.leaderboard_type_fx)},
-                listener, leaderboardType.ordinal());
+                @Override public void onNothingSelected(AdapterView<?> parent)
+                {
+                    //do nothing
+                }
+            };
+            configureDefaultSpinner(
+                    activity,
+                    new String[] {
+                            getString(R.string.leaderboard_type_stocks),
+                            getString(R.string.leaderboard_type_fx)},
+                    listener, leaderboardType.ordinal());
+            needsConfigureSpinner = false;
+        }
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -249,6 +259,12 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        needsConfigureSpinner = false;
+        super.onDestroyOptionsMenu();
     }
     //</editor-fold>
 

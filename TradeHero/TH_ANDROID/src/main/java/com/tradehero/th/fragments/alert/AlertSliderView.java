@@ -121,7 +121,7 @@ public class AlertSliderView extends RelativeLayout
         {
             valueSwitcher.setDisplayedChild(status.enabled ? SWITCHER_INDEX_ENABLED : SWITCHER_INDEX_DISABLED);
         }
-        if (alertSlider != null)
+        if (alertSlider != null && requisite != null)
         {
             alertSlider.setEnabled(status.enabled);
             int sliderValue = (int) (alertSlider.getMax() * (status.sliderValue - requisite.min) / (requisite.max - requisite.min));

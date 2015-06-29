@@ -5,6 +5,7 @@ import com.tradehero.th.utils.Constants;
 import com.urbanairship.AirshipConfigOptions;
 import dagger.Module;
 import dagger.Provides;
+import timber.log.Timber;
 
 @Module(
         injects = {
@@ -16,7 +17,15 @@ public class UrbanAirshipPushModule
 {
     @Provides AirshipConfigOptions provideAirshipConfigOptions(Context context)
     {
-        AirshipConfigOptions options = AirshipConfigOptions.loadDefaultOptions(context);
+        AirshipConfigOptions options = null;
+        try
+        {
+            options = AirshipConfigOptions.loadDefaultOptions(context);
+        } catch (Exception e)
+        {
+            Timber.e(e, "Failed to loadDefaultOptions");
+            return new AirshipConfigOptions();
+        }
         if (Constants.DOGFOOD_BUILD)
         {
             options.inProduction = false;

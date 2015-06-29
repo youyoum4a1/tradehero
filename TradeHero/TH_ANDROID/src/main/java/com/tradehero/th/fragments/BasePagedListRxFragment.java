@@ -99,6 +99,15 @@ abstract public class BasePagedListRxFragment<
         return new MultiScrollListener(nearEndScrollListener, fragmentElements.get().getListViewScrollListener());
     }
 
+    @Override public void onViewStateRestored(@Nullable Bundle savedInstanceState)
+    {
+        super.onViewStateRestored(savedInstanceState);
+        if (itemViewAdapter == null)
+        {
+            itemViewAdapter = createItemViewAdapter();
+        }
+    }
+
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
