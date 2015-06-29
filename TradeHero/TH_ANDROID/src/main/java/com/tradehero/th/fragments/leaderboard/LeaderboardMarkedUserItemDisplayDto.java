@@ -16,6 +16,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.models.number.THSignedPercentage;
+import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.StringUtils;
 
 import static com.tradehero.th.utils.Constants.MAX_OWN_LEADER_RANKING;
@@ -30,6 +31,8 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
     @NonNull final CharSequence lbmuRoi;
     final int lbmuPositionColor;
     final String lbmuFoF;
+    public final String lbmuRoiPeriod;
+    public int lbmuRoiPeriodVisibility;
     String lbmuDisplayPicture;
     @ViewVisibilityValue final int lbmuFoFVisibility;
     @ViewVisibilityValue public int lbmuFollowUserVisibility;
@@ -55,6 +58,8 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
         this.lbmuRanking = "-";
         this.lbmuFoFVisibility = View.GONE;
         this.isMyOwnRanking = true;
+        this.lbmuRoiPeriod = null;
+        this.lbmuRoiPeriodVisibility = View.GONE;
     }
 
     /**
@@ -75,6 +80,8 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
         this.lbmuFoFVisibility = View.GONE;
         this.isMyOwnRanking = true;
         this.lbmuDisplayPicture = currentUserProfileDTO.picture;
+        this.lbmuRoiPeriod = null;
+        this.lbmuRoiPeriodVisibility = View.GONE;
     }
 
     public LeaderboardMarkedUserItemDisplayDto(@NonNull Resources resources,
@@ -91,6 +98,10 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
         this.leaderboardUserDTO = leaderboardItem;
         this.userStatisticsDto = new UserStatisticView.DTO(resources, leaderboardUserDTO, currentUserProfileDTO.mostSkilledLbmu);
         this.lbmuDisplayName = leaderboardItem.displayName;
+
+        this.lbmuRoiPeriod = DateUtils.getDisplayableDate(resources, leaderboardItem.periodStartUtc, leaderboardItem.periodEndUtc);
+        this.lbmuRoiPeriodVisibility = View.GONE;
+
         this.lbmuRoi = THSignedPercentage
                 .builder(leaderboardItem.roiInPeriod * 100)
                 .signTypePlusMinusAlways()

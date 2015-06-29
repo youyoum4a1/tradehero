@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout
+    android:id="@+id/leaderboard_user_item_basic_info"
+    style="@style/TH.ListItem.LB"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/leaderboard_user_item_basic_info"
-    style="@style/TH.ListItem.LB"
     tools:context="com.tradehero.th.activities.DashboardActivity"
     >
 
@@ -15,38 +15,38 @@
       style="@style/TH.Title"
       android:layout_width="@dimen/leaderboard_position_width"
       android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:ellipsize="marquee"
       android:gravity="center_horizontal"
+      android:marqueeRepeatLimit="10"
       android:shadowColor="@color/grey"
       android:shadowDy="1"
       android:shadowRadius="1"
-      android:ellipsize="marquee"
-      android:marqueeRepeatLimit="10"
       android:singleLine="true"
-      android:layout_centerVertical="true"
       tools:text="1"
       />
 
   <ImageView
       android:id="@+id/leaderboard_user_item_profile_picture"
-      android:layout_height="@dimen/leaderboard_user_view_profile_width"
       android:layout_width="@dimen/leaderboard_user_view_profile_width"
-      android:contentDescription="@null"
-      android:src="@drawable/superman_facebook"
-      android:background="@drawable/basic_transparent_selector"
-      android:layout_toRightOf="@id/leaderboard_user_item_position"
+      android:layout_height="@dimen/leaderboard_user_view_profile_width"
       android:layout_centerVertical="true"
       android:layout_marginRight="@dimen/size_2"
+      android:layout_toRightOf="@id/leaderboard_user_item_position"
+      android:background="@drawable/basic_transparent_selector"
+      android:contentDescription="@null"
       android:scaleType="centerCrop"
+      android:src="@drawable/superman_facebook"
       />
 
   <TextView
       android:id="@+id/leaderboard_user_item_display_name"
+      style="@style/TH.UserNameTitle"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/margin_xsmall"
-      android:ellipsize="end"
-      style="@style/TH.UserNameTitle"
       android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
+      android:ellipsize="end"
       android:shadowColor="@color/grey"
       android:shadowDy="1"
       android:shadowRadius="1"
@@ -55,14 +55,14 @@
 
   <com.tradehero.th.widget.MarkdownTextView
       android:id="@+id/leaderboard_user_item_fof"
+      style="@style/TH.Caption"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:gravity="center_vertical"
       android:layout_below="@id/leaderboard_user_item_display_name"
       android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
-      tools:text="I am supposed to be gone"
-      style="@style/TH.Caption"
+      android:gravity="center_vertical"
       android:visibility="gone"
+      tools:text="I am supposed to be gone"
       />
 
   <LinearLayout
@@ -70,15 +70,27 @@
       android:layout_height="wrap_content"
       android:layout_below="@id/leaderboard_user_item_fof"
       android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
+      android:orientation="vertical"
       >
 
     <TextView
         android:id="@+id/lbmu_roi"
+        style="@style/TH.UserROI"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TH.UserROI"
         tools:text="+87%"
         />
+
+      <TextView
+          android:id="@+id/lbmu_roi_period"
+          style="@style/TH.Body"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/margin_xsmall"
+          android:visibility="gone"
+          tools:visibility="visible"
+          tools:text="06 Apr - 26 Jun 2015"
+          />
 
   </LinearLayout>
 

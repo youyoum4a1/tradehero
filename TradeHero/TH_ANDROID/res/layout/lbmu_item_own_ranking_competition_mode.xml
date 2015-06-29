@@ -20,7 +20,7 @@
   <LinearLayout
       android:id="@+id/competition_own_ranking_info_container"
       android:layout_width="wrap_content"
-      android:layout_height="@dimen/leaderboard_user_view_profile_width"
+      android:layout_height="@dimen/size_8"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"
       android:layout_alignParentTop="true"

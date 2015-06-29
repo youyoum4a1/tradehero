@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -35,8 +36,15 @@ public class DateUtils
         {
             return resources.getString(R.string.na);
         }
+        Calendar cs = Calendar.getInstance();
+        Calendar ce = Calendar.getInstance();
+        cs.setTime(dStart);
+        ce.setTime(dEnd);
 
-        SimpleDateFormat sdfStart = new SimpleDateFormat(resources.getString(R.string.data_format_dd_mmm));
+        boolean sameYear = cs.get(Calendar.YEAR) == ce.get(Calendar.YEAR);
+
+        SimpleDateFormat sdfStart =
+                new SimpleDateFormat(resources.getString(sameYear ? R.string.data_format_dd_mmm : R.string.data_format_dd_mmm_yyyy));
         sdfStart.setTimeZone(TimeZone.getDefault());
 
         SimpleDateFormat sdfEnd = new SimpleDateFormat(resources.getString(R.string.data_format_dd_mmm_yyyy));
@@ -47,7 +55,7 @@ public class DateUtils
 
     public static int getNumberOfDaysBetweenDates(@NonNull Date start, @NonNull Date end)
     {
-           return (int) ((end.getTime() - start.getTime()) / MILLISECOND_PER_DAY);
+        return (int) ((end.getTime() - start.getTime()) / MILLISECOND_PER_DAY);
     }
 
     public static String getFormattedDate(@NonNull Resources resources, @NonNull Date utcDate)

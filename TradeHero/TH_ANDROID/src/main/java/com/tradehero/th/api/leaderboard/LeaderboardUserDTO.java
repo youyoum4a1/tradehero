@@ -45,7 +45,6 @@ public class LeaderboardUserDTO extends UserBaseDTO
 
     public int avgHoldingPeriodMins;
 
-    // additional fields for most skilled
     public Date periodStartUtc;
     public Date periodEndUtc;
     @JsonProperty("stddev_positionRoiInPeriod")

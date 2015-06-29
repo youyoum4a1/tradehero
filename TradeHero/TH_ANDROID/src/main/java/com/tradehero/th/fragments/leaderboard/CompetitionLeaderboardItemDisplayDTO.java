@@ -44,6 +44,7 @@ class CompetitionLeaderboardItemDisplayDTO extends LeaderboardMarkedUserItemDisp
         super(resources, currentUserId, leaderboardItem, currentUserProfileDTO);
         this.providerDTO = providerDTO;
         this.prizeSize = competitionLeaderboardDTO.getPrizeSize();
+        this.lbmuRoiPeriodVisibility = View.VISIBLE;
     }
 
     @Override public void setRanking(int ranking)
