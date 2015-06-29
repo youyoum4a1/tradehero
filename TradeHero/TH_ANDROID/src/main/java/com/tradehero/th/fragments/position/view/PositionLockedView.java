@@ -34,13 +34,13 @@ public class PositionLockedView extends LinearLayout
 
     public static class DTO
     {
+        public final int id;
         @NonNull public final CharSequence positionPercent;
         @NonNull public final CharSequence unrealisedPLValueHeader;
         @NonNull public final CharSequence unrealisedPLValue;
         @NonNull public final CharSequence realisedPLValueHeader;
         @NonNull public final CharSequence realisedPLValue;
         @NonNull public final CharSequence totalInvestedValue;
-        public final int id;
 
         public DTO(@NonNull Resources resources, @NonNull PositionDTO positionDTO)
         {

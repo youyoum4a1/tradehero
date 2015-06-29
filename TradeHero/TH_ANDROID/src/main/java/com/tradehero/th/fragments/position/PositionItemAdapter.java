@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
+import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
@@ -14,7 +15,8 @@ import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.GraphicUtil;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Observable;
@@ -102,6 +104,45 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
         return userActionSubject.asObservable();
     }
 
+    @Override public int add(@NonNull Object o)
+    {
+        updateLatestTradeOrRemove(o);
+        return super.add(o);
+    }
+
+    @Override protected void addAllForBatch(@NonNull Collection<Object> collection)
+    {
+        for (Object o : collection)
+        {
+            updateLatestTradeOrRemove(o);
+        }
+        super.addAllForBatch(collection);
+    }
+
+    // TODO find a way to move the calculations in another thread
+    private void updateLatestTradeOrRemove(@NonNull Object o)
+    {
+        if (mSortedList.size() > 0)
+        {
+            Object item;
+            boolean areSame;
+            for (int index = 0; index < mSortedList.size(); index++)
+            {
+                item = mSortedList.get(index);
+                areSame = mComparator.areItemsTheSame(o, item);
+                if (areSame && o instanceof PositionPartialTopView.DTO)
+                {
+                    ((PositionPartialTopView.DTO) item).positionDTO.latestTradeUtc = ((PositionPartialTopView.DTO) o).positionDTO.latestTradeUtc;
+                    mSortedList.recalculatePositionOfItemAt(index);
+                }
+                else
+                {
+                    mSortedList.removeItemAt(index);
+                }
+            }
+        }
+    }
+
     @NonNull @Override public TypedViewHolder<Object> onCreateViewHolder(ViewGroup parent, int viewType)
     {
         int layoutToInflate = getLayoutForViewType(viewType);
@@ -138,13 +179,81 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
 
     private static class PositionItemComparator extends TypedRecyclerComparator<Object>
     {
-        @Override protected int compare(Object o1, Object o2)
+        @NonNull private final Comparator<PositionStatus> positionStatusComparator;
+        @NonNull private final Comparator<PositionPartialTopView.DTO> topViewComparator;
+
+        public PositionItemComparator()
         {
-            //Returns 0 here since we want to preserve the ordering from the server.
-            return 0;
+            this.positionStatusComparator = new PositionStatus.StatusComparator();
+            this.topViewComparator = new PositionPartialTopView.AscendingLatestTradeDateComparator();
         }
 
-        @Override protected boolean areContentsTheSame(Object oldItem, Object newItem)
+        @Override public int compare(Object o1, Object o2)
+        {
+            if (o1 instanceof PositionNothingView.DTO && o2 instanceof PositionNothingView.DTO)
+            {
+                return 0;
+            }
+            if (o1 instanceof PositionNothingView.DTO)
+            {
+                return -1;
+            }
+            if (o2 instanceof PositionNothingView.DTO)
+            {
+                return 1;
+            }
+            else if (o1 instanceof PositionLockedView.DTO && o2 instanceof PositionLockedView.DTO)
+            {
+                return Integer.valueOf(((PositionLockedView.DTO) o1).id).compareTo(((PositionLockedView.DTO) o2).id);
+            }
+            else if (o1 instanceof PositionLockedView.DTO)
+            {
+                return -1;
+            }
+            else if (o2 instanceof PositionLockedView.DTO)
+            {
+                return 1;
+            }
+            else if (o1 instanceof PositionSectionHeaderItemView.DTO && o2 instanceof PositionSectionHeaderItemView.DTO)
+            {
+                return positionStatusComparator.compare(
+                        ((PositionSectionHeaderItemView.DTO) o1).status,
+                        ((PositionSectionHeaderItemView.DTO) o2).status);
+            }
+            else if (o1 instanceof PositionPartialTopView.DTO && o2 instanceof PositionPartialTopView.DTO)
+            {
+                return topViewComparator.compare((PositionPartialTopView.DTO) o1, (PositionPartialTopView.DTO) o2);
+            }
+            else if (o1 instanceof PositionPartialTopView.DTO && o2 instanceof PositionSectionHeaderItemView.DTO)
+            {
+                PositionStatus s1 = ((PositionPartialTopView.DTO) o1).positionDTO.positionStatus;
+                PositionStatus s2 = ((PositionSectionHeaderItemView.DTO) o2).status;
+                if (s1 == null || s1.equals(s2))
+                {
+                    return 1;
+                }
+                return positionStatusComparator.compare(
+                        ((PositionPartialTopView.DTO) o1).positionDTO.positionStatus,
+                        ((PositionSectionHeaderItemView.DTO) o2).status);
+            }
+            else if (o1 instanceof PositionSectionHeaderItemView.DTO && o2 instanceof PositionPartialTopView.DTO)
+            {
+                if (((PositionSectionHeaderItemView.DTO) o1).status.equals(((PositionPartialTopView.DTO) o2).positionDTO.positionStatus))
+                {
+                    return -1;
+                }
+                return positionStatusComparator.compare(
+                        ((PositionSectionHeaderItemView.DTO) o1).status,
+                        ((PositionPartialTopView.DTO) o2).positionDTO.positionStatus);
+            }
+            else
+            {
+                Timber.e(new IllegalStateException(), "Unhandled  " + o1.getClass() + " " + o2.getClass());
+                throw new IllegalStateException("Unhandled  " + o1.getClass() + " " + o2.getClass());
+            }
+        }
+
+        @Override public boolean areContentsTheSame(Object oldItem, Object newItem)
         {
             if (oldItem instanceof PositionNothingView.DTO)
             {
@@ -210,7 +319,7 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
             }
         }
 
-        @Override protected boolean areItemsTheSame(Object item1, Object item2)
+        @Override public boolean areItemsTheSame(Object item1, Object item2)
         {
             if (item1.getClass().equals(item2.getClass()))
             {

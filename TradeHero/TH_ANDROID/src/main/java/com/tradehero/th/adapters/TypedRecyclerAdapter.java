@@ -23,7 +23,7 @@ public abstract class TypedRecyclerAdapter<T>
         extends RecyclerView.Adapter<TypedRecyclerAdapter.TypedViewHolder<T>>
 {
     protected final SortedList<T> mSortedList;
-    private TypedRecyclerComparator<T> mComparator;
+    @NonNull protected TypedRecyclerComparator<T> mComparator;
     protected OnItemClickedListener<T> mOnItemClickedListener;
     protected OnItemLongClickedListener<T> mOnItemLongClickedListener;
 
@@ -112,19 +112,38 @@ public abstract class TypedRecyclerAdapter<T>
         return mSortedList.get(position);
     }
 
+    /**
+     * You may want to override this method if updating the item will change its position in the sorted list
+     * @param t
+     * @return
+     */
     public int add(@NonNull T t)
     {
         return this.mSortedList.add(t);
     }
 
-    public void addAll(Collection<T> collection)
+    public void addAll(@NonNull Collection<T> collection)
     {
         this.mSortedList.beginBatchedUpdates();
+        try
+        {
+            addAllForBatch(collection);
+        } finally
+        {
+            this.mSortedList.endBatchedUpdates();
+        }
+    }
+
+    /**
+     * You may want to override this method if updating an item will change its position in the sorted list
+     * @param collection
+     */
+    protected void addAllForBatch(@NonNull Collection<T> collection)
+    {
         for (T t : collection)
         {
             this.mSortedList.add(t);
         }
-        this.mSortedList.endBatchedUpdates();
     }
 
     public boolean remove(T t)
@@ -163,7 +182,6 @@ public abstract class TypedRecyclerAdapter<T>
     {
         return mSortedList.size();
     }
-
 
     @Override
     public abstract TypedViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType);
@@ -207,17 +225,17 @@ public abstract class TypedRecyclerAdapter<T>
 
     public static class TypedRecyclerComparator<T>
     {
-        protected int compare(T o1, T o2)
+        public int compare(T o1, T o2)
         {
             return 0;
         }
 
-        protected boolean areContentsTheSame(T oldItem, T newItem)
+        public boolean areContentsTheSame(T oldItem, T newItem)
         {
             return oldItem.toString().equalsIgnoreCase(newItem.toString());
         }
 
-        protected boolean areItemsTheSame(T item1, T item2)
+        public boolean areItemsTheSame(T item1, T item2)
         {
             return item1.equals(item2);
         }

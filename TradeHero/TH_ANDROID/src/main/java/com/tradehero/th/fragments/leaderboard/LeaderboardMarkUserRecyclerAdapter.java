@@ -197,7 +197,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
 
     private static class LeaderboardMarkUserItemComparator<T extends LeaderboardItemDisplayDTO> extends TypedRecyclerComparator<T>
     {
-        @Override protected int compare(T o1, T o2)
+        @Override public int compare(T o1, T o2)
         {
             if (o1 instanceof LeaderboardMarkedUserItemDisplayDto && o2 instanceof LeaderboardMarkedUserItemDisplayDto)
             {
@@ -219,7 +219,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
             return super.compare(o1, o2);
         }
 
-        @Override protected boolean areContentsTheSame(T oldItem, T newItem)
+        @Override public boolean areContentsTheSame(T oldItem, T newItem)
         {
             if (oldItem instanceof LeaderboardMarkedUserItemDisplayDto && newItem instanceof LeaderboardMarkedUserItemDisplayDto)
             {
@@ -228,15 +228,18 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
                 if (!oldDto.lbmuDisplayName.equals(newDto.lbmuDisplayName)) return false;
                 if (!oldDto.lbmuRoi.equals(newDto.lbmuRoi)) return false;
                 if (oldDto.lbmuRoiPeriodVisibility != newDto.lbmuRoiPeriodVisibility) return false;
-                return !((oldDto.lbmuRoiPeriod != null && newDto.lbmuRoiPeriod != null) && !oldDto.lbmuRoiPeriod.equals(newDto.lbmuRoiPeriod))
-                        && oldDto.lbmuRanking.equals(newDto.lbmuRanking)
-                        && !(oldDto.lbmuDisplayPicture != null ? !oldDto.lbmuDisplayPicture.equals(newDto.lbmuDisplayPicture)
+                if (oldDto.lbmuRoiPeriod == null && newDto.lbmuRoiPeriod != null) return false;
+                if (oldDto.lbmuRoiPeriod != null && newDto.lbmuRoiPeriod == null) return false;
+                if (oldDto.lbmuRoiPeriod != null && !oldDto.lbmuRoiPeriod.equals(newDto.lbmuRoiPeriod)) return false;
+                return oldDto.lbmuRanking.equals(newDto.lbmuRanking)
+                        && !(oldDto.lbmuDisplayPicture != null
+                        ? !oldDto.lbmuDisplayPicture.equals(newDto.lbmuDisplayPicture)
                         : newDto.lbmuDisplayPicture != null);
             }
             return super.areContentsTheSame(oldItem, newItem);
         }
 
-        @Override protected boolean areItemsTheSame(T item1, T item2)
+        @Override public boolean areItemsTheSame(T item1, T item2)
         {
             if (item1 instanceof LeaderboardMarkedUserItemDisplayDto && item2 instanceof LeaderboardMarkedUserItemDisplayDto)
             {

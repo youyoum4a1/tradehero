@@ -86,7 +86,7 @@ public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecycl
 
     private static class FriendLeaderboardItemComparator extends TypedRecyclerComparator<LeaderboardItemDisplayDTO>
     {
-        @Override protected int compare(LeaderboardItemDisplayDTO o1, LeaderboardItemDisplayDTO o2)
+        @Override public int compare(LeaderboardItemDisplayDTO o1, LeaderboardItemDisplayDTO o2)
         {
             if (o1 instanceof LeaderboardMarkedUserItemDisplayDto &&
                     o2 instanceof FriendLeaderboardItemDisplayDTO.Social)

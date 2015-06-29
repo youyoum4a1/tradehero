@@ -31,7 +31,7 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
     @NonNull final CharSequence lbmuRoi;
     final int lbmuPositionColor;
     final String lbmuFoF;
-    public final String lbmuRoiPeriod;
+    @Nullable public final String lbmuRoiPeriod;
     public int lbmuRoiPeriodVisibility;
     String lbmuDisplayPicture;
     @ViewVisibilityValue final int lbmuFoFVisibility;

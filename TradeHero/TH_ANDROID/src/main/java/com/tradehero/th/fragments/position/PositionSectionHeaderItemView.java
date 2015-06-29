@@ -5,14 +5,12 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
-import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.position.PositionStatus;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -41,17 +39,20 @@ public class PositionSectionHeaderItemView extends RelativeLayout
 
     public static class DTO
     {
+        @NonNull public final PositionStatus status;
         @NonNull public final String header;
         @NonNull public final String timeBase;
         @NonNull public final Type type;
 
         public DTO(
                 @NonNull Resources resources,
+                @NonNull PositionStatus status,
                 @NonNull String header,
                 @Nullable Date left,
                 @Nullable Date right,
                 @NonNull Type type)
         {
+            this.status = status;
             this.header = header;
             SimpleDateFormat sdf = new SimpleDateFormat(resources.getString(R.string.data_format_dd_mmm_yyyy), Locale.ENGLISH);
             if (left != null || right != null)

@@ -129,6 +129,10 @@ public class BaseFragment extends Fragment
         {
             this.onStopSubscriptions.unsubscribe();
         }
+        if (this.onDestroyViewSubscriptions != null)
+        {
+            onDestroyViewSubscriptions.unsubscribe();
+        }
     }
 
     @CallSuper

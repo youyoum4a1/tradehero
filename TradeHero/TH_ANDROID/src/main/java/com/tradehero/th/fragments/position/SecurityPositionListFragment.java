@@ -24,6 +24,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOList;
+import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
@@ -332,6 +333,7 @@ public class SecurityPositionListFragment
             filtered.add(
                     new PositionSectionHeaderItemView.DTO(
                             getResources(),
+                            PositionStatus.LONG,
                             getString(securityCompactDTO instanceof FxSecurityCompactDTO
                                     ? R.string.position_list_header_open_long_unsure
                                     : R.string.position_list_header_open_unsure),
@@ -344,6 +346,7 @@ public class SecurityPositionListFragment
         {
             filtered.add(new PositionSectionHeaderItemView.DTO(
                     getResources(),
+                    PositionStatus.SHORT,
                     getString(R.string.position_list_header_open_short),
                     null,
                     null,
@@ -354,6 +357,7 @@ public class SecurityPositionListFragment
         {
             filtered.add(new PositionSectionHeaderItemView.DTO(
                     getResources(),
+                    PositionStatus.CLOSED,
                     getString(R.string.position_list_header_closed_unsure),
                     null,
                     null,

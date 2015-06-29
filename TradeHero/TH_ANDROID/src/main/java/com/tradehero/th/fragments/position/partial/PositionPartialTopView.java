@@ -31,6 +31,8 @@ import com.tradehero.th.fragments.security.FxFlagContainer;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
+import java.util.Comparator;
+import java.util.Date;
 import rx.Observable;
 import rx.Subscription;
 import rx.subjects.PublishSubject;
@@ -389,6 +391,20 @@ public class PositionPartialTopView extends LinearLayout
                 lastAmount = na;
             }
             //</editor-fold>
+        }
+    }
+
+    public static class AscendingLatestTradeDateComparator implements Comparator<DTO>
+    {
+        @Override public int compare(@NonNull DTO lhs, @NonNull DTO rhs)
+        {
+            if (lhs.positionDTO.id == rhs.positionDTO.id)
+            {
+                return 0;
+            }
+            Date lTrade = lhs.positionDTO.latestTradeUtc;
+            Date rTrade = rhs.positionDTO.latestTradeUtc;
+            return rTrade.compareTo(lTrade);
         }
     }
 
