@@ -323,7 +323,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 @NonNull SecurityCompactDTO securityCompactDTO,
                                 @NonNull Boolean buySellReady)
                         {
-                            showBuySellDialog(Math.abs(closeUnits), closeUnits > 0);
+                            showBuySellDialog(Math.abs(closeUnits), closeUnits < 0);
                             requisite.cancelCloseUnits();
                             return true;
                         }
