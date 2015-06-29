@@ -228,9 +228,10 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
                 if (!oldDto.lbmuDisplayName.equals(newDto.lbmuDisplayName)) return false;
                 if (!oldDto.lbmuRoi.equals(newDto.lbmuRoi)) return false;
                 if (oldDto.lbmuRoiPeriodVisibility != newDto.lbmuRoiPeriodVisibility) return false;
-                if (!oldDto.lbmuRoiPeriod.equals(newDto.lbmuRoiPeriod)) return false;
-                return oldDto.lbmuRanking.equals(newDto.lbmuRanking) && !(oldDto.lbmuDisplayPicture != null ? !oldDto.lbmuDisplayPicture.equals(
-                        newDto.lbmuDisplayPicture) : newDto.lbmuDisplayPicture != null);
+                return !((oldDto.lbmuRoiPeriod != null && newDto.lbmuRoiPeriod != null) && !oldDto.lbmuRoiPeriod.equals(newDto.lbmuRoiPeriod))
+                        && oldDto.lbmuRanking.equals(newDto.lbmuRanking)
+                        && !(oldDto.lbmuDisplayPicture != null ? !oldDto.lbmuDisplayPicture.equals(newDto.lbmuDisplayPicture)
+                        : newDto.lbmuDisplayPicture != null);
             }
             return super.areContentsTheSame(oldItem, newItem);
         }
