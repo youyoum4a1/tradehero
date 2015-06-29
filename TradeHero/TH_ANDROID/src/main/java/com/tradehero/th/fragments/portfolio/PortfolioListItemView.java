@@ -32,6 +32,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedPercentage;
+import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.GraphicUtil;
 import javax.inject.Inject;
 import rx.Subscription;
@@ -236,7 +237,9 @@ public class PortfolioListItemView extends RelativeLayout
                         .withDefaultColor()
                         .boldSign()
                         .boldValue()
-                        .format(getContext().getString(R.string.roi_since_inception_format))
+                        .format(getContext().getString(R.string.roi_since_format, "%1$s",
+                                DateUtils.getDisplayableDate(getContext().getResources(), displayablePortfolioDTO.portfolioDTO.creationDate,
+                                        R.string.data_format_d_mmm_yyyy)))
                         .build()
                         .into(roiValue);
                 roiValue.setVisibility(VISIBLE);

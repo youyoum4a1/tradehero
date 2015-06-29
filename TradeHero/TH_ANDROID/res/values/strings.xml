@@ -324,5 +324,5 @@
   <string name="video_locked_hint">Coming soon!</string>
   <string name="history_tab_wait_message">Please wait for loading portfolio</string>
 
-  <string name="roi_since_inception_format">%1$s since inception.</string>
+  <string name="roi_since_format">%1$s since %2$s.</string>
 </resources>

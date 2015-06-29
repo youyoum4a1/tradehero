@@ -3,6 +3,7 @@ package com.tradehero.th.utils;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -17,15 +18,25 @@ public class DateUtils
 
     public static String getDisplayableDate(@NonNull Resources resources, @Nullable Date d)
     {
+        return getDisplayableDate(resources, d, R.string.data_format_dd_mmm_yyyy_hh_mm);
+    }
+
+    public static String getDisplayableDate(@NonNull Resources resources, @Nullable Date d, @StringRes int patternResId)
+    {
         if (d == null)
         {
             return resources.getString(R.string.na);
         }
 
+        String pattern = resources.getString(patternResId);
         if (sdf == null)
         {
-            sdf = new SimpleDateFormat(resources.getString(R.string.data_format_dd_mmm_yyyy_hh_mm));
+            sdf = new SimpleDateFormat(pattern);
             sdf.setTimeZone(TimeZone.getDefault());
+        }
+        else if (!sdf.toPattern().equals(pattern))
+        {
+            sdf.applyPattern(pattern);
         }
         return sdf.format(d);
     }
