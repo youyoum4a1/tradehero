@@ -172,6 +172,7 @@ public class PositionListFragment
     protected PositionItemAdapter positionItemAdapter;
     private int firstPositionVisible = 0;
     private View inflatedView;
+    private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
@@ -408,11 +409,13 @@ public class PositionListFragment
         outState.putInt(BUNDLE_KEY_FIRST_POSITION_VISIBLE, firstPositionVisible);
     }
 
+    @SuppressLint("NewApi")
     @Override public void onDestroyView()
     {
         positionRecyclerView.clearOnScrollListeners();
         positionRecyclerView.setOnTouchListener(null);
         swipeToRefreshLayout.setOnRefreshListener(null);
+        removeGlobalLayoutListener();
         portfolioHeaderView = null;
         inflatedView = null;
         ButterKnife.reset(this);
@@ -884,17 +887,14 @@ public class PositionListFragment
             headerStub.setLayoutResource(headerLayoutId);
             inflatedView = headerStub.inflate();
             portfolioHeaderView = (PortfolioHeaderView) inflatedView;
-            linkPortfolioHeaderView(shownUserProfileDTO, portfolioCompactDTO);
         }
 
         portfolioHeaderView.linkWith(userProfileDTO);
         portfolioHeaderView.linkWith(portfolioCompactDTO);
 
-        ViewTreeObserver observer = inflatedView.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
+        globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener()
         {
-            @SuppressLint("NewApi")
-            @Override public void onGlobalLayout()
+            @SuppressLint("NewApi") @Override public void onGlobalLayout()
             {
                 if (SDKUtils.isJellyBeanOrHigher())
                 {
@@ -920,7 +920,25 @@ public class PositionListFragment
                                 .build()
                 ));
             }
-        });
+        };
+        inflatedView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
+    }
+
+    @SuppressLint("NewApi")
+    private void removeGlobalLayoutListener()
+    {
+        if (globalLayoutListener != null && inflatedView != null)
+        {
+            if (SDKUtils.isJellyBeanOrHigher())
+            {
+                inflatedView.getViewTreeObserver().removeOnGlobalLayoutListener(globalLayoutListener);
+            }
+            else
+            {
+                inflatedView.getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
+            }
+        }
+        globalLayoutListener = null;
     }
 
     @NonNull protected Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> getPositionsObservable()
