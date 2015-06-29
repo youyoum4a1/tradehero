@@ -171,6 +171,7 @@ public class PositionListFragment
 
     protected PositionItemAdapter positionItemAdapter;
     private int firstPositionVisible = 0;
+    private View inflatedView;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
@@ -413,6 +414,7 @@ public class PositionListFragment
         positionRecyclerView.setOnTouchListener(null);
         swipeToRefreshLayout.setOnRefreshListener(null);
         portfolioHeaderView = null;
+        inflatedView = null;
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -779,18 +781,14 @@ public class PositionListFragment
         return Observable.combineLatest(
                 getShownUserProfileObservable(),
                 getPortfolioObservable(),
-                new Func2<UserProfileDTO, Pair<PortfolioDTO, PortfolioHeaderView>, Pair<UserProfileDTO, PortfolioHeaderView>>()
+                new Func2<UserProfileDTO, PortfolioDTO, Pair<UserProfileDTO, PortfolioHeaderView>>()
                 {
                     @Override public Pair<UserProfileDTO, PortfolioHeaderView> call(
                             @NonNull UserProfileDTO shownProfile,
-                            @NonNull Pair<PortfolioDTO, PortfolioHeaderView> portfolioAndHeader)
+                            @NonNull PortfolioDTO portfolioDTO)
                     {
-                        portfolioAndHeader.second.linkWith(shownProfile);
-                        if (portfolioAndHeader.first != null)
-                        {
-                            portfolioAndHeader.second.linkWith(portfolioAndHeader.first);
-                        }
-                        return Pair.create(shownProfile, portfolioAndHeader.second);
+                        linkPortfolioHeaderView(shownProfile, portfolioDTO);
+                        return Pair.create(shownProfile, portfolioHeaderView);
                     }
                 });
     }
@@ -812,20 +810,18 @@ public class PositionListFragment
                 .doOnError(new ToastAction<Throwable>(getString(R.string.error_fetch_user_profile)));
     }
 
-    @NonNull protected Observable<Pair<PortfolioDTO, PortfolioHeaderView>> getPortfolioObservable()
+    @NonNull protected Observable<PortfolioDTO> getPortfolioObservable()
     {
         if (getPositionsDTOKey instanceof OwnedPortfolioId)
         {
             return portfolioCache.get(((OwnedPortfolioId) getPositionsDTOKey))
                     .observeOn(AndroidSchedulers.mainThread())
-                    .map(new Func1<Pair<OwnedPortfolioId, PortfolioDTO>, Pair<PortfolioDTO, PortfolioHeaderView>>()
+                    .map(new Func1<Pair<OwnedPortfolioId, PortfolioDTO>, PortfolioDTO>()
                     {
-                        @Override public Pair<PortfolioDTO, PortfolioHeaderView> call(Pair<OwnedPortfolioId, PortfolioDTO> pair)
+                        @Override public PortfolioDTO call(Pair<OwnedPortfolioId, PortfolioDTO> pair)
                         {
                             linkWith(pair.second);
-                            return Pair.create(
-                                    pair.second,
-                                    getPortfolioHeaderView(pair.second));
+                            return pair.second;
                         }
                     })
                     .doOnError(new Action1<Throwable>()
@@ -837,7 +833,7 @@ public class PositionListFragment
                     });
         }
 
-        return Observable.just(Pair.<PortfolioDTO, PortfolioHeaderView>create(null, getPortfolioHeaderView(null)));
+        return Observable.just(null);
         // We do not care for now about those that are loaded with LeaderboardMarkUserId
     }
 
@@ -879,54 +875,52 @@ public class PositionListFragment
         }
     }
 
-    @NonNull private PortfolioHeaderView getPortfolioHeaderView(@Nullable PortfolioCompactDTO portfolioCompactDTO)
+    private void linkPortfolioHeaderView(UserProfileDTO userProfileDTO, @Nullable PortfolioCompactDTO portfolioCompactDTO)
     {
         if (portfolioHeaderView == null)
         {
             // portfolio header
             int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);
             headerStub.setLayoutResource(headerLayoutId);
-            final View inflatedView = headerStub.inflate();
+            inflatedView = headerStub.inflate();
             portfolioHeaderView = (PortfolioHeaderView) inflatedView;
-            portfolioHeaderView.linkWith(shownUserProfileDTO);
-            portfolioHeaderView.linkWith(portfolioCompactDTO);
-
-            ViewTreeObserver observer = inflatedView.getViewTreeObserver();
-            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
-            {
-                @SuppressLint("NewApi")
-                @Override public void onGlobalLayout()
-                {
-                    if (SDKUtils.isJellyBeanOrHigher())
-                    {
-                        inflatedView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }
-                    else
-                    {
-                        inflatedView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    }
-                    int headerHeight = inflatedView.getMeasuredHeight();
-                    positionRecyclerView.setPadding(
-                            positionRecyclerView.getPaddingLeft(),
-                            headerHeight,
-                            positionRecyclerView.getPaddingRight(),
-                            positionRecyclerView.getPaddingBottom());
-
-                    positionRecyclerView.addOnScrollListener(new MultiRecyclerScrollListener(
-                            fragmentElements.get().getRecyclerViewScrollListener(),
-                            new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.HEADER)
-                                    .header(inflatedView)
-                                    .minHeaderTranslation(-headerHeight - 50)
-                                    .build()
-                    ));
-                }
-            });
+            linkPortfolioHeaderView(shownUserProfileDTO, portfolioCompactDTO);
         }
-        else
+
+        portfolioHeaderView.linkWith(userProfileDTO);
+        portfolioHeaderView.linkWith(portfolioCompactDTO);
+
+        ViewTreeObserver observer = inflatedView.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
         {
-            Timber.d("Not inflating portfolioHeaderView because already not null");
-        }
-        return portfolioHeaderView;
+            @SuppressLint("NewApi")
+            @Override public void onGlobalLayout()
+            {
+                if (SDKUtils.isJellyBeanOrHigher())
+                {
+                    inflatedView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+                else
+                {
+                    inflatedView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+                int headerHeight = inflatedView.getMeasuredHeight();
+                Timber.d("Header Height %d", headerHeight);
+                positionRecyclerView.setPadding(
+                        positionRecyclerView.getPaddingLeft(),
+                        headerHeight,
+                        positionRecyclerView.getPaddingRight(),
+                        positionRecyclerView.getPaddingBottom());
+
+                positionRecyclerView.addOnScrollListener(new MultiRecyclerScrollListener(
+                        fragmentElements.get().getRecyclerViewScrollListener(),
+                        new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.HEADER)
+                                .header(inflatedView)
+                                .minHeaderTranslation(-headerHeight - 50)
+                                .build()
+                ));
+            }
+        });
     }
 
     @NonNull protected Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> getPositionsObservable()
