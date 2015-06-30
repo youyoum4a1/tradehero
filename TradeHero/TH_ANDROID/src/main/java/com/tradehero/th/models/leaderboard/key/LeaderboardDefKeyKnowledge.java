@@ -1,5 +1,10 @@
 package com.tradehero.th.models.leaderboard.key;
 
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
+
 public class LeaderboardDefKeyKnowledge
 {
     // For fake leaderboard definition, hardcoded on client side
@@ -46,5 +51,14 @@ public class LeaderboardDefKeyKnowledge
             }
         }
         return false;
+    }
+
+    public static String getDesiredName(@NonNull Resources resources, @NonNull LeaderboardDefDTO leaderboardDefDTO)
+    {
+        if (leaderboardDefDTO.id == MOST_SKILLED_ID)
+        {
+            return resources.getString(R.string.leaderboard_community_most_skilled);
+        }
+        return leaderboardDefDTO.name;
     }
 }

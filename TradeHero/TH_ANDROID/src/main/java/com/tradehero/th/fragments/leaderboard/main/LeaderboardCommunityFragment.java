@@ -374,7 +374,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
         @Override public CharSequence getPageTitle(int position)
         {
-            return dtoList.get(position).name;
+            return LeaderboardDefKeyKnowledge.getDesiredName(getResources(), dtoList.get(position));
         }
 
         @Override public long getItemId(int position)
