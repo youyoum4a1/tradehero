@@ -5,7 +5,7 @@ import android.content.Context;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView;
 import com.tradehero.chinabuild.MainTabFragmentCompetition;
 import com.tradehero.chinabuild.MainTabFragmentDiscovery;
-import com.tradehero.chinabuild.MainTabFragmentLearning;
+import com.tradehero.chinabuild.fragment.stocklearning.StockLearningMainFragment;
 import com.tradehero.chinabuild.MainTabFragmentStockGod;
 import com.tradehero.chinabuild.MainTabFragmentTrade;
 import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
@@ -76,7 +76,7 @@ import com.tradehero.chinabuild.fragment.trade.TradeOfRisePercentFragment;
 import com.tradehero.chinabuild.fragment.trade.TradeOfTypeBaseFragment;
 import com.tradehero.chinabuild.fragment.userCenter.MyMainPage;
 import com.tradehero.chinabuild.fragment.userCenter.MyMainSubPage;
-import com.tradehero.chinabuild.fragment.userCenter.SettingMineFragment;
+import com.tradehero.chinabuild.SettingMineFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserAccountPage;
 import com.tradehero.chinabuild.fragment.userCenter.UserFansListFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
@@ -195,7 +195,7 @@ import dagger.Provides;
 
                         //China Build Start
                         MainTabFragmentTrade.class,
-                        MainTabFragmentLearning.class,
+                        StockLearningMainFragment.class,
                         SettingMineFragment.class,
                         MainTabFragmentDiscovery.class,
                         MainTabFragmentStockGod.class,

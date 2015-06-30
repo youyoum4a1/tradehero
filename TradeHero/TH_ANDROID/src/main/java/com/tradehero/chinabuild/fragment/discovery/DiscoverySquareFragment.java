@@ -20,6 +20,7 @@ import com.tradehero.chinabuild.data.TimeLineTotalInfo;
 import com.tradehero.chinabuild.fragment.competition.CompetitionDetailFragment;
 import com.tradehero.chinabuild.fragment.competition.CompetitionMainFragment;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
+import com.tradehero.chinabuild.fragment.stocklearning.StockLearningMainFragment;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
@@ -67,6 +68,9 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
     //Square News
     private LinearLayout newsLL;
 
+    //Square Classroom
+    private LinearLayout classroomLL;
+
     @InjectView(R.id.rlTopBanner) RelativeLayout rlTopBanner;
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) CirclePageIndicator indicator;
@@ -98,11 +102,13 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
         favoriteLL = (LinearLayout) view.findViewById(R.id.linearlayout_square_favorite);
         noviceLL = (LinearLayout) view.findViewById(R.id.linearlayout_square_learning);
         newsLL = (LinearLayout) view.findViewById(R.id.linearlayout_square_news);
+        classroomLL = (LinearLayout)view.findViewById(R.id.linearlayout_square_classroom);
         recentLL.setOnClickListener(this);
         rewardLL.setOnClickListener(this);
         favoriteLL.setOnClickListener(this);
         noviceLL.setOnClickListener(this);
         newsLL.setOnClickListener(this);
+        classroomLL.setOnClickListener(this);
         numberOfEssentialTV = (TextView)view.findViewById(R.id.textview_timelines_head_total_favorite);
         numberOfLearningTV = (TextView)view.findViewById(R.id.textview_timelines_head_total_learning);
         numberOfRewardTV = (TextView)view.findViewById(R.id.textview_timelines_head_total_reward);
@@ -147,6 +153,9 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
                 break;
             case R.id.linearlayout_square_news:
                 gotoDashboard(DiscoveryNewsFragment.class, new Bundle());
+                break;
+            case R.id.linearlayout_square_classroom:
+                gotoDashboard(StockLearningMainFragment.class, new Bundle());
                 break;
         }
     }
@@ -225,7 +234,7 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
         @Override
         public void destroyItem(ViewGroup container, int position, Object object)
         {
-            ((ViewPager) container).removeView(views.get(position));
+            container.removeView(views.get(position));
         }
 
         @Override

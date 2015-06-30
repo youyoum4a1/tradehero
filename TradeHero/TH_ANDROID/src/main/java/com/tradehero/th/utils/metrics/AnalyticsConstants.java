@@ -57,7 +57,7 @@ public class AnalyticsConstants
     public static final String MAIN_PAGE_STOCK = "MAIN_PAGE_STOCK";
     public static final String MAIN_PAGE_DISCOVERY = "MAIN_PAGE_DISCOVERY";
     public static final String MAIN_PAGE_COMPETITION = "MAIN_PAGE_COMPETITION";
-    public static final String MAIN_PAGE_LEARNING = "MAIN_PAGE_LEARNING";
+    public static final String MAIN_PAGE_MINE = "MAIN_PAGE_MINE";
 
     //交易中我的交易，热门关注，热门持有，中国概念的点击量，右上角的搜索点击量
     public static final String TRADE_PAGE_MINE_TRADE = "TRADE_PAGE_MINE_TRADE";

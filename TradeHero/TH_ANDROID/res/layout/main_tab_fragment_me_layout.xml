@@ -6,6 +6,15 @@
         android:layout_height="fill_parent"
         >
 
+    <TextView
+        android:background="@color/tab_head_bg"
+        android:layout_width="match_parent"
+        android:textColor="#ffffff"
+        android:textSize="17sp"
+        android:text="@string/tab_main_me"
+        android:gravity="center"
+        android:layout_height="@dimen/tab_main_indicator_height"/>
+
     <ScrollView
             android:layout_height="fill_parent"
             android:layout_width="fill_parent">

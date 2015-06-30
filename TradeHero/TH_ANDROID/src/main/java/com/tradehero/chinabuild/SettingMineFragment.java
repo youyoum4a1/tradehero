@@ -1,4 +1,4 @@
-package com.tradehero.chinabuild.fragment.userCenter;
+package com.tradehero.chinabuild;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +20,10 @@ import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.*;
 import com.tradehero.chinabuild.fragment.message.NotificationFragment;
+import com.tradehero.chinabuild.fragment.userCenter.MyMainPage;
+import com.tradehero.chinabuild.fragment.userCenter.UserAccountPage;
+import com.tradehero.chinabuild.fragment.userCenter.UserFansListFragment;
+import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -47,7 +51,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 
-public class SettingMineFragment extends DashboardFragment {
+public class SettingMineFragment extends AbsBaseFragment {
 
     DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
     @Inject PortfolioCompactCache portfolioCompactCache;
@@ -106,13 +110,6 @@ public class SettingMineFragment extends DashboardFragment {
         userProfileCacheListener = createUserProfileFetchListener();
         portfolioFetchListener = createPortfolioCacheListener();
         return view;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(getString(R.string.tab_main_me));
     }
 
 
@@ -229,7 +226,7 @@ public class SettingMineFragment extends DashboardFragment {
         {
             case R.id.me_layout:
                 analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MINE_PERSONAL_PAGE));
-                pushFragment(MyProfileFragment.class, new Bundle());
+                gotoDashboard(MyProfileFragment.class.getName(), new Bundle());
                 break;
             case R.id.rlMeDynamic:
                 analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MINE_MY_MOMENT));
@@ -237,15 +234,15 @@ public class SettingMineFragment extends DashboardFragment {
                 break;
             case R.id.rlMeMessageCenter:
                 analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_MESSAGE_CENTER));
-                pushFragment(NotificationFragment.class, new Bundle());
+                gotoDashboard(NotificationFragment.class.getName(), new Bundle());
                 break;
             case R.id.rlMeInviteFriends:
                 analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MINE_INVITE_FRIENDS));
-                pushFragment(InviteFriendsFragment.class, new Bundle());
+                gotoDashboard(InviteFriendsFragment.class.getName(), new Bundle());
                 break;
             case R.id.rlMeSetting:
                 analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MINE_SETTING));
-                pushFragment(SettingFragment.class, new Bundle());
+                gotoDashboard(SettingFragment.class.getName(), new Bundle());
                 break;
             case R.id.llItemAllAmount:
                 analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ME_TOTAL_PROPERTY));
@@ -265,24 +262,24 @@ public class SettingMineFragment extends DashboardFragment {
     public void enterUserAllAmount() {
         Bundle bundle = new Bundle();
         bundle.putInt(UserHeroesListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
-        pushFragment(UserAccountPage.class, bundle);
+        gotoDashboard(UserAccountPage.class.getName(), bundle);
     }
 
     private void enterHeroesListFragment() {
         Bundle bundle = new Bundle();
         bundle.putInt(UserHeroesListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
-        pushFragment(UserHeroesListFragment.class, bundle);
+        gotoDashboard(UserHeroesListFragment.class.getName(), bundle);
     }
 
     private void enterFollowersListFragment(){
         Bundle bundle = new Bundle();
         bundle.putInt(UserHeroesListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
-        pushFragment(UserFansListFragment.class, bundle);
+        gotoDashboard(UserFansListFragment.class.getName(), bundle);
     }
 
     public void enterMyMainPager()
     {
-        pushFragment(MyMainPage.class, new Bundle());
+        gotoDashboard(MyMainPage.class.getName(), new Bundle());
     }
 
     protected void fetchUserProfile()

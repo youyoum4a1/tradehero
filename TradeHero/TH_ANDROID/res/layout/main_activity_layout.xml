@@ -163,7 +163,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/llTabLearning"
+                    android:id="@+id/llTabMine"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:layout_weight="1.0"
@@ -178,7 +178,7 @@
                             android:id="@+id/imgTabMenu3"
                             style="@style/navigation_icon"
                             android:layout_centerHorizontal="true"
-                            android:background="@drawable/tab_menu3_normal"
+                            android:background="@drawable/tab_menu4_normal"
                             android:focusable="false" />
 
                         <ImageView
@@ -194,7 +194,7 @@
                     <TextView
                         android:id="@+id/tvTabMenu3"
                         style="@style/navigation_text"
-                        android:text="@string/tab_main_learning" />
+                        android:text="@string/tab_main_me" />
                 </LinearLayout>
 
             </LinearLayout>

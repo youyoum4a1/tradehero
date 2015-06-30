@@ -9,8 +9,6 @@ public class Constants {
 
     public static final boolean DOGFOOD_BUILD = false;
 
-    public static final boolean PICASSO_DEBUG = !RELEASE;
-
     // this constant is dedicated for static content page (html, image, cdn that
     // may be needed later, for Api endpoint, refer to retrofit module, we want to make it
     // generic and easy to switch between endpoint (prod, dev, test server) as much as possible.
@@ -32,7 +30,7 @@ public class Constants {
     public static final String LOCALYTICS_APP_KEY_RELEASE = "10a8a8e1d386d096bfe1641-8b2cc16e-5b52-11e4-a386-005cf8cbabd8";
     public static final String LOCALYTICS_APP_KEY_DEBUG =   "8f24cffb81cc32757a011bd-a6396038-58f6-11e4-a5f7-009c5fda0a25";
 
-    private static final int VERSION = 101;
+    private static final int VERSION = 86;
     public static final TapStreamType TAP_STREAM_TYPE = TapStreamType.fromType(VERSION);
 
     public static final int SHARE_WEIBO_CONTENT_LENGTH_LIMIT = 140;

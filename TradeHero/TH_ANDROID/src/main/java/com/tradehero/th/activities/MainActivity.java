@@ -25,7 +25,6 @@ import butterknife.OnClick;
 import com.igexin.sdk.PushManager;
 import com.tradehero.chinabuild.MainTabFragmentCompetition;
 import com.tradehero.chinabuild.MainTabFragmentDiscovery;
-import com.tradehero.chinabuild.MainTabFragmentLearning;
 import com.tradehero.chinabuild.MainTabFragmentStockGod;
 import com.tradehero.chinabuild.MainTabFragmentTrade;
 import com.tradehero.chinabuild.data.AppInfoDTO;
@@ -33,6 +32,7 @@ import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoverySquareFragment;
+import com.tradehero.chinabuild.SettingMineFragment;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -114,8 +114,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int TAB_TRADE = 0;
     private static final int TAB_STOCKGOD = 1;
     private static final int TAB_DISCOVERY = 2;
-    private static final int TAB_LEARNING = 3;
-    private static final int TAB_COMPETITION = 4;
+    private static final int TAB_COMPETITION = 3;
+    private static final int TAB_MINE = 4;
 
     public long TIME_PRESSED_BACK = -1;
     public static final long TIME_TO_EXIT_APP = 1000;
@@ -127,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
             MainTabFragmentTrade.class,
             MainTabFragmentStockGod.class,
             MainTabFragmentDiscovery.class,
-            MainTabFragmentLearning.class,
-            MainTabFragmentCompetition.class
+            MainTabFragmentCompetition.class,
+            SettingMineFragment.class
     };
 
     /**
@@ -138,8 +138,8 @@ public class MainActivity extends AppCompatActivity {
             R.string.tab_main_trade,
             R.string.tab_main_stock_god,
             R.string.tab_main_descovery,
-            R.string.tab_main_learning,
-            R.string.tab_main_competition
+            R.string.tab_main_competition,
+            R.string.tab_main_me
     };
 
     //Guide View
@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
         updateGETUIID();
     }
 
-    @OnClick({R.id.llTabTrade, R.id.llTabStockGod, R.id.llTabDiscovery, R.id.llTabCompetition, R.id.llTabLearning})
+    @OnClick({R.id.llTabTrade, R.id.llTabStockGod, R.id.llTabDiscovery, R.id.llTabCompetition, R.id.llTabMine})
     public void OnClickTabMenu(View view) {
         int id = view.getId();
         switch (id) {
@@ -235,10 +235,10 @@ public class MainActivity extends AppCompatActivity {
                 recordShowedGuideOfMainTab(2);
                 analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_DISCOVERY));
                 break;
-            case R.id.llTabLearning:
-                setTabCurrent(TAB_LEARNING);
+            case R.id.llTabMine:
+                setTabCurrent(TAB_MINE);
                 recordShowedGuideOfMainTab(3);
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_LEARNING));
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_MINE));
                 break;
             case R.id.llTabCompetition:
                 setTabCurrent(TAB_COMPETITION);
@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
             imgTabMenu0.setBackgroundResource(currentTab == TAB_TRADE ? R.drawable.tab_menu0_active : R.drawable.tab_menu0_normal);
             imgTabMenu1.setBackgroundResource(currentTab == TAB_STOCKGOD ? R.drawable.tab_menu1_active : R.drawable.tab_menu1_normal);
             imgTabMenu2.setBackgroundResource(currentTab == TAB_DISCOVERY ? R.drawable.tab_menu2_active : R.drawable.tab_menu2_normal);
-            imgTabMenu3.setBackgroundResource(currentTab == TAB_LEARNING ? R.drawable.tab_menu3_active : R.drawable.tab_menu3_normal);
+            imgTabMenu3.setBackgroundResource(currentTab == TAB_MINE ? R.drawable.tab_menu4_active : R.drawable.tab_menu4_normal);
             imgTabMenu4.setBackgroundResource(currentTab == TAB_COMPETITION ? R.drawable.tab_menu5_active : R.drawable.tab_menu5_normal);
 
             tvTabMenu0.setTextColor(currentTab == TAB_TRADE ? getResources().getColor(R.color.main_tab_text_color_active)
@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
                     : getResources().getColor(R.color.main_tab_text_color_default));
             tvTabMenu2.setTextColor(currentTab == TAB_DISCOVERY ? getResources().getColor(R.color.main_tab_text_color_active)
                     : getResources().getColor(R.color.main_tab_text_color_default));
-            tvTabMenu3.setTextColor(currentTab == TAB_LEARNING ? getResources().getColor(R.color.main_tab_text_color_active)
+            tvTabMenu3.setTextColor(currentTab == TAB_MINE ? getResources().getColor(R.color.main_tab_text_color_active)
                     : getResources().getColor(R.color.main_tab_text_color_default));
             tvTabMenu4.setTextColor(currentTab == TAB_COMPETITION ? getResources().getColor(R.color.main_tab_text_color_active)
                     : getResources().getColor(R.color.main_tab_text_color_default));

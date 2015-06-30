@@ -82,7 +82,7 @@ public class DiscoveryNewsFragment extends DashboardFragment {
                     Bundle bundle = new Bundle();
                     bundle.putLong(NewsDetailFragment.KEY_BUNDLE_NEWS_ID, newsDTO.id);
                     bundle.putString(NewsDetailFragment.KEY_BUNDLE_NEWS_TITLE, newsDTO.title);
-                    gotoDashboard(NewsDetailFragment.class, bundle);
+                    pushFragment(NewsDetailFragment.class, bundle);
                 }
             }
         });

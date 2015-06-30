@@ -1,15 +1,17 @@
 package com.tradehero.th.fragments.base;
 
+import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.chinabuild.fragment.LoginSuggestDialogFragment;
@@ -22,7 +24,6 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 abstract public class DashboardFragment extends BaseFragment {
     public static final String BUNDLE_KEY_TITLE = DashboardFragment.class.getName() + ".title";
@@ -35,6 +36,13 @@ abstract public class DashboardFragment extends BaseFragment {
     private TextView tvHeadRight1;
     private TextView tvHeadMiddleMain;
     private TextView tvHeadMiddleSub;
+
+    //Toolbar for page change
+    private LinearLayout pageLL;
+    private TextView pageA;
+    private TextView pageB;
+    public final static String INTENT_TOOLBAR_PAGE_A_CLICK = "INTENT_TOOLBAR_PAGE_A_CLICK";
+    public final static String INTENT_TOOLBAR_PAGE_B_CLICK = "INTENT_TOOLBAR_PAGE_B_CLICK";
 
     private LoginSuggestDialogFragment dialogFragment;
     private FragmentManager fm;
@@ -86,6 +94,12 @@ abstract public class DashboardFragment extends BaseFragment {
             }
             tvHeadMiddleMain.setVisibility(View.VISIBLE);
             tvHeadMiddleMain.setText(str);
+        }
+        if(tvHeadLeft!=null && tvHeadLeft.getVisibility()!=View.VISIBLE){
+            tvHeadLeft.setVisibility(View.VISIBLE);
+        }
+        if(pageLL!=null){
+            pageLL.setVisibility(View.GONE);
         }
     }
 
@@ -139,24 +153,6 @@ abstract public class DashboardFragment extends BaseFragment {
     public void setHeadViewRight0Visibility(int visibility) {
         if (tvHeadRight0 != null) {
             tvHeadRight0.setVisibility(visibility);
-        }
-    }
-
-    public void setHeadViewRight0Drawable(Drawable left, Drawable top, Drawable right, Drawable bottom) {
-        if (tvHeadRight0 != null) {
-            if (right != null) {
-                right.setBounds(0, 0, right.getMinimumWidth(), right.getMinimumHeight());
-            }
-            if (left != null) {
-                left.setBounds(0, 0, left.getMinimumWidth(), left.getMinimumHeight());
-            }
-            if (top != null) {
-                top.setBounds(0, 0, top.getMinimumWidth(), top.getMinimumHeight());
-            }
-            if (bottom != null) {
-                bottom.setBounds(0, 0, bottom.getMinimumWidth(), bottom.getMinimumHeight());
-            }
-            tvHeadRight0.setCompoundDrawables(left, top, right, bottom);
         }
     }
 
@@ -221,6 +217,30 @@ abstract public class DashboardFragment extends BaseFragment {
         tvHeadRight0.setBackgroundColor(Color.TRANSPARENT);
         tvHeadRight1.setBackgroundColor(Color.TRANSPARENT);
         tvHeadRight0.setCompoundDrawables(null, null, null, null);
+
+        pageLL = (LinearLayout)toolbar.findViewById(R.id.linearlayout_pager);
+        pageA = (TextView)toolbar.findViewById(R.id.page_a);
+        pageB = (TextView)toolbar.findViewById(R.id.page_b);
+
+        if(pageA!=null) {
+            pageA.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    focusOnPageA();
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(INTENT_TOOLBAR_PAGE_A_CLICK));
+                }
+            });
+        }
+
+        if(pageB!=null){
+            pageB.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    focusOnPageB();
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(INTENT_TOOLBAR_PAGE_B_CLICK));
+                }
+            });
+        }
     }
 
     public void popCurrentFragment() {
@@ -263,7 +283,7 @@ abstract public class DashboardFragment extends BaseFragment {
             InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         } catch (Exception e) {
-            Timber.d(""+e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -304,4 +324,41 @@ abstract public class DashboardFragment extends BaseFragment {
 
     public void onBackPressed() {
     }
+
+    public void focusOnPageA(){
+        if(pageA == null || pageB == null){
+            return;
+        }
+        pageA.setTextColor(Color.parseColor("#ffffff"));
+        pageA.setTextSize((float)15.50);
+        pageB.setTextColor(Color.parseColor("#CDE0F3"));
+        pageB.setTextSize(13);
+    }
+
+
+    public void focusOnPageB(){
+        if(pageA == null || pageB == null){
+            return;
+        }
+        pageA.setTextColor(Color.parseColor("#CDE0F3"));
+        pageA.setTextSize(13);
+        pageB.setTextColor(Color.parseColor("#ffffff"));
+        pageB.setTextSize((float)15.50);
+    }
+
+    public void setPageView(String pageATitle, String pageBTitle){
+        if(pageLL!=null){
+            pageLL.setVisibility(View.VISIBLE);
+            pageA.setText(pageATitle);
+            pageB.setText(pageBTitle);
+
+            tvHeadLeft.setVisibility(View.GONE);
+            tvHeadRight0.setVisibility(View.GONE);
+            tvHeadRight1.setVisibility(View.GONE);
+            tvHeadMiddleMain.setVisibility(View.GONE);
+            tvHeadMiddleSub.setVisibility(View.GONE);
+        }
+    }
+
+
 }

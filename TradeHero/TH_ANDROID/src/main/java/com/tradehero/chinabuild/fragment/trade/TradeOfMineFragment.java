@@ -19,7 +19,6 @@ import com.tradehero.chinabuild.data.WatchPositionItem;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
-import com.tradehero.chinabuild.fragment.userCenter.SettingMineFragment;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
@@ -158,7 +157,7 @@ public class TradeOfMineFragment extends DashboardFragment
         mRefreshView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoDashboard(SettingMineFragment.class, new Bundle());
+                //gotoDashboard(SettingMineFragment.class, new Bundle());
             }
         });
         roiTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_rateofreturn);

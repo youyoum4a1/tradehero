@@ -220,5 +220,38 @@
                   android:background="@color/gray_normal"
                   android:layout_marginLeft="73dp"/>
         </RelativeLayout>
+        <LinearLayout android:orientation="horizontal" android:id="@+id/linearlayout_square_classroom"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:background="@drawable/listview_item_selector">
+            <ImageView android:layout_width="43dp" android:layout_height="43dp"
+                android:background="@drawable/square_classroom"
+                android:layout_margin="15dp"/>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp" android:layout_marginRight="15dp"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginTop="3dp">
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:textSize="15sp" android:textColor="#000000"
+                        android:text="@string/discovery_square_classroom"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:textSize="12sp" android:textColor="#8d8d8d"
+                        android:singleLine="true"
+                        android:text="@string/discovery_square_classroom_description"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="1px"
+            android:background="#ffffff">
+            <View android:layout_width="match_parent" android:layout_height="match_parent"
+                android:background="@color/gray_normal"
+                android:layout_marginLeft="73dp"/>
+        </RelativeLayout>
     </LinearLayout>
 </ScrollView>
