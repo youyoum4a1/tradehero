@@ -11,7 +11,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
-import com.tradehero.th.models.fastfill.FastFillException;
+import com.tradehero.th.models.fastfill.FastFillExceptionUtil;
 import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.models.kyc.KYCForm;
@@ -65,6 +65,23 @@ public class IdentityPromptActivity extends BaseActivity
                         return formToUse;
                     }
                 })
+                .retryWhen(new Func1<Observable<? extends Throwable>, Observable<?>>()
+                {
+                    @Override public Observable<?> call(Observable<? extends Throwable> observable)
+                    {
+                        return observable.flatMap(new Func1<Throwable, Observable<?>>()
+                        {
+                            @Override public Observable<?> call(Throwable throwable)
+                            {
+                                if (FastFillExceptionUtil.canRetry(throwable))
+                                {
+                                    return Observable.just(1);
+                                }
+                                return Observable.empty();
+                            }
+                        });
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<KYCForm>()
@@ -79,7 +96,7 @@ public class IdentityPromptActivity extends BaseActivity
                             @Override public void call(Throwable throwable)
                             {
                                 Timber.e(throwable, "Error when FastFill");
-                                if (!(throwable instanceof FastFillException) || !((FastFillException) throwable).canRetry())
+                                if (!FastFillExceptionUtil.canRetry(throwable))
                                 {
                                     THToast.show(R.string.fast_fill_not_available);
                                     goToSignUp();
