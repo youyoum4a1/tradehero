@@ -5,21 +5,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.PositionInterface;
 import com.tradehero.chinabuild.data.SecurityPositionItem;
 import com.tradehero.chinabuild.data.WatchPositionItem;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
-import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
@@ -37,7 +34,6 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.number.THSignedMoney;
@@ -50,7 +46,6 @@ import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.prefs.ShareDialogROIValueKey;
 import com.tradehero.th.persistence.prefs.ShareDialogTotalValueKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -76,13 +71,11 @@ public class TradeOfMineFragment extends DashboardFragment
     @Inject PortfolioCache portfolioCache;
     @Inject CurrentUserId currentUserId;
 
-    private RelativeLayout mRefreshView;
+    private LinearLayout mRefreshView;
     private TextView roiTV;
     private TextView returnTV;
-    private TextView nicknameTV;
-    private TextView gotoMineTV;
-    private ImageView gotoMineIV;
-    private ImageView avatarIV;
+    private TextView totalTV;
+    private TextView availableTV;
 
     @InjectView(R.id.tradeMyPositionList) PullToRefreshExpandableListView listView;
 
@@ -99,10 +92,6 @@ public class TradeOfMineFragment extends DashboardFragment
     private final long duration_showing_dialog = 120000;
     private boolean availableShowDialog = false;
 
-
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    @Inject Lazy<UserProfileCache> userProfileCache;
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -112,7 +101,6 @@ public class TradeOfMineFragment extends DashboardFragment
         userWatchlistPositionFetchListener = new WatchlistPositionFragmentSecurityIdListCacheListener();
         portfolioFetchListener = new WatchlistPositionFragmentPortfolioCacheListener();
         portfolioCompactListFetchListener = new BasePurchaseManagementPortfolioCompactListFetchListener();
-        userProfileCacheListener = new UserProfileFetchListener();
     }
 
     @Override
@@ -128,7 +116,6 @@ public class TradeOfMineFragment extends DashboardFragment
         super.onResume();
         availableShowDialog = true;
         fetchPortfolioCompactList(true);
-        fetchUserProfile();
     }
 
     @Override public void onStop() {
@@ -143,29 +130,25 @@ public class TradeOfMineFragment extends DashboardFragment
     }
 
     @Override public void onDestroy() {
-        detachUserProfileCache();
         fetchGetPositionsDTOListener = null;
         portfolioFetchListener = null;
         userWatchlistPositionFetchListener = null;
         portfolioCompactListFetchListener = null;
-        userProfileCacheListener = null;
         super.onDestroy();
     }
 
     private void initRefreshView(LayoutInflater inflater) {
-        mRefreshView = (RelativeLayout) inflater.inflate(R.layout.trade_of_mine_listview_header, null);
+        mRefreshView = (LinearLayout) inflater.inflate(R.layout.trade_of_mine_listview_header, null);
         mRefreshView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //gotoDashboard(SettingMineFragment.class, new Bundle());
+
             }
         });
         roiTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_rateofreturn);
         returnTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_return);
-        nicknameTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_myname);
-        gotoMineTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_go_mypage);
-        gotoMineIV = (ImageView)mRefreshView.findViewById(R.id.imageview_trade_go_mypage);
-        avatarIV = (ImageView)mRefreshView.findViewById(R.id.imageview_trade_avatar);
+        totalTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_total);
+        availableTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_available);
     }
 
     private void initView() {
@@ -390,20 +373,25 @@ public class TradeOfMineFragment extends DashboardFragment
         }
     }
 
-    private void displayProfolioDTO(PortfolioDTO cached)
-    {
-        if (cached != null && cached.roiSinceInception != null)
-        {
+    private void displayProfolioDTO(PortfolioDTO cached) {
+        if(cached==null){
+            return;
+        }
+        if (cached.roiSinceInception != null) {
             THSignedNumber roi = THSignedPercentage.builder(cached.roiSinceInception * 100)
                     .withSign()
                     .signTypeArrow()
                     .build();
-            if (getActivity() != null)
-            {
+            if (getActivity() != null) {
                 roiTV.setText(roi.toString());
                 roiTV.setTextColor(getActivity().getResources().getColor(roi.getColorResId()));
             }
         }
+
+        String valueString = String.format("%s %,.0f", cached.getNiceCurrency(), cached.totalValue);
+        totalTV.setText(valueString);
+        String vsCash = String.format("%s %,.0f", cached.getNiceCurrency(), cached.cashBalance);
+        availableTV.setText(vsCash);
 
         //总资产数达到15w
         if (cached.totalValue > 150000 && getActivity() != null && availableShowDialog)
@@ -529,65 +517,4 @@ public class TradeOfMineFragment extends DashboardFragment
         }
     }
 
-
-    //Download my profile
-
-    protected void fetchUserProfile() {
-        detachUserProfileCache();
-        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        //Get user profile from cache
-        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey(), false);
-    }
-
-    private void detachUserProfileCache()
-    {
-        userProfileCache.get().unregister(userProfileCacheListener);
-    }
-
-    protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> {
-        @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value) {
-            refreshAvatar(value);
-            showUnreadNotificationCount(value);
-        }
-
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-        {
-
-        }
-    }
-
-    private void refreshAvatar(@NotNull UserProfileDTO user){
-         if(avatarIV == null || nicknameTV == null){
-             return;
-         }
-        if (user != null) {
-            if (user.picture != null) {
-                ImageLoader.getInstance().displayImage(user.picture, avatarIV, UniversalImageLoader.getAvatarImageLoaderOptions());
-            }
-            if (user.isVisitor) {
-                nicknameTV.setText(R.string.guest_user);
-            } else {
-                nicknameTV.setText(user.getDisplayName());
-            }
-        }
-    }
-
-    private void showUnreadNotificationCount(@NotNull UserProfileDTO value){
-        if(gotoMineTV==null){
-            return;
-        }
-        int count = value.unreadNotificationsCount;
-        if(count <= 0){
-            gotoMineIV.setVisibility(View.VISIBLE);
-            gotoMineTV.setVisibility(View.GONE);
-            return;
-        }
-        if(count > 99){
-            count = 99;
-        }
-        gotoMineIV.setVisibility(View.GONE);
-        gotoMineTV.setVisibility(View.VISIBLE);
-        gotoMineTV.setText(String.valueOf(count));
-    }
 }

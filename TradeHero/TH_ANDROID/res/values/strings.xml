@@ -573,6 +573,10 @@
     <!--Security Detail -->
     <string name="security_yesterday_price">&#160;&#160;&#160;&#160;昨收：</string>
     <string name="security_today_low">&#160;&#160;&#160;&#160;最低：</string>
+    <string name="security_mine_return_percent">&#160;&#160;&#160;&#160;总盈利:</string>
+    <string name="security_mine_total">&#160;&#160;&#160;&#160;总资产:</string>
+    <string name="security_mine_return">浮动盈亏:</string>
+    <string name="security_mine_available">可用资金:</string>
     <!--Security Detail -->
 
 
