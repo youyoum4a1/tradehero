@@ -70,6 +70,11 @@ public class JumioFastFillUtil implements FastFillUtil
         return supported;
     }
 
+    @NonNull @Override public Observable<Boolean> isAvailable(@NonNull Activity activity)
+    {
+        return Observable.just(isSupported(activity));
+    }
+
     @Override public void fastFill(@NonNull Activity activity)
     {
         fastFill(activity, getNetverifySDK(activity));

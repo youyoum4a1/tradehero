@@ -8,6 +8,7 @@ import rx.Observable;
 
 public interface FastFillUtil extends ActivityResultRequester
 {
+    @NonNull Observable<Boolean> isAvailable(@NonNull Activity activity);
     void fastFill(@NonNull Activity activity);
     void fastFill(@NonNull Fragment fragment);
     @NonNull Observable<ScannedDocument> getScannedDocumentObservable();

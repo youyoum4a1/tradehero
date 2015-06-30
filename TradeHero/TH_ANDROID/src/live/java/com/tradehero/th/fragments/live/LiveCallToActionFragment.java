@@ -8,18 +8,28 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.IdentityPromptActivity;
-import com.tradehero.th.activities.LiveActivityUtil;
+import com.tradehero.th.activities.SignUpLiveActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.models.fastfill.FastFillUtil;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.android.view.OnClickEvent;
+import rx.android.view.ViewObservable;
+import rx.functions.Action1;
+import rx.functions.Func2;
 
 public class LiveCallToActionFragment extends DashboardFragment
 {
     @Inject DashboardNavigator navigator;
-    @Inject LiveActivityUtil liveActivityUtil;
+    @Inject FastFillUtil fastFill;
+
+    @InjectView(R.id.live_button_go_live) View goLiveButton;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -30,6 +40,28 @@ public class LiveCallToActionFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+        onDestroyViewSubscriptions.add(Observable.combineLatest(
+                ViewObservable.clicks(goLiveButton),
+                fastFill.isAvailable(getActivity()),
+                new Func2<OnClickEvent, Boolean, Boolean>()
+                {
+                    @Override public Boolean call(OnClickEvent onClickEvent, Boolean available)
+                    {
+                        return available;
+                    }
+                })
+                .subscribe(
+                        new Action1<Boolean>()
+                        {
+                            @Override public void call(Boolean fastFillAvailable)
+                            {
+                                navigator.launchActivity(fastFillAvailable
+                                        ? IdentityPromptActivity.class
+                                        : SignUpLiveActivity.class);
+                                navigator.popFragment();
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to get FastFill available")));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -45,18 +77,9 @@ public class LiveCallToActionFragment extends DashboardFragment
     }
 
     @SuppressWarnings("unused")
-    @OnClick(R.id.live_button_go_live)
-    public void onGoLiveButtonClicked(View v)
-    {
-        navigator.launchActivity(IdentityPromptActivity.class);
-        navigator.popFragment();
-    }
-
-    @SuppressWarnings("unused")
     @OnClick(R.id.live_button_later)
     public void onLaterButtonClicked(View v)
     {
-        liveActivityUtil.switchLive(false);
         navigator.popFragment();
     }
 }
