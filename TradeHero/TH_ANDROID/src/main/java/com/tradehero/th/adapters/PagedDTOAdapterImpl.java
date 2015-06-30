@@ -97,10 +97,11 @@ public class PagedDTOAdapterImpl<DTOType> extends ArrayAdapter<DTOType>
 
     protected void rebuild()
     {
+        setNotifyOnChange(false);
         super.clear();
         super.addAll(makeItems());
-        notifyDataSetChanged();
         setNotifyOnChange(true);
+        notifyDataSetChanged();
     }
 
     @NonNull protected List<DTOType> makeItems()
