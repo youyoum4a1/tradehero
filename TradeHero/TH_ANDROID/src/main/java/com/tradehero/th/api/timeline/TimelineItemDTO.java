@@ -21,6 +21,7 @@ public class TimelineItemDTO extends AbstractDiscussionDTO<TimelineItemDTO>
     public boolean useSysIcon;
     public boolean renderSysStyle;
     public String imageUrl;
+    @Nullable public Integer tradeId;
 
     private UserProfileCompactDTO user;
 
