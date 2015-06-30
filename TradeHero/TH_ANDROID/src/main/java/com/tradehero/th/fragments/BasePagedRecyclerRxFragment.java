@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -57,8 +57,8 @@ abstract public class BasePagedRecyclerRxFragment<
     protected FlagNearEdgeRecyclerScrollListener nearEndScrollListener;
 
     protected PagedRecyclerAdapter<DTOType> itemViewAdapter;
-    @NonNull protected Map<Integer, Subscription> pagedSubscriptions;
-    @NonNull protected Map<Integer, Subscription> pagedPastSubscriptions;
+    @NonNull protected final Map<Integer, Subscription> pagedSubscriptions;
+    @NonNull protected final Map<Integer, Subscription> pagedPastSubscriptions;
     protected DTOType selectedItem;
 
     public static void putPerPage(@NonNull Bundle args, int perPage)
@@ -75,11 +75,15 @@ abstract public class BasePagedRecyclerRxFragment<
         return DEFAULT_PER_PAGE;
     }
 
+    public BasePagedRecyclerRxFragment()
+    {
+        pagedSubscriptions = new HashMap<>();
+        pagedPastSubscriptions = new HashMap<>();
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        pagedSubscriptions = new HashMap<>();
-        pagedPastSubscriptions = new HashMap<>();
         perPage = getPerPage(getArguments());
         perPage = getPerPage(savedInstanceState);
         itemViewAdapter = createItemViewAdapter();
@@ -220,34 +224,32 @@ abstract public class BasePagedRecyclerRxFragment<
         final PagedDTOKeyType pagedKey = makePagedDtoKey(pageToLoad);
         if (!isRequesting(pageToLoad))
         {
-            final boolean[] alreadyGotNext = new boolean[] {false};
+            final AtomicBoolean alreadyGotNext = new AtomicBoolean(false);
             Subscription subscription;
-            subscription = AppObservable.bindFragment(
-                    this,
-                    getCache().get(pagedKey)
-                            .subscribeOn(Schedulers.computation())
-                            .doOnNext(new Action1<Pair<PagedDTOKeyType, ContainerDTOType>>()
+            subscription = getCache().get(pagedKey)
+                    .subscribeOn(Schedulers.computation())
+                    .doOnNext(new Action1<Pair<PagedDTOKeyType, ContainerDTOType>>()
+                    {
+                        @Override public void call(Pair<PagedDTOKeyType, ContainerDTOType> pair)
+                        {
+                            alreadyGotNext.set(true);
+                            Subscription removed = pagedSubscriptions.remove(pageToLoad);
+                            if (removed != null)
                             {
-                                @Override public void call(Pair<PagedDTOKeyType, ContainerDTOType> pair)
-                                {
-                                    Subscription removed = pagedSubscriptions.remove(pageToLoad);
-                                    if (removed != null)
-                                    {
-                                        pagedPastSubscriptions.put(
-                                                pageToLoad,
-                                                removed);
-                                    }
-                                    alreadyGotNext[0] = true;
-                                }
-                            })
-                            .finallyDo(new Action0()
-                            {
-                                @Override public void call()
-                                {
-                                    pagedSubscriptions.remove(pageToLoad);
-                                    pagedPastSubscriptions.remove(pageToLoad);
-                                }
-                            }))
+                                pagedPastSubscriptions.put(
+                                        pageToLoad,
+                                        removed);
+                            }
+                        }
+                    })
+                    .finallyDo(new Action0()
+                    {
+                        @Override public void call()
+                        {
+                            pagedSubscriptions.remove(pageToLoad);
+                            pagedPastSubscriptions.remove(pageToLoad);
+                        }
+                    })
                     .observeOn(AndroidSchedulers.mainThread())
                     .map(new Func1<Pair<PagedDTOKeyType, ContainerDTOType>, Pair<PagedDTOKeyType, ContainerDTOType>>()
                     {
@@ -272,7 +274,7 @@ abstract public class BasePagedRecyclerRxFragment<
                                     BasePagedRecyclerRxFragment.this.onError(pagedKey, error);
                                 }
                             });
-            if (alreadyGotNext[0])
+            if (alreadyGotNext.get())
             {
                 pagedPastSubscriptions.put(
                         pageToLoad,

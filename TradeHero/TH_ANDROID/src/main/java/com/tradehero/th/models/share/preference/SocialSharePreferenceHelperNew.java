@@ -25,7 +25,8 @@ public class SocialSharePreferenceHelperNew
     {
         super();
         this.socialShareSetPreference = socialShareSetPreference;
-        if (!isInitialized.getAndSet(true)) {
+        if (!isInitialized.getAndSet(true))
+        {
             sharePreferencesMap = new Hashtable<>();
         }
         load();
